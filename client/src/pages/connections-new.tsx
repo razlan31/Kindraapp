@@ -1,16 +1,19 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useLocation } from "wouter";
 import { Header } from "@/components/layout/header";
 import { BottomNavigation } from "@/components/layout/bottom-navigation";
 import { ConnectionCard } from "@/components/dashboard/connection-card";
-import { Connection, Moment } from "@shared/schema";
+import { Connection, Moment, relationshipStages } from "@shared/schema";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
 import { useModal } from "@/contexts/modal-context";
 import { Input } from "@/components/ui/input";
 import { Search, Plus, UserPlus } from "lucide-react";
 import { useRelationshipFocus } from "@/contexts/relationship-focus-context-simple";
+import { useToast } from "@/hooks/use-toast";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export default function ConnectionsNew() {
   const { user } = useAuth();
@@ -19,6 +22,12 @@ export default function ConnectionsNew() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStage, setFilterStage] = useState<string | null>(null);
   const [, setLocation] = useLocation();
+  const [showQuickAdd, setShowQuickAdd] = useState(false);
+  const [newName, setNewName] = useState("");
+  const [newStage, setNewStage] = useState("Talking Stage");
+  const [isCreating, setIsCreating] = useState(false);
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   // Fetch connections
   const { data: connections = [], isLoading } = useQuery<Connection[]>({
@@ -71,20 +80,105 @@ export default function ConnectionsNew() {
       <div className="max-w-xl mx-auto">
         <Header title="Connections" subtitle="Track the people in your life" />
         
-        {/* Large Add Connection Button */}
-        <div className="px-4 mb-4">
-          <Button 
-            variant="default" 
-            className="w-full py-6 flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold"
-            onClick={() => {
-              // Use proper wouter navigation
-              setLocation("/connections/add");
-            }}
-          >
-            <UserPlus className="h-5 w-5" />
-            <span className="text-base">Add New Connection</span>
-          </Button>
-        </div>
+        {/* Quick Add Form */}
+        {showQuickAdd ? (
+          <div className="px-4 mb-4 bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+            <h3 className="font-semibold mb-3">Quick Add Connection</h3>
+            <div className="space-y-3">
+              <div>
+                <Label htmlFor="quick-name">Name</Label>
+                <Input 
+                  id="quick-name" 
+                  value={newName} 
+                  onChange={(e) => setNewName(e.target.value)} 
+                  placeholder="Enter name"
+                />
+              </div>
+              <div>
+                <Label htmlFor="quick-stage">Relationship Stage</Label>
+                <Select value={newStage} onValueChange={setNewStage}>
+                  <SelectTrigger id="quick-stage">
+                    <SelectValue placeholder="Select stage" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {relationshipStages.map((stage) => (
+                      <SelectItem key={stage} value={stage}>
+                        {stage}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex gap-2 pt-2">
+                <Button 
+                  variant="default" 
+                  className="flex-1"
+                  disabled={isCreating || !newName.trim()}
+                  onClick={async () => {
+                    if (!newName.trim()) return;
+                    
+                    setIsCreating(true);
+                    try {
+                      const response = await fetch("/api/connections", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                          name: newName.trim(),
+                          relationshipStage: newStage
+                        }),
+                        credentials: "include"
+                      });
+                      
+                      if (response.ok) {
+                        toast({
+                          title: "Success!",
+                          description: "Connection created successfully"
+                        });
+                        setNewName("");
+                        setShowQuickAdd(false);
+                        // Refresh connections
+                        queryClient.invalidateQueries({ queryKey: ["/api/connections"] });
+                      } else {
+                        toast({
+                          title: "Error",
+                          description: "Failed to create connection",
+                          variant: "destructive"
+                        });
+                      }
+                    } catch (error) {
+                      toast({
+                        title: "Error",
+                        description: "Something went wrong",
+                        variant: "destructive"
+                      });
+                    } finally {
+                      setIsCreating(false);
+                    }
+                  }}
+                >
+                  {isCreating ? "Creating..." : "Create"}
+                </Button>
+                <Button 
+                  variant="outline" 
+                  onClick={() => setShowQuickAdd(false)}
+                >
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="px-4 mb-4">
+            <Button 
+              variant="default" 
+              className="w-full py-6 flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold"
+              onClick={() => setShowQuickAdd(true)}
+            >
+              <UserPlus className="h-5 w-5" />
+              <span className="text-base">Add New Connection</span>
+            </Button>
+          </div>
+        )}
         
         <div className="px-4">
           <div className="flex items-center gap-2 mb-4">
