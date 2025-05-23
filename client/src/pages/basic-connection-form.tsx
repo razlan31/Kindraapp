@@ -153,7 +153,7 @@ export default function BasicConnectionForm() {
             
             <div>
               <label className="block text-sm font-medium mb-2">
-                When did you start talking/dating?
+                When did you start this connection?
               </label>
               <Input
                 type="date"
@@ -162,7 +162,7 @@ export default function BasicConnectionForm() {
                 placeholder="Select the date you started connecting"
                 className="w-full"
               />
-              <p className="text-xs text-neutral-500 mt-1">Track when this connection began</p>
+              <p className="text-xs text-neutral-500 mt-1">Track when you first connected with this person</p>
             </div>
             
             <div>
