@@ -154,17 +154,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = req.session.userId as number;
       
-      // Pre-process date fields before validation
+      // Add user ID to the data
       const data = { ...req.body, userId };
-      
-      // If startDate is provided as a string, convert it to a Date object
-      if (data.startDate && typeof data.startDate === 'string') {
-        try {
-          data.startDate = new Date(data.startDate);
-        } catch (e) {
-          data.startDate = null; // If date parsing fails, set to null
-        }
-      }
       
       const connectionData = connectionSchema.parse(data);
       const newConnection = await storage.createConnection(connectionData);
