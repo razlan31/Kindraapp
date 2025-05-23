@@ -13,6 +13,8 @@ import { useModal } from "@/contexts/modal-context";
 import { Sparkles, Calendar } from "lucide-react";
 import { Link } from "wouter";
 import { SimplifiedCalendar } from "@/components/calendar/simplified-calendar";
+import { FocusSelector } from "@/components/relationships/focus-selector";
+import { useRelationshipFocus } from "@/contexts/relationship-focus-context";
 
 export default function Dashboard() {
   const { user } = useAuth();

@@ -7,6 +7,7 @@ type ModalContextType = {
   moodTrackerModalOpen: boolean;
   selectedConnectionId: number | null;
   selectedConnection: Connection | null;
+  mainFocusConnection: Connection | null;
   openMomentModal: () => void;
   closeMomentModal: () => void;
   openConnectionModal: () => void;
@@ -14,6 +15,7 @@ type ModalContextType = {
   openMoodTrackerModal: (connection?: Connection) => void;
   closeMoodTrackerModal: () => void;
   setSelectedConnection: (connectionId: number | null, connection?: Connection | null) => void;
+  setMainFocusConnection: (connection: Connection | null) => void;
 };
 
 const ModalContext = createContext<ModalContextType>({
@@ -22,6 +24,7 @@ const ModalContext = createContext<ModalContextType>({
   moodTrackerModalOpen: false,
   selectedConnectionId: null,
   selectedConnection: null,
+  mainFocusConnection: null,
   openMomentModal: () => {},
   closeMomentModal: () => {},
   openConnectionModal: () => {},
@@ -29,6 +32,7 @@ const ModalContext = createContext<ModalContextType>({
   openMoodTrackerModal: () => {},
   closeMoodTrackerModal: () => {},
   setSelectedConnection: () => {},
+  setMainFocusConnection: () => {},
 });
 
 export const useModal = () => useContext(ModalContext);
@@ -39,6 +43,7 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [moodTrackerModalOpen, setMoodTrackerModalOpen] = useState(false);
   const [selectedConnectionId, setSelectedConnectionId] = useState<number | null>(null);
   const [selectedConnection, setSelectedConnectionObject] = useState<Connection | null>(null);
+  const [mainFocusConnection, setMainFocusConnectionObject] = useState<Connection | null>(null);
 
   const openMomentModal = () => {
     setMomentModalOpen(true);
