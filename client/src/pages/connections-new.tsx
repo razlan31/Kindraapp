@@ -77,8 +77,8 @@ export default function ConnectionsNew() {
             variant="default" 
             className="w-full py-6 flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold"
             onClick={() => {
-              // Use direct DOM navigation as a simple, reliable approach
-              document.location.href = "/connections/add";
+              // Use proper wouter navigation
+              setLocation("/connections/add");
             }}
           >
             <UserPlus className="h-5 w-5" />
