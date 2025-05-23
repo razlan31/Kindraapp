@@ -258,26 +258,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   };
 
+  // Test route to verify API is working
+  app.get("/api/test", (req, res) => {
+    res.json({ message: "API is working", timestamp: new Date().toISOString() });
+  });
+
   // Simple direct update route that bypasses any conflicts
   app.post("/api/connections/:id/update", async (req, res) => {
     try {
-      const userId = 1; // Using the test user
+      console.log("=== DIRECT UPDATE ROUTE CALLED ===");
+      console.log("Connection ID:", req.params.id);
+      console.log("Request body:", req.body);
+      
       const connectionId = parseInt(req.params.id);
       
-      console.log("DIRECT UPDATE ROUTE: Connection ID:", connectionId, "Data:", req.body);
+      // Get current connection first
+      const currentConnection = await storage.getConnection(connectionId);
+      console.log("Current connection:", currentConnection);
       
-      const connection = await storage.getConnection(connectionId);
-      if (!connection) {
+      if (!currentConnection) {
+        console.log("Connection not found!");
         return res.status(404).json({ message: "Connection not found" });
       }
       
+      // Update the connection
       const updatedConnection = await storage.updateConnection(connectionId, req.body);
-      console.log("DIRECT UPDATE: Result:", updatedConnection);
+      console.log("Updated connection:", updatedConnection);
+      
+      // Verify the update worked
+      const verifyConnection = await storage.getConnection(connectionId);
+      console.log("Verification - connection after update:", verifyConnection);
       
       res.status(200).json(updatedConnection);
     } catch (error) {
       console.error("Direct update error:", error);
-      res.status(500).json({ message: "Server error" });
+      res.status(500).json({ message: "Server error", error: error.message });
     }
   });
 
