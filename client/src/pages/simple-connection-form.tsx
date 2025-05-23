@@ -16,6 +16,10 @@ export default function SimpleConnectionForm() {
   
   const [name, setName] = useState("");
   const [stage, setStage] = useState("Talking Stage");
+  const [zodiacSign, setZodiacSign] = useState("");
+  const [loveLanguage, setLoveLanguage] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [isPrivate, setIsPrivate] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   const handleSubmit = async (e: React.FormEvent) => {
@@ -40,7 +44,11 @@ export default function SimpleConnectionForm() {
         },
         body: JSON.stringify({
           name: name.trim(),
-          relationshipStage: stage
+          relationshipStage: stage,
+          zodiacSign: zodiacSign || null,
+          loveLanguage: loveLanguage || null,
+          startDate: startDate ? new Date(startDate).toISOString() : null,
+          isPrivate
         }),
         credentials: "include"
       });
@@ -124,6 +132,79 @@ export default function SimpleConnectionForm() {
                   </option>
                 ))}
               </select>
+            </div>
+            
+            <div className="space-y-3">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                Start Date
+              </label>
+              <Input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="w-full"
+              />
+              <p className="text-xs text-gray-500">When did you start talking or dating?</p>
+            </div>
+            
+            <div className="pt-4 space-y-4 border-t">
+              <h3 className="text-sm font-medium">Optional Details</h3>
+              
+              <div className="space-y-3">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Zodiac Sign
+                </label>
+                <select
+                  value={zodiacSign}
+                  onChange={(e) => setZodiacSign(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm bg-white dark:bg-gray-800"
+                >
+                  <option value="">Select zodiac sign</option>
+                  <option value="Aries">Aries</option>
+                  <option value="Taurus">Taurus</option>
+                  <option value="Gemini">Gemini</option>
+                  <option value="Cancer">Cancer</option>
+                  <option value="Leo">Leo</option>
+                  <option value="Virgo">Virgo</option>
+                  <option value="Libra">Libra</option>
+                  <option value="Scorpio">Scorpio</option>
+                  <option value="Sagittarius">Sagittarius</option>
+                  <option value="Capricorn">Capricorn</option>
+                  <option value="Aquarius">Aquarius</option>
+                  <option value="Pisces">Pisces</option>
+                </select>
+              </div>
+              
+              <div className="space-y-3">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Love Language
+                </label>
+                <select
+                  value={loveLanguage}
+                  onChange={(e) => setLoveLanguage(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm bg-white dark:bg-gray-800"
+                >
+                  <option value="">Select love language</option>
+                  <option value="Words of Affirmation">Words of Affirmation</option>
+                  <option value="Quality Time">Quality Time</option>
+                  <option value="Physical Touch">Physical Touch</option>
+                  <option value="Acts of Service">Acts of Service</option>
+                  <option value="Receiving Gifts">Receiving Gifts</option>
+                </select>
+              </div>
+              
+              <div className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  id="private"
+                  checked={isPrivate}
+                  onChange={(e) => setIsPrivate(e.target.checked)}
+                  className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                />
+                <label htmlFor="private" className="text-sm text-gray-700 dark:text-gray-300">
+                  Keep this connection private
+                </label>
+              </div>
             </div>
             
             <Button
