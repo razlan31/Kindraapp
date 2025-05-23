@@ -25,8 +25,43 @@ export default function Connections() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStage, setFilterStage] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
+  const [showQuickAdd, setShowQuickAdd] = useState(false);
+  const [quickName, setQuickName] = useState("");
+  const [quickStage, setQuickStage] = useState("Talking Stage");
+  const [isCreating, setIsCreating] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  
+  const createConnectionMutation = useMutation({
+    mutationFn: async (data: { name: string; relationshipStage: string }) => {
+      const response = await fetch('/api/connections', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) throw new Error('Failed to create connection');
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/connections'] });
+      setShowQuickAdd(false);
+      setQuickName("");
+      setQuickStage("Talking Stage");
+      toast({
+        title: "Success",
+        description: "Connection created successfully!",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: "Failed to create connection",
+        variant: "destructive",
+      });
+    },
+  });
   
   // Form state for connection modal
   const [name, setName] = useState("");
@@ -183,14 +218,75 @@ export default function Connections() {
               />
             </div>
             <Button 
-              variant="outline" 
-              size="icon"
-              className="rounded-full"
-              onClick={() => setLocation("/connections-new")}
+              variant="default" 
+              size="sm"
+              className="bg-blue-600 hover:bg-blue-700 text-white"
+              onClick={() => setShowQuickAdd(!showQuickAdd)}
             >
-              <Plus className="h-4 w-4" />
+              <Plus className="h-4 w-4 mr-2" />
+              Add Connection
             </Button>
           </div>
+
+          {/* Quick Add Form */}
+          {showQuickAdd && (
+            <div className="bg-white dark:bg-gray-800 border rounded-lg p-4 mb-4">
+              <h3 className="text-lg font-semibold mb-3">Create New Connection</h3>
+              <div className="space-y-3">
+                <div>
+                  <Label htmlFor="quickName">Name</Label>
+                  <Input
+                    id="quickName"
+                    value={quickName}
+                    onChange={(e) => setQuickName(e.target.value)}
+                    placeholder="Enter person's name"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="quickStage">Relationship Stage</Label>
+                  <Select value={quickStage} onValueChange={setQuickStage}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select stage" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Talking Stage">Talking Stage</SelectItem>
+                      <SelectItem value="Dating">Dating</SelectItem>
+                      <SelectItem value="In a Relationship">In a Relationship</SelectItem>
+                      <SelectItem value="It's Complicated">It's Complicated</SelectItem>
+                      <SelectItem value="Friends">Friends</SelectItem>
+                      <SelectItem value="Ex">Ex</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex gap-2 pt-2">
+                  <Button
+                    onClick={() => {
+                      if (quickName.trim()) {
+                        createConnectionMutation.mutate({
+                          name: quickName.trim(),
+                          relationshipStage: quickStage
+                        });
+                      }
+                    }}
+                    disabled={!quickName.trim() || createConnectionMutation.isPending}
+                    className="bg-blue-600 hover:bg-blue-700"
+                  >
+                    {createConnectionMutation.isPending ? "Creating..." : "Create"}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setShowQuickAdd(false);
+                      setQuickName("");
+                      setQuickStage("Talking Stage");
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
 
           <div className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1">
             <Button
