@@ -91,6 +91,25 @@ export class MemStorage implements IStorage {
     
     // Initialize default badges
     this.initializeDefaultBadges();
+    this.initializeTestUser();
+  }
+
+  private async initializeTestUser() {
+    // Create the test user that was cleared by server restart
+    const hashedPassword = await import('bcryptjs').then(bcrypt => 
+      bcrypt.hash('password123', 10)
+    );
+    
+    const testUser = {
+      username: 'testuser',
+      email: 'test@example.com',
+      password: hashedPassword,
+      displayName: 'Test User',
+      zodiacSign: 'Gemini',
+      loveLanguage: 'Quality Time'
+    };
+    
+    await this.createUser(testUser);
   }
 
   private initializeDefaultBadges() {
