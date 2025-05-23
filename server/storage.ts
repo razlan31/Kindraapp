@@ -286,6 +286,10 @@ export class MemStorage implements IStorage {
       .filter((cycle) => cycle.userId === userId)
       .sort((a, b) => b.startDate.getTime() - a.startDate.getTime());
   }
+  
+  async getMenstrualCycle(id: number): Promise<MenstrualCycle | undefined> {
+    return this.menstrualCycles.get(id);
+  }
 
   async createMenstrualCycle(insertCycle: InsertMenstrualCycle): Promise<MenstrualCycle> {
     const id = this.menstrualCycleId++;

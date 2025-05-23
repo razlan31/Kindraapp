@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Connection, Moment, MenstrualCycle } from "@shared/schema";
+import { Connection, Moment, MenstrualCycle, Milestone } from "@shared/schema";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/auth-context";
 import { format, isSameDay, startOfMonth, endOfMonth, isWithinInterval, addDays } from "date-fns";
@@ -13,7 +13,9 @@ import {
   CircleAlert, 
   Droplets, 
   MessageCircle, 
-  MoreHorizontal
+  MoreHorizontal,
+  Star as StarIcon,
+  Cake as CakeIcon
 } from "lucide-react";
 import { 
   Tooltip,
@@ -22,6 +24,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
+import { MilestoneDisplay } from "./milestone-display";
+import { MilestoneModal } from "@/components/modals/milestone-modal";
 
 interface RelationshipCalendarProps {
   selectedConnection?: Connection | null;
@@ -31,6 +35,8 @@ export function RelationshipCalendar({ selectedConnection }: RelationshipCalenda
   const { user } = useAuth();
   const [date, setDate] = useState<Date>(new Date());
   const [month, setMonth] = useState<Date>(new Date());
+  const [showMilestoneModal, setShowMilestoneModal] = useState(false);
+  const [selectedMilestoneDate, setSelectedMilestoneDate] = useState<Date>(new Date());
   
   // Get all moments
   const { data: moments = [] } = useQuery<Moment[]>({
@@ -47,6 +53,18 @@ export function RelationshipCalendar({ selectedConnection }: RelationshipCalenda
   // Get all menstrual cycles
   const { data: cycles = [] } = useQuery<MenstrualCycle[]>({
     queryKey: ["/api/menstrual-cycles"],
+    enabled: !!user,
+  });
+  
+  // Get milestone data
+  const { data: milestones = [] } = useQuery<Milestone[]>({
+    queryKey: ["/api/milestones", selectedConnection?.id],
+    queryFn: async () => {
+      const queryString = selectedConnection 
+        ? `?connectionId=${selectedConnection.id}` 
+        : '';
+      return await fetch(`/api/milestones${queryString}`).then(res => res.json());
+    },
     enabled: !!user,
   });
   
@@ -77,6 +95,24 @@ export function RelationshipCalendar({ selectedConnection }: RelationshipCalenda
       return isSameDay(momentDate, day);
     });
     
+    // Check if day has any milestones
+    const dayMilestones = milestones.filter(milestone => {
+      const milestoneDate = new Date(milestone.date);
+      return isSameDay(milestoneDate, day);
+    });
+    
+    // Check for recurring anniversaries (yearly events)
+    const dayAnniversaries = milestones.filter(milestone => 
+      milestone.isAnniversary && 
+      new Date(milestone.date).getDate() === day.getDate() &&
+      new Date(milestone.date).getMonth() === day.getMonth()
+    );
+    
+    // Combine regular milestones and anniversaries, removing duplicates
+    const allMilestones = [...dayMilestones, ...dayAnniversaries.filter(
+      anniv => !dayMilestones.some(ms => ms.id === anniv.id)
+    )];
+    
     const hasIntimacyMoment = dayMoments.some(m => m.isIntimate);
     
     const hasConflictMoment = dayMoments.some(m => 
@@ -103,7 +139,9 @@ export function RelationshipCalendar({ selectedConnection }: RelationshipCalenda
       hasHappyMoment,
       hasSadMoment,
       hasCycleMoment,
-      dayMoments
+      dayMoments,
+      dayMilestones: allMilestones,
+      hasMilestone: allMilestones.length > 0
     };
   };
   
