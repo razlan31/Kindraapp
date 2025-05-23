@@ -73,6 +73,7 @@ export default function ConnectionsNew() {
   const handleSelectConnection = (connection: Connection) => {
     setSelectedConnection(connection.id, connection);
     setMainFocusConnection(connection);
+    setLocation(`/connections/${connection.id}`);
   };
 
   return (

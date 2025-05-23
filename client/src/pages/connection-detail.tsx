@@ -1,0 +1,338 @@
+import { useState, useEffect } from "react";
+import { useParams, useLocation } from "wouter";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Connection } from "@shared/schema";
+import { BottomNavigation } from "@/components/layout/bottom-navigation";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { ArrowLeft, Heart, Calendar, Star, MessageCircle, Edit, Trash2 } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { formatDistanceToNow } from "date-fns";
+import { useToast } from "@/hooks/use-toast";
+import { useModal } from "@/contexts/modal-context";
+import { useRelationshipFocus } from "@/contexts/relationship-focus-context-simple";
+
+export default function ConnectionDetail() {
+  const { id } = useParams();
+  const [, setLocation] = useLocation();
+  const { toast } = useToast();
+  const { openMoodTrackerModal } = useModal();
+  const { setMainFocusConnection } = useRelationshipFocus();
+  const connectionId = parseInt(id as string);
+  
+  // Fetch connection details
+  const { data: connection, isLoading, error } = useQuery({
+    queryKey: ['/api/connections', connectionId],
+    queryFn: async () => {
+      const response = await fetch(`/api/connections/${connectionId}`, {
+        credentials: 'include'
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch connection details');
+      }
+      
+      return response.json() as Promise<Connection>;
+    },
+    enabled: !isNaN(connectionId),
+  });
+  
+  // Fetch moments for this connection
+  const { data: moments } = useQuery({
+    queryKey: ['/api/moments', { connectionId }],
+    queryFn: async () => {
+      const response = await fetch(`/api/moments?connectionId=${connectionId}`, {
+        credentials: 'include'
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch moments');
+      }
+      
+      return response.json();
+    },
+    enabled: !isNaN(connectionId),
+  });
+  
+  // Calculate flag counts
+  const flagCounts = {
+    green: 0,
+    red: 0,
+    blue: 0
+  };
+  
+  if (moments) {
+    moments.forEach((moment: any) => {
+      if (moment.tags) {
+        const tags = Array.isArray(moment.tags) ? moment.tags : [];
+        if (tags.includes('Green Flag')) flagCounts.green++;
+        if (tags.includes('Red Flag')) flagCounts.red++;
+        if (tags.includes('Mixed Signals')) flagCounts.blue++;
+      }
+    });
+  }
+  
+  const handleDelete = async () => {
+    if (window.confirm('Are you sure you want to delete this connection?')) {
+      try {
+        const response = await fetch(`/api/connections/${connectionId}`, {
+          method: 'DELETE',
+          credentials: 'include'
+        });
+        
+        if (!response.ok) {
+          throw new Error('Failed to delete connection');
+        }
+        
+        toast({
+          title: 'Connection deleted',
+          description: 'The connection has been removed'
+        });
+        
+        setLocation('/connections');
+      } catch (error) {
+        toast({
+          title: 'Error',
+          description: 'Failed to delete connection',
+          variant: 'destructive'
+        });
+      }
+    }
+  };
+
+  const handleSetAsFocus = () => {
+    if (connection) {
+      setMainFocusConnection(connection);
+      
+      toast({
+        title: 'Focus updated',
+        description: 'This connection is now your main focus'
+      });
+      
+      setLocation('/');
+    }
+  };
+  
+  const handleEdit = () => {
+    // Navigate to edit page (yet to be implemented)
+    toast({
+      title: 'Coming soon',
+      description: 'Edit functionality will be available soon'
+    });
+  };
+  
+  const handleMoodTracking = () => {
+    if (connection) {
+      openMoodTrackerModal(connection);
+    }
+  };
+  
+  const getInitials = (name: string) => {
+    return name
+      .split(' ')
+      .map(part => part[0])
+      .join('')
+      .toUpperCase();
+  };
+  
+  const getDurationText = (startDate: Date | null) => {
+    if (!startDate) return "Not specified";
+    return formatDistanceToNow(new Date(startDate), { addSuffix: false });
+  };
+  
+  if (isLoading) {
+    return (
+      <div className="min-h-screen pb-16 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin h-6 w-6 border-2 border-primary border-t-transparent rounded-full mx-auto mb-2"></div>
+          <p>Loading connection details...</p>
+        </div>
+        <BottomNavigation />
+      </div>
+    );
+  }
+  
+  if (error || !connection) {
+    return (
+      <div className="min-h-screen pb-16 p-4">
+        <div className="max-w-md mx-auto text-center mt-12">
+          <h2 className="text-xl font-semibold mb-2">Connection not found</h2>
+          <p className="text-neutral-500 mb-4">The connection you're looking for doesn't exist or you don't have access.</p>
+          <Button onClick={() => setLocation('/connections')}>
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back to Connections
+          </Button>
+        </div>
+        <BottomNavigation />
+      </div>
+    );
+  }
+  
+  return (
+    <div className="min-h-screen pb-16">
+      <div className="max-w-md mx-auto">
+        {/* Header */}
+        <div className="bg-white dark:bg-neutral-900 border-b px-4 py-3 flex items-center gap-2">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={() => setLocation('/connections')}
+            className="h-9 w-9"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          <h1 className="font-semibold text-lg">Connection Details</h1>
+        </div>
+        
+        {/* Profile section */}
+        <div className="bg-white dark:bg-neutral-900 p-6 border-b">
+          <div className="flex items-center gap-4">
+            <Avatar className="h-20 w-20 rounded-full">
+              <AvatarImage 
+                src={connection.profileImage || undefined} 
+                alt={connection.name} 
+                className="h-full w-full object-cover"
+              />
+              <AvatarFallback className="text-lg bg-neutral-200 dark:bg-neutral-700">
+                {getInitials(connection.name)}
+              </AvatarFallback>
+            </Avatar>
+            
+            <div className="flex-1">
+              <h2 className="text-xl font-semibold">{connection.name}</h2>
+              <div className="flex flex-wrap gap-2 mt-1">
+                <Badge variant="outline" className="px-2 py-1 text-xs">
+                  {connection.relationshipStage}
+                </Badge>
+                {connection.isPrivate && (
+                  <Badge variant="outline" className="px-2 py-1 text-xs bg-neutral-100 dark:bg-neutral-800">
+                    Private
+                  </Badge>
+                )}
+              </div>
+            </div>
+          </div>
+          
+          <div className="flex mt-6 gap-2">
+            <Button 
+              variant="default" 
+              className="flex-1 bg-primary text-white"
+              onClick={handleSetAsFocus}
+            >
+              <Heart className="mr-2 h-4 w-4" />
+              Set as Focus
+            </Button>
+            
+            <Button 
+              variant="outline"
+              size="icon"
+              onClick={handleEdit}
+              className="h-10 w-10"
+            >
+              <Edit className="h-4 w-4" />
+            </Button>
+            
+            <Button 
+              variant="outline" 
+              size="icon" 
+              onClick={handleDelete}
+              className="h-10 w-10 text-red-500 hover:bg-red-50 dark:hover:bg-red-950"
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+        
+        {/* Details section */}
+        <div className="bg-white dark:bg-neutral-900 mt-2 p-6 border rounded-lg">
+          <h3 className="font-semibold mb-4">Relationship Details</h3>
+          
+          <div className="space-y-4">
+            <div className="flex justify-between">
+              <div className="text-neutral-500">Relationship Duration</div>
+              <div>{getDurationText(connection.startDate)}</div>
+            </div>
+            
+            <div className="flex justify-between">
+              <div className="text-neutral-500">Zodiac Sign</div>
+              <div>{connection.zodiacSign || "Not specified"}</div>
+            </div>
+            
+            <div className="flex justify-between">
+              <div className="text-neutral-500">Love Language</div>
+              <div>{connection.loveLanguage || "Not specified"}</div>
+            </div>
+            
+            <div className="border-t pt-4 mt-4">
+              <h4 className="font-medium mb-2">Relationship Insights</h4>
+              <div className="flex gap-3">
+                {flagCounts.green > 0 && (
+                  <div className="text-center flex-1">
+                    <div className="bg-green-50 dark:bg-green-950 text-green-600 dark:text-green-400 text-lg font-semibold rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-1">
+                      {flagCounts.green}
+                    </div>
+                    <div className="text-xs">Green Flags</div>
+                  </div>
+                )}
+                
+                {flagCounts.red > 0 && (
+                  <div className="text-center flex-1">
+                    <div className="bg-red-50 dark:bg-red-950 text-red-600 dark:text-red-400 text-lg font-semibold rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-1">
+                      {flagCounts.red}
+                    </div>
+                    <div className="text-xs">Red Flags</div>
+                  </div>
+                )}
+                
+                {flagCounts.blue > 0 && (
+                  <div className="text-center flex-1">
+                    <div className="bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-400 text-lg font-semibold rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-1">
+                      {flagCounts.blue}
+                    </div>
+                    <div className="text-xs">Mixed Signals</div>
+                  </div>
+                )}
+                
+                {flagCounts.green === 0 && flagCounts.red === 0 && flagCounts.blue === 0 && (
+                  <div className="text-neutral-500 text-sm py-3 text-center w-full">
+                    No insights available yet. Start tracking moments to build insights.
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        {/* Action buttons */}
+        <div className="mt-4 p-4 grid grid-cols-2 gap-3">
+          <Button 
+            variant="outline" 
+            className="bg-white dark:bg-neutral-900 border h-14"
+            onClick={handleMoodTracking}
+          >
+            <div className="flex flex-col items-center w-full">
+              <MessageCircle className="h-5 w-5 mb-1" />
+              <span className="text-xs">Track Mood</span>
+            </div>
+          </Button>
+          
+          <Button 
+            variant="outline" 
+            className="bg-white dark:bg-neutral-900 border h-14"
+            onClick={() => toast({
+              title: 'Coming soon',
+              description: 'Calendar view will be available soon'
+            })}
+          >
+            <div className="flex flex-col items-center w-full">
+              <Calendar className="h-5 w-5 mb-1" />
+              <span className="text-xs">View Calendar</span>
+            </div>
+          </Button>
+        </div>
+      </div>
+      
+      <BottomNavigation />
+    </div>
+  );
+}

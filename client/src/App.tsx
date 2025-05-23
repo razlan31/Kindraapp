@@ -18,6 +18,7 @@ import Profile from "@/pages/profile";
 import CycleTracking from "@/pages/cycle-tracking";
 import AICoach from "@/pages/ai-coach";
 import SummaryReport from "@/pages/summary-report";
+import ConnectionDetail from "@/pages/connection-detail";
 import { useAuth } from "./contexts/auth-context";
 import { useModal } from "./contexts/modal-context";
 import { MomentModal } from "./components/modals/moment-modal";
@@ -47,6 +48,7 @@ function Router() {
       <Route path="/connections/add" component={ConnectionsFormNew} />
       <Route path="/connections/simple" component={SimpleConnectionForm} />
       <Route path="/connections/basic" component={BasicConnectionForm} />
+      <Route path="/connections/:id" component={ConnectionDetail} />
       <Route path="/moments" component={Moments} />
       <Route path="/insights" component={Insights} />
       <Route path="/profile" component={Profile} />
