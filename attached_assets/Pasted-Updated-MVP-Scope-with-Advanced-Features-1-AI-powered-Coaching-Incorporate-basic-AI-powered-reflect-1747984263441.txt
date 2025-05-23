@@ -1,0 +1,46 @@
+Updated MVP Scope with Advanced Features
+1. AI-powered Coaching
+Incorporate basic AI-powered reflections immediately as part of the MVP.
+
+Add insights and nudges based on logged moments:
+
+For example, personalized emotional growth advice could be triggered based on the number of positive moments or emotional patterns.
+
+Sophisticated nudges like: "You’ve logged several moments of growth with [Connection]. Want to explore what’s making this relationship strong?"
+
+Rule-based AI will provide these nudges until the ML-based insights can be introduced in future versions.
+
+2. Horoscope Compatibility & Emotional Insights
+Horoscope input: Allow users to enter their zodiac sign at registration or in their profile settings.
+
+Horoscope compatibility tracking: Display emotional insights based on their zodiac compatibility with each connection.
+
+Daily/Weekly emotional insights: AI could pull compatibility predictions or emotional patterns based on both users’ signs, displayed as simple prompts or reflections (e.g., "Your Aries & Leo connection seems full of energy today! Keep nurturing that spark!").
+
+This can be optional for users who believe in it.
+
+3. Love Language Tracking
+User & partner love language tracking: Ask users to select their love language (from The 5 Love Languages) and that of their connections.
+
+Reflective prompts: Based on logged moments, users could receive personalized reflections like:
+
+"Your partner’s primary love language is Acts of Service, have you noticed them doing something thoughtful for you recently?"
+
+Badge system integration: Badges for identifying and growing emotional connections based on love languages.
+
+4. Menstrual Cycle Tracking Integrated with Emotional Insights
+Cycle tracking: Allow users (optional) to log their menstrual cycle for personalized insights and pattern tracking.
+
+Track cycle phases (e.g., menstruation, follicular, ovulation, luteal)
+
+Log mood changes and emotional states linked to cycle stages
+
+AI-powered insights: Offer emotional insights that tie mood fluctuations to the cycle phases, helping users understand and manage emotional patterns in their relationships during specific times of the month.
+
+Incorporating these features in the MVP will provide a more comprehensive app that covers a wide range of emotional insights and relationship tracking, giving users immediate value. Here’s how we could balance the speed and quality:
+Start with Rule-Based AI for reflections and nudges — this will be faster to implement and still provide meaningful insights.
+
+Horoscope and Love Languages can be included as optional fields in the user profile, allowing users to decide whether they want to enable these features.
+
+Menstrual Cycle Tracking can be simplified for the MVP as basic logging with cycle phases and emotional insights, without requiring a complex medical-grade tracking system.
+

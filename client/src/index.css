@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Add Inter and Poppins as font families */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@300;400;500&family=Quicksand:wght@400;500;600&display=swap');
+
 :root {
   --background: 0 0% 100%;
   --foreground: 20 14.3% 4.1%;
