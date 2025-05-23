@@ -202,10 +202,10 @@ function generateAIInsights(connections: Connection[], moments: Moment[], userDa
   // Look for relationship stage patterns
   const stageDistribution: Record<string, number> = {};
   connections.forEach(connection => {
-    if (!stageDistribution[connection.stage]) {
-      stageDistribution[connection.stage] = 0;
+    if (!stageDistribution[connection.relationshipStage]) {
+      stageDistribution[connection.relationshipStage] = 0;
     }
-    stageDistribution[connection.stage]++;
+    stageDistribution[connection.relationshipStage]++;
   });
   
   const mostCommonStage = Object.entries(stageDistribution).sort((a, b) => b[1] - a[1])[0]?.[0];
@@ -297,7 +297,7 @@ function generatePersonalizedResponse(
   if (lowerQuestion.includes('pattern') || lowerQuestion.includes('trends') || lowerQuestion.includes('repeat')) {
     const mostCommonStage = connections.length > 0 
       ? connections.reduce((counts, connection) => {
-          counts[connection.stage] = (counts[connection.stage] || 0) + 1;
+          counts[connection.relationshipStage] = (counts[connection.relationshipStage] || 0) + 1;
           return counts;
         }, {} as Record<string, number>)
       : {};

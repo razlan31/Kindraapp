@@ -144,7 +144,11 @@ export default function Profile() {
                 Privacy & Security
               </Button>
               <Separator />
-              <Button variant="ghost" className="w-full justify-start rounded-none h-12 px-4">
+              <Button 
+                variant="ghost" 
+                className="w-full justify-start rounded-none h-12 px-4"
+                onClick={() => window.location.href = "/cycle-tracking"}
+              >
                 <Calendar className="h-4 w-4 mr-3" />
                 Menstrual Cycle Tracking
               </Button>
