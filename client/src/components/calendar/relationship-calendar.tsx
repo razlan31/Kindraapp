@@ -22,7 +22,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
-import { useModal } from "@/contexts/modal-context";
 
 interface RelationshipCalendarProps {
   selectedConnection?: Connection | null;
@@ -32,7 +31,6 @@ export function RelationshipCalendar({ selectedConnection }: RelationshipCalenda
   const { user } = useAuth();
   const [date, setDate] = useState<Date>(new Date());
   const [month, setMonth] = useState<Date>(new Date());
-  const { openMomentModal, openMoodTrackerModal } = useModal();
   
   // Get all moments
   const { data: moments = [] } = useQuery<Moment[]>({
@@ -254,60 +252,48 @@ export function RelationshipCalendar({ selectedConnection }: RelationshipCalenda
   };
   
   return (
-    <Card className="mb-6">
-      <CardHeader className="pb-3">
-        <div className="flex items-center justify-between">
-          <div>
-            <CardTitle className="text-lg flex items-center gap-2">
-              <CalendarIcon className="h-4 w-4" />
-              Relationship Calendar
-            </CardTitle>
-            <CardDescription>
-              {selectedConnection ? 
-                `View moments with ${selectedConnection.name}` : 
-                "Visualize your relationship patterns over time"}
-            </CardDescription>
-          </div>
-          <div className="flex gap-2">
-            <Button 
-              size="sm" 
-              variant="ghost" 
-              onClick={() => openMomentModal()}
-              className="text-xs"
-            >
-              Add Moment
-            </Button>
-            <Button 
-              size="sm" 
-              variant="ghost" 
-              onClick={() => openMoodTrackerModal()}
-              className="text-xs"
-            >
-              Track Mood
-            </Button>
-          </div>
+    <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-sm overflow-hidden">
+      <div className="p-4 pb-2">
+        <div className="text-center mb-2">
+          <h3 className="text-sm font-medium">
+            {selectedConnection ? 
+              `${selectedConnection.name}'s Calendar` : 
+              "Your Relationship Calendar"}
+          </h3>
+          <p className="text-xs text-neutral-500 dark:text-neutral-400">
+            {selectedConnection ? 
+              `Showing moments with ${selectedConnection.name}` : 
+              "Visualize your relationship cycles and patterns"}
+          </p>
         </div>
-      </CardHeader>
-      <CardContent>
+      </div>
+      <div className="px-4 pb-4">
         <Calendar
           mode="single"
           selected={date}
           onSelect={(day: Date | undefined) => day && setDate(day)}
           className="rounded-md border"
+          showOutsideDays={true}
+          modifiersClassNames={{
+            selected: "bg-primary text-primary-foreground",
+            today: "bg-accent text-accent-foreground",
+          }}
+          modifiers={{
+            selected: date,
+            today: new Date(),
+          }}
           components={{
             Day: ({ date: day, ...props }: { date: Date } & Record<string, any>) => {
-              // Safely extract the props we need and ignore the rest
-              const { className, ...restProps } = props;
               return (
-                <button 
-                  {...restProps} 
-                  className={cn(
-                    className, 
-                    'h-9 w-9 p-0 font-normal aria-selected:opacity-100'
-                  )}
-                >
-                  {renderDay(day)}
-                </button>
+                <div className="relative w-9 h-9 p-0">
+                  <button 
+                    {...props} 
+                    className="h-9 w-9 p-0 font-normal"
+                  />
+                  <div className="absolute inset-0 pointer-events-none">
+                    {renderDay(day)}
+                  </div>
+                </div>
               );
             },
           }}
@@ -373,8 +359,8 @@ export function RelationshipCalendar({ selectedConnection }: RelationshipCalenda
             {getCycleInsights(cycles, filteredMoments)}
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }
 

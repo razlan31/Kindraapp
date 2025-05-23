@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { useModal } from "@/contexts/modal-context";
 import { Sparkles, Calendar } from "lucide-react";
 import { Link } from "wouter";
-import { RelationshipCalendar } from "@/components/calendar/relationship-calendar";
+import { SimplifiedCalendar } from "@/components/calendar/simplified-calendar";
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -307,6 +307,39 @@ export default function Dashboard() {
             badges={badges}
             earnedBadgeIds={userBadges.map(ub => ub.badgeId)}
           />
+        </section>
+        
+        {/* Relationship Calendar */}
+        <section className="px-4 py-3 mb-16">
+          <div className="flex justify-between items-center mb-3">
+            <h3 className="font-heading font-semibold">Your Calendar</h3>
+            <div className="flex gap-2">
+              <Button 
+                size="sm" 
+                variant={!selectedCalendarConnection ? "default" : "outline"}
+                onClick={() => setSelectedCalendarConnection(null)}
+                className="text-xs"
+              >
+                All
+              </Button>
+              
+              {connections.slice(0, 2).map(connection => (
+                <Button
+                  key={connection.id}
+                  size="sm"
+                  variant={selectedCalendarConnection?.id === connection.id ? "default" : "outline"}
+                  onClick={() => setSelectedCalendarConnection(connection)}
+                  className="text-xs"
+                >
+                  {connection.name}
+                </Button>
+              ))}
+            </div>
+          </div>
+          
+          <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-sm border border-neutral-100 dark:border-neutral-700 overflow-hidden">
+            <RelationshipCalendar selectedConnection={selectedCalendarConnection} />
+          </div>
         </section>
       </main>
 
