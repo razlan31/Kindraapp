@@ -192,14 +192,22 @@ export default function ConnectionsNew() {
             </div>
           </div>
         ) : (
-          <div className="px-4 mb-4">
+          <div className="px-4 mb-4 space-y-2">
+            <Button 
+              variant="outline" 
+              className="w-full py-3 flex items-center justify-center gap-2 border-2 border-dashed border-blue-300 hover:border-blue-500 text-blue-600"
+              onClick={() => setShowQuickAdd(true)}
+            >
+              <UserPlus className="h-5 w-5" />
+              <span className="text-base">Quick Add Connection</span>
+            </Button>
             <Button 
               variant="default" 
               className="w-full py-6 flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold"
               onClick={() => setLocation("/connections/basic")}
             >
               <UserPlus className="h-5 w-5" />
-              <span className="text-base">Add New Connection</span>
+              <span className="text-base">Add New Connection (Full Form)</span>
             </Button>
           </div>
         )}
