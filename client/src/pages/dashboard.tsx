@@ -54,32 +54,43 @@ export default function Dashboard() {
 
   // Generate a simple insight based on the data
   useEffect(() => {
+    // Only generate insights if user is authenticated
+    if (!user) {
+      setInsight("Sign in to start tracking your relationships and building insights!");
+      return;
+    }
+
     if (connections.length > 0 && moments.length > 0) {
       // Find the connection with the most moments
       const connectionMoments: Record<number, number> = {};
       moments.forEach(moment => {
-        connectionMoments[moment.connectionId] = (connectionMoments[moment.connectionId] || 0) + 1;
+        if (moment.connectionId) {
+          connectionMoments[moment.connectionId] = (connectionMoments[moment.connectionId] || 0) + 1;
+        }
       });
       
-      const mostActiveConnectionId = Object.keys(connectionMoments).reduce((a, b) => 
-        connectionMoments[Number(a)] > connectionMoments[Number(b)] ? Number(a) : Number(b)
-      , Number(Object.keys(connectionMoments)[0]));
-      
-      const mostActiveConnection = connections.find(c => c.id === Number(mostActiveConnectionId));
-      
-      if (mostActiveConnection) {
-        const isPositive = moments.filter(m => 
-          m.connectionId === mostActiveConnectionId && 
-          ['😊', '❤️', '😍', '🥰', '💖', '✨'].includes(m.emoji)
-        ).length > moments.filter(m => 
-          m.connectionId === mostActiveConnectionId && 
-          ['😕', '😢', '😠'].includes(m.emoji)
-        ).length;
+      const connectionIds = Object.keys(connectionMoments);
+      if (connectionIds.length > 0) {
+        const mostActiveConnectionId = connectionIds.reduce((a, b) => 
+          connectionMoments[Number(a)] > connectionMoments[Number(b)] ? Number(a) : Number(b)
+        , Number(connectionIds[0]));
         
-        if (isPositive) {
-          setInsight(`You've been consistently logging positive moments with ${mostActiveConnection.name}. This is great for building your connection!`);
-        } else {
-          setInsight(`You've had some mixed feelings with ${mostActiveConnection.name} lately. Consider having a conversation about your needs.`);
+        const mostActiveConnection = connections.find(c => c.id === Number(mostActiveConnectionId));
+        
+        if (mostActiveConnection) {
+          const isPositive = moments.filter(m => 
+            m.connectionId === mostActiveConnectionId && 
+            ['😊', '❤️', '😍', '🥰', '💖', '✨'].includes(m.emoji)
+          ).length > moments.filter(m => 
+            m.connectionId === mostActiveConnectionId && 
+            ['😕', '😢', '😠'].includes(m.emoji)
+          ).length;
+          
+          if (isPositive) {
+            setInsight(`You've been consistently logging positive moments with ${mostActiveConnection.name}. This is great for building your connection!`);
+          } else {
+            setInsight(`You've had some mixed feelings with ${mostActiveConnection.name} lately. Consider having a conversation about your needs.`);
+          }
         }
       }
     } else if (connections.length === 0) {
@@ -87,7 +98,7 @@ export default function Dashboard() {
     } else if (moments.length === 0) {
       setInsight("Log your first moment to start building insights about your relationships!");
     }
-  }, [connections, moments]);
+  }, [connections, moments, user]);
 
   const handleSelectConnection = (connection: Connection) => {
     setSelectedConnection(connection.id);

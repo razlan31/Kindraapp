@@ -198,8 +198,8 @@ export function SimplifiedCalendar({ selectedConnection }: RelationshipCalendarP
           showOutsideDays={true}
           components={{
             Day: ({ date: day, ...props }: { date: Date } & Record<string, any>) => {
-              // Safely extract the props we need
-              const { className, ...restProps } = props as any;
+              // Remove invalid DOM props
+              const { className, displayMonth, ...restProps } = props as any;
               return (
                 <div className="relative w-9 h-9 p-0">
                   <button 
