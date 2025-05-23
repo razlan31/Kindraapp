@@ -1,24 +1,27 @@
 import { Card } from "@/components/ui/card";
 import { Connection } from "@shared/schema";
 import { Badge } from "@/components/ui/badge";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Smile } from "lucide-react";
 import { useMemo } from "react";
+import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useModal } from "@/contexts/modal-context";
 import { formatDistanceToNow } from "date-fns";
 
 interface ConnectionCardProps {
   connection: Connection;
   onSelect: (connection: Connection) => void;
   recentEmojis?: string[];
-  flagCount?: { green: number; red: number };
+  flagCount?: { green: number; red: number; blue: number };
 }
 
 export function ConnectionCard({ 
   connection, 
   onSelect, 
   recentEmojis = ["😊", "❤️", "✨"], 
-  flagCount = { green: 0, red: 0 }
+  flagCount = { green: 0, red: 0, blue: 0 }
 }: ConnectionCardProps) {
+  const { openMoodTrackerModal } = useModal();
   const stageColorMap = useMemo(() => ({
     "Exclusive": "bg-secondary/20 text-secondary",
     "Talking": "bg-primary/20 text-primary",
@@ -84,18 +87,41 @@ export function ConnectionCard({
           ))}
         </div>
         <div className="flex space-x-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-xs flex items-center gap-1 px-2 py-1 h-auto"
+            onClick={(e) => {
+              e.stopPropagation();
+              openMoodTrackerModal(connection);
+            }}
+          >
+            <Smile className="h-4 w-4 text-primary" />
+            <span>Track Mood</span>
+          </Button>
+        </div>
+      </div>
+      
+      {/* Flag counts */}
+      {(flagCount.green > 0 || flagCount.red > 0 || flagCount.blue > 0) && (
+        <div className="mt-2 flex flex-wrap gap-2">
           {flagCount.green > 0 && (
             <span className="text-xs text-greenFlag bg-greenFlag/10 px-2 py-1 rounded-full">
-              <i className="fa-solid fa-flag mr-1"></i> {flagCount.green} green flags
+              {flagCount.green} green
             </span>
           )}
           {flagCount.red > 0 && (
             <span className="text-xs text-redFlag bg-redFlag/10 px-2 py-1 rounded-full">
-              <i className="fa-solid fa-flag mr-1"></i> {flagCount.red} red flags
+              {flagCount.red} red
+            </span>
+          )}
+          {flagCount.blue > 0 && (
+            <span className="text-xs text-blue-500 bg-blue-500/10 px-2 py-1 rounded-full">
+              {flagCount.blue} blue
             </span>
           )}
         </div>
-      </div>
+      )}
     </Card>
   );
 }

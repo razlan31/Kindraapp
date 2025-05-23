@@ -163,6 +163,10 @@ export default function Dashboard() {
                       red: moments.filter(m => 
                         m.connectionId === connection.id && 
                         m.tags?.includes('Red Flag')
+                      ).length,
+                      blue: moments.filter(m => 
+                        m.connectionId === connection.id && 
+                        m.tags?.includes('Blue Flag')
                       ).length
                     }}
                   />
