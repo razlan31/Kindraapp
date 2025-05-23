@@ -16,6 +16,7 @@ export default function BasicConnectionForm() {
   
   const [name, setName] = useState("");
   const [stage, setStage] = useState("Talking Stage");
+  const [startDate, setStartDate] = useState("");
   const [zodiacSign, setZodiacSign] = useState("");
   const [loveLanguages, setLoveLanguages] = useState<string[]>([]);
   const [profileImage, setProfileImage] = useState("");
@@ -42,6 +43,10 @@ export default function BasicConnectionForm() {
       };
       
       // Add optional fields if selected
+      if (startDate) {
+        connectionData['startDate'] = startDate;
+      }
+      
       if (zodiacSign) {
         connectionData['zodiacSign'] = zodiacSign;
       }
@@ -144,6 +149,20 @@ export default function BasicConnectionForm() {
                   <option key={s} value={s}>{s}</option>
                 ))}
               </select>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                When did you start talking/dating?
+              </label>
+              <Input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                placeholder="Select the date you started connecting"
+                className="w-full"
+              />
+              <p className="text-xs text-neutral-500 mt-1">Track when this connection began</p>
             </div>
             
             <div>
