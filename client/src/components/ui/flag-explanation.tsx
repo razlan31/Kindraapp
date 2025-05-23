@@ -1,63 +1,96 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Flag } from "lucide-react";
+import { useState } from "react";
+import { Brain, ChevronDown, ChevronUp, Flag, Heart } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface FlagExplanationProps {
-  showTitle?: boolean;
+  initiallyExpanded?: boolean;
 }
 
-export function FlagExplanation({ showTitle = true }: FlagExplanationProps) {
+export function FlagExplanation({ initiallyExpanded = false }: FlagExplanationProps) {
+  const [isExpanded, setIsExpanded] = useState(initiallyExpanded);
+
+  const flagDescriptions = [
+    {
+      color: "Green",
+      title: "Positive behaviors",
+      description: "Signs of growth or healthy relationship dynamics",
+      icon: <Heart className="h-5 w-5 text-green-500" />,
+      examples: [
+        "They remembered your preferences without prompting",
+        "You had a meaningful conversation about your values",
+        "They showed up for you during a difficult time",
+        "You felt safe being vulnerable with them"
+      ]
+    },
+    {
+      color: "Red",
+      title: "Concerning behaviors",
+      description: "Signs that may need attention or discussion",
+      icon: <Flag className="h-5 w-5 text-red-500" />,
+      examples: [
+        "They missed an important event without explanation",
+        "Communication broke down during a disagreement",
+        "You felt dismissed or invalidated",
+        "Trust was broken in some way"
+      ]
+    },
+    {
+      color: "Blue",
+      title: "Growth opportunities",
+      description: "Areas for relationship development and deeper connection",
+      icon: <Brain className="h-5 w-5 text-blue-500" />,
+      examples: [
+        "You discovered differences in future goals or values",
+        "You identified a communication pattern that could improve",
+        "A situation revealed different love languages or needs",
+        "You recognized areas where more openness is needed"
+      ]
+    }
+  ];
+
   return (
-    <Card className="mb-4">
-      {showTitle && (
-        <CardHeader className="pb-2">
-          <CardTitle className="text-lg flex items-center gap-2">
-            <Flag className="h-5 w-5" />
-            Understanding Flag Types
-          </CardTitle>
-          <CardDescription>
-            Different flags help you track emotional patterns in your relationships
-          </CardDescription>
-        </CardHeader>
-      )}
-      <CardContent>
-        <div className="space-y-3">
-          <div className="flex items-start gap-3">
-            <div className="h-6 w-6 rounded-full bg-greenFlag/20 flex items-center justify-center flex-shrink-0">
-              <span className="text-greenFlag text-xs font-bold">G</span>
-            </div>
-            <div>
-              <h4 className="text-sm font-medium text-greenFlag">Green Flags</h4>
-              <p className="text-xs text-muted-foreground">
-                Healthy, positive behaviors or emotional growth in your relationship. Examples: "They remembered your favorite coffee" or "You had a meaningful conversation about your future."
-              </p>
-            </div>
+    <div className="bg-muted/30 rounded-lg p-4 mb-4">
+      <div 
+        className="flex justify-between items-center cursor-pointer"
+        onClick={() => setIsExpanded(!isExpanded)}
+      >
+        <h3 className="font-medium text-sm">Understanding Moment Tags</h3>
+        <Button variant="ghost" size="sm" className="p-1 h-auto">
+          {isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+        </Button>
+      </div>
+      
+      {isExpanded && (
+        <div className="mt-3 space-y-4 text-sm">
+          <p className="text-muted-foreground">
+            Categorizing your moments helps you understand patterns and growth in your relationships.
+          </p>
+          
+          <div className="space-y-4">
+            {flagDescriptions.map(flag => (
+              <div key={flag.color} className="space-y-2">
+                <div className="flex items-center gap-2">
+                  {flag.icon}
+                  <span className="font-medium">{flag.color} Flag: {flag.title}</span>
+                </div>
+                <p className="text-muted-foreground text-xs">{flag.description}</p>
+                <div className="pl-7 space-y-1">
+                  <p className="text-xs font-medium">Examples:</p>
+                  <ul className="list-disc pl-4 text-xs space-y-1">
+                    {flag.examples.map((example, i) => (
+                      <li key={i}>{example}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            ))}
           </div>
           
-          <div className="flex items-start gap-3">
-            <div className="h-6 w-6 rounded-full bg-redFlag/20 flex items-center justify-center flex-shrink-0">
-              <span className="text-redFlag text-xs font-bold">R</span>
-            </div>
-            <div>
-              <h4 className="text-sm font-medium text-redFlag">Red Flags</h4>
-              <p className="text-xs text-muted-foreground">
-                Concerns or behaviors that need attention but aren't necessarily relationship-ending. Examples: "They didn't show up to an important event" or "A miscommunication caused frustration."
-              </p>
-            </div>
-          </div>
-          
-          <div className="flex items-start gap-3">
-            <div className="h-6 w-6 rounded-full bg-blue-400/20 flex items-center justify-center flex-shrink-0">
-              <span className="text-blue-600 dark:text-blue-400 text-xs font-bold">B</span>
-            </div>
-            <div>
-              <h4 className="text-sm font-medium text-blue-600 dark:text-blue-400">Blue Flags</h4>
-              <p className="text-xs text-muted-foreground">
-                Opportunities where you can grow together, showing potential for improvement. Examples: "Different future goals that need clarity" or "Working through differences in values."
-              </p>
-            </div>
-          </div>
+          <p className="text-xs text-muted-foreground italic">
+            Note: Blue flags are not negative - they represent positive opportunities for growth that can strengthen your relationship with patience and communication.
+          </p>
         </div>
-      </CardContent>
-    </Card>
+      )}
+    </div>
   );
 }

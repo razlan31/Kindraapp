@@ -15,8 +15,10 @@ import CycleTracking from "@/pages/cycle-tracking";
 import AICoach from "@/pages/ai-coach";
 import SummaryReport from "@/pages/summary-report";
 import { useAuth } from "./contexts/auth-context";
+import { useModal } from "./contexts/modal-context";
 import { MomentModal } from "./components/modals/moment-modal";
 import { ConnectionModal } from "./components/modals/connection-modal";
+import { MoodTrackerModal } from "./components/modals/mood-tracker-modal";
 import { useEffect } from "react";
 import { useLocation } from "wouter";
 
@@ -53,10 +55,29 @@ function App() {
       <TooltipProvider>
         <Toaster />
         <Router />
-        <MomentModal />
-        <ConnectionModal />
+        <ModalsContainer />
       </TooltipProvider>
     </QueryClientProvider>
+  );
+}
+
+function ModalsContainer() {
+  const { 
+    moodTrackerModalOpen, 
+    closeMoodTrackerModal,
+    selectedConnection 
+  } = useModal();
+  
+  return (
+    <>
+      <MomentModal />
+      <ConnectionModal />
+      <MoodTrackerModal 
+        isOpen={moodTrackerModalOpen} 
+        onClose={closeMoodTrackerModal}
+        connection={selectedConnection}
+      />
+    </>
   );
 }
 
