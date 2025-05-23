@@ -25,6 +25,7 @@ export default function ConnectionsNew() {
   const [showQuickAdd, setShowQuickAdd] = useState(false);
   const [newName, setNewName] = useState("");
   const [newStage, setNewStage] = useState("Talking Stage");
+  const [newStartDate, setNewStartDate] = useState("");
   const [isCreating, setIsCreating] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -110,6 +111,18 @@ export default function ConnectionsNew() {
                   </SelectContent>
                 </Select>
               </div>
+              <div>
+                <Label htmlFor="quick-start-date" className="text-sm font-medium">When did you start talking/dating?</Label>
+                <Input
+                  id="quick-start-date"
+                  type="date"
+                  value={newStartDate}
+                  onChange={(e) => setNewStartDate(e.target.value)}
+                  placeholder="Select the date you started connecting"
+                  className="w-full"
+                />
+                <p className="text-xs text-neutral-500 mt-1">Track when this connection began</p>
+              </div>
               <div className="flex gap-2 pt-2">
                 <Button 
                   variant="default" 
@@ -126,7 +139,8 @@ export default function ConnectionsNew() {
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({
                           name: newName.trim(),
-                          relationshipStage: newStage
+                          relationshipStage: newStage,
+                          startDate: newStartDate || null
                         }),
                         credentials: "include"
                       });
@@ -142,6 +156,7 @@ export default function ConnectionsNew() {
                           description: "Connection created successfully"
                         });
                         setNewName("");
+                        setNewStartDate("");
                         setShowQuickAdd(false);
                         // Refresh connections
                         queryClient.invalidateQueries({ queryKey: ["/api/connections"] });
