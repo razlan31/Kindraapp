@@ -12,7 +12,6 @@ import { useToast } from "@/hooks/use-toast";
 import { useModal } from "@/contexts/modal-context";
 import { useRelationshipFocus } from "@/contexts/relationship-focus-context-simple";
 
-
 export default function ConnectionDetail() {
   const { id } = useParams();
   const [, setLocation] = useLocation();
@@ -21,44 +20,20 @@ export default function ConnectionDetail() {
   const { setMainFocusConnection } = useRelationshipFocus();
   const connectionId = parseInt(id as string);
   
-  // Get the query client instance
-  const queryClient = useQueryClient();
-  
-  // Force reloading of connection data when component mounts
-  useEffect(() => {
-    // This will clear the React Query cache for this connection
-    if (!isNaN(connectionId)) {
-      queryClient.removeQueries({ queryKey: ['/api/connections', connectionId] });
-    }
-  }, [connectionId, queryClient]);
-
-  // Fetch connection details with a more reliable approach
+  // Fetch connection details
   const { data: connection, isLoading, error } = useQuery({
-    queryKey: ['/api/connections', connectionId], 
+    queryKey: ['/api/connections', connectionId],
     queryFn: async () => {
-      // Get the current timestamp to prevent browser caching
-      const timestamp = new Date().getTime();
-      const response = await fetch(`/api/connections/${connectionId}?t=${timestamp}`, {
-        credentials: 'include',
-        // Disable caching
-        headers: {
-          'Cache-Control': 'no-cache',
-          'Pragma': 'no-cache'
-        }
+      const response = await fetch(`/api/connections/${connectionId}`, {
+        credentials: 'include'
       });
       
       if (!response.ok) {
         throw new Error('Failed to fetch connection details');
       }
       
-      const data = await response.json() as Connection;
-      console.log("Fetched connection data:", data);
-      return data;
+      return response.json() as Promise<Connection>;
     },
-    staleTime: 0, // Always consider data stale
-    gcTime: 0, // Don't keep data in cache for long (formerly cacheTime)
-    refetchOnWindowFocus: true, // Refetch when window gets focus
-    refetchOnMount: 'always', // Always refetch when the component mounts
     enabled: !isNaN(connectionId),
   });
   
@@ -157,7 +132,10 @@ export default function ConnectionDetail() {
       .toUpperCase();
   };
   
-  // Function removed as startDate feature is no longer needed
+  const getDurationText = (startDate: Date | null) => {
+    if (!startDate) return "Not specified";
+    return formatDistanceToNow(new Date(startDate), { addSuffix: false });
+  };
   
   if (isLoading) {
     return (
@@ -267,6 +245,11 @@ export default function ConnectionDetail() {
           <h3 className="font-semibold mb-4">Relationship Details</h3>
           
           <div className="space-y-4">
+            <div className="flex justify-between">
+              <div className="text-neutral-500">Relationship Duration</div>
+              <div>{getDurationText(connection.startDate)}</div>
+            </div>
+            
             <div className="flex justify-between">
               <div className="text-neutral-500">Zodiac Sign</div>
               <div>{connection.zodiacSign || "Not specified"}</div>

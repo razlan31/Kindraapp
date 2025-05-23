@@ -53,28 +53,11 @@ export default function ConnectionEdit() {
       // Handle love languages (they are stored as comma-separated string)
       if (connection.loveLanguage) {
         setLoveLanguages(connection.loveLanguage.split(', ').map(l => l.trim()));
-      } else {
-        setLoveLanguages([]);
       }
       
       setProfileImage(connection.profileImage || "");
     }
   }, [connection]);
-  
-  // Add this new effect to handle query parameter for successful edits
-  useEffect(() => {
-    // Check if we're coming back after a redirect with a success parameter
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('edited') === 'true') {
-      toast({
-        title: "Success!",
-        description: "Connection updated successfully"
-      });
-      
-      // Remove the parameter from the URL without navigating
-      window.history.replaceState({}, '', window.location.pathname);
-    }
-  }, []);
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -131,20 +114,10 @@ export default function ConnectionEdit() {
           description: "Connection updated successfully"
         });
         
-        // Invalidate queries and wait for them to complete
-        await Promise.all([
-          queryClient.invalidateQueries({ queryKey: ['/api/connections'] }),
-          queryClient.invalidateQueries({ queryKey: ['/api/connections', connectionId] })
-        ]);
-        
-        // Force a refetch to ensure we have the latest data
-        await queryClient.refetchQueries({ queryKey: ['/api/connections', connectionId] });
-        
-        // Force a full page reload to ensure the latest data is displayed
-        // First save to server, then reload the whole page
-        setTimeout(() => {
-          window.location.href = `/connections/${connectionId}?refresh=${Date.now()}`;
-        }, 200);
+        // Invalidate and redirect
+        queryClient.invalidateQueries({ queryKey: ['/api/connections'] });
+        queryClient.invalidateQueries({ queryKey: ['/api/connections', connectionId] });
+        setLocation(`/connections/${connectionId}`);
       } else {
         const errorData = await response.text();
         console.error("Error response:", errorData);
@@ -158,43 +131,9 @@ export default function ConnectionEdit() {
     } catch (error) {
       console.error("Exception:", error);
       
-      // Despite the error, the update probably went through since we see API success
-      // Let's validate by fetching the connection details again
-      try {
-        const verifyResponse = await fetch(`/api/connections/${connectionId}`, {
-          credentials: 'include'
-        });
-        
-        if (verifyResponse.ok) {
-          // Update worked, we just had a client-side error after
-          toast({
-            title: "Success!",
-            description: "Connection updated successfully"
-          });
-          
-          // Invalidate queries and wait for them to complete
-          await Promise.all([
-            queryClient.invalidateQueries({ queryKey: ['/api/connections'] }),
-            queryClient.invalidateQueries({ queryKey: ['/api/connections', connectionId] })
-          ]);
-          
-          // Force a refetch to ensure we have the latest data
-          await queryClient.refetchQueries({ queryKey: ['/api/connections', connectionId] });
-          
-          // Then redirect
-          setTimeout(() => {
-            setLocation(`/connections/${connectionId}`);
-          }, 100);
-          return;
-        }
-      } catch (verifyError) {
-        console.error("Verify error:", verifyError);
-      }
-      
-      // If we get here, both the original save and verify failed
       toast({
         title: "Error",
-        description: "Something went wrong saving your changes",
+        description: "Something went wrong",
         variant: "destructive"
       });
     } finally {
@@ -367,7 +306,7 @@ export default function ConnectionEdit() {
                 onChange={(e) => setZodiacSign(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md"
               >
-                <option value="">Not specified</option>
+                <option value="">Select zodiac sign (optional)</option>
                 <option value="Aries">Aries</option>
                 <option value="Taurus">Taurus</option>
                 <option value="Gemini">Gemini</option>
@@ -388,20 +327,9 @@ export default function ConnectionEdit() {
                 Love Languages (select up to 3)
               </label>
               <div className="space-y-2">
-                <div className="flex justify-between items-center mb-2">
-                  <p className="text-xs text-neutral-500">
-                    Choose one or more love languages that matter to this person
-                  </p>
-                  <Button 
-                    type="button" 
-                    variant="ghost" 
-                    size="sm" 
-                    className="text-xs py-1 px-2 h-auto" 
-                    onClick={() => setLoveLanguages([])}
-                  >
-                    Clear All
-                  </Button>
-                </div>
+                <p className="text-xs text-neutral-500 mb-2">
+                  Choose one or more love languages that matter to this person
+                </p>
                 
                 <div className="grid grid-cols-1 gap-2">
                   {[
