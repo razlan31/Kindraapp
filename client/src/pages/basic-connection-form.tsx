@@ -17,7 +17,7 @@ export default function BasicConnectionForm() {
   const [name, setName] = useState("");
   const [stage, setStage] = useState("Talking Stage");
   const [zodiacSign, setZodiacSign] = useState("");
-  const [loveLanguage, setLoveLanguage] = useState("");
+  const [loveLanguages, setLoveLanguages] = useState<string[]>([]);
   const [profileImage, setProfileImage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   
@@ -46,8 +46,9 @@ export default function BasicConnectionForm() {
         connectionData['zodiacSign'] = zodiacSign;
       }
       
-      if (loveLanguage) {
-        connectionData['loveLanguage'] = loveLanguage;
+      if (loveLanguages.length > 0) {
+        // Store multiple love languages as a comma-separated string
+        connectionData['loveLanguage'] = loveLanguages.join(', ');
       }
       
       if (profileImage) {
@@ -254,20 +255,67 @@ export default function BasicConnectionForm() {
             
             <div>
               <label className="block text-sm font-medium mb-2">
-                Love Language
+                Love Languages (select up to 3)
               </label>
-              <select
-                value={loveLanguage}
-                onChange={(e) => setLoveLanguage(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md"
-              >
-                <option value="">Select love language (optional)</option>
-                <option value="Words of Affirmation">Words of Affirmation</option>
-                <option value="Physical Touch">Physical Touch</option>
-                <option value="Quality Time">Quality Time</option>
-                <option value="Acts of Service">Acts of Service</option>
-                <option value="Receiving Gifts">Receiving Gifts</option>
-              </select>
+              <div className="space-y-2">
+                <p className="text-xs text-neutral-500 mb-2">
+                  Choose one or more love languages that matter to this person
+                </p>
+                
+                <div className="grid grid-cols-1 gap-2">
+                  {[
+                    "Words of Affirmation",
+                    "Physical Touch",
+                    "Quality Time",
+                    "Acts of Service",
+                    "Receiving Gifts"
+                  ].map((language) => {
+                    const isSelected = loveLanguages.includes(language);
+                    
+                    const toggleLanguage = () => {
+                      if (isSelected) {
+                        // Remove if already selected
+                        setLoveLanguages(loveLanguages.filter(l => l !== language));
+                      } else if (loveLanguages.length < 3) {
+                        // Add if not at max capacity
+                        setLoveLanguages([...loveLanguages, language]);
+                      } else {
+                        // Warn user if trying to select more than 3
+                        toast({
+                          title: "Maximum reached",
+                          description: "You can select up to 3 love languages",
+                          variant: "destructive"
+                        });
+                      }
+                    };
+                    
+                    return (
+                      <Button
+                        key={language}
+                        type="button"
+                        variant={isSelected ? "default" : "outline"}
+                        className={`justify-start ${isSelected ? "bg-primary text-white" : ""}`}
+                        onClick={toggleLanguage}
+                      >
+                        <div className={`w-5 h-5 rounded-sm border flex items-center justify-center mr-2 ${
+                          isSelected ? "bg-white" : "bg-transparent"
+                        }`}>
+                          {isSelected && (
+                            <div className="w-3 h-3 bg-primary rounded-sm" />
+                          )}
+                        </div>
+                        <span>{language}</span>
+                      </Button>
+                    );
+                  })}
+                </div>
+                
+                {loveLanguages.length > 0 && (
+                  <div className="mt-2 text-sm">
+                    <span className="font-medium">Selected:</span> {loveLanguages.join(", ")}
+                  </div>
+                )}
+              </div>
             </div>
             
             <Button
