@@ -4,7 +4,7 @@ import { storage } from "./storage";
 import { z } from "zod";
 import { 
   userSchema, connectionSchema, momentSchema,
-  userBadgeSchema, menstrualCycleSchema
+  userBadgeSchema, menstrualCycleSchema, milestoneSchema
 } from "@shared/schema";
 import bcrypt from "bcryptjs";
 import session from "express-session";
@@ -453,6 +453,91 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(200).json(updatedCycle);
     } catch (error) {
       res.status(500).json({ message: "Server error updating menstrual cycle" });
+    }
+  });
+  
+  // Milestone routes
+  app.get("/api/milestones", isAuthenticated, async (req, res) => {
+    try {
+      const userId = req.session.userId as number;
+      const connectionId = req.query.connectionId ? parseInt(req.query.connectionId as string) : null;
+      
+      let milestones;
+      if (connectionId) {
+        milestones = await storage.getMilestonesByConnectionId(connectionId);
+      } else {
+        milestones = await storage.getMilestones(userId);
+      }
+      
+      res.json(milestones);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch milestones" });
+    }
+  });
+  
+  app.post("/api/milestones", isAuthenticated, async (req, res) => {
+    try {
+      const userId = req.session.userId as number;
+      const milestoneData = req.body;
+      
+      const result = milestoneSchema.safeParse({ ...milestoneData, userId });
+      
+      if (!result.success) {
+        return res.status(400).json({ message: "Invalid milestone data", errors: result.error.format() });
+      }
+      
+      const milestone = await storage.createMilestone(result.data);
+      res.status(201).json(milestone);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to create milestone" });
+    }
+  });
+  
+  app.put("/api/milestones/:id", isAuthenticated, async (req, res) => {
+    try {
+      const userId = req.session.userId as number;
+      const milestoneId = parseInt(req.params.id);
+      
+      if (isNaN(milestoneId)) {
+        return res.status(400).json({ message: "Invalid milestone ID" });
+      }
+      
+      // Verify the milestone belongs to this user
+      const userMilestones = await storage.getMilestones(userId);
+      const targetMilestone = userMilestones.find(m => m.id === milestoneId);
+      
+      if (!targetMilestone) {
+        return res.status(404).json({ message: "Milestone not found" });
+      }
+      
+      const updatedMilestone = await storage.updateMilestone(milestoneId, req.body);
+      res.json(updatedMilestone);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update milestone" });
+    }
+  });
+  
+  app.delete("/api/milestones/:id", isAuthenticated, async (req, res) => {
+    try {
+      const userId = req.session.userId as number;
+      const milestoneId = parseInt(req.params.id);
+      
+      if (isNaN(milestoneId)) {
+        return res.status(400).json({ message: "Invalid milestone ID" });
+      }
+      
+      // Verify the milestone belongs to this user
+      const userMilestones = await storage.getMilestones(userId);
+      const targetMilestone = userMilestones.find(m => m.id === milestoneId);
+      
+      if (!targetMilestone) {
+        return res.status(404).json({ message: "Milestone not found" });
+      }
+      
+      await storage.deleteMilestone(milestoneId);
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete milestone" });
     }
   });
 

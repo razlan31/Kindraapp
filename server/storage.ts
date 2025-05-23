@@ -87,6 +87,7 @@ export class MemStorage implements IStorage {
     this.badgeId = 1;
     this.userBadgeId = 1;
     this.menstrualCycleId = 1;
+    this.milestoneId = 1;
     
     // Initialize default badges
     this.initializeDefaultBadges();
@@ -300,6 +301,39 @@ export class MemStorage implements IStorage {
     const updatedCycle = { ...cycle, ...data };
     this.menstrualCycles.set(id, updatedCycle);
     return updatedCycle;
+  }
+  
+  // Milestone operations
+  async getMilestones(userId: number): Promise<Milestone[]> {
+    return Array.from(this.milestones.values())
+      .filter(milestone => milestone.userId === userId)
+      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  }
+  
+  async getMilestonesByConnectionId(connectionId: number): Promise<Milestone[]> {
+    return Array.from(this.milestones.values())
+      .filter(milestone => milestone.connectionId === connectionId)
+      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  }
+  
+  async createMilestone(milestone: InsertMilestone): Promise<Milestone> {
+    const id = this.milestoneId++;
+    const newMilestone: Milestone = { ...milestone, id };
+    this.milestones.set(id, newMilestone);
+    return newMilestone;
+  }
+  
+  async updateMilestone(id: number, data: Partial<Milestone>): Promise<Milestone | undefined> {
+    const milestone = this.milestones.get(id);
+    if (!milestone) return undefined;
+    
+    const updatedMilestone = { ...milestone, ...data };
+    this.milestones.set(id, updatedMilestone);
+    return updatedMilestone;
+  }
+  
+  async deleteMilestone(id: number): Promise<boolean> {
+    return this.milestones.delete(id);
   }
 }
 
