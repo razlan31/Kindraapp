@@ -432,13 +432,17 @@ export default function Insights() {
                           const airSign = ['Gemini', 'Libra', 'Aquarius'];
                           const waterSign = ['Cancer', 'Scorpio', 'Pisces'];
                           
-                          const userElement = fireSign.includes(user.zodiacSign) ? 'fire' :
+                          const userElement = user?.zodiacSign ? 
+                                              (fireSign.includes(user.zodiacSign) ? 'fire' :
                                               earthSign.includes(user.zodiacSign) ? 'earth' :
-                                              airSign.includes(user.zodiacSign) ? 'air' : 'water';
+                                              airSign.includes(user.zodiacSign) ? 'air' : 'water')
+                                              : 'unknown';
                                               
-                          const connectionElement = fireSign.includes(connection.zodiacSign || "") ? 'fire' :
-                                                    earthSign.includes(connection.zodiacSign || "") ? 'earth' :
-                                                    airSign.includes(connection.zodiacSign || "") ? 'air' : 'water';
+                          const connectionElement = connection.zodiacSign ? 
+                                                    (fireSign.includes(connection.zodiacSign) ? 'fire' :
+                                                    earthSign.includes(connection.zodiacSign) ? 'earth' :
+                                                    airSign.includes(connection.zodiacSign) ? 'air' : 'water')
+                                                    : 'unknown';
                           
                           // Most compatible: Fire-Air, Earth-Water
                           return (userElement === 'fire' && connectionElement === 'air') ||
@@ -773,10 +777,10 @@ export default function Insights() {
                         </p>
                       </div>
                       
-                      {moments.filter(m => m.notes).length > 0 && (
+                      {moments.filter(m => m.content && m.content.length > 10).length > 0 && (
                         <div className="bg-neutral-50 dark:bg-neutral-800 p-3 rounded-lg">
                           <p className="text-sm">
-                            You've added notes to {moments.filter(m => m.notes).length} moments. Journaling about your experiences enhances self-awareness and helps identify patterns in your relationships.
+                            You've added detailed content to {moments.filter(m => m.content && m.content.length > 10).length} moments. Journaling about your experiences enhances self-awareness and helps identify patterns in your relationships.
                           </p>
                         </div>
                       )}
