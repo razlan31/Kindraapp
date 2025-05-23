@@ -10,13 +10,15 @@ import { Connection, Moment, Badge } from "@shared/schema";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
 import { useModal } from "@/contexts/modal-context";
-import { Sparkles } from "lucide-react";
+import { Sparkles, Calendar } from "lucide-react";
 import { Link } from "wouter";
+import { RelationshipCalendar } from "@/components/calendar/relationship-calendar";
 
 export default function Dashboard() {
   const { user } = useAuth();
   const { openMomentModal, openConnectionModal, setSelectedConnection } = useModal();
   const [insight, setInsight] = useState<string>("");
+  const [selectedCalendarConnection, setSelectedCalendarConnection] = useState<Connection | null>(null);
 
   // Fetch connections
   const { data: connections = [] } = useQuery<Connection[]>({
@@ -129,6 +131,50 @@ export default function Dashboard() {
             </div>
           </section>
         )}
+        
+        {/* Relationship Calendar */}
+        <section className="px-4 pt-3">
+          <RelationshipCalendar selectedConnection={selectedCalendarConnection} />
+          
+          {/* Connection filter for calendar */}
+          {connections.length > 0 && (
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-sm font-medium">Filter Calendar By:</h3>
+              <div className="flex flex-wrap gap-2">
+                <Button 
+                  size="sm" 
+                  variant={!selectedCalendarConnection ? "secondary" : "outline"}
+                  onClick={() => setSelectedCalendarConnection(null)}
+                  className="text-xs h-7 px-2"
+                >
+                  All
+                </Button>
+                
+                {connections.slice(0, 3).map(connection => (
+                  <Button
+                    key={connection.id}
+                    size="sm"
+                    variant={selectedCalendarConnection?.id === connection.id ? "secondary" : "outline"}
+                    onClick={() => setSelectedCalendarConnection(connection)}
+                    className="text-xs h-7 px-2"
+                  >
+                    {connection.name}
+                  </Button>
+                ))}
+                
+                {connections.length > 3 && (
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="text-xs h-7 px-2"
+                  >
+                    +{connections.length - 3} more
+                  </Button>
+                )}
+              </div>
+            </div>
+          )}
+        </section>
 
         {/* Your Connections */}
         <section className="px-4 py-3">
