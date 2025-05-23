@@ -55,9 +55,12 @@ export function Header() {
             <DropdownMenuItem onClick={async () => {
               try {
                 await logout();
-                window.location.reload(); // Force a page refresh after logout
+                // Clear any cached data and redirect to login
+                window.location.href = "/auth/login";
               } catch (error) {
                 console.error("Logout error:", error);
+                // Even if logout fails, redirect to login page
+                window.location.href = "/auth/login";
               }
             }}>
               <LogOut className="mr-2 h-4 w-4" />
