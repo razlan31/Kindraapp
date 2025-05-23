@@ -5,11 +5,12 @@ import { Connection } from "@shared/schema";
 import { BottomNavigation } from "@/components/layout/bottom-navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, Camera } from "lucide-react";
+import { ArrowLeft, Camera, Calendar } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { relationshipStages } from "@shared/schema";
 import { useToast } from "@/hooks/use-toast";
+import { format } from "date-fns";
 
 export default function ConnectionEdit() {
   const { id } = useParams();
@@ -21,6 +22,7 @@ export default function ConnectionEdit() {
   // Form state
   const [name, setName] = useState("");
   const [stage, setStage] = useState("");
+  const [startDate, setStartDate] = useState<string | null>(null);
   const [zodiacSign, setZodiacSign] = useState("");
   const [loveLanguages, setLoveLanguages] = useState<string[]>([]);
   const [profileImage, setProfileImage] = useState("");
@@ -49,6 +51,12 @@ export default function ConnectionEdit() {
       setName(connection.name);
       setStage(connection.relationshipStage);
       setZodiacSign(connection.zodiacSign || "");
+      
+      // Format and set start date if available
+      if (connection.startDate) {
+        const date = new Date(connection.startDate);
+        setStartDate(format(date, 'yyyy-MM-dd'));
+      }
       
       // Handle love languages (they are stored as comma-separated string)
       if (connection.loveLanguage) {
@@ -83,6 +91,11 @@ export default function ConnectionEdit() {
       // Add optional fields if selected
       if (zodiacSign) {
         connectionData.zodiacSign = zodiacSign;
+      }
+      
+      // Add start date if provided
+      if (startDate) {
+        connectionData.startDate = new Date(startDate);
       }
       
       if (loveLanguages.length > 0) {
@@ -223,6 +236,26 @@ export default function ConnectionEdit() {
                   <option key={s} value={s}>{s}</option>
                 ))}
               </select>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                When did you start talking/dating?
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                  <Calendar className="h-4 w-4 text-gray-400" />
+                </div>
+                <Input
+                  type="date"
+                  value={startDate || ''}
+                  onChange={(e) => setStartDate(e.target.value || null)}
+                  className="pl-10"
+                />
+              </div>
+              <p className="text-xs text-neutral-500 mt-1">
+                Track when this connection began
+              </p>
             </div>
             
             <div>
