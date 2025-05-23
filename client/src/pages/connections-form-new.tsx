@@ -111,7 +111,7 @@ export default function ConnectionsFormNew() {
     return Object.keys(newErrors).length === 0;
   };
   
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!validateForm() || !user) return;
@@ -129,8 +129,43 @@ export default function ConnectionsFormNew() {
     
     console.log("Submitting connection data:", connectionData);
     
-    // Submit the data
-    createMutation.mutate(connectionData);
+    try {
+      // Direct API call to avoid any issues with the mutation
+      const response = await fetch("/api/connections", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(connectionData),
+        credentials: "include"
+      });
+      
+      if (response.ok) {
+        toast({
+          title: "Connection created",
+          description: "Your new connection has been created successfully."
+        });
+        
+        // Manually refresh connections data
+        queryClient.invalidateQueries({ queryKey: ["/api/connections"] });
+        
+        // Redirect to connections page
+        setLocation("/connections");
+      } else {
+        const errorData = await response.text();
+        console.error("Error creating connection:", errorData);
+        toast({
+          title: "Error creating connection",
+          description: "There was a problem creating your connection. Please try again.",
+          variant: "destructive"
+        });
+      }
+    } catch (error) {
+      console.error("Exception creating connection:", error);
+      toast({
+        title: "Error creating connection",
+        description: "There was a problem creating your connection. Please try again.",
+        variant: "destructive"
+      });
+    }
   };
   
   return (
