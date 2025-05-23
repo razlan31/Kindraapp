@@ -10,6 +10,7 @@ import Dashboard from "@/pages/dashboard";
 import Connections from "@/pages/connections";
 import ConnectionsNew from "@/pages/connections-new";
 import ConnectionsForm from "@/pages/connections-form";
+import ConnectionsFormNew from "./pages/connections-form-new";
 import Moments from "@/pages/moments";
 import Insights from "@/pages/insights";
 import Profile from "@/pages/profile";
@@ -42,7 +43,7 @@ function Router() {
       <Route path="/" component={Dashboard} />
       <Route path="/connections" component={ConnectionsNew} />
       <Route path="/connections/old" component={Connections} />
-      <Route path="/connections/add" component={ConnectionsForm} />
+      <Route path="/connections/add" component={ConnectionsFormNew} />
       <Route path="/moments" component={Moments} />
       <Route path="/insights" component={Insights} />
       <Route path="/profile" component={Profile} />
