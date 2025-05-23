@@ -91,6 +91,7 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         moodTrackerModalOpen,
         selectedConnectionId,
         selectedConnection,
+        mainFocusConnection,
         openMomentModal,
         closeMomentModal,
         openConnectionModal,
@@ -98,6 +99,7 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         openMoodTrackerModal,
         closeMoodTrackerModal,
         setSelectedConnection,
+        setMainFocusConnection: setMainFocusConnectionObject,
       }}
     >
       {children}
