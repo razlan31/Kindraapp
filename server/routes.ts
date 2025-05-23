@@ -204,7 +204,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/api/connections/:id", isAuthenticated, async (req, res) => {
+  // Handle both PUT and PATCH for connection updates
+  const updateConnectionHandler = async (req: Request, res: Response) => {
     try {
       const userId = req.session.userId as number;
       const connectionId = parseInt(req.params.id);
@@ -228,7 +229,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(500).json({ message: "Server error updating connection" });
     }
-  });
+  };
+
+  app.put("/api/connections/:id", isAuthenticated, updateConnectionHandler);
+  app.patch("/api/connections/:id", isAuthenticated, updateConnectionHandler);
 
   app.delete("/api/connections/:id", isAuthenticated, async (req, res) => {
     try {
