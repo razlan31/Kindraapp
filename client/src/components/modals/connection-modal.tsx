@@ -38,10 +38,26 @@ export function ConnectionModal() {
   // Create connection mutation
   const { mutate: createConnection, isPending } = useMutation({
     mutationFn: async (data: any) => {
-      const response = await apiRequest("POST", "/api/connections", data);
-      return response.json();
+      console.log("Sending data to server:", data);
+      const response = await fetch("/api/connections", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+        credentials: "include"
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Server response:", response.status, errorText);
+        throw new Error("Failed to create connection");
+      }
+      
+      return await response.json();
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      console.log("Connection created successfully:", data);
       toast({
         title: "Connection added successfully",
         description: "Your new connection has been saved.",
@@ -51,9 +67,10 @@ export function ConnectionModal() {
       resetForm();
     },
     onError: (error) => {
+      console.error("Error creating connection:", error);
       toast({
         title: "Failed to add connection",
-        description: error.message || "Please try again later.",
+        description: "Please try again later.",
         variant: "destructive",
       });
     },
