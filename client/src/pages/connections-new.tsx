@@ -118,6 +118,7 @@ export default function ConnectionsNew() {
                   onClick={async () => {
                     if (!newName.trim()) return;
                     
+                    console.log("Creating connection with data:", { name: newName.trim(), relationshipStage: newStage });
                     setIsCreating(true);
                     try {
                       const response = await fetch("/api/connections", {
@@ -130,7 +131,12 @@ export default function ConnectionsNew() {
                         credentials: "include"
                       });
                       
+                      console.log("Response status:", response.status);
+                      console.log("Response headers:", response.headers);
+                      
                       if (response.ok) {
+                        const result = await response.json();
+                        console.log("Connection created successfully:", result);
                         toast({
                           title: "Success!",
                           description: "Connection created successfully"
@@ -140,6 +146,8 @@ export default function ConnectionsNew() {
                         // Refresh connections
                         queryClient.invalidateQueries({ queryKey: ["/api/connections"] });
                       } else {
+                        const errorText = await response.text();
+                        console.error("Failed to create connection:", response.status, errorText);
                         toast({
                           title: "Error",
                           description: "Failed to create connection",
