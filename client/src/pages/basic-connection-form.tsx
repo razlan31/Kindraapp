@@ -14,6 +14,7 @@ export default function BasicConnectionForm() {
   
   const [name, setName] = useState("");
   const [stage, setStage] = useState("Talking Stage");
+  const [zodiacSign, setZodiacSign] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   const handleSubmit = async (e: React.FormEvent) => {
@@ -30,17 +31,25 @@ export default function BasicConnectionForm() {
     setIsSubmitting(true);
     
     try {
-      console.log("Sending data:", { name: name.trim(), relationshipStage: stage });
+      // Create connection data object
+      const connectionData = {
+        name: name.trim(),
+        relationshipStage: stage
+      };
+      
+      // Add zodiac sign if selected
+      if (zodiacSign) {
+        connectionData['zodiacSign'] = zodiacSign;
+      }
+      
+      console.log("Sending data:", connectionData);
       
       const response = await fetch("/api/connections", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({
-          name: name.trim(),
-          relationshipStage: stage
-        }),
+        body: JSON.stringify(connectionData),
         credentials: "include"
       });
       
@@ -121,6 +130,31 @@ export default function BasicConnectionForm() {
                 {relationshipStages.map((s) => (
                   <option key={s} value={s}>{s}</option>
                 ))}
+              </select>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Zodiac Sign
+              </label>
+              <select
+                value={zodiacSign}
+                onChange={(e) => setZodiacSign(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md"
+              >
+                <option value="">Select zodiac sign (optional)</option>
+                <option value="Aries">Aries</option>
+                <option value="Taurus">Taurus</option>
+                <option value="Gemini">Gemini</option>
+                <option value="Cancer">Cancer</option>
+                <option value="Leo">Leo</option>
+                <option value="Virgo">Virgo</option>
+                <option value="Libra">Libra</option>
+                <option value="Scorpio">Scorpio</option>
+                <option value="Sagittarius">Sagittarius</option>
+                <option value="Capricorn">Capricorn</option>
+                <option value="Aquarius">Aquarius</option>
+                <option value="Pisces">Pisces</option>
               </select>
             </div>
             
