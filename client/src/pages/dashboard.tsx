@@ -204,9 +204,9 @@ export default function Dashboard() {
                 <Button 
                   variant="outline" 
                   className="mt-2"
-                  onClick={openConnectionModal}
+                  asChild
                 >
-                  Add Your First Connection
+                  <Link href="/connections-new">Add Your First Connection</Link>
                 </Button>
               </div>
             )}

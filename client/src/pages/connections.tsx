@@ -184,9 +184,11 @@ export default function Connections() {
               variant="outline" 
               size="icon"
               className="rounded-full"
-              onClick={openConnectionModal}
+              asChild
             >
-              <Plus className="h-4 w-4" />
+              <Link href="/connections-new">
+                <Plus className="h-4 w-4" />
+              </Link>
             </Button>
           </div>
 
