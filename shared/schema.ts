@@ -1,0 +1,117 @@
+import { pgTable, text, serial, integer, boolean, timestamp, json } from "drizzle-orm/pg-core";
+import { createInsertSchema } from "drizzle-zod";
+import { z } from "zod";
+
+// Users
+export const users = pgTable("users", {
+  id: serial("id").primaryKey(),
+  username: text("username").notNull().unique(),
+  password: text("password").notNull(),
+  email: text("email").notNull().unique(),
+  displayName: text("display_name"),
+  profileImage: text("profile_image"),
+  zodiacSign: text("zodiac_sign"),
+  loveLanguage: text("love_language"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const userSchema = createInsertSchema(users).omit({ id: true, createdAt: true });
+export type InsertUser = z.infer<typeof userSchema>;
+export type User = typeof users.$inferSelect;
+
+// Relationship stages enum
+export const relationshipStages = [
+  "Talking",
+  "Situationship",
+  "FWB",
+  "Exclusive",
+  "Sneaky Link",
+  "Best Friend",
+  "Potential",
+] as const;
+
+// Connections (relationships)
+export const connections = pgTable("connections", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  name: text("name").notNull(),
+  profileImage: text("profile_image"),
+  relationshipStage: text("relationship_stage").notNull(),
+  startDate: timestamp("start_date"),
+  zodiacSign: text("zodiac_sign"),
+  loveLanguage: text("love_language"),
+  isPrivate: boolean("is_private").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const connectionSchema = createInsertSchema(connections).omit({ id: true, createdAt: true });
+export type InsertConnection = z.infer<typeof connectionSchema>;
+export type Connection = typeof connections.$inferSelect;
+
+// Moment tags
+export const momentTags = [
+  "Intimacy",
+  "Conflict",
+  "Green Flag",
+  "Red Flag",
+  "Milestone",
+  "Surprise",
+  "Gift",
+  "Positive",
+  "Menstrual",
+] as const;
+
+// Moments (emotional logs)
+export const moments = pgTable("moments", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  connectionId: integer("connection_id").notNull(),
+  emoji: text("emoji").notNull(),
+  content: text("content").notNull(),
+  tags: json("tags").$type<string[]>(),
+  isPrivate: boolean("is_private").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const momentSchema = createInsertSchema(moments).omit({ id: true, createdAt: true });
+export type InsertMoment = z.infer<typeof momentSchema>;
+export type Moment = typeof moments.$inferSelect;
+
+// Badges
+export const badges = pgTable("badges", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  description: text("description").notNull(),
+  icon: text("icon").notNull(),
+  category: text("category").notNull(),
+  unlockCriteria: json("unlock_criteria").notNull(),
+});
+
+export const badgeSchema = createInsertSchema(badges).omit({ id: true });
+export type InsertBadge = z.infer<typeof badgeSchema>;
+export type Badge = typeof badges.$inferSelect;
+
+// User Badges (junction table)
+export const userBadges = pgTable("user_badges", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  badgeId: integer("badge_id").notNull(),
+  unlockedAt: timestamp("unlocked_at").defaultNow(),
+});
+
+export const userBadgeSchema = createInsertSchema(userBadges).omit({ id: true, unlockedAt: true });
+export type InsertUserBadge = z.infer<typeof userBadgeSchema>;
+export type UserBadge = typeof userBadges.$inferSelect;
+
+// Menstrual cycles
+export const menstrualCycles = pgTable("menstrual_cycles", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  startDate: timestamp("start_date").notNull(),
+  endDate: timestamp("end_date"),
+  notes: text("notes"),
+});
+
+export const menstrualCycleSchema = createInsertSchema(menstrualCycles).omit({ id: true });
+export type InsertMenstrualCycle = z.infer<typeof menstrualCycleSchema>;
+export type MenstrualCycle = typeof menstrualCycles.$inferSelect;

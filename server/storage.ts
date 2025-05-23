@@ -1,0 +1,295 @@
+import { 
+  User, InsertUser, users,
+  Connection, InsertConnection, connections,
+  Moment, InsertMoment, moments, 
+  Badge, InsertBadge, badges,
+  UserBadge, InsertUserBadge, userBadges,
+  MenstrualCycle, InsertMenstrualCycle, menstrualCycles
+} from "@shared/schema";
+
+export interface IStorage {
+  // User operations
+  getUser(id: number): Promise<User | undefined>;
+  getUserByUsername(username: string): Promise<User | undefined>;
+  getUserByEmail(email: string): Promise<User | undefined>;
+  createUser(user: InsertUser): Promise<User>;
+  updateUser(id: number, data: Partial<User>): Promise<User | undefined>;
+
+  // Connection operations
+  getConnection(id: number): Promise<Connection | undefined>;
+  getConnectionsByUserId(userId: number): Promise<Connection[]>;
+  createConnection(connection: InsertConnection): Promise<Connection>;
+  updateConnection(id: number, data: Partial<Connection>): Promise<Connection | undefined>;
+  deleteConnection(id: number): Promise<boolean>;
+
+  // Moment operations
+  getMoment(id: number): Promise<Moment | undefined>;
+  getMomentsByUserId(userId: number, limit?: number): Promise<Moment[]>;
+  getMomentsByConnectionId(connectionId: number): Promise<Moment[]>;
+  createMoment(moment: InsertMoment): Promise<Moment>;
+  updateMoment(id: number, data: Partial<Moment>): Promise<Moment | undefined>;
+  deleteMoment(id: number): Promise<boolean>;
+
+  // Badge operations
+  getBadge(id: number): Promise<Badge | undefined>;
+  getAllBadges(): Promise<Badge[]>;
+  createBadge(badge: InsertBadge): Promise<Badge>;
+  
+  // User Badge operations
+  getUserBadges(userId: number): Promise<(UserBadge & { badge: Badge })[]>;
+  addUserBadge(userBadge: InsertUserBadge): Promise<UserBadge>;
+  
+  // Menstrual Cycle operations
+  getMenstrualCycles(userId: number): Promise<MenstrualCycle[]>;
+  createMenstrualCycle(cycle: InsertMenstrualCycle): Promise<MenstrualCycle>;
+  updateMenstrualCycle(id: number, data: Partial<MenstrualCycle>): Promise<MenstrualCycle | undefined>;
+}
+
+export class MemStorage implements IStorage {
+  private users: Map<number, User>;
+  private connections: Map<number, Connection>;
+  private moments: Map<number, Moment>;
+  private badges: Map<number, Badge>;
+  private userBadges: Map<number, UserBadge>;
+  private menstrualCycles: Map<number, MenstrualCycle>;
+  
+  private userId: number;
+  private connectionId: number;
+  private momentId: number;
+  private badgeId: number;
+  private userBadgeId: number;
+  private menstrualCycleId: number;
+
+  constructor() {
+    // Initialize maps for storage
+    this.users = new Map();
+    this.connections = new Map();
+    this.moments = new Map();
+    this.badges = new Map();
+    this.userBadges = new Map();
+    this.menstrualCycles = new Map();
+    
+    // Initialize auto-incrementing IDs
+    this.userId = 1;
+    this.connectionId = 1;
+    this.momentId = 1;
+    this.badgeId = 1;
+    this.userBadgeId = 1;
+    this.menstrualCycleId = 1;
+    
+    // Initialize default badges
+    this.initializeDefaultBadges();
+  }
+
+  private initializeDefaultBadges() {
+    const defaultBadges: InsertBadge[] = [
+      {
+        name: "Emotion Master",
+        description: "Log emotions in 10 different moments",
+        icon: "fa-heart",
+        category: "Emotional Growth",
+        unlockCriteria: { momentsLogged: 10 },
+      },
+      {
+        name: "Communication Pro",
+        description: "Have at least 5 positive communication moments",
+        icon: "fa-comments",
+        category: "Communication",
+        unlockCriteria: { positiveCommunication: 5 },
+      },
+      {
+        name: "Green Flag Queen",
+        description: "Collect 10 green flags across all relationships",
+        icon: "fa-flag",
+        category: "Relationship Health",
+        unlockCriteria: { greenFlags: 10 },
+      },
+      {
+        name: "Reflection Ritualist",
+        description: "Log moments consistently for 7 days",
+        icon: "fa-calendar-check",
+        category: "Consistency",
+        unlockCriteria: { streakDays: 7 },
+      },
+      {
+        name: "Boundary Babe",
+        description: "Set and maintain healthy boundaries",
+        icon: "fa-shield",
+        category: "Self-care",
+        unlockCriteria: { boundariesSet: 3 },
+      },
+      {
+        name: "Connection Champion",
+        description: "Track 3 different relationship types",
+        icon: "fa-people-group",
+        category: "Diversity",
+        unlockCriteria: { relationshipTypes: 3 },
+      }
+    ];
+
+    defaultBadges.forEach(badge => this.createBadge(badge));
+  }
+
+  // User operations
+  async getUser(id: number): Promise<User | undefined> {
+    return this.users.get(id);
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    return Array.from(this.users.values()).find(
+      (user) => user.username === username
+    );
+  }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    return Array.from(this.users.values()).find(
+      (user) => user.email === email
+    );
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const id = this.userId++;
+    const user: User = { ...insertUser, id, createdAt: new Date() };
+    this.users.set(id, user);
+    return user;
+  }
+
+  async updateUser(id: number, data: Partial<User>): Promise<User | undefined> {
+    const user = this.users.get(id);
+    if (!user) return undefined;
+    
+    const updatedUser = { ...user, ...data };
+    this.users.set(id, updatedUser);
+    return updatedUser;
+  }
+
+  // Connection operations
+  async getConnection(id: number): Promise<Connection | undefined> {
+    return this.connections.get(id);
+  }
+
+  async getConnectionsByUserId(userId: number): Promise<Connection[]> {
+    return Array.from(this.connections.values()).filter(
+      (connection) => connection.userId === userId
+    );
+  }
+
+  async createConnection(insertConnection: InsertConnection): Promise<Connection> {
+    const id = this.connectionId++;
+    const connection: Connection = { ...insertConnection, id, createdAt: new Date() };
+    this.connections.set(id, connection);
+    return connection;
+  }
+
+  async updateConnection(id: number, data: Partial<Connection>): Promise<Connection | undefined> {
+    const connection = this.connections.get(id);
+    if (!connection) return undefined;
+    
+    const updatedConnection = { ...connection, ...data };
+    this.connections.set(id, updatedConnection);
+    return updatedConnection;
+  }
+
+  async deleteConnection(id: number): Promise<boolean> {
+    return this.connections.delete(id);
+  }
+
+  // Moment operations
+  async getMoment(id: number): Promise<Moment | undefined> {
+    return this.moments.get(id);
+  }
+
+  async getMomentsByUserId(userId: number, limit?: number): Promise<Moment[]> {
+    const userMoments = Array.from(this.moments.values())
+      .filter((moment) => moment.userId === userId)
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+    
+    return limit ? userMoments.slice(0, limit) : userMoments;
+  }
+
+  async getMomentsByConnectionId(connectionId: number): Promise<Moment[]> {
+    return Array.from(this.moments.values())
+      .filter((moment) => moment.connectionId === connectionId)
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  }
+
+  async createMoment(insertMoment: InsertMoment): Promise<Moment> {
+    const id = this.momentId++;
+    const moment: Moment = { ...insertMoment, id, createdAt: new Date() };
+    this.moments.set(id, moment);
+    return moment;
+  }
+
+  async updateMoment(id: number, data: Partial<Moment>): Promise<Moment | undefined> {
+    const moment = this.moments.get(id);
+    if (!moment) return undefined;
+    
+    const updatedMoment = { ...moment, ...data };
+    this.moments.set(id, updatedMoment);
+    return updatedMoment;
+  }
+
+  async deleteMoment(id: number): Promise<boolean> {
+    return this.moments.delete(id);
+  }
+
+  // Badge operations
+  async getBadge(id: number): Promise<Badge | undefined> {
+    return this.badges.get(id);
+  }
+
+  async getAllBadges(): Promise<Badge[]> {
+    return Array.from(this.badges.values());
+  }
+
+  async createBadge(insertBadge: InsertBadge): Promise<Badge> {
+    const id = this.badgeId++;
+    const badge: Badge = { ...insertBadge, id };
+    this.badges.set(id, badge);
+    return badge;
+  }
+
+  // User Badge operations
+  async getUserBadges(userId: number): Promise<(UserBadge & { badge: Badge })[]> {
+    const userBadgeEntries = Array.from(this.userBadges.values())
+      .filter((userBadge) => userBadge.userId === userId);
+    
+    return userBadgeEntries.map(userBadge => {
+      const badge = this.badges.get(userBadge.badgeId);
+      if (!badge) throw new Error(`Badge not found: ${userBadge.badgeId}`);
+      return { ...userBadge, badge };
+    });
+  }
+
+  async addUserBadge(insertUserBadge: InsertUserBadge): Promise<UserBadge> {
+    const id = this.userBadgeId++;
+    const userBadge: UserBadge = { ...insertUserBadge, id, unlockedAt: new Date() };
+    this.userBadges.set(id, userBadge);
+    return userBadge;
+  }
+
+  // Menstrual Cycle operations
+  async getMenstrualCycles(userId: number): Promise<MenstrualCycle[]> {
+    return Array.from(this.menstrualCycles.values())
+      .filter((cycle) => cycle.userId === userId)
+      .sort((a, b) => b.startDate.getTime() - a.startDate.getTime());
+  }
+
+  async createMenstrualCycle(insertCycle: InsertMenstrualCycle): Promise<MenstrualCycle> {
+    const id = this.menstrualCycleId++;
+    const cycle: MenstrualCycle = { ...insertCycle, id };
+    this.menstrualCycles.set(id, cycle);
+    return cycle;
+  }
+
+  async updateMenstrualCycle(id: number, data: Partial<MenstrualCycle>): Promise<MenstrualCycle | undefined> {
+    const cycle = this.menstrualCycles.get(id);
+    if (!cycle) return undefined;
+    
+    const updatedCycle = { ...cycle, ...data };
+    this.menstrualCycles.set(id, updatedCycle);
+    return updatedCycle;
+  }
+}
+
+export const storage = new MemStorage();
