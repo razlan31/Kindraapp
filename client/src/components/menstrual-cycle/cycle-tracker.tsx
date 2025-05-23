@@ -13,6 +13,8 @@ import { Input } from "@/components/ui/input";
 import { format } from "date-fns";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface CycleTrackerProps {
   cycles: MenstrualCycle[];
@@ -26,6 +28,16 @@ export function CycleTracker({ cycles }: CycleTrackerProps) {
   const [mood, setMood] = useState<string>("Neutral");
   const [flowIntensity, setFlowIntensity] = useState<string>("Medium");
   const [symptoms, setSymptoms] = useState<string[]>([]);
+  
+  // Reset state when form is closed
+  const resetForm = () => {
+    setSelectedDate(undefined);
+    setEndDate(undefined);
+    setNotes("");
+    setMood("Neutral");
+    setFlowIntensity("Medium");
+    setSymptoms([]);
+  };
   
   const { toast } = useToast();
   const queryClient = useQueryClient();
