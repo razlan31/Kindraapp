@@ -111,8 +111,8 @@ export default function ConnectionsNew() {
       profileImage: profileImage || null,
       relationshipStage,
       startDate: startDate ? new Date(startDate).toISOString() : null,
-      zodiacSign: zodiacSign || null,
-      loveLanguage: loveLanguage || null,
+      zodiacSign: zodiacSign === "none" ? null : zodiacSign,
+      loveLanguage: loveLanguage === "none" ? null : loveLanguage,
       isPrivate,
     };
     
@@ -153,7 +153,8 @@ export default function ConnectionsNew() {
     
     return {
       green: connectionMoments.filter(m => m.tags?.includes('Green Flag')).length,
-      red: connectionMoments.filter(m => m.tags?.includes('Red Flag')).length
+      red: connectionMoments.filter(m => m.tags?.includes('Red Flag')).length,
+      blue: connectionMoments.filter(m => m.tags?.includes('Mixed Signal')).length
     };
   };
 
@@ -355,7 +356,7 @@ export default function ConnectionsNew() {
                       <SelectValue placeholder="Select sign" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">None</SelectItem>
+                      <SelectItem value="none">None</SelectItem>
                       {zodiacSigns.map((sign) => (
                         <SelectItem key={sign} value={sign}>
                           {sign}
@@ -372,7 +373,7 @@ export default function ConnectionsNew() {
                       <SelectValue placeholder="Select love language" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">None</SelectItem>
+                      <SelectItem value="none">None</SelectItem>
                       {loveLanguages.map((language) => (
                         <SelectItem key={language} value={language}>
                           {language}
