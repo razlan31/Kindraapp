@@ -1,0 +1,27 @@
+AI Prompts Based on Notes
+Yes, the AI can prompt based on the notes the user adds! Here's how we can implement it:
+
+1. User Adds Notes:
+* When a user tags a moment (e.g., Conflict), they will be prompted to add notes:
+    * Example: “What happened during this conflict? Feel free to add details or reflections.”
+* This allows the user to write a custom reflection, explanation, or context (e.g., “We argued about money, and it got heated.”).
+
+2. AI’s Ability to Prompt Based on Notes:
+* AI Reflection Logic: The AI can analyze the notes to generate more personalized insights. Here’s how it works:
+    * Keyword-based Prompts: The AI can scan the notes for keywords or phrases related to emotions (e.g., "heated," "stressed," "misunderstood"). Based on these, it will generate relevant reflections or suggestions. Example AI Prompts:
+        * For Conflict Notes: “You mentioned the argument was heated. Would you like help exploring better communication techniques for handling sensitive topics?”
+        * For Growth Notes: “You noted that you're growing together despite challenges. Keep focusing on the positive and nurturing your bond.”
+        * For Emotional Notes: “You mentioned feeling stressed. It could be helpful to explore ways to manage stress and communicate more effectively.”
+
+3. AI's Adaptive Feedback Based on User Notes:
+* The AI could adapt based on the nature of the notes and provide users with custom feedback, helping them reflect on the situation in a healthy way. For example:
+    * If a user logs a Conflict moment and notes: “We had a disagreement about money. I felt unheard,” the AI might say:
+        * “It sounds like money is a sensitive topic for you and [Partner]. Communication is key—would you like suggestions for resolving financial conflicts?”
+    * If the user logs a Growth moment and says: “Despite our challenges, we’re still learning to communicate better,” the AI might respond:
+        * “Your relationship is growing through these challenges. It’s great that you’re focusing on improving communication!”
+
+4. Benefits of AI Prompts Based on Notes:
+* Personalization: The AI can tailor its reflections to real situations the user logs, making it more meaningful and actionable for the user.
+* Engagement: By offering reflective prompts based on user input, the AI encourages users to engage more deeply with the app over time, ensuring they continue to reflect on their emotional journey.
+* Emotional Support: Users will feel supported as the app doesn’t just log events, but helps them process them with thoughtful guidance, leading to greater emotional insight.
+ 
