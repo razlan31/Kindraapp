@@ -306,7 +306,7 @@ export default function ConnectionEdit() {
                 onChange={(e) => setZodiacSign(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md"
               >
-                <option value="">Select zodiac sign (optional)</option>
+                <option value="">Not specified</option>
                 <option value="Aries">Aries</option>
                 <option value="Taurus">Taurus</option>
                 <option value="Gemini">Gemini</option>
@@ -327,9 +327,20 @@ export default function ConnectionEdit() {
                 Love Languages (select up to 3)
               </label>
               <div className="space-y-2">
-                <p className="text-xs text-neutral-500 mb-2">
-                  Choose one or more love languages that matter to this person
-                </p>
+                <div className="flex justify-between items-center mb-2">
+                  <p className="text-xs text-neutral-500">
+                    Choose one or more love languages that matter to this person
+                  </p>
+                  <Button 
+                    type="button" 
+                    variant="ghost" 
+                    size="sm" 
+                    className="text-xs py-1 px-2 h-auto" 
+                    onClick={() => setLoveLanguages([])}
+                  >
+                    Clear All
+                  </Button>
+                </div>
                 
                 <div className="grid grid-cols-1 gap-2">
                   {[
