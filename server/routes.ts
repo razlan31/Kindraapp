@@ -224,7 +224,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Unauthorized to update this connection" });
       }
       
+      console.log("Updating connection with data:", req.body);
       const updatedConnection = await storage.updateConnection(connectionId, req.body);
+      console.log("Updated connection result:", updatedConnection);
       res.status(200).json(updatedConnection);
     } catch (error) {
       res.status(500).json({ message: "Server error updating connection" });
