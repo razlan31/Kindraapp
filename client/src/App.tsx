@@ -11,6 +11,7 @@ import Connections from "@/pages/connections";
 import Moments from "@/pages/moments";
 import Insights from "@/pages/insights";
 import Profile from "@/pages/profile";
+import CycleTracking from "@/pages/cycle-tracking";
 import { useAuth } from "./contexts/auth-context";
 import { MomentModal } from "./components/modals/moment-modal";
 import { ConnectionModal } from "./components/modals/connection-modal";
@@ -36,6 +37,7 @@ function Router() {
       <Route path="/moments" component={Moments} />
       <Route path="/insights" component={Insights} />
       <Route path="/profile" component={Profile} />
+      <Route path="/cycle-tracking" component={CycleTracking} />
       <Route component={NotFound} />
     </Switch>
   );
