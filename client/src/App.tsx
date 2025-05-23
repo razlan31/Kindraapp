@@ -8,6 +8,7 @@ import Login from "@/pages/auth/login";
 import Register from "@/pages/auth/register";
 import Dashboard from "@/pages/dashboard";
 import Connections from "@/pages/connections";
+import ConnectionsNew from "@/pages/connections-new";
 import Moments from "@/pages/moments";
 import Insights from "@/pages/insights";
 import Profile from "@/pages/profile";
@@ -38,7 +39,8 @@ function Router() {
       <Route path="/auth/login" component={Login} />
       <Route path="/auth/register" component={Register} />
       <Route path="/" component={Dashboard} />
-      <Route path="/connections" component={Connections} />
+      <Route path="/connections" component={ConnectionsNew} />
+      <Route path="/connections/old" component={Connections} />
       <Route path="/moments" component={Moments} />
       <Route path="/insights" component={Insights} />
       <Route path="/profile" component={Profile} />
