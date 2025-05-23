@@ -260,8 +260,8 @@ export default function ConnectionsNew() {
                 <ConnectionCard
                   key={connection.id}
                   connection={connection}
-                  onClick={() => handleSelectConnection(connection)}
-                  flagCounts={getConnectionFlags(connection.id)}
+                  onSelect={() => handleSelectConnection(connection)}
+                  flagCount={getConnectionFlags(connection.id)}
                 />
               ))}
             </div>
