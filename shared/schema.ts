@@ -79,7 +79,12 @@ export const momentTags = [
   "Surprise",
   "Gift",
   "Menstrual",
-  "Reflection"
+  "Reflection",
+  
+  // Intimacy Tags
+  "Sexual Intimacy",
+  "Emotional Intimacy",
+  "Physical Intimacy"
 ] as const;
 
 // Moments (emotional logs)
@@ -92,6 +97,9 @@ export const moments = pgTable("moments", {
   tags: json("tags").$type<string[]>(),
   isPrivate: boolean("is_private").default(false),
   createdAt: timestamp("created_at").defaultNow(),
+  isIntimate: boolean("is_intimate").default(false),
+  intimacyRating: text("intimacy_rating"),
+  relatedToMenstrualCycle: boolean("related_to_menstrual_cycle").default(false),
 });
 
 export const momentSchema = createInsertSchema(moments).omit({ id: true, createdAt: true });
@@ -131,6 +139,9 @@ export const menstrualCycles = pgTable("menstrual_cycles", {
   startDate: timestamp("start_date").notNull(),
   endDate: timestamp("end_date"),
   notes: text("notes"),
+  mood: text("mood"),
+  symptoms: json("symptoms").$type<string[]>(),
+  flowIntensity: text("flow_intensity"),
 });
 
 export const menstrualCycleSchema = createInsertSchema(menstrualCycles).omit({ id: true });

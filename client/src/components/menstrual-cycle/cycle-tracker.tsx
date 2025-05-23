@@ -23,6 +23,9 @@ export function CycleTracker({ cycles }: CycleTrackerProps) {
   const [showAddForm, setShowAddForm] = useState(false);
   const [notes, setNotes] = useState<string>("");
   const [endDate, setEndDate] = useState<Date | undefined>(undefined);
+  const [mood, setMood] = useState<string>("Neutral");
+  const [flowIntensity, setFlowIntensity] = useState<string>("Medium");
+  const [symptoms, setSymptoms] = useState<string[]>([]);
   
   const { toast } = useToast();
   const queryClient = useQueryClient();

@@ -44,6 +44,9 @@ export function MomentModal() {
       .max(500, "Content cannot exceed 500 characters"),
     tags: z.array(z.string()).optional(),
     isPrivate: z.boolean().default(false),
+    isIntimate: z.boolean().default(false),
+    intimacyRating: z.string().optional(),
+    relatedToMenstrualCycle: z.boolean().default(false),
     userId: z.number().optional(),
   });
   
@@ -221,6 +224,80 @@ export function MomentModal() {
                     Select at least one tag to categorize this moment
                   </FormDescription>
                   <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            <FormField
+              control={form.control}
+              name="isIntimate"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>This is an intimate moment</FormLabel>
+                    <FormDescription>
+                      Track intimate moments to identify patterns in your relationship
+                    </FormDescription>
+                  </div>
+                </FormItem>
+              )}
+            />
+            
+            {form.watch("isIntimate") && (
+              <FormField
+                control={form.control}
+                name="intimacyRating"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Intimacy Quality</FormLabel>
+                    <Select
+                      value={field.value}
+                      onValueChange={field.onChange}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Rate the experience" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="Great">Great</SelectItem>
+                        <SelectItem value="Good">Good</SelectItem>
+                        <SelectItem value="Neutral">Neutral</SelectItem>
+                        <SelectItem value="Needs Improvement">Needs Improvement</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormDescription>
+                      This helps identify patterns in your intimate connection
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
+            
+            <FormField
+              control={form.control}
+              name="relatedToMenstrualCycle"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>Related to menstrual cycle</FormLabel>
+                    <FormDescription>
+                      Track how your cycle may affect your mood and relationship
+                    </FormDescription>
+                  </div>
                 </FormItem>
               )}
             />
