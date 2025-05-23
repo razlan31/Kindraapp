@@ -113,9 +113,9 @@ export default function Insights() {
 
   // Calculate days since first moment
   const firstMomentDate = moments.length > 0 ? 
-    new Date(moments.sort((a, b) => 
-      new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-    )[0].createdAt) : null;
+    new Date(moments.slice().sort((a, b) => 
+      new Date(a.createdAt).valueOf() - new Date(b.createdAt).valueOf()
+    )[0].createdAt) : undefined;
   
   const trackingDays = firstMomentDate ? 
     Math.ceil((new Date().getTime() - firstMomentDate.getTime()) / (1000 * 60 * 60 * 24)) : 0;
@@ -494,6 +494,134 @@ export default function Insights() {
                 </CardContent>
               </Card>
 
+              <Card className="mt-4">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-lg">Relationship Signal Analysis</CardTitle>
+                  <CardDescription>
+                    Detecting patterns in your relationship signals
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {connections.length > 0 && moments.length > 0 ? (
+                    <div className="space-y-4">
+                      {connections.map(connection => {
+                        // Get all moments for this connection
+                        const connectionMoments = moments.filter(m => m.connectionId === connection.id);
+                        
+                        if (connectionMoments.length < 3) {
+                          return null; // Not enough data for meaningful analysis
+                        }
+                        
+                        // Analyze mood patterns
+                        const happyMoments = connectionMoments.filter(m => 
+                          ['😃', '🙂', '😊', '❤️', '😍', '🥰'].includes(m.emoji)
+                        ).length;
+                        
+                        const unhappyMoments = connectionMoments.filter(m => 
+                          ['😕', '😞', '😢', '😠', '😡'].includes(m.emoji)
+                        ).length;
+                        
+                        const neutralMoments = connectionMoments.length - happyMoments - unhappyMoments;
+                        
+                        // Analyze flag patterns
+                        const greenFlags = connectionMoments.filter(m => 
+                          m.tags?.includes('Green Flag')
+                        ).length;
+                        
+                        const redFlags = connectionMoments.filter(m => 
+                          m.tags?.includes('Red Flag')
+                        ).length;
+                        
+                        const blueFlags = connectionMoments.filter(m => 
+                          m.tags?.includes('Blue Flag')
+                        ).length;
+                        
+                        // Sort moments by date to check for patterns over time
+                        const sortedMoments = [...connectionMoments].sort((a, b) => 
+                          new Date(a.createdAt).valueOf() - new Date(b.createdAt).valueOf()
+                        );
+                        
+                        // Check for emotional fluctuations (potential mixed signals)
+                        let fluctuationCount = 0;
+                        for (let i = 1; i < sortedMoments.length; i++) {
+                          const prevMood = ['😃', '🙂', '😊', '❤️', '😍', '🥰'].includes(sortedMoments[i-1].emoji) ? 'happy' :
+                                          ['😕', '😞', '😢', '😠', '😡'].includes(sortedMoments[i-1].emoji) ? 'unhappy' : 'neutral';
+                          
+                          const currentMood = ['😃', '🙂', '😊', '❤️', '😍', '🥰'].includes(sortedMoments[i].emoji) ? 'happy' :
+                                             ['😕', '😞', '😢', '😠', '😡'].includes(sortedMoments[i].emoji) ? 'unhappy' : 'neutral';
+                          
+                          if (prevMood !== currentMood && (prevMood === 'happy' || currentMood === 'happy')) {
+                            fluctuationCount++;
+                          }
+                        }
+                        
+                        // Determine relationship signal pattern based on data
+                        let signalType = "";
+                        let signalDescription = "";
+                        
+                        if (fluctuationCount > connectionMoments.length * 0.4) {
+                          // High fluctuation indicates mixed signals
+                          signalType = "Mixed Signals";
+                          if (connection.relationshipStage === "Talking") {
+                            signalDescription = "Your emotions show frequent shifts between positive and negative, typical in early relationships when expectations are still forming.";
+                          } else if (connection.relationshipStage === "FWB" || connection.relationshipStage === "Sneaky Link") {
+                            signalDescription = "This connection shows emotional ups and downs, common in casual relationships where expectations may be unclear.";
+                          } else {
+                            signalDescription = "There seem to be emotional fluctuations in this relationship. Open communication might help address these shifts.";
+                          }
+                        } else if (happyMoments > connectionMoments.length * 0.6 && greenFlags > redFlags) {
+                          // Consistently positive
+                          signalType = "Consistent Interest";
+                          signalDescription = "This connection shows consistent positive patterns, suggesting mutual interest and emotional alignment.";
+                        } else if (unhappyMoments > connectionMoments.length * 0.5 || redFlags > greenFlags + blueFlags) {
+                          // Consistently negative
+                          signalType = "Concerning Pattern";
+                          signalDescription = "This relationship shows signs of recurring challenges. Consider reflecting on whether this connection meets your needs.";
+                        } else if (neutralMoments > connectionMoments.length * 0.5 || blueFlags > greenFlags + redFlags) {
+                          // Growth-focused
+                          signalType = "Growth Opportunity";
+                          signalDescription = "This relationship shows signs of development and learning, with opportunities for mutual growth.";
+                        } else {
+                          // Not enough clear patterns
+                          signalType = "Developing Pattern";
+                          signalDescription = "There isn't a clear pattern yet in this relationship. Continue tracking to reveal deeper insights.";
+                        }
+                        
+                        // Only return connections with enough data for meaningful analysis
+                        return (
+                          <div key={connection.id} className="bg-neutral-50 dark:bg-neutral-800 p-3 rounded-lg">
+                            <div className="flex justify-between items-center mb-2">
+                              <h4 className="font-medium">{connection.name}</h4>
+                              <span className={`text-xs px-2 py-1 rounded-full ${
+                                signalType === "Consistent Interest" ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400" :
+                                signalType === "Mixed Signals" ? "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400" :
+                                signalType === "Concerning Pattern" ? "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400" :
+                                signalType === "Growth Opportunity" ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400" :
+                                "bg-neutral-100 text-neutral-800 dark:bg-neutral-700 dark:text-neutral-300"
+                              }`}>
+                                {signalType}
+                              </span>
+                            </div>
+                            <p className="text-sm text-neutral-700 dark:text-neutral-300">{signalDescription}</p>
+                            <div className="mt-2 flex flex-wrap gap-1">
+                              <span className="text-xs bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-400 px-2 py-0.5 rounded-full">{greenFlags} green</span>
+                              <span className="text-xs bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-400 px-2 py-0.5 rounded-full">{redFlags} red</span>
+                              <span className="text-xs bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-400 px-2 py-0.5 rounded-full">{blueFlags} blue</span>
+                            </div>
+                          </div>
+                        );
+                      }).filter(Boolean)}
+                      
+                      {connections.filter(c => moments.filter(m => m.connectionId === c.id).length >= 3).length === 0 && (
+                        <p className="text-center py-2 text-neutral-500">Log more moments for each connection to see relationship signal analysis</p>
+                      )}
+                    </div>
+                  ) : (
+                    <p className="text-center py-2 text-neutral-500">Add connections and log moments to see relationship signal analysis</p>
+                  )}
+                </CardContent>
+              </Card>
+              
               <Card className="mt-4">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-lg">AI Insights</CardTitle>

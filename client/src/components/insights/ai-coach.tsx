@@ -199,6 +199,65 @@ function generateAIInsights(connections: Connection[], moments: Moment[], userDa
     );
   }
   
+  // Detect mixed signals in relationships
+  if (connections.length > 0 && moments.length >= 5) {
+    // Group moments by connection
+    const connectionMoments: Record<number, Moment[]> = {};
+    
+    moments.forEach(moment => {
+      if (!connectionMoments[moment.connectionId]) {
+        connectionMoments[moment.connectionId] = [];
+      }
+      connectionMoments[moment.connectionId].push(moment);
+    });
+    
+    // Check for connections with mixed signals
+    const connectionsWithMixedSignals = connections.filter(connection => {
+      const connMoments = connectionMoments[connection.id] || [];
+      if (connMoments.length < 3) return false; // Need at least 3 moments for analysis
+      
+      // Check for emotional fluctuations (potential mixed signals)
+      const sortedMoments = [...connMoments].sort((a, b) => 
+        new Date(a.createdAt).valueOf() - new Date(b.createdAt).valueOf()
+      );
+      
+      let fluctuationCount = 0;
+      for (let i = 1; i < sortedMoments.length; i++) {
+        const prevMood = ['😃', '🙂', '😊', '❤️', '😍', '🥰'].includes(sortedMoments[i-1].emoji) ? 'happy' :
+                        ['😕', '😞', '😢', '😠', '😡'].includes(sortedMoments[i-1].emoji) ? 'unhappy' : 'neutral';
+        
+        const currentMood = ['😃', '🙂', '😊', '❤️', '😍', '🥰'].includes(sortedMoments[i].emoji) ? 'happy' :
+                           ['😕', '😞', '😢', '😠', '😡'].includes(sortedMoments[i].emoji) ? 'unhappy' : 'neutral';
+        
+        if (prevMood !== currentMood && (prevMood === 'happy' || currentMood === 'happy')) {
+          fluctuationCount++;
+        }
+      }
+      
+      // Consider it mixed signals if there are significant fluctuations
+      return fluctuationCount > sortedMoments.length * 0.4;
+    });
+    
+    if (connectionsWithMixedSignals.length > 0) {
+      const connectionName = connectionsWithMixedSignals[0].name;
+      const relationshipStage = connectionsWithMixedSignals[0].relationshipStage;
+      
+      if (relationshipStage === "Talking") {
+        insights.push(
+          `Your mood tracking for ${connectionName} shows frequent shifts between positive and negative feelings. In the Talking stage, these mixed signals are normal as you're still getting to know each other. Consider having a conversation about expectations to help clarify your connection.`
+        );
+      } else if (relationshipStage === "FWB" || relationshipStage === "Sneaky Link") {
+        insights.push(
+          `I notice emotional fluctuations in your moments with ${connectionName}. This pattern is common in casual relationships where boundaries might be unclear. Reflect on whether this dynamic meets your emotional needs or if clearer expectations would help.`
+        );
+      } else {
+        insights.push(
+          `Your relationship with ${connectionName} shows shifts between positive and challenging moments. This mix of experiences is normal, though frequent emotional swings might indicate you're still aligning your expectations or communication styles.`
+        );
+      }
+    }
+  }
+  
   // Look for relationship stage patterns
   const stageDistribution: Record<string, number> = {};
   connections.forEach(connection => {
