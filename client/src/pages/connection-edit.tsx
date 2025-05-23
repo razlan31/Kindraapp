@@ -348,11 +348,6 @@ export default function ConnectionEdit() {
                     "Quality Time",
                     "Acts of Service",
                     "Receiving Gifts",
-                    "Gift Giving",
-                    "Touch",
-                    "Time Together",
-                    "Verbal Appreciation",
-                    "Helpful Actions",
                     "Not Specified"
                   ].map((language) => {
                     const isSelected = loveLanguages.includes(language);
@@ -361,16 +356,9 @@ export default function ConnectionEdit() {
                       if (isSelected) {
                         // Remove if already selected
                         setLoveLanguages(loveLanguages.filter(l => l !== language));
-                      } else if (loveLanguages.length < 3) {
-                        // Add if not at max capacity
-                        setLoveLanguages([...loveLanguages, language]);
                       } else {
-                        // Warn user if trying to select more than 3
-                        toast({
-                          title: "Maximum reached",
-                          description: "You can select up to 3 love languages",
-                          variant: "destructive"
-                        });
+                        // Add it (no limit)
+                        setLoveLanguages([...loveLanguages, language]);
                       }
                     };
                     

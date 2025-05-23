@@ -26,11 +26,6 @@ const loveLanguages = [
   "Physical Touch",
   "Acts of Service",
   "Receiving Gifts",
-  "Gift Giving",
-  "Touch",
-  "Time Together",
-  "Verbal Appreciation",
-  "Helpful Actions",
   "Not Specified"
 ];
 
@@ -307,11 +302,10 @@ export default function ConnectionsFormNew() {
             </div>
             
             <div className="space-y-2">
-              <Label className="text-xs text-neutral-500">Love Languages (Select up to 3)</Label>
+              <Label className="text-xs text-neutral-500">Love Languages</Label>
               <div className="flex flex-wrap gap-2 mt-2">
                 {loveLanguages.map((language) => {
                   const isSelected = selectedLoveLanguages.includes(language);
-                  const canSelect = isSelected || selectedLoveLanguages.length < 3;
                   
                   return (
                     <Button
@@ -319,15 +313,14 @@ export default function ConnectionsFormNew() {
                       type="button"
                       variant={isSelected ? "default" : "outline"}
                       size="sm"
-                      className={`rounded-full text-xs ${!canSelect && !isSelected ? 'opacity-50 cursor-not-allowed' : ''}`}
+                      className="rounded-full text-xs"
                       onClick={() => {
                         if (isSelected) {
                           setSelectedLoveLanguages(selectedLoveLanguages.filter(l => l !== language));
-                        } else if (canSelect) {
+                        } else {
                           setSelectedLoveLanguages([...selectedLoveLanguages, language]);
                         }
                       }}
-                      disabled={!canSelect && !isSelected}
                     >
                       {language}
                     </Button>
