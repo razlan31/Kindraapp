@@ -236,7 +236,7 @@ export default function SummaryReport() {
         } else if (hasBlueFlags) {
           insights.push({
             type: "connection",
-            text: `Your relationship with ${connectionName} is in a growth phase with both challenges and rewards. This is a time of potential deepening.`,
+            text: `You've logged several Blue Flag moments with ${connectionName} about growth areas. Perhaps set aside time to align your visions and plan together - these moments can strengthen your connection with patience and communication.`,
             icon: <Brain className="h-5 w-5 text-blue-500" />
           });
         }
@@ -259,8 +259,22 @@ export default function SummaryReport() {
       });
     }
     
-    // Insight 4: Earned badges
-    const recentBadges = userBadges
+    // Insight 4: Growth opportunities (Blue Flag focus)
+    const blueTagMoments = filteredMoments.filter(m => 
+      m.tags && (m.tags.includes("Blue Flag") || 
+      m.tags.some(tag => ["Life Goals", "Career", "Future Planning", "Vulnerability", "Communication"].includes(tag)))
+    );
+    
+    if (blueTagMoments.length >= 2) {
+      insights.push({
+        type: "growth",
+        text: `You've logged ${blueTagMoments.length} blue flag moments showing growth opportunities. These are not problems but areas where patience and communication can strengthen your connections.`,
+        icon: <Brain className="h-5 w-5 text-blue-500" />
+      });
+    }
+    
+    // Insight 5: Earned badges
+    const recentBadges = Array.isArray(userBadges) ? userBadges
       .filter((ub: any) => {
         if (!ub.unlockedAt) return false;
         const badgeDate = new Date(ub.unlockedAt);
@@ -269,12 +283,13 @@ export default function SummaryReport() {
           end: dateRange.end
         });
       })
-      .slice(0, 2);
+      .slice(0, 2) : [];
     
     if (recentBadges.length > 0) {
+      const periodTxt = period === "week" ? "this week" : period === "month" ? "this month" : "overall";
       insights.push({
         type: "achievement",
-        text: `You've earned ${recentBadges.length} badge${recentBadges.length > 1 ? 's' : ''} ${periodText}! Keep tracking your relationship moments to unlock more achievements.`,
+        text: `You've earned ${recentBadges.length} badge${recentBadges.length > 1 ? 's' : ''} ${periodTxt}! Keep tracking your relationship moments to unlock more achievements.`,
         icon: <Star className="h-5 w-5 text-yellow-500" />
       });
     }
