@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useModal } from "@/contexts/modal-context";
 import { useRelationshipFocus } from "@/contexts/relationship-focus-context-simple";
 
+
 export default function ConnectionDetail() {
   const { id } = useParams();
   const [, setLocation] = useLocation();
@@ -20,25 +21,29 @@ export default function ConnectionDetail() {
   const { setMainFocusConnection } = useRelationshipFocus();
   const connectionId = parseInt(id as string);
   
-  // Force reloading of connection data
+  // Get the query client instance
+  const queryClient = useQueryClient();
+  
+  // Force reloading of connection data when component mounts
   useEffect(() => {
-    // This will clear all the React Query cache when the component mounts
+    // This will clear the React Query cache for this connection
     if (!isNaN(connectionId)) {
       queryClient.removeQueries({ queryKey: ['/api/connections', connectionId] });
     }
   }, [connectionId, queryClient]);
 
-  // Fetch connection details with cache disabled
+  // Fetch connection details with a more reliable approach
   const { data: connection, isLoading, error } = useQuery({
-    queryKey: ['/api/connections', connectionId, Date.now()], // Add timestamp to prevent cache
+    queryKey: ['/api/connections', connectionId], 
     queryFn: async () => {
-      const response = await fetch(`/api/connections/${connectionId}?t=${Date.now()}`, {
+      // Get the current timestamp to prevent browser caching
+      const timestamp = new Date().getTime();
+      const response = await fetch(`/api/connections/${connectionId}?t=${timestamp}`, {
         credentials: 'include',
         // Disable caching
         headers: {
-          'Cache-Control': 'no-store, no-cache, must-revalidate',
-          'Pragma': 'no-cache',
-          'Expires': '0'
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache'
         }
       });
       
@@ -47,13 +52,13 @@ export default function ConnectionDetail() {
       }
       
       const data = await response.json() as Connection;
-      console.log("Fetched fresh connection data:", data);
+      console.log("Fetched connection data:", data);
       return data;
     },
     staleTime: 0, // Always consider data stale
-    cacheTime: 0, // Don't cache at all
+    gcTime: 0, // Don't keep data in cache for long (formerly cacheTime)
     refetchOnWindowFocus: true, // Refetch when window gets focus
-    refetchOnMount: true, // Always refetch when the component mounts
+    refetchOnMount: 'always', // Always refetch when the component mounts
     enabled: !isNaN(connectionId),
   });
   
