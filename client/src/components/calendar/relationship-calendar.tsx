@@ -292,20 +292,24 @@ export function RelationshipCalendar({ selectedConnection }: RelationshipCalenda
         <Calendar
           mode="single"
           selected={date}
-          onSelect={(day) => day && setDate(day)}
+          onSelect={(day: Date | undefined) => day && setDate(day)}
           className="rounded-md border"
           components={{
-            Day: ({ date: day, ...props }) => (
-              <button 
-                {...props} 
-                className={cn(
-                  props.className, 
-                  'h-9 w-9 p-0 font-normal aria-selected:opacity-100'
-                )}
-              >
-                {renderDay(day)}
-              </button>
-            ),
+            Day: ({ date: day, ...props }: { date: Date } & Record<string, any>) => {
+              // Safely extract the props we need and ignore the rest
+              const { className, ...restProps } = props;
+              return (
+                <button 
+                  {...restProps} 
+                  className={cn(
+                    className, 
+                    'h-9 w-9 p-0 font-normal aria-selected:opacity-100'
+                  )}
+                >
+                  {renderDay(day)}
+                </button>
+              );
+            },
           }}
         />
         
