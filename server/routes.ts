@@ -206,21 +206,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Handle both PUT and PATCH for connection updates
   const updateConnectionHandler = async (req: Request, res: Response) => {
+    console.log("=== CONNECTION UPDATE HANDLER CALLED ===");
+    console.log("Request body:", req.body);
+    console.log("Request params:", req.params);
+    console.log("Session data:", req.session);
+    
     try {
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       const connectionId = parseInt(req.params.id);
       
+      console.log("User ID:", userId);
+      console.log("Connection ID:", connectionId);
+      
+      if (!userId) {
+        console.log("No user ID in session");
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+      
       if (isNaN(connectionId)) {
+        console.log("Invalid connection ID");
         return res.status(400).json({ message: "Invalid connection ID" });
       }
       
       const connection = await storage.getConnection(connectionId);
+      console.log("Found connection:", connection);
       
       if (!connection) {
+        console.log("Connection not found");
         return res.status(404).json({ message: "Connection not found" });
       }
       
       if (connection.userId !== userId) {
+        console.log("Unauthorized access attempt");
         return res.status(403).json({ message: "Unauthorized to update this connection" });
       }
       
@@ -229,11 +246,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log("Updated connection result:", updatedConnection);
       
       if (!updatedConnection) {
+        console.log("Update failed");
         return res.status(404).json({ message: "Failed to update connection" });
       }
       
+      console.log("=== UPDATE SUCCESSFUL ===");
       res.status(200).json(updatedConnection);
     } catch (error) {
+      console.error("Update error:", error);
       res.status(500).json({ message: "Server error updating connection" });
     }
   };
