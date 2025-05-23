@@ -32,7 +32,14 @@ export function CycleTracker({ cycles }: CycleTrackerProps) {
 
   // Create cycle mutation
   const { mutate: createCycle, isPending } = useMutation({
-    mutationFn: async (data: { startDate: Date; endDate?: Date; notes?: string }) => {
+    mutationFn: async (data: { 
+      startDate: Date; 
+      endDate?: Date; 
+      notes?: string;
+      mood?: string;
+      flowIntensity?: string;
+      symptoms?: string[];
+    }) => {
       const response = await apiRequest("POST", "/api/menstrual-cycles", data);
       return response.json();
     },
@@ -103,6 +110,9 @@ export function CycleTracker({ cycles }: CycleTrackerProps) {
       startDate: selectedDate,
       endDate: endDate,
       notes: notes.trim() || undefined,
+      mood: mood,
+      flowIntensity: flowIntensity,
+      symptoms: symptoms.length > 0 ? symptoms : undefined,
     });
   };
 
@@ -198,9 +208,74 @@ export function CycleTracker({ cycles }: CycleTrackerProps) {
             </div>
 
             <div>
+              <Label>Mood</Label>
+              <Select
+                value={mood}
+                onValueChange={setMood}
+              >
+                <SelectTrigger className="w-full mt-1">
+                  <SelectValue placeholder="Select your mood" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Happy">Happy</SelectItem>
+                  <SelectItem value="Neutral">Neutral</SelectItem>
+                  <SelectItem value="Tired">Tired</SelectItem>
+                  <SelectItem value="Irritable">Irritable</SelectItem>
+                  <SelectItem value="Emotional">Emotional</SelectItem>
+                  <SelectItem value="Energetic">Energetic</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div>
+              <Label>Flow Intensity</Label>
+              <Select
+                value={flowIntensity}
+                onValueChange={setFlowIntensity}
+              >
+                <SelectTrigger className="w-full mt-1">
+                  <SelectValue placeholder="Select flow intensity" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Light">Light</SelectItem>
+                  <SelectItem value="Medium">Medium</SelectItem>
+                  <SelectItem value="Heavy">Heavy</SelectItem>
+                  <SelectItem value="Spotting">Spotting</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div>
+              <Label>Symptoms (Select all that apply)</Label>
+              <div className="grid grid-cols-2 gap-2 mt-1">
+                {["Cramps", "Headache", "Bloating", "Backache", "Fatigue", "Mood Swings", "Breast Tenderness", "Acne"].map((symptom) => (
+                  <div key={symptom} className="flex items-center space-x-2">
+                    <Checkbox 
+                      id={`symptom-${symptom}`} 
+                      checked={symptoms.includes(symptom)}
+                      onCheckedChange={(checked) => {
+                        if (checked) {
+                          setSymptoms([...symptoms, symptom]);
+                        } else {
+                          setSymptoms(symptoms.filter(s => s !== symptom));
+                        }
+                      }}
+                    />
+                    <label 
+                      htmlFor={`symptom-${symptom}`}
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    >
+                      {symptom}
+                    </label>
+                  </div>
+                ))}
+              </div>
+            </div>
+            
+            <div>
               <Label>Notes (Optional)</Label>
               <Textarea 
-                placeholder="Physical and emotional symptoms, flow intensity, etc."
+                placeholder="Additional notes about your cycle..."
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 className="resize-none mt-1"
@@ -259,11 +334,44 @@ export function CycleTracker({ cycles }: CycleTrackerProps) {
                       <span className="text-sm">{format(new Date(cycles[0].endDate), 'PPP')}</span>
                     </div>
                   )}
-                  {cycles[0].notes && (
-                    <div className="mt-2">
-                      <p className="text-xs text-neutral-600 dark:text-neutral-400">{cycles[0].notes}</p>
+                  {cycles[0].mood && (
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="text-sm font-medium">Mood:</span>
+                      <span className="text-sm">{cycles[0].mood}</span>
                     </div>
                   )}
+                  {cycles[0].flowIntensity && (
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="text-sm font-medium">Flow:</span>
+                      <span className="text-sm">{cycles[0].flowIntensity}</span>
+                    </div>
+                  )}
+                  {cycles[0].symptoms && cycles[0].symptoms.length > 0 && (
+                    <div className="mb-1">
+                      <span className="text-sm font-medium">Symptoms:</span>
+                      <div className="flex flex-wrap gap-1 mt-1">
+                        {cycles[0].symptoms.map(symptom => (
+                          <span key={symptom} className="text-xs bg-primary/10 rounded-full px-2 py-0.5">
+                            {symptom}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {cycles[0].notes && (
+                    <div className="mt-2">
+                      <span className="text-xs font-medium">Notes:</span>
+                      <p className="text-xs text-neutral-600 dark:text-neutral-400 mt-1">{cycles[0].notes}</p>
+                    </div>
+                  )}
+                  
+                  {/* Relationship Insights based on cycle */}
+                  <div className="mt-3 pt-3 border-t border-neutral-200 dark:border-neutral-700">
+                    <p className="text-xs font-medium">Cycle Insights:</p>
+                    <p className="text-xs text-neutral-600 dark:text-neutral-400 mt-1">
+                      Your menstrual cycle can influence your emotions and relationship dynamics. Track moments during different phases to identify patterns.
+                    </p>
+                  </div>
                 </div>
               </div>
             )}
