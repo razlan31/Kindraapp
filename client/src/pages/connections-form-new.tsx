@@ -46,12 +46,27 @@ export default function ConnectionsFormNew() {
   
   // Create connection mutation
   const createMutation = useMutation({
-    mutationFn: async (data: Partial<Connection>) => {
-      const response = await apiRequest("/api/connections", {
-        method: "POST",
-        data,
-      });
-      return response;
+    mutationFn: async (data: any) => {
+      console.log("Sending data to server:", data);
+      try {
+        const response = await fetch("/api/connections", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+          credentials: "include"
+        });
+        
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error("Error response:", errorText);
+          throw new Error(errorText || "Failed to create connection");
+        }
+        
+        return await response.json();
+      } catch (error) {
+        console.error("Error creating connection:", error);
+        throw error;
+      }
     },
     onSuccess: () => {
       toast({
@@ -101,7 +116,8 @@ export default function ConnectionsFormNew() {
     
     if (!validateForm() || !user) return;
     
-    const data = {
+    // Prepare the data in the exact format expected by the server
+    const connectionData = {
       name,
       profileImage: profileImage || null,
       relationshipStage,
@@ -111,7 +127,10 @@ export default function ConnectionsFormNew() {
       isPrivate,
     };
     
-    createMutation.mutate(data as any);
+    console.log("Submitting connection data:", connectionData);
+    
+    // Submit the data
+    createMutation.mutate(connectionData);
   };
   
   return (
