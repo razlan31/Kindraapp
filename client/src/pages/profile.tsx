@@ -64,10 +64,13 @@ export default function Profile() {
           <div className="flex justify-between items-start">
             <div className="flex items-center">
               <Avatar className="h-20 w-20 mr-4">
-                <AvatarImage src={user?.profileImage} alt={displayName} />
-                <AvatarFallback className="text-lg bg-primary text-white">
-                  {initials}
-                </AvatarFallback>
+                {user?.profileImage && user.profileImage !== null ? (
+                  <AvatarImage src={user.profileImage} alt={displayName} />
+                ) : (
+                  <AvatarFallback className="text-lg bg-primary text-white">
+                    {initials}
+                  </AvatarFallback>
+                )}
               </Avatar>
               <div>
                 <h2 className="text-xl font-heading font-semibold">{displayName}</h2>

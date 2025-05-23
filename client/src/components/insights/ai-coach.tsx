@@ -218,6 +218,10 @@ function generateAIInsights(connections: Connection[], moments: Moment[], userDa
         ? 'You have several casual connections. Make sure these relationships align with your long-term emotional needs and boundaries.'
         : mostCommonStage === 'Exclusive' 
         ? 'You value exclusivity and commitment in relationships. Consider how you can continue to grow together while maintaining individual identities.'
+        : mostCommonStage === 'Situationship'
+        ? 'You seem to be in several undefined or evolving relationships. Consider whether these dynamics give you the clarity and security you need.'
+        : mostCommonStage === 'FWB'
+        ? 'You prioritize connections with physical intimacy alongside friendship. Make sure both parties are aligned on expectations.'
         : 'Your relationship patterns suggest you value a variety of connection types. This flexibility can be healthy as long as expectations are clear on all sides.'
     );
   }
@@ -311,6 +315,12 @@ function generatePersonalizedResponse(
         ? 'prioritize freedom and flexibility in relationships. Make sure these arrangements truly satisfy your emotional needs long-term.'
         : dominantStage === 'Exclusive' 
         ? 'value stability and commitment. The security of defined relationships appears important to your emotional wellbeing.'
+        : dominantStage === 'Situationship'
+        ? 'prefer keeping things undefined for now, which allows flexibility but can sometimes create emotional uncertainty.'
+        : dominantStage === 'FWB'
+        ? 'value maintaining clear boundaries between physical and emotional connection, though these lines can sometimes blur.'
+        : dominantStage === 'Best Friend'
+        ? 'place high importance on friendship as the foundation of your closest connections, which often leads to lasting bonds.'
         : 'have diverse relationship needs that vary by connection. This adaptability can be healthy when it authentically reflects your needs rather than just accommodating others.'
     }`;
   }
