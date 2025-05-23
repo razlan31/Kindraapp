@@ -28,7 +28,7 @@ export function FlagExplanation({ showTitle = true }: FlagExplanationProps) {
             <div>
               <h4 className="text-sm font-medium text-greenFlag">Green Flags</h4>
               <p className="text-xs text-muted-foreground">
-                Positive moments that show healthy relationship behaviors and growth.
+                Healthy, positive behaviors or emotional growth in your relationship. Examples: "They remembered your favorite coffee" or "You had a meaningful conversation about your future."
               </p>
             </div>
           </div>
@@ -40,7 +40,7 @@ export function FlagExplanation({ showTitle = true }: FlagExplanationProps) {
             <div>
               <h4 className="text-sm font-medium text-redFlag">Red Flags</h4>
               <p className="text-xs text-muted-foreground">
-                Moments of concern or behaviors that need attention and reflection.
+                Concerns or behaviors that need attention but aren't necessarily relationship-ending. Examples: "They didn't show up to an important event" or "A miscommunication caused frustration."
               </p>
             </div>
           </div>
@@ -52,7 +52,7 @@ export function FlagExplanation({ showTitle = true }: FlagExplanationProps) {
             <div>
               <h4 className="text-sm font-medium text-blue-600 dark:text-blue-400">Blue Flags</h4>
               <p className="text-xs text-muted-foreground">
-                Growth opportunities that show potential for deeper understanding and communication.
+                Opportunities where you can grow together, showing potential for improvement. Examples: "Different future goals that need clarity" or "Working through differences in values."
               </p>
             </div>
           </div>
