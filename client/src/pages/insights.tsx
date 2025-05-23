@@ -114,8 +114,8 @@ export default function Insights() {
   // Calculate days since first moment
   const firstMomentDate = moments.length > 0 ? 
     new Date(moments.slice().sort((a, b) => 
-      new Date(a.createdAt).valueOf() - new Date(b.createdAt).valueOf()
-    )[0].createdAt) : undefined;
+      new Date(a.createdAt || "").valueOf() - new Date(b.createdAt || "").valueOf()
+    )[0].createdAt || "") : undefined;
   
   const trackingDays = firstMomentDate ? 
     Math.ceil((new Date().getTime() - firstMomentDate.getTime()) / (1000 * 60 * 60 * 24)) : 0;
@@ -385,20 +385,29 @@ export default function Insights() {
                     <div className="h-64">
                       <ResponsiveContainer width="100%" height="100%">
                         <BarChart
+                          data={tagData.slice(0, 5)}
                           layout="vertical"
-                          data={tagData}
-                          margin={{ top: 5, right: 30, left: 60, bottom: 5 }}
+                          margin={{ top: 5, right: 5, left: 5, bottom: 5 }}
                         >
-                          <CartesianGrid strokeDasharray="3 3" />
+                          <CartesianGrid strokeDasharray="3 3" horizontal={false} />
                           <XAxis type="number" />
-                          <YAxis type="category" dataKey="tag" />
-                          <Tooltip />
-                          <Bar dataKey="count" fill="hsl(var(--secondary))" />
+                          <YAxis 
+                            type="category" 
+                            dataKey="tag"
+                            width={100}
+                          />
+                          <Tooltip 
+                            formatter={(value) => [`${value} moments`, 'Count']}
+                          />
+                          <Bar 
+                            dataKey="count" 
+                            fill="hsl(var(--primary))" 
+                          />
                         </BarChart>
                       </ResponsiveContainer>
                     </div>
                   ) : (
-                    <p className="text-center py-10 text-neutral-500">Not enough tagged moments yet</p>
+                    <p className="text-center py-10 text-neutral-500">No tags yet</p>
                   )}
                 </CardContent>
               </Card>
@@ -410,38 +419,108 @@ export default function Insights() {
                 <CardHeader className="pb-2">
                   <CardTitle className="text-lg">Zodiac Compatibility</CardTitle>
                   <CardDescription>
-                    Astrological insights about your connections
+                    Astrological insights for your connections
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   {user?.zodiacSign ? (
                     <div className="space-y-4">
-                      {connections.filter(c => c.zodiacSign).map((connection) => (
-                        <div key={connection.id} className="border rounded-lg p-3">
-                          <div className="flex justify-between items-center mb-2">
-                            <span className="font-medium">{connection.name}</span>
-                            <span className="text-sm text-neutral-500">
-                              {connection.zodiacSign}
-                            </span>
+                      {connections.filter(c => c.zodiacSign).map(connection => {
+                        const isCompatible = (() => {
+                          const fireSign = ['Aries', 'Leo', 'Sagittarius'];
+                          const earthSign = ['Taurus', 'Virgo', 'Capricorn'];
+                          const airSign = ['Gemini', 'Libra', 'Aquarius'];
+                          const waterSign = ['Cancer', 'Scorpio', 'Pisces'];
+                          
+                          const userElement = fireSign.includes(user.zodiacSign) ? 'fire' :
+                                              earthSign.includes(user.zodiacSign) ? 'earth' :
+                                              airSign.includes(user.zodiacSign) ? 'air' : 'water';
+                                              
+                          const connectionElement = fireSign.includes(connection.zodiacSign || "") ? 'fire' :
+                                                    earthSign.includes(connection.zodiacSign || "") ? 'earth' :
+                                                    airSign.includes(connection.zodiacSign || "") ? 'air' : 'water';
+                          
+                          // Most compatible: Fire-Air, Earth-Water
+                          return (userElement === 'fire' && connectionElement === 'air') ||
+                                (userElement === 'air' && connectionElement === 'fire') ||
+                                (userElement === 'earth' && connectionElement === 'water') ||
+                                (userElement === 'water' && connectionElement === 'earth') ||
+                                (userElement === connectionElement);
+                        })();
+                        
+                        return (
+                          <div key={connection.id} className="bg-neutral-50 dark:bg-neutral-800 p-3 rounded-lg">
+                            <div className="flex justify-between items-center mb-1">
+                              <span className="font-medium">{connection.name}</span>
+                              <span className="text-sm text-neutral-500 dark:text-neutral-400">{connection.zodiacSign}</span>
+                            </div>
+                            <div className="flex items-center">
+                              <div className={`h-2 rounded-full ${isCompatible ? 'bg-green-500' : 'bg-amber-500'} flex-1`}></div>
+                              <span className="text-xs ml-2">
+                                {isCompatible ? 'Compatible elements' : 'May require more effort'}
+                              </span>
+                            </div>
                           </div>
-                          <div className="flex items-center">
-                            <Sparkles className="h-4 w-4 text-accent mr-2" />
-                            <span className="text-sm">
-                              {getZodiacCompatibility(user?.zodiacSign, connection.zodiacSign)}
-                            </span>
-                          </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                       
                       {connections.filter(c => c.zodiacSign).length === 0 && (
-                        <p className="text-center py-6 text-neutral-500">
-                          No connections with zodiac signs yet
-                        </p>
+                        <p className="text-center py-2 text-neutral-500">Add zodiac signs to your connections to see compatibility</p>
                       )}
                     </div>
                   ) : (
-                    <div className="text-center py-6 text-neutral-500">
-                      <p>Set your zodiac sign in your profile to see compatibility insights</p>
+                    <div className="text-center py-6">
+                      <Star className="h-10 w-10 mx-auto text-muted-foreground mb-2" />
+                      <h3 className="text-lg font-medium mb-1">Add your zodiac sign</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Update your profile to add your zodiac sign for personalized compatibility insights
+                      </p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+              
+              <Card className="mt-4">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-lg">Love Language</CardTitle>
+                  <CardDescription>
+                    Insights based on how you give and receive love
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {user?.loveLanguage ? (
+                    <div className="space-y-4">
+                      <div className="bg-neutral-50 dark:bg-neutral-800 p-3 rounded-lg">
+                        <p className="text-sm mb-2">
+                          Your love language is <span className="font-medium">{user.loveLanguage}</span>. This is how you prefer to receive affection.
+                        </p>
+                        
+                        <p className="text-sm">
+                          {user.loveLanguage === 'Words of Affirmation' ? 
+                            'You feel most loved when receiving verbal compliments and hearing "I love you".' :
+                           user.loveLanguage === 'Quality Time' ? 
+                            'You feel most loved when someone gives you their undivided attention.' :
+                           user.loveLanguage === 'Physical Touch' ? 
+                            'You feel most loved through physical closeness, including hugs, kisses, and cuddling.' :
+                           user.loveLanguage === 'Acts of Service' ? 
+                            'You feel most loved when others do things to help you or ease your burden.' :
+                           'You feel most loved when receiving thoughtful gifts that show you are known and valued.'}
+                        </p>
+                      </div>
+                      
+                      <div className="bg-neutral-50 dark:bg-neutral-800 p-3 rounded-lg">
+                        <p className="text-sm">
+                          <span className="font-medium">Compatibility tip:</span> When connecting with others, pay attention to their love language. It may differ from yours, creating an opportunity for growth and understanding.
+                        </p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-center py-6">
+                      <Heart className="h-10 w-10 mx-auto text-muted-foreground mb-2" />
+                      <h3 className="text-lg font-medium mb-1">Add your love language</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Update your profile to add your love language for personalized relationship insights
+                      </p>
                     </div>
                   )}
                 </CardContent>
@@ -490,6 +569,12 @@ export default function Insights() {
                       </div>
                       <span className="font-medium">{Object.keys(emotionCounts).length}</span>
                     </div>
+                    
+                    <div className="pt-4">
+                      <p className="text-sm text-neutral-500 dark:text-neutral-400">
+                        The relationship pattern analysis is now active! Log your emotions consistently to reveal deeper insights about your connections.
+                      </p>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -498,7 +583,7 @@ export default function Insights() {
                 <CardHeader className="pb-2">
                   <CardTitle className="text-lg">Relationship Signal Analysis</CardTitle>
                   <CardDescription>
-                    Detecting patterns in your relationship signals
+                    Stage-specific patterns based on your emotional responses
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -538,8 +623,8 @@ export default function Insights() {
                         
                         // Sort moments by date to check for patterns over time
                         const sortedMoments = [...connectionMoments].sort((a, b) => {
-                          const dateA = new Date(a.createdAt);
-                          const dateB = new Date(b.createdAt);
+                          const dateA = new Date(a.createdAt || "");
+                          const dateB = new Date(b.createdAt || "");
                           return dateA.valueOf() - dateB.valueOf();
                         });
                         
@@ -557,36 +642,75 @@ export default function Insights() {
                           }
                         }
                         
-                        // Determine relationship signal pattern based on data
-                        let signalType = "";
-                        let signalDescription = "";
+                        // Analyze relationship patterns based on stage and mood fluctuations
+                        let patternType = "";
+                        let patternDescription = "";
+                        const hasFluctuations = fluctuationCount > connectionMoments.length * 0.4;
+                        const isPositive = happyMoments > connectionMoments.length * 0.6;
+                        const isNegative = unhappyMoments > connectionMoments.length * 0.5;
+                        const isNeutral = neutralMoments > connectionMoments.length * 0.5;
                         
-                        if (fluctuationCount > connectionMoments.length * 0.4) {
-                          // High fluctuation indicates mixed signals
-                          signalType = "Mixed Signals";
-                          if (connection.relationshipStage === "Talking") {
-                            signalDescription = "Your emotions show frequent shifts between positive and negative, typical in early relationships when expectations are still forming.";
-                          } else if (connection.relationshipStage === "FWB" || connection.relationshipStage === "Sneaky Link") {
-                            signalDescription = "This connection shows emotional ups and downs, common in casual relationships where expectations may be unclear.";
+                        // Adjust insights based on relationship stage for more context-aware analysis
+                        if (connection.relationshipStage === "Talking") {
+                          // Talking Stage - focus on emotional consistency and communication patterns
+                          if (hasFluctuations) {
+                            patternType = "Emotional Fluctuations";
+                            patternDescription = "You've experienced moments of both connection and emotional distance. These fluctuations are common in the Talking Stage while you're getting to know each other.";
+                          } else if (isPositive) {
+                            patternType = "Early Alignment";
+                            patternDescription = "Your interactions show consistent positive emotional responses, suggesting a promising start to this connection.";
+                          } else if (isNegative) {
+                            patternType = "Early Friction";
+                            patternDescription = "Your tracking shows some emotional challenges in this early stage. Consider whether your communication styles and expectations align.";
                           } else {
-                            signalDescription = "There seem to be emotional fluctuations in this relationship. Open communication might help address these shifts.";
+                            patternType = "Getting Acquainted";
+                            patternDescription = "This new connection is still developing its own pattern. Continue exploring your compatibility through open communication.";
                           }
-                        } else if (happyMoments > connectionMoments.length * 0.6 && greenFlags > redFlags) {
-                          // Consistently positive
-                          signalType = "Consistent Interest";
-                          signalDescription = "This connection shows consistent positive patterns, suggesting mutual interest and emotional alignment.";
-                        } else if (unhappyMoments > connectionMoments.length * 0.5 || redFlags > greenFlags + blueFlags) {
-                          // Consistently negative
-                          signalType = "Concerning Pattern";
-                          signalDescription = "This relationship shows signs of recurring challenges. Consider reflecting on whether this connection meets your needs.";
-                        } else if (neutralMoments > connectionMoments.length * 0.5 || blueFlags > greenFlags + redFlags) {
-                          // Growth-focused
-                          signalType = "Growth Opportunity";
-                          signalDescription = "This relationship shows signs of development and learning, with opportunities for mutual growth.";
+                        } else if (connection.relationshipStage === "FWB" || connection.relationshipStage === "Sneaky Link") {
+                          // Casual Relationships - focus on boundaries and emotional complexity
+                          if (hasFluctuations) {
+                            patternType = "Complex Dynamics";
+                            patternDescription = "Your relationship shows a mix of highs and lows, which is common in casual connections where boundaries and expectations can be fluid.";
+                          } else if (isPositive) {
+                            patternType = "Mutually Satisfying";
+                            patternDescription = "This casual relationship appears to be consistently positive, suggesting both parties are satisfied with the current arrangement.";
+                          } else if (isNegative) {
+                            patternType = "Mismatched Expectations";
+                            patternDescription = "There may be unspoken differences in expectations within this casual connection. Consider a conversation about boundaries.";
+                          } else {
+                            patternType = "Maintaining Balance";
+                            patternDescription = "Your casual relationship shows a balance of different emotions, which can work well when both people understand the arrangement.";
+                          }
+                        } else if (connection.relationshipStage === "Exclusive") {
+                          // Exclusive Relationships - focus on growth and conflict resolution
+                          if (hasFluctuations) {
+                            patternType = "Growth Through Challenges";
+                            patternDescription = "Your relationship experiences both harmony and challenges, which is normal in committed relationships. How you navigate these together is key to growth.";
+                          } else if (isPositive) {
+                            patternType = "Strong Foundation";
+                            patternDescription = "Your exclusive relationship shows consistent positive patterns, suggesting a healthy foundation of mutual understanding.";
+                          } else if (isNegative) {
+                            patternType = "Recurring Tension";
+                            patternDescription = "There appear to be ongoing challenges that might benefit from direct communication and possibly relationship support resources.";
+                          } else {
+                            patternType = "Stable Connection";
+                            patternDescription = "Your relationship shows a moderate, stable emotional pattern with room for deepening connection through vulnerability and communication.";
+                          }
                         } else {
-                          // Not enough clear patterns
-                          signalType = "Developing Pattern";
-                          signalDescription = "There isn't a clear pattern yet in this relationship. Continue tracking to reveal deeper insights.";
+                          // Other relationship types or undefined
+                          if (hasFluctuations) {
+                            patternType = "Mixed Emotional Patterns";
+                            patternDescription = "Your relationship shows varying emotional responses over time. Consider what might be causing these shifts in your connection.";
+                          } else if (isPositive) {
+                            patternType = "Positive Trend";
+                            patternDescription = "This connection is generating consistently positive emotional responses, which is worth acknowledging and nurturing.";
+                          } else if (isNegative) {
+                            patternType = "Emotional Challenges";
+                            patternDescription = "This relationship appears to present recurring emotional challenges. Reflect on whether this dynamic serves your wellbeing.";
+                          } else {
+                            patternType = "Balanced Dynamic";
+                            patternDescription = "Your relationship shows a mix of different emotions, creating a balanced pattern that reflects the natural complexity of human connections.";
+                          }
                         }
                         
                         // Only return connections with enough data for meaningful analysis
@@ -595,20 +719,29 @@ export default function Insights() {
                             <div className="flex justify-between items-center mb-2">
                               <h4 className="font-medium">{connection.name}</h4>
                               <span className={`text-xs px-2 py-1 rounded-full ${
-                                signalType === "Consistent Interest" ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400" :
-                                signalType === "Mixed Signals" ? "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400" :
-                                signalType === "Concerning Pattern" ? "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400" :
-                                signalType === "Growth Opportunity" ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400" :
+                                patternType.includes("Alignment") || patternType.includes("Positive") || patternType.includes("Strong") || patternType.includes("Satisfying") ? 
+                                  "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400" :
+                                patternType.includes("Fluctuation") || patternType.includes("Complex") || patternType.includes("Mixed") ? 
+                                  "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400" :
+                                patternType.includes("Friction") || patternType.includes("Tension") || patternType.includes("Challenge") ? 
+                                  "bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-400" :
+                                patternType.includes("Growth") || patternType.includes("Balance") ? 
+                                  "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400" :
                                 "bg-neutral-100 text-neutral-800 dark:bg-neutral-700 dark:text-neutral-300"
                               }`}>
-                                {signalType}
+                                {patternType}
                               </span>
                             </div>
-                            <p className="text-sm text-neutral-700 dark:text-neutral-300">{signalDescription}</p>
+                            <p className="text-sm text-neutral-700 dark:text-neutral-300">{patternDescription}</p>
                             <div className="mt-2 flex flex-wrap gap-1">
-                              <span className="text-xs bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-400 px-2 py-0.5 rounded-full">{greenFlags} green</span>
-                              <span className="text-xs bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-400 px-2 py-0.5 rounded-full">{redFlags} red</span>
-                              <span className="text-xs bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-400 px-2 py-0.5 rounded-full">{blueFlags} blue</span>
+                              <span className="text-xs bg-primary/10 dark:bg-primary/20 text-primary dark:text-primary/80 px-2 py-0.5 rounded-full">{connection.relationshipStage}</span>
+                              <span className="text-xs bg-neutral-100 dark:bg-neutral-800 text-neutral-800 dark:text-neutral-300 px-2 py-0.5 rounded-full">{connectionMoments.length} moments</span>
+                              {happyMoments > 0 && (
+                                <span className="text-xs bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-400 px-2 py-0.5 rounded-full">{happyMoments} positive</span>
+                              )}
+                              {unhappyMoments > 0 && (
+                                <span className="text-xs bg-rose-100 dark:bg-rose-900/20 text-rose-800 dark:text-rose-400 px-2 py-0.5 rounded-full">{unhappyMoments} challenging</span>
+                              )}
                             </div>
                           </div>
                         );
@@ -632,101 +765,57 @@ export default function Insights() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-3">
-                    {generateAIInsights(connections, moments, user).map((insight, index) => (
-                      <div key={index} className="bg-neutral-50 dark:bg-neutral-800 p-3 rounded-lg">
-                        <div className="flex items-start">
-                          <Brain className="h-4 w-4 text-primary mt-1 mr-2 flex-shrink-0" />
-                          <p className="text-sm">{insight}</p>
-                        </div>
+                  {moments.length > 5 ? (
+                    <div className="space-y-4">
+                      <div className="bg-neutral-50 dark:bg-neutral-800 p-3 rounded-lg">
+                        <p className="text-sm">
+                          Your mood patterns suggest you experience both highs and lows in your relationships. This emotional variability is natural and provides opportunities for growth and deeper understanding.
+                        </p>
                       </div>
-                    ))}
-                  </div>
+                      
+                      {moments.filter(m => m.notes).length > 0 && (
+                        <div className="bg-neutral-50 dark:bg-neutral-800 p-3 rounded-lg">
+                          <p className="text-sm">
+                            You've added notes to {moments.filter(m => m.notes).length} moments. Journaling about your experiences enhances self-awareness and helps identify patterns in your relationships.
+                          </p>
+                        </div>
+                      )}
+                      
+                      <div className="bg-neutral-50 dark:bg-neutral-800 p-3 rounded-lg">
+                        <p className="text-sm">
+                          Looking for deeper AI insights? Visit the AI Coach tab for personalized advice based on your relationship patterns and emotional responses.
+                        </p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-center py-6">
+                      <Brain className="h-12 w-12 mx-auto text-muted-foreground mb-2" />
+                      <p className="text-sm text-muted-foreground">
+                        Keep logging moments to receive AI-powered insights about your relationship patterns
+                      </p>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </TabsContent>
           </Tabs>
         ) : (
           <div className="px-4 py-10 text-center">
-            <div className="rounded-full bg-primary/10 p-4 h-16 w-16 mx-auto mb-4 flex items-center justify-center">
-              <Brain className="h-8 w-8 text-primary" />
+            <div className="max-w-md mx-auto bg-white dark:bg-neutral-800 rounded-lg p-6 shadow-sm">
+              <Heart className="h-12 w-12 mx-auto text-primary mb-4" />
+              <h3 className="text-xl font-heading font-semibold mb-2">Start Tracking Moments</h3>
+              <p className="text-neutral-600 dark:text-neutral-400 mb-6">
+                Log emotional moments and track mood patterns to unlock personalized insights and relationship analysis
+              </p>
+              <Link to="/moments" className="inline-block bg-primary hover:bg-primary/90 text-white font-medium py-2 px-4 rounded-md transition-colors">
+                Create Your First Moment
+              </Link>
             </div>
-            <h3 className="font-heading font-semibold mb-2">No Insights Yet</h3>
-            <p className="text-neutral-500 dark:text-neutral-400 text-sm max-w-xs mx-auto mb-4">
-              Start tracking your relationships and logging moments to generate insights and patterns
-            </p>
           </div>
         )}
+        
+        <BottomNavigation />
       </main>
-
-      <BottomNavigation />
     </div>
   );
-}
-
-// Helper function to generate fake zodiac compatibility
-function getZodiacCompatibility(sign1?: string, sign2?: string): string {
-  if (!sign1 || !sign2) return "Unknown compatibility";
-  
-  const compatibilityPhrases = [
-    "Strong emotional connection, good communication.",
-    "Great intellectual compatibility, work on emotional bond.",
-    "Passionate match with some communication challenges.",
-    "Balanced relationship with mutual understanding.",
-    "Complementary energies create a harmonious bond."
-  ];
-  
-  // This is just a simplified example - in a real app you'd have actual compatibility logic
-  const index = (sign1.length + sign2.length) % compatibilityPhrases.length;
-  return compatibilityPhrases[index];
-}
-
-// Helper function to generate simple AI insights
-function generateAIInsights(connections: Connection[], moments: Moment[], user: any): string[] {
-  if (!moments.length || !connections.length) return [];
-  
-  const insights: string[] = [];
-  
-  // Add a few rule-based insights
-  if (moments.length > 0) {
-    // Check for positive emotion trends
-    const positiveEmojis = ['😊', '❤️', '😍', '🥰', '💖', '✨'];
-    const percentPositive = moments.filter(m => positiveEmojis.includes(m.emoji)).length / moments.length;
-    
-    if (percentPositive > 0.7) {
-      insights.push("You're experiencing a lot of positive emotions in your relationships. This is a great sign of emotional well-being!");
-    } else if (percentPositive < 0.3) {
-      insights.push("You seem to be experiencing some challenging emotions recently. Consider discussing your feelings with someone you trust.");
-    }
-    
-    // Check for green flags
-    const greenFlagMoments = moments.filter(m => m.tags?.includes('Green Flag'));
-    if (greenFlagMoments.length > 5) {
-      insights.push("You've identified multiple green flags in your relationships, showing good awareness of healthy relationship traits.");
-    }
-    
-    // Check for red flags
-    const redFlagMoments = moments.filter(m => m.tags?.includes('Red Flag'));
-    if (redFlagMoments.length > 3) {
-      insights.push("You've noted several red flags. Consider reflecting on patterns across relationships that might need attention.");
-    }
-    
-    // Check connection with most moments
-    const connectionMoments: Record<number, number> = {};
-    moments.forEach(moment => {
-      connectionMoments[moment.connectionId] = (connectionMoments[moment.connectionId] || 0) + 1;
-    });
-    
-    const mostActiveConnectionId = Object.keys(connectionMoments).reduce((a, b) => 
-      connectionMoments[Number(a)] > connectionMoments[Number(b)] ? Number(a) : Number(b)
-    , Number(Object.keys(connectionMoments)[0]));
-    
-    const mostActiveConnection = connections.find(c => c.id === mostActiveConnectionId);
-    if (mostActiveConnection) {
-      insights.push(`Your relationship with ${mostActiveConnection.name} shows the most activity. You're investing good energy in this connection.`);
-    }
-  }
-  
-  // Limit to 3 insights
-  return insights.slice(0, 3);
 }

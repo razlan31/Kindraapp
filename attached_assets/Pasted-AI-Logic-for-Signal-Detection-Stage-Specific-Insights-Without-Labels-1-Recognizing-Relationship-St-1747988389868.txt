@@ -1,0 +1,49 @@
+AI Logic for Signal Detection: Stage-Specific Insights Without Labels
+1. Recognizing Relationship Stages
+The AI needs to understand which stage the relationship is in (e.g., Talking, FWB, Exclusive), as behaviors and patterns in each stage will differ. The logic will adapt the reflections based on the stage.
+* Talking Stage: In this stage, users might be seeing a mix of uncertainty and early emotional highs. The AI can track emotional patterns like:
+    * "You’ve logged several moments of affection this week, but also some emotional distance. This is common in the Talking Stage, where feelings are often uncertain."
+    * Behavioral Focus: Frequency of communication, mood fluctuations, signs of interest.
+* FWB (Friends with Benefits): In this stage, there may be emotional highs (intimacy) and conflict (lack of commitment). The AI should recognize that patterns here are less about emotional stability and more about physical connection and unclear boundaries.
+    * "You’ve logged a mix of affectionate and conflictual moments. In the FWB stage, this is common, as emotions can be complex and unspoken."
+    * Behavioral Focus: Intimacy, conflict resolution, consistency in communication.
+* Exclusive Relationship: For exclusivity, the AI can look for more consistent emotional patterns, signs of deeper commitment, and growth. The mix of positive and negative moments will be analyzed with the understanding that conflicts are normal but must be resolved for long-term success.
+    * "Your relationship with [Partner] has moments of both growth and tension, which is normal in an Exclusive Relationship. How are you managing these moments together?"
+    * Behavioral Focus: Growth, emotional closeness, long-term commitment signals.
+
+2. Analyzing Mixed Moments (Without Labeling)
+Instead of labeling moments as Green Flag or Red Flag, we’ll track patterns of behavior and offer insights based on what the patterns suggest within the context of the relationship stage. The AI will provide reflections based on the combination of positive and negative moments.
+For example:
+* Talking Stage (Mixed Moments):
+    * "You’ve logged moments of deep connection followed by moments of distance. This is often seen in the early stages of a relationship. Would you like to explore how to address communication gaps with [Partner]?"
+* FWB (Mixed Moments):
+    * "There seems to be a mix of intimacy and emotional distance in your relationship. In an FWB situation, this can lead to confusion about expectations. Would you like tips on managing emotions in this arrangement?"
+* Exclusive Relationship (Mixed Moments):
+    * "Your relationship has seen both growth and conflict. In exclusive relationships, disagreements are normal but resolving them together helps strengthen the bond. Would you like help navigating this?"
+
+3. Behavioral Insights Without Judgment
+The key is to show data and let the user make their own judgment. The app will present trends and offer reflections based on the data but won’t tell users what to think.
+For example:
+* Mixed Signals (General Insight):
+    * “Your connection with [Partner] has moments of both intimacy and conflict. This is common in relationships where emotional expectations might still be forming. Would you like to explore what these patterns mean for your connection?”
+* Affection vs. Distance:
+    * The app can provide insight based on emotional fluctuations:
+        * “Your mood ratings show frequent shifts from positive (happy, intimate) to neutral (distant). This is typical in early relationships, but if you’re unsure, it might help to discuss these fluctuations directly with [Partner].”
+
+4. AI Reflections Based on Stage-Specific Trends
+Instead of using fixed labels like "Red Flag" or "Green Flag," the AI can focus on emotional trends and specific behaviors.
+* In the Talking Stage:
+    * AI will focus on emotional consistency (or lack of it).
+    * Example: “You’ve experienced moments of closeness but also emotional distance. These fluctuations are common in the Talking Stage when both people are unsure about commitment. Do you want tips on addressing these changes?”
+* In FWB:
+    * The AI will track intimacy and conflict but will acknowledge that both are normal in this type of relationship.
+    * Example: “Your relationship with [Partner] shows both moments of affection and tension. FWB relationships can be emotionally complex. Would you like help setting boundaries and expectations?”
+* In Exclusive Relationships:
+    * AI focuses on growth and resolution of conflicts.
+    * Example: “Your relationship with [Partner] has experienced both conflict and growth. It’s important to resolve disagreements to continue building trust. Would you like advice on effective conflict resolution?”
+
+5. User Self-Judgment:
+* Instead of AI labeling things, the app will focus on presenting the facts and patterns and offer prompts for reflection, like:
+    * “How do you feel about the fluctuations in your relationship with [Partner]? Do you think you’re on the same page emotionally?”
+    * “Would you like to explore how to communicate your needs or expectations with [Partner]?”
+By doing this, we’ll let users make their own judgments based on the data and guide them toward productive conversations without telling them what to think.

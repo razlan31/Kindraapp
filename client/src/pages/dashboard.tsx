@@ -223,7 +223,7 @@ export default function Dashboard() {
                       connection={{
                         id: connection.id,
                         name: connection.name,
-                        profileImage: connection.profileImage
+                        profileImage: connection.profileImage || undefined
                       }}
                       onAddReflection={handleAddReflection}
                       // In a full implementation, we would determine if there's an AI reflection
