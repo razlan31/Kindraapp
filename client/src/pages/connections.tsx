@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { Header } from "@/components/layout/header";
 import { BottomNavigation } from "@/components/layout/bottom-navigation";
 import { ConnectionCard } from "@/components/dashboard/connection-card";
@@ -21,6 +21,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 export default function Connections() {
   const { user } = useAuth();
   const { setSelectedConnection } = useModal();
+  const [, setLocation] = useLocation();
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStage, setFilterStage] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
@@ -181,15 +182,14 @@ export default function Connections() {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            <Link href="/connections-new">
-              <Button 
-                variant="outline" 
-                size="icon"
-                className="rounded-full"
-              >
-                <Plus className="h-4 w-4" />
-              </Button>
-            </Link>
+            <Button 
+              variant="outline" 
+              size="icon"
+              className="rounded-full"
+              onClick={() => setLocation("/connections-new")}
+            >
+              <Plus className="h-4 w-4" />
+            </Button>
           </div>
 
           <div className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1">
