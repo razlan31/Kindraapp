@@ -13,6 +13,7 @@ import Insights from "@/pages/insights";
 import Profile from "@/pages/profile";
 import CycleTracking from "@/pages/cycle-tracking";
 import AICoach from "@/pages/ai-coach";
+import SummaryReport from "@/pages/summary-report";
 import { useAuth } from "./contexts/auth-context";
 import { MomentModal } from "./components/modals/moment-modal";
 import { ConnectionModal } from "./components/modals/connection-modal";
@@ -40,6 +41,7 @@ function Router() {
       <Route path="/profile" component={Profile} />
       <Route path="/cycle-tracking" component={CycleTracking} />
       <Route path="/ai-coach" component={AICoach} />
+      <Route path="/summary-report" component={SummaryReport} />
       <Route component={NotFound} />
     </Switch>
   );

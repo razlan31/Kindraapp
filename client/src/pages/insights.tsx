@@ -130,6 +130,21 @@ export default function Insights() {
           </p>
         </section>
         
+        {/* Reports Quick Link - New Feature */}
+        <div className="px-4 mb-4">
+          <Link href="/summary-report">
+            <a className="w-full flex items-center justify-between py-3 px-4 bg-primary/10 hover:bg-primary/20 text-primary rounded-lg transition-colors">
+              <div className="flex items-center gap-2">
+                <BarChart3 className="h-5 w-5" />
+                <span className="font-medium">View Relationship Report</span>
+              </div>
+              <div>
+                <ChevronRight className="h-5 w-5" />
+              </div>
+            </a>
+          </Link>
+        </div>
+        
         {/* AI Coach Card - Always shown regardless of moments */}
         <div className="px-4 mb-6">
           <Card>
