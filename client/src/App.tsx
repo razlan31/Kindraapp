@@ -9,7 +9,6 @@ import Register from "@/pages/auth/register";
 import Dashboard from "@/pages/dashboard";
 import Connections from "@/pages/connections";
 import ConnectionsNew from "@/pages/connections-new";
-import ConnectionsForm from "@/pages/connections-form";
 import ConnectionsFormNew from "./pages/connections-form-new";
 import Moments from "@/pages/moments";
 import Insights from "@/pages/insights";

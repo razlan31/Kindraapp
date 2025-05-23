@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useLocation } from "wouter";
-import { Header } from "@/components/layout/header";
+import { useQuery } from "@tanstack/react-query";
+import { Link, useLocation } from "wouter";
+import { Header } from "../components/layout/header";
 import { BottomNavigation } from "@/components/layout/bottom-navigation";
 import { ConnectionCard } from "@/components/dashboard/connection-card";
 import { Connection, Moment } from "@shared/schema";
@@ -9,35 +9,16 @@ import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
 import { useModal } from "@/contexts/modal-context";
 import { Input } from "@/components/ui/input";
-import { Search, Plus, X, Camera } from "lucide-react";
-import { Card } from "@/components/ui/card";
-import { relationshipStages } from "@shared/schema";
-import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Users } from "lucide-react";
+import { Search, Plus, UserPlus } from "lucide-react";
+import { useRelationshipFocus } from "@/contexts/relationship-focus-context-simple";
 
 export default function ConnectionsNew() {
   const { user } = useAuth();
   const { setSelectedConnection } = useModal();
+  const { setMainFocusConnection } = useRelationshipFocus();
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStage, setFilterStage] = useState<string | null>(null);
-  const [showModal, setShowModal] = useState(false);
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
   const [, setLocation] = useLocation();
-  
-  // Form state for connection modal
-  const [name, setName] = useState("");
-  const [profileImage, setProfileImage] = useState("");
-  const [relationshipStage, setRelationshipStage] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [zodiacSign, setZodiacSign] = useState("");
-  const [selectedLoveLanguages, setSelectedLoveLanguages] = useState<string[]>([]);
-  const [isPrivate, setIsPrivate] = useState(false);
-  const [errors, setErrors] = useState<Record<string, string>>({});
 
   // Fetch connections
   const { data: connections = [], isLoading } = useQuery<Connection[]>({
@@ -51,414 +32,147 @@ export default function ConnectionsNew() {
     enabled: !!user,
   });
 
-  // Create connection mutation
-  const { mutate: createConnection, isPending } = useMutation({
-    mutationFn: async (data: any) => {
-      const response = await apiRequest("POST", "/api/connections", data);
-      return response.json();
-    },
-    onSuccess: () => {
-      toast({
-        title: "Connection added successfully",
-        description: "Your new connection has been saved.",
-      });
-      queryClient.invalidateQueries({ queryKey: ["/api/connections"] });
-      setShowModal(false);
-      resetForm();
-    },
-    onError: (error) => {
-      toast({
-        title: "Failed to add connection",
-        description: error.message || "Please try again later.",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const resetForm = () => {
-    setName("");
-    setProfileImage("");
-    setRelationshipStage("");
-    setStartDate("");
-    setZodiacSign("");
-    setSelectedLoveLanguages([]);
-    setIsPrivate(false);
-    setErrors({});
-  };
-
-  const validateForm = () => {
-    const newErrors: Record<string, string> = {};
-    
-    if (!name.trim()) {
-      newErrors.name = "Name is required";
-    } else if (name.length < 2) {
-      newErrors.name = "Name must be at least 2 characters";
-    }
-    
-    if (!relationshipStage) {
-      newErrors.relationshipStage = "Please select a relationship stage";
-    }
-    
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!validateForm() || !user) return;
-    
-    const data = {
-      name,
-      profileImage: profileImage || null,
-      relationshipStage,
-      startDate: startDate ? new Date(startDate).toISOString() : null,
-      zodiacSign: zodiacSign === "none" ? null : zodiacSign,
-      loveLanguage: selectedLoveLanguages.length > 0 ? selectedLoveLanguages.join(", ") : null,
-      isPrivate,
-    };
-    
-    createConnection(data);
-  };
-
-  const handleSelectConnection = (connection: Connection) => {
-    setSelectedConnection(connection.id);
-    // In a full implementation, this would navigate to a connection details page
-    // navigate(`/connections/${connection.id}`);
-  };
-
-  // Filter connections based on search term and filter stage
-  const filteredConnections = connections.filter(connection => {
+  // Filter connections based on search term and stage filter
+  const filteredConnections = connections.filter((connection) => {
     const matchesSearch = connection.name.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStage = filterStage ? connection.relationshipStage === filterStage : true;
+    const matchesStage = !filterStage || connection.relationshipStage === filterStage;
     return matchesSearch && matchesStage;
   });
 
-  // Get recent emojis for each connection
-  const getConnectionEmojis = (connectionId: number) => {
-    const connectionMoments = moments.filter(m => m.connectionId === connectionId);
-    const recentEmojis = connectionMoments
-      .sort((a, b) => {
-        const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-        const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-        return dateB - dateA;
-      })
-      .slice(0, 3)
-      .map(m => m.emoji);
-    
-    return recentEmojis.length > 0 ? recentEmojis : ["😊", "❤️", "✨"];
-  };
-
   // Calculate flag counts for each connection
-  const getConnectionFlagCounts = (connectionId: number) => {
+  const getConnectionFlags = (connectionId: number) => {
     const connectionMoments = moments.filter(m => m.connectionId === connectionId);
     
-    return {
-      green: connectionMoments.filter(m => m.tags?.includes('Green Flag')).length,
-      red: connectionMoments.filter(m => m.tags?.includes('Red Flag')).length,
-      blue: connectionMoments.filter(m => m.tags?.includes('Mixed Signal')).length
+    const flagCounts = {
+      green: 0,
+      red: 0,
+      blue: 0
     };
+    
+    connectionMoments.forEach(moment => {
+      if (moment.tags) {
+        const tags = Array.isArray(moment.tags) ? moment.tags : [];
+        if (tags.includes('Green Flag')) flagCounts.green++;
+        if (tags.includes('Red Flag')) flagCounts.red++;
+        if (tags.includes('Mixed Signals')) flagCounts.blue++;
+      }
+    });
+    
+    return flagCounts;
   };
 
-  const zodiacSigns = [
-    "Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo",
-    "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"
-  ];
-  
-  const loveLanguages = [
-    "Words of Affirmation", "Quality Time", "Physical Touch",
-    "Acts of Service", "Receiving Gifts"
-  ];
+  const handleSelectConnection = (connection: Connection) => {
+    setSelectedConnection(connection.id, connection);
+    setMainFocusConnection(connection);
+  };
 
   return (
-    <div className="max-w-md mx-auto bg-white dark:bg-neutral-900 min-h-screen flex flex-col relative">
-      <Header />
-
-      <main className="flex-1 overflow-y-auto pb-20">
-        {/* Search and Filter Section */}
-        <section className="px-4 pt-4 pb-2 sticky top-0 bg-white dark:bg-neutral-900 z-10">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-neutral-500" />
+    <div className="min-h-screen pb-16">
+      <div className="max-w-xl mx-auto">
+        <Header title="Connections" subtitle="Track the people in your life" />
+        
+        {/* Large Add Connection Button */}
+        <div className="px-4 mb-4">
+          <Button 
+            variant="default" 
+            className="w-full py-6 flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold"
+            onClick={() => {
+              window.location.href = "/connections/add";
+            }}
+          >
+            <UserPlus className="h-5 w-5" />
+            <span className="text-base">Add New Connection</span>
+          </Button>
+        </div>
+        
+        <div className="px-4">
+          <div className="flex items-center gap-2 mb-4">
+            <div className="relative flex-grow">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-neutral-400" />
               <Input
-                type="text"
                 placeholder="Search connections..."
                 className="pl-9"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            <Button 
-              variant="outline" 
-              size="icon"
-              className="rounded-full"
-              onClick={() => setLocation("/connections/add")}
-            >
-              <Plus className="h-4 w-4" />
-            </Button>
           </div>
 
           <div className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1">
             <Button
               variant={filterStage === null ? "default" : "outline"}
               size="sm"
-              className="rounded-full text-xs"
+              className="rounded-full whitespace-nowrap text-xs"
               onClick={() => setFilterStage(null)}
             >
               All
             </Button>
-            {relationshipStages.map((stage) => (
-              <Button
-                key={stage}
-                variant={filterStage === stage ? "default" : "outline"}
-                size="sm"
-                className="rounded-full text-xs whitespace-nowrap"
-                onClick={() => setFilterStage(stage === filterStage ? null : stage)}
-              >
-                {stage}
-              </Button>
-            ))}
+            <Button
+              variant={filterStage === "Talking Stage" ? "default" : "outline"}
+              size="sm"
+              className="rounded-full whitespace-nowrap text-xs"
+              onClick={() => setFilterStage("Talking Stage")}
+            >
+              Talking Stage
+            </Button>
+            <Button
+              variant={filterStage === "Friends with Benefits" ? "default" : "outline"}
+              size="sm"
+              className="rounded-full whitespace-nowrap text-xs"
+              onClick={() => setFilterStage("Friends with Benefits")}
+            >
+              FWB
+            </Button>
+            <Button
+              variant={filterStage === "Exclusive" ? "default" : "outline"}
+              size="sm"
+              className="rounded-full whitespace-nowrap text-xs"
+              onClick={() => setFilterStage("Exclusive")}
+            >
+              Exclusive
+            </Button>
+            <Button
+              variant={filterStage === "Just Friends" ? "default" : "outline"}
+              size="sm"
+              className="rounded-full whitespace-nowrap text-xs"
+              onClick={() => setFilterStage("Just Friends")}
+            >
+              Friends
+            </Button>
           </div>
-        </section>
-
-        {/* Connections List */}
-        <section className="px-4 py-3">
+          
           {isLoading ? (
-            <div className="text-center py-10">
-              <p>Loading connections...</p>
+            <div className="flex justify-center mt-12">
+              <div className="animate-spin h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full"></div>
             </div>
-          ) : filteredConnections.length > 0 ? (
-            <div className="space-y-3">
+          ) : filteredConnections.length === 0 ? (
+            <div className="text-center py-12">
+              <UserPlus className="h-12 w-12 mx-auto text-neutral-300 mb-4" />
+              <h3 className="font-medium text-lg mb-1">No connections yet</h3>
+              <p className="text-neutral-500 mb-4">
+                {searchTerm ? "No matches found. Try a different search." : "Add your first connection to get started."}
+              </p>
+              <Link href="/connections/add">
+                <Button>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Connection
+                </Button>
+              </Link>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 gap-4 mt-4">
               {filteredConnections.map((connection) => (
-                <ConnectionCard 
-                  key={connection.id} 
-                  connection={connection} 
-                  onSelect={handleSelectConnection}
-                  recentEmojis={getConnectionEmojis(connection.id)}
-                  flagCount={getConnectionFlagCounts(connection.id)}
+                <ConnectionCard
+                  key={connection.id}
+                  connection={connection}
+                  onClick={() => handleSelectConnection(connection)}
+                  flagCounts={getConnectionFlags(connection.id)}
                 />
               ))}
             </div>
-          ) : connections.length > 0 ? (
-            <div className="text-center py-8">
-              <p className="text-neutral-500 dark:text-neutral-400 mb-2">No connections found matching your filters</p>
-              <Button 
-                variant="outline"
-                onClick={() => {
-                  setSearchTerm("");
-                  setFilterStage(null);
-                }}
-              >
-                Clear Filters
-              </Button>
-            </div>
-          ) : (
-            <Card className="flex flex-col items-center justify-center py-10 px-4 text-center">
-              <div className="rounded-full bg-primary/10 p-3 mb-3">
-                <Users className="h-6 w-6 text-primary" />
-              </div>
-              <h3 className="font-heading font-semibold mb-1">No Connections Yet</h3>
-              <p className="text-neutral-500 dark:text-neutral-400 text-sm mb-4">
-                Add your first connection to start tracking your relationships
-              </p>
-              <Button 
-                onClick={() => setShowModal(true)}
-                className="bg-primary text-white"
-              >
-                <Plus className="h-4 w-4 mr-2" /> Add Connection
-              </Button>
-            </Card>
           )}
-        </section>
-      </main>
-
-      {/* Connection Modal */}
-      {showModal && (
-        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between p-4 border-b">
-              <h2 className="font-heading font-semibold text-lg">Add New Connection</h2>
-              <Button variant="ghost" size="icon" onClick={() => setShowModal(false)}>
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
-            
-            <form onSubmit={handleSubmit} className="p-4 space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="name">Name</Label>
-                <Input 
-                  id="name"
-                  value={name} 
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Enter name" 
-                />
-                {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
-              </div>
-              
-              <div className="space-y-2">
-                <Label>Profile Photo</Label>
-                <div className="flex flex-col items-center gap-3">
-                  <div className="h-20 w-20 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center overflow-hidden border-2 border-neutral-200 dark:border-neutral-700">
-                    {profileImage ? (
-                      <img 
-                        src={profileImage} 
-                        alt="Profile" 
-                        className="h-full w-full object-cover"
-                      />
-                    ) : (
-                      <Camera className="h-8 w-8 text-neutral-400" />
-                    )}
-                  </div>
-                  
-                  <div className="flex flex-wrap gap-2 justify-center">
-                    <Input
-                      type="url"
-                      placeholder="Enter image URL"
-                      value={profileImage}
-                      onChange={(e) => setProfileImage(e.target.value)}
-                      className="max-w-[180px] text-sm"
-                    />
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      type="button"
-                      onClick={() => setProfileImage("")}
-                      className="text-xs"
-                    >
-                      Clear
-                    </Button>
-                  </div>
-                  
-                  <div className="grid grid-cols-4 gap-2 w-full max-w-[240px] mx-auto">
-                    {["https://randomuser.me/api/portraits/women/32.jpg", 
-                      "https://randomuser.me/api/portraits/men/32.jpg",
-                      "https://randomuser.me/api/portraits/women/68.jpg",
-                      "https://randomuser.me/api/portraits/men/68.jpg"].map((url, i) => (
-                      <Button
-                        key={i}
-                        variant="ghost"
-                        className="p-1 h-auto aspect-square"
-                        type="button"
-                        onClick={() => setProfileImage(url)}
-                      >
-                        <img 
-                          src={url} 
-                          alt={`Avatar option ${i+1}`}
-                          className="w-full h-full rounded-full object-cover"
-                        />
-                      </Button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="stage">Relationship Stage</Label>
-                <Select value={relationshipStage} onValueChange={setRelationshipStage}>
-                  <SelectTrigger id="stage">
-                    <SelectValue placeholder="Select stage" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {relationshipStages.map((stage) => (
-                      <SelectItem key={stage} value={stage}>
-                        {stage}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                {errors.relationshipStage && <p className="text-sm text-red-500">{errors.relationshipStage}</p>}
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="startDate">Started talking/dating</Label>
-                <Input 
-                  id="startDate"
-                  type="date" 
-                  value={startDate} 
-                  onChange={(e) => setStartDate(e.target.value)} 
-                />
-              </div>
-              
-              <div className="space-y-3 bg-neutral-50 dark:bg-neutral-900 p-4 rounded-lg">
-                <h3 className="text-sm font-medium">Optional Details</h3>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="zodiac" className="text-xs text-neutral-500">Zodiac Sign</Label>
-                  <Select value={zodiacSign} onValueChange={setZodiacSign}>
-                    <SelectTrigger id="zodiac">
-                      <SelectValue placeholder="Select sign" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="none">None</SelectItem>
-                      {zodiacSigns.map((sign) => (
-                        <SelectItem key={sign} value={sign}>
-                          {sign}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div className="space-y-2">
-                  <Label className="text-xs text-neutral-500">Love Languages (Select up to 3)</Label>
-                  <div className="flex flex-wrap gap-2 mt-2">
-                    {loveLanguages.map((language) => {
-                      const isSelected = selectedLoveLanguages.includes(language);
-                      const canSelect = isSelected || selectedLoveLanguages.length < 3;
-                      
-                      return (
-                        <Button
-                          key={language}
-                          type="button"
-                          variant={isSelected ? "default" : "outline"}
-                          size="sm"
-                          className={`rounded-full text-xs ${!canSelect && !isSelected ? 'opacity-50 cursor-not-allowed' : ''}`}
-                          onClick={() => {
-                            if (isSelected) {
-                              setSelectedLoveLanguages(selectedLoveLanguages.filter(l => l !== language));
-                            } else if (canSelect) {
-                              setSelectedLoveLanguages([...selectedLoveLanguages, language]);
-                            }
-                          }}
-                          disabled={!canSelect && !isSelected}
-                        >
-                          {language}
-                        </Button>
-                      );
-                    })}
-                  </div>
-                  {selectedLoveLanguages.length > 0 && (
-                    <p className="text-xs text-neutral-500 mt-2">
-                      Selected: {selectedLoveLanguages.join(", ")}
-                    </p>
-                  )}
-                </div>
-              </div>
-              
-              <div className="flex items-start space-x-3 space-y-0 rounded-md border p-4">
-                <Checkbox
-                  id="private"
-                  checked={isPrivate}
-                  onCheckedChange={(checked) => setIsPrivate(checked === true)}
-                />
-                <div className="space-y-1 leading-none">
-                  <Label htmlFor="private">Keep this connection private</Label>
-                  <p className="text-sm text-gray-500">
-                    Private connections are only visible to you
-                  </p>
-                </div>
-              </div>
-              
-              <div className="pt-2">
-                <Button type="submit" className="w-full bg-primary text-white" disabled={isPending}>
-                  {isPending ? "Adding..." : "Add Connection"}
-                </Button>
-              </div>
-            </form>
-          </div>
         </div>
-      )}
-
+      </div>
       <BottomNavigation />
     </div>
   );
