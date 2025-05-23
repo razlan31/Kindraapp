@@ -114,11 +114,8 @@ export default function ConnectionDetail() {
   };
   
   const handleEdit = () => {
-    // Navigate to edit page (yet to be implemented)
-    toast({
-      title: 'Coming soon',
-      description: 'Edit functionality will be available soon'
-    });
+    // Navigate to the edit page
+    setLocation(`/connections/${connectionId}/edit`);
   };
   
   const handleMoodTracking = () => {
