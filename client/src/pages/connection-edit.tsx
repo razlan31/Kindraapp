@@ -352,13 +352,23 @@ export default function ConnectionEdit() {
                   ].map((language) => {
                     const isSelected = loveLanguages.includes(language);
                     
+                    const hasNotSpecified = loveLanguages.includes("Not Specified");
+                    const isNotSpecified = language === "Not Specified";
+                    const isDisabled = (hasNotSpecified && !isNotSpecified) || (!hasNotSpecified && isNotSpecified && loveLanguages.length > 0);
+                    
                     const toggleLanguage = () => {
                       if (isSelected) {
                         // Remove if already selected
                         setLoveLanguages(loveLanguages.filter(l => l !== language));
                       } else {
-                        // Add it (no limit)
-                        setLoveLanguages([...loveLanguages, language]);
+                        if (isNotSpecified) {
+                          // If selecting "Not Specified", clear all others
+                          setLoveLanguages(["Not Specified"]);
+                        } else {
+                          // If selecting any other, remove "Not Specified" and add this one
+                          const filteredLanguages = loveLanguages.filter(l => l !== "Not Specified");
+                          setLoveLanguages([...filteredLanguages, language]);
+                        }
                       }
                     };
                     
@@ -367,7 +377,8 @@ export default function ConnectionEdit() {
                         key={language}
                         type="button"
                         variant={isSelected ? "default" : "outline"}
-                        className={`justify-start ${isSelected ? "bg-primary text-white" : ""}`}
+                        className={`justify-start ${isSelected ? "bg-primary text-white" : ""} ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        disabled={isDisabled}
                         onClick={toggleLanguage}
                       >
                         <div className={`w-5 h-5 rounded-sm border flex items-center justify-center mr-2 ${

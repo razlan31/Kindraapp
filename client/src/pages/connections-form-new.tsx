@@ -306,6 +306,9 @@ export default function ConnectionsFormNew() {
               <div className="flex flex-wrap gap-2 mt-2">
                 {loveLanguages.map((language) => {
                   const isSelected = selectedLoveLanguages.includes(language);
+                  const hasNotSpecified = selectedLoveLanguages.includes("Not Specified");
+                  const isNotSpecified = language === "Not Specified";
+                  const isDisabled = (hasNotSpecified && !isNotSpecified) || (!hasNotSpecified && isNotSpecified && selectedLoveLanguages.length > 0);
                   
                   return (
                     <Button
@@ -313,12 +316,20 @@ export default function ConnectionsFormNew() {
                       type="button"
                       variant={isSelected ? "default" : "outline"}
                       size="sm"
-                      className="rounded-full text-xs"
+                      className={`rounded-full text-xs ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+                      disabled={isDisabled}
                       onClick={() => {
                         if (isSelected) {
                           setSelectedLoveLanguages(selectedLoveLanguages.filter(l => l !== language));
                         } else {
-                          setSelectedLoveLanguages([...selectedLoveLanguages, language]);
+                          if (isNotSpecified) {
+                            // If selecting "Not Specified", clear all others
+                            setSelectedLoveLanguages(["Not Specified"]);
+                          } else {
+                            // If selecting any other, remove "Not Specified" and add this one
+                            const filteredLanguages = selectedLoveLanguages.filter(l => l !== "Not Specified");
+                            setSelectedLoveLanguages([...filteredLanguages, language]);
+                          }
                         }
                       }}
                     >
