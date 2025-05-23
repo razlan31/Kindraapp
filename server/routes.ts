@@ -258,8 +258,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   };
 
-  app.put("/api/connections/:id", isAuthenticated, updateConnectionHandler);
-  app.patch("/api/connections/:id", isAuthenticated, updateConnectionHandler);
+  // Ensure these routes are registered first and working
+  app.put("/api/connections/:id", (req, res, next) => {
+    console.log("PUT route hit for connection update");
+    isAuthenticated(req, res, () => updateConnectionHandler(req, res));
+  });
+  
+  app.patch("/api/connections/:id", (req, res, next) => {
+    console.log("PATCH route hit for connection update");
+    isAuthenticated(req, res, () => updateConnectionHandler(req, res));
+  });
 
   app.delete("/api/connections/:id", isAuthenticated, async (req, res) => {
     try {
