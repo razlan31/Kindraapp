@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Heart, Calendar, Star, MessageCircle, Edit, Trash2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow, format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
 import { useModal } from "@/contexts/modal-context";
 import { useRelationshipFocus } from "@/contexts/relationship-focus-context-simple";
@@ -132,6 +132,11 @@ export default function ConnectionDetail() {
       .toUpperCase();
   };
   
+  const getFormattedDate = (date: Date | null) => {
+    if (!date) return "Not specified";
+    return format(new Date(date), 'MMMM d, yyyy');
+  };
+  
   const getDurationText = (startDate: Date | null) => {
     if (!startDate) return "Not specified";
     return formatDistanceToNow(new Date(startDate), { addSuffix: false });
@@ -245,6 +250,11 @@ export default function ConnectionDetail() {
           <h3 className="font-semibold mb-4">Relationship Details</h3>
           
           <div className="space-y-4">
+            <div className="flex justify-between">
+              <div className="text-neutral-500">Started Dating</div>
+              <div>{getFormattedDate(connection.startDate)}</div>
+            </div>
+            
             <div className="flex justify-between">
               <div className="text-neutral-500">Relationship Duration</div>
               <div>{getDurationText(connection.startDate)}</div>
