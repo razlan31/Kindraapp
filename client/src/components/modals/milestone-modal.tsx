@@ -73,7 +73,7 @@ export function MilestoneModal({ isOpen, onClose, selectedDate, selectedConnecti
       ...existingMilestone,
       date: new Date(existingMilestone.date),
     } : {
-      connectionId: mainFocusConnection?.id || 0,
+      connectionId: connection?.id || 0,
       title: '',
       description: '',
       date: selectedDate,
@@ -133,7 +133,7 @@ export function MilestoneModal({ isOpen, onClose, selectedDate, selectedConnecti
   });
   
   const onSubmit = (data: MilestoneFormValues) => {
-    if (!mainFocusConnection) {
+    if (!connection) {
       toast({
         title: 'No connection selected',
         description: 'Please select a connection to add a milestone',
@@ -150,7 +150,7 @@ export function MilestoneModal({ isOpen, onClose, selectedDate, selectedConnecti
     } else {
       createMilestoneMutation.mutate({
         ...data,
-        connectionId: mainFocusConnection.id,
+        connectionId: connection.id,
       });
     }
   };
