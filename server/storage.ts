@@ -194,11 +194,21 @@ export class MemStorage implements IStorage {
   }
 
   async updateConnection(id: number, data: Partial<Connection>): Promise<Connection | undefined> {
+    console.log("STORAGE: updateConnection called with id:", id, "data:", data);
     const connection = this.connections.get(id);
-    if (!connection) return undefined;
+    console.log("STORAGE: Found existing connection:", connection);
+    
+    if (!connection) {
+      console.log("STORAGE: Connection not found");
+      return undefined;
+    }
     
     const updatedConnection = { ...connection, ...data };
+    console.log("STORAGE: Created updated connection:", updatedConnection);
+    
     this.connections.set(id, updatedConnection);
+    console.log("STORAGE: Saved to map. Verifying:", this.connections.get(id));
+    
     return updatedConnection;
   }
 
