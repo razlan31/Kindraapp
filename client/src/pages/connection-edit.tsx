@@ -75,23 +75,23 @@ export default function ConnectionEdit() {
     
     try {
       // Create connection data object
-      const connectionData = {
+      const connectionData: any = {
         name: name.trim(),
         relationshipStage: stage
       };
       
       // Add optional fields if selected
       if (zodiacSign) {
-        connectionData['zodiacSign'] = zodiacSign;
+        connectionData.zodiacSign = zodiacSign;
       }
       
       if (loveLanguages.length > 0) {
         // Store multiple love languages as a comma-separated string
-        connectionData['loveLanguage'] = loveLanguages.join(', ');
+        connectionData.loveLanguage = loveLanguages.join(', ');
       }
       
       if (profileImage) {
-        connectionData['profileImage'] = profileImage;
+        connectionData.profileImage = profileImage;
       }
       
       console.log("Sending update data:", connectionData);
@@ -106,7 +106,17 @@ export default function ConnectionEdit() {
       });
       
       if (response.ok) {
-        const data = await response.json();
+        // Don't try to parse JSON if the response might be empty
+        let data = null;
+        try {
+          const text = await response.text();
+          if (text) {
+            data = JSON.parse(text);
+          }
+        } catch (e) {
+          // Response might be empty, which is fine for an update
+        }
+        
         console.log("Connection updated successfully:", data);
         
         toast({
