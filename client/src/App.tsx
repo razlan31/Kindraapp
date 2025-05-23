@@ -10,7 +10,7 @@ import Dashboard from "@/pages/dashboard";
 import Connections from "@/pages/connections";
 import ConnectionsNew from "@/pages/connections-new";
 import ConnectionsFormNew from "./pages/connections-form-new";
-import ConnectionDirectCreate from "./pages/connection-direct-create";
+import SimpleConnectionForm from "./pages/simple-connection-form";
 import Moments from "@/pages/moments";
 import Insights from "@/pages/insights";
 import Profile from "@/pages/profile";
@@ -44,7 +44,7 @@ function Router() {
       <Route path="/connections" component={ConnectionsNew} />
       <Route path="/connections/old" component={Connections} />
       <Route path="/connections/add" component={ConnectionsFormNew} />
-      <Route path="/connections/quick-add" component={ConnectionDirectCreate} />
+      <Route path="/connections/simple" component={SimpleConnectionForm} />
       <Route path="/moments" component={Moments} />
       <Route path="/insights" component={Insights} />
       <Route path="/profile" component={Profile} />

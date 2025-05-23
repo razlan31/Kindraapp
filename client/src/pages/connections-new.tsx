@@ -172,7 +172,7 @@ export default function ConnectionsNew() {
             <Button 
               variant="default" 
               className="w-full py-6 flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold"
-              onClick={() => setShowQuickAdd(true)}
+              onClick={() => setLocation("/connections/simple")}
             >
               <UserPlus className="h-5 w-5" />
               <span className="text-base">Add New Connection</span>
