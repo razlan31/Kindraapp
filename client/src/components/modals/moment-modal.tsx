@@ -26,7 +26,7 @@ export function MomentModal() {
   const queryClient = useQueryClient();
   
   // Fetch user connections
-  const { data: connections = [] } = useQuery({
+  const { data: connections = [] } = useQuery<Connection[]>({
     queryKey: ["/api/connections"],
     enabled: !!user && momentModalOpen, // Only fetch when modal is open
   });
@@ -180,11 +180,40 @@ export function MomentModal() {
                 <FormItem>
                   <FormLabel>Tag this moment:</FormLabel>
                   <FormControl>
-                    <TagSelector 
-                      selectedTags={field.value || []} 
-                      onChange={field.onChange}
-                    />
+                    <div className="space-y-3">
+                      {/* Flag explanation */}
+                      <div className="bg-muted/30 rounded-lg p-3 mb-2">
+                        <p className="text-xs font-medium mb-2">Flag Guide:</p>
+                        <div className="grid grid-cols-1 gap-2">
+                          <div className="flex items-center gap-2">
+                            <span className="h-4 w-4 rounded-full bg-greenFlag/20 flex items-center justify-center flex-shrink-0">
+                              <span className="text-greenFlag text-[10px] font-bold">G</span>
+                            </span>
+                            <span className="text-xs text-greenFlag">Green Flag: Positive moments</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="h-4 w-4 rounded-full bg-redFlag/20 flex items-center justify-center flex-shrink-0">
+                              <span className="text-redFlag text-[10px] font-bold">R</span>
+                            </span>
+                            <span className="text-xs text-redFlag">Red Flag: Concerning moments</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="h-4 w-4 rounded-full bg-blue-400/20 flex items-center justify-center flex-shrink-0">
+                              <span className="text-blue-600 dark:text-blue-400 text-[10px] font-bold">B</span>
+                            </span>
+                            <span className="text-xs text-blue-600 dark:text-blue-400">Blue Flag: Growth opportunities</span>
+                          </div>
+                        </div>
+                      </div>
+                      <TagSelector 
+                        selectedTags={field.value || []} 
+                        onChange={field.onChange}
+                      />
+                    </div>
                   </FormControl>
+                  <FormDescription>
+                    Select at least one tag to categorize this moment
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}

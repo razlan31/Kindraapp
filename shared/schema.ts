@@ -50,15 +50,36 @@ export type Connection = typeof connections.$inferSelect;
 
 // Moment tags
 export const momentTags = [
-  "Intimacy",
-  "Conflict",
+  // Positive Moments
   "Green Flag",
+  "Intimacy",
+  "Affection",
+  "Support",
+  "Growth",
+  "Trust",
+  "Celebration",
+  
+  // Negative Moments
   "Red Flag",
+  "Conflict",
+  "Jealousy",
+  "Stress",
+  "Disconnection",
+  
+  // Growth Moments
+  "Blue Flag",
+  "Life Goals",
+  "Career",
+  "Future Planning",
+  "Vulnerability",
+  "Communication",
+  
+  // Special Tags
   "Milestone",
   "Surprise",
   "Gift",
-  "Positive",
   "Menstrual",
+  "Reflection"
 ] as const;
 
 // Moments (emotional logs)

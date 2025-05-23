@@ -120,6 +120,30 @@ export default function Moments() {
               <Plus className="h-4 w-4" />
             </Button>
           </div>
+          
+          {/* Flag Legend */}
+          <div className="bg-muted/30 rounded-lg p-3 mb-3">
+            <div className="flex justify-between items-center gap-2">
+              <div className="flex items-center gap-1.5">
+                <div className="h-3 w-3 rounded-full bg-greenFlag/20 flex items-center justify-center">
+                  <span className="text-greenFlag text-[8px] font-bold">G</span>
+                </div>
+                <span className="text-[10px] text-greenFlag">Green: Positive</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <div className="h-3 w-3 rounded-full bg-redFlag/20 flex items-center justify-center">
+                  <span className="text-redFlag text-[8px] font-bold">R</span>
+                </div>
+                <span className="text-[10px] text-redFlag">Red: Concerning</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <div className="h-3 w-3 rounded-full bg-blue-400/20 flex items-center justify-center">
+                  <span className="text-blue-600 dark:text-blue-400 text-[8px] font-bold">B</span>
+                </div>
+                <span className="text-[10px] text-blue-600 dark:text-blue-400">Blue: Growth</span>
+              </div>
+            </div>
+          </div>
         </section>
 
         {/* Moments List */}

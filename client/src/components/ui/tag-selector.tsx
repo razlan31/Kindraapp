@@ -30,19 +30,41 @@ export function TagSelector({ selectedTags, onChange }: TagSelectorProps) {
   };
   
   const getTagClass = (tag: string) => {
+    // Helper to get category for similar tags
+    const getCategory = (tag: string) => {
+      // Positive moment tags
+      if (["Green Flag", "Intimacy", "Affection", "Support", "Growth", "Trust", "Celebration"].includes(tag)) {
+        return "positive";
+      }
+      // Negative moment tags
+      else if (["Red Flag", "Conflict", "Jealousy", "Stress", "Disconnection"].includes(tag)) {
+        return "negative";
+      }
+      // Growth moment tags
+      else if (["Blue Flag", "Life Goals", "Career", "Future Planning", "Vulnerability", "Communication"].includes(tag)) {
+        return "growth";
+      }
+      // Special tags
+      else if (tag === "Milestone" || tag === "Menstrual") {
+        return tag.toLowerCase();
+      }
+      // Default for anything else
+      return "default";
+    };
+
+    const category = getCategory(tag);
+    
     if (selectedTags.includes(tag)) {
-      switch(tag) {
-        case "Intimacy":
-          return "bg-secondary/20 text-secondary border-secondary";
-        case "Conflict":
-          return "bg-redFlag/20 text-redFlag border-redFlag";
-        case "Green Flag":
+      switch(category) {
+        case "positive":
           return "bg-greenFlag/20 text-greenFlag border-greenFlag";
-        case "Red Flag":
-          return "bg-warning/20 text-warning border-warning";
-        case "Milestone":
+        case "negative":
+          return "bg-redFlag/20 text-redFlag border-redFlag";
+        case "growth":
+          return "bg-blue-400/20 text-blue-600 dark:text-blue-400 border-blue-500";
+        case "milestone":
           return "bg-accent/20 text-neutral-700 dark:text-neutral-300 border-accent";
-        case "Menstrual":
+        case "menstrual":
           return "bg-primary/20 text-primary border-primary";
         default:
           return "bg-neutral-200 dark:bg-neutral-700 text-neutral-800 dark:text-neutral-200 border-neutral-500";
@@ -50,18 +72,16 @@ export function TagSelector({ selectedTags, onChange }: TagSelectorProps) {
     }
     
     // Default unselected style
-    switch(tag) {
-      case "Intimacy":
-        return "bg-secondary/10 text-secondary hover:border-secondary";
-      case "Conflict":
-        return "bg-redFlag/10 text-redFlag hover:border-redFlag";
-      case "Green Flag":
+    switch(category) {
+      case "positive":
         return "bg-greenFlag/10 text-greenFlag hover:border-greenFlag";
-      case "Red Flag":
-        return "bg-warning/10 text-warning hover:border-warning";
-      case "Milestone":
+      case "negative":
+        return "bg-redFlag/10 text-redFlag hover:border-redFlag";
+      case "growth":
+        return "bg-blue-400/10 text-blue-600 dark:text-blue-400 hover:border-blue-500";
+      case "milestone":
         return "bg-accent/10 text-neutral-700 dark:text-neutral-300 hover:border-accent";
-      case "Menstrual":
+      case "menstrual":
         return "bg-primary/10 text-primary hover:border-primary";
       default:
         return "bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 hover:border-neutral-500";
