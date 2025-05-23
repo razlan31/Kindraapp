@@ -90,7 +90,7 @@ export function ConnectionCard({
           <Button
             variant="ghost"
             size="sm"
-            className="text-xs flex items-center gap-1 px-2 py-1 h-auto"
+            className="text-xs flex items-center gap-1 px-3 py-1.5 h-auto border border-primary/20 hover:bg-primary/10 animate-pulse-glow"
             onClick={(e) => {
               e.stopPropagation();
               openMoodTrackerModal(connection);
