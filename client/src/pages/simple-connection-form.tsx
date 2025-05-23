@@ -47,7 +47,8 @@ export default function SimpleConnectionForm() {
           relationshipStage: stage,
           zodiacSign: zodiacSign || null,
           loveLanguage: loveLanguage || null,
-          startDate: startDate ? new Date(startDate).toISOString() : null,
+          // Omit startDate completely if empty
+          ...(startDate ? { startDate: startDate } : {}),
           isPrivate
         }),
         credentials: "include"
