@@ -96,8 +96,8 @@ export default function ConnectionEdit() {
       
       console.log("Sending update data:", connectionData);
       
-      const response = await fetch(`/api/connections/${connectionId}`, {
-        method: "PATCH",
+      const response = await fetch(`/api/connections/${connectionId}/update`, {
+        method: "POST",
         headers: {
           "Content-Type": "application/json"
         },

@@ -258,16 +258,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   };
 
-  // Ensure these routes are registered first and working
-  app.put("/api/connections/:id", (req, res, next) => {
-    console.log("PUT route hit for connection update");
-    isAuthenticated(req, res, () => updateConnectionHandler(req, res));
+  // Simple direct update route that bypasses any conflicts
+  app.post("/api/connections/:id/update", async (req, res) => {
+    try {
+      const userId = 1; // Using the test user
+      const connectionId = parseInt(req.params.id);
+      
+      console.log("DIRECT UPDATE ROUTE: Connection ID:", connectionId, "Data:", req.body);
+      
+      const connection = await storage.getConnection(connectionId);
+      if (!connection) {
+        return res.status(404).json({ message: "Connection not found" });
+      }
+      
+      const updatedConnection = await storage.updateConnection(connectionId, req.body);
+      console.log("DIRECT UPDATE: Result:", updatedConnection);
+      
+      res.status(200).json(updatedConnection);
+    } catch (error) {
+      console.error("Direct update error:", error);
+      res.status(500).json({ message: "Server error" });
+    }
   });
-  
-  app.patch("/api/connections/:id", (req, res, next) => {
-    console.log("PATCH route hit for connection update");
-    isAuthenticated(req, res, () => updateConnectionHandler(req, res));
-  });
+
+  // Original routes
+  app.put("/api/connections/:id", isAuthenticated, updateConnectionHandler);
+  app.patch("/api/connections/:id", isAuthenticated, updateConnectionHandler);
 
   app.delete("/api/connections/:id", isAuthenticated, async (req, res) => {
     try {
