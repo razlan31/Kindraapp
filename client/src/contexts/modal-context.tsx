@@ -55,6 +55,7 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const openConnectionModal = () => {
+    console.log("Opening connection modal from context");
     setConnectionModalOpen(true);
   };
 

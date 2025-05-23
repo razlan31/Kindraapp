@@ -1,20 +1,16 @@
-import { useCallback } from "react";
+import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { useModal } from "@/contexts/modal-context";
 import { useAuth } from "@/contexts/auth-context";
-import { connectionSchema, relationshipStages } from "@shared/schema";
+import { relationshipStages } from "@shared/schema";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Label } from "@/components/ui/label";
 import { Camera } from "lucide-react";
 
 export function ConnectionModal() {
@@ -23,37 +19,21 @@ export function ConnectionModal() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
-  // Form schema
-  const formSchema = connectionSchema.extend({
-    name: z.string()
-      .min(2, "Name must be at least 2 characters")
-      .max(50, "Name cannot exceed 50 characters"),
-    relationshipStage: z.string({
-      required_error: "Please select a relationship stage",
-    }),
-    startDate: z.string().optional(),
-    zodiacSign: z.string().optional(),
-    loveLanguage: z.string().optional(),
-    isPrivate: z.boolean().default(false),
-  }).omit({ userId: true, id: true, createdAt: true });
+  // Form state
+  const [name, setName] = useState("");
+  const [profileImage, setProfileImage] = useState("");
+  const [relationshipStage, setRelationshipStage] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [zodiacSign, setZodiacSign] = useState("");
+  const [loveLanguage, setLoveLanguage] = useState("");
+  const [isPrivate, setIsPrivate] = useState(false);
   
-  // Form setup
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-      profileImage: "",
-      relationshipStage: "",
-      startDate: new Date().toISOString().split('T')[0],
-      zodiacSign: "",
-      loveLanguage: "",
-      isPrivate: false,
-    },
-  });
+  // Validation
+  const [errors, setErrors] = useState<Record<string, string>>({});
   
   // Create connection mutation
   const { mutate: createConnection, isPending } = useMutation({
-    mutationFn: async (data: z.infer<typeof formSchema>) => {
+    mutationFn: async (data: any) => {
       const response = await apiRequest("POST", "/api/connections", data);
       return response.json();
     },
@@ -64,7 +44,7 @@ export function ConnectionModal() {
       });
       queryClient.invalidateQueries({ queryKey: ["/api/connections"] });
       closeConnectionModal();
-      form.reset();
+      resetForm();
     },
     onError: (error) => {
       toast({
@@ -75,17 +55,51 @@ export function ConnectionModal() {
     },
   });
   
-  const onSubmit = useCallback((data: z.infer<typeof formSchema>) => {
-    if (!user) return;
+  const resetForm = () => {
+    setName("");
+    setProfileImage("");
+    setRelationshipStage("");
+    setStartDate("");
+    setZodiacSign("");
+    setLoveLanguage("");
+    setIsPrivate(false);
+    setErrors({});
+  };
+  
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
     
-    // Convert date string to ISO format if provided
-    const formattedData = {
-      ...data,
-      startDate: data.startDate ? new Date(data.startDate).toISOString() : undefined,
+    if (!name.trim()) {
+      newErrors.name = "Name is required";
+    } else if (name.length < 2) {
+      newErrors.name = "Name must be at least 2 characters";
+    }
+    
+    if (!relationshipStage) {
+      newErrors.relationshipStage = "Please select a relationship stage";
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+  
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!validateForm() || !user) return;
+    
+    const data = {
+      name,
+      profileImage: profileImage || null,
+      relationshipStage,
+      startDate: startDate ? new Date(startDate).toISOString() : null,
+      zodiacSign: zodiacSign || null,
+      loveLanguage: loveLanguage || null,
+      isPrivate,
     };
     
-    createConnection(formattedData);
-  }, [user, createConnection]);
+    createConnection(data);
+  };
   
   const zodiacSigns = [
     "Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo",
@@ -104,184 +118,129 @@ export function ConnectionModal() {
           <DialogTitle className="font-heading font-semibold">Add New Connection</DialogTitle>
         </DialogHeader>
         
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="name">Name</Label>
+            <Input 
+              id="name"
+              value={name} 
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Enter name" 
             />
-            
-            <FormField
-              control={form.control}
-              name="profileImage"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Profile Photo</FormLabel>
-                  <FormControl>
-                    <Button 
-                      type="button"
-                      variant="outline"
-                      className="w-full border border-dashed border-neutral-300 dark:border-neutral-700 rounded-lg p-4 flex flex-col items-center h-auto"
-                      onClick={() => {
-                        // For now just set a placeholder image URL
-                        // In a real implementation, this would open a file picker
-                        field.onChange("https://randomuser.me/api/portraits/men/32.jpg");
-                      }}
-                    >
-                      <div className="h-16 w-16 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-2">
-                        {field.value ? (
-                          <img 
-                            src={field.value} 
-                            alt="Profile" 
-                            className="h-full w-full object-cover rounded-full"
-                          />
-                        ) : (
-                          <Camera className="h-6 w-6 text-neutral-400" />
-                        )}
-                      </div>
-                      <span className="text-sm text-primary font-medium">Upload Photo</span>
-                    </Button>
-                  </FormControl>
-                  <FormDescription>
-                    Choose a profile photo for this connection
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <FormField
-              control={form.control}
-              name="relationshipStage"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Relationship Stage</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select stage" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {relationshipStages.map((stage) => (
-                        <SelectItem key={stage} value={stage}>
-                          {stage}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <FormField
-              control={form.control}
-              name="startDate"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Started talking/dating</FormLabel>
-                  <FormControl>
-                    <Input type="date" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <div className="space-y-3 bg-neutral-50 dark:bg-neutral-900 p-4 rounded-lg">
-              <h3 className="text-sm font-medium">Optional Details</h3>
-              
-              <FormField
-                control={form.control}
-                name="zodiacSign"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-xs text-neutral-500">Zodiac Sign</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select sign" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="">None</SelectItem>
-                        {zodiacSigns.map((sign) => (
-                          <SelectItem key={sign} value={sign}>
-                            {sign}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
+            {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
+          </div>
+          
+          <div className="space-y-2">
+            <Label>Profile Photo</Label>
+            <Button 
+              type="button"
+              variant="outline"
+              className="w-full border border-dashed border-neutral-300 dark:border-neutral-700 rounded-lg p-4 flex flex-col items-center h-auto"
+              onClick={() => {
+                setProfileImage("https://randomuser.me/api/portraits/men/32.jpg");
+              }}
+            >
+              <div className="h-16 w-16 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-2">
+                {profileImage ? (
+                  <img 
+                    src={profileImage} 
+                    alt="Profile" 
+                    className="h-full w-full object-cover rounded-full"
+                  />
+                ) : (
+                  <Camera className="h-6 w-6 text-neutral-400" />
                 )}
-              />
-              
-              <FormField
-                control={form.control}
-                name="loveLanguage"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-xs text-neutral-500">Love Language</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select love language" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="">None</SelectItem>
-                        {loveLanguages.map((language) => (
-                          <SelectItem key={language} value={language}>
-                            {language}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              </div>
+              <span className="text-sm text-primary font-medium">Upload Photo</span>
+            </Button>
+            <p className="text-sm text-gray-500">Choose a profile photo for this connection</p>
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="stage">Relationship Stage</Label>
+            <Select value={relationshipStage} onValueChange={setRelationshipStage}>
+              <SelectTrigger id="stage">
+                <SelectValue placeholder="Select stage" />
+              </SelectTrigger>
+              <SelectContent>
+                {relationshipStages.map((stage) => (
+                  <SelectItem key={stage} value={stage}>
+                    {stage}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {errors.relationshipStage && <p className="text-sm text-red-500">{errors.relationshipStage}</p>}
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="startDate">Started talking/dating</Label>
+            <Input 
+              id="startDate"
+              type="date" 
+              value={startDate} 
+              onChange={(e) => setStartDate(e.target.value)} 
+            />
+          </div>
+          
+          <div className="space-y-3 bg-neutral-50 dark:bg-neutral-900 p-4 rounded-lg">
+            <h3 className="text-sm font-medium">Optional Details</h3>
+            
+            <div className="space-y-2">
+              <Label htmlFor="zodiac" className="text-xs text-neutral-500">Zodiac Sign</Label>
+              <Select value={zodiacSign} onValueChange={setZodiacSign}>
+                <SelectTrigger id="zodiac">
+                  <SelectValue placeholder="Select sign" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">None</SelectItem>
+                  {zodiacSigns.map((sign) => (
+                    <SelectItem key={sign} value={sign}>
+                      {sign}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             
-            <FormField
-              control={form.control}
-              name="isPrivate"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                  <div className="space-y-1 leading-none">
-                    <FormLabel>Keep this connection private</FormLabel>
-                    <FormDescription>
-                      Private connections are only visible to you
-                    </FormDescription>
-                  </div>
-                </FormItem>
-              )}
+            <div className="space-y-2">
+              <Label htmlFor="love" className="text-xs text-neutral-500">Love Language</Label>
+              <Select value={loveLanguage} onValueChange={setLoveLanguage}>
+                <SelectTrigger id="love">
+                  <SelectValue placeholder="Select love language" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">None</SelectItem>
+                  {loveLanguages.map((language) => (
+                    <SelectItem key={language} value={language}>
+                      {language}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          
+          <div className="flex items-start space-x-3 space-y-0 rounded-md border p-4">
+            <Checkbox
+              id="private"
+              checked={isPrivate}
+              onCheckedChange={(checked) => setIsPrivate(checked === true)}
             />
-            
-            <DialogFooter>
-              <Button type="submit" className="w-full bg-primary text-white" disabled={isPending}>
-                {isPending ? "Adding..." : "Add Connection"}
-              </Button>
-            </DialogFooter>
-          </form>
-        </Form>
+            <div className="space-y-1 leading-none">
+              <Label htmlFor="private">Keep this connection private</Label>
+              <p className="text-sm text-gray-500">
+                Private connections are only visible to you
+              </p>
+            </div>
+          </div>
+          
+          <DialogFooter>
+            <Button type="submit" className="w-full bg-primary text-white" disabled={isPending}>
+              {isPending ? "Adding..." : "Add Connection"}
+            </Button>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   );
