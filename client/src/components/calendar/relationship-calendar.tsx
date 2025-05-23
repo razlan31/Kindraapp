@@ -154,7 +154,9 @@ export function RelationshipCalendar({ selectedConnection }: RelationshipCalenda
       hasHappyMoment,
       hasSadMoment,
       hasCycleMoment,
-      dayMoments
+      dayMoments,
+      dayMilestones,
+      hasMilestone
     } = getDayState(day);
     
     const formatMoments = (moments: Moment[]) => {
@@ -244,12 +246,25 @@ export function RelationshipCalendar({ selectedConnection }: RelationshipCalenda
                   </Tooltip>
                 </TooltipProvider>
               )}
+              
+              {hasMilestone && (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="h-1.5 w-1.5 rounded-full bg-amber-400" />
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom">
+                      <p className="text-xs">Milestone/Anniversary</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              )}
             </div>
           </div>
         </div>
         
-        {/* Expanded view for days with moments */}
-        {dayMoments.length > 0 && (
+        {/* Expanded view for days with moments or milestones */}
+        {(dayMoments.length > 0 || dayMilestones.length > 0) && (
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -260,26 +275,72 @@ export function RelationshipCalendar({ selectedConnection }: RelationshipCalenda
               <TooltipContent side="right" className="w-60 p-2">
                 <div className="space-y-2">
                   <p className="text-xs font-medium">{format(day, 'MMMM d, yyyy')}</p>
-                  <div className="space-y-1.5">
-                    {formatMoments(dayMoments).map((moment, idx) => (
-                      <div key={idx} className="flex items-start gap-1.5 text-xs">
-                        <span>{moment.emoji}</span>
-                        <div>
-                          <span className={cn(
-                            "font-medium",
-                            moment.type === 'Intimacy' && "text-pink-500",
-                            moment.type === 'Conflict' && "text-red-500",
-                            moment.type === 'Red Flag' && "text-red-500",
-                            moment.type === 'Green Flag' && "text-emerald-500",
-                            moment.type === 'Menstrual' && "text-purple-500",
-                          )}>
-                            {moment.type}:
+                  
+                  {/* Milestones section */}
+                  {dayMilestones.length > 0 && (
+                    <div className="space-y-1.5">
+                      <p className="text-xs font-medium text-amber-500">Milestones & Anniversaries</p>
+                      {dayMilestones.map((milestone, idx) => (
+                        <div key={`milestone-${idx}`} className="flex items-start gap-1.5 text-xs">
+                          <span>
+                            {milestone.icon === 'heart' ? <HeartIcon className="h-3 w-3" /> : 
+                             milestone.icon === 'star' ? <StarIcon className="h-3 w-3" /> : 
+                             <CakeIcon className="h-3 w-3" />}
                           </span>
-                          <span className="ml-1">{moment.content.substring(0, 50)}{moment.content.length > 50 ? '...' : ''}</span>
+                          <div>
+                            <span className="font-medium" style={{ color: milestone.color || '#C084FC' }}>
+                              {milestone.title}:
+                            </span>
+                            {milestone.description && (
+                              <span className="ml-1">{milestone.description.substring(0, 50)}
+                                {milestone.description?.length > 50 ? '...' : ''}
+                              </span>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
+                  )}
+                  
+                  {/* Moments section */}
+                  {dayMoments.length > 0 && (
+                    <div className="space-y-1.5">
+                      <p className="text-xs font-medium text-neutral-500">Moments</p>
+                      {formatMoments(dayMoments).map((moment, idx) => (
+                        <div key={`moment-${idx}`} className="flex items-start gap-1.5 text-xs">
+                          <span>{moment.emoji}</span>
+                          <div>
+                            <span className={cn(
+                              "font-medium",
+                              moment.type === 'Intimacy' && "text-pink-500",
+                              moment.type === 'Conflict' && "text-red-500",
+                              moment.type === 'Red Flag' && "text-red-500",
+                              moment.type === 'Green Flag' && "text-emerald-500",
+                              moment.type === 'Menstrual' && "text-purple-500",
+                            )}>
+                              {moment.type}:
+                            </span>
+                            <span className="ml-1">{moment.content.substring(0, 50)}{moment.content.length > 50 ? '...' : ''}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  
+                  {/* Button to add milestone */}
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="w-full mt-1 text-xs h-7" 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedMilestoneDate(day);
+                      setShowMilestoneModal(true);
+                    }}
+                  >
+                    <StarIcon className="mr-1 h-3 w-3" />
+                    Add Milestone
+                  </Button>
                 </div>
               </TooltipContent>
             </Tooltip>
@@ -398,6 +459,16 @@ export function RelationshipCalendar({ selectedConnection }: RelationshipCalenda
           </div>
         </div>
       </div>
+
+      {/* Milestone Modal */}
+      {showMilestoneModal && selectedConnection && (
+        <MilestoneModal 
+          isOpen={showMilestoneModal}
+          onClose={() => setShowMilestoneModal(false)}
+          selectedDate={selectedMilestoneDate}
+          selectedConnection={selectedConnection}
+        />
+      )}
     </div>
   );
 }

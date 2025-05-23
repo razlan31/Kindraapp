@@ -19,6 +19,7 @@ import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { useRelationshipFocus } from '@/contexts/relationship-focus-context';
 import { useToast } from '@/hooks/use-toast';
+import { Connection } from '@shared/schema';
 
 type MilestoneFormValues = z.infer<typeof milestoneFormSchema>;
 
@@ -35,6 +36,7 @@ type MilestoneModalProps = {
   isOpen: boolean;
   onClose: () => void;
   selectedDate: Date;
+  selectedConnection?: Connection;
   existingMilestone?: any; // The milestone to edit if in edit mode
 };
 
@@ -53,11 +55,14 @@ const colorOptions = [
   { value: '#F472B6', label: 'Pink', className: 'bg-pink-400' },
 ];
 
-export function MilestoneModal({ isOpen, onClose, selectedDate, existingMilestone }: MilestoneModalProps) {
+export function MilestoneModal({ isOpen, onClose, selectedDate, selectedConnection, existingMilestone }: MilestoneModalProps) {
   const { mainFocusConnection } = useRelationshipFocus();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  
+  // Use the provided selectedConnection if available, otherwise fall back to mainFocusConnection
+  const connection = selectedConnection || mainFocusConnection;
   
   const isEditMode = !!existingMilestone;
   
