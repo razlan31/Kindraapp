@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useLocation } from "wouter";
-import { Header } from "../components/layout/header";
+import { Header } from "@/components/layout/header";
 import { BottomNavigation } from "@/components/layout/bottom-navigation";
 import { ConnectionCard } from "@/components/dashboard/connection-card";
 import { Connection, Moment } from "@shared/schema";
@@ -77,7 +77,8 @@ export default function ConnectionsNew() {
             variant="default" 
             className="w-full py-6 flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold"
             onClick={() => {
-              window.location.href = "/connections/add";
+              // Use direct DOM navigation as a simple, reliable approach
+              document.location.href = "/connections/add";
             }}
           >
             <UserPlus className="h-5 w-5" />
