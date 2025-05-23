@@ -32,7 +32,7 @@ export function MomentModal() {
   });
   
   // Form schema
-  const formSchema = momentSchema.extend({
+  const formSchema = z.object({
     connectionId: z.number({
       required_error: "Please select a connection",
     }),
@@ -44,7 +44,8 @@ export function MomentModal() {
       .max(500, "Content cannot exceed 500 characters"),
     tags: z.array(z.string()).optional(),
     isPrivate: z.boolean().default(false),
-  }).omit({ userId: true, id: true, createdAt: true });
+    userId: z.number().optional(),
+  });
   
   // Form setup
   const form = useForm<z.infer<typeof formSchema>>({
@@ -97,7 +98,12 @@ export function MomentModal() {
   
   const onSubmit = useCallback((data: z.infer<typeof formSchema>) => {
     if (!user) return;
-    createMoment(data);
+    // Add user ID if not present
+    const momentData = {
+      ...data,
+      userId: user.id
+    };
+    createMoment(momentData);
   }, [user, createMoment]);
   
   return (
