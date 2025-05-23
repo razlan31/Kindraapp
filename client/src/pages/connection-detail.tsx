@@ -20,16 +20,25 @@ export default function ConnectionDetail() {
   const { setMainFocusConnection } = useRelationshipFocus();
   const connectionId = parseInt(id as string);
   
-  // Fetch connection details with staleTime: 0 to always get fresh data
+  // Force reloading of connection data
+  useEffect(() => {
+    // This will clear all the React Query cache when the component mounts
+    if (!isNaN(connectionId)) {
+      queryClient.removeQueries({ queryKey: ['/api/connections', connectionId] });
+    }
+  }, [connectionId, queryClient]);
+
+  // Fetch connection details with cache disabled
   const { data: connection, isLoading, error } = useQuery({
-    queryKey: ['/api/connections', connectionId],
+    queryKey: ['/api/connections', connectionId, Date.now()], // Add timestamp to prevent cache
     queryFn: async () => {
-      const response = await fetch(`/api/connections/${connectionId}`, {
+      const response = await fetch(`/api/connections/${connectionId}?t=${Date.now()}`, {
         credentials: 'include',
-        // Add cache-busting query parameter
+        // Disable caching
         headers: {
-          'Cache-Control': 'no-cache',
-          'Pragma': 'no-cache'
+          'Cache-Control': 'no-store, no-cache, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
         }
       });
       
@@ -37,10 +46,14 @@ export default function ConnectionDetail() {
         throw new Error('Failed to fetch connection details');
       }
       
-      return response.json() as Promise<Connection>;
+      const data = await response.json() as Connection;
+      console.log("Fetched fresh connection data:", data);
+      return data;
     },
-    staleTime: 0, // Always consider data stale to force refetch
-    refetchOnMount: 'always', // Always refetch when the component mounts
+    staleTime: 0, // Always consider data stale
+    cacheTime: 0, // Don't cache at all
+    refetchOnWindowFocus: true, // Refetch when window gets focus
+    refetchOnMount: true, // Always refetch when the component mounts
     enabled: !isNaN(connectionId),
   });
   

@@ -53,11 +53,28 @@ export default function ConnectionEdit() {
       // Handle love languages (they are stored as comma-separated string)
       if (connection.loveLanguage) {
         setLoveLanguages(connection.loveLanguage.split(', ').map(l => l.trim()));
+      } else {
+        setLoveLanguages([]);
       }
       
       setProfileImage(connection.profileImage || "");
     }
   }, [connection]);
+  
+  // Add this new effect to handle query parameter for successful edits
+  useEffect(() => {
+    // Check if we're coming back after a redirect with a success parameter
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('edited') === 'true') {
+      toast({
+        title: "Success!",
+        description: "Connection updated successfully"
+      });
+      
+      // Remove the parameter from the URL without navigating
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+  }, []);
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -123,10 +140,11 @@ export default function ConnectionEdit() {
         // Force a refetch to ensure we have the latest data
         await queryClient.refetchQueries({ queryKey: ['/api/connections', connectionId] });
         
-        // Short delay before redirecting
+        // Force a full page reload to ensure the latest data is displayed
+        // First save to server, then reload the whole page
         setTimeout(() => {
-          setLocation(`/connections/${connectionId}`);
-        }, 100);
+          window.location.href = `/connections/${connectionId}?refresh=${Date.now()}`;
+        }, 200);
       } else {
         const errorData = await response.text();
         console.error("Error response:", errorData);
