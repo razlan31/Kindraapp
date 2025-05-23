@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Connection } from "@shared/schema";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/auth-context";
-import { useRelationshipFocus } from "@/contexts/relationship-focus-context";
+import { useRelationshipFocus } from "@/contexts/relationship-focus-context-simple";
 import { 
   Select,
   SelectContent,

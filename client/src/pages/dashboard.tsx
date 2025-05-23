@@ -21,6 +21,7 @@ export default function Dashboard() {
   const { openMomentModal, openConnectionModal, setSelectedConnection } = useModal();
   const [insight, setInsight] = useState<string>("");
   const [selectedCalendarConnection, setSelectedCalendarConnection] = useState<Connection | null>(null);
+  const { mainFocusConnection } = useRelationshipFocus();
 
   // Fetch connections
   const { data: connections = [] } = useQuery<Connection[]>({
@@ -271,33 +272,17 @@ export default function Dashboard() {
         
         {/* Relationship Calendar */}
         <section className="px-4 py-3 mb-16">
-          <div className="flex justify-between items-center mb-3">
+          <div className="flex justify-between items-center mb-4">
             <h3 className="font-heading font-semibold">Your Calendar</h3>
-            <div className="flex gap-2">
-              <Button 
-                size="sm" 
-                variant={!selectedCalendarConnection ? "default" : "outline"}
-                onClick={() => setSelectedCalendarConnection(null)}
-                className="text-xs"
-              >
-                All
-              </Button>
-              
-              {connections.slice(0, 2).map(connection => (
-                <Button
-                  key={connection.id}
-                  size="sm"
-                  variant={selectedCalendarConnection?.id === connection.id ? "default" : "outline"}
-                  onClick={() => setSelectedCalendarConnection(connection)}
-                  className="text-xs"
-                >
-                  {connection.name}
-                </Button>
-              ))}
-            </div>
           </div>
           
-          <SimplifiedCalendar selectedConnection={selectedCalendarConnection} />
+          {/* Display relationship focus selector for non-monogamous relationships */}
+          {connections.length > 1 && (
+            <FocusSelector />
+          )}
+          
+          {/* Calendar view that shows data based on main focus connection */}
+          <SimplifiedCalendar selectedConnection={mainFocusConnection || selectedCalendarConnection} />
         </section>
       </main>
 
