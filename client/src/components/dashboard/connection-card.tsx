@@ -54,7 +54,7 @@ export function ConnectionCard({
         <div className="flex items-center">
           <Avatar className="h-12 w-12 rounded-full relative mr-3">
             <AvatarImage 
-              src={connection.profileImage} 
+              src={connection.profileImage || undefined} 
               alt={connection.name} 
               className="h-full w-full object-cover rounded-full"
             />

@@ -537,9 +537,11 @@ export default function Insights() {
                         ).length;
                         
                         // Sort moments by date to check for patterns over time
-                        const sortedMoments = [...connectionMoments].sort((a, b) => 
-                          new Date(a.createdAt).valueOf() - new Date(b.createdAt).valueOf()
-                        );
+                        const sortedMoments = [...connectionMoments].sort((a, b) => {
+                          const dateA = new Date(a.createdAt);
+                          const dateB = new Date(b.createdAt);
+                          return dateA.valueOf() - dateB.valueOf();
+                        });
                         
                         // Check for emotional fluctuations (potential mixed signals)
                         let fluctuationCount = 0;

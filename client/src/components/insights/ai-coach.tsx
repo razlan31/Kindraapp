@@ -212,14 +212,18 @@ function generateAIInsights(connections: Connection[], moments: Moment[], userDa
     });
     
     // Check for connections with mixed signals
-    const connectionsWithMixedSignals = connections.filter(connection => {
+    const connectionsWithMixedSignals: Connection[] = [];
+    
+    connections.forEach(connection => {
       const connMoments = connectionMoments[connection.id] || [];
-      if (connMoments.length < 3) return false; // Need at least 3 moments for analysis
+      if (connMoments.length < 3) return; // Need at least 3 moments for analysis
       
       // Check for emotional fluctuations (potential mixed signals)
-      const sortedMoments = [...connMoments].sort((a, b) => 
-        new Date(a.createdAt).valueOf() - new Date(b.createdAt).valueOf()
-      );
+      const sortedMoments = [...connMoments].sort((a, b) => {
+        const dateA = new Date(a.createdAt);
+        const dateB = new Date(b.createdAt);
+        return dateA.valueOf() - dateB.valueOf();
+      });
       
       let fluctuationCount = 0;
       for (let i = 1; i < sortedMoments.length; i++) {
@@ -235,7 +239,9 @@ function generateAIInsights(connections: Connection[], moments: Moment[], userDa
       }
       
       // Consider it mixed signals if there are significant fluctuations
-      return fluctuationCount > sortedMoments.length * 0.4;
+      if (fluctuationCount > sortedMoments.length * 0.4) {
+        connectionsWithMixedSignals.push(connection);
+      }
     });
     
     if (connectionsWithMixedSignals.length > 0) {
