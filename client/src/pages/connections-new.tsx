@@ -33,7 +33,7 @@ export default function ConnectionsNew() {
   const [relationshipStage, setRelationshipStage] = useState("");
   const [startDate, setStartDate] = useState("");
   const [zodiacSign, setZodiacSign] = useState("");
-  const [loveLanguage, setLoveLanguage] = useState("");
+  const [selectedLoveLanguages, setSelectedLoveLanguages] = useState<string[]>([]);
   const [isPrivate, setIsPrivate] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -79,7 +79,7 @@ export default function ConnectionsNew() {
     setRelationshipStage("");
     setStartDate("");
     setZodiacSign("");
-    setLoveLanguage("");
+    setSelectedLoveLanguages([]);
     setIsPrivate(false);
     setErrors({});
   };
@@ -112,7 +112,7 @@ export default function ConnectionsNew() {
       relationshipStage,
       startDate: startDate ? new Date(startDate).toISOString() : null,
       zodiacSign: zodiacSign === "none" ? null : zodiacSign,
-      loveLanguage: loveLanguage === "none" ? null : loveLanguage,
+      loveLanguage: selectedLoveLanguages.length > 0 ? selectedLoveLanguages.join(", ") : null,
       isPrivate,
     };
     
@@ -295,28 +295,59 @@ export default function ConnectionsNew() {
               
               <div className="space-y-2">
                 <Label>Profile Photo</Label>
-                <Button 
-                  type="button"
-                  variant="outline"
-                  className="w-full border border-dashed border-neutral-300 dark:border-neutral-700 rounded-lg p-4 flex flex-col items-center h-auto"
-                  onClick={() => {
-                    setProfileImage("https://randomuser.me/api/portraits/men/32.jpg");
-                  }}
-                >
-                  <div className="h-16 w-16 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-2">
+                <div className="flex flex-col items-center gap-3">
+                  <div className="h-20 w-20 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center overflow-hidden border-2 border-neutral-200 dark:border-neutral-700">
                     {profileImage ? (
                       <img 
                         src={profileImage} 
                         alt="Profile" 
-                        className="h-full w-full object-cover rounded-full"
+                        className="h-full w-full object-cover"
                       />
                     ) : (
-                      <Camera className="h-6 w-6 text-neutral-400" />
+                      <Camera className="h-8 w-8 text-neutral-400" />
                     )}
                   </div>
-                  <span className="text-sm text-primary font-medium">Upload Photo</span>
-                </Button>
-                <p className="text-sm text-gray-500">Choose a profile photo for this connection</p>
+                  
+                  <div className="flex flex-wrap gap-2 justify-center">
+                    <Input
+                      type="url"
+                      placeholder="Enter image URL"
+                      value={profileImage}
+                      onChange={(e) => setProfileImage(e.target.value)}
+                      className="max-w-[180px] text-sm"
+                    />
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      type="button"
+                      onClick={() => setProfileImage("")}
+                      className="text-xs"
+                    >
+                      Clear
+                    </Button>
+                  </div>
+                  
+                  <div className="grid grid-cols-4 gap-2 w-full max-w-[240px] mx-auto">
+                    {["https://randomuser.me/api/portraits/women/32.jpg", 
+                      "https://randomuser.me/api/portraits/men/32.jpg",
+                      "https://randomuser.me/api/portraits/women/68.jpg",
+                      "https://randomuser.me/api/portraits/men/68.jpg"].map((url, i) => (
+                      <Button
+                        key={i}
+                        variant="ghost"
+                        className="p-1 h-auto aspect-square"
+                        type="button"
+                        onClick={() => setProfileImage(url)}
+                      >
+                        <img 
+                          src={url} 
+                          alt={`Avatar option ${i+1}`}
+                          className="w-full h-full rounded-full object-cover"
+                        />
+                      </Button>
+                    ))}
+                  </div>
+                </div>
               </div>
               
               <div className="space-y-2">
@@ -367,20 +398,38 @@ export default function ConnectionsNew() {
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="love" className="text-xs text-neutral-500">Love Language</Label>
-                  <Select value={loveLanguage} onValueChange={setLoveLanguage}>
-                    <SelectTrigger id="love">
-                      <SelectValue placeholder="Select love language" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="none">None</SelectItem>
-                      {loveLanguages.map((language) => (
-                        <SelectItem key={language} value={language}>
+                  <Label className="text-xs text-neutral-500">Love Languages (Select up to 3)</Label>
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {loveLanguages.map((language) => {
+                      const isSelected = selectedLoveLanguages.includes(language);
+                      const canSelect = isSelected || selectedLoveLanguages.length < 3;
+                      
+                      return (
+                        <Button
+                          key={language}
+                          type="button"
+                          variant={isSelected ? "default" : "outline"}
+                          size="sm"
+                          className={`rounded-full text-xs ${!canSelect && !isSelected ? 'opacity-50 cursor-not-allowed' : ''}`}
+                          onClick={() => {
+                            if (isSelected) {
+                              setSelectedLoveLanguages(selectedLoveLanguages.filter(l => l !== language));
+                            } else if (canSelect) {
+                              setSelectedLoveLanguages([...selectedLoveLanguages, language]);
+                            }
+                          }}
+                          disabled={!canSelect && !isSelected}
+                        >
                           {language}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                        </Button>
+                      );
+                    })}
+                  </div>
+                  {selectedLoveLanguages.length > 0 && (
+                    <p className="text-xs text-neutral-500 mt-2">
+                      Selected: {selectedLoveLanguages.join(", ")}
+                    </p>
+                  )}
                 </div>
               </div>
               
