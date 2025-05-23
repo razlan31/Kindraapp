@@ -227,6 +227,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log("Updating connection with data:", req.body);
       const updatedConnection = await storage.updateConnection(connectionId, req.body);
       console.log("Updated connection result:", updatedConnection);
+      
+      if (!updatedConnection) {
+        return res.status(404).json({ message: "Failed to update connection" });
+      }
+      
       res.status(200).json(updatedConnection);
     } catch (error) {
       res.status(500).json({ message: "Server error updating connection" });
