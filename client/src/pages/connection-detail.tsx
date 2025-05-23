@@ -20,12 +20,17 @@ export default function ConnectionDetail() {
   const { setMainFocusConnection } = useRelationshipFocus();
   const connectionId = parseInt(id as string);
   
-  // Fetch connection details
+  // Fetch connection details with staleTime: 0 to always get fresh data
   const { data: connection, isLoading, error } = useQuery({
     queryKey: ['/api/connections', connectionId],
     queryFn: async () => {
       const response = await fetch(`/api/connections/${connectionId}`, {
-        credentials: 'include'
+        credentials: 'include',
+        // Add cache-busting query parameter
+        headers: {
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache'
+        }
       });
       
       if (!response.ok) {
@@ -34,6 +39,8 @@ export default function ConnectionDetail() {
       
       return response.json() as Promise<Connection>;
     },
+    staleTime: 0, // Always consider data stale to force refetch
+    refetchOnMount: 'always', // Always refetch when the component mounts
     enabled: !isNaN(connectionId),
   });
   
