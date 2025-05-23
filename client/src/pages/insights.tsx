@@ -129,6 +129,98 @@ export default function Insights() {
             Discover patterns and trends in your relationships
           </p>
         </section>
+        
+        {/* AI Coach Card - Always shown regardless of moments */}
+        <div className="px-4 mb-6">
+          <Card>
+            <CardHeader className="pb-2">
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="flex items-center gap-2">
+                    <Sparkles className="h-5 w-5 text-primary" />
+                    AI Relationship Coach
+                  </CardTitle>
+                  <CardDescription>
+                    Personalized insights based on your profile
+                  </CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="bg-neutral-50 dark:bg-neutral-800 p-3 rounded-lg">
+                  <div className="flex gap-3 items-start">
+                    <div className="bg-primary/10 p-2 rounded-full">
+                      <Brain className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <p className="text-sm">
+                        {user?.zodiacSign ? 
+                          `As a ${user.zodiacSign}, you likely value ${
+                            ['Aries', 'Leo', 'Sagittarius'].includes(user.zodiacSign) ? 
+                              'passion and excitement in your relationships. Consider partners who can match your energy and enthusiasm.'
+                            : ['Taurus', 'Virgo', 'Capricorn'].includes(user.zodiacSign) ?
+                              'stability and reliability in your connections. Look for consistency in your relationships.'
+                            : ['Gemini', 'Libra', 'Aquarius'].includes(user.zodiacSign) ?
+                              'mental stimulation and variety. Connect with people who engage you intellectually.'
+                            : 'emotional depth and intuitive understanding. Seek partners who honor your sensitivity.'
+                          }`
+                        : "Add your zodiac sign in your profile to receive personalized astrological insights about your relationship patterns."}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="bg-neutral-50 dark:bg-neutral-800 p-3 rounded-lg">
+                  <div className="flex gap-3 items-start">
+                    <div className="bg-primary/10 p-2 rounded-full">
+                      <Heart className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <p className="text-sm">
+                        {user?.loveLanguage ? 
+                          `Your love language is ${user.loveLanguage}. This means you feel most loved through ${
+                            user.loveLanguage === 'Words of Affirmation' ? 
+                              'verbal expressions of appreciation and care. Make sure to communicate this need to your partners.'
+                            : user.loveLanguage === 'Quality Time' ?
+                              'dedicated, undivided attention. Prioritize meaningful time together in your relationships.'
+                            : user.loveLanguage === 'Physical Touch' ?
+                              'physical closeness and affection. Express the importance of this connection to your partners.'
+                            : user.loveLanguage === 'Acts of Service' ?
+                              'actions that show care and support. Look for partners who demonstrate their love through helpful gestures.'
+                            : 'thoughtful and meaningful gifts that show you are seen and understood.'
+                          }`
+                        : "Add your love language to your profile to receive more personalized relationship coaching."}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="bg-neutral-50 dark:bg-neutral-800 p-3 rounded-lg">
+                  <div className="flex gap-3 items-start">
+                    <div className="bg-primary/10 p-2 rounded-full">
+                      <Calendar className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <p className="text-sm">
+                        {moments.length > 0 ? 
+                          `You've tracked ${moments.length} emotional moments. Keep logging to discover deeper patterns in your relationship dynamics.`
+                        : "Start tracking emotional moments to receive AI-powered insights about your relationship patterns."}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                
+                <button 
+                  onClick={() => window.location.href = "/ai-coach"} 
+                  className="w-full bg-primary/10 hover:bg-primary/20 text-primary font-medium py-2 px-4 rounded-md transition-colors"
+                >
+                  Get More AI Coaching
+                </button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
 
         {moments.length > 0 ? (
           <Tabs defaultValue="coach" className="w-full">
