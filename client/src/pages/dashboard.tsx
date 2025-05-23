@@ -134,7 +134,7 @@ export default function Dashboard() {
         
         {/* Relationship Calendar */}
         <section className="px-4 pt-3">
-          <RelationshipCalendar selectedConnection={selectedCalendarConnection} />
+          <SimplifiedCalendar selectedConnection={selectedCalendarConnection} />
           
           {/* Connection filter for calendar */}
           {connections.length > 0 && (
@@ -337,9 +337,7 @@ export default function Dashboard() {
             </div>
           </div>
           
-          <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-sm border border-neutral-100 dark:border-neutral-700 overflow-hidden">
-            <RelationshipCalendar selectedConnection={selectedCalendarConnection} />
-          </div>
+          <SimplifiedCalendar selectedConnection={selectedCalendarConnection} />
         </section>
       </main>
 
