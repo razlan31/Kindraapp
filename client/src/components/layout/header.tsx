@@ -52,7 +52,14 @@ export function Header() {
                 <span>Settings</span>
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={logout}>
+            <DropdownMenuItem onClick={async () => {
+              try {
+                await logout();
+                window.location.reload(); // Force a page refresh after logout
+              } catch (error) {
+                console.error("Logout error:", error);
+              }
+            }}>
               <LogOut className="mr-2 h-4 w-4" />
               <span>Log out</span>
             </DropdownMenuItem>
