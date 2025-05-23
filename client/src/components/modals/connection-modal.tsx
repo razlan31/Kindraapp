@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -11,13 +10,18 @@ import { relationshipStages } from "@shared/schema";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { Label } from "@/components/ui/label";
-import { Camera } from "lucide-react";
+import { Camera, X } from "lucide-react";
 
 export function ConnectionModal() {
   const { connectionModalOpen, closeConnectionModal } = useModal();
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [showModal, setShowModal] = useState(false);
+  
+  useEffect(() => {
+    setShowModal(connectionModalOpen);
+  }, [connectionModalOpen]);
   
   // Form state
   const [name, setName] = useState("");
@@ -43,7 +47,7 @@ export function ConnectionModal() {
         description: "Your new connection has been saved.",
       });
       queryClient.invalidateQueries({ queryKey: ["/api/connections"] });
-      closeConnectionModal();
+      handleClose();
       resetForm();
     },
     onError: (error) => {
@@ -101,6 +105,11 @@ export function ConnectionModal() {
     createConnection(data);
   };
   
+  const handleClose = () => {
+    setShowModal(false);
+    closeConnectionModal();
+  };
+  
   const zodiacSigns = [
     "Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo",
     "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"
@@ -111,14 +120,19 @@ export function ConnectionModal() {
     "Acts of Service", "Receiving Gifts"
   ];
   
+  if (!showModal) return null;
+  
   return (
-    <Dialog open={connectionModalOpen} onOpenChange={(open) => !open && closeConnectionModal()}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle className="font-heading font-semibold">Add New Connection</DialogTitle>
-        </DialogHeader>
+    <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+      <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
+        <div className="flex items-center justify-between p-4 border-b">
+          <h2 className="font-heading font-semibold text-lg">Add New Connection</h2>
+          <Button variant="ghost" size="icon" onClick={handleClose}>
+            <X className="h-4 w-4" />
+          </Button>
+        </div>
         
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="p-4 space-y-4">
           <div className="space-y-2">
             <Label htmlFor="name">Name</Label>
             <Input 
@@ -235,13 +249,13 @@ export function ConnectionModal() {
             </div>
           </div>
           
-          <DialogFooter>
+          <div className="pt-2">
             <Button type="submit" className="w-full bg-primary text-white" disabled={isPending}>
               {isPending ? "Adding..." : "Add Connection"}
             </Button>
-          </DialogFooter>
+          </div>
         </form>
-      </DialogContent>
-    </Dialog>
+      </div>
+    </div>
   );
 }
