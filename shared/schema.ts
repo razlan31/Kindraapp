@@ -147,3 +147,21 @@ export const menstrualCycles = pgTable("menstrual_cycles", {
 export const menstrualCycleSchema = createInsertSchema(menstrualCycles).omit({ id: true });
 export type InsertMenstrualCycle = z.infer<typeof menstrualCycleSchema>;
 export type MenstrualCycle = typeof menstrualCycles.$inferSelect;
+
+// Relationship Milestones
+export const milestones = pgTable("milestones", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  connectionId: integer("connection_id").notNull(),
+  title: text("title").notNull(),
+  description: text("description"),
+  date: timestamp("date").notNull(),
+  isAnniversary: boolean("is_anniversary").default(false),
+  isRecurring: boolean("is_recurring").default(false),
+  color: text("color").default("#C084FC"), // Default milestone color
+  icon: text("icon").default("cake"),
+});
+
+export const milestoneSchema = createInsertSchema(milestones).omit({ id: true });
+export type InsertMilestone = z.infer<typeof milestoneSchema>;
+export type Milestone = typeof milestones.$inferSelect;
