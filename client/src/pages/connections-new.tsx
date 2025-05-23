@@ -16,8 +16,9 @@ import { apiRequest } from "@/lib/queryClient";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Users } from "lucide-react";
 
-export default function Connections() {
+export default function ConnectionsNew() {
   const { user } = useAuth();
   const { setSelectedConnection } = useModal();
   const [searchTerm, setSearchTerm] = useState("");
@@ -48,40 +49,6 @@ export default function Connections() {
     enabled: !!user,
   });
 
-  const handleSelectConnection = (connection: Connection) => {
-    setSelectedConnection(connection.id);
-    // In a full implementation, this would navigate to a connection details page
-    // navigate(`/connections/${connection.id}`);
-  };
-
-  // Filter connections based on search term and filter stage
-  const filteredConnections = connections.filter(connection => {
-    const matchesSearch = connection.name.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStage = filterStage ? connection.relationshipStage === filterStage : true;
-    return matchesSearch && matchesStage;
-  });
-
-  // Get recent emojis for each connection
-  const getConnectionEmojis = (connectionId: number) => {
-    const connectionMoments = moments.filter(m => m.connectionId === connectionId);
-    const recentEmojis = connectionMoments
-      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-      .slice(0, 3)
-      .map(m => m.emoji);
-    
-    return recentEmojis.length > 0 ? recentEmojis : ["😊", "❤️", "✨"];
-  };
-
-  // Calculate flag counts for each connection
-  const getConnectionFlagCounts = (connectionId: number) => {
-    const connectionMoments = moments.filter(m => m.connectionId === connectionId);
-    
-    return {
-      green: connectionMoments.filter(m => m.tags?.includes('Green Flag')).length,
-      red: connectionMoments.filter(m => m.tags?.includes('Red Flag')).length
-    };
-  };
-
   // Create connection mutation
   const { mutate: createConnection, isPending } = useMutation({
     mutationFn: async (data: any) => {
@@ -105,7 +72,7 @@ export default function Connections() {
       });
     },
   });
-  
+
   const resetForm = () => {
     setName("");
     setProfileImage("");
@@ -116,7 +83,7 @@ export default function Connections() {
     setIsPrivate(false);
     setErrors({});
   };
-  
+
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
     
@@ -133,7 +100,7 @@ export default function Connections() {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-  
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -151,7 +118,45 @@ export default function Connections() {
     
     createConnection(data);
   };
-  
+
+  const handleSelectConnection = (connection: Connection) => {
+    setSelectedConnection(connection.id);
+    // In a full implementation, this would navigate to a connection details page
+    // navigate(`/connections/${connection.id}`);
+  };
+
+  // Filter connections based on search term and filter stage
+  const filteredConnections = connections.filter(connection => {
+    const matchesSearch = connection.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStage = filterStage ? connection.relationshipStage === filterStage : true;
+    return matchesSearch && matchesStage;
+  });
+
+  // Get recent emojis for each connection
+  const getConnectionEmojis = (connectionId: number) => {
+    const connectionMoments = moments.filter(m => m.connectionId === connectionId);
+    const recentEmojis = connectionMoments
+      .sort((a, b) => {
+        const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return dateB - dateA;
+      })
+      .slice(0, 3)
+      .map(m => m.emoji);
+    
+    return recentEmojis.length > 0 ? recentEmojis : ["😊", "❤️", "✨"];
+  };
+
+  // Calculate flag counts for each connection
+  const getConnectionFlagCounts = (connectionId: number) => {
+    const connectionMoments = moments.filter(m => m.connectionId === connectionId);
+    
+    return {
+      green: connectionMoments.filter(m => m.tags?.includes('Green Flag')).length,
+      red: connectionMoments.filter(m => m.tags?.includes('Red Flag')).length
+    };
+  };
+
   const zodiacSigns = [
     "Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo",
     "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"
@@ -161,7 +166,7 @@ export default function Connections() {
     "Words of Affirmation", "Quality Time", "Physical Touch",
     "Acts of Service", "Receiving Gifts"
   ];
-  
+
   return (
     <div className="max-w-md mx-auto bg-white dark:bg-neutral-900 min-h-screen flex flex-col relative">
       <Header />
@@ -184,7 +189,7 @@ export default function Connections() {
               variant="outline" 
               size="icon"
               className="rounded-full"
-              onClick={openConnectionModal}
+              onClick={() => setShowModal(true)}
             >
               <Plus className="h-4 w-4" />
             </Button>
@@ -254,7 +259,7 @@ export default function Connections() {
                 Add your first connection to start tracking your relationships
               </p>
               <Button 
-                onClick={openConnectionModal}
+                onClick={() => setShowModal(true)}
                 className="bg-primary text-white"
               >
                 <Plus className="h-4 w-4 mr-2" /> Add Connection
@@ -264,10 +269,145 @@ export default function Connections() {
         </section>
       </main>
 
+      {/* Connection Modal */}
+      {showModal && (
+        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between p-4 border-b">
+              <h2 className="font-heading font-semibold text-lg">Add New Connection</h2>
+              <Button variant="ghost" size="icon" onClick={() => setShowModal(false)}>
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+            
+            <form onSubmit={handleSubmit} className="p-4 space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="name">Name</Label>
+                <Input 
+                  id="name"
+                  value={name} 
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Enter name" 
+                />
+                {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
+              </div>
+              
+              <div className="space-y-2">
+                <Label>Profile Photo</Label>
+                <Button 
+                  type="button"
+                  variant="outline"
+                  className="w-full border border-dashed border-neutral-300 dark:border-neutral-700 rounded-lg p-4 flex flex-col items-center h-auto"
+                  onClick={() => {
+                    setProfileImage("https://randomuser.me/api/portraits/men/32.jpg");
+                  }}
+                >
+                  <div className="h-16 w-16 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-2">
+                    {profileImage ? (
+                      <img 
+                        src={profileImage} 
+                        alt="Profile" 
+                        className="h-full w-full object-cover rounded-full"
+                      />
+                    ) : (
+                      <Camera className="h-6 w-6 text-neutral-400" />
+                    )}
+                  </div>
+                  <span className="text-sm text-primary font-medium">Upload Photo</span>
+                </Button>
+                <p className="text-sm text-gray-500">Choose a profile photo for this connection</p>
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="stage">Relationship Stage</Label>
+                <Select value={relationshipStage} onValueChange={setRelationshipStage}>
+                  <SelectTrigger id="stage">
+                    <SelectValue placeholder="Select stage" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {relationshipStages.map((stage) => (
+                      <SelectItem key={stage} value={stage}>
+                        {stage}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {errors.relationshipStage && <p className="text-sm text-red-500">{errors.relationshipStage}</p>}
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="startDate">Started talking/dating</Label>
+                <Input 
+                  id="startDate"
+                  type="date" 
+                  value={startDate} 
+                  onChange={(e) => setStartDate(e.target.value)} 
+                />
+              </div>
+              
+              <div className="space-y-3 bg-neutral-50 dark:bg-neutral-900 p-4 rounded-lg">
+                <h3 className="text-sm font-medium">Optional Details</h3>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="zodiac" className="text-xs text-neutral-500">Zodiac Sign</Label>
+                  <Select value={zodiacSign} onValueChange={setZodiacSign}>
+                    <SelectTrigger id="zodiac">
+                      <SelectValue placeholder="Select sign" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">None</SelectItem>
+                      {zodiacSigns.map((sign) => (
+                        <SelectItem key={sign} value={sign}>
+                          {sign}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="love" className="text-xs text-neutral-500">Love Language</Label>
+                  <Select value={loveLanguage} onValueChange={setLoveLanguage}>
+                    <SelectTrigger id="love">
+                      <SelectValue placeholder="Select love language" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">None</SelectItem>
+                      {loveLanguages.map((language) => (
+                        <SelectItem key={language} value={language}>
+                          {language}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              
+              <div className="flex items-start space-x-3 space-y-0 rounded-md border p-4">
+                <Checkbox
+                  id="private"
+                  checked={isPrivate}
+                  onCheckedChange={(checked) => setIsPrivate(checked === true)}
+                />
+                <div className="space-y-1 leading-none">
+                  <Label htmlFor="private">Keep this connection private</Label>
+                  <p className="text-sm text-gray-500">
+                    Private connections are only visible to you
+                  </p>
+                </div>
+              </div>
+              
+              <div className="pt-2">
+                <Button type="submit" className="w-full bg-primary text-white" disabled={isPending}>
+                  {isPending ? "Adding..." : "Add Connection"}
+                </Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       <BottomNavigation />
     </div>
   );
 }
-
-// Import at the top of the file
-import { Users } from "lucide-react";
