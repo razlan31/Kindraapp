@@ -47,6 +47,8 @@ export function MomentModal() {
     isIntimate: z.boolean().default(false),
     intimacyRating: z.string().optional(),
     relatedToMenstrualCycle: z.boolean().default(false),
+    isMilestone: z.boolean().default(false),
+    milestoneTitle: z.string().optional(),
     userId: z.number().optional(),
   });
   
@@ -59,6 +61,8 @@ export function MomentModal() {
       content: "",
       tags: [],
       isPrivate: false,
+      isMilestone: false,
+      milestoneTitle: "",
     },
   });
   
@@ -99,6 +103,27 @@ export function MomentModal() {
     },
   });
   
+  // Milestone creation mutation
+  const { mutate: createMilestone } = useMutation({
+    mutationFn: async (milestoneData: any) => {
+      return await apiRequest("POST", "/api/milestones", milestoneData);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/milestones"] });
+      toast({
+        title: "Milestone created",
+        description: "Your milestone has been added to your journey",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Failed to create milestone",
+        description: error.message || "Please try again later.",
+        variant: "destructive",
+      });
+    },
+  });
+  
   const onSubmit = useCallback((data: z.infer<typeof formSchema>) => {
     if (!user) return;
     // Add user ID if not present
@@ -106,8 +131,27 @@ export function MomentModal() {
       ...data,
       userId: user.id
     };
+    
+    // Create the moment
     createMoment(momentData);
-  }, [user, createMoment]);
+    
+    // If marked as milestone, also create a milestone entry
+    if (data.isMilestone && data.milestoneTitle) {
+      const milestoneData = {
+        userId: user.id,
+        connectionId: data.connectionId,
+        title: data.milestoneTitle,
+        description: data.content,
+        date: new Date(),
+        icon: "star", // Default icon for moments converted to milestones
+        color: "#FBBF24", // Default amber color
+        isAnniversary: false,
+        isRecurring: false
+      };
+      
+      createMilestone(milestoneData);
+    }
+  }, [user, createMoment, createMilestone]);
   
   return (
     <Dialog open={momentModalOpen} onOpenChange={(open) => !open && closeMomentModal()}>
@@ -301,6 +345,49 @@ export function MomentModal() {
                 </FormItem>
               )}
             />
+            
+            <FormField
+              control={form.control}
+              name="isMilestone"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>Mark as milestone</FormLabel>
+                    <FormDescription>
+                      Important moments in your relationship journey (e.g., first date, anniversary)
+                    </FormDescription>
+                  </div>
+                </FormItem>
+              )}
+            />
+            
+            {form.watch("isMilestone") && (
+              <FormField
+                control={form.control}
+                name="milestoneTitle"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Milestone Title</FormLabel>
+                    <FormControl>
+                      <Input 
+                        placeholder="E.g., First Date, Anniversary, First Trip Together" 
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Give your milestone a memorable title
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
             
             <FormField
               control={form.control}
