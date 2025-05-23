@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Link } from "wouter";
 import { Header } from "@/components/layout/header";
 import { BottomNavigation } from "@/components/layout/bottom-navigation";
 import { ConnectionCard } from "@/components/dashboard/connection-card";
@@ -180,16 +181,15 @@ export default function Connections() {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            <Button 
-              variant="outline" 
-              size="icon"
-              className="rounded-full"
-              asChild
-            >
-              <Link href="/connections-new">
+            <Link href="/connections-new">
+              <Button 
+                variant="outline" 
+                size="icon"
+                className="rounded-full"
+              >
                 <Plus className="h-4 w-4" />
-              </Link>
-            </Button>
+              </Button>
+            </Link>
           </div>
 
           <div className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1">
