@@ -157,10 +157,7 @@ export default function ConnectionDetail() {
       .toUpperCase();
   };
   
-  const getDurationText = (startDate: Date | null) => {
-    if (!startDate) return "Not specified";
-    return formatDistanceToNow(new Date(startDate), { addSuffix: false });
-  };
+  // Function removed as startDate feature is no longer needed
   
   if (isLoading) {
     return (
@@ -270,11 +267,6 @@ export default function ConnectionDetail() {
           <h3 className="font-semibold mb-4">Relationship Details</h3>
           
           <div className="space-y-4">
-            <div className="flex justify-between">
-              <div className="text-neutral-500">Relationship Duration</div>
-              <div>{getDurationText(connection.startDate)}</div>
-            </div>
-            
             <div className="flex justify-between">
               <div className="text-neutral-500">Zodiac Sign</div>
               <div>{connection.zodiacSign || "Not specified"}</div>
