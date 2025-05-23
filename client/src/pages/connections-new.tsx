@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useLocation } from "wouter";
 import { Header } from "@/components/layout/header";
 import { BottomNavigation } from "@/components/layout/bottom-navigation";
 import { ConnectionCard } from "@/components/dashboard/connection-card";
@@ -26,6 +27,7 @@ export default function ConnectionsNew() {
   const [showModal, setShowModal] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [, setLocation] = useLocation();
   
   // Form state for connection modal
   const [name, setName] = useState("");
@@ -190,7 +192,7 @@ export default function ConnectionsNew() {
               variant="outline" 
               size="icon"
               className="rounded-full"
-              onClick={() => setShowModal(true)}
+              onClick={() => setLocation("/connections/add")}
             >
               <Plus className="h-4 w-4" />
             </Button>
