@@ -25,7 +25,13 @@ const loveLanguages = [
   "Quality Time",
   "Physical Touch",
   "Acts of Service",
-  "Receiving Gifts"
+  "Receiving Gifts",
+  "Gift Giving",
+  "Touch",
+  "Time Together",
+  "Verbal Appreciation",
+  "Helpful Actions",
+  "Not Specified"
 ];
 
 export default function ConnectionsForm() {

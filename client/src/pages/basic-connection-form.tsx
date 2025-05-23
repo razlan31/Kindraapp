@@ -268,7 +268,13 @@ export default function BasicConnectionForm() {
                     "Physical Touch",
                     "Quality Time",
                     "Acts of Service",
-                    "Receiving Gifts"
+                    "Receiving Gifts",
+                    "Gift Giving",
+                    "Touch",
+                    "Time Together",
+                    "Verbal Appreciation",
+                    "Helpful Actions",
+                    "Not Specified"
                   ].map((language) => {
                     const isSelected = loveLanguages.includes(language);
                     

@@ -22,10 +22,16 @@ const zodiacSigns = [
 
 const loveLanguages = [
   "Words of Affirmation",
-  "Quality Time",
+  "Quality Time", 
   "Physical Touch",
   "Acts of Service",
-  "Receiving Gifts"
+  "Receiving Gifts",
+  "Gift Giving",
+  "Touch",
+  "Time Together",
+  "Verbal Appreciation",
+  "Helpful Actions",
+  "Not Specified"
 ];
 
 export default function ConnectionsFormNew() {
