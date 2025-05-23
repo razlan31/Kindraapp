@@ -37,20 +37,25 @@ export default function SimpleConnectionForm() {
     setIsSubmitting(true);
     
     try {
+      // Create a simple data object with just the required fields
+      const connectionData = {
+        name: name.trim(),
+        relationshipStage: stage
+      };
+      
+      // Only add optional fields if they have values
+      if (zodiacSign) connectionData['zodiacSign'] = zodiacSign;
+      if (loveLanguage) connectionData['loveLanguage'] = loveLanguage;
+      if (isPrivate) connectionData['isPrivate'] = true;
+      
+      console.log("Sending connection data:", connectionData);
+      
       const response = await fetch("/api/connections", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({
-          name: name.trim(),
-          relationshipStage: stage,
-          zodiacSign: zodiacSign || null,
-          loveLanguage: loveLanguage || null,
-          // Omit startDate completely if empty
-          ...(startDate ? { startDate: startDate } : {}),
-          isPrivate
-        }),
+        body: JSON.stringify(connectionData),
         credentials: "include"
       });
       

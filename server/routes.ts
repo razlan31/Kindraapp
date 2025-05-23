@@ -153,11 +153,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/connections", isAuthenticated, async (req, res) => {
     try {
       const userId = req.session.userId as number;
-      const connectionData = connectionSchema.parse({ ...req.body, userId });
       
+      // Pre-process date fields before validation
+      const data = { ...req.body, userId };
+      
+      // If startDate is provided as a string, convert it to a Date object
+      if (data.startDate && typeof data.startDate === 'string') {
+        try {
+          data.startDate = new Date(data.startDate);
+        } catch (e) {
+          data.startDate = null; // If date parsing fails, set to null
+        }
+      }
+      
+      const connectionData = connectionSchema.parse(data);
       const newConnection = await storage.createConnection(connectionData);
       res.status(201).json(newConnection);
     } catch (error) {
+      console.error("Connection creation error:", error);
       if (error instanceof z.ZodError) {
         res.status(400).json({ message: "Invalid input", errors: error.errors });
       } else {
