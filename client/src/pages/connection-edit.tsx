@@ -114,10 +114,19 @@ export default function ConnectionEdit() {
           description: "Connection updated successfully"
         });
         
-        // Invalidate and redirect
-        queryClient.invalidateQueries({ queryKey: ['/api/connections'] });
-        queryClient.invalidateQueries({ queryKey: ['/api/connections', connectionId] });
-        setLocation(`/connections/${connectionId}`);
+        // Invalidate queries and wait for them to complete
+        await Promise.all([
+          queryClient.invalidateQueries({ queryKey: ['/api/connections'] }),
+          queryClient.invalidateQueries({ queryKey: ['/api/connections', connectionId] })
+        ]);
+        
+        // Force a refetch to ensure we have the latest data
+        await queryClient.refetchQueries({ queryKey: ['/api/connections', connectionId] });
+        
+        // Short delay before redirecting
+        setTimeout(() => {
+          setLocation(`/connections/${connectionId}`);
+        }, 100);
       } else {
         const errorData = await response.text();
         console.error("Error response:", errorData);
@@ -145,10 +154,19 @@ export default function ConnectionEdit() {
             description: "Connection updated successfully"
           });
           
-          // Invalidate and redirect
-          queryClient.invalidateQueries({ queryKey: ['/api/connections'] });
-          queryClient.invalidateQueries({ queryKey: ['/api/connections', connectionId] });
-          setLocation(`/connections/${connectionId}`);
+          // Invalidate queries and wait for them to complete
+          await Promise.all([
+            queryClient.invalidateQueries({ queryKey: ['/api/connections'] }),
+            queryClient.invalidateQueries({ queryKey: ['/api/connections', connectionId] })
+          ]);
+          
+          // Force a refetch to ensure we have the latest data
+          await queryClient.refetchQueries({ queryKey: ['/api/connections', connectionId] });
+          
+          // Then redirect
+          setTimeout(() => {
+            setLocation(`/connections/${connectionId}`);
+          }, 100);
           return;
         }
       } catch (verifyError) {
