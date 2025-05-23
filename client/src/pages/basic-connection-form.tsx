@@ -15,6 +15,7 @@ export default function BasicConnectionForm() {
   const [name, setName] = useState("");
   const [stage, setStage] = useState("Talking Stage");
   const [zodiacSign, setZodiacSign] = useState("");
+  const [loveLanguage, setLoveLanguage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   const handleSubmit = async (e: React.FormEvent) => {
@@ -37,9 +38,13 @@ export default function BasicConnectionForm() {
         relationshipStage: stage
       };
       
-      // Add zodiac sign if selected
+      // Add optional fields if selected
       if (zodiacSign) {
         connectionData['zodiacSign'] = zodiacSign;
+      }
+      
+      if (loveLanguage) {
+        connectionData['loveLanguage'] = loveLanguage;
       }
       
       console.log("Sending data:", connectionData);
@@ -155,6 +160,24 @@ export default function BasicConnectionForm() {
                 <option value="Capricorn">Capricorn</option>
                 <option value="Aquarius">Aquarius</option>
                 <option value="Pisces">Pisces</option>
+              </select>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Love Language
+              </label>
+              <select
+                value={loveLanguage}
+                onChange={(e) => setLoveLanguage(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md"
+              >
+                <option value="">Select love language (optional)</option>
+                <option value="Words of Affirmation">Words of Affirmation</option>
+                <option value="Physical Touch">Physical Touch</option>
+                <option value="Quality Time">Quality Time</option>
+                <option value="Acts of Service">Acts of Service</option>
+                <option value="Receiving Gifts">Receiving Gifts</option>
               </select>
             </div>
             
