@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { Connection, Moment } from "@shared/schema";
+import { AICoach } from "@/components/insights/ai-coach";
 import { 
   BarChart, 
   Bar, 
@@ -130,9 +131,12 @@ export default function Insights() {
         </section>
 
         {moments.length > 0 ? (
-          <Tabs defaultValue="emotions" className="w-full">
+          <Tabs defaultValue="coach" className="w-full">
             <div className="px-4">
-              <TabsList className="grid w-full grid-cols-4">
+              <TabsList className="grid w-full grid-cols-5">
+                <TabsTrigger value="coach">
+                  <Sparkles className="h-4 w-4 mr-1" /> Coach
+                </TabsTrigger>
                 <TabsTrigger value="emotions">
                   <Heart className="h-4 w-4 mr-1" /> Emotions
                 </TabsTrigger>
@@ -147,6 +151,18 @@ export default function Insights() {
                 </TabsTrigger>
               </TabsList>
             </div>
+
+            {/* AI Coach Tab */}
+            <TabsContent value="coach" className="px-4 py-4">
+              <AICoach 
+                connections={connections} 
+                moments={moments} 
+                userData={{
+                  zodiacSign: user?.zodiacSign || undefined,
+                  loveLanguage: user?.loveLanguage || undefined
+                }}
+              />
+            </TabsContent>
 
             {/* Emotions Tab */}
             <TabsContent value="emotions" className="px-4 py-4">
