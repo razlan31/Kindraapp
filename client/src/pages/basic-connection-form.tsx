@@ -15,7 +15,7 @@ export default function BasicConnectionForm() {
   const queryClient = useQueryClient();
   
   const [name, setName] = useState("");
-  const [stage, setStage] = useState("Talking Stage");
+  const [stage, setStage] = useState("Talking");
   const [startDate, setStartDate] = useState("");
   const [zodiacSign, setZodiacSign] = useState("");
   const [loveLanguages, setLoveLanguages] = useState<string[]>([]);
