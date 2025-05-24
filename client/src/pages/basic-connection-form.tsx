@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { relationshipStages } from "@shared/schema";
+import { relationshipStages, type InsertConnection } from "@shared/schema";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
 import { BottomNavigation } from "@/components/layout/bottom-navigation";
@@ -36,28 +36,29 @@ export default function BasicConnectionForm() {
     setIsSubmitting(true);
     
     try {
-      // Create connection data object
-      const connectionData = {
+      // Create connection data object with proper typing
+      const connectionData: Partial<InsertConnection> = {
         name: name.trim(),
-        relationshipStage: stage
+        relationshipStage: stage,
+        isPrivate: false
       };
       
       // Add optional fields if selected
       if (startDate) {
-        connectionData['startDate'] = startDate;
+        connectionData.startDate = new Date(startDate);
       }
       
       if (zodiacSign) {
-        connectionData['zodiacSign'] = zodiacSign;
+        connectionData.zodiacSign = zodiacSign;
       }
       
       if (loveLanguages.length > 0) {
         // Store multiple love languages as a comma-separated string
-        connectionData['loveLanguage'] = loveLanguages.join(', ');
+        connectionData.loveLanguage = loveLanguages.join(', ');
       }
       
       if (profileImage) {
-        connectionData['profileImage'] = profileImage;
+        connectionData.profileImage = profileImage;
       }
       
       console.log("Sending data:", connectionData);
