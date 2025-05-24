@@ -36,8 +36,8 @@ export default function BasicConnectionForm() {
     setIsSubmitting(true);
     
     try {
-      // Create connection data object
-      const connectionData = {
+      // Create connection data object with proper typing
+      const connectionData: any = {
         name: name.trim(),
         relationshipStage: stage
       };
