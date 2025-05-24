@@ -149,32 +149,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = req.session.userId as number;
       console.log("User ID:", userId, "Request body:", req.body);
       
-      // Pre-process date fields before validation
-      const data = { ...req.body, userId };
+      // Safely construct connection data
+      const connectionData = {
+        userId: userId,
+        name: req.body.name,
+        relationshipStage: req.body.relationshipStage,
+        startDate: req.body.startDate ? new Date(req.body.startDate) : null,
+        zodiacSign: req.body.zodiacSign || null,
+        loveLanguage: req.body.loveLanguage || null,
+        profileImage: req.body.profileImage || null,
+        isPrivate: req.body.isPrivate === true
+      };
       
-      // If startDate is provided as a string, convert it to a Date object
-      if (data.startDate && typeof data.startDate === 'string') {
-        try {
-          data.startDate = new Date(data.startDate);
-        } catch (e) {
-          data.startDate = null; // If date parsing fails, set to null
-        }
-      }
+      console.log("Manually created connection data:", connectionData);
       
-      console.log("Data before validation:", data);
-      const connectionData = connectionSchema.parse(data);
-      console.log("Connection data after validation:", connectionData);
+      // Create the connection directly using our prepared data
       const newConnection = await storage.createConnection(connectionData);
       console.log("New connection created:", newConnection);
       res.status(201).json(newConnection);
     } catch (error) {
       console.error("Connection creation error:", error);
-      if (error instanceof z.ZodError) {
-        console.error("Validation errors:", error.errors);
-        res.status(400).json({ message: "Invalid input", errors: error.errors });
-      } else {
-        res.status(500).json({ message: "Server error creating connection" });
-      }
+      // Send detailed error information to help debugging
+      res.status(500).json({ 
+        message: "Server error creating connection", 
+        error: error instanceof Error ? error.message : String(error) 
+      });
     }
   });
 

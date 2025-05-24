@@ -37,28 +37,15 @@ export default function BasicConnectionForm() {
     
     try {
       // Create connection data object with proper typing
-      const connectionData: any = {
+      const connectionData = {
         name: name.trim(),
-        relationshipStage: stage
+        relationshipStage: stage,
+        startDate: startDate || null,
+        zodiacSign: zodiacSign || null,
+        loveLanguage: loveLanguages.length > 0 ? loveLanguages.join(', ') : null,
+        profileImage: profileImage || null,
+        isPrivate: false
       };
-      
-      // Add optional fields if selected
-      if (startDate) {
-        connectionData['startDate'] = startDate;
-      }
-      
-      if (zodiacSign) {
-        connectionData['zodiacSign'] = zodiacSign;
-      }
-      
-      if (loveLanguages.length > 0) {
-        // Store multiple love languages as a comma-separated string
-        connectionData['loveLanguage'] = loveLanguages.join(', ');
-      }
-      
-      if (profileImage) {
-        connectionData['profileImage'] = profileImage;
-      }
       
       console.log("Sending data:", connectionData);
       
