@@ -152,7 +152,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/connections", isAuthenticated, async (req, res) => {
     try {
+      console.log("Creating new connection. Session:", req.session);
       const userId = req.session.userId as number;
+      console.log("User ID:", userId, "Request body:", req.body);
       
       // Pre-process date fields before validation
       const data = { ...req.body, userId };
@@ -166,12 +168,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
       
+      console.log("Data before validation:", data);
       const connectionData = connectionSchema.parse(data);
+      console.log("Connection data after validation:", connectionData);
       const newConnection = await storage.createConnection(connectionData);
+      console.log("New connection created:", newConnection);
       res.status(201).json(newConnection);
     } catch (error) {
       console.error("Connection creation error:", error);
       if (error instanceof z.ZodError) {
+        console.error("Validation errors:", error.errors);
         res.status(400).json({ message: "Invalid input", errors: error.errors });
       } else {
         res.status(500).json({ message: "Server error creating connection" });

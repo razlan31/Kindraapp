@@ -251,7 +251,7 @@ export default function ConnectionDetail() {
           
           <div className="space-y-4">
             <div className="flex justify-between">
-              <div className="text-neutral-500">Started Dating</div>
+              <div className="text-neutral-500">Connection Started</div>
               <div>{getFormattedDate(connection.startDate)}</div>
             </div>
             

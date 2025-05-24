@@ -240,7 +240,7 @@ export default function ConnectionEdit() {
             
             <div>
               <label className="block text-sm font-medium mb-2">
-                When did you start talking/dating?
+                When did you start this connection?
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -254,7 +254,7 @@ export default function ConnectionEdit() {
                 />
               </div>
               <p className="text-xs text-neutral-500 mt-1">
-                Track when this connection began
+                Track when you first connected with this person
               </p>
             </div>
             

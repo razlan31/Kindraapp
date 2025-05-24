@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { relationshipStages, type InsertConnection } from "@shared/schema";
+import { relationshipStages } from "@shared/schema";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
 import { BottomNavigation } from "@/components/layout/bottom-navigation";
@@ -15,7 +15,7 @@ export default function BasicConnectionForm() {
   const queryClient = useQueryClient();
   
   const [name, setName] = useState("");
-  const [stage, setStage] = useState("Talking Stage");
+  const [stage, setStage] = useState("Talking");
   const [startDate, setStartDate] = useState("");
   const [zodiacSign, setZodiacSign] = useState("");
   const [loveLanguages, setLoveLanguages] = useState<string[]>([]);
@@ -36,29 +36,28 @@ export default function BasicConnectionForm() {
     setIsSubmitting(true);
     
     try {
-      // Create connection data object with proper typing
-      const connectionData: Partial<InsertConnection> = {
+      // Create connection data object
+      const connectionData = {
         name: name.trim(),
-        relationshipStage: stage,
-        isPrivate: false
+        relationshipStage: stage
       };
       
       // Add optional fields if selected
       if (startDate) {
-        connectionData.startDate = new Date(startDate);
+        connectionData['startDate'] = startDate;
       }
       
       if (zodiacSign) {
-        connectionData.zodiacSign = zodiacSign;
+        connectionData['zodiacSign'] = zodiacSign;
       }
       
       if (loveLanguages.length > 0) {
         // Store multiple love languages as a comma-separated string
-        connectionData.loveLanguage = loveLanguages.join(', ');
+        connectionData['loveLanguage'] = loveLanguages.join(', ');
       }
       
       if (profileImage) {
-        connectionData.profileImage = profileImage;
+        connectionData['profileImage'] = profileImage;
       }
       
       console.log("Sending data:", connectionData);
@@ -154,7 +153,7 @@ export default function BasicConnectionForm() {
             
             <div>
               <label className="block text-sm font-medium mb-2">
-                When did you start talking/dating?
+                When did you start this connection?
               </label>
               <Input
                 type="date"
@@ -163,7 +162,7 @@ export default function BasicConnectionForm() {
                 placeholder="Select the date you started connecting"
                 className="w-full"
               />
-              <p className="text-xs text-neutral-500 mt-1">Track when this connection began</p>
+              <p className="text-xs text-neutral-500 mt-1">Track when you first connected with this person</p>
             </div>
             
             <div>
