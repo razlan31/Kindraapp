@@ -15,7 +15,7 @@ export default function BasicConnectionForm() {
   const queryClient = useQueryClient();
   
   const [name, setName] = useState("");
-  const [stage, setStage] = useState("Talking");
+  const [stage, setStage] = useState("Talking Stage");
   const [startDate, setStartDate] = useState("");
   const [zodiacSign, setZodiacSign] = useState("");
   const [loveLanguages, setLoveLanguages] = useState<string[]>([]);
@@ -153,7 +153,7 @@ export default function BasicConnectionForm() {
             
             <div>
               <label className="block text-sm font-medium mb-2">
-                When did you start this connection?
+                When did you start talking/dating?
               </label>
               <Input
                 type="date"
@@ -162,7 +162,7 @@ export default function BasicConnectionForm() {
                 placeholder="Select the date you started connecting"
                 className="w-full"
               />
-              <p className="text-xs text-neutral-500 mt-1">Track when you first connected with this person</p>
+              <p className="text-xs text-neutral-500 mt-1">Track when this connection began</p>
             </div>
             
             <div>

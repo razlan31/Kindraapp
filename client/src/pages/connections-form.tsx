@@ -220,7 +220,7 @@ export default function ConnectionsForm() {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="startDate" className="text-sm font-medium">When did you start this connection?</Label>
+              <Label htmlFor="startDate" className="text-sm font-medium">When did you start talking/dating?</Label>
               <Input
                 id="startDate"
                 type="date"
@@ -229,7 +229,7 @@ export default function ConnectionsForm() {
                 placeholder="Select the date you started connecting"
                 className="w-full"
               />
-              <p className="text-xs text-neutral-500">Track when you first connected with this person</p>
+              <p className="text-xs text-neutral-500">Track when this connection began</p>
             </div>
             
             <div className="space-y-2">
