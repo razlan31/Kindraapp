@@ -427,7 +427,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = req.session.userId as number;
       const momentId = parseInt(req.params.id);
-      const { content, reflection } = req.body;
+      const { content, reflection, emoji, tags, isIntimate, isResolved, resolvedAt, resolutionNotes, intimacyRating } = req.body;
       
       if (isNaN(momentId)) {
         return res.status(400).json({ message: "Invalid moment ID" });
@@ -446,6 +446,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const updateData: any = {};
       if (content !== undefined) updateData.content = content;
       if (reflection !== undefined) updateData.reflection = reflection;
+      if (emoji !== undefined) updateData.emoji = emoji;
+      if (tags !== undefined) updateData.tags = tags;
+      if (isIntimate !== undefined) updateData.isIntimate = isIntimate;
+      if (isResolved !== undefined) updateData.isResolved = isResolved;
+      if (resolvedAt !== undefined) updateData.resolvedAt = resolvedAt;
+      if (resolutionNotes !== undefined) updateData.resolutionNotes = resolutionNotes;
+      if (intimacyRating !== undefined) updateData.intimacyRating = intimacyRating;
       
       const updatedMoment = await storage.updateMoment(momentId, updateData);
       
