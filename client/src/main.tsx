@@ -10,7 +10,9 @@ createRoot(document.getElementById("root")!).render(
   <ThemeProvider defaultTheme="light" storageKey="kindra-theme">
     <AuthProvider>
       <ModalProvider>
-        <App />
+        <RelationshipFocusProvider>
+          <App />
+        </RelationshipFocusProvider>
       </ModalProvider>
     </AuthProvider>
   </ThemeProvider>
