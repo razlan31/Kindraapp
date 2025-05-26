@@ -109,6 +109,37 @@ export default function Dashboard() {
     console.log("Add reflection for moment:", momentId);
   };
 
+  const handleAddTestMoment = async () => {
+    if (connections.length === 0) return;
+    
+    const testMoments = [
+      { content: "Had an amazing dinner together", emoji: "🍽️", tags: ["Green Flag", "Quality Time"] },
+      { content: "Great communication about future plans", emoji: "💬", tags: ["Green Flag", "Communication"] },
+      { content: "Feeling really connected today", emoji: "❤️", tags: ["Intimacy", "Growth"] }
+    ];
+    
+    const randomMoment = testMoments[Math.floor(Math.random() * testMoments.length)];
+    const randomConnection = connections[Math.floor(Math.random() * connections.length)];
+    
+    try {
+      await fetch('/api/moments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          connectionId: randomConnection.id,
+          content: randomMoment.content,
+          emoji: randomMoment.emoji,
+          tags: randomMoment.tags,
+          isPrivate: false
+        })
+      });
+      // Refresh the page data
+      window.location.reload();
+    } catch (error) {
+      console.error('Failed to create test moment:', error);
+    }
+  };
+
   return (
     <div className="max-w-md mx-auto bg-white dark:bg-neutral-900 min-h-screen flex flex-col relative">
       <Header />

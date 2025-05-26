@@ -1,157 +1,85 @@
-import { useState } from "react";
-import { Connection } from "@shared/schema";
-import { useQuery } from "@tanstack/react-query";
-import { useAuth } from "@/contexts/auth-context";
-import { useRelationshipFocus } from "@/contexts/relationship-focus-context-simple";
-import { 
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from "@/components/ui/select";
-import { 
-  Popover,
-  PopoverContent, 
-  PopoverTrigger 
-} from "@/components/ui/popover";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { 
-  Check, 
-  ChevronsUpDown, 
-  Heart,
-  HeartOff
-} from "lucide-react";
-import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { 
-  Command, 
-  CommandEmpty, 
-  CommandGroup, 
-  CommandInput, 
-  CommandItem 
-} from "@/components/ui/command";
+import { Heart } from "lucide-react";
+import { Connection } from "@shared/schema";
+import { useRelationshipFocus } from "@/contexts/relationship-focus-context";
 
-export function FocusSelector() {
-  const { user } = useAuth();
+interface FocusSelectorProps {
+  connections: Connection[];
+}
+
+export function FocusSelector({ connections }: FocusSelectorProps) {
   const { mainFocusConnection, setMainFocusConnection } = useRelationshipFocus();
-  const [open, setOpen] = useState(false);
 
-  // Fetch all connections
-  const { data: connections = [], isLoading } = useQuery<Connection[]>({
-    queryKey: ["/api/connections"],
-    enabled: !!user,
-  });
-
-  const handleSelectConnection = (connectionId: string) => {
-    if (connectionId === "none") {
-      setMainFocusConnection(null);
-    } else {
-      const connection = connections.find(c => c.id.toString() === connectionId);
-      if (connection) {
-        setMainFocusConnection(connection);
-      }
-    }
-    setOpen(false);
-  };
-
-  // Get initials for avatar fallback
   const getInitials = (name: string) => {
-    return name.split(' ')
-      .map(part => part[0])
-      .join('')
-      .toUpperCase();
+    return name.split(' ').map(part => part[0]).join('').toUpperCase();
   };
-
-  if (isLoading || connections.length === 0) {
-    return null;
-  }
 
   return (
-    <div className="mb-4">
-      <div className="flex items-center justify-between">
-        <p className="text-sm font-medium">Main Focus</p>
-        
-        <Popover open={open} onOpenChange={setOpen}>
-          <PopoverTrigger asChild>
-            <Button
-              variant="outline"
-              role="combobox"
-              aria-expanded={open}
-              className="justify-between text-xs px-3 h-8"
-            >
-              {mainFocusConnection ? (
-                <div className="flex items-center gap-2">
-                  <Avatar className="h-5 w-5">
-                    {mainFocusConnection.profileImage && (
-                      <AvatarImage src={mainFocusConnection.profileImage} alt={mainFocusConnection.name} />
-                    )}
-                    <AvatarFallback className="text-[10px]">
-                      {getInitials(mainFocusConnection.name)}
-                    </AvatarFallback>
-                  </Avatar>
-                  <span>{mainFocusConnection.name}</span>
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-lg flex items-center space-x-2">
+          <Heart className="h-5 w-5" />
+          <span>Relationship Focus</span>
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        {mainFocusConnection ? (
+          <div className="space-y-3">
+            <div className="flex items-center space-x-3 p-3 bg-red-50 dark:bg-red-900/20 rounded-lg">
+              <Avatar className="h-10 w-10">
+                {mainFocusConnection.profileImage ? (
+                  <AvatarImage src={mainFocusConnection.profileImage} alt={mainFocusConnection.name} />
+                ) : (
+                  <AvatarFallback>{getInitials(mainFocusConnection.name)}</AvatarFallback>
+                )}
+              </Avatar>
+              <div className="flex-1">
+                <div className="flex items-center space-x-2">
+                  <span className="font-medium">{mainFocusConnection.name}</span>
+                  <Heart className="h-4 w-4 text-red-500 fill-current" />
                 </div>
-              ) : (
-                <span>All Connections</span>
-              )}
-              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                <span className="text-xs text-neutral-500">Main Focus</span>
+              </div>
+            </div>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={() => setMainFocusConnection(null)}
+              className="w-full"
+            >
+              Remove Focus
             </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-[200px] p-0">
-            <Command>
-              <CommandInput placeholder="Search connections..." />
-              <CommandEmpty>No connections found.</CommandEmpty>
-              <CommandGroup>
-                <CommandItem
-                  value="none"
-                  onSelect={() => handleSelectConnection("none")}
-                  className="flex items-center gap-2 text-sm"
+          </div>
+        ) : (
+          <div className="space-y-3">
+            <p className="text-sm text-neutral-600">
+              Choose a connection to focus on for better insights and tracking.
+            </p>
+            <div className="space-y-2 max-h-40 overflow-y-auto">
+              {connections.slice(0, 3).map((connection) => (
+                <Button
+                  key={connection.id}
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setMainFocusConnection(connection)}
+                  className="w-full justify-start p-2"
                 >
-                  <div className="flex h-5 w-5 items-center justify-center">
-                    {!mainFocusConnection && <Check className="h-4 w-4" />}
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <HeartOff className="h-4 w-4 text-neutral-400" />
-                    <span>All Connections</span>
-                  </div>
-                </CommandItem>
-                
-                {connections.map((connection) => (
-                  <CommandItem
-                    key={connection.id}
-                    value={connection.name}
-                    onSelect={() => handleSelectConnection(connection.id.toString())}
-                    className="flex items-center gap-2 text-sm"
-                  >
-                    <div className="flex h-5 w-5 items-center justify-center">
-                      {mainFocusConnection?.id === connection.id && (
-                        <Check className="h-4 w-4" />
-                      )}
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Avatar className="h-5 w-5">
-                        {connection.profileImage && (
-                          <AvatarImage src={connection.profileImage} alt={connection.name} />
-                        )}
-                        <AvatarFallback className="text-[10px]">
-                          {getInitials(connection.name)}
-                        </AvatarFallback>
-                      </Avatar>
-                      <span>{connection.name}</span>
-                    </div>
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </Command>
-          </PopoverContent>
-        </Popover>
-      </div>
-      {mainFocusConnection && (
-        <p className="text-xs text-neutral-500 mt-1">
-          Showing data primarily for {mainFocusConnection.name}
-        </p>
-      )}
-    </div>
+                  <Avatar className="h-6 w-6 mr-2">
+                    {connection.profileImage ? (
+                      <AvatarImage src={connection.profileImage} alt={connection.name} />
+                    ) : (
+                      <AvatarFallback className="text-xs">{getInitials(connection.name)}</AvatarFallback>
+                    )}
+                  </Avatar>
+                  <span className="text-sm">{connection.name}</span>
+                </Button>
+              ))}
+            </div>
+          </div>
+        )}
+      </CardContent>
+    </Card>
   );
 }

@@ -41,12 +41,45 @@ export default function Moments() {
     console.log("Add reflection for moment:", momentId);
   };
 
+  const handleAddTestMoment = async () => {
+    if (connections.length === 0) return;
+    
+    const testMoments = [
+      { content: "Had an amazing dinner together", emoji: "🍽️", tags: ["Green Flag", "Quality Time"] },
+      { content: "Great communication about future plans", emoji: "💬", tags: ["Green Flag", "Communication"] },
+      { content: "Feeling really connected today", emoji: "❤️", tags: ["Intimacy", "Growth"] },
+      { content: "Enjoyed a fun movie night", emoji: "🎬", tags: ["Green Flag", "Fun"] },
+      { content: "Deep conversation about dreams", emoji: "✨", tags: ["Blue Flag", "Vulnerability"] }
+    ];
+    
+    const randomMoment = testMoments[Math.floor(Math.random() * testMoments.length)];
+    const randomConnection = connections[Math.floor(Math.random() * connections.length)];
+    
+    try {
+      await fetch('/api/moments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          connectionId: randomConnection.id,
+          content: randomMoment.content,
+          emoji: randomMoment.emoji,
+          tags: randomMoment.tags,
+          isPrivate: false
+        })
+      });
+      // Refresh the page data
+      window.location.reload();
+    } catch (error) {
+      console.error('Failed to create test moment:', error);
+    }
+  };
+
   // Group moments by date
   const groupMomentsByDate = (moments: Moment[]) => {
     const grouped: Record<string, Moment[]> = {};
     
     moments.forEach(moment => {
-      const date = format(new Date(moment.createdAt), 'yyyy-MM-dd');
+      const date = format(new Date(moment.createdAt || new Date()), 'yyyy-MM-dd');
       if (!grouped[date]) {
         grouped[date] = [];
       }
