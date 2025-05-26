@@ -150,6 +150,92 @@ export class MemStorage implements IStorage {
     this.connectionId = 3; // Next connection will start from ID 3
     console.log("Created hidden system connection to prevent empty database");
     console.log("Created test connection for user testing");
+    
+    // Add sample moments with proper tags for calendar visualization
+    this.createSampleMoments();
+  }
+
+  private createSampleMoments() {
+    // Create moments with different tags for calendar visualization
+    const sampleMoments: Moment[] = [
+      {
+        id: this.momentId++,
+        userId: 1,
+        connectionId: 2,
+        emoji: "😍",
+        content: "Amazing date night! We had such great chemistry.",
+        tags: ["Green Flag", "Quality Time", "Intimacy"],
+        isPrivate: false,
+        isIntimate: false,
+        relatedToMenstrualCycle: false,
+        isMilestone: false,
+        milestoneTitle: null,
+        createdAt: new Date('2025-05-24T19:30:00')
+      },
+      {
+        id: this.momentId++,
+        userId: 1,
+        connectionId: 2,
+        emoji: "😔",
+        content: "Had a disagreement about future plans. Felt dismissed.",
+        tags: ["Red Flag", "Conflict", "Communication"],
+        isPrivate: false,
+        isIntimate: false,
+        relatedToMenstrualCycle: false,
+        isMilestone: false,
+        milestoneTitle: null,
+        createdAt: new Date('2025-05-23T14:20:00')
+      },
+      {
+        id: this.momentId++,
+        userId: 1,
+        connectionId: 2,
+        emoji: "💕",
+        content: "First time being intimate together. Beautiful connection.",
+        tags: ["Intimacy", "Physical Touch", "Green Flag"],
+        isPrivate: true,
+        isIntimate: true,
+        relatedToMenstrualCycle: false,
+        isMilestone: true,
+        milestoneTitle: "First Intimacy",
+        createdAt: new Date('2025-05-22T22:15:00')
+      },
+      {
+        id: this.momentId++,
+        userId: 1,
+        connectionId: 2,
+        emoji: "🗣️",
+        content: "Great conversation about our goals and dreams.",
+        tags: ["Communication", "Blue Flag", "Growth"],
+        isPrivate: false,
+        isIntimate: false,
+        relatedToMenstrualCycle: false,
+        isMilestone: false,
+        milestoneTitle: null,
+        createdAt: new Date('2025-05-21T16:45:00')
+      },
+      {
+        id: this.momentId++,
+        userId: 1,
+        connectionId: 2,
+        emoji: "❤️",
+        content: "Surprise flowers at work! So thoughtful.",
+        tags: ["Green Flag", "Acts of Service", "Support"],
+        isPrivate: false,
+        isIntimate: false,
+        relatedToMenstrualCycle: false,
+        isMilestone: false,
+        milestoneTitle: null,
+        createdAt: new Date('2025-05-20T12:30:00')
+      }
+    ];
+
+    // Add the sample moments to storage
+    sampleMoments.forEach(moment => {
+      this.moments.set(moment.id, moment);
+    });
+
+    console.log(`Created ${sampleMoments.length} sample moments with proper tags for calendar visualization`);
   }
 
   private async initializeTestUser() {
