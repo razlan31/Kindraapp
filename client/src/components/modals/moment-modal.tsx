@@ -28,7 +28,7 @@ export function MomentModal() {
   // Fetch user connections
   const { data: connections = [] } = useQuery<Connection[]>({
     queryKey: ["/api/connections"],
-    enabled: !!user && momentModalOpen, // Only fetch when modal is open
+    enabled: momentModalOpen, // Always enabled since backend auto-authenticates
   });
   
   // Form schema
@@ -125,11 +125,10 @@ export function MomentModal() {
   });
   
   const onSubmit = useCallback((data: z.infer<typeof formSchema>) => {
-    if (!user) return;
-    // Add user ID if not present
+    // Backend auto-authenticates, so we don't need to check user
     const momentData = {
       ...data,
-      userId: user.id
+      userId: 1 // Backend automatically sets this
     };
     
     // Create the moment
