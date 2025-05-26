@@ -13,6 +13,7 @@ import ConnectionsFormNew from "./pages/connections-form-new";
 import SimpleConnectionForm from "./pages/simple-connection-form";
 import BasicConnectionForm from "./pages/basic-connection-form";
 import SimpleConnectionCreate from "./pages/simple-connection-create";
+import SimpleForm from "./pages/simple-form";
 import Moments from "@/pages/moments";
 import Insights from "@/pages/insights";
 import Profile from "@/pages/profile";
@@ -51,6 +52,7 @@ function Router() {
       <Route path="/connections/simple" component={SimpleConnectionForm} />
       <Route path="/connections/basic" component={BasicConnectionForm} />
       <Route path="/connections/test" component={SimpleConnectionCreate} />
+      <Route path="/connections/bulletproof" component={SimpleForm} />
       <Route path="/connections/:id/edit" component={ConnectionEdit} />
       <Route path="/connections/:id" component={ConnectionDetail} />
       <Route path="/moments" component={Moments} />
