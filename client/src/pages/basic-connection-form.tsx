@@ -128,7 +128,7 @@ export default function BasicConnectionForm() {
               <label className="block text-sm font-medium mb-2">
                 When did you start this connection?
               </label>
-              <div className="flex gap-2">
+              <div className="flex gap-2 items-center">
                 <Input
                   type="date"
                   value={startDate}
@@ -136,23 +136,27 @@ export default function BasicConnectionForm() {
                   placeholder="Select the date you started connecting"
                   className="flex-1"
                 />
-                {startDate && (
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    className="px-3 text-xs"
-                    onClick={() => {
-                      // Just a visual confirmation that the date is set
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="px-3 text-xs whitespace-nowrap"
+                  onClick={() => {
+                    if (startDate) {
                       toast({
                         title: "Date confirmed",
                         description: `Connection start date set to ${new Date(startDate).toLocaleDateString()}`
                       });
-                    }}
-                  >
-                    Done
-                  </Button>
-                )}
+                    } else {
+                      toast({
+                        title: "No date selected",
+                        description: "Please select a date first"
+                      });
+                    }
+                  }}
+                >
+                  Done
+                </Button>
               </div>
               <p className="text-xs text-neutral-500 mt-1">Track when you first connected with this person</p>
             </div>
