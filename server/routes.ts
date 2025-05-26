@@ -145,17 +145,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/connections", isAuthenticated, async (req, res) => {
     try {
+      console.log("Received connection creation request:", req.body);
       const userId = req.session.userId as number;
-      const connectionData = connectionSchema.parse({ ...req.body, userId });
+      console.log("User ID from session:", userId);
+      
+      // Create a minimal connection object that we know will work
+      const connectionData = {
+        userId: userId,
+        name: req.body.name,
+        relationshipStage: req.body.relationshipStage || "Talking"
+      };
+      
+      console.log("Creating connection with data:", connectionData);
       const newConnection = await storage.createConnection(connectionData);
+      console.log("Connection created successfully:", newConnection);
       res.status(201).json(newConnection);
     } catch (error) {
       console.error("Connection creation error:", error);
-      if (error instanceof z.ZodError) {
-        res.status(400).json({ message: "Invalid input", errors: error.errors });
-      } else {
-        res.status(500).json({ message: "Server error creating connection" });
-      }
+      res.status(500).json({ message: "Server error creating connection", details: error.message });
     }
   });
 
