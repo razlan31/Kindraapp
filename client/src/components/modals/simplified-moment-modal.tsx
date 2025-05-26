@@ -58,7 +58,12 @@ export function MomentModal() {
   // Create moment mutation
   const { mutate: createMoment } = useMutation({
     mutationFn: async (data: any) => {
-      const response = await apiRequest("POST", "/api/moments", data);
+      const response = await fetch("/api/moments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) throw new Error('Failed to create moment');
       return response.json();
     },
     onSuccess: () => {
