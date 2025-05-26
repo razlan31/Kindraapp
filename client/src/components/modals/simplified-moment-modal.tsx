@@ -239,10 +239,11 @@ export function MomentModal() {
   };
   
   const getModalTitle = () => {
+    const action = editingMoment ? 'Edit' : 'Log';
     switch (activityType) {
-      case 'conflict': return 'Log Conflict';
-      case 'intimacy': return 'Log Intimacy';
-      default: return 'Log Moment';
+      case 'conflict': return `${action} Conflict`;
+      case 'intimacy': return `${action} Intimacy`;
+      default: return `${action} Moment`;
     }
   };
   

@@ -8,6 +8,7 @@ import { Calendar, Edit2, X, Plus } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
+import { useModal } from "@/contexts/modal-context";
 import type { Moment, Connection } from "@shared/schema";
 
 interface EntryDetailModalProps {
@@ -27,6 +28,7 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection }: EntryD
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { openMomentModal } = useModal();
 
   // Preset tag options for editing
   const presetTags = {
@@ -120,12 +122,12 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection }: EntryD
 
   const handleEdit = () => {
     if (freshMoment) {
-      setEditedContent(freshMoment.content);
-      setEditedReflection(freshMoment.reflection || "");
-      setEditedTags(freshMoment.tags || []);
-      setEditedEmoji(freshMoment.emoji);
-      setCustomTag("");
-      setIsEditing(true);
+      // Determine activity type from the moment
+      const activityType = getActivityType(freshMoment);
+      // Open the unified modal for editing
+      openMomentModal(activityType as 'moment' | 'conflict' | 'intimacy', freshMoment);
+      // Close this detail modal
+      onClose();
     }
   };
 
