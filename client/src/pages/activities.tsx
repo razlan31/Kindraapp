@@ -4,6 +4,7 @@ import { Header } from "@/components/layout/header";
 import { BottomNavigation } from "@/components/layout/bottom-navigation";
 import { MomentCard } from "@/components/dashboard/moment-card";
 import { ReflectionModal } from "@/components/modals/reflection-modal";
+import { EntryDetailModal } from "@/components/modals/entry-detail-modal";
 import { Moment, Connection } from "@shared/schema";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
@@ -53,12 +54,27 @@ export default function Activities() {
   // Reflection modal state
   const [reflectionModalOpen, setReflectionModalOpen] = useState(false);
   const [selectedMomentForReflection, setSelectedMomentForReflection] = useState<Moment | null>(null);
+  
+  // Entry detail modal state
+  const [entryDetailModalOpen, setEntryDetailModalOpen] = useState(false);
+  const [selectedMomentForDetail, setSelectedMomentForDetail] = useState<Moment | null>(null);
+  const [selectedConnectionForDetail, setSelectedConnectionForDetail] = useState<Connection | null>(null);
 
   const handleAddReflection = (momentId: number) => {
     const moment = moments.find(m => m.id === momentId);
     if (moment) {
       setSelectedMomentForReflection(moment);
       setReflectionModalOpen(true);
+    }
+  };
+
+  const handleViewEntryDetail = (momentId: number) => {
+    const moment = moments.find(m => m.id === momentId);
+    const connection = connections.find(c => c.id === moment?.connectionId);
+    if (moment && connection) {
+      setSelectedMomentForDetail(moment);
+      setSelectedConnectionForDetail(connection);
+      setEntryDetailModalOpen(true);
     }
   };
 

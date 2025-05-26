@@ -14,10 +14,11 @@ interface MomentCardProps {
     profileImage?: string;
   };
   onAddReflection: (momentId: number) => void;
+  onViewDetail?: (momentId: number) => void;
   hasAiReflection?: boolean;
 }
 
-export function MomentCard({ moment, connection, onAddReflection, hasAiReflection }: MomentCardProps) {
+export function MomentCard({ moment, connection, onAddReflection, onViewDetail, hasAiReflection }: MomentCardProps) {
   const getInitials = (name: string) => {
     return name.split(' ').map(part => part[0]).join('').toUpperCase();
   };
@@ -36,7 +37,10 @@ export function MomentCard({ moment, connection, onAddReflection, hasAiReflectio
   };
 
   return (
-    <Card className="p-4">
+    <Card 
+      className="p-4 cursor-pointer hover:shadow-md transition-shadow" 
+      onClick={() => onViewDetail?.(moment.id)}
+    >
       <CardContent className="p-0">
         <div className="flex items-start space-x-3">
           <Avatar className="h-10 w-10">
