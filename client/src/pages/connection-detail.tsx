@@ -139,7 +139,36 @@ export default function ConnectionDetail() {
   
   const getDurationText = (startDate: Date | null) => {
     if (!startDate) return "Not specified";
-    return formatDistanceToNow(new Date(startDate), { addSuffix: false });
+    
+    const start = new Date(startDate);
+    const now = new Date();
+    
+    let years = now.getFullYear() - start.getFullYear();
+    let months = now.getMonth() - start.getMonth();
+    let days = now.getDate() - start.getDate();
+    
+    // Adjust for negative days
+    if (days < 0) {
+      months--;
+      const daysInPrevMonth = new Date(now.getFullYear(), now.getMonth(), 0).getDate();
+      days += daysInPrevMonth;
+    }
+    
+    // Adjust for negative months
+    if (months < 0) {
+      years--;
+      months += 12;
+    }
+    
+    const parts = [];
+    if (years > 0) parts.push(`${years} year${years > 1 ? 's' : ''}`);
+    if (months > 0) parts.push(`${months} month${months > 1 ? 's' : ''}`);
+    if (days > 0) parts.push(`${days} day${days > 1 ? 's' : ''}`);
+    
+    if (parts.length === 0) return "Today";
+    if (parts.length === 1) return parts[0];
+    if (parts.length === 2) return parts.join(" and ");
+    return parts.slice(0, -1).join(", ") + " and " + parts[parts.length - 1];
   };
   
   if (isLoading) {

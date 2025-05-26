@@ -42,7 +42,34 @@ export function ConnectionCard({
 
   const relationshipDuration = useMemo(() => {
     if (!connection.startDate) return "New";
-    return formatDistanceToNow(new Date(connection.startDate), { addSuffix: false });
+    
+    const start = new Date(connection.startDate);
+    const now = new Date();
+    
+    let years = now.getFullYear() - start.getFullYear();
+    let months = now.getMonth() - start.getMonth();
+    let days = now.getDate() - start.getDate();
+    
+    // Adjust for negative days
+    if (days < 0) {
+      months--;
+      const daysInPrevMonth = new Date(now.getFullYear(), now.getMonth(), 0).getDate();
+      days += daysInPrevMonth;
+    }
+    
+    // Adjust for negative months
+    if (months < 0) {
+      years--;
+      months += 12;
+    }
+    
+    const parts = [];
+    if (years > 0) parts.push(`${years}y`);
+    if (months > 0) parts.push(`${months}m`);
+    if (days > 0) parts.push(`${days}d`);
+    
+    if (parts.length === 0) return "Today";
+    return parts.join(" ");
   }, [connection.startDate]);
 
   return (
