@@ -89,7 +89,8 @@ export function MomentCard({ moment, connection, onAddReflection, onViewDetail, 
               {moment.content}
             </p>
             
-            {moment.tags && moment.tags.length > 0 && (
+            {/* Only show tags for regular moments, not conflicts or intimacy */}
+            {getMomentType(moment) === null && moment.tags && moment.tags.length > 0 && (
               <div className="flex flex-wrap gap-1 mb-3">
                 {moment.tags
                   .filter(tag => !['Positive', 'Negative', 'Neutral'].includes(tag))
