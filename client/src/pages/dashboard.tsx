@@ -276,7 +276,7 @@ export default function Dashboard() {
         {/* Recent Moments */}
         <section className="px-4 py-3">
           <div className="flex justify-between items-center mb-3">
-            <h3 className="font-heading font-semibold">Recent Moments</h3>
+            <h3 className="font-heading font-semibold">Recent Activities</h3>
             <Button 
               variant="ghost" 
               size="sm"
