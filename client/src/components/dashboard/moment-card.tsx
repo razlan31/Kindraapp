@@ -23,6 +23,18 @@ export function MomentCard({ moment, connection, onAddReflection, onViewDetail, 
     return name.split(' ').map(part => part[0]).join('').toUpperCase();
   };
 
+  const getMomentType = (moment: Moment) => {
+    // Determine moment type based on tags and properties
+    if (moment.tags?.includes('Conflict') || moment.isResolved !== undefined) {
+      return 'Conflict';
+    }
+    if (moment.isIntimate || moment.tags?.includes('Intimacy')) {
+      return 'Intimacy';
+    }
+    // For regular moments, we don't show a type badge since type is just positive/negative/neutral
+    return null;
+  };
+
   const getTagColor = (tag: string) => {
     if (tag === "Green Flag" || ["Intimacy", "Affection", "Support", "Growth", "Trust", "Celebration"].includes(tag)) {
       return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300";
@@ -56,6 +68,12 @@ export function MomentCard({ moment, connection, onAddReflection, onViewDetail, 
               <div className="flex items-center space-x-2">
                 <span className="font-medium text-sm">{connection.name}</span>
                 <span className="text-2xl">{moment.emoji}</span>
+                {/* Moment Type Indicator */}
+                {(moment.tags?.includes('Conflict') || moment.isIntimate) && (
+                  <Badge variant="outline" className="text-xs">
+                    {moment.tags?.includes('Conflict') ? 'Conflict' : 'Intimacy'}
+                  </Badge>
+                )}
               </div>
               <span className="text-xs text-neutral-500">
                 {formatDistanceToNow(new Date(moment.createdAt || new Date()), { addSuffix: true })}
@@ -68,15 +86,17 @@ export function MomentCard({ moment, connection, onAddReflection, onViewDetail, 
             
             {moment.tags && moment.tags.length > 0 && (
               <div className="flex flex-wrap gap-1 mb-3">
-                {moment.tags.map((tag, index) => (
-                  <Badge
-                    key={index}
-                    variant="secondary"
-                    className={`text-xs ${getTagColor(tag)}`}
-                  >
-                    {tag}
-                  </Badge>
-                ))}
+                {moment.tags
+                  .filter(tag => !['Positive', 'Negative', 'Neutral'].includes(tag))
+                  .map((tag, index) => (
+                    <Badge
+                      key={index}
+                      variant="secondary"
+                      className={`text-xs ${getTagColor(tag)}`}
+                    >
+                      {tag}
+                    </Badge>
+                  ))}
               </div>
             )}
             

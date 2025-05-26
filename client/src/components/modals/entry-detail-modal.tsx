@@ -201,14 +201,25 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection }: EntryD
             <span>{format(new Date(freshMoment.createdAt || ''), "PPP 'at' p")}</span>
           </div>
 
+          {/* Activity Type */}
+          {(freshMoment.tags?.includes('Conflict') || freshMoment.isIntimate) && (
+            <div className="flex items-center gap-2">
+              <Badge variant="outline" className="text-xs">
+                {freshMoment.tags?.includes('Conflict') ? 'Conflict' : 'Intimacy'}
+              </Badge>
+            </div>
+          )}
+
           {/* Tags */}
-          {freshMoment.tags && freshMoment.tags.length > 0 && (
+          {freshMoment.tags && freshMoment.tags.filter(tag => !['Positive', 'Negative', 'Neutral'].includes(tag)).length > 0 && (
             <div className="flex flex-wrap gap-2">
-              {freshMoment.tags.map((tag, index) => (
-                <Badge key={index} className={getTagColor(tag)} variant="secondary">
-                  {tag}
-                </Badge>
-              ))}
+              {freshMoment.tags
+                .filter(tag => !['Positive', 'Negative', 'Neutral'].includes(tag))
+                .map((tag: string, index: number) => (
+                  <Badge key={index} className={getTagColor(tag)} variant="secondary">
+                    {tag}
+                  </Badge>
+                ))}
             </div>
           )}
 
@@ -223,7 +234,7 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection }: EntryD
               />
             ) : (
               <p className="text-sm bg-gray-50 dark:bg-gray-800 p-3 rounded-md">
-                {moment.content}
+                {moment?.content}
               </p>
             )}
           </div>
