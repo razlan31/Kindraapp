@@ -22,6 +22,7 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection }: EntryD
   const [editedContent, setEditedContent] = useState("");
   const [editedReflection, setEditedReflection] = useState("");
   const [editedTags, setEditedTags] = useState<string[]>([]);
+  const [editedEmoji, setEditedEmoji] = useState("");
   const [customTag, setCustomTag] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
@@ -85,12 +86,13 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection }: EntryD
   };
 
   const updateMomentMutation = useMutation({
-    mutationFn: async (data: { id: number; content: string; reflection: string; tags: string[] }) => {
+    mutationFn: async (data: { id: number; content: string; emoji?: string; reflection: string; tags: string[] }) => {
       const response = await fetch(`/api/moments/${data.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           content: data.content,
+          emoji: data.emoji,
           reflection: data.reflection || null,
           tags: data.tags
         }),
@@ -101,6 +103,7 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection }: EntryD
     onSuccess: () => {
       toast({ title: "Entry updated successfully!" });
       queryClient.invalidateQueries({ queryKey: ["/api/moments"] });
+      queryClient.refetchQueries({ queryKey: ["/api/moments"] });
       setIsEditing(false);
     },
     onError: () => {
@@ -113,6 +116,7 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection }: EntryD
       setEditedContent(freshMoment.content);
       setEditedReflection(freshMoment.reflection || "");
       setEditedTags(freshMoment.tags || []);
+      setEditedEmoji(freshMoment.emoji);
       setCustomTag("");
       setIsEditing(true);
     }
@@ -126,9 +130,10 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection }: EntryD
       await updateMomentMutation.mutateAsync({
         id: moment.id,
         content: editedContent.trim(),
+        emoji: editedEmoji,
         reflection: editedReflection.trim(),
         tags: editedTags
-      });
+      } as any);
     } finally {
       setIsSubmitting(false);
     }
@@ -220,6 +225,39 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection }: EntryD
           </div>
 
 
+
+          {/* Emoji/Type Selection (when editing) */}
+          {isEditing && (
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Moment Type</label>
+              <div className="flex gap-2">
+                <Button
+                  type="button"
+                  variant={editedEmoji === "😊" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setEditedEmoji("😊")}
+                >
+                  😊 Positive
+                </Button>
+                <Button
+                  type="button"
+                  variant={editedEmoji === "😕" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setEditedEmoji("😕")}
+                >
+                  😕 Negative
+                </Button>
+                <Button
+                  type="button"
+                  variant={editedEmoji === "😐" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setEditedEmoji("😐")}
+                >
+                  😐 Neutral
+                </Button>
+              </div>
+            </div>
+          )}
 
           {/* Content */}
           <div className="space-y-2">
