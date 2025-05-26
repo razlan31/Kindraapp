@@ -18,11 +18,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { format } from "date-fns";
 
-export default function Moments() {
+export default function Activities() {
   const { user } = useAuth();
   const { openMomentModal } = useModal();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedConnection, setSelectedConnection] = useState<number | null>(null);
+  const [activeTab, setActiveTab] = useState<'moments' | 'conflicts' | 'intimacy'>('moments');
 
   // Fetch moments
   const { data: moments = [], isLoading, refetch: refetchMoments } = useQuery<Moment[]>({

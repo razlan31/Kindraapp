@@ -14,7 +14,7 @@ import SimpleConnectionForm from "./pages/simple-connection-form";
 import BasicConnectionForm from "./pages/basic-connection-form";
 import SimpleConnectionCreate from "./pages/simple-connection-create";
 import SimpleForm from "./pages/simple-form";
-import Moments from "@/pages/moments";
+import Activities from "@/pages/activities";
 import Calendar from "@/pages/calendar";
 import Insights from "@/pages/insights";
 import Profile from "@/pages/profile";
@@ -57,7 +57,7 @@ function Router() {
       <Route path="/connections/bulletproof" component={SimpleForm} />
       <Route path="/connections/:id/edit" component={ConnectionEdit} />
       <Route path="/connections/:id" component={ConnectionDetail} />
-      <Route path="/moments" component={Moments} />
+      <Route path="/activities" component={Activities} />
       <Route path="/calendar" component={Calendar} />
       <Route path="/insights" component={Insights} />
       <Route path="/profile" component={Profile} />
