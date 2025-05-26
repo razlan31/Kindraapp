@@ -435,6 +435,8 @@ export class MemStorage implements IStorage {
       .filter((moment) => moment.userId === userId)
       .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
     
+    console.log(`📋 Getting moments for user ${userId}:`, userMoments.map(m => ({ id: m.id, emoji: m.emoji, content: m.content?.substring(0, 20) })));
+    
     return limit ? userMoments.slice(0, limit) : userMoments;
   }
 
@@ -462,10 +464,20 @@ export class MemStorage implements IStorage {
 
   async updateMoment(id: number, data: Partial<Moment>): Promise<Moment | undefined> {
     const moment = this.moments.get(id);
-    if (!moment) return undefined;
+    if (!moment) {
+      console.log(`❌ Moment ${id} not found for update`);
+      return undefined;
+    }
     
+    console.log(`🔄 Updating moment ${id}:`, { before: moment, updateData: data });
     const updatedMoment = { ...moment, ...data };
     this.moments.set(id, updatedMoment);
+    console.log(`✅ Moment ${id} updated:`, updatedMoment);
+    
+    // Verify the update was saved
+    const savedMoment = this.moments.get(id);
+    console.log(`🔍 Verification - moment ${id} in storage:`, savedMoment);
+    
     return updatedMoment;
   }
 
