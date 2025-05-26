@@ -17,7 +17,7 @@ import { FocusSelector } from "@/components/relationships/focus-selector";
 import { useRelationshipFocus } from "@/contexts/relationship-focus-context";
 
 export default function Dashboard() {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const { openMomentModal, openConnectionModal, setSelectedConnection } = useModal();
   const [insight, setInsight] = useState<string>("");
   const [selectedCalendarConnection, setSelectedCalendarConnection] = useState<Connection | null>(null);
@@ -38,11 +38,26 @@ export default function Dashboard() {
   // Debug logging
   console.log("Dashboard Debug:", { 
     user: !!user, 
+    loading,
     momentsLength: moments.length, 
     momentsLoading,
     momentsError,
     moments 
   });
+
+  // Show loading state while authenticating
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-rose-50 via-pink-50 to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-4">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-rose-600 mx-auto"></div>
+            <p className="mt-2 text-gray-600 dark:text-gray-400">Loading...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // Fetch badges
   const { data: badges = [] } = useQuery<Badge[]>({
