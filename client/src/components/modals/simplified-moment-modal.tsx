@@ -100,9 +100,14 @@ export function MomentModal() {
       isIntimate = true;
     }
     
+    // Set default emoji if none selected for conflict/intimacy
+    const finalEmoji = activityType === 'moment' ? emoji : 
+                      activityType === 'conflict' ? '⚡' : 
+                      activityType === 'intimacy' ? '💕' : emoji;
+    
     const momentData = {
       connectionId,
-      emoji,
+      emoji: finalEmoji,
       content: content.trim(),
       tags,
       isPrivate: false,
@@ -156,11 +161,13 @@ export function MomentModal() {
             </Select>
           </div>
 
-          {/* Emoji Selection */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Emoji</label>
-            <EmojiPicker value={emoji} onChange={setEmoji} />
-          </div>
+          {/* Emoji Selection - Only for regular moments */}
+          {activityType === 'moment' && (
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Emoji</label>
+              <EmojiPicker value={emoji} onChange={setEmoji} />
+            </div>
+          )}
 
           {/* Moment Type - Only for regular moments */}
           {activityType === 'moment' && (
