@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Header } from "@/components/layout/header";
 import { BottomNavigation } from "@/components/layout/bottom-navigation";
@@ -25,7 +25,7 @@ export default function Moments() {
   const [selectedConnection, setSelectedConnection] = useState<number | null>(null);
 
   // Fetch moments
-  const { data: moments = [], isLoading } = useQuery<Moment[]>({
+  const { data: moments = [], isLoading, refetch: refetchMoments } = useQuery<Moment[]>({
     queryKey: ["/api/moments"],
     enabled: !!user,
     refetchOnWindowFocus: true,
@@ -37,6 +37,16 @@ export default function Moments() {
     queryKey: ["/api/connections"],
     enabled: !!user,
   });
+
+  // Listen for moment creation events to trigger refetch
+  useEffect(() => {
+    const handleMomentCreated = () => {
+      refetchMoments();
+    };
+    
+    window.addEventListener('momentCreated', handleMomentCreated);
+    return () => window.removeEventListener('momentCreated', handleMomentCreated);
+  }, [refetchMoments]);
 
   const handleAddReflection = (momentId: number) => {
     // This would open a reflection modal in a full implementation

@@ -94,6 +94,9 @@ export function MomentModal() {
       queryClient.refetchQueries({ queryKey: ["/api/moments"] });
       // Also refresh connections in case they were affected  
       queryClient.invalidateQueries({ queryKey: ["/api/connections"] });
+      
+      // Trigger a custom event to notify the Moments page to refetch
+      window.dispatchEvent(new CustomEvent('momentCreated'));
       closeMomentModal();
       form.reset({
         connectionId: 0,
