@@ -427,7 +427,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = req.session.userId as number;
       const momentId = parseInt(req.params.id);
-      const { content, reflection, emoji, tags, isIntimate, isResolved, resolvedAt, resolutionNotes, intimacyRating } = req.body;
       
       if (isNaN(momentId)) {
         return res.status(400).json({ message: "Invalid moment ID" });
@@ -443,16 +442,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Unauthorized to update this moment" });
       }
       
-      const updateData: any = {};
-      if (content !== undefined) updateData.content = content;
-      if (reflection !== undefined) updateData.reflection = reflection;
-      if (emoji !== undefined) updateData.emoji = emoji;
-      if (tags !== undefined) updateData.tags = tags;
-      if (isIntimate !== undefined) updateData.isIntimate = isIntimate;
-      if (isResolved !== undefined) updateData.isResolved = isResolved;
-      if (resolvedAt !== undefined) updateData.resolvedAt = resolvedAt;
-      if (resolutionNotes !== undefined) updateData.resolutionNotes = resolutionNotes;
-      if (intimacyRating !== undefined) updateData.intimacyRating = intimacyRating;
+      // SIMPLIFIED: Just update the fields we care about most
+      const updateData: any = {
+        ...req.body // Use all fields from request body
+      };
       
       console.log(`🎯 PATCH Route - Updating moment ${momentId} with data:`, updateData);
       
@@ -464,8 +457,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       console.log(`✅ PATCH Route - Successfully updated moment ${momentId}:`, updatedMoment);
+      
+      // FORCE IMMEDIATE VERIFICATION - check if the update actually stuck
+      const verifyMoment = await storage.getMoment(momentId);
+      console.log(`🔍 VERIFICATION - Moment ${momentId} after update:`, verifyMoment);
+      
       res.json(updatedMoment);
     } catch (error) {
+      console.error("❌ PATCH Route error:", error);
       res.status(500).json({ message: "Server error updating moment" });
     }
   });
