@@ -25,9 +25,16 @@ export async function logoutUser(): Promise<void> {
 
 export async function getCurrentUser(): Promise<User | null> {
   try {
-    const response = await apiRequest("GET", "/api/me");
-    return await response.json();
+    const response = await fetch('/api/me');
+    if (response.ok) {
+      const user = await response.json();
+      console.log('getCurrentUser successful:', user);
+      return user;
+    }
+    console.log('getCurrentUser failed - response not ok');
+    return null;
   } catch (error) {
+    console.error('getCurrentUser error:', error);
     return null;
   }
 }
