@@ -1,0 +1,135 @@
+Overview of the App’s Features
+User Authentication
+
+Login & Registration: Users can create an account and log in using their email and password.
+
+After logging in, the user is taken to their profile page where they can track relationships, menstrual cycles, intimacy, and more.
+
+Profile Management
+
+Users can manage multiple relationships. They can add multiple partners to their profile (e.g., Partner 1, Partner 2).
+
+Each partner will have their own section in the profile, where their menstrual cycle, intimacy moments, and conflict logs are tracked.
+
+Main Focus Connection
+
+The user can select a main focus partner. This is the partner they want to prioritize for insights, AI reflections, and calendar tracking.
+
+The calendar and insights will display data only for the focused connection. Users can switch the focus at any time to track different relationships.
+
+Key Features:
+Moment Logging
+
+Users can log moments related to:
+
+Mood: Happy, Neutral, Unhappy.
+
+Tags: Green Flag, Affection, Conflict, Intimacy, etc.
+
+Note: A text input where users can add context to the moment.
+
+Media: Optional images or videos to accompany the logged moment.
+
+Sexual Intimacy Tracking
+
+Users can log sexual intimacy moments separately, with the option to rate satisfaction (Good, Neutral, Needs Improvement).
+
+The app will analyze the frequency of intimacy and give insights on patterns (e.g., intimacy increases during certain hormonal phases).
+
+Conflict Tracking
+
+Users can log conflicts or fights, specifying the reason or cause (e.g., Jealousy, Miscommunication, Stress).
+
+The app will help correlate conflicts with the partner’s menstrual cycle and give insights on how hormonal changes may affect emotional dynamics.
+
+Menstrual Cycle Tracking
+
+Users (and their partners) can log their menstrual cycle (start and end dates).
+
+The app will display the current phase (e.g., Follicular, Ovulation, Luteal, Menstruation) and give insights into how the phase may affect the user's mood, relationship dynamics, and sexual intimacy.
+
+AI reflections will be generated based on the current cycle phase and logged moments (e.g., "You might feel more emotional during your partner’s luteal phase — communication could help reduce conflicts").
+
+Milestone and Anniversary Tracking
+
+Users can log important relationship milestones (e.g., First Date, First Kiss, Engagement, Marriage) and anniversaries (e.g., dating or marriage anniversary).
+
+These milestones will appear in the calendar, with special icons (e.g., 🎉 for anniversaries, ⭐️ for milestones).
+
+The app will send reminders before these events, encouraging users to reflect and celebrate.
+
+Calendar View
+
+The calendar is the main hub where users can visually track good moments, conflicts, intimacy, milestones, and anniversaries.
+
+The calendar is color-coded to differentiate between types of events:
+
+Green: Sexual intimacy
+
+Red: Conflict
+
+Blue: Menstrual phase
+
+Gold/Yellow: Milestone or anniversary
+
+Multiple Partner Support: Users can view separate calendars for each partner or switch between partners easily.
+
+How It All Ties Together:
+User Flow:
+
+Login/Register: The user logs in or registers with their email and password.
+
+Profile Setup: The user sets up their profile, adding one or more partners. For each partner, they can track menstrual cycles, intimacy moments, and conflicts.
+
+Select Focused Connection: The user selects their main focus connection (e.g., Partner 1). This connection's data will be prioritized in the calendar and insights.
+
+Log Moments: The user logs moods, conflicts, sexual intimacy, and good moments (e.g., "Had a great date night").
+
+When logging moments, they can choose whether the moment relates to their menstrual cycle, but the app will show the current phase of their cycle automatically.
+
+Review Insights: After logging moments, the app provides AI-powered insights reflecting the user’s mood and events based on menstrual cycle, conflicts, intimacy, etc.
+
+Track Milestones and Anniversaries: The user can log milestones (First Date, First Kiss) and anniversaries (dating or wedding anniversaries).
+
+The app will notify users before milestones and anniversaries, helping them celebrate these events and track how their relationship evolves.
+
+AI Reflections & Insights:
+
+The app uses AI to provide reflections based on logged events and patterns. For example:
+
+"You had more intimacy during Partner 1’s follicular phase."
+
+"You’ve had more conflicts during your partner’s luteal phase. Try focusing on better communication during this time."
+
+"Your anniversary with Partner 2 is coming up. Don’t forget to celebrate!"
+
+Example User Journey:
+User Logs In: Upon login, the user sees the calendar with Partner 1’s data displayed.
+
+Log a Conflict: The user logs a conflict with Partner 1 and the app asks if the conflict might relate to the menstrual cycle (optional).
+
+Log Sexual Intimacy: The user logs sexual intimacy with Partner 1 and rates the satisfaction.
+
+Review Calendar: The calendar updates, showing the logged events (conflict, intimacy) on the correct dates. A gold star marks the anniversary of their first date.
+
+Receive Insights: The app provides an AI-generated reflection: "You had more conflicts during Partner 1's luteal phase. Hormonal changes may be influencing emotional dynamics."
+
+Set Reminders for Anniversary: A notification pops up, reminding the user that their anniversary is approaching.
+
+App Features Recap:
+Multiple Partner Support: Track multiple relationships.
+
+Calendar View: Shows good moments, conflicts, intimacy, menstrual phases, milestones, and anniversaries.
+
+AI-Powered Reflections: Provides insights based on moods, tags, and logged events.
+
+Sexual Intimacy Tracking: Track frequency and satisfaction of sexual intimacy.
+
+Menstrual Cycle Tracking: Display menstrual phases and link them to emotional or relationship dynamics.
+
+Milestones and Anniversaries: Log and track important events in the relationship, with automatic reminders.
+
+Customizable Profile: Set and edit multiple partners and their relationship data.
+
+Conclusion:
+The Kindra app offers a comprehensive tool for users to track all aspects of their relationships, from emotional dynamics to intimacy, while also offering insights based on menstrual cycles, conflicts, good moments, and important milestones. It allows users to manage multiple relationships and provides personalized reflections to help users understand their relationship patterns and grow emotionally.

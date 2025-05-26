@@ -29,9 +29,9 @@ export function BottomNavigation() {
         >
           <Plus className="h-5 w-5" />
         </button>
-        <Link href="/moments" className={`bottom-tab flex flex-col items-center justify-center ${location === '/moments' ? 'active' : ''}`}>
+        <Link href="/calendar" className={`bottom-tab flex flex-col items-center justify-center ${location === '/calendar' ? 'active' : ''}`}>
           <Calendar className="h-5 w-5" />
-          <span className="text-xs mt-1">Moments</span>
+          <span className="text-xs mt-1">Calendar</span>
         </Link>
         <Link href="/insights" className={`bottom-tab flex flex-col items-center justify-center ${location === '/insights' ? 'active' : ''}`}>
           <LineChart className="h-5 w-5" />

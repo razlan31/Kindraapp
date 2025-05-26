@@ -15,6 +15,7 @@ import BasicConnectionForm from "./pages/basic-connection-form";
 import SimpleConnectionCreate from "./pages/simple-connection-create";
 import SimpleForm from "./pages/simple-form";
 import Moments from "@/pages/moments";
+import Calendar from "@/pages/calendar";
 import Insights from "@/pages/insights";
 import Profile from "@/pages/profile";
 import CycleTracking from "@/pages/cycle-tracking";
@@ -57,6 +58,7 @@ function Router() {
       <Route path="/connections/:id/edit" component={ConnectionEdit} />
       <Route path="/connections/:id" component={ConnectionDetail} />
       <Route path="/moments" component={Moments} />
+      <Route path="/calendar" component={Calendar} />
       <Route path="/insights" component={Insights} />
       <Route path="/profile" component={Profile} />
       <Route path="/cycle-tracking" component={CycleTracking} />
