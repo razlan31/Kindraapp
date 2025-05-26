@@ -161,7 +161,7 @@ export function MomentModal() {
     const momentData = {
       connectionId,
       emoji: finalEmoji,
-      content: content.trim() || "No description",
+      content: content.trim() || "",
       tags,
       isPrivate: false,
       isIntimate,

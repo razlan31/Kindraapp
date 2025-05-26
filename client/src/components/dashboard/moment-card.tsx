@@ -85,9 +85,11 @@ export function MomentCard({ moment, connection, onAddReflection, onViewDetail, 
               </span>
             </div>
             
-            <p className="text-sm text-neutral-700 dark:text-neutral-300 mb-3">
-              {moment.content}
-            </p>
+            {moment.content && (
+              <p className="text-sm text-neutral-700 dark:text-neutral-300 mb-3">
+                {moment.content}
+              </p>
+            )}
             
             {/* Only show tags for regular moments, not conflicts or intimacy */}
             {getMomentType(moment) === null && moment.tags && moment.tags.length > 0 && (
