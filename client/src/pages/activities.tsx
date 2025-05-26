@@ -27,6 +27,7 @@ export default function Activities() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedConnection, setSelectedConnection] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState<'moments' | 'conflicts' | 'intimacy'>('moments');
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   // Fetch moments with forced refresh mechanism
   const { data: moments = [], isLoading, refetch: refetchMoments } = useQuery<Moment[]>({
@@ -34,7 +35,6 @@ export default function Activities() {
     enabled: !!user,
     refetchOnWindowFocus: true,
     staleTime: 0, // Always refetch to ensure fresh data
-    cacheTime: 0, // Don't cache at all
   });
 
   // Fetch connections
@@ -43,8 +43,7 @@ export default function Activities() {
     enabled: !!user,
   });
 
-  // Force immediate updates with a simple refresh counter
-  const [refreshTrigger, setRefreshTrigger] = useState(0);
+
   
   useEffect(() => {
     const handleMomentCreated = () => {
