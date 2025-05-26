@@ -33,6 +33,14 @@ export default function BasicConnectionForm() {
       return;
     }
     
+    if (!stage) {
+      toast({
+        title: "Stage required",
+        description: "Please select a relationship stage"
+      });
+      return;
+    }
+    
     setIsSubmitting(true);
     
     try {
