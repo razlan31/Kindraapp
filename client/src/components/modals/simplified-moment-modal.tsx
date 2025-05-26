@@ -446,19 +446,21 @@ export function MomentModal() {
             </>
           )}
 
-          {/* Reflection Field - Available for all activity types */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Reflection (Optional)</label>
-            <Textarea
-              value={reflection}
-              onChange={(e) => setReflection(e.target.value)}
-              placeholder="What deeper thoughts do you have about this moment? How did it make you feel? What did you learn?"
-              className="min-h-[80px]"
-            />
-            <p className="text-xs text-gray-500">
-              Add your personal insights and thoughts about this experience
-            </p>
-          </div>
+          {/* Reflection Field - Only for regular moments */}
+          {activityType === 'moment' && (
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Reflection (Optional)</label>
+              <Textarea
+                value={reflection}
+                onChange={(e) => setReflection(e.target.value)}
+                placeholder="What deeper thoughts do you have about this moment? How did it make you feel? What did you learn?"
+                className="min-h-[80px]"
+              />
+              <p className="text-xs text-gray-500">
+                Add your personal insights and thoughts about this experience
+              </p>
+            </div>
+          )}
 
           {/* Action Buttons */}
           <div className="flex justify-end space-x-2 pt-4">
