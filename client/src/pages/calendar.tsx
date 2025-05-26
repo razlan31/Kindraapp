@@ -19,20 +19,21 @@ export default function Calendar() {
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
   const [dayDetailOpen, setDayDetailOpen] = useState(false);
 
-  // Force refresh moments when user is available
-  useEffect(() => {
-    if (user) {
-      queryClient.invalidateQueries({ queryKey: ["/api/moments"] });
-    }
-  }, [user, queryClient]);
-
-  // Fetch moments
-  const { data: moments = [], isLoading: momentsLoading } = useQuery<Moment[]>({
+  // Fetch moments (using exact same config as moments.tsx that works)
+  const { data: moments = [], isLoading: momentsLoading, refetch: refetchMoments } = useQuery<Moment[]>({
     queryKey: ["/api/moments"],
     enabled: !!user,
     refetchOnWindowFocus: true,
     staleTime: 0, // Always refetch to ensure fresh data
   });
+
+  // Force refresh when component mounts
+  useEffect(() => {
+    if (user) {
+      console.log('Calendar - User authenticated, fetching moments...');
+      refetchMoments();
+    }
+  }, [user, refetchMoments]);
 
   // Fetch connections
   const { data: connections = [] } = useQuery<Connection[]>({
