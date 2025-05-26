@@ -153,8 +153,8 @@ export default function Activities() {
     // Filter by tab type
     let matchesTab = false;
     if (activeTab === 'moments') {
-      // Show moments that aren't conflicts or intimacy
-      matchesTab = !tags.includes('Conflict') && !moment.isIntimate;
+      // Show moments that aren't conflicts or intimate moments
+      matchesTab = !tags.includes('Conflict') && !tags.includes('Intimacy') && moment.isIntimate !== true;
     } else if (activeTab === 'conflicts') {
       matchesTab = tags.includes('Conflict');
     } else if (activeTab === 'intimacy') {
