@@ -46,6 +46,7 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [mainFocusConnection, setMainFocusConnectionObject] = useState<Connection | null>(null);
 
   const openMomentModal = () => {
+    console.log("openMomentModal called!");
     setMomentModalOpen(true);
   };
 

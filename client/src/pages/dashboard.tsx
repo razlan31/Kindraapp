@@ -267,7 +267,10 @@ export default function Dashboard() {
               variant="ghost" 
               size="sm"
               className="text-sm text-primary font-medium flex items-center"
-              onClick={openMomentModal}
+              onClick={() => {
+                console.log("Log button clicked!");
+                openMomentModal();
+              }}
             >
               <i className="fa-solid fa-plus mr-1"></i> Log
             </Button>
@@ -310,7 +313,10 @@ export default function Dashboard() {
                   <Button 
                     variant="outline" 
                     size="sm"
-                    onClick={openMomentModal}
+                    onClick={() => {
+                      console.log("Log Your First Moment button clicked!");
+                      openMomentModal();
+                    }}
                     className="text-primary mr-2"
                   >
                     <i className="fa-solid fa-plus mr-2"></i>Log Your First Moment
