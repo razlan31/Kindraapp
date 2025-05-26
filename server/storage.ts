@@ -121,6 +121,7 @@ export class MemStorage implements IStorage {
       name: "System Connection",
       relationshipStage: "Best Friend",
       startDate: new Date('2024-01-15'),
+      birthday: null,
       zodiacSign: "Leo",
       loveLanguage: "Quality Time",
       profileImage: null,

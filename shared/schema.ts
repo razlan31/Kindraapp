@@ -38,6 +38,7 @@ export const connections = pgTable("connections", {
   profileImage: text("profile_image"),
   relationshipStage: text("relationship_stage").notNull(),
   startDate: timestamp("start_date"),
+  birthday: timestamp("birthday"),
   zodiacSign: text("zodiac_sign"),
   loveLanguage: text("love_language"),
   isPrivate: boolean("is_private").default(false),

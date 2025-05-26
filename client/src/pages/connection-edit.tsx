@@ -26,6 +26,7 @@ export default function ConnectionEdit() {
   const [zodiacSign, setZodiacSign] = useState("");
   const [loveLanguages, setLoveLanguages] = useState<string[]>([]);
   const [profileImage, setProfileImage] = useState("");
+  const [birthday, setBirthday] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   // Fetch connection details
@@ -64,6 +65,12 @@ export default function ConnectionEdit() {
       }
       
       setProfileImage(connection.profileImage || "");
+      
+      // Handle birthday if available
+      if (connection.birthday) {
+        const date = new Date(connection.birthday);
+        setBirthday(format(date, 'yyyy-MM-dd'));
+      }
     }
   }, [connection]);
   
@@ -105,6 +112,11 @@ export default function ConnectionEdit() {
       
       if (profileImage) {
         connectionData.profileImage = profileImage;
+      }
+      
+      // Add birthday if provided
+      if (birthday) {
+        connectionData.birthday = new Date(birthday);
       }
       
       console.log("Sending update data:", connectionData);
@@ -338,6 +350,20 @@ export default function ConnectionEdit() {
                   </TabsContent>
                 </Tabs>
               </div>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Birthday
+              </label>
+              <input
+                type="date"
+                value={birthday}
+                onChange={(e) => setBirthday(e.target.value)}
+                placeholder="Select birthday"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              />
+              <p className="text-xs text-neutral-500 mt-1">Optional: Track birthdays and anniversaries</p>
             </div>
             
             <div>
