@@ -8,8 +8,9 @@ import { Connection, Moment } from "@shared/schema";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
 import { useModal } from "@/contexts/modal-context";
+import { useRelationshipFocus } from "@/contexts/relationship-focus-context-simple";
 import { Input } from "@/components/ui/input";
-import { Search, Plus, X, Camera } from "lucide-react";
+import { Search, Plus, X, Camera, Heart } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { relationshipStages } from "@shared/schema";
 import { useToast } from "@/hooks/use-toast";
@@ -21,6 +22,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 export default function Connections() {
   const { user } = useAuth();
   const { setSelectedConnection } = useModal();
+  const { mainFocusConnection } = useRelationshipFocus();
   const [, setLocation] = useLocation();
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStage, setFilterStage] = useState<string | null>(null);
@@ -319,13 +321,19 @@ export default function Connections() {
           ) : filteredConnections.length > 0 ? (
             <div className="space-y-3">
               {filteredConnections.map((connection) => (
-                <ConnectionCard 
-                  key={connection.id} 
-                  connection={connection} 
-                  onSelect={handleSelectConnection}
-                  recentEmojis={getConnectionEmojis(connection.id)}
-                  flagCount={getConnectionFlagCounts(connection.id)}
-                />
+                <div key={connection.id} className="relative">
+                  <ConnectionCard 
+                    connection={connection} 
+                    onSelect={handleSelectConnection}
+                    recentEmojis={getConnectionEmojis(connection.id)}
+                    flagCount={getConnectionFlagCounts(connection.id)}
+                  />
+                  {mainFocusConnection?.id === connection.id && (
+                    <div className="absolute top-2 right-2 bg-red-500 rounded-full p-1.5">
+                      <Heart className="h-3 w-3 text-white fill-white" />
+                    </div>
+                  )}
+                </div>
               ))}
             </div>
           ) : connections.length > 0 ? (

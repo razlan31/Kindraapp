@@ -17,9 +17,11 @@ export default function ConnectionDetail() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const { openMoodTrackerModal } = useModal();
-  const { setMainFocusConnection } = useRelationshipFocus();
+  const { mainFocusConnection, setMainFocusConnection } = useRelationshipFocus();
   const queryClient = useQueryClient();
   const connectionId = parseInt(id as string);
+  
+  const isMainFocus = mainFocusConnection?.id === connectionId;
   
   // Fetch connection details
   const { data: connection, isLoading, error } = useQuery({
@@ -258,12 +260,13 @@ export default function ConnectionDetail() {
           
           <div className="flex mt-6 gap-2">
             <Button 
-              variant="default" 
-              className="flex-1 bg-primary text-white"
+              variant={isMainFocus ? "secondary" : "default"}
+              className={`flex-1 ${isMainFocus ? 'bg-red-500 hover:bg-red-600 text-white' : 'bg-primary text-white'}`}
               onClick={handleSetAsFocus}
+              disabled={isMainFocus}
             >
-              <Heart className="mr-2 h-4 w-4" />
-              Set as Focus
+              <Heart className={`mr-2 h-4 w-4 ${isMainFocus ? 'fill-white' : ''}`} />
+              {isMainFocus ? 'Main Focus' : 'Set as Focus'}
             </Button>
             
             <Button 
