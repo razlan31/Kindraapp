@@ -123,9 +123,18 @@ export function MomentModal() {
   
   // Success and error handlers
   const handleSuccess = () => {
+    // Force immediate cache invalidation and refresh
     queryClient.invalidateQueries({ queryKey: ["/api/moments"] });
     queryClient.refetchQueries({ queryKey: ["/api/moments"] });
+    
+    // Trigger events for all components listening
+    window.dispatchEvent(new CustomEvent('momentCreated'));
     window.dispatchEvent(new CustomEvent('momentUpdated'));
+    window.dispatchEvent(new CustomEvent('momentDeleted'));
+    
+    // Force page reload for immediate visual updates
+    window.location.reload();
+    
     closeMomentModal();
     setIsSubmitting(false);
   };
