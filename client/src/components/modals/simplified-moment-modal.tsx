@@ -42,6 +42,35 @@ export function MomentModal() {
   const [customTag, setCustomTag] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Initialize form with existing data when editing
+  useEffect(() => {
+    if (editingMoment) {
+      setConnectionId(editingMoment.connectionId);
+      setEmoji(editingMoment.emoji);
+      setContent(editingMoment.content || "");
+      setSelectedDate(new Date(editingMoment.createdAt || new Date()));
+      setSelectedTags(editingMoment.tags || []);
+      
+      // Determine activity type from existing moment
+      if (editingMoment.tags?.includes('Conflict')) {
+        setMomentType('negative');
+      } else if (editingMoment.isIntimate) {
+        setMomentType('positive');
+      } else {
+        setMomentType('positive');
+      }
+    } else {
+      // Reset form for new entries
+      setConnectionId(selectedConnectionId || 2);
+      setEmoji(activityType === 'conflict' ? '⚡' : activityType === 'intimacy' ? '💕' : '😊');
+      setContent("");
+      setSelectedDate(new Date());
+      setMomentType('positive');
+      setSelectedTags([]);
+      setCustomTag("");
+    }
+  }, [editingMoment, selectedConnectionId, activityType]);
+
   // Tag handling functions
   const addTag = (tag: string) => {
     if (!selectedTags.includes(tag)) {
@@ -92,6 +121,25 @@ export function MomentModal() {
     }
   }, [momentModalOpen, selectedConnectionId, activityType]);
   
+  // Success and error handlers
+  const handleSuccess = () => {
+    queryClient.invalidateQueries({ queryKey: ["/api/moments"] });
+    queryClient.refetchQueries({ queryKey: ["/api/moments"] });
+    window.dispatchEvent(new CustomEvent('momentUpdated'));
+    closeMomentModal();
+    setIsSubmitting(false);
+  };
+
+  const handleError = (error: any) => {
+    console.error("Error with moment:", error);
+    toast({
+      title: "Error",
+      description: error?.message || "Failed to save entry. Please try again.",
+      variant: "destructive",
+    });
+    setIsSubmitting(false);
+  };
+
   // Create moment mutation
   const { mutate: createMoment } = useMutation({
     mutationFn: async (data: any) => {
@@ -108,24 +156,30 @@ export function MomentModal() {
         title: `${activityType === 'conflict' ? 'Conflict' : activityType === 'intimacy' ? 'Intimacy' : 'Moment'} logged successfully`,
         description: "Your entry has been recorded.",
       });
-      // Force immediate cache invalidation and refetch
-      queryClient.invalidateQueries({ queryKey: ["/api/moments"] });
-      queryClient.refetchQueries({ queryKey: ["/api/moments"] });
-      // Trigger immediate UI updates across all components
-      window.dispatchEvent(new CustomEvent('momentCreated'));
-      window.dispatchEvent(new CustomEvent('momentUpdated'));
-      closeMomentModal();
-      setIsSubmitting(false);
+      handleSuccess();
     },
-    onError: (error: any) => {
-      console.error("Error creating moment:", error);
-      toast({
-        title: "Error",
-        description: error?.message || "Failed to create entry. Please try again.",
-        variant: "destructive",
+    onError: (error: any) => handleError(error),
+  });
+
+  // Update moment mutation
+  const { mutate: updateMoment } = useMutation({
+    mutationFn: async (data: any) => {
+      const response = await fetch(`/api/moments/${editingMoment?.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
       });
-      setIsSubmitting(false);
+      if (!response.ok) throw new Error('Failed to update moment');
+      return response.json();
     },
+    onSuccess: () => {
+      toast({
+        title: "Entry updated successfully",
+        description: "Your changes have been saved.",
+      });
+      handleSuccess();
+    },
+    onError: (error: any) => handleError(error),
   });
   
   const handleSubmit = () => {
@@ -176,7 +230,12 @@ export function MomentModal() {
       reflection: reflection.trim() || null,
     };
     
-    createMoment(momentData);
+    // Use the appropriate mutation based on editing mode
+    if (editingMoment) {
+      updateMoment(momentData);
+    } else {
+      createMoment(momentData);
+    }
   };
   
   const getModalTitle = () => {
