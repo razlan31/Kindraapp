@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from "react";
-import { Connection } from "@shared/schema";
+import { Connection, Moment } from "@shared/schema";
 
 type ModalContextType = {
   momentModalOpen: boolean;
@@ -9,7 +9,8 @@ type ModalContextType = {
   selectedConnection: Connection | null;
   mainFocusConnection: Connection | null;
   activityType: 'moment' | 'conflict' | 'intimacy';
-  openMomentModal: (activityType?: 'moment' | 'conflict' | 'intimacy') => void;
+  editingMoment: Moment | null;
+  openMomentModal: (activityType?: 'moment' | 'conflict' | 'intimacy', moment?: Moment) => void;
   closeMomentModal: () => void;
   openConnectionModal: () => void;
   closeConnectionModal: () => void;
@@ -27,6 +28,7 @@ const ModalContext = createContext<ModalContextType>({
   selectedConnection: null,
   mainFocusConnection: null,
   activityType: 'moment',
+  editingMoment: null,
   openMomentModal: () => {},
   closeMomentModal: () => {},
   openConnectionModal: () => {},
@@ -47,10 +49,12 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [selectedConnection, setSelectedConnectionObject] = useState<Connection | null>(null);
   const [mainFocusConnection, setMainFocusConnectionObject] = useState<Connection | null>(null);
   const [activityType, setActivityType] = useState<'moment' | 'conflict' | 'intimacy'>('moment');
+  const [editingMoment, setEditingMoment] = useState<Moment | null>(null);
 
-  const openMomentModal = (activityType: 'moment' | 'conflict' | 'intimacy' = 'moment') => {
+  const openMomentModal = (activityType: 'moment' | 'conflict' | 'intimacy' = 'moment', moment?: Moment) => {
     console.log("openMomentModal called!");
     setActivityType(activityType);
+    setEditingMoment(moment || null);
     setMomentModalOpen(true);
   };
 
@@ -99,6 +103,7 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         selectedConnection,
         mainFocusConnection,
         activityType,
+        editingMoment,
         openMomentModal,
         closeMomentModal,
         openConnectionModal,

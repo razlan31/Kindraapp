@@ -19,7 +19,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
 export function MomentModal() {
-  const { momentModalOpen, closeMomentModal, selectedConnectionId, activityType } = useModal();
+  const { momentModalOpen, closeMomentModal, selectedConnectionId, activityType, editingMoment } = useModal();
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
