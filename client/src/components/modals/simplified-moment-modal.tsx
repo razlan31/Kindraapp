@@ -28,7 +28,7 @@ export function MomentModal() {
   const presetTags = {
     positive: ["Green Flag", "Quality Time", "Growth", "Support", "Trust", "Communication", "Affection", "Fun", "Celebration"],
     negative: ["Red Flag", "Stress", "Disconnection", "Jealousy", "Miscommunication", "Disappointment"],
-    intimate: ["Intimacy", "Physical Touch", "Emotional Connection", "Vulnerability", "Deep Conversation"],
+    intimate: ["Physical Touch", "Emotional Connection", "Vulnerability", "Deep Conversation"],
     general: ["Milestone", "Life Goals", "Future Planning", "Career", "Family", "Friends", "Travel", "Hobbies"]
   };
   
