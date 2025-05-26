@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Header } from "@/components/layout/header";
 import { BottomNavigation } from "@/components/layout/bottom-navigation";
 import { MomentCard } from "@/components/dashboard/moment-card";
+import { ReflectionModal } from "@/components/modals/reflection-modal";
 import { Moment, Connection } from "@shared/schema";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
@@ -49,9 +50,16 @@ export default function Activities() {
     return () => window.removeEventListener('momentCreated', handleMomentCreated);
   }, [refetchMoments]);
 
+  // Reflection modal state
+  const [reflectionModalOpen, setReflectionModalOpen] = useState(false);
+  const [selectedMomentForReflection, setSelectedMomentForReflection] = useState<Moment | null>(null);
+
   const handleAddReflection = (momentId: number) => {
-    // This would open a reflection modal in a full implementation
-    console.log("Add reflection for moment:", momentId);
+    const moment = moments.find(m => m.id === momentId);
+    if (moment) {
+      setSelectedMomentForReflection(moment);
+      setReflectionModalOpen(true);
+    }
   };
 
   const handleAddTestMoment = async () => {
@@ -315,6 +323,16 @@ export default function Activities() {
       </main>
 
       <BottomNavigation />
+      
+      {/* Reflection Modal */}
+      <ReflectionModal
+        isOpen={reflectionModalOpen}
+        onClose={() => {
+          setReflectionModalOpen(false);
+          setSelectedMomentForReflection(null);
+        }}
+        moment={selectedMomentForReflection}
+      />
     </div>
   );
 }

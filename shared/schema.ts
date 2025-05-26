@@ -105,6 +105,8 @@ export const moments = pgTable("moments", {
   isResolved: boolean("is_resolved").default(false),
   resolvedAt: timestamp("resolved_at"),
   resolutionNotes: text("resolution_notes"),
+  // Reflection field
+  reflection: text("reflection"),
 });
 
 export const momentSchema = createInsertSchema(moments).omit({ id: true, createdAt: true });
