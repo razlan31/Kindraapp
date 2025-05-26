@@ -1,0 +1,50 @@
+
+Console.js:61 Dashboard Debug: 
+Object
+Console.js:61 Dashboard Debug: 
+Object
+Console.js:61 Dashboard Debug: 
+Object
+Console.js:61 Dashboard Debug: 
+Object
+Console.js:61 Focus Context Debug: 
+Object
+Console.js:61 Found saved connection: 
+Object
+Console.js:61 Dashboard Debug: 
+Object
+Console.js:61 getCurrentUser successful: 
+Object
+Console.js:61 Auth context setting user: 
+Object
+Console.js:61 Dashboard Debug: 
+Object
+Console.js:61 Dashboard Debug: 
+Object
+2
+Console.js:61 Log button clicked!
+
+ Chrome is moving towards a new experience that allows users to choose to browse without third-party cookies.
+
+ Chrome is moving towards a new experience that allows users to choose to browse without third-party cookies.
+Console.js:61 getCurrentUser successful: 
+{id: 1, username: 'testuser', email: 'test@example.com', displayName: 'Test User', zodiacSign: 'Gemini', …}
+Console.js:61 Auth context setting user: 
+{id: 1, username: 'testuser', email: 'test@example.com', displayName: 'Test User', zodiacSign: 'Gemini', …}
+Console.js:61 Focus Context Debug: 
+{savedId: '2', connectionsLength: 1, connections: Array(1)}
+Console.js:61 Found saved connection: 
+{userId: 1, name: 'sadassa', relationshipStage: 'Talking', startDate: '2025-05-02T00:00:00.000Z', birthday: '2025-05-29T00:00:00.000Z', …}
+Console.js:61 MomentModal render - momentModalOpen: false
+Console.js:61 MomentModal render - momentModalOpen: false
+Console.js:61 MomentModal render - momentModalOpen: false
+Console.js:61 Focus Context Debug: 
+{savedId: '2', connectionsLength: 1, connections: Array(1)}
+Console.js:61 Found saved connection: 
+{userId: 1, name: 'sadassa', relationshipStage: 'Talking', startDate: '2025-05-02T00:00:00.000Z', birthday: '2025-05-29T00:00:00.000Z', …}
+Console.js:61 getCurrentUser successful: 
+{id: 1, username: 'testuser', email: 'test@example.com', displayName: 'Test User', zodiacSign: 'Gemini', …}
+Console.js:61 Auth context setting user: 
+{id: 1, username: 'testuser', email: 'test@example.com', displayName: 'Test User', zodiacSign: 'Gemini', …}
+﻿
+
