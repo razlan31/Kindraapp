@@ -4,7 +4,8 @@ import { Header } from "@/components/layout/header";
 import { BottomNavigation } from "@/components/layout/bottom-navigation";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ChevronLeft, ChevronRight, Heart, Calendar as CalendarIcon } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { ChevronLeft, ChevronRight, Heart, Calendar as CalendarIcon, Plus, Eye } from "lucide-react";
 import { useAuth } from "@/contexts/auth-context";
 import { useModal } from "@/contexts/modal-context";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, getDay } from "date-fns";
@@ -14,6 +15,8 @@ export default function Calendar() {
   const { user } = useAuth();
   const { openMomentModal, setSelectedConnection } = useModal();
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [selectedDay, setSelectedDay] = useState<Date | null>(null);
+  const [dayDetailOpen, setDayDetailOpen] = useState(false);
 
   // Fetch moments
   const { data: moments = [] } = useQuery<Moment[]>({
@@ -68,7 +71,24 @@ export default function Calendar() {
 
   // Handle day click
   const handleDayClick = (day: Date) => {
-    // Set the first connection as selected for moment creation
+    const dayMoments = getMomentsForDay(day);
+    
+    if (dayMoments.length > 0) {
+      // Show day details if there are moments
+      setSelectedDay(day);
+      setDayDetailOpen(true);
+    } else {
+      // Create new moment if no moments exist for this day
+      if (connections.length > 0) {
+        setSelectedConnection(connections[0].id, connections[0]);
+      }
+      openMomentModal();
+    }
+  };
+
+  // Handle adding new moment from day detail
+  const handleAddMomentFromDay = () => {
+    setDayDetailOpen(false);
     if (connections.length > 0) {
       setSelectedConnection(connections[0].id, connections[0]);
     }
@@ -235,6 +255,75 @@ export default function Calendar() {
           </Card>
         </section>
       </main>
+
+      {/* Day Detail Modal */}
+      <Dialog open={dayDetailOpen} onOpenChange={setDayDetailOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center justify-between">
+              <span>
+                {selectedDay && format(selectedDay, 'EEEE, MMMM d')}
+              </span>
+              <Button 
+                size="sm" 
+                onClick={handleAddMomentFromDay}
+                className="ml-2"
+              >
+                <Plus className="h-4 w-4 mr-1" />
+                Add Moment
+              </Button>
+            </DialogTitle>
+          </DialogHeader>
+          
+          <div className="space-y-4 max-h-96 overflow-y-auto">
+            {selectedDay && getMomentsForDay(selectedDay).map((moment) => {
+              const connection = connections.find(c => c.id === moment.connectionId);
+              return (
+                <Card key={moment.id} className="p-4">
+                  <div className="flex items-start gap-3">
+                    <div className="text-2xl">{moment.emoji}</div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="font-medium text-sm">
+                          {connection?.name || 'Unknown'}
+                        </span>
+                        <span className="text-xs text-muted-foreground">
+                          {format(new Date(moment.createdAt || new Date()), 'h:mm a')}
+                        </span>
+                      </div>
+                      
+                      <p className="text-sm mb-3">{moment.content}</p>
+                      
+                      {moment.tags && moment.tags.length > 0 && (
+                        <div className="flex flex-wrap gap-1">
+                          {moment.tags.map((tag, index) => (
+                            <span
+                              key={index}
+                              className={`text-xs px-2 py-1 rounded-full ${
+                                tag.includes('Green') || tag === 'Quality Time' || tag === 'Support'
+                                  ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300'
+                                : tag.includes('Red') || tag === 'Conflict'
+                                  ? 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'
+                                : tag === 'Intimacy' || tag === 'Physical Touch'
+                                  ? 'bg-pink-100 text-pink-700 dark:bg-pink-900 dark:text-pink-300'
+                                : tag.includes('Blue') || tag === 'Communication' || tag === 'Growth'
+                                  ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300'
+                                : 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300'
+                              }`}
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </Card>
+              );
+            })}
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <BottomNavigation />
     </div>
