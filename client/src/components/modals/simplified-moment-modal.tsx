@@ -123,20 +123,18 @@ export function MomentModal() {
   
   // Success and error handlers
   const handleSuccess = () => {
-    // Force immediate cache invalidation and refresh
-    queryClient.invalidateQueries({ queryKey: ["/api/moments"] });
-    queryClient.refetchQueries({ queryKey: ["/api/moments"] });
-    
-    // Trigger events for all components listening
-    window.dispatchEvent(new CustomEvent('momentCreated'));
-    window.dispatchEvent(new CustomEvent('momentUpdated'));
-    window.dispatchEvent(new CustomEvent('momentDeleted'));
-    
-    // Force page reload for immediate visual updates
-    window.location.reload();
-    
+    // Close modal first
     closeMomentModal();
     setIsSubmitting(false);
+    
+    // Immediate cache invalidation
+    queryClient.invalidateQueries({ queryKey: ["/api/moments"] });
+    queryClient.removeQueries({ queryKey: ["/api/moments"] });
+    
+    // Small delay then force page reload to ensure changes are visible
+    setTimeout(() => {
+      window.location.reload();
+    }, 100);
   };
 
   const handleError = (error: any) => {
