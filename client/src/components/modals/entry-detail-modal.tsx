@@ -226,8 +226,8 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection }: EntryD
 
 
 
-          {/* Emoji/Type Selection (when editing) */}
-          {isEditing && (
+          {/* Emoji/Type Selection (when editing) - Only for regular moments */}
+          {isEditing && !freshMoment.tags?.includes('Conflict') && !freshMoment.isIntimate && !freshMoment.tags?.includes('Intimacy') && (
             <div className="space-y-2">
               <label className="text-sm font-medium">Moment Type</label>
               <div className="flex gap-2">
