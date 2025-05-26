@@ -121,20 +121,11 @@ export function MomentModal() {
     }
   }, [momentModalOpen, selectedConnectionId, activityType]);
   
-  // Success and error handlers
+  // Success and error handlers - now unused since we handle success directly in mutations
   const handleSuccess = () => {
-    // Close modal first
     closeMomentModal();
     setIsSubmitting(false);
-    
-    // Immediate cache invalidation
-    queryClient.invalidateQueries({ queryKey: ["/api/moments"] });
-    queryClient.removeQueries({ queryKey: ["/api/moments"] });
-    
-    // Small delay then force page reload to ensure changes are visible
-    setTimeout(() => {
-      window.location.reload();
-    }, 100);
+    window.location.reload();
   };
 
   const handleError = (error: any) => {
@@ -163,7 +154,11 @@ export function MomentModal() {
         title: `${activityType === 'conflict' ? 'Conflict' : activityType === 'intimacy' ? 'Intimacy' : 'Moment'} logged successfully`,
         description: "Your entry has been recorded.",
       });
-      handleSuccess();
+      // Close modal immediately
+      closeMomentModal();
+      setIsSubmitting(false);
+      // Force page reload - the most reliable way to show changes
+      window.location.reload();
     },
     onError: (error: any) => handleError(error),
   });
@@ -184,7 +179,11 @@ export function MomentModal() {
         title: "Entry updated successfully",
         description: "Your changes have been saved.",
       });
-      handleSuccess();
+      // Close modal immediately
+      closeMomentModal();
+      setIsSubmitting(false);
+      // Force page reload - the most reliable way to show changes
+      window.location.reload();
     },
     onError: (error: any) => handleError(error),
   });
