@@ -133,12 +133,12 @@ export function MomentModal() {
 
   return (
     <Dialog open={momentModalOpen} onOpenChange={closeMomentModal}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{getModalTitle()}</DialogTitle>
         </DialogHeader>
         
-        <div className="space-y-4">
+        <div className="space-y-4 px-1">
           {/* Connection Selection */}
           <div className="space-y-2">
             <label className="text-sm font-medium">Connection</label>
