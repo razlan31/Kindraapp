@@ -112,6 +112,8 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection }: EntryD
     if (freshMoment) {
       setEditedContent(freshMoment.content);
       setEditedReflection(freshMoment.reflection || "");
+      setEditedTags(freshMoment.tags || []);
+      setCustomTag("");
       setIsEditing(true);
     }
   };
@@ -124,7 +126,8 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection }: EntryD
       await updateMomentMutation.mutateAsync({
         id: moment.id,
         content: editedContent.trim(),
-        reflection: editedReflection.trim()
+        reflection: editedReflection.trim(),
+        tags: editedTags
       });
     } finally {
       setIsSubmitting(false);
@@ -246,6 +249,77 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection }: EntryD
               )}
             </div>
           )}
+
+          {/* Tags Section */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Tags</label>
+            {isEditing ? (
+              <div className="space-y-3">
+                {/* Selected Tags Display */}
+                {editedTags.length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {editedTags.map((tag, index) => (
+                      <Badge key={index} variant="secondary" className="flex items-center gap-1">
+                        {tag}
+                        <X className="h-3 w-3 cursor-pointer" onClick={() => removeTag(tag)} />
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+
+                {/* Preset Tags */}
+                <div className="space-y-2">
+                  <div className="text-xs font-medium text-gray-600 dark:text-gray-400">Quick Tags:</div>
+                  <div className="flex flex-wrap gap-1">
+                    {presetTags.positive.slice(0, 6).map((tag) => (
+                      <Button
+                        key={tag}
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className={`h-7 text-xs ${editedTags.includes(tag) ? "bg-green-100 border-green-300 text-green-800" : ""}`}
+                        onClick={() => editedTags.includes(tag) ? removeTag(tag) : addTag(tag)}
+                      >
+                        {tag}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Custom Tag Input */}
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="Add custom tag..."
+                    value={customTag}
+                    onChange={(e) => setCustomTag(e.target.value)}
+                    onKeyPress={handleCustomTagKeyPress}
+                    className="text-sm"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={addCustomTag}
+                    disabled={!customTag.trim()}
+                  >
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <div className="flex flex-wrap gap-2">
+                {freshMoment.tags && freshMoment.tags.length > 0 ? (
+                  freshMoment.tags.map((tag, index) => (
+                    <Badge key={index} className={getTagColor(tag)} variant="secondary">
+                      {tag}
+                    </Badge>
+                  ))
+                ) : (
+                  <span className="text-sm text-gray-500 italic">No tags</span>
+                )}
+              </div>
+            )}
+          </div>
 
           {/* Reflection */}
           <div className="space-y-2">
