@@ -345,7 +345,8 @@ export default function BasicConnectionForm() {
             </div>
             
             <Button
-              type="submit"
+              type="button"
+              onClick={handleSubmit}
               className="w-full bg-blue-600 hover:bg-blue-700 text-white"
               disabled={isSubmitting}
             >
