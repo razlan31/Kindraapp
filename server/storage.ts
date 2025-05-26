@@ -241,7 +241,15 @@ export class MemStorage implements IStorage {
 
   async createUser(insertUser: InsertUser): Promise<User> {
     const id = this.userId++;
-    const user: User = { ...insertUser, id, createdAt: new Date() };
+    const user: User = { 
+      ...insertUser, 
+      id, 
+      createdAt: new Date(),
+      displayName: insertUser.displayName || null,
+      profileImage: insertUser.profileImage || null,
+      zodiacSign: insertUser.zodiacSign || null,
+      loveLanguage: insertUser.loveLanguage || null
+    };
     this.users.set(id, user);
     return user;
   }
@@ -331,7 +339,16 @@ export class MemStorage implements IStorage {
 
   async createMoment(insertMoment: InsertMoment): Promise<Moment> {
     const id = this.momentId++;
-    const moment: Moment = { ...insertMoment, id, createdAt: new Date() };
+    const moment: Moment = { 
+      ...insertMoment, 
+      id, 
+      createdAt: new Date(),
+      tags: insertMoment.tags || null,
+      isPrivate: insertMoment.isPrivate || null,
+      isIntimate: insertMoment.isIntimate || null,
+      intimacyRating: insertMoment.intimacyRating || null,
+      relatedToMenstrualCycle: insertMoment.relatedToMenstrualCycle || null
+    };
     this.moments.set(id, moment);
     return moment;
   }

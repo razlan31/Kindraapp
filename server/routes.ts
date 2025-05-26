@@ -10,6 +10,13 @@ import bcrypt from "bcryptjs";
 import session from "express-session";
 import MemoryStore from "memorystore";
 
+// Extend session types
+declare module "express-session" {
+  interface SessionData {
+    userId?: number;
+  }
+}
+
 // Auth middleware
 const isAuthenticated = (req: Request, res: Response, next: Function) => {
   // For development purposes, we'll automatically log in with user ID 1

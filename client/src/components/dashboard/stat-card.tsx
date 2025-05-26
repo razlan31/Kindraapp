@@ -1,33 +1,22 @@
-import { Card } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
 interface StatCardProps {
-  value: number | string;
+  value: number;
   label: string;
   color: "primary" | "secondary" | "accent";
 }
 
 export function StatCard({ value, label, color }: StatCardProps) {
-  const getColorClass = () => {
-    switch (color) {
-      case "primary":
-        return "text-primary";
-      case "secondary":
-        return "text-secondary";
-      case "accent":
-        return "text-accent dark:text-accent";
-      default:
-        return "text-primary";
-    }
+  const colorClasses = {
+    primary: "bg-primary/10 text-primary",
+    secondary: "bg-green-500/10 text-green-600",
+    accent: "bg-purple-500/10 text-purple-600"
   };
 
   return (
-    <Card className="bg-neutral-100 dark:bg-neutral-800 rounded-xl p-3 flex flex-col items-center">
-      <span className={`text-2xl font-heading font-semibold ${getColorClass()}`}>
-        {value}
-      </span>
-      <span className="text-xs text-neutral-600 dark:text-neutral-400 mt-1">
-        {label}
-      </span>
-    </Card>
+    <div className={cn("rounded-lg p-3 text-center", colorClasses[color])}>
+      <div className="text-2xl font-bold">{value}</div>
+      <div className="text-xs mt-1">{label}</div>
+    </div>
   );
 }
