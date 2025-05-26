@@ -2,6 +2,7 @@ import { useLocation, Link } from "wouter";
 import { useModal } from "@/contexts/modal-context";
 import { 
   Calendar, 
+  Heart,
   Home, 
   LineChart, 
   Plus, 
@@ -33,9 +34,9 @@ export function BottomNavigation() {
           <Calendar className="h-5 w-5" />
           <span className="text-xs mt-1">Calendar</span>
         </Link>
-        <Link href="/insights" className={`bottom-tab flex flex-col items-center justify-center ${location === '/insights' ? 'active' : ''}`}>
-          <LineChart className="h-5 w-5" />
-          <span className="text-xs mt-1">Insights</span>
+        <Link href="/activities" className={`bottom-tab flex flex-col items-center justify-center ${location === '/activities' ? 'active' : ''}`}>
+          <Heart className="h-5 w-5" />
+          <span className="text-xs mt-1">Activities</span>
         </Link>
       </div>
     </nav>
