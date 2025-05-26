@@ -385,6 +385,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Add reflection to a moment
+  app.post("/api/moments/:id/reflection", isAuthenticated, async (req: Request, res: Response) => {
+    try {
+      const userId = req.session.userId as number;
+      const momentId = parseInt(req.params.id);
+      const { reflection } = req.body;
+      
+      if (isNaN(momentId)) {
+        return res.status(400).json({ message: "Invalid moment ID" });
+      }
+      
+      if (!reflection || typeof reflection !== 'string') {
+        return res.status(400).json({ message: "Reflection text is required" });
+      }
+      
+      const moment = await storage.getMoment(momentId);
+      
+      if (!moment) {
+        return res.status(404).json({ message: "Moment not found" });
+      }
+      
+      if (moment.userId !== userId) {
+        return res.status(403).json({ message: "Unauthorized to update this moment" });
+      }
+      
+      const updatedMoment = await storage.updateMoment(momentId, { reflection });
+      
+      if (!updatedMoment) {
+        return res.status(500).json({ message: "Failed to update moment" });
+      }
+      
+      res.json(updatedMoment);
+    } catch (error) {
+      res.status(500).json({ message: "Server error adding reflection" });
+    }
+  });
+
   app.get("/api/connections/:id/moments", isAuthenticated, async (req, res) => {
     try {
       const userId = req.session.userId as number;

@@ -35,6 +35,9 @@ export function MomentModal() {
   const [resolutionNotes, setResolutionNotes] = useState('');
   const [resolvedDate, setResolvedDate] = useState<Date>(new Date());
   
+  // Reflection field
+  const [reflection, setReflection] = useState('');
+  
   // Fetch user connections
   const { data: connections = [] } = useQuery<Connection[]>({
     queryKey: ["/api/connections"],
@@ -124,6 +127,8 @@ export function MomentModal() {
       isResolved: activityType === 'conflict' ? isResolved : false,
       resolvedAt: (activityType === 'conflict' && isResolved) ? resolvedDate.toISOString() : null,
       resolutionNotes: (activityType === 'conflict' && isResolved) ? resolutionNotes : null,
+      // Reflection field
+      reflection: reflection.trim() || null,
     };
     
     createMoment(momentData);
@@ -293,6 +298,20 @@ export function MomentModal() {
               )}
             </>
           )}
+
+          {/* Reflection Field - Available for all activity types */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Reflection (Optional)</label>
+            <Textarea
+              value={reflection}
+              onChange={(e) => setReflection(e.target.value)}
+              placeholder="What deeper thoughts do you have about this moment? How did it make you feel? What did you learn?"
+              className="min-h-[80px]"
+            />
+            <p className="text-xs text-gray-500">
+              Add your personal insights and thoughts about this experience
+            </p>
+          </div>
 
           {/* Action Buttons */}
           <div className="flex justify-end space-x-2 pt-4">
