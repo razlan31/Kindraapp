@@ -30,9 +30,18 @@ export default function Dashboard() {
   });
 
   // Fetch recent moments
-  const { data: moments = [] } = useQuery<Moment[]>({
+  const { data: moments = [], isLoading: momentsLoading, error: momentsError } = useQuery<Moment[]>({
     queryKey: ["/api/moments"],
     enabled: !!user,
+  });
+
+  // Debug logging
+  console.log("Dashboard Debug:", { 
+    user: !!user, 
+    momentsLength: moments.length, 
+    momentsLoading,
+    momentsError,
+    moments 
   });
 
   // Fetch badges
