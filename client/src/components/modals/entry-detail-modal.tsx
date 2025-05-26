@@ -45,6 +45,13 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection }: EntryD
   // Get the fresh moment data from the query result
   const freshMoment = Array.isArray(moments) ? moments.find((m: Moment) => m.id === moment?.id) || moment : moment;
 
+  // Reset to view mode when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      setIsEditing(false);
+    }
+  }, [isOpen]);
+
   // Listen for reflection updates and refresh data
   useEffect(() => {
     const handleReflectionAdded = (event: CustomEvent) => {
