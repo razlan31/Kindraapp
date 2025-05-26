@@ -165,25 +165,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const connectionData: any = {
         userId: userId,
         name: req.body.name,
-        relationshipStage: req.body.relationshipStage || "Talking"
+        relationshipStage: req.body.relationshipStage || "Talking",
+        startDate: req.body.startDate ? new Date(req.body.startDate) : null,
+        birthday: req.body.birthday ? new Date(req.body.birthday) : null,
+        zodiacSign: req.body.zodiacSign || null,
+        loveLanguage: req.body.loveLanguage || null,
+        profileImage: req.body.profileImage || null,
+        isPrivate: req.body.isPrivate || false
       };
-      
-      // Add optional fields if provided
-      if (req.body.startDate) {
-        connectionData.startDate = new Date(req.body.startDate);
-      }
-      if (req.body.birthday) {
-        connectionData.birthday = new Date(req.body.birthday);
-      }
-      if (req.body.zodiacSign) {
-        connectionData.zodiacSign = req.body.zodiacSign;
-      }
-      if (req.body.loveLanguage) {
-        connectionData.loveLanguage = req.body.loveLanguage;
-      }
-      if (req.body.profileImage) {
-        connectionData.profileImage = req.body.profileImage;
-      }
       
       console.log("Creating connection with data:", connectionData);
       const newConnection = await storage.createConnection(connectionData);
