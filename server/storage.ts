@@ -112,6 +112,24 @@ export class MemStorage implements IStorage {
     
     this.users.set(1, testUser);
     console.log("Created test user synchronously:", testUser.username);
+    
+    // Add a sample connection so database is never empty
+    const sampleConnection: Connection = {
+      id: 1,
+      userId: 1,
+      name: "Sample Person",
+      relationshipStage: "Best Friend",
+      startDate: new Date('2024-01-15'),
+      zodiacSign: "Leo",
+      loveLanguage: "Quality Time",
+      profileImage: null,
+      isPrivate: false,
+      createdAt: new Date()
+    };
+    
+    this.connections.set(1, sampleConnection);
+    this.connectionId = 2; // Next connection will start from ID 2
+    console.log("Created sample connection to prevent empty database");
   }
 
   private async initializeTestUser() {
