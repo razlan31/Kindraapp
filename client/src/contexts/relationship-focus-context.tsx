@@ -49,13 +49,16 @@ export const RelationshipFocusProvider: React.FC<{ children: React.ReactNode }> 
   }, [connections, isLoading]);
   
   const setMainFocusConnection = (connection: Connection | null) => {
+    console.log('Context: Setting main focus connection:', connection);
     setMainFocusConnectionObject(connection);
     
     // Store in localStorage for persistence
     if (connection) {
       localStorage.setItem('mainFocusConnectionId', connection.id.toString());
+      console.log('Context: Saved to localStorage:', connection.id.toString());
     } else {
       localStorage.removeItem('mainFocusConnectionId');
+      console.log('Context: Removed from localStorage');
     }
   };
 
