@@ -267,9 +267,23 @@ export class MemStorage implements IStorage {
   }
 
   async createConnection(insertConnection: InsertConnection): Promise<Connection> {
+    console.log("STORAGE: createConnection called with data:", insertConnection);
     const id = this.connectionId++;
-    const connection: Connection = { ...insertConnection, id, createdAt: new Date() };
+    const connection: Connection = { 
+      ...insertConnection, 
+      id, 
+      createdAt: new Date(),
+      // Ensure null values for optional fields that aren't provided
+      profileImage: insertConnection.profileImage || null,
+      startDate: insertConnection.startDate || null,
+      birthday: insertConnection.birthday || null,
+      zodiacSign: insertConnection.zodiacSign || null,
+      loveLanguage: insertConnection.loveLanguage || null,
+      isPrivate: insertConnection.isPrivate || false
+    };
+    console.log("STORAGE: Created connection object:", connection);
     this.connections.set(id, connection);
+    console.log("STORAGE: Saved to map. Verifying:", this.connections.get(id));
     return connection;
   }
 
