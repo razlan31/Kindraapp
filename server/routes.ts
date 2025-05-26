@@ -1,6 +1,8 @@
 import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
-import { storage } from "./storage";
+import { PgStorage } from "./pg-storage";
+
+const storage = new PgStorage();
 import { z } from "zod";
 import { 
   userSchema, connectionSchema, momentSchema,
