@@ -24,8 +24,10 @@ export default function BasicConnectionForm() {
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("Form submitted! Name:", name, "Stage:", stage);
     
     if (!name.trim()) {
+      console.log("Name validation failed");
       toast({
         title: "Name required",
         description: "Please enter a name for this connection"
@@ -33,6 +35,7 @@ export default function BasicConnectionForm() {
       return;
     }
     
+    console.log("Starting submission...");
     setIsSubmitting(true);
     
     try {
