@@ -44,9 +44,11 @@ export default function Activities() {
   // Listen for moment creation events to trigger refetch
   useEffect(() => {
     const handleMomentCreated = () => {
+      console.log("Moment created event received, refetching...");
       refetchMoments();
     };
     const handleMomentUpdated = () => {
+      console.log("Moment updated event received, refetching...");
       refetchMoments();
     };
     
