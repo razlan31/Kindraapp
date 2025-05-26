@@ -110,11 +110,12 @@ export default function BasicConnectionForm() {
               <label className="block text-sm font-medium mb-2">
                 Name <span className="text-red-500">*</span>
               </label>
-              <Input
+              <input
+                type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Enter name"
-                className="w-full"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md"
                 autoFocus
               />
             </div>
@@ -139,12 +140,12 @@ export default function BasicConnectionForm() {
                 When did you start this connection?
               </label>
               <div className="space-y-2">
-                <Input
+                <input
                   type="date"
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
                   placeholder="Select the date you started connecting"
-                  className="w-full"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
                 />
                 <div className="flex justify-end">
                   <Button
