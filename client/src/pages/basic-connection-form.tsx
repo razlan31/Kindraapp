@@ -22,45 +22,26 @@ export default function BasicConnectionForm() {
   const [profileImage, setProfileImage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  const handleSubmit = async (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    console.log("Button clicked! Function is running!");
-    alert("Button was clicked - function is working!");
-    
+  const handleSubmit = async () => {
     if (!name.trim()) {
-      console.log("Name validation failed");
-      alert("Please enter a name first!");
+      toast({
+        title: "Name required",
+        description: "Please enter a name for this connection"
+      });
       return;
     }
     
-    console.log("Starting submission...");
     setIsSubmitting(true);
     
     try {
-      // Create connection data object
-      const connectionData: any = {
+      const connectionData = {
         name: name.trim(),
-        relationshipStage: stage
+        relationshipStage: stage,
+        startDate: startDate || null,
+        zodiacSign: zodiacSign || null,
+        loveLanguage: loveLanguages.length > 0 ? loveLanguages.join(', ') : null,
+        profileImage: profileImage || null
       };
-      
-      // Add optional fields only if they have values
-      if (startDate) {
-        connectionData.startDate = startDate;
-      }
-      
-      if (zodiacSign) {
-        connectionData.zodiacSign = zodiacSign;
-      }
-      
-      if (loveLanguages.length > 0) {
-        connectionData.loveLanguage = loveLanguages.join(', ');
-      }
-      
-      if (profileImage) {
-        connectionData.profileImage = profileImage;
-      }
-      
-      console.log("Sending data:", connectionData);
       
       const response = await fetch("/api/connections", {
         method: "POST",
@@ -72,9 +53,6 @@ export default function BasicConnectionForm() {
       });
       
       if (response.ok) {
-        const data = await response.json();
-        console.log("Connection created successfully:", data);
-        
         toast({
           title: "Success!",
           description: "Connection created successfully"
@@ -83,9 +61,6 @@ export default function BasicConnectionForm() {
         queryClient.invalidateQueries({ queryKey: ["/api/connections"] });
         setLocation("/connections");
       } else {
-        const errorData = await response.text();
-        console.error("Error response:", errorData);
-        
         toast({
           title: "Error",
           description: "Failed to create connection",
@@ -93,8 +68,6 @@ export default function BasicConnectionForm() {
         });
       }
     } catch (error) {
-      console.error("Exception:", error);
-      
       toast({
         title: "Error",
         description: "Something went wrong",

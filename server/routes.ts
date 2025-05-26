@@ -136,20 +136,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/connections", isAuthenticated, async (req, res) => {
     try {
       const userId = req.session.userId as number;
-      let connections = await storage.getConnectionsByUserId(userId);
-      
-      // If no connections exist, create a test connection for debugging
-      if (connections.length === 0) {
-        console.log("No connections found, creating test connection");
-        const testConnection = await storage.createConnection({
-          userId: userId,
-          name: "Test Connection",
-          relationshipStage: "Talking"
-        });
-        console.log("Test connection created:", testConnection);
-        connections = [testConnection];
-      }
-      
+      const connections = await storage.getConnectionsByUserId(userId);
       res.status(200).json(connections);
     } catch (error) {
       console.error("Error in get connections:", error);
