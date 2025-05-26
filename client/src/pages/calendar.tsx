@@ -19,7 +19,7 @@ export default function Calendar() {
   const [dayDetailOpen, setDayDetailOpen] = useState(false);
 
   // Fetch moments
-  const { data: moments = [] } = useQuery<Moment[]>({
+  const { data: moments = [], isLoading: momentsLoading } = useQuery<Moment[]>({
     queryKey: ["/api/moments"],
     enabled: !!user,
   });
@@ -37,10 +37,15 @@ export default function Calendar() {
 
   // Get moments for a specific day
   const getMomentsForDay = (day: Date) => {
-    return moments.filter(moment => 
+    const dayMoments = moments.filter(moment => 
       isSameDay(new Date(moment.createdAt || new Date()), day)
     );
+    console.log(`Calendar Debug - Day: ${format(day, 'yyyy-MM-dd')}, Moments found: ${dayMoments.length}`, dayMoments);
+    return dayMoments;
   };
+
+  // Debug moments loading
+  console.log('Calendar Debug - Total moments:', moments.length, moments);
 
   // Get moment color based on tags
   const getMomentColor = (moment: Moment) => {
