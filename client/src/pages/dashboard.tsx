@@ -269,7 +269,12 @@ export default function Dashboard() {
               className="text-sm text-primary font-medium flex items-center"
               onClick={() => {
                 console.log("Log button clicked!");
-                openMomentModal();
+                console.log("openMomentModal function:", openMomentModal);
+                if (openMomentModal) {
+                  openMomentModal();
+                } else {
+                  console.error("openMomentModal is undefined!");
+                }
               }}
             >
               <i className="fa-solid fa-plus mr-1"></i> Log
