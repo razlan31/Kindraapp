@@ -161,12 +161,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = req.session.userId as number;
       console.log("User ID from session:", userId);
       
-      // Create a minimal connection object that we know will work
-      const connectionData = {
+      // Create connection object with all form data
+      const connectionData: any = {
         userId: userId,
         name: req.body.name,
         relationshipStage: req.body.relationshipStage || "Talking"
       };
+      
+      // Add optional fields if provided
+      if (req.body.startDate) {
+        connectionData.startDate = new Date(req.body.startDate);
+      }
+      if (req.body.birthday) {
+        connectionData.birthday = new Date(req.body.birthday);
+      }
+      if (req.body.zodiacSign) {
+        connectionData.zodiacSign = req.body.zodiacSign;
+      }
+      if (req.body.loveLanguage) {
+        connectionData.loveLanguage = req.body.loveLanguage;
+      }
+      if (req.body.profileImage) {
+        connectionData.profileImage = req.body.profileImage;
+      }
       
       console.log("Creating connection with data:", connectionData);
       const newConnection = await storage.createConnection(connectionData);

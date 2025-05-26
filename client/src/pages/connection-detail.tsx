@@ -84,6 +84,9 @@ export default function ConnectionDetail() {
           throw new Error('Failed to delete connection');
         }
         
+        // Invalidate the connections cache to refresh the list
+        queryClient.invalidateQueries({ queryKey: ['/api/connections'] });
+        
         toast({
           title: 'Connection deleted',
           description: 'The connection has been removed'
@@ -287,6 +290,11 @@ export default function ConnectionDetail() {
             <div className="flex justify-between">
               <div className="text-neutral-500">Relationship Duration</div>
               <div>{getDurationText(connection.startDate)}</div>
+            </div>
+            
+            <div className="flex justify-between">
+              <div className="text-neutral-500">Birthday</div>
+              <div>{getFormattedDate(connection.birthday)}</div>
             </div>
             
             <div className="flex justify-between">
