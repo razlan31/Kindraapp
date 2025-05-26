@@ -40,9 +40,12 @@ export function ReflectionModal({ isOpen, onClose, moment }: ReflectionModalProp
       toast({ title: "Reflection added successfully!" });
       // Invalidate all moment-related queries to refresh the data
       queryClient.invalidateQueries({ queryKey: ["/api/moments"] });
-      queryClient.invalidateQueries({ queryKey: ["moments"] });
-      // Also trigger a manual refetch to ensure immediate update
+      // Force immediate refresh of the data
       queryClient.refetchQueries({ queryKey: ["/api/moments"] });
+      // Trigger a custom event to notify other components
+      window.dispatchEvent(new CustomEvent('reflectionAdded', { 
+        detail: { momentId: moment?.id } 
+      }));
       setReflection("");
       onClose();
     },

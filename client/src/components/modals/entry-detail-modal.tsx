@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
@@ -23,6 +23,21 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection }: EntryD
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  // Listen for reflection updates and refresh data
+  useEffect(() => {
+    const handleReflectionAdded = (event: CustomEvent) => {
+      if (event.detail.momentId === moment?.id) {
+        // Refresh the moments data to get the updated reflection
+        queryClient.refetchQueries({ queryKey: ["/api/moments"] });
+      }
+    };
+
+    window.addEventListener('reflectionAdded', handleReflectionAdded as EventListener);
+    return () => {
+      window.removeEventListener('reflectionAdded', handleReflectionAdded as EventListener);
+    };
+  }, [moment?.id, queryClient]);
 
   const updateMomentMutation = useMutation({
     mutationFn: async (data: { id: number; content: string; reflection: string }) => {
