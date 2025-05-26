@@ -56,7 +56,7 @@ export function MomentModal() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      connectionId: selectedConnectionId || mainFocusConnection?.id || 2, // Use focus connection or default
+      connectionId: selectedConnectionId || 2, // Use selected connection or default to Alex
       emoji: "😊",
       content: "",
       tags: [],
