@@ -152,6 +152,9 @@ export function MomentModal() {
     }
   }, [user, createMoment, createMilestone]);
   
+  // Debug modal state
+  console.log("MomentModal render - momentModalOpen:", momentModalOpen);
+
   return (
     <Dialog open={momentModalOpen} onOpenChange={(open) => !open && closeMomentModal()}>
       <DialogContent className="sm:max-w-md">

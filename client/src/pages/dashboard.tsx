@@ -267,14 +267,12 @@ export default function Dashboard() {
               variant="ghost" 
               size="sm"
               className="text-sm text-primary font-medium flex items-center"
-              onClick={() => {
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
                 console.log("Log button clicked!");
                 console.log("openMomentModal function:", openMomentModal);
-                if (openMomentModal) {
-                  openMomentModal();
-                } else {
-                  console.error("openMomentModal is undefined!");
-                }
+                openMomentModal();
               }}
             >
               <i className="fa-solid fa-plus mr-1"></i> Log
