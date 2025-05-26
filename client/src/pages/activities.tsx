@@ -156,8 +156,10 @@ export default function Activities() {
       // Show all moments except pure conflicts and intimacy entries
       matchesTab = !tags.includes('Conflict') && !moment.isIntimate && !tags.includes('Intimacy');
     } else if (activeTab === 'conflicts') {
-      matchesTab = tags.includes('Conflict');
+      // Only show conflicts, exclude intimacy even if it has conflict tags
+      matchesTab = tags.includes('Conflict') && !moment.isIntimate && !tags.includes('Intimacy');
     } else if (activeTab === 'intimacy') {
+      // Only show intimacy entries, prioritize intimacy over conflict
       matchesTab = moment.isIntimate === true || tags.includes('Intimacy');
     }
     
