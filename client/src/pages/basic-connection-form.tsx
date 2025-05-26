@@ -25,19 +25,8 @@ export default function BasicConnectionForm() {
   const handleSubmit = async () => {
     console.log("Create button clicked!", { name, stage, startDate, loveLanguages });
     
-    if (!name.trim()) {
-      toast({
-        title: "Name required",
-        description: "Please enter a name for this connection"
-      });
-      return;
-    }
-    
-    if (!stage) {
-      toast({
-        title: "Stage required",
-        description: "Please select a relationship stage"
-      });
+    if (!name.trim() || !stage) {
+      alert("Please fill in name and relationship stage");
       return;
     }
     
@@ -58,8 +47,7 @@ export default function BasicConnectionForm() {
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify(connectionData),
-        credentials: "include"
+        body: JSON.stringify(connectionData)
       });
       
       if (response.ok) {
