@@ -76,6 +76,7 @@ export function MomentModal() {
   // Log moment mutation
   const { mutate: createMoment, isPending } = useMutation({
     mutationFn: async (data: z.infer<typeof formSchema>) => {
+      console.log("Creating moment with data:", data);
       const response = await apiRequest("POST", "/api/moments", data);
       return response.json();
     },
