@@ -27,7 +27,7 @@ export function MomentModal() {
   // Preset tag options organized by category
   const presetTags = {
     positive: ["Green Flag", "Quality Time", "Growth", "Support", "Trust", "Communication", "Affection", "Fun", "Celebration"],
-    negative: ["Red Flag", "Conflict", "Stress", "Disconnection", "Jealousy", "Miscommunication"],
+    negative: ["Red Flag", "Stress", "Disconnection", "Jealousy", "Miscommunication", "Disappointment"],
     intimate: ["Intimacy", "Physical Touch", "Emotional Connection", "Vulnerability", "Deep Conversation"],
     general: ["Milestone", "Life Goals", "Future Planning", "Career", "Family", "Friends", "Travel", "Hobbies"]
   };
@@ -137,21 +137,21 @@ export function MomentModal() {
     
     setIsSubmitting(true);
     
-    // Use selected tags or fallback to activity type tags
+    // Use selected tags or fallback to activity type tags (but not moment type)
     let tags: string[] = [];
     let isIntimate = false;
     
     if (selectedTags.length > 0) {
       tags = selectedTags;
     } else {
-      if (activityType === 'moment') {
-        tags = [momentType === 'positive' ? 'Positive' : momentType === 'negative' ? 'Negative' : 'Neutral'];
-      } else if (activityType === 'conflict') {
+      // Only add default tags for conflict and intimacy, not for regular moments
+      if (activityType === 'conflict') {
         tags = ['Conflict'];
       } else if (activityType === 'intimacy') {
         tags = ['Intimacy'];
         isIntimate = true;
       }
+      // For regular moments, don't add any default tags - let users choose
     }
     
     if (activityType === 'intimacy') {
