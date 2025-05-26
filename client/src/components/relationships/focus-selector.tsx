@@ -58,7 +58,7 @@ export function FocusSelector({ connections }: FocusSelectorProps) {
               Choose a connection to focus on for better insights and tracking.
             </p>
             <div className="space-y-2 max-h-40 overflow-y-auto">
-              {connections.slice(0, 3).map((connection) => (
+              {connections?.slice(0, 3).map((connection) => (
                 <Button
                   key={connection.id}
                   variant="ghost"

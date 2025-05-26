@@ -320,7 +320,7 @@ export default function Dashboard() {
           
           {/* Display relationship focus selector for non-monogamous relationships */}
           {connections.length > 1 && (
-            <FocusSelector />
+            <FocusSelector connections={connections} />
           )}
           
           {/* Calendar view that shows data based on main focus connection */}
