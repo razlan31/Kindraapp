@@ -188,6 +188,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log("Creating connection with data:", connectionData);
       const newConnection = await storage.createConnection(connectionData);
       console.log("Connection created successfully:", newConnection);
+      
+      // Log the saved connection to verify all fields are preserved
+      const savedConnection = await storage.getConnection(newConnection.id);
+      console.log("Verification - saved connection:", savedConnection);
       res.status(201).json(newConnection);
     } catch (error) {
       console.error("Connection creation error:", error);

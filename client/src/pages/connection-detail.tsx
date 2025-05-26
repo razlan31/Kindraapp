@@ -18,6 +18,7 @@ export default function ConnectionDetail() {
   const { toast } = useToast();
   const { openMoodTrackerModal } = useModal();
   const { setMainFocusConnection } = useRelationshipFocus();
+  const queryClient = useQueryClient();
   const connectionId = parseInt(id as string);
   
   // Fetch connection details
@@ -72,33 +73,41 @@ export default function ConnectionDetail() {
     });
   }
   
+  const [isDeleting, setIsDeleting] = useState(false);
+
   const handleDelete = async () => {
+    if (isDeleting) return; // Prevent double-clicking
+    
     if (window.confirm('Are you sure you want to delete this connection?')) {
+      setIsDeleting(true);
       try {
         const response = await fetch(`/api/connections/${connectionId}`, {
           method: 'DELETE',
           credentials: 'include'
         });
         
-        if (!response.ok) {
+        if (response.ok || response.status === 404) {
+          // Both 200 (success) and 404 (already deleted) are fine
+          // Invalidate the connections cache to refresh the list
+          queryClient.invalidateQueries({ queryKey: ['/api/connections'] });
+          
+          toast({
+            title: 'Connection deleted',
+            description: 'The connection has been removed'
+          });
+          
+          setLocation('/connections');
+        } else {
           throw new Error('Failed to delete connection');
         }
-        
-        // Invalidate the connections cache to refresh the list
-        queryClient.invalidateQueries({ queryKey: ['/api/connections'] });
-        
-        toast({
-          title: 'Connection deleted',
-          description: 'The connection has been removed'
-        });
-        
-        setLocation('/connections');
       } catch (error) {
         toast({
           title: 'Error',
           description: 'Failed to delete connection',
           variant: 'destructive'
         });
+      } finally {
+        setIsDeleting(false);
       }
     }
   };
