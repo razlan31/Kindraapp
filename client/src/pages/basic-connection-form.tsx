@@ -23,57 +23,37 @@ export default function BasicConnectionForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   const handleSubmit = async () => {
-    console.log("Create button clicked!", { name, stage, startDate, loveLanguages });
-    
     if (!name.trim() || !stage) {
-      alert("Please fill in name and relationship stage");
+      alert('Please fill in name and relationship stage');
       return;
     }
-    
+
     setIsSubmitting(true);
-    
+
     try {
-      const connectionData = {
-        name: name.trim(),
-        relationshipStage: stage,
-        startDate: startDate || null,
-        zodiacSign: zodiacSign || null,
-        loveLanguage: loveLanguages.length > 0 ? loveLanguages.join(', ') : null,
-        profileImage: profileImage || null
-      };
-      
-      const response = await fetch("/api/connections", {
-        method: "POST",
+      const response = await fetch('/api/connections', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json"
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(connectionData)
+        body: JSON.stringify({
+          name: name.trim(),
+          relationshipStage: stage
+        }),
       });
-      
+
       if (response.ok) {
-        toast({
-          title: "Success!",
-          description: "Connection created successfully"
-        });
-        
-        queryClient.invalidateQueries({ queryKey: ["/api/connections"] });
-        setLocation("/connections");
+        alert('Connection created successfully!');
+        setLocation('/connections');
       } else {
-        toast({
-          title: "Error",
-          description: "Failed to create connection",
-          variant: "destructive"
-        });
+        alert('Failed to create connection');
       }
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "Something went wrong",
-        variant: "destructive"
-      });
-    } finally {
-      setIsSubmitting(false);
+      console.error('Error:', error);
+      alert('Error creating connection');
     }
+    
+    setIsSubmitting(false);
   };
   
   return (
