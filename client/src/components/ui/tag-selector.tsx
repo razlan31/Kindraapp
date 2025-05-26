@@ -83,6 +83,7 @@ export function TagSelector({ selectedTags, onChange }: TagSelectorProps) {
           ?.tags.map(tag => (
             <Button
               key={tag}
+              type="button"
               variant={selectedTags.includes(tag) ? "default" : "outline"}
               size="sm"
               onClick={() => handleTagClick(tag)}
