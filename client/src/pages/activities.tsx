@@ -32,13 +32,14 @@ export default function Activities() {
   // Fetch moments with forced refresh mechanism
   const { data: moments = [], isLoading, refetch: refetchMoments } = useQuery<Moment[]>({
     queryKey: ["/api/moments", refreshTrigger], // Include refresh trigger in query key
-    enabled: !!user,
+    enabled: !!user && user.id !== undefined,
     refetchOnWindowFocus: true,
     staleTime: 0, // Always refetch to ensure fresh data
   });
 
   console.log('Activities Debug:', {
     user: !!user,
+    userId: user?.id,
     momentsLength: moments.length,
     momentsLoading: isLoading,
     moments: moments.slice(0, 2) // Just show first 2 for debugging
