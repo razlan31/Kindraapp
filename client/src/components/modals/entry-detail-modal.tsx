@@ -244,16 +244,16 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection }: EntryD
             <div className="space-y-2">
               <label className="text-sm font-medium">Resolution Status</label>
               <div className="flex items-center gap-2">
-                <Badge variant={moment.isResolved ? "default" : "secondary"}>
-                  {moment.isResolved ? "Resolved" : "Unresolved"}
+                <Badge variant={moment?.isResolved ? "default" : "secondary"}>
+                  {moment?.isResolved ? "Resolved" : "Unresolved"}
                 </Badge>
-                {moment.isResolved && moment.resolvedAt && (
+                {moment?.isResolved && moment?.resolvedAt && (
                   <span className="text-xs text-gray-500">
                     on {format(new Date(moment.resolvedAt), "PPP")}
                   </span>
                 )}
               </div>
-              {moment.isResolved && moment.resolutionNotes && (
+              {moment?.isResolved && moment?.resolutionNotes && (
                 <p className="text-sm bg-green-50 dark:bg-green-900 p-3 rounded-md">
                   <strong>Resolution:</strong> {moment.resolutionNotes}
                 </p>
