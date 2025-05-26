@@ -13,9 +13,20 @@ import MemoryStore from "memorystore";
 // Auth middleware
 const isAuthenticated = (req: Request, res: Response, next: Function) => {
   // For development purposes, we'll automatically log in with user ID 1
-  req.session.userId = 1;
-  console.log("Auth middleware: Setting userId to 1");
-  next();
+  // But first check if the user actually exists
+  storage.getUser(1).then(user => {
+    if (user) {
+      req.session.userId = 1;
+      console.log("Auth middleware: Setting userId to 1 - user exists");
+      next();
+    } else {
+      console.error("Auth middleware: User ID 1 does not exist!");
+      res.status(401).json({ message: "User not found" });
+    }
+  }).catch(error => {
+    console.error("Auth middleware error:", error);
+    res.status(500).json({ message: "Authentication error" });
+  });
 };
 
 export async function registerRoutes(app: Express): Promise<Server> {
