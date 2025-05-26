@@ -10,7 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatDistanceToNow, format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
 import { useModal } from "@/contexts/modal-context";
-import { useRelationshipFocus } from "@/contexts/relationship-focus-context-simple";
+import { useRelationshipFocus } from "@/contexts/relationship-focus-context";
 
 export default function ConnectionDetail() {
   const { id } = useParams();

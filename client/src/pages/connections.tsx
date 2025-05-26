@@ -8,7 +8,7 @@ import { Connection, Moment } from "@shared/schema";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
 import { useModal } from "@/contexts/modal-context";
-import { useRelationshipFocus } from "@/contexts/relationship-focus-context-simple";
+import { useRelationshipFocus } from "@/contexts/relationship-focus-context";
 import { Input } from "@/components/ui/input";
 import { Search, Plus, X, Camera, Heart } from "lucide-react";
 import { Card } from "@/components/ui/card";
