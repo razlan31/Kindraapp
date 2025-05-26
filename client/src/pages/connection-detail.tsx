@@ -23,6 +23,14 @@ export default function ConnectionDetail() {
   
   const isMainFocus = mainFocusConnection?.id === connectionId;
   
+  // Debug logging
+  console.log('Connection Detail Debug:', {
+    connectionId,
+    mainFocusConnectionId: mainFocusConnection?.id,
+    isMainFocus,
+    mainFocusConnection
+  });
+  
   // Fetch connection details
   const { data: connection, isLoading, error } = useQuery({
     queryKey: ['/api/connections', connectionId],

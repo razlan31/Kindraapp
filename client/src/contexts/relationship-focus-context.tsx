@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Connection } from "@shared/schema";
-// No need to import useQuery here as we'll handle connection selection differently
 
 type RelationshipFocusContextType = {
   mainFocusConnection: Connection | null;

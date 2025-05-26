@@ -337,10 +337,17 @@ export default function Connections() {
                     flagCount={getConnectionFlagCounts(connection.id)}
                   />
                   {mainFocusConnection?.id === connection.id && (
-                    <div className="absolute top-3 right-3 bg-red-500 rounded-full p-2 shadow-lg border-2 border-white">
+                    <div className="absolute top-3 right-3 bg-red-500 rounded-full p-2 shadow-lg border-2 border-white z-10">
                       <Heart className="h-4 w-4 text-white fill-white" />
                     </div>
                   )}
+                  {/* Debug indicator */}
+                  {console.log('Connection List Debug:', {
+                    connectionId: connection.id,
+                    mainFocusId: mainFocusConnection?.id,
+                    isMatch: mainFocusConnection?.id === connection.id,
+                    mainFocusConnection
+                  })}
                 </div>
               ))}
             </div>
