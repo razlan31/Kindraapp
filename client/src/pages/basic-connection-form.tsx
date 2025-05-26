@@ -22,16 +22,14 @@ export default function BasicConnectionForm() {
   const [profileImage, setProfileImage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Form submitted! Name:", name, "Stage:", stage);
+  const handleSubmit = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    console.log("Button clicked! Function is running!");
+    alert("Button was clicked - function is working!");
     
     if (!name.trim()) {
       console.log("Name validation failed");
-      toast({
-        title: "Name required",
-        description: "Please enter a name for this connection"
-      });
+      alert("Please enter a name first!");
       return;
     }
     
