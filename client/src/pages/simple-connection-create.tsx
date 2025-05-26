@@ -10,14 +10,20 @@ export default function SimpleConnectionCreate() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const createConnection = async () => {
+    console.log("=== CREATE CONNECTION FUNCTION CALLED ===");
+    console.log("Name:", name);
+    
     if (!name.trim()) {
+      console.log("Name validation failed");
       alert("Please enter a name");
       return;
     }
 
+    console.log("Setting isSubmitting to true");
     setIsSubmitting(true);
     
     try {
+      console.log("About to make fetch request...");
       const response = await fetch("/api/connections", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -27,18 +33,24 @@ export default function SimpleConnectionCreate() {
         }),
         credentials: "include"
       });
+      
+      console.log("Fetch response received:", response.status, response.statusText);
 
       if (response.ok) {
+        console.log("Success! Connection created");
         alert("Connection created successfully!");
         queryClient.invalidateQueries({ queryKey: ["/api/connections"] });
         setLocation("/connections");
       } else {
         const errorText = await response.text();
+        console.log("Error response:", errorText);
         alert("Failed to create connection: " + errorText);
       }
     } catch (error) {
+      console.log("Catch block error:", error);
       alert("Error: " + String(error));
     } finally {
+      console.log("Setting isSubmitting to false");
       setIsSubmitting(false);
     }
   };
