@@ -23,6 +23,13 @@ export default function ConnectionDetail() {
   
   const isMainFocus = mainFocusConnection?.id === connectionId;
   
+  console.log('Focus Debug - Connection Detail:', {
+    connectionId,
+    mainFocusConnection,
+    isMainFocus,
+    mainFocusId: mainFocusConnection?.id
+  });
+  
   // Fetch connection details
   const { data: connection, isLoading, error } = useQuery({
     queryKey: ['/api/connections', connectionId],
@@ -116,14 +123,13 @@ export default function ConnectionDetail() {
 
   const handleSetAsFocus = () => {
     if (connection) {
+      console.log('Setting as focus:', connection);
       setMainFocusConnection(connection);
       
       toast({
         title: 'Focus updated',
         description: 'This connection is now your main focus'
       });
-      
-      setLocation('/');
     }
   };
   
