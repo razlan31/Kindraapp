@@ -39,7 +39,12 @@ export default function BasicConnectionForm() {
         },
         body: JSON.stringify({
           name: name.trim(),
-          relationshipStage: stage
+          relationshipStage: stage,
+          startDate: startDate ? startDate : null,
+          zodiacSign: zodiacSign || null,
+          loveLanguage: loveLanguages.length > 0 ? loveLanguages.join(', ') : null,
+          profileImage: profileImage || null,
+          birthday: birthday || null
         }),
       });
 
