@@ -46,9 +46,17 @@ export default function Activities() {
     const handleMomentCreated = () => {
       refetchMoments();
     };
+    const handleMomentUpdated = () => {
+      refetchMoments();
+    };
     
     window.addEventListener('momentCreated', handleMomentCreated);
-    return () => window.removeEventListener('momentCreated', handleMomentCreated);
+    window.addEventListener('momentUpdated', handleMomentUpdated);
+    
+    return () => {
+      window.removeEventListener('momentCreated', handleMomentCreated);
+      window.removeEventListener('momentUpdated', handleMomentUpdated);
+    };
   }, [refetchMoments]);
 
   // Reflection modal state

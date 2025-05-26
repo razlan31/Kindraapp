@@ -30,10 +30,24 @@ export default function Dashboard() {
   });
 
   // Fetch recent moments
-  const { data: moments = [], isLoading: momentsLoading, error: momentsError } = useQuery<Moment[]>({
+  const { data: moments = [], isLoading: momentsLoading, error: momentsError, refetch: refetchMoments } = useQuery<Moment[]>({
     queryKey: ["/api/moments"],
     enabled: true, // Always enabled since backend auto-authenticates
   });
+
+  // Listen for moment creation and update events to refetch data immediately
+  useEffect(() => {
+    const handleMomentCreated = () => refetchMoments();
+    const handleMomentUpdated = () => refetchMoments();
+    
+    window.addEventListener('momentCreated', handleMomentCreated);
+    window.addEventListener('momentUpdated', handleMomentUpdated);
+    
+    return () => {
+      window.removeEventListener('momentCreated', handleMomentCreated);
+      window.removeEventListener('momentUpdated', handleMomentUpdated);
+    };
+  }, [refetchMoments]);
 
   // Fetch badges
   const { data: badges = [] } = useQuery<Badge[]>({

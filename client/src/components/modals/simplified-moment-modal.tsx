@@ -108,9 +108,12 @@ export function MomentModal() {
         title: `${activityType === 'conflict' ? 'Conflict' : activityType === 'intimacy' ? 'Intimacy' : 'Moment'} logged successfully`,
         description: "Your entry has been recorded.",
       });
+      // Force immediate cache invalidation and refetch
       queryClient.invalidateQueries({ queryKey: ["/api/moments"] });
       queryClient.refetchQueries({ queryKey: ["/api/moments"] });
+      // Trigger immediate UI updates across all components
       window.dispatchEvent(new CustomEvent('momentCreated'));
+      window.dispatchEvent(new CustomEvent('momentUpdated'));
       closeMomentModal();
       setIsSubmitting(false);
     },

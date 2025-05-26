@@ -102,8 +102,11 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection }: EntryD
     },
     onSuccess: () => {
       toast({ title: "Entry updated successfully!" });
+      // Force immediate cache invalidation and refetch
       queryClient.invalidateQueries({ queryKey: ["/api/moments"] });
       queryClient.refetchQueries({ queryKey: ["/api/moments"] });
+      // Trigger immediate UI update
+      window.dispatchEvent(new CustomEvent('momentUpdated'));
       setIsEditing(false);
     },
     onError: () => {

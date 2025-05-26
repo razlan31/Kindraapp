@@ -27,13 +27,27 @@ export default function Calendar() {
     staleTime: 0, // Always refetch to ensure fresh data
   });
 
-  // Force refresh when component mounts
+  // Force refresh when component mounts and listen for updates
   useEffect(() => {
     if (user) {
       console.log('Calendar - User authenticated, fetching moments...');
       refetchMoments();
     }
   }, [user, refetchMoments]);
+
+  // Listen for moment creation and update events to refetch data immediately
+  useEffect(() => {
+    const handleMomentCreated = () => refetchMoments();
+    const handleMomentUpdated = () => refetchMoments();
+    
+    window.addEventListener('momentCreated', handleMomentCreated);
+    window.addEventListener('momentUpdated', handleMomentUpdated);
+    
+    return () => {
+      window.removeEventListener('momentCreated', handleMomentCreated);
+      window.removeEventListener('momentUpdated', handleMomentUpdated);
+    };
+  }, [refetchMoments]);
 
   // Fetch connections
   const { data: connections = [] } = useQuery<Connection[]>({
