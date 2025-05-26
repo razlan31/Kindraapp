@@ -77,11 +77,11 @@ export function MomentModal() {
       closeMomentModal();
       setIsSubmitting(false);
     },
-    onError: (error) => {
+    onError: (error: any) => {
       console.error("Error creating moment:", error);
       toast({
         title: "Error",
-        description: "Failed to create entry. Please try again.",
+        description: error?.message || "Failed to create entry. Please try again.",
         variant: "destructive",
       });
       setIsSubmitting(false);

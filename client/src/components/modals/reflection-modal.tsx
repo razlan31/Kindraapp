@@ -25,7 +25,10 @@ export function ReflectionModal({ isOpen, onClose, moment }: ReflectionModalProp
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ reflection: data.reflection }),
       });
-      if (!response.ok) throw new Error('Failed to add reflection');
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to add reflection: ${errorText}`);
+      }
       return response.json();
     },
     onSuccess: () => {
@@ -34,7 +37,8 @@ export function ReflectionModal({ isOpen, onClose, moment }: ReflectionModalProp
       setReflection("");
       onClose();
     },
-    onError: () => {
+    onError: (error) => {
+      console.error("Reflection error:", error);
       toast({ title: "Failed to add reflection", variant: "destructive" });
     },
   });
