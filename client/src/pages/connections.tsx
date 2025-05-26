@@ -87,8 +87,7 @@ export default function Connections() {
 
   const handleSelectConnection = (connection: Connection) => {
     setSelectedConnection(connection.id);
-    // In a full implementation, this would navigate to a connection details page
-    // navigate(`/connections/${connection.id}`);
+    setLocation(`/connections/${connection.id}`);
   };
 
   // Filter connections based on search term and filter stage
