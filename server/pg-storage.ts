@@ -145,7 +145,7 @@ export class PgStorage implements IStorage {
     let query = db.select().from(moments).where(eq(moments.userId, userId)).orderBy(desc(moments.createdAt));
     
     if (limit) {
-      query = query.limit(limit);
+      query = query.limit(limit) as any;
     }
     
     const result = await query;
@@ -160,7 +160,7 @@ export class PgStorage implements IStorage {
 
   async createMoment(moment: InsertMoment): Promise<Moment> {
     await this.initialize();
-    const result = await db.insert(moments).values(moment).returning();
+    const result = await db.insert(moments).values([moment]).returning();
     console.log(`✅ PG Storage - createMoment:`, result[0]);
     return result[0];
   }
