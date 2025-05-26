@@ -302,6 +302,7 @@ export default function Activities() {
                             profileImage: connection.profileImage
                           }}
                           onAddReflection={handleAddReflection}
+                          onViewDetail={handleViewEntryDetail}
                           hasAiReflection={moment.id % 3 === 0} // Simulated AI reflection flag
                         />
                       );
@@ -348,6 +349,18 @@ export default function Activities() {
           setSelectedMomentForReflection(null);
         }}
         moment={selectedMomentForReflection}
+      />
+      
+      {/* Entry Detail Modal */}
+      <EntryDetailModal
+        isOpen={entryDetailModalOpen}
+        onClose={() => {
+          setEntryDetailModalOpen(false);
+          setSelectedMomentForDetail(null);
+          setSelectedConnectionForDetail(null);
+        }}
+        moment={selectedMomentForDetail}
+        connection={selectedConnectionForDetail}
       />
     </div>
   );

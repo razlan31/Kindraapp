@@ -422,6 +422,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Update a moment
+  app.patch("/api/moments/:id", isAuthenticated, async (req: Request, res: Response) => {
+    try {
+      const userId = req.session.userId as number;
+      const momentId = parseInt(req.params.id);
+      const { content, reflection } = req.body;
+      
+      if (isNaN(momentId)) {
+        return res.status(400).json({ message: "Invalid moment ID" });
+      }
+      
+      const moment = await storage.getMoment(momentId);
+      
+      if (!moment) {
+        return res.status(404).json({ message: "Moment not found" });
+      }
+      
+      if (moment.userId !== userId) {
+        return res.status(403).json({ message: "Unauthorized to update this moment" });
+      }
+      
+      const updateData: any = {};
+      if (content !== undefined) updateData.content = content;
+      if (reflection !== undefined) updateData.reflection = reflection;
+      
+      const updatedMoment = await storage.updateMoment(momentId, updateData);
+      
+      if (!updatedMoment) {
+        return res.status(500).json({ message: "Failed to update moment" });
+      }
+      
+      res.json(updatedMoment);
+    } catch (error) {
+      res.status(500).json({ message: "Server error updating moment" });
+    }
+  });
+
   app.get("/api/connections/:id/moments", isAuthenticated, async (req, res) => {
     try {
       const userId = req.session.userId as number;
