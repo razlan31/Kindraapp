@@ -158,13 +158,13 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection }: EntryD
           {/* Date Info */}
           <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
             <Calendar className="h-4 w-4" />
-            <span>{format(new Date(moment.createdAt || ''), "PPP 'at' p")}</span>
+            <span>{format(new Date(freshMoment.createdAt || ''), "PPP 'at' p")}</span>
           </div>
 
           {/* Tags */}
-          {moment.tags && moment.tags.length > 0 && (
+          {freshMoment.tags && freshMoment.tags.length > 0 && (
             <div className="flex flex-wrap gap-2">
-              {moment.tags.map((tag, index) => (
+              {freshMoment.tags.map((tag, index) => (
                 <Badge key={index} className={getTagColor(tag)} variant="secondary">
                   {tag}
                 </Badge>
@@ -220,9 +220,9 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection }: EntryD
                 placeholder="Add your personal insights and thoughts..."
                 className="min-h-[100px]"
               />
-            ) : moment.reflection ? (
+            ) : freshMoment.reflection ? (
               <p className="text-sm bg-blue-50 dark:bg-blue-900 p-3 rounded-md italic">
-                {moment.reflection}
+                {freshMoment.reflection}
               </p>
             ) : (
               <p className="text-sm text-gray-500 italic">No reflection added</p>
