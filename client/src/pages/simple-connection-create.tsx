@@ -73,6 +73,16 @@ export default function SimpleConnectionCreate() {
           </div>
           
           <button
+            onClick={() => {
+              console.log("TEST BUTTON CLICKED!");
+              alert("Button works!");
+            }}
+            className="w-full bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 mb-2"
+          >
+            TEST BUTTON - Click Me First
+          </button>
+          
+          <button
             onClick={createConnection}
             disabled={isSubmitting}
             className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:opacity-50"
