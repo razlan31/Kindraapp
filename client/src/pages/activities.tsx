@@ -176,7 +176,7 @@ export default function Activities() {
 
           {/* Add Button for Active Tab */}
           <div className="mb-4">
-            <Button onClick={() => openMomentModal()} className="w-full">
+            <Button onClick={() => openMomentModal(activeTab as 'moment' | 'conflict' | 'intimacy')} className="w-full">
               <Plus className="h-4 w-4 mr-2" />
               Add {activeTab === 'moments' ? 'Moment' : activeTab === 'conflicts' ? 'Conflict' : 'Intimacy'}
             </Button>

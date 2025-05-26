@@ -8,7 +8,8 @@ type ModalContextType = {
   selectedConnectionId: number | null;
   selectedConnection: Connection | null;
   mainFocusConnection: Connection | null;
-  openMomentModal: () => void;
+  activityType: 'moment' | 'conflict' | 'intimacy';
+  openMomentModal: (activityType?: 'moment' | 'conflict' | 'intimacy') => void;
   closeMomentModal: () => void;
   openConnectionModal: () => void;
   closeConnectionModal: () => void;
@@ -25,6 +26,7 @@ const ModalContext = createContext<ModalContextType>({
   selectedConnectionId: null,
   selectedConnection: null,
   mainFocusConnection: null,
+  activityType: 'moment',
   openMomentModal: () => {},
   closeMomentModal: () => {},
   openConnectionModal: () => {},
@@ -44,9 +46,11 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [selectedConnectionId, setSelectedConnectionId] = useState<number | null>(null);
   const [selectedConnection, setSelectedConnectionObject] = useState<Connection | null>(null);
   const [mainFocusConnection, setMainFocusConnectionObject] = useState<Connection | null>(null);
+  const [activityType, setActivityType] = useState<'moment' | 'conflict' | 'intimacy'>('moment');
 
-  const openMomentModal = () => {
+  const openMomentModal = (activityType: 'moment' | 'conflict' | 'intimacy' = 'moment') => {
     console.log("openMomentModal called!");
+    setActivityType(activityType);
     setMomentModalOpen(true);
   };
 
@@ -94,6 +98,7 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         selectedConnectionId,
         selectedConnection,
         mainFocusConnection,
+        activityType,
         openMomentModal,
         closeMomentModal,
         openConnectionModal,
