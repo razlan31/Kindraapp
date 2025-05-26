@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Header } from "@/components/layout/header";
 import { BottomNavigation } from "@/components/layout/bottom-navigation";
 import { MomentCard } from "@/components/dashboard/moment-card";
@@ -23,16 +23,18 @@ import { format } from "date-fns";
 export default function Activities() {
   const { user } = useAuth();
   const { openMomentModal } = useModal();
+  const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedConnection, setSelectedConnection] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState<'moments' | 'conflicts' | 'intimacy'>('moments');
 
-  // Fetch moments
+  // Fetch moments with forced refresh mechanism
   const { data: moments = [], isLoading, refetch: refetchMoments } = useQuery<Moment[]>({
-    queryKey: ["/api/moments"],
+    queryKey: ["/api/moments", refreshTrigger], // Include refresh trigger in query key
     enabled: !!user,
     refetchOnWindowFocus: true,
     staleTime: 0, // Always refetch to ensure fresh data
+    cacheTime: 0, // Don't cache at all
   });
 
   // Fetch connections
@@ -41,14 +43,18 @@ export default function Activities() {
     enabled: !!user,
   });
 
-  // Listen for moment creation events to trigger refetch
+  // Force immediate updates with a simple refresh counter
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+  
   useEffect(() => {
     const handleMomentCreated = () => {
-      console.log("Moment created event received, refetching...");
+      console.log("Moment created event received, forcing refresh...");
+      setRefreshTrigger(prev => prev + 1);
       refetchMoments();
     };
     const handleMomentUpdated = () => {
-      console.log("Moment updated event received, refetching...");
+      console.log("Moment updated event received, forcing refresh...");
+      setRefreshTrigger(prev => prev + 1);
       refetchMoments();
     };
     
