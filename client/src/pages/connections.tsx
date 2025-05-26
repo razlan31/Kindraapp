@@ -351,12 +351,9 @@ export default function Connections() {
               <p className="text-neutral-500 dark:text-neutral-400 text-sm mb-4">
                 Add your first connection to start tracking your relationships
               </p>
-              <Button 
-                onClick={openConnectionModal}
-                className="bg-primary text-white"
-              >
-                <Plus className="h-4 w-4 mr-2" /> Add Connection
-              </Button>
+              <p className="text-neutral-400 text-sm">
+                Use the "Add Connection" button at the top to get started
+              </p>
             </Card>
           )}
         </section>
