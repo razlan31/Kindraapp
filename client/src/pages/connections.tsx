@@ -221,7 +221,7 @@ export default function Connections() {
               variant="default" 
               size="sm"
               className="bg-blue-600 hover:bg-blue-700 text-white"
-              onClick={() => setShowQuickAdd(!showQuickAdd)}
+              onClick={() => setLocation("/connections/basic")}
             >
               <Plus className="h-4 w-4 mr-2" />
               Add Connection
