@@ -102,16 +102,28 @@ export default function Activities() {
     return grouped;
   };
 
-  // Filter moments based on search and selected connection
+  // Filter moments based on tab, search and selected connection
   const filteredMoments = moments.filter(moment => {
     const connection = connections.find(c => c.id === moment.connectionId);
     if (!connection) return false;
+    
+    const tags = moment.tags || [];
+    
+    // Filter by tab type
+    let matchesTab = false;
+    if (activeTab === 'moments') {
+      matchesTab = tags.includes('Positive') || tags.includes('Negative') || tags.includes('Neutral') || (!tags.includes('Conflict') && !tags.includes('Intimacy'));
+    } else if (activeTab === 'conflicts') {
+      matchesTab = tags.includes('Conflict');
+    } else if (activeTab === 'intimacy') {
+      matchesTab = tags.includes('Intimacy') || (moment.isIntimate === true);
+    }
     
     const matchesSearch = moment.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
                            connection.name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesConnection = selectedConnection ? moment.connectionId === selectedConnection : true;
     
-    return matchesSearch && matchesConnection;
+    return matchesTab && matchesSearch && matchesConnection;
   });
 
   const groupedMoments = groupMomentsByDate(filteredMoments);
@@ -124,8 +136,55 @@ export default function Activities() {
       <Header />
 
       <main className="flex-1 overflow-y-auto pb-20">
+        {/* Page Title */}
+        <div className="px-4 pt-4 pb-2">
+          <h1 className="text-2xl font-bold mb-4">Activities</h1>
+          
+          {/* Activity Type Tabs */}
+          <div className="flex space-x-1 bg-muted rounded-lg p-1 mb-4">
+            <button 
+              onClick={() => setActiveTab('moments')}
+              className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+                activeTab === 'moments' 
+                  ? 'bg-background text-foreground shadow-sm' 
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              Moments
+            </button>
+            <button 
+              onClick={() => setActiveTab('conflicts')}
+              className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+                activeTab === 'conflicts' 
+                  ? 'bg-background text-foreground shadow-sm' 
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              Conflicts
+            </button>
+            <button 
+              onClick={() => setActiveTab('intimacy')}
+              className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+                activeTab === 'intimacy' 
+                  ? 'bg-background text-foreground shadow-sm' 
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              Intimacy
+            </button>
+          </div>
+
+          {/* Add Button for Active Tab */}
+          <div className="flex justify-end mb-4">
+            <Button onClick={() => openMomentModal()}>
+              <Plus className="h-4 w-4 mr-2" />
+              Add {activeTab === 'moments' ? 'Moment' : activeTab === 'conflicts' ? 'Conflict' : 'Intimacy'}
+            </Button>
+          </div>
+        </div>
+
         {/* Search and Filter Section */}
-        <section className="px-4 pt-4 pb-2 sticky top-0 bg-white dark:bg-neutral-900 z-10">
+        <section className="px-4 pb-2 sticky top-0 bg-white dark:bg-neutral-900 z-10">
           <div className="flex items-center gap-2 mb-3">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-neutral-500" />
