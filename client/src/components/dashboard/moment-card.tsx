@@ -105,27 +105,30 @@ export function MomentCard({ moment, connection, onAddReflection, onViewDetail, 
               </div>
             )}
             
-            <div className="flex items-center justify-between">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onAddReflection(moment.id);
-                }}
-                className="text-xs h-8"
-              >
-                <MessageSquare className="h-3 w-3 mr-1" />
-                Add Reflection
-              </Button>
-              
-              {hasAiReflection && (
-                <Badge variant="outline" className="text-xs">
-                  <Sparkles className="h-3 w-3 mr-1" />
-                  AI Insight
-                </Badge>
-              )}
-            </div>
+            {/* Only show reflection for regular moments, not conflicts or intimacy */}
+            {getMomentType(moment) === null && (
+              <div className="flex items-center justify-between">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onAddReflection(moment.id);
+                  }}
+                  className="text-xs h-8"
+                >
+                  <MessageSquare className="h-3 w-3 mr-1" />
+                  Add Reflection
+                </Button>
+                
+                {hasAiReflection && (
+                  <Badge variant="outline" className="text-xs">
+                    <Sparkles className="h-3 w-3 mr-1" />
+                    AI Insight
+                  </Badge>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </CardContent>
