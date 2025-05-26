@@ -109,7 +109,28 @@ export class MemStorage implements IStorage {
       loveLanguage: 'Quality Time'
     };
     
-    await this.createUser(testUser);
+    const user = await this.createUser(testUser);
+    
+    // Add test connections so the app is usable
+    await this.createConnection({
+      userId: user.id,
+      name: "Alex",
+      relationshipStage: "Exclusive",
+      startDate: new Date("2023-11-23"),
+      zodiacSign: "Sagittarius",
+      loveLanguage: "Words of Affirmation, Quality Time",
+      profileImage: "https://randomuser.me/api/portraits/women/32.jpg"
+    });
+    
+    await this.createConnection({
+      userId: user.id,
+      name: "Jordan",
+      relationshipStage: "Talking",
+      startDate: new Date("2024-01-15"),
+      zodiacSign: "Leo",
+      loveLanguage: "Physical Touch",
+      profileImage: "https://randomuser.me/api/portraits/men/22.jpg"
+    });
   }
 
   private initializeDefaultBadges() {
