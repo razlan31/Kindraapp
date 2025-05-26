@@ -265,7 +265,8 @@ export function MomentModal() {
             />
           </div>
 
-          {/* Tags Selection */}
+          {/* Tags Selection - Only show for regular moments */}
+          {activityType === 'moment' && (
           <div className="space-y-3">
             <label className="text-sm font-medium">Tags (Optional)</label>
             
@@ -357,6 +358,7 @@ export function MomentModal() {
               </Button>
             </div>
           </div>
+          )}
 
           {/* Date Selection */}
           <div className="space-y-2">
