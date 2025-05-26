@@ -31,7 +31,7 @@ export default function Dashboard() {
 
   // Fetch recent moments
   const { data: moments = [] } = useQuery<Moment[]>({
-    queryKey: ["/api/moments", { limit: 5 }],
+    queryKey: ["/api/moments"],
     enabled: !!user,
   });
 
