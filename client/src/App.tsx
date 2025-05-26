@@ -24,6 +24,7 @@ import ConnectionDetail from "@/pages/connection-detail";
 import ConnectionEdit from "@/pages/connection-edit";
 import { useAuth } from "./contexts/auth-context";
 import { useModal } from "./contexts/modal-context";
+import { RelationshipFocusProvider } from "./contexts/relationship-focus-context";
 import { MomentModal } from "./components/modals/moment-modal";
 import { ConnectionModal } from "./components/modals/connection-modal";
 import { MoodTrackerModal } from "./components/modals/mood-tracker-modal";
@@ -68,11 +69,13 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Router />
-        <ModalsContainer />
-      </TooltipProvider>
+      <RelationshipFocusProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Router />
+          <ModalsContainer />
+        </TooltipProvider>
+      </RelationshipFocusProvider>
     </QueryClientProvider>
   );
 }
