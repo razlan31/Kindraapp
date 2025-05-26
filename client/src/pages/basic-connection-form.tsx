@@ -128,35 +128,37 @@ export default function BasicConnectionForm() {
               <label className="block text-sm font-medium mb-2">
                 When did you start this connection?
               </label>
-              <div className="flex gap-2 items-center">
+              <div className="space-y-2">
                 <Input
                   type="date"
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
                   placeholder="Select the date you started connecting"
-                  className="flex-1"
+                  className="w-full"
                 />
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  className="px-3 text-xs whitespace-nowrap"
-                  onClick={() => {
-                    if (startDate) {
-                      toast({
-                        title: "Date confirmed",
-                        description: `Connection start date set to ${new Date(startDate).toLocaleDateString()}`
-                      });
-                    } else {
-                      toast({
-                        title: "No date selected",
-                        description: "Please select a date first"
-                      });
-                    }
-                  }}
-                >
-                  Done
-                </Button>
+                <div className="flex justify-end">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="px-4 py-1 text-sm bg-blue-50 border-blue-200 text-blue-700 hover:bg-blue-100"
+                    onClick={() => {
+                      if (startDate) {
+                        toast({
+                          title: "Date confirmed",
+                          description: `Connection start date set to ${new Date(startDate).toLocaleDateString()}`
+                        });
+                      } else {
+                        toast({
+                          title: "No date selected",
+                          description: "Please select a date first"
+                        });
+                      }
+                    }}
+                  >
+                    ✓ Done
+                  </Button>
+                </div>
               </div>
               <p className="text-xs text-neutral-500 mt-1">Track when you first connected with this person</p>
             </div>
