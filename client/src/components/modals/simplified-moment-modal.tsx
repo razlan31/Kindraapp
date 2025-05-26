@@ -120,6 +120,10 @@ export function MomentModal() {
       intimacyRating: isIntimate ? "high" : null,
       relatedToMenstrualCycle: false,
       createdAt: selectedDate.toISOString(),
+      // Conflict resolution fields
+      isResolved: activityType === 'conflict' ? isResolved : false,
+      resolvedAt: (activityType === 'conflict' && isResolved) ? resolvedDate.toISOString() : null,
+      resolutionNotes: (activityType === 'conflict' && isResolved) ? resolutionNotes : null,
     };
     
     createMoment(momentData);
@@ -228,6 +232,67 @@ export function MomentModal() {
               </PopoverContent>
             </Popover>
           </div>
+
+          {/* Conflict Resolution Toggle - Only for conflicts */}
+          {activityType === 'conflict' && (
+            <>
+              <div className="space-y-2">
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id="isResolved"
+                    checked={isResolved}
+                    onChange={(e) => setIsResolved(e.target.checked)}
+                    className="h-4 w-4 rounded border-gray-300"
+                  />
+                  <label htmlFor="isResolved" className="text-sm font-medium">
+                    Mark as resolved
+                  </label>
+                </div>
+              </div>
+
+              {/* Resolution fields - Only show when resolved */}
+              {isResolved && (
+                <>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Resolution Notes</label>
+                    <Textarea
+                      value={resolutionNotes}
+                      onChange={(e) => setResolutionNotes(e.target.value)}
+                      placeholder="How was this conflict resolved?"
+                      className="min-h-[80px]"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Resolution Date</label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className={cn(
+                            "w-full justify-start text-left font-normal",
+                            !resolvedDate && "text-muted-foreground"
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {resolvedDate ? format(resolvedDate, "PPP") : <span>Pick resolution date</span>}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0">
+                        <Calendar
+                          mode="single"
+                          selected={resolvedDate}
+                          onSelect={(date) => date && setResolvedDate(date)}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                </>
+              )}
+            </>
+          )}
 
           {/* Action Buttons */}
           <div className="flex justify-end space-x-2 pt-4">
