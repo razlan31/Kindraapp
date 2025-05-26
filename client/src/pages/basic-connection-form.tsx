@@ -36,16 +36,28 @@ export default function BasicConnectionForm() {
     setIsSubmitting(true);
     
     try {
-      // Create connection data object with proper typing
+      // Create connection data object
       const connectionData = {
         name: name.trim(),
-        relationshipStage: stage,
-        startDate: startDate || null,
-        zodiacSign: zodiacSign || null,
-        loveLanguage: loveLanguages.length > 0 ? loveLanguages.join(', ') : null,
-        profileImage: profileImage || null,
-        isPrivate: false
+        relationshipStage: stage
       };
+      
+      // Add optional fields only if they have values
+      if (startDate) {
+        connectionData.startDate = startDate;
+      }
+      
+      if (zodiacSign) {
+        connectionData.zodiacSign = zodiacSign;
+      }
+      
+      if (loveLanguages.length > 0) {
+        connectionData.loveLanguage = loveLanguages.join(', ');
+      }
+      
+      if (profileImage) {
+        connectionData.profileImage = profileImage;
+      }
       
       console.log("Sending data:", connectionData);
       

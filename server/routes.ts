@@ -145,35 +145,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/connections", isAuthenticated, async (req, res) => {
     try {
-      console.log("Creating new connection. Session:", req.session);
       const userId = req.session.userId as number;
-      console.log("User ID:", userId, "Request body:", req.body);
-      
-      // Safely construct connection data
-      const connectionData = {
-        userId: userId,
-        name: req.body.name,
-        relationshipStage: req.body.relationshipStage,
-        startDate: req.body.startDate ? new Date(req.body.startDate) : null,
-        zodiacSign: req.body.zodiacSign || null,
-        loveLanguage: req.body.loveLanguage || null,
-        profileImage: req.body.profileImage || null,
-        isPrivate: req.body.isPrivate === true
-      };
-      
-      console.log("Manually created connection data:", connectionData);
-      
-      // Create the connection directly using our prepared data
+      const connectionData = connectionSchema.parse({ ...req.body, userId });
       const newConnection = await storage.createConnection(connectionData);
-      console.log("New connection created:", newConnection);
       res.status(201).json(newConnection);
     } catch (error) {
       console.error("Connection creation error:", error);
-      // Send detailed error information to help debugging
-      res.status(500).json({ 
-        message: "Server error creating connection", 
-        error: error instanceof Error ? error.message : String(error) 
-      });
+      if (error instanceof z.ZodError) {
+        res.status(400).json({ message: "Invalid input", errors: error.errors });
+      } else {
+        res.status(500).json({ message: "Server error creating connection" });
+      }
     }
   });
 
