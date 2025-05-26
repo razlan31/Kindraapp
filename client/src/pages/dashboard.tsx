@@ -122,7 +122,7 @@ export default function Dashboard() {
     const randomConnection = connections[Math.floor(Math.random() * connections.length)];
     
     try {
-      await fetch('/api/moments', {
+      const response = await fetch('/api/moments', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -133,8 +133,13 @@ export default function Dashboard() {
           isPrivate: false
         })
       });
-      // Refresh the page data
-      window.location.reload();
+      
+      if (response.ok) {
+        // Force refresh the page to show new moment
+        window.location.reload();
+      } else {
+        console.error('Failed to create moment:', response.statusText);
+      }
     } catch (error) {
       console.error('Failed to create test moment:', error);
     }
@@ -288,15 +293,29 @@ export default function Dashboard() {
                 </div>
               </>
             ) : (
-              <div className="text-center py-8 text-neutral-500 dark:text-neutral-400">
-                <p>No moments logged yet</p>
-                <Button 
-                  variant="outline" 
-                  className="mt-2"
-                  onClick={openMomentModal}
-                >
-                  Log Your First Moment
-                </Button>
+              <div className="text-center py-8 text-neutral-500">
+                <div className="text-4xl mb-3">💭</div>
+                <p className="text-sm mb-4">No moments recorded yet</p>
+                <div className="space-y-2">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={openMomentModal}
+                    className="text-primary mr-2"
+                  >
+                    <i className="fa-solid fa-plus mr-2"></i>Log Your First Moment
+                  </Button>
+                  {connections.length > 0 && (
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      onClick={handleAddTestMoment}
+                      className="text-xs"
+                    >
+                      Add Sample Moment
+                    </Button>
+                  )}
+                </div>
               </div>
             )}
           </div>
