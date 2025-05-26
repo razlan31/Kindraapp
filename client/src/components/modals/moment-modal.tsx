@@ -56,7 +56,7 @@ export function MomentModal() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      connectionId: selectedConnectionId || 0,
+      connectionId: selectedConnectionId || 2, // Default to main focus connection
       emoji: "😊",
       content: "",
       tags: [],
@@ -68,8 +68,12 @@ export function MomentModal() {
   
   // Update form when selected connection changes
   useEffect(() => {
+    console.log("Selected connection ID changed:", selectedConnectionId);
     if (selectedConnectionId) {
       form.setValue("connectionId", selectedConnectionId);
+    } else {
+      // If no selected connection, default to connection ID 2 (sadassa)
+      form.setValue("connectionId", 2);
     }
   }, [selectedConnectionId, form]);
   
@@ -158,7 +162,7 @@ export function MomentModal() {
 
   return (
     <Dialog open={momentModalOpen} onOpenChange={(open) => !open && closeMomentModal()}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="font-heading font-semibold">Log a Moment</DialogTitle>
         </DialogHeader>
