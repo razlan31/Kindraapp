@@ -20,7 +20,7 @@ import { z } from "zod";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 
 export function MomentModal() {
-  const { momentModalOpen, closeMomentModal, selectedConnectionId } = useModal();
+  const { momentModalOpen, closeMomentModal, selectedConnectionId, mainFocusConnection } = useModal();
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -56,7 +56,7 @@ export function MomentModal() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      connectionId: selectedConnectionId || 2, // Default to main focus connection
+      connectionId: selectedConnectionId || mainFocusConnection?.id || 2, // Use focus connection or default
       emoji: "😊",
       content: "",
       tags: [],
