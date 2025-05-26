@@ -113,23 +113,24 @@ export class MemStorage implements IStorage {
     this.users.set(1, testUser);
     console.log("Created test user synchronously:", testUser.username);
     
-    // Add a sample connection so database is never empty
-    const sampleConnection: Connection = {
+    // Add a hidden system connection so database is never empty
+    // This connection uses userId 0 (system) so it won't appear in user's list
+    const systemConnection: Connection = {
       id: 1,
-      userId: 1,
-      name: "Sample Person",
+      userId: 0, // System user ID - won't appear in user queries
+      name: "System Connection",
       relationshipStage: "Best Friend",
       startDate: new Date('2024-01-15'),
       zodiacSign: "Leo",
       loveLanguage: "Quality Time",
       profileImage: null,
-      isPrivate: false,
+      isPrivate: true,
       createdAt: new Date()
     };
     
-    this.connections.set(1, sampleConnection);
+    this.connections.set(1, systemConnection);
     this.connectionId = 2; // Next connection will start from ID 2
-    console.log("Created sample connection to prevent empty database");
+    console.log("Created hidden system connection to prevent empty database");
   }
 
   private async initializeTestUser() {
