@@ -26,25 +26,25 @@ export default function Dashboard() {
   // Fetch connections
   const { data: connections = [] } = useQuery<Connection[]>({
     queryKey: ["/api/connections"],
-    enabled: !!user,
+    enabled: !loading && !!user,
   });
 
   // Fetch recent moments
   const { data: moments = [], isLoading: momentsLoading, error: momentsError } = useQuery<Moment[]>({
     queryKey: ["/api/moments"],
-    enabled: !!user,
+    enabled: true, // Always enabled since backend auto-authenticates
   });
 
   // Fetch badges
   const { data: badges = [] } = useQuery<Badge[]>({
     queryKey: ["/api/badges"],
-    enabled: !!user,
+    enabled: !loading && !!user,
   });
 
   // Fetch user badges
   const { data: userBadges = [] } = useQuery<any[]>({
     queryKey: ["/api/user-badges"],
-    enabled: !!user,
+    enabled: !loading && !!user,
   });
 
   // Debug logging
