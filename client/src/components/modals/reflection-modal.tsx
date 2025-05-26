@@ -29,7 +29,12 @@ export function ReflectionModal({ isOpen, onClose, moment }: ReflectionModalProp
         const errorText = await response.text();
         throw new Error(`Failed to add reflection: ${errorText}`);
       }
-      return response.json();
+      // Handle both JSON and non-JSON responses
+      const contentType = response.headers.get('content-type');
+      if (contentType && contentType.includes('application/json')) {
+        return response.json();
+      }
+      return { success: true };
     },
     onSuccess: () => {
       toast({ title: "Reflection added successfully!" });
