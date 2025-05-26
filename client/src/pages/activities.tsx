@@ -37,6 +37,13 @@ export default function Activities() {
     staleTime: 0, // Always refetch to ensure fresh data
   });
 
+  console.log('Activities Debug:', {
+    user: !!user,
+    momentsLength: moments.length,
+    momentsLoading: isLoading,
+    moments: moments.slice(0, 2) // Just show first 2 for debugging
+  });
+
   // Fetch connections
   const { data: connections = [] } = useQuery<Connection[]>({
     queryKey: ["/api/connections"],
