@@ -35,15 +35,7 @@ export default function Activities() {
     staleTime: 0,
   });
 
-  console.log('Activities Debug:', {
-    user: !!user,
-    isAuthenticated,
-    loading,
-    userId: user?.id,
-    momentsLength: moments.length,
-    momentsLoading: isLoading,
-    moments: moments.slice(0, 2) // Just show first 2 for debugging
-  });
+
 
   // Fetch connections
   const { data: connections = [] } = useQuery<Connection[]>({
@@ -173,16 +165,7 @@ export default function Activities() {
                            connection.name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesConnection = selectedConnection ? moment.connectionId === selectedConnection : true;
     
-    console.log('Filtering moment:', {
-      momentId: moment.id,
-      activeTab,
-      tags,
-      isIntimate: moment.isIntimate,
-      matchesTab,
-      matchesSearch,
-      matchesConnection,
-      finalResult: matchesTab && matchesSearch && matchesConnection
-    });
+
     
     return matchesTab && matchesSearch && matchesConnection;
   });
