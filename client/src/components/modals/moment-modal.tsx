@@ -248,27 +248,29 @@ export function MomentModal() {
                   <FormLabel>Tag this moment:</FormLabel>
                   <FormControl>
                     <div className="space-y-3">
-                      {/* Flag explanation */}
+                      {/* Type explanation */}
                       <div className="bg-muted/30 rounded-lg p-3 mb-2">
-                        <p className="text-xs font-medium mb-2">Flag Guide:</p>
+                        <p className="text-xs font-medium mb-2">Calendar Color Guide:</p>
                         <div className="grid grid-cols-1 gap-2">
                           <div className="flex items-center gap-2">
-                            <span className="h-4 w-4 rounded-full bg-greenFlag/20 flex items-center justify-center flex-shrink-0">
-                              <span className="text-greenFlag text-[10px] font-bold">G</span>
-                            </span>
-                            <span className="text-xs text-greenFlag">Green Flag: Positive moments</span>
+                            <span className="h-4 w-4 rounded-full bg-green-500 flex-shrink-0"></span>
+                            <span className="text-xs">Positive: Good moments, sweet interactions</span>
                           </div>
                           <div className="flex items-center gap-2">
-                            <span className="h-4 w-4 rounded-full bg-redFlag/20 flex items-center justify-center flex-shrink-0">
-                              <span className="text-redFlag text-[10px] font-bold">R</span>
-                            </span>
-                            <span className="text-xs text-redFlag">Red Flag: Concerning moments</span>
+                            <span className="h-4 w-4 rounded-full bg-orange-500 flex-shrink-0"></span>
+                            <span className="text-xs">Negative: Bad moments (not fights)</span>
                           </div>
                           <div className="flex items-center gap-2">
-                            <span className="h-4 w-4 rounded-full bg-blue-400/20 flex items-center justify-center flex-shrink-0">
-                              <span className="text-blue-600 dark:text-blue-400 text-[10px] font-bold">B</span>
-                            </span>
-                            <span className="text-xs text-blue-600 dark:text-blue-400">Blue Flag: Growth opportunities</span>
+                            <span className="h-4 w-4 rounded-full bg-red-500 flex-shrink-0"></span>
+                            <span className="text-xs">Conflict: Fights, serious disagreements</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="h-4 w-4 rounded-full bg-pink-500 flex-shrink-0"></span>
+                            <span className="text-xs">Intimacy: Physical/emotional intimate moments</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="h-4 w-4 rounded-full bg-blue-500 flex-shrink-0"></span>
+                            <span className="text-xs">Neutral: Regular interactions</span>
                           </div>
                         </div>
                       </div>

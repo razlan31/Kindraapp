@@ -61,16 +61,21 @@ export default function Calendar() {
   // Get moment color based on tags
   const getMomentColor = (moment: Moment) => {
     const tags = moment.tags || [];
-    if (tags.some(tag => ["Green Flag", "Quality Time", "Growth", "Support"].includes(tag))) {
-      return "bg-green-500";
-    }
-    if (tags.some(tag => ["Red Flag", "Conflict", "Disappointment", "Stress"].includes(tag))) {
-      return "bg-red-500";
-    }
-    if (tags.some(tag => ["Intimacy", "Physical Touch"].includes(tag))) {
+    
+    // Priority order: Intimacy > Conflict > Positive > Negative > Neutral
+    if (tags.includes("Intimacy")) {
       return "bg-pink-500";
     }
-    if (tags.some(tag => ["Communication", "Blue Flag"].includes(tag))) {
+    if (tags.includes("Conflict")) {
+      return "bg-red-500";
+    }
+    if (tags.includes("Positive")) {
+      return "bg-green-500";
+    }
+    if (tags.includes("Negative")) {
+      return "bg-orange-500";
+    }
+    if (tags.includes("Neutral")) {
       return "bg-blue-500";
     }
     return "bg-gray-400";

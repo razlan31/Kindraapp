@@ -10,24 +10,24 @@ interface TagSelectorProps {
 // Predefined tag categories with their respective tags
 const tagCategories = [
   {
-    name: "Moment Type",
-    tags: ["Green Flag", "Red Flag", "Intimacy", "Communication", "Growth", "Conflict"]
+    name: "Type",
+    tags: ["Positive", "Negative", "Neutral", "Conflict", "Intimacy"]
   },
   {
-    name: "Connection Type",
-    tags: ["Trust", "Support", "Fun", "Quality Time", "Physical Touch", "Emotional"]
+    name: "Connection",
+    tags: ["Quality Time", "Communication", "Trust", "Support", "Fun", "Growth"]
   },
   {
-    name: "Needs & Desires",
-    tags: ["Words of Affirmation", "Acts of Service", "Gifts", "Understanding", "Validation"]
+    name: "Love Languages",
+    tags: ["Physical Touch", "Words of Affirmation", "Acts of Service", "Gifts", "Quality Time"]
   },
   {
     name: "Life Areas",
-    tags: ["Life Goals", "Career", "Family", "Future Planning", "Finances", "Health"]
+    tags: ["Future Planning", "Career", "Family", "Goals", "Finances", "Health"]
   },
   {
     name: "Emotions",
-    tags: ["Joy", "Vulnerability", "Excitement", "Disappointment", "Anxiety", "Trust Issues"]
+    tags: ["Joy", "Excitement", "Vulnerability", "Disappointment", "Anxiety", "Frustration"]
   }
 ];
 
