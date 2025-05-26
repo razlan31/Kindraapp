@@ -130,8 +130,26 @@ export class MemStorage implements IStorage {
     };
     
     this.connections.set(1, systemConnection);
-    this.connectionId = 2; // Next connection will start from ID 2
+    
+    // Create a test connection for the actual user to test with
+    const testConnection: Connection = {
+      id: 2,
+      userId: 1, // Actual test user ID
+      name: "Alex",
+      relationshipStage: "Talking",
+      startDate: new Date('2025-05-01'),
+      birthday: new Date('1995-06-15'),
+      zodiacSign: "Gemini",
+      loveLanguage: "Quality Time",
+      profileImage: null,
+      isPrivate: false,
+      createdAt: new Date()
+    };
+    
+    this.connections.set(2, testConnection);
+    this.connectionId = 3; // Next connection will start from ID 3
     console.log("Created hidden system connection to prevent empty database");
+    console.log("Created test connection for user testing");
   }
 
   private async initializeTestUser() {
