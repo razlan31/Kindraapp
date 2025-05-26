@@ -129,15 +129,6 @@ export function MomentModal() {
   });
   
   const handleSubmit = () => {
-    if (!content.trim()) {
-      toast({
-        title: "Missing description",
-        description: "Please add a description for your entry.",
-        variant: "destructive",
-      });
-      return;
-    }
-    
     setIsSubmitting(true);
     
     // Use selected tags or fallback to activity type tags (but not moment type)
@@ -170,7 +161,7 @@ export function MomentModal() {
     const momentData = {
       connectionId,
       emoji: finalEmoji,
-      content: content.trim(),
+      content: content.trim() || "No description",
       tags,
       isPrivate: false,
       isIntimate,
@@ -256,7 +247,7 @@ export function MomentModal() {
 
           {/* Description */}
           <div className="space-y-2">
-            <label className="text-sm font-medium">Description</label>
+            <label className="text-sm font-medium">Description (Optional)</label>
             <Textarea
               placeholder={getPlaceholder()}
               value={content}
