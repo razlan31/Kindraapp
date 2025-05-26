@@ -13,7 +13,9 @@ import { EmojiPicker } from "@/components/ui/emoji-picker";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, X, Plus } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
 export function MomentModal() {
@@ -21,6 +23,14 @@ export function MomentModal() {
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  // Preset tag options organized by category
+  const presetTags = {
+    positive: ["Green Flag", "Quality Time", "Growth", "Support", "Trust", "Communication", "Affection", "Fun", "Celebration"],
+    negative: ["Red Flag", "Conflict", "Stress", "Disconnection", "Jealousy", "Miscommunication"],
+    intimate: ["Intimacy", "Physical Touch", "Emotional Connection", "Vulnerability", "Deep Conversation"],
+    general: ["Milestone", "Life Goals", "Future Planning", "Career", "Family", "Friends", "Travel", "Hobbies"]
+  };
   
   // Form state
   const [connectionId, setConnectionId] = useState<number>(2);
@@ -28,7 +38,34 @@ export function MomentModal() {
   const [content, setContent] = useState<string>("");
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [momentType, setMomentType] = useState<string>("positive");
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [customTag, setCustomTag] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Tag handling functions
+  const addTag = (tag: string) => {
+    if (!selectedTags.includes(tag)) {
+      setSelectedTags([...selectedTags, tag]);
+    }
+  };
+
+  const removeTag = (tagToRemove: string) => {
+    setSelectedTags(selectedTags.filter(tag => tag !== tagToRemove));
+  };
+
+  const addCustomTag = () => {
+    if (customTag.trim() && !selectedTags.includes(customTag.trim())) {
+      setSelectedTags([...selectedTags, customTag.trim()]);
+      setCustomTag("");
+    }
+  };
+
+  const handleCustomTagKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      addCustomTag();
+    }
+  };
   
   // Conflict resolution fields
   const [isResolved, setIsResolved] = useState(false);
@@ -100,16 +137,24 @@ export function MomentModal() {
     
     setIsSubmitting(true);
     
-    // Determine tags based on activity type
+    // Use selected tags or fallback to activity type tags
     let tags: string[] = [];
     let isIntimate = false;
     
-    if (activityType === 'moment') {
-      tags = [momentType === 'positive' ? 'Positive' : momentType === 'negative' ? 'Negative' : 'Neutral'];
-    } else if (activityType === 'conflict') {
-      tags = ['Conflict'];
-    } else if (activityType === 'intimacy') {
-      tags = ['Intimacy'];
+    if (selectedTags.length > 0) {
+      tags = selectedTags;
+    } else {
+      if (activityType === 'moment') {
+        tags = [momentType === 'positive' ? 'Positive' : momentType === 'negative' ? 'Negative' : 'Neutral'];
+      } else if (activityType === 'conflict') {
+        tags = ['Conflict'];
+      } else if (activityType === 'intimacy') {
+        tags = ['Intimacy'];
+        isIntimate = true;
+      }
+    }
+    
+    if (activityType === 'intimacy') {
       isIntimate = true;
     }
     
@@ -214,6 +259,99 @@ export function MomentModal() {
               onChange={(e) => setContent(e.target.value)}
               className="min-h-[100px]"
             />
+          </div>
+
+          {/* Tags Selection */}
+          <div className="space-y-3">
+            <label className="text-sm font-medium">Tags (Optional)</label>
+            
+            {/* Selected Tags Display */}
+            {selectedTags.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {selectedTags.map((tag, index) => (
+                  <Badge key={index} variant="secondary" className="flex items-center gap-1">
+                    {tag}
+                    <X className="h-3 w-3 cursor-pointer" onClick={() => removeTag(tag)} />
+                  </Badge>
+                ))}
+              </div>
+            )}
+
+            {/* Preset Tags */}
+            <div className="space-y-2">
+              <div className="text-xs font-medium text-gray-600 dark:text-gray-400">Quick Tags:</div>
+              <div className="flex flex-wrap gap-1">
+                {presetTags.positive.slice(0, 6).map((tag) => (
+                  <Button
+                    key={tag}
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className={cn(
+                      "h-7 text-xs",
+                      selectedTags.includes(tag) ? "bg-green-100 border-green-300 text-green-800" : ""
+                    )}
+                    onClick={() => selectedTags.includes(tag) ? removeTag(tag) : addTag(tag)}
+                  >
+                    {tag}
+                  </Button>
+                ))}
+              </div>
+              <div className="flex flex-wrap gap-1">
+                {presetTags.negative.slice(0, 4).map((tag) => (
+                  <Button
+                    key={tag}
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className={cn(
+                      "h-7 text-xs",
+                      selectedTags.includes(tag) ? "bg-red-100 border-red-300 text-red-800" : ""
+                    )}
+                    onClick={() => selectedTags.includes(tag) ? removeTag(tag) : addTag(tag)}
+                  >
+                    {tag}
+                  </Button>
+                ))}
+              </div>
+              <div className="flex flex-wrap gap-1">
+                {presetTags.intimate.slice(0, 4).map((tag) => (
+                  <Button
+                    key={tag}
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className={cn(
+                      "h-7 text-xs",
+                      selectedTags.includes(tag) ? "bg-pink-100 border-pink-300 text-pink-800" : ""
+                    )}
+                    onClick={() => selectedTags.includes(tag) ? removeTag(tag) : addTag(tag)}
+                  >
+                    {tag}
+                  </Button>
+                ))}
+              </div>
+            </div>
+
+            {/* Custom Tag Input */}
+            <div className="flex gap-2">
+              <Input
+                placeholder="Add custom tag..."
+                value={customTag}
+                onChange={(e) => setCustomTag(e.target.value)}
+                onKeyPress={handleCustomTagKeyPress}
+                className="text-sm"
+              />
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={addCustomTag}
+                disabled={!customTag.trim()}
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
 
           {/* Date Selection */}
