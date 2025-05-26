@@ -92,12 +92,20 @@ export default function Connections() {
     setLocation(`/connections/${connection.id}`);
   };
 
-  // Filter connections based on search term and filter stage
-  const filteredConnections = connections.filter(connection => {
-    const matchesSearch = connection.name.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStage = filterStage ? connection.relationshipStage === filterStage : true;
-    return matchesSearch && matchesStage;
-  });
+  // Filter and sort connections - put main focus at the top
+  const filteredConnections = connections
+    .filter(connection => {
+      const matchesSearch = connection.name.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesStage = filterStage ? connection.relationshipStage === filterStage : true;
+      return matchesSearch && matchesStage;
+    })
+    .sort((a, b) => {
+      // Main focus connection always comes first
+      if (mainFocusConnection?.id === a.id) return -1;
+      if (mainFocusConnection?.id === b.id) return 1;
+      // Then sort by creation date (newest first)
+      return new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime();
+    });
 
   // Get recent emojis for each connection
   const getConnectionEmojis = (connectionId: number) => {
@@ -329,8 +337,8 @@ export default function Connections() {
                     flagCount={getConnectionFlagCounts(connection.id)}
                   />
                   {mainFocusConnection?.id === connection.id && (
-                    <div className="absolute top-2 right-2 bg-red-500 rounded-full p-1.5">
-                      <Heart className="h-3 w-3 text-white fill-white" />
+                    <div className="absolute top-3 right-3 bg-red-500 rounded-full p-2 shadow-lg border-2 border-white">
+                      <Heart className="h-4 w-4 text-white fill-white" />
                     </div>
                   )}
                 </div>
