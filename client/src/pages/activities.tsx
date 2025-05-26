@@ -61,7 +61,9 @@ export default function Activities() {
   const [selectedConnectionForDetail, setSelectedConnectionForDetail] = useState<Connection | null>(null);
 
   const handleAddReflection = (momentId: number) => {
+    console.log("Add reflection for moment:", momentId);
     const moment = moments.find(m => m.id === momentId);
+    console.log("Found moment for reflection:", moment);
     if (moment) {
       setSelectedMomentForReflection(moment);
       setReflectionModalOpen(true);
