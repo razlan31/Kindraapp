@@ -44,7 +44,8 @@ export default function BasicConnectionForm() {
 
       if (response.ok) {
         alert('Connection created successfully!');
-        setLocation('/connections');
+        // Force a page refresh to show the new connection
+        window.location.href = '/connections';
       } else {
         alert('Failed to create connection');
       }
