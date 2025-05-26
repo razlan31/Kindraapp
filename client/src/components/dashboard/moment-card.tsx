@@ -69,9 +69,14 @@ export function MomentCard({ moment, connection, onAddReflection, onViewDetail, 
                 <span className="font-medium text-sm">{connection.name}</span>
                 <span className="text-2xl">{moment.emoji}</span>
                 {/* Moment Type Indicator */}
-                {(moment.tags?.includes('Conflict') || moment.isIntimate) && (
+                {(moment.tags?.includes('Conflict') || moment.isIntimate) ? (
                   <Badge variant="outline" className="text-xs">
                     {moment.tags?.includes('Conflict') ? 'Conflict' : 'Intimacy'}
+                  </Badge>
+                ) : (
+                  <Badge variant="outline" className="text-xs">
+                    {['😊', '❤️', '😍', '🥰', '💖', '✨', '🔥'].includes(moment.emoji) ? 'Positive' :
+                     ['😕', '😢', '😠', '😞', '😤'].includes(moment.emoji) ? 'Negative' : 'Neutral'}
                   </Badge>
                 )}
               </div>

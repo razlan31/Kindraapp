@@ -201,14 +201,23 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection }: EntryD
             <span>{format(new Date(freshMoment.createdAt || ''), "PPP 'at' p")}</span>
           </div>
 
-          {/* Activity Type - Only show for Conflict and Intimacy */}
-          {(freshMoment.tags?.includes('Conflict') || freshMoment.isIntimate) && (
-            <div className="flex items-center gap-2">
+          {/* Moment Type and Activity Type */}
+          <div className="flex items-center gap-2">
+            {/* Show activity type for conflicts and intimacy */}
+            {(freshMoment.tags?.includes('Conflict') || freshMoment.isIntimate) && (
               <Badge variant="outline" className="text-xs">
                 {freshMoment.tags?.includes('Conflict') ? 'Conflict' : 'Intimacy'}
               </Badge>
-            </div>
-          )}
+            )}
+            
+            {/* Show moment type for regular moments based on emoji/content sentiment */}
+            {!freshMoment.tags?.includes('Conflict') && !freshMoment.isIntimate && (
+              <Badge variant="outline" className="text-xs">
+                {['😊', '❤️', '😍', '🥰', '💖', '✨', '🔥'].includes(freshMoment.emoji) ? 'Positive' :
+                 ['😕', '😢', '😠', '😞', '😤'].includes(freshMoment.emoji) ? 'Negative' : 'Neutral'}
+              </Badge>
+            )}
+          </div>
 
           {/* Tags */}
           {freshMoment.tags && freshMoment.tags.filter(tag => !['Positive', 'Negative', 'Neutral'].includes(tag)).length > 0 && (
