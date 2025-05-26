@@ -91,11 +91,31 @@ export class MemStorage implements IStorage {
     
     // Initialize default badges
     this.initializeDefaultBadges();
-    this.initializeTestUser();
+    
+    // Create test user synchronously to ensure it exists
+    this.createTestUserSync();
+  }
+
+  private createTestUserSync() {
+    // Create test user synchronously without bcrypt for simplicity
+    const testUser: User = {
+      id: 1,
+      username: 'testuser',
+      email: 'test@example.com',
+      password: 'password123', // In production this would be hashed
+      displayName: 'Test User',
+      zodiacSign: 'Gemini',
+      loveLanguage: 'Quality Time',
+      profileImage: null,
+      createdAt: new Date()
+    };
+    
+    this.users.set(1, testUser);
+    console.log("Created test user synchronously:", testUser.username);
   }
 
   private async initializeTestUser() {
-    // Create the test user that was cleared by server restart
+    // This method is kept for reference but not used
     const hashedPassword = await import('bcryptjs').then(bcrypt => 
       bcrypt.hash('password123', 10)
     );
