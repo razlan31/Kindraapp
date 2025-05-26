@@ -175,8 +175,8 @@ export default function Activities() {
           </div>
 
           {/* Add Button for Active Tab */}
-          <div className="flex justify-end mb-4">
-            <Button onClick={() => openMomentModal()}>
+          <div className="mb-4">
+            <Button onClick={() => openMomentModal()} className="w-full">
               <Plus className="h-4 w-4 mr-2" />
               Add {activeTab === 'moments' ? 'Moment' : activeTab === 'conflicts' ? 'Conflict' : 'Intimacy'}
             </Button>
@@ -216,14 +216,7 @@ export default function Activities() {
                 ))}
               </DropdownMenuContent>
             </DropdownMenu>
-            <Button 
-              variant="outline" 
-              size="icon"
-              className="rounded-full"
-              onClick={openMomentModal}
-            >
-              <Plus className="h-4 w-4" />
-            </Button>
+
           </div>
           
           {/* Flag Legend */}
@@ -315,12 +308,7 @@ export default function Activities() {
               <p className="text-neutral-500 dark:text-neutral-400 text-sm mb-4">
                 Log your first moment to start tracking your emotional journey
               </p>
-              <Button 
-                onClick={openMomentModal}
-                className="bg-primary text-white"
-              >
-                <Plus className="h-4 w-4 mr-2" /> Log Moment
-              </Button>
+
             </Card>
           )}
         </section>
