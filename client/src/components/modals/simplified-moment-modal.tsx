@@ -141,6 +141,8 @@ export function MomentModal() {
     let tags: string[] = [];
     let isIntimate = false;
     
+    console.log("Moment creation debug:", { selectedTags, activityType, momentType });
+    
     if (selectedTags.length > 0) {
       tags = selectedTags;
     } else {
@@ -151,8 +153,11 @@ export function MomentModal() {
         tags = ['Intimacy'];
         isIntimate = true;
       }
-      // For regular moments, don't add any default tags - let users choose
+      // For regular moments (activityType === 'moment'), don't add any default tags
+      // Never add momentType as a tag
     }
+    
+    console.log("Final tags before creation:", tags);
     
     if (activityType === 'intimacy') {
       isIntimate = true;
