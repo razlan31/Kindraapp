@@ -84,7 +84,10 @@ export function MomentCard({ moment, connection, onAddReflection, onViewDetail, 
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => onAddReflection(moment.id)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onAddReflection(moment.id);
+                }}
                 className="text-xs h-8"
               >
                 <MessageSquare className="h-3 w-3 mr-1" />
