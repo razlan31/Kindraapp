@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Header } from "@/components/layout/header";
 import { BottomNavigation } from "@/components/layout/bottom-navigation";
 import { Button } from "@/components/ui/button";
@@ -14,14 +14,24 @@ import type { Moment, Connection } from "@shared/schema";
 export default function Calendar() {
   const { user } = useAuth();
   const { openMomentModal, setSelectedConnection } = useModal();
+  const queryClient = useQueryClient();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
   const [dayDetailOpen, setDayDetailOpen] = useState(false);
+
+  // Force refresh moments when user is available
+  useEffect(() => {
+    if (user) {
+      queryClient.invalidateQueries({ queryKey: ["/api/moments"] });
+    }
+  }, [user, queryClient]);
 
   // Fetch moments
   const { data: moments = [], isLoading: momentsLoading } = useQuery<Moment[]>({
     queryKey: ["/api/moments"],
     enabled: !!user,
+    refetchOnWindowFocus: true,
+    staleTime: 0, // Always refetch to ensure fresh data
   });
 
   // Fetch connections
