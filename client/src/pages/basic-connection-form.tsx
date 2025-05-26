@@ -23,6 +23,8 @@ export default function BasicConnectionForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   const handleSubmit = async () => {
+    console.log("Create button clicked!", { name, stage, startDate, loveLanguages });
+    
     if (!name.trim()) {
       toast({
         title: "Name required",
