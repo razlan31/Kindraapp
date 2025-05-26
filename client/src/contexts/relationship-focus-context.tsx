@@ -21,23 +21,32 @@ export const RelationshipFocusProvider: React.FC<{ children: React.ReactNode }> 
   const [loading, setLoading] = useState(true);
   
   // Fetch all connections
-  const { data: connections = [] } = useQuery<Connection[]>({
+  const { data: connections = [], isLoading } = useQuery<Connection[]>({
     queryKey: ["/api/connections"],
   });
   
   useEffect(() => {
+    if (isLoading) return;
+    
     // Try to restore the main focus connection from localStorage
     const savedId = localStorage.getItem('mainFocusConnectionId');
     
+    console.log('Focus Context Debug:', {
+      savedId,
+      connectionsLength: connections.length,
+      connections
+    });
+    
     if (savedId && connections.length > 0) {
       const savedConnection = connections.find(c => c.id === parseInt(savedId));
+      console.log('Found saved connection:', savedConnection);
       if (savedConnection) {
         setMainFocusConnectionObject(savedConnection);
       }
     }
     
     setLoading(false);
-  }, [connections]);
+  }, [connections, isLoading]);
   
   const setMainFocusConnection = (connection: Connection | null) => {
     setMainFocusConnectionObject(connection);

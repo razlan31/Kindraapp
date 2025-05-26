@@ -341,13 +341,7 @@ export default function Connections() {
                       <Heart className="h-4 w-4 text-white fill-white" />
                     </div>
                   )}
-                  {/* Debug indicator */}
-                  {console.log('Connection List Debug:', {
-                    connectionId: connection.id,
-                    mainFocusId: mainFocusConnection?.id,
-                    isMatch: mainFocusConnection?.id === connection.id,
-                    mainFocusConnection
-                  })}
+
                 </div>
               ))}
             </div>
