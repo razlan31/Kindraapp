@@ -28,6 +28,8 @@ export default function Moments() {
   const { data: moments = [], isLoading } = useQuery<Moment[]>({
     queryKey: ["/api/moments"],
     enabled: !!user,
+    refetchOnWindowFocus: true,
+    staleTime: 0, // Always refetch to ensure fresh data
   });
 
   // Fetch connections
