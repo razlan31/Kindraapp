@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import { Calendar, Edit2, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import type { Moment, Connection } from "@shared/schema";
 
 interface EntryDetailModalProps {
@@ -23,6 +23,15 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection }: EntryD
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  // Fetch fresh moment data to ensure we have the latest reflection
+  const { data: moments } = useQuery({
+    queryKey: ["/api/moments"],
+    enabled: isOpen && !!moment?.id,
+  });
+
+  // Get the fresh moment data from the query result
+  const freshMoment = Array.isArray(moments) ? moments.find((m: Moment) => m.id === moment?.id) || moment : moment;
 
   // Listen for reflection updates and refresh data
   useEffect(() => {
@@ -63,9 +72,9 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection }: EntryD
   });
 
   const handleEdit = () => {
-    if (moment) {
-      setEditedContent(moment.content);
-      setEditedReflection(moment.reflection || "");
+    if (freshMoment) {
+      setEditedContent(freshMoment.content);
+      setEditedReflection(freshMoment.reflection || "");
       setIsEditing(true);
     }
   };
@@ -118,9 +127,9 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection }: EntryD
     return "bg-neutral-100 text-neutral-800 dark:bg-neutral-800 dark:text-neutral-300";
   };
 
-  if (!moment || !connection) return null;
+  if (!freshMoment || !connection) return null;
 
-  const activityType = getActivityType(moment);
+  const activityType = getActivityType(freshMoment);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -128,7 +137,7 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection }: EntryD
         <DialogHeader>
           <div className="flex items-center justify-between">
             <DialogTitle className="flex items-center gap-2">
-              <span className="text-2xl">{moment.emoji}</span>
+              <span className="text-2xl">{freshMoment.emoji}</span>
               {getActivityTypeLabel(activityType)} Details
             </DialogTitle>
             {!isEditing && (
