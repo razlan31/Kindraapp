@@ -21,7 +21,7 @@ import {
 import { format } from "date-fns";
 
 export default function Activities() {
-  const { user } = useAuth();
+  const { user, isAuthenticated, loading } = useAuth();
   const { openMomentModal } = useModal();
   const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = useState("");
@@ -32,13 +32,15 @@ export default function Activities() {
   // Fetch moments with forced refresh mechanism
   const { data: moments = [], isLoading, refetch: refetchMoments } = useQuery<Moment[]>({
     queryKey: ["/api/moments", refreshTrigger], // Include refresh trigger in query key
-    enabled: !!user && user.id !== undefined,
+    enabled: isAuthenticated && !loading,
     refetchOnWindowFocus: true,
     staleTime: 0, // Always refetch to ensure fresh data
   });
 
   console.log('Activities Debug:', {
     user: !!user,
+    isAuthenticated,
+    loading,
     userId: user?.id,
     momentsLength: moments.length,
     momentsLoading: isLoading,
