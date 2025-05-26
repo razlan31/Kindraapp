@@ -179,10 +179,10 @@ export function MomentModal() {
         title: "Entry updated successfully",
         description: "Your changes have been saved.",
       });
-      // Close modal immediately
       closeMomentModal();
       setIsSubmitting(false);
-      // Force page reload - the most reliable way to show changes
+      
+      // Force immediate refresh using the proven approach from entry detail modal
       window.location.reload();
     },
     onError: (error: any) => handleError(error),
