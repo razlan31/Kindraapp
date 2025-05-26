@@ -352,7 +352,12 @@ export default function BasicConnectionForm() {
             
             <Button
               type="button"
-              onClick={handleSubmit}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log("Button clicked - calling handleSubmit");
+                handleSubmit();
+              }}
               className="w-full bg-blue-600 hover:bg-blue-700 text-white"
               disabled={isSubmitting}
             >
