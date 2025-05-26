@@ -4,7 +4,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
-import { Calendar, Edit2, X } from "lucide-react";
+import { Calendar, Edit2, X, Plus } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import type { Moment, Connection } from "@shared/schema";
@@ -20,9 +21,19 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection }: EntryD
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState("");
   const [editedReflection, setEditedReflection] = useState("");
+  const [editedTags, setEditedTags] = useState<string[]>([]);
+  const [customTag, setCustomTag] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  // Preset tag options for editing
+  const presetTags = {
+    positive: ["Green Flag", "Quality Time", "Growth", "Support", "Trust", "Communication", "Affection", "Fun", "Celebration"],
+    negative: ["Red Flag", "Conflict", "Stress", "Disconnection", "Jealousy", "Miscommunication"],
+    intimate: ["Intimacy", "Physical Touch", "Emotional Connection", "Vulnerability", "Deep Conversation"],
+    general: ["Milestone", "Life Goals", "Future Planning", "Career", "Family", "Friends", "Travel", "Hobbies"]
+  };
 
   // Fetch fresh moment data to ensure we have the latest reflection
   const { data: moments } = useQuery({
@@ -48,14 +59,40 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection }: EntryD
     };
   }, [moment?.id, queryClient]);
 
+  // Tag handling functions
+  const addTag = (tag: string) => {
+    if (!editedTags.includes(tag)) {
+      setEditedTags([...editedTags, tag]);
+    }
+  };
+
+  const removeTag = (tagToRemove: string) => {
+    setEditedTags(editedTags.filter(tag => tag !== tagToRemove));
+  };
+
+  const addCustomTag = () => {
+    if (customTag.trim() && !editedTags.includes(customTag.trim())) {
+      setEditedTags([...editedTags, customTag.trim()]);
+      setCustomTag("");
+    }
+  };
+
+  const handleCustomTagKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      addCustomTag();
+    }
+  };
+
   const updateMomentMutation = useMutation({
-    mutationFn: async (data: { id: number; content: string; reflection: string }) => {
+    mutationFn: async (data: { id: number; content: string; reflection: string; tags: string[] }) => {
       const response = await fetch(`/api/moments/${data.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           content: data.content,
-          reflection: data.reflection || null
+          reflection: data.reflection || null,
+          tags: data.tags
         }),
       });
       if (!response.ok) throw new Error('Failed to update entry');
