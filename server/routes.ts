@@ -454,12 +454,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (resolutionNotes !== undefined) updateData.resolutionNotes = resolutionNotes;
       if (intimacyRating !== undefined) updateData.intimacyRating = intimacyRating;
       
+      console.log(`🎯 PATCH Route - Updating moment ${momentId} with data:`, updateData);
+      
       const updatedMoment = await storage.updateMoment(momentId, updateData);
       
       if (!updatedMoment) {
+        console.log(`❌ PATCH Route - Failed to update moment ${momentId}`);
         return res.status(500).json({ message: "Failed to update moment" });
       }
       
+      console.log(`✅ PATCH Route - Successfully updated moment ${momentId}:`, updatedMoment);
       res.json(updatedMoment);
     } catch (error) {
       res.status(500).json({ message: "Server error updating moment" });

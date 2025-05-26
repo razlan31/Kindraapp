@@ -1,0 +1,37 @@
+Focus Context Debug: {savedId: '2', connectionsLength: 1, connections: Array(1)}
+VM4574 eruda.js:2 Found saved connection: {id: 2, userId: 1, name: 'Alex', relationshipStage: 'Talking', startDate: '2025-05-01T00:00:00.000Z', …}
+VM4574 eruda.js:2 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+Mt.forEach.n.<computed> @ VM4574 eruda.js:2
+(anonymous) @ VM4706 chunk-EBT4D7XX.js:337
+commitHookEffectListMount @ VM4603 chunk-RPCDYKBN.js:16915
+commitPassiveMountOnFiber @ VM4603 chunk-RPCDYKBN.js:18156
+commitPassiveMountEffects_complete @ VM4603 chunk-RPCDYKBN.js:18129
+commitPassiveMountEffects_begin @ VM4603 chunk-RPCDYKBN.js:18119
+commitPassiveMountEffects @ VM4603 chunk-RPCDYKBN.js:18109
+flushPassiveEffectsImpl @ VM4603 chunk-RPCDYKBN.js:19490
+flushPassiveEffects @ VM4603 chunk-RPCDYKBN.js:19447
+commitRootImpl @ VM4603 chunk-RPCDYKBN.js:19416
+commitRoot @ VM4603 chunk-RPCDYKBN.js:19277
+performSyncWorkOnRoot @ VM4603 chunk-RPCDYKBN.js:18895
+flushSyncCallbacks @ VM4603 chunk-RPCDYKBN.js:9119
+(anonymous) @ VM4603 chunk-RPCDYKBN.js:18627Understand this warning
+VM4574 eruda.js:2 openMomentModal called!
+VM4574 eruda.js:2 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+Mt.forEach.n.<computed> @ VM4574 eruda.js:2
+(anonymous) @ VM4706 chunk-EBT4D7XX.js:337
+commitHookEffectListMount @ VM4603 chunk-RPCDYKBN.js:16915
+commitPassiveMountOnFiber @ VM4603 chunk-RPCDYKBN.js:18156
+commitPassiveMountEffects_complete @ VM4603 chunk-RPCDYKBN.js:18129
+commitPassiveMountEffects_begin @ VM4603 chunk-RPCDYKBN.js:18119
+commitPassiveMountEffects @ VM4603 chunk-RPCDYKBN.js:18109
+flushPassiveEffectsImpl @ VM4603 chunk-RPCDYKBN.js:19490
+flushPassiveEffects @ VM4603 chunk-RPCDYKBN.js:19447
+commitRootImpl @ VM4603 chunk-RPCDYKBN.js:19416
+commitRoot @ VM4603 chunk-RPCDYKBN.js:19277
+performSyncWorkOnRoot @ VM4603 chunk-RPCDYKBN.js:18895
+flushSyncCallbacks @ VM4603 chunk-RPCDYKBN.js:9119
+(anonymous) @ VM4603 chunk-RPCDYKBN.js:18627Understand this warning
+Console.js:61 getCurrentUser successful: {id: 1, username: 'testuser', email: 'test@example.com', displayName: 'Test User', zodiacSign: 'Gemini', …}
+Console.js:61 Auth context setting user: {id: 1, username: 'testuser', email: 'test@example.com', displayName: 'Test User', zodiacSign: 'Gemini', …}
+Console.js:61 Focus Context Debug: {savedId: '2', connectionsLength: 1, connections: Array(1)}
+Console.js:61 Found saved connection: {id: 2, userId: 1, name: 'Alex', relationshipStage: 'Talking', startDate: '2025-05-01T00:00:00.000Z', …}
