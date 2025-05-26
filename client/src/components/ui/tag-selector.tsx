@@ -45,6 +45,7 @@ export function TagSelector({ selectedTags, onChange }: TagSelectorProps) {
         {tagCategories.map(category => (
           <Button
             key={category.name}
+            type="button"
             variant={activeCategory === category.name ? "default" : "outline"}
             size="sm"
             onClick={() => setActiveCategory(category.name)}
