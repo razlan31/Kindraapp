@@ -272,6 +272,10 @@ export default function Dashboard() {
                 e.stopPropagation();
                 console.log("Log button clicked!");
                 console.log("openMomentModal function:", openMomentModal);
+                // Set the main focus connection when opening the modal
+                if (mainFocusConnection) {
+                  setSelectedConnection(mainFocusConnection.id, mainFocusConnection);
+                }
                 openMomentModal();
               }}
             >
