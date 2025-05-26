@@ -29,10 +29,10 @@ export default function Activities() {
   const [activeTab, setActiveTab] = useState<'moments' | 'conflicts' | 'intimacy'>('moments');
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
-  // Fetch moments with forced refresh mechanism
+  // Fetch moments with forced refresh mechanism  
   const { data: moments = [], isLoading, refetch: refetchMoments } = useQuery<Moment[]>({
     queryKey: ["/api/moments", refreshTrigger], // Include refresh trigger in query key
-    enabled: isAuthenticated && !loading,
+    enabled: !loading && user !== null,
     refetchOnWindowFocus: true,
     staleTime: 0, // Always refetch to ensure fresh data
   });
