@@ -297,7 +297,8 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection }: EntryD
             </div>
           )}
 
-          {/* Tags Section */}
+          {/* Tags Section - Only show for regular moments */}
+          {!freshMoment.tags?.includes('Conflict') && !freshMoment.isIntimate && (
           <div className="space-y-2">
             <label className="text-sm font-medium">Tags</label>
             {isEditing ? (
@@ -369,6 +370,7 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection }: EntryD
               </div>
             )}
           </div>
+          )}
 
           {/* Reflection */}
           <div className="space-y-2">
