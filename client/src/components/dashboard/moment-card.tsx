@@ -25,10 +25,10 @@ export function MomentCard({ moment, connection, onAddReflection, onViewDetail, 
 
   const getMomentType = (moment: Moment) => {
     // Determine moment type based on tags and properties
-    if (moment.tags?.includes('Conflict') || moment.isResolved !== undefined) {
+    if (moment.tags?.includes('Conflict')) {
       return 'Conflict';
     }
-    if (moment.isIntimate || moment.tags?.includes('Intimacy')) {
+    if (moment.isIntimate === true || moment.tags?.includes('Intimacy')) {
       return 'Intimacy';
     }
     // For regular moments, we don't show a type badge since type is just positive/negative/neutral

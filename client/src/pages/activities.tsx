@@ -154,11 +154,11 @@ export default function Activities() {
     let matchesTab = false;
     if (activeTab === 'moments') {
       // Show all moments except pure conflicts and intimacy entries
-      matchesTab = !tags.includes('Conflict') && moment.isIntimate !== true;
+      matchesTab = !tags.includes('Conflict') && !moment.isIntimate && !tags.includes('Intimacy');
     } else if (activeTab === 'conflicts') {
       matchesTab = tags.includes('Conflict');
     } else if (activeTab === 'intimacy') {
-      matchesTab = tags.includes('Intimacy') || (moment.isIntimate === true);
+      matchesTab = moment.isIntimate === true || tags.includes('Intimacy');
     }
     
     const matchesSearch = moment.content.toLowerCase().includes(searchTerm.toLowerCase()) ||

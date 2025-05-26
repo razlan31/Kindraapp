@@ -209,14 +209,14 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection }: EntryD
           {/* Moment Type and Activity Type */}
           <div className="flex items-center gap-2">
             {/* Show activity type for conflicts and intimacy */}
-            {(freshMoment.tags?.includes('Conflict') || freshMoment.isIntimate) && (
+            {(freshMoment.tags?.includes('Conflict') || freshMoment.isIntimate === true || freshMoment.tags?.includes('Intimacy')) && (
               <Badge variant="outline" className="text-xs">
                 {freshMoment.tags?.includes('Conflict') ? 'Conflict' : 'Intimacy'}
               </Badge>
             )}
             
             {/* Show moment type for regular moments based on emoji/content sentiment */}
-            {!freshMoment.tags?.includes('Conflict') && !freshMoment.isIntimate && (
+            {!freshMoment.tags?.includes('Conflict') && !freshMoment.isIntimate && !freshMoment.tags?.includes('Intimacy') && (
               <Badge variant="outline" className="text-xs">
                 {['😊', '❤️', '😍', '🥰', '💖', '✨', '🔥'].includes(freshMoment.emoji) ? 'Positive' :
                  ['😕', '😢', '😠', '😞', '😤'].includes(freshMoment.emoji) ? 'Negative' : 'Neutral'}
