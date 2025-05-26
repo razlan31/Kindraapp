@@ -350,19 +350,14 @@ export default function BasicConnectionForm() {
               </div>
             </div>
             
-            <Button
+            <button
               type="button"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                console.log("Button clicked - calling handleSubmit");
-                handleSubmit();
-              }}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+              onClick={handleSubmit}
               disabled={isSubmitting}
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md disabled:opacity-50"
             >
               {isSubmitting ? "Creating..." : "Create Connection"}
-            </Button>
+            </button>
           </form>
         </div>
       </div>
