@@ -20,6 +20,7 @@ export default function BasicConnectionForm() {
   const [zodiacSign, setZodiacSign] = useState("");
   const [loveLanguages, setLoveLanguages] = useState<string[]>([]);
   const [profileImage, setProfileImage] = useState("");
+  const [birthday, setBirthday] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   const handleSubmit = async () => {
@@ -198,6 +199,20 @@ export default function BasicConnectionForm() {
                   </TabsContent>
                 </Tabs>
               </div>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Birthday
+              </label>
+              <input
+                type="date"
+                value={birthday}
+                onChange={(e) => setBirthday(e.target.value)}
+                placeholder="Select birthday"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              />
+              <p className="text-xs text-neutral-500 mt-1">Optional: Track birthdays and anniversaries</p>
             </div>
             
             <div>
