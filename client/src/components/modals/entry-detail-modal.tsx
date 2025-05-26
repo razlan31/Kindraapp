@@ -298,7 +298,7 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection }: EntryD
           )}
 
           {/* Tags Section - Only show for regular moments */}
-          {!freshMoment.tags?.includes('Conflict') && !freshMoment.isIntimate && (
+          {!freshMoment.tags?.includes('Conflict') && !freshMoment.isIntimate && !freshMoment.tags?.includes('Intimacy') && (
           <div className="space-y-2">
             <label className="text-sm font-medium">Tags</label>
             {isEditing ? (
