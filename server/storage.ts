@@ -167,9 +167,11 @@ export class MemStorage implements IStorage {
         tags: ["Green Flag", "Quality Time", "Intimacy"],
         isPrivate: false,
         isIntimate: false,
+        intimacyRating: null,
         relatedToMenstrualCycle: false,
-        isMilestone: false,
-        milestoneTitle: null,
+        isResolved: false,
+        resolvedAt: null,
+        resolutionNotes: null,
         createdAt: new Date('2025-05-24T19:30:00')
       },
       {
@@ -182,8 +184,9 @@ export class MemStorage implements IStorage {
         isPrivate: false,
         isIntimate: false,
         relatedToMenstrualCycle: false,
-        isMilestone: false,
-        milestoneTitle: null,
+        isResolved: false,
+        resolvedAt: null,
+        resolutionNotes: null,
         createdAt: new Date('2025-05-23T14:20:00')
       },
       {

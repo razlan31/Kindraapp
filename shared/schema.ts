@@ -101,6 +101,10 @@ export const moments = pgTable("moments", {
   isIntimate: boolean("is_intimate").default(false),
   intimacyRating: text("intimacy_rating"),
   relatedToMenstrualCycle: boolean("related_to_menstrual_cycle").default(false),
+  // Conflict resolution fields
+  isResolved: boolean("is_resolved").default(false),
+  resolvedAt: timestamp("resolved_at"),
+  resolutionNotes: text("resolution_notes"),
 });
 
 export const momentSchema = createInsertSchema(moments).omit({ id: true, createdAt: true });

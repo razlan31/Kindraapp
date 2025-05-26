@@ -30,6 +30,11 @@ export function MomentModal() {
   const [momentType, setMomentType] = useState<string>("positive");
   const [isSubmitting, setIsSubmitting] = useState(false);
   
+  // Conflict resolution fields
+  const [isResolved, setIsResolved] = useState(false);
+  const [resolutionNotes, setResolutionNotes] = useState('');
+  const [resolvedDate, setResolvedDate] = useState<Date>(new Date());
+  
   // Fetch user connections
   const { data: connections = [] } = useQuery<Connection[]>({
     queryKey: ["/api/connections"],
