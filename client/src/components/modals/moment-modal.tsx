@@ -89,9 +89,11 @@ export function MomentModal() {
         title: "Moment logged successfully",
         description: "Your emotional moment has been recorded.",
       });
-      // Invalidate all moments-related queries
+      // Force immediate refresh of all moments data
       queryClient.invalidateQueries({ queryKey: ["/api/moments"] });
       queryClient.refetchQueries({ queryKey: ["/api/moments"] });
+      // Also refresh connections in case they were affected  
+      queryClient.invalidateQueries({ queryKey: ["/api/connections"] });
       closeMomentModal();
       form.reset({
         connectionId: 0,
