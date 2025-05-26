@@ -428,11 +428,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = req.session.userId as number;
       const momentId = parseInt(req.params.id);
       
+      console.log(`🚀 PATCH START - Moment ${momentId}, Request body:`, req.body);
+      
       if (isNaN(momentId)) {
         return res.status(400).json({ message: "Invalid moment ID" });
       }
       
       const moment = await storage.getMoment(momentId);
+      console.log(`📖 PATCH - Found moment:`, moment);
       
       if (!moment) {
         return res.status(404).json({ message: "Moment not found" });
@@ -447,7 +450,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ...req.body // Use all fields from request body
       };
       
-      console.log(`🎯 PATCH Route - Updating moment ${momentId} with data:`, updateData);
+      console.log(`🎯 PATCH Route - About to call storage.updateMoment(${momentId}) with:`, updateData);
       
       const updatedMoment = await storage.updateMoment(momentId, updateData);
       
