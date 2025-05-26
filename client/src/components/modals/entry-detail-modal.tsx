@@ -201,7 +201,7 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection }: EntryD
             <span>{format(new Date(freshMoment.createdAt || ''), "PPP 'at' p")}</span>
           </div>
 
-          {/* Activity Type */}
+          {/* Activity Type - Only show for Conflict and Intimacy */}
           {(freshMoment.tags?.includes('Conflict') || freshMoment.isIntimate) && (
             <div className="flex items-center gap-2">
               <Badge variant="outline" className="text-xs">
