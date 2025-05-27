@@ -319,20 +319,27 @@ export default function Activities() {
           {activeTab !== 'timeline' && (
             <div className="mb-4">
               <Button onClick={() => {
-                // Set the connection in modal context before opening
-                if (selectedConnection && connections.length > 0) {
-                  const connection = connections.find(c => c.id === selectedConnection);
-                  if (connection) {
-                    setModalConnection(selectedConnection, connection);
-                  }
+                if (activeTab === 'milestones') {
+                  setMilestoneModalOpen(true);
                 } else {
-                  // If "All Connections" is selected, clear the modal connection so user can choose
-                  setModalConnection(null, null);
+                  // Set the connection in modal context before opening
+                  if (selectedConnection && connections.length > 0) {
+                    const connection = connections.find(c => c.id === selectedConnection);
+                    if (connection) {
+                      setModalConnection(selectedConnection, connection);
+                    }
+                  } else {
+                    // If "All Connections" is selected, clear the modal connection so user can choose
+                    setModalConnection(null, null);
+                  }
+                  openMomentModal(activeTab === 'moments' ? 'moment' : activeTab === 'conflicts' ? 'conflict' : 'intimacy');
                 }
-                openMomentModal(activeTab === 'moments' ? 'moment' : activeTab === 'conflicts' ? 'conflict' : 'intimacy');
               }} className="w-full">
                 <Plus className="h-4 w-4 mr-2" />
-                Add {activeTab === 'moments' ? 'Moment' : activeTab === 'conflicts' ? 'Conflict' : 'Intimacy'}
+                Add {activeTab === 'moments' ? 'Moment' : 
+                     activeTab === 'conflicts' ? 'Conflict' : 
+                     activeTab === 'intimacy' ? 'Intimacy' : 
+                     activeTab === 'milestones' ? 'Milestone' : ''}
               </Button>
             </div>
           )}
@@ -506,6 +513,83 @@ export default function Activities() {
                 </p>
               </Card>
             )
+          ) : activeTab === 'milestones' ? (
+            // Milestones tab - fetch and display milestones
+            (() => {
+              const { data: milestones = [] } = useQuery({
+                queryKey: ["/api/milestones", selectedConnection],
+                staleTime: 0,
+              });
+
+              const filteredMilestones = milestones.filter((milestone: any) => {
+                if (selectedConnection && milestone.connectionId !== selectedConnection) return false;
+                if (searchTerm) {
+                  return milestone.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         milestone.description?.toLowerCase().includes(searchTerm.toLowerCase());
+                }
+                return true;
+              });
+
+              return filteredMilestones.length > 0 ? (
+                <div className="space-y-4">
+                  {filteredMilestones.map((milestone: any) => {
+                    const connection = connections.find(c => c.id === milestone.connectionId);
+                    const getIcon = () => {
+                      switch (milestone.icon) {
+                        case 'heart': return '💖';
+                        case 'star': return '⭐';
+                        case 'gift': return '🎁';
+                        case 'trophy': return '🏆';
+                        case 'home': return '🏠';
+                        case 'plane': return '✈️';
+                        case 'ring': return '💍';
+                        default: return '🎂';
+                      }
+                    };
+
+                    return (
+                      <Card key={milestone.id} className="p-4">
+                        <div className="flex items-start gap-3">
+                          <div 
+                            className="w-10 h-10 rounded-full flex items-center justify-center text-lg"
+                            style={{ backgroundColor: milestone.color + '20', color: milestone.color }}
+                          >
+                            {getIcon()}
+                          </div>
+                          <div className="flex-1">
+                            <div className="flex items-center justify-between mb-1">
+                              <h3 className="font-semibold">{milestone.title}</h3>
+                              {milestone.isAnniversary && (
+                                <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded-full">
+                                  Anniversary
+                                </span>
+                              )}
+                            </div>
+                            {milestone.description && (
+                              <p className="text-sm text-muted-foreground mb-2">{milestone.description}</p>
+                            )}
+                            <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                              <span>{format(new Date(milestone.date), 'MMM d, yyyy')}</span>
+                              {connection && <span>with {connection.name}</span>}
+                            </div>
+                          </div>
+                        </div>
+                      </Card>
+                    );
+                  })}
+                </div>
+              ) : (
+                <Card className="flex flex-col items-center justify-center py-10 px-4 text-center">
+                  <div className="rounded-full bg-primary/10 p-3 mb-3">
+                    <Calendar className="h-6 w-6 text-primary" />
+                  </div>
+                  <h3 className="font-semibold mb-1">No Milestones Yet</h3>
+                  <p className="text-muted-foreground text-sm mb-4">
+                    Create your first milestone to celebrate important moments
+                  </p>
+                </Card>
+              );
+            })()
           ) : filteredMoments.length > 0 ? (
             // Regular tabbed view
             <div>
@@ -594,6 +678,14 @@ export default function Activities() {
         }}
         moment={selectedMomentForDetail}
         connection={selectedConnectionForDetail}
+      />
+      
+      {/* Milestone Modal */}
+      <MilestoneModal
+        isOpen={milestoneModalOpen}
+        onClose={() => setMilestoneModalOpen(false)}
+        selectedConnection={selectedConnection ? 
+          connections.find(c => c.id === selectedConnection) || null : null}
       />
     </div>
   );
