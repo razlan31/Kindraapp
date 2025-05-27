@@ -79,6 +79,8 @@ export function MilestoneModal({ isOpen, onClose, connectionId, editingMilestone
 
   const createMilestone = useMutation({
     mutationFn: async (milestoneData: any) => {
+      console.log("📋 CLIENT DEBUG - Sending milestone data:", milestoneData);
+      
       const response = await fetch("/api/milestones", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -87,6 +89,8 @@ export function MilestoneModal({ isOpen, onClose, connectionId, editingMilestone
       });
 
       if (!response.ok) {
+        const errorData = await response.json();
+        console.log("📋 CLIENT DEBUG - Server error response:", errorData);
         throw new Error("Failed to create milestone");
       }
 

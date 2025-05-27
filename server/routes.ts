@@ -686,15 +686,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = req.session.userId as number;
       const milestoneData = req.body;
       
+      console.log("📋 MILESTONE DEBUG - Request body:", JSON.stringify(milestoneData, null, 2));
+      console.log("📋 MILESTONE DEBUG - With userId:", JSON.stringify({ ...milestoneData, userId }, null, 2));
+      
       const result = milestoneSchema.safeParse({ ...milestoneData, userId });
       
       if (!result.success) {
+        console.log("📋 MILESTONE DEBUG - Validation errors:", JSON.stringify(result.error.format(), null, 2));
         return res.status(400).json({ message: "Invalid milestone data", errors: result.error.format() });
       }
       
+      console.log("📋 MILESTONE DEBUG - Validation successful, creating milestone");
       const milestone = await storage.createMilestone(result.data);
       res.status(201).json(milestone);
     } catch (error) {
+      console.log("📋 MILESTONE DEBUG - Server error:", error);
       res.status(500).json({ message: "Failed to create milestone" });
     }
   });
