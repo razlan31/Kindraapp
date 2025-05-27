@@ -462,8 +462,8 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection, onUpdate
           </div>
           )}
 
-          {/* Reflection - Only for regular moments, not conflicts */}
-          {getActivityType(freshMoment) !== 'conflict' && (
+          {/* Reflection - Only for regular moments, not conflicts or intimacy */}
+          {getActivityType(freshMoment) !== 'conflict' && getActivityType(freshMoment) !== 'intimacy' && (
             <div className="space-y-2">
               <label className="text-sm font-medium">Reflection</label>
               {isEditing ? (
