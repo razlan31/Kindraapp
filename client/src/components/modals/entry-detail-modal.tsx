@@ -114,12 +114,6 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection, onUpdate
       toast({ title: "Entry updated successfully!" });
       setIsEditing(false);
       setIsSubmitting(false);
-      
-      // IMMEDIATE SOLUTION - Force page reload for instant visual update
-      console.log("Entry Detail Modal - Forcing immediate page reload for instant update");
-      setTimeout(() => {
-        window.location.reload();
-      }, 500);
     },
     onError: () => {
       toast({ title: "Failed to update entry", variant: "destructive" });
@@ -168,16 +162,20 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection, onUpdate
     console.log("HandleSave - Starting edit process");
     
     try {
-      await updateMomentMutation.mutateAsync({
-        id: moment.id,
-        content: editedContent.trim(),
-        emoji: editedEmoji,
-        reflection: editedReflection.trim(),
-        tags: editedTags
-      } as any);
+      const response = await fetch(`/api/moments/${moment.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          content: editedContent.trim(),
+          emoji: editedEmoji,
+          reflection: editedReflection.trim(),
+          tags: editedTags
+        }),
+      });
       
-      // Simple, direct solution - immediate page reload
-      console.log("HandleSave - Success! Reloading page now");
+      if (!response.ok) throw new Error('Failed to update');
+      
+      console.log("HandleSave - Success! Reloading page immediately");
       window.location.reload();
       
     } catch (error) {
