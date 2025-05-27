@@ -195,6 +195,8 @@ export function MomentModal() {
       // Force immediate refresh for calendar and activities
       queryClient.invalidateQueries({ queryKey: ['/api/moments'] });
       queryClient.refetchQueries({ queryKey: ['/api/moments'] });
+      // Dispatch custom event to notify calendar to refresh
+      window.dispatchEvent(new CustomEvent('momentCreated'));
     },
     onError: (error: any) => handleError(error),
   });
