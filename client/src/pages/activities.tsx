@@ -7,6 +7,7 @@ import { MomentCard } from "@/components/dashboard/moment-card";
 import { ReflectionModal } from "@/components/modals/reflection-modal";
 import { EntryDetailModal } from "@/components/modals/entry-detail-modal";
 import { MilestoneModal } from "@/components/modals/milestone-modal";
+import { PlanModal } from "@/components/modals/plan-modal";
 import { Moment, Connection } from "@shared/schema";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
@@ -25,7 +26,7 @@ import { useRelationshipFocus } from "@/contexts/relationship-focus-context";
 
 export default function Activities() {
   const { user, isAuthenticated, loading } = useAuth();
-  const { openMomentModal, setSelectedConnection: setModalConnection } = useModal();
+  const { openMomentModal, openPlanModal, closePlanModal, planModalOpen, setSelectedConnection: setModalConnection } = useModal();
   const { mainFocusConnection, loading: focusLoading } = useRelationshipFocus();
   const queryClient = useQueryClient();
   const [location] = useLocation();
@@ -351,8 +352,16 @@ export default function Activities() {
             <div className="mb-4">
               <Button onClick={() => {
                 if (activeTab === 'plans') {
-                  // TODO: Open plans modal when implemented
-                  console.log('Plans modal would open here');
+                  // Open plan modal
+                  if (selectedConnection && connections.length > 0) {
+                    const connection = connections.find(c => c.id === selectedConnection);
+                    if (connection) {
+                      openPlanModal(connection);
+                    }
+                  } else {
+                    // If "All Connections" is selected, open plan modal without specific connection
+                    openPlanModal();
+                  }
                 } else {
                   // Set the connection in modal context before opening
                   if (selectedConnection && connections.length > 0) {

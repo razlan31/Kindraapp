@@ -5,6 +5,7 @@ type ModalContextType = {
   momentModalOpen: boolean;
   connectionModalOpen: boolean;
   moodTrackerModalOpen: boolean;
+  planModalOpen: boolean;
   selectedConnectionId: number | null;
   selectedConnection: Connection | null;
   mainFocusConnection: Connection | null;
@@ -18,6 +19,8 @@ type ModalContextType = {
   closeConnectionModal: () => void;
   openMoodTrackerModal: (connection?: Connection) => void;
   closeMoodTrackerModal: () => void;
+  openPlanModal: (connection?: Connection, date?: Date) => void;
+  closePlanModal: () => void;
   setSelectedConnection: (connectionId: number | null, connection?: Connection | null) => void;
   setMainFocusConnection: (connection: Connection | null) => void;
   setNavigationConnectionId: (connectionId: number | null) => void;
@@ -27,6 +30,7 @@ const ModalContext = createContext<ModalContextType>({
   momentModalOpen: false,
   connectionModalOpen: false,
   moodTrackerModalOpen: false,
+  planModalOpen: false,
   selectedConnectionId: null,
   selectedConnection: null,
   mainFocusConnection: null,
@@ -40,6 +44,8 @@ const ModalContext = createContext<ModalContextType>({
   closeConnectionModal: () => {},
   openMoodTrackerModal: () => {},
   closeMoodTrackerModal: () => {},
+  openPlanModal: () => {},
+  closePlanModal: () => {},
   setSelectedConnection: () => {},
   setMainFocusConnection: () => {},
   setNavigationConnectionId: () => {},
@@ -51,6 +57,7 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [momentModalOpen, setMomentModalOpen] = useState(false);
   const [connectionModalOpen, setConnectionModalOpen] = useState(false);
   const [moodTrackerModalOpen, setMoodTrackerModalOpen] = useState(false);
+  const [planModalOpen, setPlanModalOpen] = useState(false);
   const [selectedConnectionId, setSelectedConnectionId] = useState<number | null>(null);
   const [selectedConnection, setSelectedConnectionObject] = useState<Connection | null>(null);
   const [mainFocusConnection, setMainFocusConnectionObject] = useState<Connection | null>(null);
@@ -106,6 +113,21 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setMoodTrackerModalOpen(false);
   };
 
+  const openPlanModal = (connection?: Connection, date?: Date) => {
+    if (connection) {
+      setSelectedConnectionObject(connection);
+      setSelectedConnectionId(connection.id);
+    }
+    if (date) {
+      setSelectedDate(date);
+    }
+    setPlanModalOpen(true);
+  };
+
+  const closePlanModal = () => {
+    setPlanModalOpen(false);
+  };
+
   const setSelectedConnection = (connectionId: number | null, connection?: Connection | null) => {
     setSelectedConnectionId(connectionId);
     setSelectedConnectionObject(connection || null);
@@ -121,20 +143,25 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         momentModalOpen,
         connectionModalOpen,
         moodTrackerModalOpen,
+        planModalOpen,
         selectedConnectionId,
         selectedConnection,
         mainFocusConnection,
         activityType,
         editingMoment,
         selectedDate,
+        navigationConnectionId,
         openMomentModal,
         closeMomentModal,
         openConnectionModal,
         closeConnectionModal,
         openMoodTrackerModal,
         closeMoodTrackerModal,
+        openPlanModal,
+        closePlanModal,
         setSelectedConnection,
         setMainFocusConnection: setMainFocusConnectionObject,
+        setNavigationConnectionId,
       }}
     >
       {children}
