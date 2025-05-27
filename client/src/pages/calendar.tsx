@@ -69,6 +69,17 @@ export default function Calendar() {
     queryKey: ["/api/connections"],
     staleTime: 0,
   });
+
+  // Fetch milestones
+  const { data: milestones = [] } = useQuery({
+    queryKey: ["/api/milestones", selectedConnectionId],
+    queryFn: async () => {
+      const queryString = selectedConnectionId ? `?connectionId=${selectedConnectionId}` : '';
+      const response = await fetch(`/api/milestones${queryString}`);
+      return response.json();
+    },
+    enabled: !!user,
+  });
   
   // Debug logging for allMoments
   console.log("All moments from query:", allMoments);
@@ -421,6 +432,15 @@ export default function Calendar() {
               {/* Calendar days */}
               {calendarDays.map(day => {
                 const dayMoments = getMomentsForDay(day);
+                
+                // Get milestones for this day
+                const dayMilestones = milestones.filter(milestone => 
+                  isSameDay(new Date(milestone.date), day) ||
+                  (milestone.isAnniversary && 
+                   new Date(milestone.date).getDate() === day.getDate() &&
+                   new Date(milestone.date).getMonth() === day.getMonth())
+                );
+                
                 const isToday = isSameDay(day, new Date());
                 
                 return (
@@ -437,9 +457,37 @@ export default function Calendar() {
                       {format(day, 'd')}
                     </div>
                     
-                    {/* Moment indicators */}
+                    {/* Moment and Milestone indicators */}
                     <div className="flex flex-wrap gap-0.5 items-center">
-                      {dayMoments.slice(0, 3).map((moment, index) => {
+                      {/* Show milestones first */}
+                      {dayMilestones.map((milestone) => {
+                        const getIcon = () => {
+                          switch (milestone.icon) {
+                            case 'heart': return '💖';
+                            case 'star': return '⭐';
+                            case 'gift': return '🎁';
+                            case 'trophy': return '🏆';
+                            case 'home': return '🏠';
+                            case 'plane': return '✈️';
+                            case 'ring': return '💍';
+                            default: return '🎂';
+                          }
+                        };
+                        
+                        return (
+                          <span
+                            key={`milestone-${milestone.id}`}
+                            className="text-[10px] cursor-pointer hover:scale-110 transition-transform"
+                            title={`${milestone.title}: ${milestone.description || ''}`}
+                            style={{ color: milestone.color }}
+                          >
+                            {getIcon()}
+                          </span>
+                        );
+                      })}
+                      
+                      {/* Show moments */}
+                      {dayMoments.slice(0, dayMilestones.length > 0 ? 2 : 3).map((moment, index) => {
                         const displayInfo = getMomentDisplayInfo(moment);
                         return displayInfo.type === 'emoji' ? (
                           <span
@@ -459,7 +507,8 @@ export default function Calendar() {
                           />
                         );
                       })}
-                      {dayMoments.length > 3 && (
+                      
+                      {(dayMoments.length + dayMilestones.length) > 3 && (
                         <div className="w-2 h-2 rounded-full bg-gray-300 text-[6px] flex items-center justify-center font-bold">
                           +
                         </div>
