@@ -59,6 +59,13 @@ export default function Activities() {
     enabled: !!user,
   });
 
+  // Fetch milestones
+  const { data: milestones = [] } = useQuery({
+    queryKey: ["/api/milestones", selectedConnection],
+    staleTime: 0,
+    enabled: !!user,
+  });
+
 
   
   useEffect(() => {
@@ -514,14 +521,9 @@ export default function Activities() {
               </Card>
             )
           ) : activeTab === 'milestones' ? (
-            // Milestones tab - fetch and display milestones
+            // Milestones tab - display milestones
             (() => {
-              const { data: milestones = [] } = useQuery({
-                queryKey: ["/api/milestones", selectedConnection],
-                staleTime: 0,
-              });
-
-              const filteredMilestones = milestones.filter((milestone: any) => {
+              const filteredMilestones = (milestones as any[]).filter((milestone: any) => {
                 if (selectedConnection && milestone.connectionId !== selectedConnection) return false;
                 if (searchTerm) {
                   return milestone.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
