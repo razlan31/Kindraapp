@@ -94,6 +94,7 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
       });
       queryClient.invalidateQueries({ queryKey: ['/api/plans'] });
       queryClient.invalidateQueries({ queryKey: ['/api/milestones'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/moments'] });
       onClose();
       resetForm();
     },

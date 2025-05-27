@@ -574,51 +574,63 @@ export default function Activities() {
                 </p>
               </Card>
             )
-          ) : activeTab === 'plans' && filteredPlans.length > 0 ? (
+          ) : activeTab === 'plans' ? (
             // Plans view
-            <div className="space-y-4">
-              {filteredPlans.map(plan => {
-                const connection = connections.find(c => c.id === plan.connectionId);
-                if (!connection) return null;
+            filteredPlans.length > 0 ? (
+              <div className="space-y-4">
+                {filteredPlans.map(plan => {
+                  const connection = connections.find(c => c.id === plan.connectionId);
+                  if (!connection) return null;
 
-                return (
-                  <Card key={plan.id} className="p-4">
-                    <div className="flex items-start justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        <span className="text-lg">📅</span>
-                        <div>
-                          <h3 className="font-medium">{plan.title}</h3>
-                          <p className="text-sm text-muted-foreground">with {connection.name}</p>
+                  return (
+                    <Card key={plan.id} className="p-4">
+                      <div className="flex items-start justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          <span className="text-lg">📅</span>
+                          <div>
+                            <h3 className="font-medium">{plan.title}</h3>
+                            <p className="text-sm text-muted-foreground">with {connection.name}</p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-sm font-medium">
+                            {format(new Date(plan.scheduledDate), 'MMM d, yyyy')}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {format(new Date(plan.scheduledDate), 'h:mm a')}
+                          </p>
                         </div>
                       </div>
-                      <div className="text-right">
-                        <p className="text-sm font-medium">
-                          {format(new Date(plan.scheduledDate), 'MMM d, yyyy')}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          {format(new Date(plan.scheduledDate), 'h:mm a')}
-                        </p>
-                      </div>
-                    </div>
-                    
-                    {plan.description && (
-                      <p className="text-sm text-muted-foreground mb-2">{plan.description}</p>
-                    )}
-                    
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs px-2 py-1 bg-blue-100 text-blue-800 rounded-full">
-                        {plan.category}
-                      </span>
-                      {plan.isCompleted && (
-                        <span className="text-xs px-2 py-1 bg-green-100 text-green-800 rounded-full">
-                          Completed
-                        </span>
+                      
+                      {plan.description && (
+                        <p className="text-sm text-muted-foreground mb-2">{plan.description}</p>
                       )}
-                    </div>
-                  </Card>
-                );
-              })}
-            </div>
+                      
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs px-2 py-1 bg-blue-100 text-blue-800 rounded-full">
+                          {plan.category}
+                        </span>
+                        {plan.isCompleted && (
+                          <span className="text-xs px-2 py-1 bg-green-100 text-green-800 rounded-full">
+                            Completed
+                          </span>
+                        )}
+                      </div>
+                    </Card>
+                  );
+                })}
+              </div>
+            ) : (
+              <Card className="flex flex-col items-center justify-center py-10 px-4 text-center">
+                <div className="rounded-full bg-primary/10 p-3 mb-3">
+                  <Calendar className="h-6 w-6 text-primary" />
+                </div>
+                <h3 className="font-heading font-semibold mb-1">No Plans Yet</h3>
+                <p className="text-neutral-500 dark:text-neutral-400 text-sm mb-4">
+                  Create your first plan to start organizing activities with your connections
+                </p>
+              </Card>
+            )
           ) : filteredMoments.length > 0 ? (
             // Regular tabbed view
             <div>
