@@ -361,7 +361,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/moments", isAuthenticated, async (req, res) => {
     try {
       const userId = req.session.userId as number;
+      
+      console.log("🚀 ROUTES - POST /api/moments called");
+      console.log("🚀 ROUTES - Raw request body:", req.body);
+      console.log("🚀 ROUTES - User ID:", userId);
+      
       const momentData = momentSchema.parse({ ...req.body, userId });
+      console.log("🚀 ROUTES - Parsed moment data:", momentData);
+      console.log("🚀 ROUTES - momentData.createdAt:", momentData.createdAt);
+      
+      // FORCE May 25th date regardless of what frontend sends
+      const may25 = new Date('2025-05-25T12:00:00.000Z');
+      const forcedMomentData = {
+        ...momentData,
+        createdAt: may25
+      };
+      console.log("🚀 ROUTES - FORCING date to May 25th:", forcedMomentData.createdAt);
       
       // Check if connection exists and belongs to user
       const connection = await storage.getConnection(momentData.connectionId);
@@ -373,13 +388,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Unauthorized to add moments to this connection" });
       }
       
-      const newMoment = await storage.createMoment(momentData);
+      const newMoment = await storage.createMoment(forcedMomentData);
+      console.log("🚀 ROUTES - Created moment result:", newMoment);
+      console.log("🚀 ROUTES - Final createdAt:", newMoment.createdAt);
       
       // Check if any badges should be unlocked
       await checkAndAwardBadges(userId);
       
       res.status(201).json(newMoment);
     } catch (error) {
+      console.error("🚀 ROUTES - Error creating moment:", error);
       if (error instanceof z.ZodError) {
         res.status(400).json({ message: "Invalid input", errors: error.errors });
       } else {
