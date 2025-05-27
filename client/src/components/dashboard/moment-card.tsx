@@ -80,14 +80,14 @@ export function MomentCard({ moment, connection, onAddReflection, onViewDetail, 
                   <Badge variant="outline" className={`text-xs ${
                     moment.emoji === '😊' ? 'bg-green-100 text-green-700 border-green-300 dark:bg-green-900/20 dark:text-green-300 dark:border-green-700' :
                     moment.emoji === '😕' ? 'bg-orange-100 text-orange-700 border-orange-300 dark:bg-orange-900/20 dark:text-orange-300 dark:border-orange-700' :
-                    moment.emoji === '😐' ? 'bg-blue-100 text-blue-700 border-blue-300 dark:bg-blue-900/20 dark:text-blue-300 dark:border-blue-700' :
+                    moment.emoji === '🙂' ? 'bg-blue-100 text-blue-700 border-blue-300 dark:bg-blue-900/20 dark:text-blue-300 dark:border-blue-700' :
                     ['❤️', '😍', '🥰', '💖', '✨', '🔥'].includes(moment.emoji) ? 'bg-green-100 text-green-700 border-green-300 dark:bg-green-900/20 dark:text-green-300 dark:border-green-700' :
                     ['😢', '😠', '😞', '😤'].includes(moment.emoji) ? 'bg-orange-100 text-orange-700 border-orange-300 dark:bg-orange-900/20 dark:text-orange-300 dark:border-orange-700' :
                     'bg-blue-100 text-blue-700 border-blue-300 dark:bg-blue-900/20 dark:text-blue-300 dark:border-blue-700'
                   }`}>
                     {moment.emoji === '😊' ? 'Positive' :
                      moment.emoji === '😕' ? 'Negative' :
-                     moment.emoji === '😐' ? 'Neutral' :
+                     moment.emoji === '🙂' ? 'Neutral' :
                      ['❤️', '😍', '🥰', '💖', '✨', '🔥'].includes(moment.emoji) ? 'Positive' :
                      ['😢', '😠', '😞', '😤'].includes(moment.emoji) ? 'Negative' : 'Neutral'}
                   </Badge>

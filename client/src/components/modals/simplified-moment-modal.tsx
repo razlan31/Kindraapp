@@ -225,7 +225,7 @@ export function MomentModal() {
           finalEmoji = '😕';
           break;
         case 'neutral':
-          finalEmoji = '😐';
+          finalEmoji = '🙂';
           break;
         default:
           finalEmoji = emoji;

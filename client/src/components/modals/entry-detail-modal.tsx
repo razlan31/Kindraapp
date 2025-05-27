@@ -260,11 +260,11 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection }: EntryD
                 </Button>
                 <Button
                   type="button"
-                  variant={editedEmoji === "😐" ? "default" : "outline"}
+                  variant={editedEmoji === "🙂" ? "default" : "outline"}
                   size="sm"
-                  onClick={() => setEditedEmoji("😐")}
+                  onClick={() => setEditedEmoji("🙂")}
                 >
-                  😐 Neutral
+                  🙂 Neutral
                 </Button>
               </div>
             </div>

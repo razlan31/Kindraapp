@@ -351,7 +351,7 @@ export default function Activities() {
                               
                               // Check moment type based on emoji (standardized emojis from the form)
                               if (moment.emoji === '😕') return 'negative';  // Negative moment
-                              if (moment.emoji === '😐') return 'neutral';   // Neutral moment
+                              if (moment.emoji === '🙂') return 'neutral';   // Neutral moment
                               
                               // Check if it's a negative moment (other sad emojis or red flags, but not conflicts)
                               if (moment.emoji === '😔' || moment.emoji === '😞' || moment.emoji === '😟' || 
