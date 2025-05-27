@@ -44,6 +44,7 @@ export function MomentModal() {
 
   // Initialize form with existing data when editing
   useEffect(() => {
+    console.log("Modal useEffect - selectedDate from context:", selectedDate);
     if (editingMoment) {
       setConnectionId(editingMoment.connectionId);
       setEmoji(editingMoment.emoji);

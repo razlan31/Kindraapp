@@ -1,0 +1,30 @@
+
+Console.js:61 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+Console.js:61 Calendar Debug - Total moments: 12 
+(12) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+Console.js:61 Today 2025-05-27 - Moment 12: 2025-05-27 - Match: true 
+{userId: 1, connectionId: 2, emoji: '🌱', content: '', tags: Array(2), …}
+Console.js:61 Today 2025-05-27 - Moment 11: 2025-05-27 - Match: true 
+{userId: 1, connectionId: 2, emoji: '😕', content: '', tags: Array(1), …}
+Console.js:61 Today 2025-05-27 - Moment 10: 2025-05-27 - Match: true 
+{userId: 1, connectionId: 2, emoji: '⚡', content: '', tags: Array(1), …}
+Console.js:61 Today 2025-05-27 - Moment 9: 2025-05-27 - Match: true 
+{userId: 1, connectionId: 2, emoji: '💕', content: 'htytyftyf', tags: Array(1), …}
+Console.js:61 Today 2025-05-27 - Moment 8: 2025-05-27 - Match: true 
+{userId: 1, connectionId: 2, emoji: '😕', content: '', tags: Array(1), …}
+Console.js:61 Today 2025-05-27 - Moment 7: 2025-05-27 - Match: true 
+{userId: 1, connectionId: 2, emoji: '⚡', content: 'mkk', tags: Array(1), …}
+Console.js:61 Today 2025-05-27 - Moment 6: 2025-05-27 - Match: true 
+{userId: 1, connectionId: 2, emoji: '💕', content: 'kmkmm', tags: Array(1), …}
+Console.js:61 Today 2025-05-27 - Moment 1: 2025-05-25 - Match: false 
+{id: 1, userId: 1, connectionId: 2, emoji: '😍', content: 'Amazing date night! We had such great chemistry.', …}
+Console.js:61 Today 2025-05-27 - Moment 2: 2025-05-23 - Match: false 
+{id: 2, userId: 1, connectionId: 2, emoji: '😔', content: 'Had a disagreement about future plans. Felt dismissed.', …}
+Console.js:61 Today 2025-05-27 - Moment 3: 2025-05-23 - Match: false 
+{id: 3, userId: 1, connectionId: 2, emoji: '💕', content: 'First time being intimate together. Beautiful connection.', …}
+Console.js:61 Today 2025-05-27 - Moment 4: 2025-05-22 - Match: false 
+{id: 4, userId: 1, connectionId: 2, emoji: '🗣️', content: 'Great conversation about our goals and dreams.', …}
+Console.js:61 Today 2025-05-27 - Moment 5: 2025-05-20 - Match: false 
+{id: 5, userId: 1, connectionId: 2, emoji: '❤️', content: 'Surprise flowers at work! So thoughtful.', …}
+﻿
+
