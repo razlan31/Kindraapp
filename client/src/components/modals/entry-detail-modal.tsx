@@ -175,7 +175,7 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection, onUpdate
       
       if (!response.ok) throw new Error('Failed to update');
       
-      console.log("HandleSave - Success! Reloading page immediately");
+      toast({ title: "Entry updated successfully!" });
       window.location.reload();
       
     } catch (error) {
