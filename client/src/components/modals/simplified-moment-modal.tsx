@@ -286,13 +286,7 @@ export function MomentModal() {
             </Select>
           </div>
 
-          {/* Emoji Selection - Only for regular moments */}
-          {activityType === 'moment' && (
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Emoji</label>
-              <EmojiPicker value={emoji} onChange={setEmoji} />
-            </div>
-          )}
+
 
           {/* Moment Type - Only for regular moments */}
           {activityType === 'moment' && (
