@@ -300,10 +300,11 @@ export function MomentModal() {
       finalEmoji = '💕';
     }
     
-    console.log("Creating moment with date:", {
+    console.log("🗓️ FRONTEND - Creating moment with date:", {
       selectedDate, 
       localSelectedDate, 
-      iso: localSelectedDate.toISOString()
+      iso: localSelectedDate.toISOString(),
+      createdAtField: localSelectedDate.toISOString()
     });
     
     const momentData = {

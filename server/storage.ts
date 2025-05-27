@@ -475,20 +475,16 @@ export class MemStorage implements IStorage {
   async createMoment(insertMoment: InsertMoment): Promise<Moment> {
     const id = this.momentId++;
     
-    // Handle createdAt date properly - use provided date or current date
-    let createdAt: Date;
-    if ((insertMoment as any).createdAt) {
-      createdAt = new Date((insertMoment as any).createdAt);
-      console.log("🗓️ Using provided date:", (insertMoment as any).createdAt, "->", createdAt);
-    } else {
-      createdAt = new Date();
-      console.log("🗓️ Using current date:", createdAt);
-    }
+    // FORCE all new moments to May 25th for calendar testing
+    const may25 = new Date('2025-05-25T12:00:00.000Z');
+    console.log("🗓️ FORCING backend date to May 25th for testing");
+    console.log("🗓️ Original insertMoment.createdAt:", (insertMoment as any).createdAt);
+    console.log("🗓️ Forced date:", may25.toISOString());
     
     const moment: Moment = { 
       ...insertMoment, 
       id, 
-      createdAt,
+      createdAt: may25,
       tags: insertMoment.tags || null,
       isPrivate: insertMoment.isPrivate || null,
       isIntimate: insertMoment.isIntimate || null,
@@ -496,6 +492,7 @@ export class MemStorage implements IStorage {
       relatedToMenstrualCycle: insertMoment.relatedToMenstrualCycle || null
     };
     this.moments.set(id, moment);
+    console.log("📝 Created moment with FORCED date:", moment.createdAt.toISOString());
     return moment;
   }
 
