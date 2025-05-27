@@ -85,16 +85,26 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
 
   const createPlanMutation = useMutation({
     mutationFn: async (data: PlanFormData) => {
-      return apiRequest('POST', '/plans-data', data);
+      // Convert plan data to moment format with 'Plan' tag
+      const momentData = {
+        title: data.title,
+        content: data.description || `${data.category} scheduled for ${data.scheduledDate}`,
+        emoji: "📅", // Calendar emoji for plans
+        tags: ["Plan", data.category],
+        connectionId: data.connectionId,
+        createdAt: data.scheduledDate, // Use scheduled date as the moment date
+        isCompleted: data.isCompleted || false,
+        notes: data.notes
+      };
+      return apiRequest('POST', '/api/moments', momentData);
     },
     onSuccess: () => {
       toast({
         title: "Plan created!",
         description: "Your plan has been added successfully.",
       });
-      queryClient.invalidateQueries({ queryKey: ['/plans-data'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/milestones'] });
       queryClient.invalidateQueries({ queryKey: ['/api/moments'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/milestones'] });
       onClose();
       resetForm();
     },

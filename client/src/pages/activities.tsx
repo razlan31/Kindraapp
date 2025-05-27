@@ -77,11 +77,10 @@ export default function Activities() {
     enabled: !!user,
   });
 
-  // Fetch plans
-  const { data: plans = [], isLoading: plansLoading, error: plansError } = useQuery<Plan[]>({
-    queryKey: ["/plans-data"],
-    staleTime: 0,
-  });
+  // Get plans from moments with "Plan" tag
+  const plans = moments.filter(moment => moment.tags?.includes('Plan')) || [];
+  const plansLoading = isLoading;
+  const plansError = null;
 
   // Debug plans data
   console.log("Plans Debug:", { plans, plansLoading, plansError, activeTab, user: !!user, isAuthenticated, loading });
@@ -584,35 +583,39 @@ export default function Activities() {
                   const connection = connections.find(c => c.id === plan.connectionId);
                   if (!connection) return null;
 
+                  // Extract category from tags (second tag after "Plan")
+                  const category = plan.tags?.find(tag => tag !== 'Plan') || 'other';
+                  const planDate = new Date(plan.createdAt || new Date());
+
                   return (
                     <Card key={plan.id} className="p-4">
                       <div className="flex items-start justify-between mb-2">
                         <div className="flex items-center gap-2">
-                          <span className="text-lg">📅</span>
+                          <span className="text-lg">{plan.emoji}</span>
                           <div>
-                            <h3 className="font-medium">{plan.title}</h3>
+                            <h3 className="font-medium">{plan.title || 'Untitled Plan'}</h3>
                             <p className="text-sm text-muted-foreground">with {connection.name}</p>
                           </div>
                         </div>
                         <div className="text-right">
                           <p className="text-sm font-medium">
-                            {format(new Date(plan.scheduledDate), 'MMM d, yyyy')}
+                            {format(planDate, 'MMM d, yyyy')}
                           </p>
                           <p className="text-xs text-muted-foreground">
-                            {format(new Date(plan.scheduledDate), 'h:mm a')}
+                            {format(planDate, 'h:mm a')}
                           </p>
                         </div>
                       </div>
                       
-                      {plan.description && (
-                        <p className="text-sm text-muted-foreground mb-2">{plan.description}</p>
+                      {plan.content && (
+                        <p className="text-sm text-muted-foreground mb-2">{plan.content}</p>
                       )}
                       
                       <div className="flex items-center justify-between">
                         <span className="text-xs px-2 py-1 bg-blue-100 text-blue-800 rounded-full">
-                          {plan.category}
+                          {category}
                         </span>
-                        {plan.isCompleted && (
+                        {plan.notes && (
                           <span className="text-xs px-2 py-1 bg-green-100 text-green-800 rounded-full">
                             Completed
                           </span>
