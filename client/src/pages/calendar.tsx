@@ -62,15 +62,9 @@ export default function Calendar() {
 
   // Get moments for a specific day
   const getMomentsForDay = (day: Date) => {
-    const dayMoments = moments.filter(moment => {
-      const momentDate = new Date(moment.createdAt || new Date());
-      const isSame = isSameDay(momentDate, day);
-      if (format(day, 'yyyy-MM-dd') === '2025-05-20' || format(day, 'yyyy-MM-dd') === '2025-05-21' || format(day, 'yyyy-MM-dd') === '2025-05-22' || format(day, 'yyyy-MM-dd') === '2025-05-23' || format(day, 'yyyy-MM-dd') === '2025-05-24') {
-        console.log(`Calendar Debug - Day: ${format(day, 'yyyy-MM-dd')}, Moment date: ${format(momentDate, 'yyyy-MM-dd')}, Same: ${isSame}`, moment);
-      }
-      return isSame;
-    });
-    console.log(`Calendar Debug - Day: ${format(day, 'yyyy-MM-dd')}, Moments found: ${dayMoments.length}`, dayMoments);
+    const dayMoments = moments.filter(moment => 
+      isSameDay(new Date(moment.createdAt || new Date()), day)
+    );
     return dayMoments;
   };
 
