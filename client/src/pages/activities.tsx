@@ -22,7 +22,7 @@ import { format } from "date-fns";
 
 export default function Activities() {
   const { user, isAuthenticated, loading } = useAuth();
-  const { openMomentModal } = useModal();
+  const { openMomentModal, setSelectedConnection: setModalConnection } = useModal();
   const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedConnection, setSelectedConnection] = useState<number | null>(null);
@@ -279,7 +279,16 @@ export default function Activities() {
           {/* Add Button for Active Tab - Hide for Timeline */}
           {activeTab !== 'timeline' && (
             <div className="mb-4">
-              <Button onClick={() => openMomentModal(activeTab === 'moments' ? 'moment' : activeTab === 'conflicts' ? 'conflict' : 'intimacy')} className="w-full">
+              <Button onClick={() => {
+                // Set the connection in modal context before opening
+                if (selectedConnection && connections.length > 0) {
+                  const connection = connections.find(c => c.id === selectedConnection);
+                  if (connection) {
+                    setModalConnection(selectedConnection, connection);
+                  }
+                }
+                openMomentModal(activeTab === 'moments' ? 'moment' : activeTab === 'conflicts' ? 'conflict' : 'intimacy');
+              }} className="w-full">
                 <Plus className="h-4 w-4 mr-2" />
                 Add {activeTab === 'moments' ? 'Moment' : activeTab === 'conflicts' ? 'Conflict' : 'Intimacy'}
               </Button>
