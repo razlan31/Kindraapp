@@ -390,7 +390,17 @@ export function MomentModal() {
             </Select>
           </div>
 
-
+          {/* Title */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Title</label>
+            <Input
+              placeholder="Give this moment a title..."
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="w-full"
+              required
+            />
+          </div>
 
           {/* Moment Type - Only for regular moments */}
           {activityType === 'moment' && (
@@ -408,17 +418,6 @@ export function MomentModal() {
               </Select>
             </div>
           )}
-
-          {/* Title */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Title (Optional)</label>
-            <Input
-              placeholder="Give this moment a title..."
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="w-full"
-            />
-          </div>
 
           {/* Description */}
           <div className="space-y-2">
