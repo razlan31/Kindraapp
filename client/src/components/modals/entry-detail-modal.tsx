@@ -467,9 +467,23 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection }: EntryD
                   </Button>
                 </>
               ) : (
-                <Button variant="outline" onClick={onClose}>
-                  Close
-                </Button>
+                <>
+                  <Button variant="outline" onClick={handleEdit}>
+                    <Edit2 className="h-4 w-4 mr-1" />
+                    Edit
+                  </Button>
+                  <Button 
+                    variant="destructive" 
+                    size="sm"
+                    onClick={handleDelete} 
+                    disabled={isSubmitting}
+                  >
+                    Delete
+                  </Button>
+                  <Button variant="outline" onClick={onClose}>
+                    Close
+                  </Button>
+                </>
               )}
             </div>
           </div>
