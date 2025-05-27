@@ -195,6 +195,8 @@ export const milestones = pgTable("milestones", {
   icon: text("icon").default("cake"),
 });
 
-export const milestoneSchema = createInsertSchema(milestones).omit({ id: true });
+export const milestoneSchema = createInsertSchema(milestones).omit({ id: true }).extend({
+  date: z.string().transform((str) => new Date(str)), // Allow date as ISO string
+});
 export type InsertMilestone = z.infer<typeof milestoneSchema>;
 export type Milestone = typeof milestones.$inferSelect;
