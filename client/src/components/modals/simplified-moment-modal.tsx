@@ -283,6 +283,12 @@ export function MomentModal() {
       finalEmoji = '💕';
     }
     
+    console.log("Creating moment with date:", {
+      selectedDate, 
+      localSelectedDate, 
+      iso: localSelectedDate.toISOString()
+    });
+    
     const momentData = {
       connectionId,
       emoji: finalEmoji,
