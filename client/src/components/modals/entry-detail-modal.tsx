@@ -418,24 +418,26 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection }: EntryD
           </div>
           )}
 
-          {/* Reflection */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Reflection</label>
-            {isEditing ? (
-              <Textarea
-                value={editedReflection}
-                onChange={(e) => setEditedReflection(e.target.value)}
-                placeholder="Add your personal insights and thoughts..."
-                className="min-h-[100px]"
-              />
-            ) : freshMoment.reflection ? (
-              <p className="text-sm bg-blue-50 dark:bg-blue-900 p-3 rounded-md italic">
-                {freshMoment.reflection}
-              </p>
-            ) : (
-              <p className="text-sm text-gray-500 italic">No reflection added</p>
-            )}
-          </div>
+          {/* Reflection - Only for regular moments, not conflicts */}
+          {getActivityType(freshMoment) !== 'conflict' && (
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Reflection</label>
+              {isEditing ? (
+                <Textarea
+                  value={editedReflection}
+                  onChange={(e) => setEditedReflection(e.target.value)}
+                  placeholder="Add your personal insights and thoughts..."
+                  className="min-h-[100px]"
+                />
+              ) : freshMoment.reflection ? (
+                <p className="text-sm bg-blue-50 dark:bg-blue-900 p-3 rounded-md italic">
+                  {freshMoment.reflection}
+                </p>
+              ) : (
+                <p className="text-sm text-gray-500 italic">No reflection added</p>
+              )}
+            </div>
+          )}
 
           {/* Action Buttons */}
           <div className="flex justify-between items-center pt-4">
