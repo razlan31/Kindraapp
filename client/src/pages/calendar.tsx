@@ -339,20 +339,47 @@ export default function Calendar() {
       <Dialog open={dayDetailOpen} onOpenChange={setDayDetailOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle className="flex items-center justify-between">
-              <span>
-                {selectedDay && format(selectedDay, 'EEEE, MMMM d')}
-              </span>
-              <Button 
-                size="sm" 
-                onClick={handleAddMomentFromDay}
-                className="ml-2"
-              >
-                <Plus className="h-4 w-4 mr-1" />
-                Add Moment
-              </Button>
+            <DialogTitle>
+              {selectedDay && format(selectedDay, 'EEEE, MMMM d')}
             </DialogTitle>
           </DialogHeader>
+          
+          {/* Add Entry Buttons */}
+          <div className="grid grid-cols-3 gap-2 mb-4">
+            <Button 
+              size="sm" 
+              onClick={handleAddMomentFromDay}
+              className="flex flex-col h-16 text-xs"
+              variant="outline"
+            >
+              <div className="text-lg mb-1">😊</div>
+              <span>Moment</span>
+            </Button>
+            <Button 
+              size="sm" 
+              onClick={() => {
+                openMomentModal('conflict');
+                setDayDetailOpen(false);
+              }}
+              className="flex flex-col h-16 text-xs"
+              variant="outline"
+            >
+              <div className="text-lg mb-1">⚡</div>
+              <span>Conflict</span>
+            </Button>
+            <Button 
+              size="sm" 
+              onClick={() => {
+                openMomentModal('intimacy');
+                setDayDetailOpen(false);
+              }}
+              className="flex flex-col h-16 text-xs"
+              variant="outline"
+            >
+              <div className="text-lg mb-1">💕</div>
+              <span>Intimacy</span>
+            </Button>
+          </div>
           
           <div className="space-y-4 max-h-96 overflow-y-auto">
             {selectedDay && getMomentsForDay(selectedDay).map((moment) => {
