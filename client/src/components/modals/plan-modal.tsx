@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -57,6 +57,17 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
     color: "#3b82f6", // Default blue color
     icon: "📅"
   });
+
+  // Update local state when selectedConnection prop changes
+  useEffect(() => {
+    console.log("Plan Modal - selectedConnection prop changed:", selectedConnection);
+    console.log("Plan Modal - current localSelectedConnection:", localSelectedConnection);
+    if (selectedConnection && selectedConnection.id !== localSelectedConnection?.id) {
+      console.log("Plan Modal - updating connection to:", selectedConnection.name);
+      setLocalSelectedConnection(selectedConnection);
+      setFormData(prev => ({ ...prev, connectionId: selectedConnection.id }));
+    }
+  }, [selectedConnection, localSelectedConnection?.id]);
 
   // Fetch connections for the picker
   const { data: connections = [] } = useQuery<Connection[]>({

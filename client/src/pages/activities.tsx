@@ -657,7 +657,7 @@ export default function Activities() {
         isOpen={planModalOpen}
         onClose={closePlanModal}
         selectedConnection={selectedConnection ? 
-          connections.find(c => c.id === selectedConnection) || null : null}
+          connections?.find(c => c.id === selectedConnection) || null : null}
         selectedDate={null}
         showConnectionPicker={true}
       />
