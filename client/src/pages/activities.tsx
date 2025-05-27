@@ -81,7 +81,6 @@ export default function Activities() {
   const { data: plans = [], isLoading: plansLoading, error: plansError } = useQuery<Plan[]>({
     queryKey: ["/api/plans"],
     staleTime: 0,
-    enabled: isAuthenticated && !loading,
   });
 
   // Debug plans data
