@@ -431,17 +431,32 @@ export class MemStorage implements IStorage {
   }
 
   async getMomentsByUserId(userId: number, limit?: number): Promise<Moment[]> {
-    const userMoments = Array.from(this.moments.values())
-      .filter((moment) => moment.userId === userId)
-      .sort((a, b) => {
-        const dateA = new Date(a.createdAt || 0);
-        const dateB = new Date(b.createdAt || 0);
-        return dateB.getTime() - dateA.getTime();
+    try {
+      console.log(`📋 getMomentsByUserId - Starting fetch for user ${userId}`);
+      const allMoments = Array.from(this.moments.values());
+      console.log(`📋 Total moments in storage: ${allMoments.length}`);
+      
+      const userMoments = allMoments.filter((moment) => moment.userId === userId);
+      console.log(`📋 User ${userId} moments found: ${userMoments.length}`);
+      
+      const sortedMoments = userMoments.sort((a, b) => {
+        try {
+          const dateA = new Date(a.createdAt || 0);
+          const dateB = new Date(b.createdAt || 0);
+          return dateB.getTime() - dateA.getTime();
+        } catch (sortError) {
+          console.error(`❌ Error sorting moments:`, sortError);
+          return 0;
+        }
       });
-    
-    console.log(`📋 Getting moments for user ${userId}:`, userMoments.map(m => ({ id: m.id, emoji: m.emoji, content: m.content?.substring(0, 20) })));
-    
-    return limit ? userMoments.slice(0, limit) : userMoments;
+      
+      console.log(`📋 Getting moments for user ${userId}:`, sortedMoments.map(m => ({ id: m.id, emoji: m.emoji, content: m.content?.substring(0, 20) })));
+      
+      return limit ? sortedMoments.slice(0, limit) : sortedMoments;
+    } catch (error) {
+      console.error(`❌ Error in getMomentsByUserId:`, error);
+      throw error;
+    }
   }
 
   async getMomentsByConnectionId(connectionId: number): Promise<Moment[]> {
