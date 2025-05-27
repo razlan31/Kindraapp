@@ -54,7 +54,6 @@ export default function Calendar() {
   
   // Debug logging for allMoments
   console.log("All moments from query:", allMoments);
-  console.log("Calendar Debug - Total moments:", moments.length, moments);
 
   // Filter moments based on selected filters and connection
   const moments = allMoments.filter(moment => {
@@ -85,6 +84,9 @@ export default function Calendar() {
     
     return true;
   });
+
+  // Debug logging after moments is defined
+  console.log("Calendar Debug - Total moments:", moments.length, moments);
 
   // Simple event listeners for cache invalidation only
   useEffect(() => {
