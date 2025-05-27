@@ -62,14 +62,28 @@ export default function Calendar() {
 
   // Get moments for a specific day
   const getMomentsForDay = (day: Date) => {
-    const dayMoments = moments.filter(moment => 
-      isSameDay(new Date(moment.createdAt || new Date()), day)
-    );
+    const dayMoments = moments.filter(moment => {
+      const momentDate = new Date(moment.createdAt || new Date());
+      const same = isSameDay(momentDate, day);
+      // Debug for today's date
+      if (format(day, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd')) {
+        console.log(`Today ${format(day, 'yyyy-MM-dd')} - Moment ${moment.id}: ${format(momentDate, 'yyyy-MM-dd')} - Match: ${same}`, moment);
+      }
+      return same;
+    });
     return dayMoments;
   };
 
   // Debug moments loading
   console.log('Calendar Debug - Total moments:', moments.length, moments);
+  
+  // Force refetch if no moments but user is authenticated
+  useEffect(() => {
+    if (user && moments.length === 0 && !momentsLoading) {
+      console.log('Calendar - No moments found, refetching...');
+      setTimeout(() => refetchMoments(), 100);
+    }
+  }, [user, moments.length, momentsLoading, refetchMoments]);
 
   // Get moment type and display info
   const getMomentDisplayInfo = (moment: Moment) => {
