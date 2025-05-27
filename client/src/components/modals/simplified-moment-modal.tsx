@@ -189,14 +189,9 @@ export function MomentModal() {
         title: `${activityType === 'conflict' ? 'Conflict' : activityType === 'intimacy' ? 'Intimacy' : 'Moment'} logged successfully`,
         description: "Your entry has been recorded.",
       });
-      // Close modal and update cache instantly
-      closeMomentModal();
-      setIsSubmitting(false);
-      // Force immediate refresh for calendar and activities
-      queryClient.invalidateQueries({ queryKey: ['/api/moments'] });
-      queryClient.refetchQueries({ queryKey: ['/api/moments'] });
-      // Dispatch custom event to notify calendar to refresh
-      window.dispatchEvent(new CustomEvent('momentCreated'));
+      console.log("Creation successful! Reloading page for instant calendar update");
+      // Simple, reliable solution - reload page to show new entry immediately
+      window.location.reload();
     },
     onError: (error: any) => handleError(error),
   });

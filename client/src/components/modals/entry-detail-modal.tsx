@@ -165,8 +165,9 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection, onUpdate
     if (!moment) return;
     
     setIsSubmitting(true);
+    console.log("HandleSave - Starting edit process");
+    
     try {
-      console.log("HandleSave - About to update moment with reload trigger");
       await updateMomentMutation.mutateAsync({
         id: moment.id,
         content: editedContent.trim(),
@@ -174,9 +175,13 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection, onUpdate
         reflection: editedReflection.trim(),
         tags: editedTags
       } as any);
-      // Note: The success callback in updateMomentMutation will handle the reload
+      
+      // Simple, direct solution - immediate page reload
+      console.log("HandleSave - Success! Reloading page now");
+      window.location.reload();
+      
     } catch (error) {
-      console.error("HandleSave - Error updating moment:", error);
+      console.error("HandleSave - Error:", error);
       setIsSubmitting(false);
     }
   };
