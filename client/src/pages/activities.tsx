@@ -79,7 +79,7 @@ export default function Activities() {
 
   // Fetch plans
   const { data: plans = [], isLoading: plansLoading, error: plansError } = useQuery<Plan[]>({
-    queryKey: ["/api/kindra-plans"],
+    queryKey: ["/plans-data"],
     staleTime: 0,
   });
 

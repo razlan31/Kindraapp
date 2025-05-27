@@ -49,18 +49,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     })
   );
 
-  // Plan routes - use unique endpoint to bypass Vite conflicts
-  app.get("/api/kindra-plans", isAuthenticated, async (req: Request, res: Response) => {
-    console.log('🚀 KINDRA PLANS API HIT - This should show if route is working');
+  // Plan routes - use non-api route to bypass ALL Vite middleware conflicts  
+  app.get("/plans-data", isAuthenticated, async (req: Request, res: Response) => {
+    console.log('🚀 PLANS DATA ROUTE HIT - This should show if route is working');
     try {
       const userId = req.session.userId as number;
-      console.log('📋 GET /api/kindra-plans - Fetching for user', userId);
+      console.log('📋 GET /plans-data - Fetching for user', userId);
       const plans = await storage.getPlans(userId);
       console.log('📋 Plans found:', plans.length);
       console.log('📋 Plans data:', JSON.stringify(plans, null, 2));
       
       // Force JSON response with explicit headers
       res.setHeader('Content-Type', 'application/json');
+      res.setHeader('Cache-Control', 'no-cache');
       res.status(200).json(plans);
     } catch (error) {
       console.error('Error fetching plans:', error);
@@ -68,7 +69,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/kindra-plans", isAuthenticated, async (req: Request, res: Response) => {
+  app.post("/plans-data", isAuthenticated, async (req: Request, res: Response) => {
     try {
       const userId = req.session.userId as number;
       const planData = { ...req.body, userId };

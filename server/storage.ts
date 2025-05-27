@@ -165,6 +165,9 @@ export class MemStorage implements IStorage {
     
     // Add sample moments with proper tags for calendar visualization
     this.createSampleMoments();
+    
+    // Add sample plans for testing
+    this.createSamplePlans();
   }
 
   private createSampleMoments() {
