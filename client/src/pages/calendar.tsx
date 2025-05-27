@@ -46,8 +46,11 @@ export default function Calendar() {
   useEffect(() => {
     const urlParams = new URLSearchParams(location.split('?')[1] || '');
     const connectionParam = urlParams.get('connection');
+    console.log("Calendar URL param check:", { connectionParam, location });
     if (connectionParam) {
-      setSelectedConnectionId(parseInt(connectionParam));
+      const connectionId = parseInt(connectionParam);
+      console.log("Setting calendar connection from URL:", connectionId);
+      setSelectedConnectionId(connectionId);
     }
   }, [location]);
   
