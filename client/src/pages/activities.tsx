@@ -325,7 +325,7 @@ export default function Activities() {
                           
                           {/* Timeline content */}
                           <Card className="p-4 shadow-sm hover:shadow-md transition-shadow cursor-pointer" onClick={() => handleViewEntryDetail(moment.id)}>
-                            <div className="flex items-start justify-between mb-2">
+                            <div className="flex items-start justify-between mb-3">
                               <div className="flex items-center gap-2">
                                 <span className="text-lg">{moment.emoji}</span>
                                 <span className="font-medium text-sm">{connection.name}</span>
@@ -333,9 +333,14 @@ export default function Activities() {
                                   {activityType}
                                 </span>
                               </div>
-                              <span className="text-xs text-muted-foreground">
-                                {moment.createdAt ? format(new Date(moment.createdAt), 'MMM d, h:mm a') : ''}
-                              </span>
+                              <div className="text-right">
+                                <div className="text-sm font-medium text-foreground">
+                                  {moment.createdAt ? format(new Date(moment.createdAt), 'MMM d') : ''}
+                                </div>
+                                <div className="text-xs text-muted-foreground">
+                                  {moment.createdAt ? format(new Date(moment.createdAt), 'h:mm a') : ''}
+                                </div>
+                              </div>
                             </div>
                             
                             {moment.content && (
