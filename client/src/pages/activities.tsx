@@ -31,7 +31,7 @@ export default function Activities() {
   const [location] = useLocation();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedConnection, setSelectedConnection] = useState<number | null>(null);
-  const [activeTab, setActiveTab] = useState<'moments' | 'conflicts' | 'intimacy' | 'timeline'>('moments');
+  const [activeTab, setActiveTab] = useState<'moments' | 'conflicts' | 'intimacy' | 'plans' | 'timeline'>('moments');
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   // Handle navigation connection filtering and focus connection
@@ -292,8 +292,8 @@ export default function Activities() {
             </DropdownMenu>
           </Card>
           
-          {/* Main Activity Types - Single Row */}
-          <div className="grid grid-cols-4 gap-1 bg-muted rounded-lg p-1 mb-3">
+          {/* Main Activity Types - Grid Layout */}
+          <div className="grid grid-cols-2 gap-1 bg-muted rounded-lg p-1 mb-3">
             <button 
               onClick={() => setActiveTab('moments')}
               className={`py-2 px-2 rounded-md text-xs font-medium transition-colors ${
@@ -324,7 +324,16 @@ export default function Activities() {
             >
               Intimacy
             </button>
-
+            <button 
+              onClick={() => setActiveTab('plans')}
+              className={`py-2 px-2 rounded-md text-xs font-medium transition-colors ${
+                activeTab === 'plans' 
+                  ? 'bg-background text-foreground shadow-sm' 
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              Plans
+            </button>
           </div>
           
           {/* Timeline Overview - Below main tabs */}
@@ -345,8 +354,9 @@ export default function Activities() {
           {activeTab !== 'timeline' && (
             <div className="mb-4">
               <Button onClick={() => {
-                if (activeTab === 'milestones') {
-                  setMilestoneModalOpen(true);
+                if (activeTab === 'plans') {
+                  // TODO: Open plans modal when implemented
+                  console.log('Plans modal would open here');
                 } else {
                   // Set the connection in modal context before opening
                   if (selectedConnection && connections.length > 0) {
@@ -365,7 +375,7 @@ export default function Activities() {
                 Add {activeTab === 'moments' ? 'Moment' : 
                      activeTab === 'conflicts' ? 'Conflict' : 
                      activeTab === 'intimacy' ? 'Intimacy' : 
-                     activeTab === 'milestones' ? 'Milestone' : ''}
+                     activeTab === 'plans' ? 'Plan' : ''}
               </Button>
             </div>
           )}
