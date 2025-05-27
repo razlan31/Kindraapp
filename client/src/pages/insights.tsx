@@ -94,19 +94,30 @@ export default function Insights() {
     count: tagCounts[tag]
   })).sort((a, b) => b.count - a.count);
 
-  // Connection with most green flags
-  const connectionGreenFlags = connections.map(connection => {
-    const greenFlagCount = moments.filter(m => 
-      m.connectionId === connection.id && 
-      m.tags?.includes('Green Flag')
+  // Connection with strongest positive patterns
+  const connectionStrengths = connections.map(connection => {
+    const connectionMoments = moments.filter(m => m.connectionId === connection.id);
+    
+    // Count positive engagement patterns
+    const positivePatterns = connectionMoments.filter(m => 
+      m.tags?.some(tag => [
+        'Quality Time', 'Affection', 'Support', 'Trust Building',
+        'Deep Conversation', 'Vulnerability', 'Conflict Resolution',
+        'Understanding', 'Emotional Intimacy', 'Acts of Service'
+      ].includes(tag))
     ).length;
+
+    const totalMoments = connectionMoments.length;
+    const positiveRatio = totalMoments > 0 ? positivePatterns / totalMoments : 0;
 
     return {
       id: connection.id,
       name: connection.name,
-      greenFlags: greenFlagCount
+      positivePatterns,
+      totalMoments,
+      healthScore: Math.round(positiveRatio * 100)
     };
-  }).sort((a, b) => b.greenFlags - a.greenFlags);
+  }).sort((a, b) => b.healthScore - a.healthScore);
 
   // Calculate color for pie chart
   const COLORS = ['#FF6B6B', '#4ECDC4', '#FFD166', '#20C997', '#FD7E14'];
@@ -248,8 +259,8 @@ export default function Insights() {
                 <TabsTrigger value="emotions">
                   <Heart className="h-4 w-4 mr-1" /> Emotions
                 </TabsTrigger>
-                <TabsTrigger value="flags">
-                  <Flag className="h-4 w-4 mr-1" /> Flags
+                <TabsTrigger value="health">
+                  <Zap className="h-4 w-4 mr-1" /> Health
                 </TabsTrigger>
                 <TabsTrigger value="zodiac">
                   <Star className="h-4 w-4 mr-1" /> Zodiac
@@ -344,28 +355,33 @@ export default function Insights() {
               </Card>
             </TabsContent>
 
-            {/* Flags Tab */}
-            <TabsContent value="flags" className="px-4 py-4">
+            {/* Relationship Health Tab */}
+            <TabsContent value="health" className="px-4 py-4">
               <Card>
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-lg">Flag Distribution</CardTitle>
+                  <CardTitle className="text-lg">Relationship Health</CardTitle>
                   <CardDescription>
-                    Green and red flags across your connections
+                    Connection strength and growth patterns
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    {connectionGreenFlags.slice(0, 3).map((connection) => (
-                      <div key={connection.id} className="flex justify-between items-center">
-                        <span className="font-medium">{connection.name}</span>
-                        <div className="flex items-center">
-                          <span className="text-greenFlag mr-2">{connection.greenFlags} Green Flags</span>
-                          <span className="text-redFlag">
-                            {moments.filter(m => 
-                              m.connectionId === connection.id && 
-                              m.tags?.includes('Red Flag')
-                            ).length} Red Flags
+                    {connectionStrengths.slice(0, 3).map((connection) => (
+                      <div key={connection.id} className="p-3 bg-neutral-50 dark:bg-neutral-800 rounded-lg">
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="font-medium">{connection.name}</span>
+                          <span className="text-sm font-semibold text-primary">
+                            {connection.healthScore}% Health Score
                           </span>
+                        </div>
+                        <div className="text-xs text-neutral-600 dark:text-neutral-400">
+                          {connection.positivePatterns} positive patterns out of {connection.totalMoments} moments
+                        </div>
+                        <div className="w-full bg-neutral-200 dark:bg-neutral-700 rounded-full h-2 mt-2">
+                          <div 
+                            className="bg-primary h-2 rounded-full transition-all duration-300" 
+                            style={{ width: `${connection.healthScore}%` }}
+                          />
                         </div>
                       </div>
                     ))}

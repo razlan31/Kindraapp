@@ -49,43 +49,67 @@ export const connectionSchema = createInsertSchema(connections).omit({ id: true,
 export type InsertConnection = z.infer<typeof connectionSchema>;
 export type Connection = typeof connections.$inferSelect;
 
-// Moment tags
+// Moment tags - refined for nuanced relationship insights
 export const momentTags = [
-  // Positive Moments
-  "Green Flag",
-  "Intimacy",
+  // Connection & Bonding
+  "Quality Time",
   "Affection",
   "Support",
-  "Growth",
-  "Trust",
+  "Trust Building",
   "Celebration",
+  "Acts of Service",
+  "Words of Affirmation",
+  "Physical Touch",
   
-  // Negative Moments
-  "Red Flag",
-  "Conflict",
-  "Jealousy",
+  // Communication & Growth
+  "Deep Conversation",
+  "Vulnerability",
+  "Conflict Resolution",
+  "Boundary Setting",
+  "Compromise",
+  "Understanding",
+  "Active Listening",
+  
+  // Challenges & Learning
+  "Disagreement",
   "Stress",
-  "Disconnection",
+  "External Pressure", 
+  "Miscommunication",
+  "Different Values",
+  "Jealousy",
+  "Insecurity",
   
-  // Growth Moments
-  "Blue Flag",
+  // Personal Development
+  "Personal Growth",
   "Life Goals",
   "Career",
   "Future Planning",
-  "Vulnerability",
-  "Communication",
+  "Self-Reflection",
   
-  // Special Tags
+  // Intimacy Categories
+  "Emotional Intimacy",
+  "Physical Intimacy", 
+  "Sexual Intimacy",
+  "Intellectual Connection",
+  
+  // Life Events
   "Milestone",
+  "First Time",
   "Surprise",
   "Gift",
-  "Menstrual",
-  "Reflection",
+  "Special Occasion",
+  "Family/Friends",
   
-  // Intimacy Tags
-  "Sexual Intimacy",
-  "Emotional Intimacy",
-  "Physical Intimacy"
+  // Health & Wellness
+  "Mental Health",
+  "Physical Health",
+  "Menstrual Cycle",
+  
+  // Genuine Red Flags (serious concerns)
+  "Disrespect",
+  "Manipulation",
+  "Boundary Violation",
+  "Dishonesty"
 ] as const;
 
 // Moments (emotional logs)
