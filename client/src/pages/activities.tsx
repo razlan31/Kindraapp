@@ -214,10 +214,11 @@ export default function Activities() {
       // Timeline shows ALL entries regardless of type
       matchesTab = true;
     } else if (activeTab === 'moments') {
-      // Show regular moments (positive, negative, neutral) - exclude conflicts and intimacy
+      // Show regular moments (positive, negative, neutral) - exclude conflicts, intimacy, and plans
       const isConflict = tags.includes('Conflict') || moment.emoji === '⚡';
       const isIntimacy = moment.isIntimate === true || tags.includes('Intimacy') || moment.emoji === '💕';
-      matchesTab = !isConflict && !isIntimacy;
+      const isPlan = tags.includes('Plan');
+      matchesTab = !isConflict && !isIntimacy && !isPlan;
     } else if (activeTab === 'conflicts') {
       // Show conflicts - check for conflict indicators
       matchesTab = tags.includes('Conflict') || moment.emoji === '⚡' || 
