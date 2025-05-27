@@ -284,13 +284,12 @@ export default function Dashboard() {
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                console.log("Log button clicked!");
-                console.log("openMomentModal function:", openMomentModal);
+                console.log("Dashboard Log button clicked!");
                 // Set the main focus connection when opening the modal
                 if (mainFocusConnection) {
                   setSelectedConnection(mainFocusConnection.id, mainFocusConnection);
                 }
-                openMomentModal();
+                openMomentModal('moment', undefined, new Date());
               }}
             >
               <i className="fa-solid fa-plus mr-1"></i> Log
@@ -336,7 +335,7 @@ export default function Dashboard() {
                     size="sm"
                     onClick={() => {
                       console.log("Log Your First Moment button clicked!");
-                      openMomentModal();
+                      openMomentModal('moment', undefined, new Date());
                     }}
                     className="text-primary mr-2"
                   >

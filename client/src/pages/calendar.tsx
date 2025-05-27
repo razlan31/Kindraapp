@@ -129,6 +129,7 @@ export default function Calendar() {
 
   // Handle adding new moment from day detail
   const handleAddMomentFromDay = () => {
+    console.log("Calendar button clicked - selectedDay:", selectedDay);
     setDayDetailOpen(false);
     if (connections.length > 0) {
       setSelectedConnection(connections[0].id, connections[0]);
@@ -358,6 +359,7 @@ export default function Calendar() {
             <Button 
               size="sm" 
               onClick={() => {
+                console.log("Conflict button clicked - selectedDay:", selectedDay);
                 openMomentModal('conflict', undefined, selectedDay || undefined);
                 setDayDetailOpen(false);
               }}
@@ -370,6 +372,7 @@ export default function Calendar() {
             <Button 
               size="sm" 
               onClick={() => {
+                console.log("Intimacy button clicked - selectedDay:", selectedDay);
                 openMomentModal('intimacy', undefined, selectedDay || undefined);
                 setDayDetailOpen(false);
               }}
