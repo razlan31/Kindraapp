@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ChevronLeft, ChevronRight, Heart, Calendar as CalendarIcon, Plus, Eye, ChevronDown, ChevronUp } from "lucide-react";
 import { useAuth } from "@/contexts/auth-context";
 import { useModal } from "@/contexts/modal-context";
+import { useRelationshipFocus } from "@/contexts/relationship-focus-context";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, getDay } from "date-fns";
 import type { Moment, Connection } from "@shared/schema";
 import { EntryDetailModal } from "@/components/modals/entry-detail-modal";
@@ -18,6 +19,7 @@ import { EntryDetailModal } from "@/components/modals/entry-detail-modal";
 export default function Calendar() {
   const { user } = useAuth();
   const { openMomentModal, setSelectedConnection } = useModal();
+  const { mainFocusConnection, loading: focusLoading } = useRelationshipFocus();
   const queryClient = useQueryClient();
   const [location] = useLocation();
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -42,8 +44,9 @@ export default function Calendar() {
   // Connection filter state
   const [selectedConnectionId, setSelectedConnectionId] = useState<number | null>(null);
 
-  // Handle navigation connection filtering
+  // Handle navigation connection filtering and focus connection
   useEffect(() => {
+    // First check for navigation connection (highest priority)
     const navigationConnectionId = localStorage.getItem('navigationConnectionId');
     console.log("Calendar navigation check:", { navigationConnectionId });
     if (navigationConnectionId) {
@@ -52,8 +55,15 @@ export default function Calendar() {
       setSelectedConnectionId(connectionId);
       // Clear the navigation state after using it
       localStorage.removeItem('navigationConnectionId');
+      return;
     }
-  }, []);
+
+    // If no navigation connection but main focus is set, use that
+    if (!focusLoading && mainFocusConnection && !selectedConnectionId) {
+      console.log("Setting calendar connection from main focus:", mainFocusConnection.id);
+      setSelectedConnectionId(mainFocusConnection.id);
+    }
+  }, [mainFocusConnection, focusLoading, selectedConnectionId]);
   
   // Legend collapse state
   const [isLegendCollapsed, setIsLegendCollapsed] = useState(false);

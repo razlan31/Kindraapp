@@ -21,10 +21,12 @@ import {
   DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu";
 import { format } from "date-fns";
+import { useRelationshipFocus } from "@/contexts/relationship-focus-context";
 
 export default function Activities() {
   const { user, isAuthenticated, loading } = useAuth();
   const { openMomentModal, setSelectedConnection: setModalConnection } = useModal();
+  const { mainFocusConnection, loading: focusLoading } = useRelationshipFocus();
   const queryClient = useQueryClient();
   const [location] = useLocation();
   const [searchTerm, setSearchTerm] = useState("");
@@ -32,8 +34,9 @@ export default function Activities() {
   const [activeTab, setActiveTab] = useState<'moments' | 'conflicts' | 'intimacy' | 'timeline'>('moments');
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
-  // Handle navigation connection filtering
+  // Handle navigation connection filtering and focus connection
   useEffect(() => {
+    // First check for navigation connection (highest priority)
     const navigationConnectionId = localStorage.getItem('navigationConnectionId');
     console.log("Activities navigation check:", { navigationConnectionId });
     if (navigationConnectionId) {
@@ -42,8 +45,15 @@ export default function Activities() {
       setSelectedConnection(connectionId);
       // Clear the navigation state after using it
       localStorage.removeItem('navigationConnectionId');
+      return;
     }
-  }, []);
+
+    // If no navigation connection but main focus is set, use that
+    if (!focusLoading && mainFocusConnection && !selectedConnection) {
+      console.log("Setting activities connection from main focus:", mainFocusConnection.id);
+      setSelectedConnection(mainFocusConnection.id);
+    }
+  }, [mainFocusConnection, focusLoading, selectedConnection]);
 
   // Fetch moments - use simple approach like Dashboard
   const { data: moments = [], isLoading, refetch: refetchMoments } = useQuery<Moment[]>({
