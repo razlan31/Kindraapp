@@ -545,7 +545,11 @@ export default function Calendar() {
           isOpen={entryDetailOpen}
           onClose={() => {
             setEntryDetailOpen(false);
-            refetchMoments(); // Refresh data when modal closes
+            // Force immediate refresh by invalidating cache and refetching
+            queryClient.invalidateQueries({ queryKey: ["/api/moments"] });
+            refetchMoments();
+            // Force a re-render by updating state
+            setSelectedEntry(null);
           }}
           moment={selectedEntry}
           connection={connections.find(c => c.id === selectedEntry.connectionId) || null}
