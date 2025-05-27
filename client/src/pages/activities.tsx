@@ -591,10 +591,7 @@ export default function Activities() {
                     <Card 
                       key={plan.id} 
                       className="p-4 cursor-pointer hover:shadow-md transition-shadow"
-                      onClick={() => {
-                        setSelectedMoment(plan);
-                        setEntryDetailModalOpen(true);
-                      }}
+                      onClick={() => handleViewEntryDetail(plan.id)}
                     >
                       <div className="flex items-start justify-between mb-2">
                         <div className="flex items-center gap-2">
