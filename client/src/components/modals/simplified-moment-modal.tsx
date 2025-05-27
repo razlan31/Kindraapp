@@ -19,7 +19,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
 export function MomentModal() {
-  const { momentModalOpen, closeMomentModal, selectedConnectionId, activityType, editingMoment } = useModal();
+  const { momentModalOpen, closeMomentModal, selectedConnectionId, activityType, editingMoment, selectedDate } = useModal();
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -36,7 +36,7 @@ export function MomentModal() {
   const [connectionId, setConnectionId] = useState<number>(2);
   const [emoji, setEmoji] = useState<string>("😊");
   const [content, setContent] = useState<string>("");
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [localSelectedDate, setLocalSelectedDate] = useState<Date>(new Date());
   const [momentType, setMomentType] = useState<string>("positive");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [customTag, setCustomTag] = useState<string>("");
@@ -48,7 +48,7 @@ export function MomentModal() {
       setConnectionId(editingMoment.connectionId);
       setEmoji(editingMoment.emoji);
       setContent(editingMoment.content || "");
-      setSelectedDate(new Date(editingMoment.createdAt || new Date()));
+      setLocalSelectedDate(new Date(editingMoment.createdAt || new Date()));
       setSelectedTags(editingMoment.tags || []);
       setReflection(editingMoment.reflection || "");
       
@@ -77,7 +77,7 @@ export function MomentModal() {
       setConnectionId(selectedConnectionId || 2);
       setEmoji(activityType === 'conflict' ? '⚡' : activityType === 'intimacy' ? '💕' : '😊');
       setContent("");
-      setSelectedDate(new Date());
+      setLocalSelectedDate(selectedDate || new Date());
       setMomentType('positive');
       setSelectedTags([]);
       setCustomTag("");
@@ -290,7 +290,7 @@ export function MomentModal() {
       isIntimate,
       intimacyRating: isIntimate ? "high" : null,
       relatedToMenstrualCycle: false,
-      createdAt: selectedDate.toISOString(),
+      createdAt: localSelectedDate.toISOString(),
       // Conflict resolution fields
       isResolved: activityType === 'conflict' ? isResolved : false,
       resolvedAt: (activityType === 'conflict' && isResolved) ? resolvedDate.toISOString() : null,
@@ -493,8 +493,8 @@ export function MomentModal() {
               <PopoverContent className="w-auto p-0">
                 <Calendar
                   mode="single"
-                  selected={selectedDate}
-                  onSelect={(date) => date && setSelectedDate(date)}
+                  selected={localSelectedDate}
+                  onSelect={(date) => date && setLocalSelectedDate(date)}
                   initialFocus
                 />
               </PopoverContent>
