@@ -182,14 +182,18 @@ export default function Activities() {
       // Timeline shows ALL entries regardless of type
       matchesTab = true;
     } else if (activeTab === 'moments') {
-      // Show all moments except pure conflicts and intimacy entries
-      matchesTab = !tags.includes('Conflict') && !moment.isIntimate && !tags.includes('Intimacy');
+      // Show regular moments (positive, negative, neutral) - exclude conflicts and intimacy
+      const isConflict = tags.includes('Conflict') || moment.emoji === '⚡';
+      const isIntimacy = moment.isIntimate === true || tags.includes('Intimacy') || moment.emoji === '💕';
+      matchesTab = !isConflict && !isIntimacy;
     } else if (activeTab === 'conflicts') {
-      // Only show conflicts, exclude intimacy even if it has conflict tags
-      matchesTab = tags.includes('Conflict') && !moment.isIntimate && !tags.includes('Intimacy');
+      // Show conflicts - check for conflict indicators
+      matchesTab = tags.includes('Conflict') || moment.emoji === '⚡' || 
+                   (moment.isResolved !== undefined) || 
+                   (moment.resolutionNotes && moment.resolutionNotes.trim() !== '');
     } else if (activeTab === 'intimacy') {
-      // Only show intimacy entries, prioritize intimacy over conflict
-      matchesTab = moment.isIntimate === true || tags.includes('Intimacy');
+      // Show intimacy entries
+      matchesTab = moment.isIntimate === true || tags.includes('Intimacy') || moment.emoji === '💕';
     }
     
     const matchesSearch = moment.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
