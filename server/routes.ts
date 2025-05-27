@@ -348,9 +348,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = req.session.userId as number;
       const limit = req.query.limit ? parseInt(req.query.limit as string) : undefined;
       
+      console.log(`📋 GET /api/moments - Fetching for user ${userId}`);
       const moments = await storage.getMomentsByUserId(userId, limit);
+      console.log(`✅ GET /api/moments - Found ${moments.length} moments`);
       res.status(200).json(moments);
     } catch (error) {
+      console.error("❌ GET /api/moments error:", error);
       res.status(500).json({ message: "Server error fetching moments" });
     }
   });

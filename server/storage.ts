@@ -433,7 +433,11 @@ export class MemStorage implements IStorage {
   async getMomentsByUserId(userId: number, limit?: number): Promise<Moment[]> {
     const userMoments = Array.from(this.moments.values())
       .filter((moment) => moment.userId === userId)
-      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+      .sort((a, b) => {
+        const dateA = new Date(a.createdAt || 0);
+        const dateB = new Date(b.createdAt || 0);
+        return dateB.getTime() - dateA.getTime();
+      });
     
     console.log(`📋 Getting moments for user ${userId}:`, userMoments.map(m => ({ id: m.id, emoji: m.emoji, content: m.content?.substring(0, 20) })));
     
