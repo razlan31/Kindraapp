@@ -387,8 +387,8 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection, onUpdate
             </div>
           )}
 
-          {/* Tags Section - Only show for regular moments */}
-          {!freshMoment.tags?.includes('Conflict') && !freshMoment.isIntimate && !freshMoment.tags?.includes('Intimacy') && (
+          {/* Tags Section - Only show for regular moments, not plans, conflicts, or intimacy */}
+          {!freshMoment.tags?.includes('Conflict') && !freshMoment.isIntimate && !freshMoment.tags?.includes('Intimacy') && !freshMoment.tags?.includes('Plan') && (
           <div className="space-y-2">
             <label className="text-sm font-medium">Tags</label>
             {isEditing ? (
