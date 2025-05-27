@@ -64,20 +64,37 @@ export default function ConnectionDetail() {
     enabled: !isNaN(connectionId),
   });
   
-  // Calculate flag counts
-  const flagCounts = {
-    green: 0,
-    red: 0,
-    blue: 0
+  // Calculate activity counts
+  const activityCounts = {
+    totalMoments: 0,
+    conflicts: 0,
+    intimacy: 0,
+    positive: 0
   };
   
   if (moments) {
     moments.forEach((moment: any) => {
-      if (moment.tags) {
-        const tags = Array.isArray(moment.tags) ? moment.tags : [];
-        if (tags.includes('Green Flag')) flagCounts.green++;
-        if (tags.includes('Red Flag')) flagCounts.red++;
-        if (tags.includes('Mixed Signals')) flagCounts.blue++;
+      activityCounts.totalMoments++;
+      
+      // Count conflicts (moments with conflict emoji or conflict-related tags)
+      if (moment.emoji === '⚡' || (moment.tags && moment.tags.some((tag: string) => 
+        ['Disagreement', 'Conflict', 'Stress', 'Miscommunication'].includes(tag)
+      ))) {
+        activityCounts.conflicts++;
+      }
+      
+      // Count intimacy moments
+      if (moment.emoji === '💕' || moment.isIntimate || (moment.tags && moment.tags.some((tag: string) => 
+        ['Sexual Intimacy', 'Physical Intimacy', 'Emotional Intimacy'].includes(tag)
+      ))) {
+        activityCounts.intimacy++;
+      }
+      
+      // Count positive moments
+      if (moment.emoji === '😊' || (moment.tags && moment.tags.some((tag: string) => 
+        ['Quality Time', 'Affection', 'Support', 'Trust Building', 'Celebration'].includes(tag)
+      ))) {
+        activityCounts.positive++;
       }
     });
   }
@@ -322,41 +339,42 @@ export default function ConnectionDetail() {
             </div>
             
             <div className="border-t pt-4 mt-4">
-              <h4 className="font-medium mb-2">Relationship Insights</h4>
-              <div className="flex gap-3">
-                {flagCounts.green > 0 && (
-                  <div className="text-center flex-1">
-                    <div className="bg-green-50 dark:bg-green-950 text-green-600 dark:text-green-400 text-lg font-semibold rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-1">
-                      {flagCounts.green}
-                    </div>
-                    <div className="text-xs">Green Flags</div>
+              <h4 className="font-medium mb-2">Activity Summary</h4>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="text-center">
+                  <div className="bg-neutral-50 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 text-lg font-semibold rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-1">
+                    {activityCounts.totalMoments}
                   </div>
-                )}
+                  <div className="text-xs">Total Moments</div>
+                </div>
                 
-                {flagCounts.red > 0 && (
-                  <div className="text-center flex-1">
-                    <div className="bg-red-50 dark:bg-red-950 text-red-600 dark:text-red-400 text-lg font-semibold rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-1">
-                      {flagCounts.red}
-                    </div>
-                    <div className="text-xs">Red Flags</div>
+                <div className="text-center">
+                  <div className="bg-green-50 dark:bg-green-950 text-green-600 dark:text-green-400 text-lg font-semibold rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-1">
+                    {activityCounts.positive}
                   </div>
-                )}
+                  <div className="text-xs">Positive</div>
+                </div>
                 
-                {flagCounts.blue > 0 && (
-                  <div className="text-center flex-1">
-                    <div className="bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-400 text-lg font-semibold rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-1">
-                      {flagCounts.blue}
-                    </div>
-                    <div className="text-xs">Mixed Signals</div>
+                <div className="text-center">
+                  <div className="bg-red-50 dark:bg-red-950 text-red-600 dark:text-red-400 text-lg font-semibold rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-1">
+                    {activityCounts.conflicts}
                   </div>
-                )}
+                  <div className="text-xs">Conflicts</div>
+                </div>
                 
-                {flagCounts.green === 0 && flagCounts.red === 0 && flagCounts.blue === 0 && (
-                  <div className="text-neutral-500 text-sm py-3 text-center w-full">
-                    No insights available yet. Start tracking moments to build insights.
+                <div className="text-center">
+                  <div className="bg-pink-50 dark:bg-pink-950 text-pink-600 dark:text-pink-400 text-lg font-semibold rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-1">
+                    {activityCounts.intimacy}
                   </div>
-                )}
+                  <div className="text-xs">Intimacy</div>
+                </div>
               </div>
+              
+              {activityCounts.totalMoments === 0 && (
+                <div className="text-neutral-500 text-sm py-3 text-center w-full">
+                  No moments tracked yet. Start adding moments to see activity summary.
+                </div>
+              )}
             </div>
           </div>
         </div>
