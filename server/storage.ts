@@ -477,7 +477,7 @@ export class MemStorage implements IStorage {
     const moment: Moment = { 
       ...insertMoment, 
       id, 
-      createdAt: new Date(),
+      createdAt: (insertMoment as any).createdAt ? new Date((insertMoment as any).createdAt) : new Date(),
       tags: insertMoment.tags || null,
       isPrivate: insertMoment.isPrivate || null,
       isIntimate: insertMoment.isIntimate || null,

@@ -44,7 +44,6 @@ export function MomentModal() {
 
   // Initialize form with existing data when editing
   useEffect(() => {
-    console.log("Modal useEffect triggered:", { selectedDate, editingMoment });
     if (editingMoment) {
       setConnectionId(editingMoment.connectionId);
       setEmoji(editingMoment.emoji);
@@ -171,7 +170,9 @@ export function MomentModal() {
       // Close modal and update cache instantly
       closeMomentModal();
       setIsSubmitting(false);
+      // Force immediate refresh for calendar and activities
       queryClient.invalidateQueries({ queryKey: ['/api/moments'] });
+      queryClient.refetchQueries({ queryKey: ['/api/moments'] });
     },
     onError: (error: any) => handleError(error),
   });
