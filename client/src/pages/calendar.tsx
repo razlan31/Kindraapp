@@ -42,16 +42,21 @@ export default function Calendar() {
 
   // Fetch moments with aggressive refresh settings
   const { data: allMoments = [], isLoading: momentsLoading, refetch: refetchMoments } = useQuery<Moment[]>({
-    queryKey: ["/api/moments", refreshKey], // Include refreshKey to force new queries
+    queryKey: ["/api/moments"], // Simplified query key
     enabled: !!user,
     refetchOnWindowFocus: true,
     staleTime: 0, // Always refetch to ensure fresh data
-    gcTime: 0, // Don't cache results (new property name in React Query v5)
     refetchOnMount: "always", // Always refetch on mount
   });
+  
+  // Debug logging for allMoments
+  console.log("All moments from query:", allMoments);
 
   // Filter moments based on selected filters
   const moments = allMoments.filter(moment => {
+    // Debug logging
+    console.log("Filtering moment:", moment);
+    
     if (moment.tags?.includes('Conflict') && !filters.conflict) return false;
     if (moment.tags?.includes('Intimacy') && !filters.intimacy) return false;
     
