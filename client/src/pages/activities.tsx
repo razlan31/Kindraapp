@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useLocation } from "wouter";
 import { Header } from "@/components/layout/header";
 import { BottomNavigation } from "@/components/layout/bottom-navigation";
 import { MomentCard } from "@/components/dashboard/moment-card";
@@ -24,10 +25,20 @@ export default function Activities() {
   const { user, isAuthenticated, loading } = useAuth();
   const { openMomentModal, setSelectedConnection: setModalConnection } = useModal();
   const queryClient = useQueryClient();
+  const [location] = useLocation();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedConnection, setSelectedConnection] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState<'moments' | 'conflicts' | 'intimacy' | 'timeline'>('moments');
   const [refreshTrigger, setRefreshTrigger] = useState(0);
+
+  // Handle URL parameters for connection filtering
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.split('?')[1] || '');
+    const connectionParam = urlParams.get('connection');
+    if (connectionParam) {
+      setSelectedConnection(parseInt(connectionParam));
+    }
+  }, [location]);
 
   // Fetch moments - use simple approach like Dashboard
   const { data: moments = [], isLoading, refetch: refetchMoments } = useQuery<Moment[]>({

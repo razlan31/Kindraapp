@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useLocation } from "wouter";
 import { Header } from "@/components/layout/header";
 import { BottomNavigation } from "@/components/layout/bottom-navigation";
 import { Button } from "@/components/ui/button";
@@ -18,6 +19,7 @@ export default function Calendar() {
   const { user } = useAuth();
   const { openMomentModal, setSelectedConnection } = useModal();
   const queryClient = useQueryClient();
+  const [location] = useLocation();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
   const [dayDetailOpen, setDayDetailOpen] = useState(false);
@@ -39,6 +41,15 @@ export default function Calendar() {
   
   // Connection filter state
   const [selectedConnectionId, setSelectedConnectionId] = useState<number | null>(null);
+
+  // Handle URL parameters for connection filtering
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.split('?')[1] || '');
+    const connectionParam = urlParams.get('connection');
+    if (connectionParam) {
+      setSelectedConnectionId(parseInt(connectionParam));
+    }
+  }, [location]);
   
   // Legend collapse state
   const [isLegendCollapsed, setIsLegendCollapsed] = useState(false);

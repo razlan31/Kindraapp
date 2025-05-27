@@ -381,7 +381,7 @@ export default function ConnectionDetail() {
           <div className="grid grid-cols-2 gap-3">
             <Button 
               variant="outline" 
-              onClick={() => setLocation('/activities')}
+              onClick={() => setLocation(`/activities?connection=${connectionId}`)}
             >
               <Activity className="h-4 w-4 mr-2" />
               View Activities
@@ -389,7 +389,7 @@ export default function ConnectionDetail() {
             
             <Button 
               variant="outline" 
-              onClick={() => setLocation('/calendar')}
+              onClick={() => setLocation(`/calendar?connection=${connectionId}`)}
             >
               <Calendar className="h-4 w-4 mr-2" />
               View Calendar
