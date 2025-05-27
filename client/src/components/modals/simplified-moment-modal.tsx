@@ -213,10 +213,28 @@ export function MomentModal() {
       isIntimate = true;
     }
     
-    // Set default emoji if none selected for conflict/intimacy
-    const finalEmoji = activityType === 'moment' ? emoji : 
-                      activityType === 'conflict' ? '⚡' : 
-                      activityType === 'intimacy' ? '💕' : emoji;
+    // Set emoji based on activity type and moment type
+    let finalEmoji = emoji;
+    if (activityType === 'moment') {
+      // Use moment type to determine emoji
+      switch (momentType) {
+        case 'positive':
+          finalEmoji = '😊';
+          break;
+        case 'negative':
+          finalEmoji = '😕';
+          break;
+        case 'neutral':
+          finalEmoji = '😐';
+          break;
+        default:
+          finalEmoji = emoji;
+      }
+    } else if (activityType === 'conflict') {
+      finalEmoji = '⚡';
+    } else if (activityType === 'intimacy') {
+      finalEmoji = '💕';
+    }
     
     const momentData = {
       connectionId,
