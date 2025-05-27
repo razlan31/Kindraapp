@@ -42,6 +42,13 @@ export function MomentModal() {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [customTag, setCustomTag] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // Milestone-specific state
+  const [isMilestone, setIsMilestone] = useState<boolean>(false);
+  const [milestoneColor, setMilestoneColor] = useState<string>("#3b82f6");
+  const [milestoneIcon, setMilestoneIcon] = useState<string>("star");
+  const [isAnniversary, setIsAnniversary] = useState<boolean>(false);
+  const [isRecurring, setIsRecurring] = useState<boolean>(false);
 
   // Initialize form with existing data when editing
   useEffect(() => {
@@ -447,61 +454,7 @@ export function MomentModal() {
               </div>
             )}
 
-            {/* Preset Tags */}
-            <div className="space-y-2">
-              <div className="text-xs font-medium text-gray-600 dark:text-gray-400">Quick Tags:</div>
-              <div className="flex flex-wrap gap-1">
-                {presetTags.positive.slice(0, 6).map((tag) => (
-                  <Button
-                    key={tag}
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    className={cn(
-                      "h-7 text-xs",
-                      selectedTags.includes(tag) ? "bg-green-100 border-green-300 text-green-800" : ""
-                    )}
-                    onClick={() => selectedTags.includes(tag) ? removeTag(tag) : addTag(tag)}
-                  >
-                    {tag}
-                  </Button>
-                ))}
-              </div>
-              <div className="flex flex-wrap gap-1">
-                {presetTags.negative.slice(0, 4).map((tag) => (
-                  <Button
-                    key={tag}
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    className={cn(
-                      "h-7 text-xs",
-                      selectedTags.includes(tag) ? "bg-red-100 border-red-300 text-red-800" : ""
-                    )}
-                    onClick={() => selectedTags.includes(tag) ? removeTag(tag) : addTag(tag)}
-                  >
-                    {tag}
-                  </Button>
-                ))}
-              </div>
-              <div className="flex flex-wrap gap-1">
-                {presetTags.intimate.slice(0, 4).map((tag) => (
-                  <Button
-                    key={tag}
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    className={cn(
-                      "h-7 text-xs",
-                      selectedTags.includes(tag) ? "bg-pink-100 border-pink-300 text-pink-800" : ""
-                    )}
-                    onClick={() => selectedTags.includes(tag) ? removeTag(tag) : addTag(tag)}
-                  >
-                    {tag}
-                  </Button>
-                ))}
-              </div>
-            </div>
+
 
             {/* Custom Tag Input */}
             <div className="flex gap-2">
@@ -682,8 +635,106 @@ export function MomentModal() {
             </div>
           )}
 
+          {/* Milestone Toggle - Only show for regular moments */}
+          {activityType === 'moment' && (
+            <div className="space-y-4 pt-4 border-t">
+              <div className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  id="milestone-toggle"
+                  checked={isMilestone}
+                  onChange={(e) => setIsMilestone(e.target.checked)}
+                  className="rounded border-gray-300"
+                />
+                <label htmlFor="milestone-toggle" className="text-sm font-medium">
+                  Mark as milestone
+                </label>
+              </div>
+
+              {/* Milestone Options - Show when toggle is enabled */}
+              {isMilestone && (
+                <div className="space-y-4 pl-6 border-l-2 border-primary/20">
+                  {/* Icon Selection */}
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Icon</label>
+                    <div className="flex flex-wrap gap-2">
+                      {['star', 'heart', 'gift', 'trophy', 'home', 'plane', 'ring'].map((icon) => (
+                        <Button
+                          key={icon}
+                          type="button"
+                          variant={milestoneIcon === icon ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setMilestoneIcon(icon)}
+                          className="text-lg"
+                        >
+                          {icon === 'star' && '⭐'}
+                          {icon === 'heart' && '💖'}
+                          {icon === 'gift' && '🎁'}
+                          {icon === 'trophy' && '🏆'}
+                          {icon === 'home' && '🏠'}
+                          {icon === 'plane' && '✈️'}
+                          {icon === 'ring' && '💍'}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Color Selection */}
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Color</label>
+                    <div className="flex flex-wrap gap-2">
+                      {['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899'].map((color) => (
+                        <Button
+                          key={color}
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setMilestoneColor(color)}
+                          className="w-8 h-8 p-0 rounded-full border-2"
+                          style={{ 
+                            backgroundColor: color,
+                            borderColor: milestoneColor === color ? '#000' : color
+                          }}
+                        />
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Anniversary and Recurring toggles */}
+                  <div className="space-y-3">
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        id="anniversary-toggle"
+                        checked={isAnniversary}
+                        onChange={(e) => setIsAnniversary(e.target.checked)}
+                        className="rounded border-gray-300"
+                      />
+                      <label htmlFor="anniversary-toggle" className="text-sm">
+                        Anniversary (yearly reminder)
+                      </label>
+                    </div>
+
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        id="recurring-toggle"
+                        checked={isRecurring}
+                        onChange={(e) => setIsRecurring(e.target.checked)}
+                        className="rounded border-gray-300"
+                      />
+                      <label htmlFor="recurring-toggle" className="text-sm">
+                        Recurring milestone
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Action Buttons */}
-          <div className="flex justify-between items-center pt-4">
+          <div className="flex justify-between items-center pt-4 border-t">
             {editingMoment && (
               <Button 
                 variant="destructive" 
