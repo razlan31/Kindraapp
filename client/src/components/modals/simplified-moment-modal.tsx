@@ -87,7 +87,7 @@ export function MomentModal() {
       setResolvedDate(new Date());
       setIntimacyRating(5);
     }
-  }, [editingMoment, selectedConnectionId, activityType]);
+  }, [editingMoment, selectedConnectionId, activityType, selectedDate]);
 
   // Tag handling functions
   const addTag = (tag: string) => {
