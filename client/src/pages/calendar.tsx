@@ -70,26 +70,13 @@ export default function Calendar() {
     staleTime: 0,
   });
 
-  // Fetch milestones - FORCE EXECUTION FOR DEBUGGING
+  // Fetch milestones
   const { data: milestones = [] } = useQuery({
     queryKey: ["/api/milestones", selectedConnectionId],
-    queryFn: async () => {
-      const queryString = selectedConnectionId ? `?connectionId=${selectedConnectionId}` : '';
-      console.log("🔍 CALENDAR DEBUG - Fetching milestones with query:", queryString);
-      const response = await fetch(`/api/milestones${queryString}`, {
-        credentials: 'include'
-      });
-      const data = await response.json();
-      console.log("🔍 CALENDAR DEBUG - Milestones fetched:", data);
-      return data;
-    },
     staleTime: 0,
   });
 
-  console.log("🔍 CALENDAR DEBUG - Current milestones state:", milestones);
-  console.log("🔍 CALENDAR DEBUG - Selected connection ID:", selectedConnectionId);
-  console.log("🔍 CALENDAR DEBUG - User state:", !!user);
-  console.log("🔍 CALENDAR DEBUG - Query enabled condition:", !!user);
+
   
   // Debug logging for allMoments
   console.log("All moments from query:", allMoments);
@@ -444,23 +431,15 @@ export default function Calendar() {
                 const dayMoments = getMomentsForDay(day);
                 
                 // Get milestones for this day
-                const dayMilestones = milestones.filter(milestone => {
+                const dayMilestones = (milestones as any[])?.filter((milestone: any) => {
                   const milestoneDate = new Date(milestone.date);
                   const isSameDayMatch = isSameDay(milestoneDate, day);
                   const isAnniversaryMatch = milestone.isAnniversary && 
                     milestoneDate.getDate() === day.getDate() &&
                     milestoneDate.getMonth() === day.getMonth();
                   
-                  if (isSameDayMatch || isAnniversaryMatch) {
-                    console.log("🔍 MILESTONE MATCH - Day:", format(day, 'yyyy-MM-dd'), "Milestone:", milestone.title, "Date:", milestone.date);
-                  }
-                  
                   return isSameDayMatch || isAnniversaryMatch;
-                });
-                
-                if (dayMilestones.length > 0) {
-                  console.log("🔍 MILESTONES FOR DAY", format(day, 'yyyy-MM-dd'), ":", dayMilestones);
-                }
+                }) || [];
                 
                 const isToday = isSameDay(day, new Date());
                 

@@ -6,6 +6,7 @@ import { BottomNavigation } from "@/components/layout/bottom-navigation";
 import { MomentCard } from "@/components/dashboard/moment-card";
 import { ReflectionModal } from "@/components/modals/reflection-modal";
 import { EntryDetailModal } from "@/components/modals/entry-detail-modal";
+import { MilestoneModal } from "@/components/modals/milestone-modal";
 import { Moment, Connection } from "@shared/schema";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
@@ -28,7 +29,7 @@ export default function Activities() {
   const [location] = useLocation();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedConnection, setSelectedConnection] = useState<number | null>(null);
-  const [activeTab, setActiveTab] = useState<'moments' | 'conflicts' | 'intimacy' | 'timeline'>('moments');
+  const [activeTab, setActiveTab] = useState<'moments' | 'conflicts' | 'intimacy' | 'timeline' | 'milestones'>('moments');
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   // Handle navigation connection filtering
@@ -89,6 +90,9 @@ export default function Activities() {
   const [entryDetailModalOpen, setEntryDetailModalOpen] = useState(false);
   const [selectedMomentForDetail, setSelectedMomentForDetail] = useState<Moment | null>(null);
   const [selectedConnectionForDetail, setSelectedConnectionForDetail] = useState<Connection | null>(null);
+  
+  // Milestone modal state
+  const [milestoneModalOpen, setMilestoneModalOpen] = useState(false);
 
   const handleAddReflection = (momentId: number) => {
     console.log("Add reflection for moment:", momentId);
@@ -268,10 +272,10 @@ export default function Activities() {
           </Card>
           
           {/* Activity Type Tabs */}
-          <div className="flex space-x-1 bg-muted rounded-lg p-1 mb-4">
+          <div className="grid grid-cols-2 gap-1 bg-muted rounded-lg p-1 mb-4">
             <button 
               onClick={() => setActiveTab('timeline')}
-              className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+              className={`py-2 px-3 rounded-md text-sm font-medium transition-colors ${
                 activeTab === 'timeline' 
                   ? 'bg-background text-foreground shadow-sm' 
                   : 'text-muted-foreground hover:text-foreground'
@@ -280,8 +284,18 @@ export default function Activities() {
               Timeline
             </button>
             <button 
+              onClick={() => setActiveTab('milestones')}
+              className={`py-2 px-3 rounded-md text-sm font-medium transition-colors ${
+                activeTab === 'milestones' 
+                  ? 'bg-background text-foreground shadow-sm' 
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              Milestones
+            </button>
+            <button 
               onClick={() => setActiveTab('moments')}
-              className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+              className={`py-2 px-3 rounded-md text-sm font-medium transition-colors ${
                 activeTab === 'moments' 
                   ? 'bg-background text-foreground shadow-sm' 
                   : 'text-muted-foreground hover:text-foreground'
@@ -290,18 +304,8 @@ export default function Activities() {
               Moments
             </button>
             <button 
-              onClick={() => setActiveTab('conflicts')}
-              className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
-                activeTab === 'conflicts' 
-                  ? 'bg-background text-foreground shadow-sm' 
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              Conflicts
-            </button>
-            <button 
               onClick={() => setActiveTab('intimacy')}
-              className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+              className={`py-2 px-3 rounded-md text-sm font-medium transition-colors ${
                 activeTab === 'intimacy' 
                   ? 'bg-background text-foreground shadow-sm' 
                   : 'text-muted-foreground hover:text-foreground'
