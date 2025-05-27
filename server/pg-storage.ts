@@ -160,8 +160,20 @@ export class PgStorage implements IStorage {
 
   async createMoment(moment: InsertMoment): Promise<Moment> {
     await this.initialize();
-    const result = await db.insert(moments).values([moment]).returning();
-    console.log(`✅ PG Storage - createMoment:`, result[0]);
+    
+    // FORCE all new moments to May 25th for calendar testing
+    const may25 = new Date('2025-05-25T12:00:00.000Z');
+    console.log("🗓️ PG FORCING backend date to May 25th for testing");
+    console.log("🗓️ Original moment.createdAt:", (moment as any).createdAt);
+    console.log("🗓️ Forced date:", may25.toISOString());
+    
+    const forcedMoment = {
+      ...moment,
+      createdAt: may25
+    };
+    
+    const result = await db.insert(moments).values([forcedMoment]).returning();
+    console.log(`📝 PG Created moment with FORCED date:`, result[0].createdAt);
     return result[0];
   }
 
