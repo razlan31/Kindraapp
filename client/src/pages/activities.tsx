@@ -8,7 +8,7 @@ import { ReflectionModal } from "@/components/modals/reflection-modal";
 import { EntryDetailModal } from "@/components/modals/entry-detail-modal";
 import { MilestoneModal } from "@/components/modals/milestone-modal";
 import { PlanModal } from "@/components/modals/plan-modal";
-import { Moment, Connection } from "@shared/schema";
+import { Moment, Connection, Plan } from "@shared/schema";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
 import { useModal } from "@/contexts/modal-context";
@@ -73,6 +73,13 @@ export default function Activities() {
   // Fetch milestones
   const { data: milestones = [] } = useQuery({
     queryKey: ["/api/milestones", selectedConnection],
+    staleTime: 0,
+    enabled: !!user,
+  });
+
+  // Fetch plans
+  const { data: plans = [] } = useQuery<Plan[]>({
+    queryKey: ["/api/plans", selectedConnection],
     staleTime: 0,
     enabled: !!user,
   });
@@ -179,6 +186,19 @@ export default function Activities() {
     
     return grouped;
   };
+
+  // Filter plans based on search and selected connection
+  const filteredPlans = plans.filter(plan => {
+    const connection = connections.find(c => c.id === plan.connectionId);
+    if (!connection) return false;
+    
+    const matchesSearch = plan.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         (plan.description && plan.description.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                         connection.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesConnection = selectedConnection ? plan.connectionId === selectedConnection : true;
+    
+    return matchesSearch && matchesConnection;
+  });
 
   // Filter moments based on tab, search and selected connection
   const filteredMoments = moments.filter(moment => {
@@ -554,6 +574,51 @@ export default function Activities() {
                 </p>
               </Card>
             )
+          ) : activeTab === 'plans' && filteredPlans.length > 0 ? (
+            // Plans view
+            <div className="space-y-4">
+              {filteredPlans.map(plan => {
+                const connection = connections.find(c => c.id === plan.connectionId);
+                if (!connection) return null;
+
+                return (
+                  <Card key={plan.id} className="p-4">
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">📅</span>
+                        <div>
+                          <h3 className="font-medium">{plan.title}</h3>
+                          <p className="text-sm text-muted-foreground">with {connection.name}</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm font-medium">
+                          {format(new Date(plan.scheduledDate), 'MMM d, yyyy')}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {format(new Date(plan.scheduledDate), 'h:mm a')}
+                        </p>
+                      </div>
+                    </div>
+                    
+                    {plan.description && (
+                      <p className="text-sm text-muted-foreground mb-2">{plan.description}</p>
+                    )}
+                    
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs px-2 py-1 bg-blue-100 text-blue-800 rounded-full">
+                        {plan.category}
+                      </span>
+                      {plan.isCompleted && (
+                        <span className="text-xs px-2 py-1 bg-green-100 text-green-800 rounded-full">
+                          Completed
+                        </span>
+                      )}
+                    </div>
+                  </Card>
+                );
+              })}
+            </div>
           ) : filteredMoments.length > 0 ? (
             // Regular tabbed view
             <div>

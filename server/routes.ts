@@ -764,6 +764,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Plan routes
+  app.get("/api/plans", isAuthenticated, async (req: Request, res: Response) => {
+    try {
+      const userId = req.session.userId as number;
+      const plans = await storage.getPlans(userId);
+      res.json(plans);
+    } catch (error) {
+      console.error('Error fetching plans:', error);
+      res.status(500).json({ message: "Failed to fetch plans" });
+    }
+  });
+
   app.post("/api/plans", isAuthenticated, async (req: Request, res: Response) => {
     try {
       const userId = req.session.userId as number;
