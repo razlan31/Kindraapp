@@ -171,13 +171,20 @@ export function MomentModal() {
   // Create moment mutation
   const { mutate: createMoment } = useMutation({
     mutationFn: async (data: any) => {
+      console.log("🔥 FORM SUBMISSION - Data being sent to API:", data);
+      console.log("🔥 FORM SUBMISSION - data.createdAt:", data.createdAt);
+      console.log("🔥 FORM SUBMISSION - JSON.stringify result:", JSON.stringify(data));
+      
       const response = await fetch("/api/moments", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
       if (!response.ok) throw new Error('Failed to create moment');
-      return response.json();
+      const result = await response.json();
+      console.log("🔥 FORM SUBMISSION - API response:", result);
+      console.log("🔥 FORM SUBMISSION - result.createdAt:", result.createdAt);
+      return result;
     },
     onSuccess: () => {
       toast({
@@ -517,12 +524,31 @@ export function MomentModal() {
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0">
-                <Calendar
-                  mode="single"
-                  selected={localSelectedDate}
-                  onSelect={(date) => date && setLocalSelectedDate(date)}
-                  initialFocus
-                />
+                <div className="p-3">
+                  <Calendar
+                    mode="single"
+                    selected={localSelectedDate}
+                    onSelect={(date) => date && setLocalSelectedDate(date)}
+                    initialFocus
+                  />
+                  <div className="flex justify-between items-center mt-3 pt-3 border-t">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setLocalSelectedDate(new Date())}
+                    >
+                      Today
+                    </Button>
+                    <div className="flex gap-2">
+                      <Button variant="outline" size="sm" onClick={() => {}}>
+                        Cancel
+                      </Button>
+                      <Button size="sm" onClick={() => {}}>
+                        Done
+                      </Button>
+                    </div>
+                  </div>
+                </div>
               </PopoverContent>
             </Popover>
           </div>
@@ -574,12 +600,31 @@ export function MomentModal() {
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-auto p-0">
-                        <Calendar
-                          mode="single"
-                          selected={resolvedDate}
-                          onSelect={(date) => date && setResolvedDate(date)}
-                          initialFocus
-                        />
+                        <div className="p-3">
+                          <Calendar
+                            mode="single"
+                            selected={resolvedDate}
+                            onSelect={(date) => date && setResolvedDate(date)}
+                            initialFocus
+                          />
+                          <div className="flex justify-between items-center mt-3 pt-3 border-t">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setResolvedDate(new Date())}
+                            >
+                              Today
+                            </Button>
+                            <div className="flex gap-2">
+                              <Button variant="outline" size="sm" onClick={() => {}}>
+                                Cancel
+                              </Button>
+                              <Button size="sm" onClick={() => {}}>
+                                Done
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
                       </PopoverContent>
                     </Popover>
                   </div>
