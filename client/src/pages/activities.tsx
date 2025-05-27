@@ -349,7 +349,11 @@ export default function Activities() {
                               // If it appears in conflicts tab (has conflict emoji but no conflict resolution)
                               if (moment.emoji === '😠' && !tags.includes('Conflict') && moment.isResolved !== true) return 'conflict';
                               
-                              // Check if it's a negative moment (sad emojis or red flags, but not conflicts)
+                              // Check moment type based on emoji (standardized emojis from the form)
+                              if (moment.emoji === '😕') return 'negative';  // Negative moment
+                              if (moment.emoji === '😐') return 'neutral';   // Neutral moment
+                              
+                              // Check if it's a negative moment (other sad emojis or red flags, but not conflicts)
                               if (moment.emoji === '😔' || moment.emoji === '😞' || moment.emoji === '😟' || 
                                   moment.emoji === '🙁' || moment.tags?.includes('Red Flag')) return 'negative';
                               
@@ -361,6 +365,7 @@ export default function Activities() {
                             const typeColors = {
                               positive: 'bg-green-100 border-green-300 text-green-700 dark:bg-green-900/20 dark:border-green-700 dark:text-green-300',
                               negative: 'bg-orange-100 border-orange-300 text-orange-700 dark:bg-orange-900/20 dark:border-orange-700 dark:text-orange-300',
+                              neutral: 'bg-blue-100 border-blue-300 text-blue-700 dark:bg-blue-900/20 dark:border-blue-700 dark:text-blue-300',
                               conflict: 'bg-red-100 border-red-300 text-red-700 dark:bg-red-900/20 dark:border-red-700 dark:text-red-300',
                               intimacy: 'bg-pink-100 border-pink-300 text-pink-700 dark:bg-pink-900/20 dark:border-pink-700 dark:text-pink-300'
                             };
