@@ -543,7 +543,10 @@ export default function Calendar() {
       {selectedEntry && (
         <EntryDetailModal
           isOpen={entryDetailOpen}
-          onClose={() => setEntryDetailOpen(false)}
+          onClose={() => {
+            setEntryDetailOpen(false);
+            refetchMoments(); // Refresh data when modal closes
+          }}
           moment={selectedEntry}
           connection={connections.find(c => c.id === selectedEntry.connectionId) || null}
         />
