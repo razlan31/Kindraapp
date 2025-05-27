@@ -205,15 +205,24 @@ export function MomentModal() {
       if (!response.ok) throw new Error('Failed to update moment');
       return response.json();
     },
-    onSuccess: () => {
+    onSuccess: (updatedData) => {
       toast({
         title: "Entry updated successfully",
         description: "Your changes have been saved.",
       });
+      
+      // Optimistically update the cache with the new data
+      queryClient.setQueryData(['/api/moments'], (oldData: any) => {
+        if (!oldData) return oldData;
+        return oldData.map((moment: any) => 
+          moment.id === editingMoment?.id ? { ...moment, ...updatedData } : moment
+        );
+      });
+      
       closeMomentModal();
       setIsSubmitting(false);
       
-      // Properly invalidate cache to trigger immediate refetch
+      // Also invalidate to ensure fresh data
       queryClient.invalidateQueries({ queryKey: ['/api/moments'] });
     },
     onError: (error: any) => handleError(error),
