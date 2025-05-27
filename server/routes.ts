@@ -767,7 +767,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/plans", isAuthenticated, async (req: Request, res: Response) => {
     try {
       const userId = req.session.userId as number;
+      console.log('📋 GET /api/plans - Fetching for user', userId);
       const plans = await storage.getPlans(userId);
+      console.log('📋 Plans found:', plans.length, plans);
       res.json(plans);
     } catch (error) {
       console.error('Error fetching plans:', error);
@@ -779,8 +781,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = req.session.userId as number;
       const planData = { ...req.body, userId };
+      console.log('📋 Creating plan for user', userId, 'data:', planData);
       
       const plan = await storage.createPlan(planData);
+      console.log('📋 Plan created successfully:', plan);
       res.status(201).json(plan);
     } catch (error) {
       console.error('Error creating plan:', error);
