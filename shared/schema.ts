@@ -206,3 +206,30 @@ export const milestoneSchema = createInsertSchema(milestones).omit({ id: true })
 });
 export type InsertMilestone = z.infer<typeof milestoneSchema>;
 export type Milestone = typeof milestones.$inferSelect;
+
+// Plans table for future activities with connections
+export const plans = pgTable("plans", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  connectionId: integer("connection_id").notNull(),
+  title: text("title").notNull(),
+  description: text("description"),
+  category: text("category").notNull(), // "date", "call", "movie", "hiking", "dinner", "other"
+  scheduledDate: timestamp("scheduled_date").notNull(),
+  location: text("location"),
+  isCompleted: boolean("is_completed").default(false),
+  completedAt: timestamp("completed_at"),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const planSchema = createInsertSchema(plans).omit({ id: true }).extend({
+  scheduledDate: z.string().or(z.date()).transform((val) => {
+    if (typeof val === 'string') {
+      return new Date(val);
+    }
+    return val;
+  }),
+});
+export type InsertPlan = z.infer<typeof planSchema>;
+export type Plan = typeof plans.$inferSelect;

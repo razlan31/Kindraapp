@@ -5,7 +5,8 @@ import {
   Badge, InsertBadge, badges,
   UserBadge, InsertUserBadge, userBadges,
   MenstrualCycle, InsertMenstrualCycle, menstrualCycles,
-  Milestone, InsertMilestone, milestones
+  Milestone, InsertMilestone, milestones,
+  Plan, InsertPlan, plans
 } from "@shared/schema";
 
 export interface IStorage {
@@ -51,6 +52,13 @@ export interface IStorage {
   createMilestone(milestone: InsertMilestone): Promise<Milestone>;
   updateMilestone(id: number, data: Partial<Milestone>): Promise<Milestone | undefined>;
   deleteMilestone(id: number): Promise<boolean>;
+  
+  // Plan operations
+  getPlans(userId: number): Promise<Plan[]>;
+  getPlansByConnectionId(connectionId: number): Promise<Plan[]>;
+  createPlan(plan: InsertPlan): Promise<Plan>;
+  updatePlan(id: number, data: Partial<Plan>): Promise<Plan | undefined>;
+  deletePlan(id: number): Promise<boolean>;
 }
 
 export class MemStorage implements IStorage {
@@ -61,6 +69,7 @@ export class MemStorage implements IStorage {
   private userBadges: Map<number, UserBadge>;
   private menstrualCycles: Map<number, MenstrualCycle>;
   private milestones: Map<number, Milestone>;
+  private plans: Map<number, Plan>;
   
   private userId: number;
   private connectionId: number;
@@ -69,6 +78,7 @@ export class MemStorage implements IStorage {
   private userBadgeId: number;
   private menstrualCycleId: number;
   private milestoneId: number;
+  private planId: number;
 
   constructor() {
     // Initialize maps for storage
@@ -79,6 +89,7 @@ export class MemStorage implements IStorage {
     this.userBadges = new Map();
     this.menstrualCycles = new Map();
     this.milestones = new Map();
+    this.plans = new Map();
     
     // Initialize auto-incrementing IDs
     this.userId = 1;
@@ -88,6 +99,7 @@ export class MemStorage implements IStorage {
     this.userBadgeId = 1;
     this.menstrualCycleId = 1;
     this.milestoneId = 1;
+    this.planId = 1;
     
     // Initialize default badges
     this.initializeDefaultBadges();

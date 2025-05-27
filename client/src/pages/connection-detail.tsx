@@ -114,7 +114,7 @@ export default function ConnectionDetail() {
   
   const [isDeleting, setIsDeleting] = useState(false);
   const [milestoneModalOpen, setMilestoneModalOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<'moments' | 'conflicts' | 'intimacy' | 'timeline'>('moments');
+  const [activeTab, setActiveTab] = useState<'moments' | 'conflicts' | 'intimacy' | 'plans' | 'timeline'>('moments');
 
   const handleDelete = async () => {
     if (isDeleting) return; // Prevent double-clicking
