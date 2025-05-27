@@ -64,6 +64,8 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const closeMomentModal = () => {
     setMomentModalOpen(false);
+    // Reset selected date when closing modal
+    setSelectedDate(null);
     // Don't reset the selected connection ID here so it can be used when the modal is opened
   };
 

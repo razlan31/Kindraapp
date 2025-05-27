@@ -45,14 +45,18 @@ export function MomentModal() {
   // Initialize form with existing data when editing
   useEffect(() => {
     console.log("Modal useEffect - selectedDate from context:", selectedDate);
+    console.log("Modal useEffect - editingMoment:", editingMoment);
     
-    // Set the local selected date from context or default to today
-    if (selectedDate) {
-      console.log("Setting localSelectedDate to selectedDate:", selectedDate);
-      setLocalSelectedDate(selectedDate);
-    } else if (!editingMoment) {
-      console.log("No selectedDate, defaulting to today");
-      setLocalSelectedDate(new Date());
+    // For new entries, always use selectedDate if available, otherwise today
+    if (!editingMoment) {
+      if (selectedDate) {
+        console.log("Setting localSelectedDate to selectedDate:", selectedDate);
+        setLocalSelectedDate(selectedDate);
+      } else {
+        console.log("No selectedDate provided, using today as fallback");
+        // Set to today by default, but user can change it with the date picker
+        setLocalSelectedDate(new Date());
+      }
     }
     
     if (editingMoment) {
