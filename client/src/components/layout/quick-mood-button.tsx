@@ -7,7 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Connection } from "@shared/schema";
 
 export function QuickMoodButton() {
-  const { openMoodTrackerModal } = useModal();
+  const { openMomentModal, setSelectedConnection: setModalSelectedConnection } = useModal();
   const [location] = useLocation();
   const [showConnections, setShowConnections] = useState(false);
   const [selectedConnection, setSelectedConnection] = useState<Connection | null>(null);
@@ -52,8 +52,10 @@ export function QuickMoodButton() {
                 className="w-full justify-start text-left"
                 onClick={() => {
                   setSelectedConnection(connection);
+                  setModalSelectedConnection(connection.id, connection);
                   setShowConnections(false);
-                  openMoodTrackerModal(connection);
+                  // Use moment modal instead of mood tracker for proper date handling
+                  openMomentModal('moment', undefined, new Date());
                 }}
               >
                 {connection.name}
