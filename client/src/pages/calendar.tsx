@@ -85,6 +85,12 @@ export default function Calendar() {
     }
   }, [user, moments.length, momentsLoading, refetchMoments]);
 
+  // Force calendar re-render when moments change
+  const [forceUpdate, setForceUpdate] = useState(0);
+  useEffect(() => {
+    setForceUpdate(prev => prev + 1);
+  }, [moments]);
+
   // Get moment type and display info
   const getMomentDisplayInfo = (moment: Moment) => {
     const tags = moment.tags || [];
@@ -222,7 +228,7 @@ export default function Calendar() {
             </div>
 
             {/* Calendar Days */}
-            <div className="grid grid-cols-7 gap-1">
+            <div key={`calendar-${forceUpdate}-${moments.length}`} className="grid grid-cols-7 gap-1">
               {/* Empty cells for days before month start */}
               {Array.from({ length: getDay(monthStart) }).map((_, index) => (
                 <div key={`empty-${index}`} className="h-16"></div>
