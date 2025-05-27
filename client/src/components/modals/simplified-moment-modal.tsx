@@ -140,6 +140,9 @@ export function MomentModal() {
   // Reflection field
   const [reflection, setReflection] = useState('');
   
+  // Date picker state
+  const [datePickerOpen, setDatePickerOpen] = useState(false);
+  
   // Fetch user connections
   const { data: connections = [] } = useQuery<Connection[]>({
     queryKey: ["/api/connections"],
@@ -512,17 +515,17 @@ export function MomentModal() {
           {/* Date Selection */}
           <div className="space-y-2">
             <label className="text-sm font-medium">Date</label>
-            <Popover>
+            <Popover open={datePickerOpen} onOpenChange={setDatePickerOpen}>
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
                   className={cn(
                     "w-full justify-start text-left font-normal",
-                    !selectedDate && "text-muted-foreground"
+                    !localSelectedDate && "text-muted-foreground"
                   )}
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
-                  {selectedDate ? format(selectedDate, "PPP") : <span>Pick a date</span>}
+                  {localSelectedDate ? format(localSelectedDate, "PPP") : <span>Pick a date</span>}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0">
@@ -530,22 +533,37 @@ export function MomentModal() {
                   <Calendar
                     mode="single"
                     selected={localSelectedDate}
-                    onSelect={(date) => date && setLocalSelectedDate(date)}
+                    onSelect={(date) => {
+                      if (date) {
+                        setLocalSelectedDate(date);
+                        setDatePickerOpen(false);
+                      }
+                    }}
                     initialFocus
                   />
                   <div className="flex justify-between items-center mt-3 pt-3 border-t">
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => setLocalSelectedDate(new Date())}
+                      onClick={() => {
+                        setLocalSelectedDate(new Date());
+                        setDatePickerOpen(false);
+                      }}
                     >
                       Today
                     </Button>
                     <div className="flex gap-2">
-                      <Button variant="outline" size="sm" onClick={() => {}}>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => setDatePickerOpen(false)}
+                      >
                         Cancel
                       </Button>
-                      <Button size="sm" onClick={() => {}}>
+                      <Button 
+                        size="sm" 
+                        onClick={() => setDatePickerOpen(false)}
+                      >
                         Done
                       </Button>
                     </div>
