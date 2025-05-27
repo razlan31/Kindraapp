@@ -265,23 +265,7 @@ export default function Activities() {
 
           </div>
           
-          {/* Flag Legend */}
-          <div className="bg-muted/30 rounded-lg p-3 mb-3">
-            <div className="flex justify-center items-center gap-6">
-              <div className="flex items-center gap-1.5">
-                <div className="h-3 w-3 rounded-full bg-greenFlag/20 flex items-center justify-center">
-                  <span className="text-greenFlag text-[8px] font-bold">G</span>
-                </div>
-                <span className="text-[10px] text-greenFlag">Green: Positive</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <div className="h-3 w-3 rounded-full bg-redFlag/20 flex items-center justify-center">
-                  <span className="text-redFlag text-[8px] font-bold">R</span>
-                </div>
-                <span className="text-[10px] text-redFlag">Red: Concerning</span>
-              </div>
-            </div>
-          </div>
+
         </section>
 
         {/* Moments List */}
