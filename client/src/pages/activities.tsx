@@ -185,9 +185,52 @@ export default function Activities() {
       <Header />
 
       <main className="flex-1 overflow-y-auto pb-20">
-        {/* Page Title */}
+        {/* Page Title and Connection Picker */}
         <div className="px-4 pt-4 pb-2">
           <h1 className="text-2xl font-bold mb-4">Activities</h1>
+          
+          {/* Connection Picker - Primary Selection */}
+          <Card className="p-4 bg-card/50 backdrop-blur-sm mb-4">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-medium">Viewing activities for</h3>
+              <span className="text-xs text-muted-foreground">
+                {selectedConnection ? 
+                  connections.find(c => c.id === selectedConnection)?.name || 'Unknown' : 
+                  'All Connections'
+                }
+              </span>
+            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="w-full justify-between">
+                  <span>
+                    {selectedConnection ? 
+                      connections.find(c => c.id === selectedConnection)?.name || 'Select Connection' : 
+                      'All Connections'
+                    }
+                  </span>
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-[var(--radix-dropdown-menu-trigger-width)]" sideOffset={4}>
+                <DropdownMenuItem 
+                  onClick={() => setSelectedConnection(null)}
+                  className="py-3 px-4 text-base"
+                >
+                  All Connections
+                </DropdownMenuItem>
+                {connections.map((connection) => (
+                  <DropdownMenuItem 
+                    key={connection.id}
+                    onClick={() => setSelectedConnection(connection.id)}
+                    className="py-3 px-4 text-base"
+                  >
+                    {connection.name}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </Card>
           
           {/* Activity Type Tabs */}
           <div className="flex space-x-1 bg-muted rounded-lg p-1 mb-4">
@@ -251,58 +294,13 @@ export default function Activities() {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-neutral-500" />
               <Input
                 type="text"
-                placeholder="Search moments..."
+                placeholder="Search activities..."
                 className="pl-9"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
           </div>
-
-          {/* Connection Filter - More Visible */}
-          <Card className="p-4 bg-card/50 backdrop-blur-sm mb-3">
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="text-sm font-medium">Filter by Connection</h3>
-              <span className="text-xs text-muted-foreground">
-                {selectedConnection ? 
-                  connections.find(c => c.id === selectedConnection)?.name || 'Unknown' : 
-                  'All Connections'
-                }
-              </span>
-            </div>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="w-full justify-between">
-                  <span>
-                    {selectedConnection ? 
-                      connections.find(c => c.id === selectedConnection)?.name || 'Select Connection' : 
-                      'All Connections'
-                    }
-                  </span>
-                  <ChevronDown className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-[var(--radix-dropdown-menu-trigger-width)]" sideOffset={4}>
-                <DropdownMenuItem 
-                  onClick={() => setSelectedConnection(null)}
-                  className="py-3 px-4 text-base"
-                >
-                  All Connections
-                </DropdownMenuItem>
-                {connections.map((connection) => (
-                  <DropdownMenuItem 
-                    key={connection.id}
-                    onClick={() => setSelectedConnection(connection.id)}
-                    className="py-3 px-4 text-base"
-                  >
-                    {connection.name}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </Card>
-          
-
         </section>
 
         {/* Content Area */}
