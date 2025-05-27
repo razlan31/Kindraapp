@@ -177,16 +177,20 @@ export default function Calendar() {
                 <span>Positive Moments</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                <span>Conflicts</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-pink-500"></div>
-                <span>Intimacy</span>
+                <div className="w-3 h-3 rounded-full bg-orange-500"></div>
+                <span>Negative Moments</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-                <span>Communication</span>
+                <span>Neutral Moments</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-sm">⚡</span>
+                <span>Conflicts</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-sm">💕</span>
+                <span>Intimacy</span>
               </div>
             </div>
           </Card>
