@@ -362,6 +362,31 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection, onUpdate
             </div>
           )}
 
+          {/* Plan Completion Info */}
+          {activityType === 'plan' && (
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Plan Status</label>
+              <div className="flex items-center gap-2">
+                <Badge variant={moment?.isCompleted ? "default" : "secondary"}>
+                  {moment?.isCompleted ? "Completed" : "Pending"}
+                </Badge>
+                {moment?.isCompleted && moment?.completedAt && (
+                  <span className="text-xs text-gray-500">
+                    completed on {format(new Date(moment.completedAt), "PPP")}
+                  </span>
+                )}
+              </div>
+              {moment?.isCompleted && moment?.reflection && (
+                <p className="text-sm bg-purple-50 dark:bg-purple-900 p-3 rounded-md">
+                  <strong>Reflection:</strong> {moment.reflection}
+                </p>
+              )}
+              <div className="text-xs text-gray-500">
+                Created on {format(new Date(moment?.createdAt || new Date()), "PPP")}
+              </div>
+            </div>
+          )}
+
           {/* Tags Section - Only show for regular moments */}
           {!freshMoment.tags?.includes('Conflict') && !freshMoment.isIntimate && !freshMoment.tags?.includes('Intimacy') && (
           <div className="space-y-2">
