@@ -32,14 +32,11 @@ interface PlanModalProps {
 const planSchema = z.object({
   title: z.string().min(1, "Title is required"),
   description: z.string().optional(),
-  date: z.date(),
+  scheduledDate: z.date(),
   connectionId: z.number(),
-  color: z.string().optional(),
-  icon: z.string().optional(),
-  isAnniversary: z.boolean().optional(),
-  isRecurring: z.boolean().optional(),
-  isCompleted: z.boolean().optional(),
-  reflection: z.string().optional()
+  category: z.string().default("other"),
+  notes: z.string().optional(),
+  isCompleted: z.boolean().optional()
 });
 
 type PlanFormData = z.infer<typeof planSchema>;
@@ -54,10 +51,11 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
   const [formData, setFormData] = useState<Partial<PlanFormData>>({
     title: "",
     description: "",
-    date: selectedDate || new Date(),
+    scheduledDate: selectedDate || new Date(),
     connectionId: localSelectedConnection?.id || selectedConnection?.id,
-    color: "#3b82f6", // Default blue color
-    icon: "📅"
+    category: "other",
+    notes: "",
+    isCompleted: false
   });
 
   // Milestone state
@@ -113,10 +111,11 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
     setFormData({
       title: "",
       description: "",
-      date: selectedDate || new Date(),
+      scheduledDate: selectedDate || new Date(),
       connectionId: localSelectedConnection?.id || selectedConnection?.id,
-      color: "#3b82f6",
-      icon: "📅"
+      category: "other",
+      notes: "",
+      isCompleted: false
     });
     setLocalSelectedConnection(selectedConnection);
     
@@ -137,7 +136,7 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
     
     const connectionId = localSelectedConnection?.id || formData.connectionId;
     
-    if (!formData.title || !formData.date || !connectionId) {
+    if (!formData.title || !formData.scheduledDate || !connectionId) {
       toast({
         title: "Missing information",
         description: "Please fill in all required fields and select a connection.",
@@ -152,7 +151,7 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
         connectionId,
         title: formData.title.trim(),
         description: formData.description?.trim() || "",
-        date: formData.date.toISOString(),
+        date: formData.scheduledDate!.toISOString(),
         icon: milestoneIcon,
         color: milestoneColor,
         isAnniversary,
@@ -193,7 +192,7 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
         ...formData, 
         connectionId,
         isCompleted,
-        reflection: isCompleted ? reflection : undefined
+        notes: isCompleted ? reflection : formData.notes
       });
       createPlanMutation.mutate(validatedData);
     } catch (error) {

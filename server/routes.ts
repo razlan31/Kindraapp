@@ -4,7 +4,7 @@ import { storage } from "./storage";
 import { z } from "zod";
 import { 
   userSchema, connectionSchema, momentSchema,
-  userBadgeSchema, menstrualCycleSchema, milestoneSchema
+  userBadgeSchema, menstrualCycleSchema, milestoneSchema, planSchema
 } from "@shared/schema";
 import bcrypt from "bcryptjs";
 import session from "express-session";
