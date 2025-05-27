@@ -474,10 +474,21 @@ export class MemStorage implements IStorage {
 
   async createMoment(insertMoment: InsertMoment): Promise<Moment> {
     const id = this.momentId++;
+    
+    // Handle createdAt date properly - use provided date or current date
+    let createdAt: Date;
+    if ((insertMoment as any).createdAt) {
+      createdAt = new Date((insertMoment as any).createdAt);
+      console.log("🗓️ Using provided date:", (insertMoment as any).createdAt, "->", createdAt);
+    } else {
+      createdAt = new Date();
+      console.log("🗓️ Using current date:", createdAt);
+    }
+    
     const moment: Moment = { 
       ...insertMoment, 
       id, 
-      createdAt: (insertMoment as any).createdAt ? new Date((insertMoment as any).createdAt) : new Date(),
+      createdAt,
       tags: insertMoment.tags || null,
       isPrivate: insertMoment.isPrivate || null,
       isIntimate: insertMoment.isIntimate || null,
