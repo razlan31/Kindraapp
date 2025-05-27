@@ -549,9 +549,11 @@ export default function Calendar() {
           onClose={() => {
             setEntryDetailOpen(false);
             setSelectedEntry(null);
-            // Force immediate visual refresh
+          }}
+          onUpdate={() => {
+            // Force immediate refresh with multiple strategies
             setRefreshKey(prev => prev + 1);
-            // Invalidate cache to get fresh data
+            refetchMoments();
             queryClient.invalidateQueries({ queryKey: ["/api/moments"] });
           }}
           moment={selectedEntry}

@@ -16,9 +16,10 @@ interface EntryDetailModalProps {
   onClose: () => void;
   moment: Moment | null;
   connection: Connection | null;
+  onUpdate?: () => void; // Callback to trigger parent refresh
 }
 
-export function EntryDetailModal({ isOpen, onClose, moment, connection }: EntryDetailModalProps) {
+export function EntryDetailModal({ isOpen, onClose, moment, connection, onUpdate }: EntryDetailModalProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState("");
   const [editedReflection, setEditedReflection] = useState("");
@@ -116,6 +117,11 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection }: EntryD
       
       // Instantly update the cache instead of full page reload
       queryClient.invalidateQueries({ queryKey: ['/api/moments'] });
+      
+      // Trigger parent component refresh
+      if (onUpdate) {
+        onUpdate();
+      }
     },
     onError: () => {
       toast({ title: "Failed to update entry", variant: "destructive" });
