@@ -159,7 +159,7 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection, onUpdate
     if (!moment) return;
     
     setIsSubmitting(true);
-    console.log("HandleSave - Starting edit process");
+    console.log("🚀 HandleSave called - Starting save process");
     
     try {
       const response = await fetch(`/api/moments/${moment.id}`, {
@@ -175,11 +175,16 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection, onUpdate
       
       if (!response.ok) throw new Error('Failed to update');
       
+      console.log("✅ Save successful - Reloading page now");
       toast({ title: "Entry updated successfully!" });
-      window.location.reload();
+      
+      // Force immediate page reload
+      setTimeout(() => {
+        window.location.reload();
+      }, 100);
       
     } catch (error) {
-      console.error("HandleSave - Error:", error);
+      console.error("❌ HandleSave - Error:", error);
       setIsSubmitting(false);
     }
   };
