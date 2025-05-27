@@ -166,6 +166,7 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection, onUpdate
     
     setIsSubmitting(true);
     try {
+      console.log("HandleSave - About to update moment with reload trigger");
       await updateMomentMutation.mutateAsync({
         id: moment.id,
         content: editedContent.trim(),
@@ -173,24 +174,9 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection, onUpdate
         reflection: editedReflection.trim(),
         tags: editedTags
       } as any);
-      
-      // Force calendar refresh immediately after successful update
-      console.log("HandleSave - Dispatching momentUpdated event for immediate refresh");
-      window.dispatchEvent(new CustomEvent('momentUpdated'));
-      
-      if (onUpdate) {
-        onUpdate();
-      }
-      
-      // Force query invalidation
-      queryClient.invalidateQueries({ queryKey: ['/api/moments'] });
-      
-      // Force immediate page refresh as backup solution
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
-      
-    } finally {
+      // Note: The success callback in updateMomentMutation will handle the reload
+    } catch (error) {
+      console.error("HandleSave - Error updating moment:", error);
       setIsSubmitting(false);
     }
   };
