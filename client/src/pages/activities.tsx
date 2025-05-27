@@ -336,13 +336,17 @@ export default function Activities() {
 
                             const getActivityType = (moment: Moment) => {
                               if (moment.isIntimate) return 'intimacy';
-                              if (moment.tags?.includes('Red Flag') || moment.emoji === '😠') return 'conflict';
-                              return 'moment';
+                              // Check if it's actually a conflict (has conflict tags or resolution fields)
+                              if (moment.tags?.includes('Conflict') || moment.isResolved !== undefined || moment.resolutionNotes !== undefined) return 'conflict';
+                              // Check if it's a negative moment (based on emoji or negative type)
+                              if (moment.emoji === '😔' || moment.emoji === '😞' || moment.emoji === '😟' || moment.tags?.includes('Red Flag')) return 'negative';
+                              return 'positive';
                             };
 
                             const activityType = getActivityType(moment);
                             const typeColors = {
-                              moment: 'bg-green-100 border-green-300 text-green-700 dark:bg-green-900/20 dark:border-green-700 dark:text-green-300',
+                              positive: 'bg-green-100 border-green-300 text-green-700 dark:bg-green-900/20 dark:border-green-700 dark:text-green-300',
+                              negative: 'bg-orange-100 border-orange-300 text-orange-700 dark:bg-orange-900/20 dark:border-orange-700 dark:text-orange-300',
                               conflict: 'bg-red-100 border-red-300 text-red-700 dark:bg-red-900/20 dark:border-red-700 dark:text-red-300',
                               intimacy: 'bg-pink-100 border-pink-300 text-pink-700 dark:bg-pink-900/20 dark:border-pink-700 dark:text-pink-300'
                             };
