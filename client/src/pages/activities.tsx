@@ -286,6 +286,9 @@ export default function Activities() {
                   if (connection) {
                     setModalConnection(selectedConnection, connection);
                   }
+                } else {
+                  // If "All Connections" is selected, clear the modal connection so user can choose
+                  setModalConnection(null, null);
                 }
                 openMomentModal(activeTab === 'moments' ? 'moment' : activeTab === 'conflicts' ? 'conflict' : 'intimacy');
               }} className="w-full">
