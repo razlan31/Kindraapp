@@ -194,7 +194,7 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Add Plan</DialogTitle>
         </DialogHeader>
