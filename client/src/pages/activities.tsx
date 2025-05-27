@@ -332,7 +332,7 @@ export default function Activities() {
                   : 'border-muted bg-background text-foreground hover:border-primary/50'
               }`}
             >
-              📅 Complete Timeline View
+              📅 Timeline
             </button>
           </div>
 
