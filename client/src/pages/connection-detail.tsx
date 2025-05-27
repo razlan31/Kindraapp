@@ -366,8 +366,12 @@ export default function ConnectionDetail() {
           <Button 
             className="w-full h-12"
             onClick={() => {
+              console.log("Setting connection before modal:", connection);
               setSelectedConnection(connectionId, connection);
-              openMomentModal();
+              // Add small delay to ensure connection is set before opening modal
+              setTimeout(() => {
+                openMomentModal();
+              }, 10);
             }}
           >
             <Plus className="h-4 w-4 mr-2" />
