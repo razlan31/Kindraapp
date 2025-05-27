@@ -152,7 +152,10 @@ export default function Activities() {
     
     // Filter by tab type
     let matchesTab = false;
-    if (activeTab === 'moments') {
+    if (activeTab === 'timeline') {
+      // Timeline shows ALL entries regardless of type
+      matchesTab = true;
+    } else if (activeTab === 'moments') {
       // Show all moments except pure conflicts and intimacy entries
       matchesTab = !tags.includes('Conflict') && !moment.isIntimate && !tags.includes('Intimacy');
     } else if (activeTab === 'conflicts') {
@@ -321,7 +324,7 @@ export default function Activities() {
                           </div>
                           
                           {/* Timeline content */}
-                          <Card className="p-4 shadow-sm hover:shadow-md transition-shadow cursor-pointer" onClick={() => handleViewEntryDetail(moment)}>
+                          <Card className="p-4 shadow-sm hover:shadow-md transition-shadow cursor-pointer" onClick={() => handleViewEntryDetail(moment.id)}>
                             <div className="flex items-start justify-between mb-2">
                               <div className="flex items-center gap-2">
                                 <span className="text-lg">{moment.emoji}</span>
