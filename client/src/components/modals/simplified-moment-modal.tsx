@@ -34,6 +34,7 @@ export function MomentModal() {
   
   // Form state
   const [connectionId, setConnectionId] = useState<number>(2);
+  const [title, setTitle] = useState<string>("");
   const [emoji, setEmoji] = useState<string>("😊");
   const [content, setContent] = useState<string>("");
   const [localSelectedDate, setLocalSelectedDate] = useState<Date>(new Date());
@@ -61,6 +62,7 @@ export function MomentModal() {
     
     if (editingMoment) {
       setConnectionId(editingMoment.connectionId);
+      setTitle(editingMoment.title || "");
       setEmoji(editingMoment.emoji);
       setContent(editingMoment.content || "");
       setLocalSelectedDate(new Date(editingMoment.createdAt || new Date()));
@@ -321,6 +323,7 @@ export function MomentModal() {
     
     const momentData = {
       connectionId,
+      title: title.trim() || "",
       emoji: finalEmoji,
       content: content.trim() || "",
       tags,
@@ -405,6 +408,17 @@ export function MomentModal() {
               </Select>
             </div>
           )}
+
+          {/* Title */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Title (Optional)</label>
+            <Input
+              placeholder="Give this moment a title..."
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="w-full"
+            />
+          </div>
 
           {/* Description */}
           <div className="space-y-2">

@@ -117,6 +117,7 @@ export const moments = pgTable("moments", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").notNull(),
   connectionId: integer("connection_id").notNull(),
+  title: text("title"),
   emoji: text("emoji").notNull(),
   content: text("content").notNull(),
   tags: json("tags").$type<string[]>(),
