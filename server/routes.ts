@@ -369,14 +369,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const momentData = momentSchema.parse({ ...req.body, userId });
       console.log("🚀 ROUTES - Parsed moment data:", momentData);
       console.log("🚀 ROUTES - momentData.createdAt:", momentData.createdAt);
-      
-      // FORCE May 25th date regardless of what frontend sends
-      const may25 = new Date('2025-05-25T12:00:00.000Z');
-      const forcedMomentData = {
-        ...momentData,
-        createdAt: may25
-      };
-      console.log("🚀 ROUTES - FORCING date to May 25th:", forcedMomentData.createdAt);
+      console.log("🚀 ROUTES - Using selected date:", momentData.createdAt);
       
       // Check if connection exists and belongs to user
       const connection = await storage.getConnection(momentData.connectionId);
@@ -388,7 +381,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Unauthorized to add moments to this connection" });
       }
       
-      const newMoment = await storage.createMoment(forcedMomentData);
+      const newMoment = await storage.createMoment(momentData);
       console.log("🚀 ROUTES - Created moment result:", newMoment);
       console.log("🚀 ROUTES - Final createdAt:", newMoment.createdAt);
       
