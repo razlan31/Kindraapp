@@ -223,14 +223,14 @@ export default function Calendar() {
               </span>
             </div>
             <Select
-              value={selectedConnectionId ? selectedConnectionId.toString() : ""}
-              onValueChange={(value) => setSelectedConnectionId(value ? parseInt(value) : null)}
+              value={selectedConnectionId ? selectedConnectionId.toString() : "all"}
+              onValueChange={(value) => setSelectedConnectionId(value === "all" ? null : parseInt(value))}
             >
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Show all connections" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Connections</SelectItem>
+                <SelectItem value="all">All Connections</SelectItem>
                 {connections.map((connection) => (
                   <SelectItem key={connection.id} value={connection.id.toString()}>
                     {connection.name}
