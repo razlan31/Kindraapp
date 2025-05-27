@@ -5,7 +5,7 @@ import { Connection } from "@shared/schema";
 import { BottomNavigation } from "@/components/layout/bottom-navigation";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Heart, Calendar, Star, MessageCircle, Edit, Trash2 } from "lucide-react";
+import { ArrowLeft, Heart, Calendar, Star, MessageCircle, Edit, Trash2, Plus, Activity } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatDistanceToNow, format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
@@ -16,7 +16,7 @@ export default function ConnectionDetail() {
   const { id } = useParams();
   const [, setLocation] = useLocation();
   const { toast } = useToast();
-  const { openMoodTrackerModal } = useModal();
+  const { openMomentModal, setSelectedConnection } = useModal();
   const { mainFocusConnection, setMainFocusConnection } = useRelationshipFocus();
   const queryClient = useQueryClient();
   const connectionId = parseInt(id as string);
@@ -138,11 +138,7 @@ export default function ConnectionDetail() {
     setLocation(`/connections/${connectionId}/edit`);
   };
   
-  const handleMoodTracking = () => {
-    if (connection) {
-      openMoodTrackerModal(connection);
-    }
-  };
+
   
   const getInitials = (name: string) => {
     return name
@@ -365,32 +361,36 @@ export default function ConnectionDetail() {
           </div>
         </div>
         
-        {/* Action buttons */}
-        <div className="mt-4 p-4 grid grid-cols-2 gap-3">
+        {/* Quick Actions */}
+        <div className="mt-4 p-4 space-y-3">
           <Button 
-            variant="outline" 
-            className="bg-white dark:bg-neutral-900 border h-14"
-            onClick={handleMoodTracking}
+            className="w-full h-12"
+            onClick={() => {
+              setSelectedConnection(connectionId, connection);
+              openMomentModal();
+            }}
           >
-            <div className="flex flex-col items-center w-full">
-              <MessageCircle className="h-5 w-5 mb-1" />
-              <span className="text-xs">Track Mood</span>
-            </div>
+            <Plus className="h-4 w-4 mr-2" />
+            Add Moment with {connection.name}
           </Button>
           
-          <Button 
-            variant="outline" 
-            className="bg-white dark:bg-neutral-900 border h-14"
-            onClick={() => toast({
-              title: 'Coming soon',
-              description: 'Calendar view will be available soon'
-            })}
-          >
-            <div className="flex flex-col items-center w-full">
-              <Calendar className="h-5 w-5 mb-1" />
-              <span className="text-xs">View Calendar</span>
-            </div>
-          </Button>
+          <div className="grid grid-cols-2 gap-3">
+            <Button 
+              variant="outline" 
+              onClick={() => setLocation('/activities')}
+            >
+              <Activity className="h-4 w-4 mr-2" />
+              View Activities
+            </Button>
+            
+            <Button 
+              variant="outline" 
+              onClick={() => setLocation('/calendar')}
+            >
+              <Calendar className="h-4 w-4 mr-2" />
+              View Calendar
+            </Button>
+          </div>
         </div>
       </div>
       
