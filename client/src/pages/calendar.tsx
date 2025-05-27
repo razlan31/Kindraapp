@@ -11,6 +11,7 @@ import { useAuth } from "@/contexts/auth-context";
 import { useModal } from "@/contexts/modal-context";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, getDay } from "date-fns";
 import type { Moment, Connection } from "@shared/schema";
+import { EntryDetailModal } from "@/components/modals/entry-detail-modal";
 
 export default function Calendar() {
   const { user } = useAuth();
@@ -19,6 +20,10 @@ export default function Calendar() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
   const [dayDetailOpen, setDayDetailOpen] = useState(false);
+  
+  // Entry detail modal state
+  const [selectedEntry, setSelectedEntry] = useState<Moment | null>(null);
+  const [entryDetailOpen, setEntryDetailOpen] = useState(false);
   
   // Filter states for different entry types
   const [filters, setFilters] = useState({
@@ -161,6 +166,13 @@ export default function Calendar() {
     }
     // Pass the selected day as a Date object, not undefined
     openMomentModal('moment', undefined, selectedDay || new Date());
+  };
+
+  // Handle clicking on calendar entries to open details
+  const handleEntryClick = (moment: Moment, event: React.MouseEvent) => {
+    event.stopPropagation(); // Prevent day click
+    setSelectedEntry(moment);
+    setEntryDetailOpen(true);
   };
 
   // Get weekday names
@@ -330,16 +342,18 @@ export default function Calendar() {
                         return displayInfo.type === 'emoji' ? (
                           <span
                             key={moment.id}
-                            className={`text-[8px] ${displayInfo.color}`}
+                            className={`text-[8px] ${displayInfo.color} cursor-pointer hover:scale-110 transition-transform`}
                             title={moment.content || moment.emoji}
+                            onClick={(e) => handleEntryClick(moment, e)}
                           >
                             {displayInfo.value}
                           </span>
                         ) : (
                           <div
                             key={moment.id}
-                            className={`w-2 h-2 rounded-full ${displayInfo.color}`}
+                            className={`w-2 h-2 rounded-full ${displayInfo.color} cursor-pointer hover:scale-110 transition-transform`}
                             title={moment.content || moment.emoji}
+                            onClick={(e) => handleEntryClick(moment, e)}
                           />
                         );
                       })}
@@ -516,6 +530,20 @@ export default function Calendar() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Entry Detail Modal */}
+      {selectedEntry && (
+        <EntryDetailModal
+          moment={selectedEntry}
+          open={entryDetailOpen}
+          onOpenChange={setEntryDetailOpen}
+          connections={connections}
+          onUpdate={() => {
+            refetchMoments();
+            window.dispatchEvent(new CustomEvent('momentUpdated'));
+          }}
+        />
+      )}
 
       <BottomNavigation />
     </div>
