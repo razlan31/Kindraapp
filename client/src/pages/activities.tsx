@@ -137,9 +137,11 @@ export default function Activities() {
     console.log("Found moment and connection:", { moment, connection });
     if (moment && connection) {
       console.log("Setting entry detail modal state");
+      console.log("Current entryDetailModalOpen state:", entryDetailModalOpen);
       setSelectedMomentForDetail(moment);
       setSelectedConnectionForDetail(connection);
       setEntryDetailModalOpen(true);
+      console.log("Entry detail modal should now be open");
     }
   };
 
