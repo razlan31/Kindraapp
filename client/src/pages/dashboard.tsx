@@ -10,7 +10,7 @@ import { Connection, Moment, Badge } from "@shared/schema";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
 import { useModal } from "@/contexts/modal-context";
-import { Sparkles, Calendar } from "lucide-react";
+import { Sparkles, Calendar, ChevronDown } from "lucide-react";
 import { Link } from "wouter";
 import { SimplifiedCalendar } from "@/components/calendar/simplified-calendar";
 import { FocusSelector } from "@/components/relationships/focus-selector";
@@ -21,6 +21,7 @@ export default function Dashboard() {
   const { openMomentModal, openConnectionModal, setSelectedConnection } = useModal();
   const [insight, setInsight] = useState<string>("");
   const [selectedCalendarConnection, setSelectedCalendarConnection] = useState<Connection | null>(null);
+  const [dashboardConnection, setDashboardConnection] = useState<Connection | null>(null);
   const { mainFocusConnection } = useRelationshipFocus();
 
   // Fetch connections
@@ -71,8 +72,15 @@ export default function Dashboard() {
     moments 
   });
 
-  // Determine which connection to focus on
-  const focusConnection = mainFocusConnection || null;
+  // Determine which connection to focus on - prioritize dashboard selection, then main focus
+  const focusConnection = dashboardConnection || mainFocusConnection || null;
+  
+  // Initialize dashboard connection to main focus on first load
+  useEffect(() => {
+    if (mainFocusConnection && !dashboardConnection) {
+      setDashboardConnection(mainFocusConnection);
+    }
+  }, [mainFocusConnection, dashboardConnection]);
   
   // Filter moments based on focus connection
   const filteredMoments = focusConnection 
@@ -150,9 +158,39 @@ export default function Dashboard() {
       <main className="flex-1 overflow-y-auto pb-20">
         {/* Welcome Section */}
         <section className="px-4 pt-5 pb-3">
-          <h2 className="text-xl font-heading font-semibold">
-            {focusConnection ? `${focusConnection.name} Summary` : `Welcome back, ${user?.displayName || user?.username || "Friend"}!`}
-          </h2>
+          <div className="flex items-center justify-between mb-2">
+            <h2 className="text-xl font-heading font-semibold">
+              {focusConnection ? `${focusConnection.name} Summary` : `Welcome back, ${user?.displayName || user?.username || "Friend"}!`}
+            </h2>
+            
+            {/* Connection Switcher */}
+            {connections.length > 1 && (
+              <div className="relative">
+                <select
+                  value={focusConnection?.id || "all"}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (value === "all") {
+                      setDashboardConnection(null);
+                    } else {
+                      const selectedConnection = connections.find(c => c.id === parseInt(value));
+                      setDashboardConnection(selectedConnection || null);
+                    }
+                  }}
+                  className="appearance-none bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg px-3 py-1.5 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+                >
+                  <option value="all">All Connections</option>
+                  {connections.map((connection) => (
+                    <option key={connection.id} value={connection.id}>
+                      {connection.name}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-neutral-500 pointer-events-none" />
+              </div>
+            )}
+          </div>
+          
           <p className="text-neutral-600 dark:text-neutral-400 text-sm">
             {focusConnection ? `Your relationship insights and activity` : `Track your relationships and emotional connections`}
           </p>
