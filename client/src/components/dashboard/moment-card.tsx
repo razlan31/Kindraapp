@@ -70,13 +70,26 @@ export function MomentCard({ moment, connection, onAddReflection, onViewDetail, 
                 <span className="text-2xl">{moment.emoji}</span>
                 {/* Moment Type Indicator */}
                 {(moment.tags?.includes('Conflict') || moment.isIntimate) ? (
-                  <Badge variant="outline" className="text-xs">
+                  <Badge variant="outline" className={`text-xs ${
+                    moment.tags?.includes('Conflict') ? 'bg-red-100 text-red-700 border-red-300 dark:bg-red-900/20 dark:text-red-300 dark:border-red-700' : 
+                    'bg-pink-100 text-pink-700 border-pink-300 dark:bg-pink-900/20 dark:text-pink-300 dark:border-pink-700'
+                  }`}>
                     {moment.tags?.includes('Conflict') ? 'Conflict' : 'Intimacy'}
                   </Badge>
                 ) : (
-                  <Badge variant="outline" className="text-xs">
-                    {['😊', '❤️', '😍', '🥰', '💖', '✨', '🔥'].includes(moment.emoji) ? 'Positive' :
-                     ['😕', '😢', '😠', '😞', '😤'].includes(moment.emoji) ? 'Negative' : 'Neutral'}
+                  <Badge variant="outline" className={`text-xs ${
+                    moment.emoji === '😊' ? 'bg-green-100 text-green-700 border-green-300 dark:bg-green-900/20 dark:text-green-300 dark:border-green-700' :
+                    moment.emoji === '😕' ? 'bg-orange-100 text-orange-700 border-orange-300 dark:bg-orange-900/20 dark:text-orange-300 dark:border-orange-700' :
+                    moment.emoji === '😐' ? 'bg-blue-100 text-blue-700 border-blue-300 dark:bg-blue-900/20 dark:text-blue-300 dark:border-blue-700' :
+                    ['❤️', '😍', '🥰', '💖', '✨', '🔥'].includes(moment.emoji) ? 'bg-green-100 text-green-700 border-green-300 dark:bg-green-900/20 dark:text-green-300 dark:border-green-700' :
+                    ['😢', '😠', '😞', '😤'].includes(moment.emoji) ? 'bg-orange-100 text-orange-700 border-orange-300 dark:bg-orange-900/20 dark:text-orange-300 dark:border-orange-700' :
+                    'bg-blue-100 text-blue-700 border-blue-300 dark:bg-blue-900/20 dark:text-blue-300 dark:border-blue-700'
+                  }`}>
+                    {moment.emoji === '😊' ? 'Positive' :
+                     moment.emoji === '😕' ? 'Negative' :
+                     moment.emoji === '😐' ? 'Neutral' :
+                     ['❤️', '😍', '🥰', '💖', '✨', '🔥'].includes(moment.emoji) ? 'Positive' :
+                     ['😢', '😠', '😞', '😤'].includes(moment.emoji) ? 'Negative' : 'Neutral'}
                   </Badge>
                 )}
               </div>
