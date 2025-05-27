@@ -63,7 +63,11 @@ export function RelationshipCalendar({ selectedConnection }: RelationshipCalenda
       const queryString = selectedConnection 
         ? `?connectionId=${selectedConnection.id}` 
         : '';
-      return await fetch(`/api/milestones${queryString}`).then(res => res.json());
+      console.log("📋 CALENDAR - Fetching milestones with query:", queryString);
+      const response = await fetch(`/api/milestones${queryString}`);
+      const data = await response.json();
+      console.log("📋 CALENDAR - Milestones received:", data);
+      return data;
     },
     enabled: !!user,
   });
