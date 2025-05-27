@@ -131,16 +131,7 @@ export function MomentModal() {
     enabled: momentModalOpen,
   });
   
-  // Reset form when modal opens
-  useEffect(() => {
-    if (momentModalOpen) {
-      setConnectionId(selectedConnectionId || 2);
-      setEmoji(activityType === 'conflict' ? "😠" : activityType === 'intimacy' ? "💕" : "😊");
-      setContent("");
-      setSelectedDate(new Date());
-      setMomentType("positive");
-    }
-  }, [momentModalOpen, selectedConnectionId, activityType]);
+  // This effect is removed as form initialization is handled in the main useEffect above
   
   // Success and error handlers - now optimized for instant updates
   const handleSuccess = () => {
