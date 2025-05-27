@@ -335,11 +335,25 @@ export default function Activities() {
                             if (!connection) return null;
 
                             const getActivityType = (moment: Moment) => {
-                              if (moment.isIntimate) return 'intimacy';
-                              // Check if it's actually a conflict (has conflict tags or resolution fields)
-                              if (moment.tags?.includes('Conflict') || moment.isResolved !== undefined || moment.resolutionNotes !== undefined) return 'conflict';
-                              // Check if it's a negative moment (based on emoji or negative type)
-                              if (moment.emoji === '😔' || moment.emoji === '😞' || moment.emoji === '😟' || moment.tags?.includes('Red Flag')) return 'negative';
+                              // Priority 1: Check if it's intimacy (isIntimate flag or intimacy tags)
+                              if (moment.isIntimate === true || moment.tags?.includes('Intimacy')) return 'intimacy';
+                              
+                              // Priority 2: Check if it's a conflict (has conflict indicators)
+                              if (moment.tags?.includes('Conflict') || 
+                                  moment.isResolved === true || 
+                                  (moment.resolutionNotes && moment.resolutionNotes.trim() !== '')) return 'conflict';
+                              
+                              // Priority 3: Check what tab it would appear in based on the filtering logic
+                              const tags = moment.tags || [];
+                              
+                              // If it appears in conflicts tab (has conflict emoji but no conflict resolution)
+                              if (moment.emoji === '😠' && !tags.includes('Conflict') && moment.isResolved !== true) return 'conflict';
+                              
+                              // Check if it's a negative moment (sad emojis or red flags, but not conflicts)
+                              if (moment.emoji === '😔' || moment.emoji === '😞' || moment.emoji === '😟' || 
+                                  moment.emoji === '🙁' || moment.tags?.includes('Red Flag')) return 'negative';
+                              
+                              // Everything else is positive
                               return 'positive';
                             };
 
