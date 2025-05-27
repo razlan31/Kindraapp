@@ -78,14 +78,23 @@ export default function Activities() {
   });
 
   // Fetch plans
-  const { data: plans = [], isLoading: plansLoading } = useQuery<Plan[]>({
+  const { data: plans = [], isLoading: plansLoading, error: plansError, refetch: refetchPlans } = useQuery<Plan[]>({
     queryKey: ["/api/plans"],
     staleTime: 0,
     enabled: !!user,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
   });
 
+  // Force refetch plans when switching to plans tab
+  useEffect(() => {
+    if (activeTab === 'plans' && user) {
+      refetchPlans();
+    }
+  }, [activeTab, user, refetchPlans]);
+
   // Debug plans data
-  console.log("Plans Debug:", { plans, plansLoading, activeTab });
+  console.log("Plans Debug:", { plans, plansLoading, plansError, activeTab, user: !!user });
 
 
   
