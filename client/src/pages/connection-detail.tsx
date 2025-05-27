@@ -5,7 +5,10 @@ import { Connection } from "@shared/schema";
 import { BottomNavigation } from "@/components/layout/bottom-navigation";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Heart, Calendar, Star, MessageCircle, Edit, Trash2, Plus, Activity, Trophy } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { ArrowLeft, Heart, Calendar, Star, MessageCircle, Edit, Trash2, Plus, Activity, Trophy, ChevronDown, Search } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatDistanceToNow, format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
@@ -114,6 +117,9 @@ export default function ConnectionDetail() {
   
   const [isDeleting, setIsDeleting] = useState(false);
   const [milestoneModalOpen, setMilestoneModalOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<'moments' | 'conflicts' | 'intimacy' | 'timeline'>('moments');
+  const [selectedConnectionFilter, setSelectedConnectionFilter] = useState<number | null>(connectionId);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const handleDelete = async () => {
     if (isDeleting) return; // Prevent double-clicking
@@ -401,6 +407,149 @@ export default function ConnectionDetail() {
             </div>
           </div>
         </div>
+        
+        {/* Activities Section - Duplicated from Activities Page */}
+        <div className="mt-4 px-4">
+          {/* Connection Picker - Primary Selection */}
+          <Card className="p-4 bg-card/50 backdrop-blur-sm mb-4">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-medium">Viewing activities for</h3>
+              <span className="text-xs text-muted-foreground">
+                {selectedConnectionFilter ? 
+                  [connection].find(c => c.id === selectedConnectionFilter)?.name || 'Unknown' : 
+                  'All Connections'
+                }
+              </span>
+            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="w-full justify-between">
+                  <span>
+                    {selectedConnectionFilter ? 
+                      [connection].find(c => c.id === selectedConnectionFilter)?.name || 'Select Connection' : 
+                      'All Connections'
+                    }
+                  </span>
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-[var(--radix-dropdown-menu-trigger-width)]" sideOffset={4}>
+                <DropdownMenuItem 
+                  onClick={() => setSelectedConnectionFilter(null)}
+                  className="py-3 px-4 text-base"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
+                      <span className="text-xs font-medium">All</span>
+                    </div>
+                    <span>All Connections</span>
+                  </div>
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  onClick={() => setSelectedConnectionFilter(connection.id)}
+                  className="py-3 px-4 text-base"
+                >
+                  <div className="flex items-center gap-3">
+                    {connection.profileImage ? (
+                      <img 
+                        src={connection.profileImage} 
+                        alt={connection.name}
+                        className="w-8 h-8 rounded-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                        <span className="text-xs font-medium text-primary">
+                          {connection.name.charAt(0).toUpperCase()}
+                        </span>
+                      </div>
+                    )}
+                    <span>{connection.name}</span>
+                  </div>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </Card>
+          
+          {/* Main Activity Types - Single Row */}
+          <div className="grid grid-cols-4 gap-1 bg-muted rounded-lg p-1 mb-3">
+            <button 
+              onClick={() => setActiveTab('moments')}
+              className={`py-2 px-2 rounded-md text-xs font-medium transition-colors ${
+                activeTab === 'moments' 
+                  ? 'bg-background text-foreground shadow-sm' 
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              Moments
+            </button>
+            <button 
+              onClick={() => setActiveTab('conflicts')}
+              className={`py-2 px-2 rounded-md text-xs font-medium transition-colors ${
+                activeTab === 'conflicts' 
+                  ? 'bg-background text-foreground shadow-sm' 
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              Conflicts
+            </button>
+            <button 
+              onClick={() => setActiveTab('intimacy')}
+              className={`py-2 px-2 rounded-md text-xs font-medium transition-colors ${
+                activeTab === 'intimacy' 
+                  ? 'bg-background text-foreground shadow-sm' 
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              Intimacy
+            </button>
+          </div>
+          
+          {/* Timeline Overview - Below main tabs */}
+          <div className="mb-4">
+            <button 
+              onClick={() => setActiveTab('timeline')}
+              className={`w-full py-3 px-4 rounded-lg text-sm font-medium transition-colors border ${
+                activeTab === 'timeline' 
+                  ? 'border-primary bg-primary text-primary-foreground shadow-sm' 
+                  : 'border-muted bg-background text-foreground hover:border-primary/50'
+              }`}
+            >
+              📅 Timeline
+            </button>
+          </div>
+
+          {/* Add Button for Active Tab - Hide for Timeline */}
+          {activeTab !== 'timeline' && (
+            <div className="mb-4">
+              <Button onClick={() => {
+                // Set the connection in modal context before opening
+                setSelectedConnection(connection.id, connection);
+                openMomentModal(activeTab === 'moments' ? 'moment' : activeTab === 'conflicts' ? 'conflict' : 'intimacy');
+              }} className="w-full">
+                <Plus className="h-4 w-4 mr-2" />
+                Add {activeTab === 'moments' ? 'Moment' : 
+                     activeTab === 'conflicts' ? 'Conflict' : 
+                     activeTab === 'intimacy' ? 'Intimacy' : ''}
+              </Button>
+            </div>
+          )}
+        </div>
+
+        {/* Search Section */}
+        <section className="px-4 pb-2 sticky top-0 bg-white dark:bg-neutral-900 z-10">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-neutral-500" />
+              <Input
+                type="text"
+                placeholder="Search activities..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+          </div>
+        </section>
       </div>
       
       <BottomNavigation />
