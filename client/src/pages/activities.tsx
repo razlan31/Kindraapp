@@ -278,21 +278,11 @@ export default function Activities() {
             </DropdownMenu>
           </Card>
           
-          {/* Activity Type Tabs */}
-          <div className="grid grid-cols-2 gap-1 bg-muted rounded-lg p-1 mb-4">
-            <button 
-              onClick={() => setActiveTab('timeline')}
-              className={`py-2 px-3 rounded-md text-sm font-medium transition-colors ${
-                activeTab === 'timeline' 
-                  ? 'bg-background text-foreground shadow-sm' 
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              Timeline
-            </button>
+          {/* Main Activity Types - Single Row */}
+          <div className="grid grid-cols-4 gap-1 bg-muted rounded-lg p-1 mb-3">
             <button 
               onClick={() => setActiveTab('moments')}
-              className={`py-2 px-3 rounded-md text-sm font-medium transition-colors ${
+              className={`py-2 px-2 rounded-md text-xs font-medium transition-colors ${
                 activeTab === 'moments' 
                   ? 'bg-background text-foreground shadow-sm' 
                   : 'text-muted-foreground hover:text-foreground'
@@ -302,7 +292,7 @@ export default function Activities() {
             </button>
             <button 
               onClick={() => setActiveTab('conflicts')}
-              className={`py-2 px-3 rounded-md text-sm font-medium transition-colors ${
+              className={`py-2 px-2 rounded-md text-xs font-medium transition-colors ${
                 activeTab === 'conflicts' 
                   ? 'bg-background text-foreground shadow-sm' 
                   : 'text-muted-foreground hover:text-foreground'
@@ -312,7 +302,7 @@ export default function Activities() {
             </button>
             <button 
               onClick={() => setActiveTab('intimacy')}
-              className={`py-2 px-3 rounded-md text-sm font-medium transition-colors ${
+              className={`py-2 px-2 rounded-md text-xs font-medium transition-colors ${
                 activeTab === 'intimacy' 
                   ? 'bg-background text-foreground shadow-sm' 
                   : 'text-muted-foreground hover:text-foreground'
@@ -320,19 +310,29 @@ export default function Activities() {
             >
               Intimacy
             </button>
-          </div>
-          
-          {/* Milestones Section - Show below tabs when relevant */}
-          <div className="mb-4">
             <button 
               onClick={() => setActiveTab('milestones')}
-              className={`w-full py-3 px-4 rounded-lg text-sm font-medium transition-colors border-2 border-dashed ${
+              className={`py-2 px-2 rounded-md text-xs font-medium transition-colors ${
                 activeTab === 'milestones' 
-                  ? 'border-primary bg-primary/5 text-primary' 
-                  : 'border-muted-foreground/30 text-muted-foreground hover:border-primary/50 hover:text-primary'
+                  ? 'bg-background text-foreground shadow-sm' 
+                  : 'text-muted-foreground hover:text-foreground'
               }`}
             >
-              ✨ Milestones & Special Occasions
+              Milestones
+            </button>
+          </div>
+          
+          {/* Timeline Overview - Below main tabs */}
+          <div className="mb-4">
+            <button 
+              onClick={() => setActiveTab('timeline')}
+              className={`w-full py-3 px-4 rounded-lg text-sm font-medium transition-colors border ${
+                activeTab === 'timeline' 
+                  ? 'border-primary bg-primary text-primary-foreground shadow-sm' 
+                  : 'border-muted bg-background text-foreground hover:border-primary/50'
+              }`}
+            >
+              📅 Complete Timeline View
             </button>
           </div>
 
