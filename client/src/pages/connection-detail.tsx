@@ -66,35 +66,47 @@ export default function ConnectionDetail() {
   
   // Calculate activity counts
   const activityCounts = {
-    totalMoments: 0,
+    positive: 0,
+    negative: 0,
+    neutral: 0,
     conflicts: 0,
-    intimacy: 0,
-    positive: 0
+    intimacy: 0
   };
   
   if (moments) {
     moments.forEach((moment: any) => {
-      activityCounts.totalMoments++;
-      
-      // Count conflicts (moments with conflict emoji or conflict-related tags)
-      if (moment.emoji === '⚡' || (moment.tags && moment.tags.some((tag: string) => 
-        ['Disagreement', 'Conflict', 'Stress', 'Miscommunication'].includes(tag)
-      ))) {
+      // Count conflicts first (has specific emoji)
+      if (moment.emoji === '⚡') {
         activityCounts.conflicts++;
       }
-      
-      // Count intimacy moments
-      if (moment.emoji === '💕' || moment.isIntimate || (moment.tags && moment.tags.some((tag: string) => 
-        ['Sexual Intimacy', 'Physical Intimacy', 'Emotional Intimacy'].includes(tag)
-      ))) {
+      // Count intimacy moments (has specific emoji)
+      else if (moment.emoji === '💕' || moment.isIntimate) {
         activityCounts.intimacy++;
       }
-      
-      // Count positive moments
-      if (moment.emoji === '😊' || (moment.tags && moment.tags.some((tag: string) => 
-        ['Quality Time', 'Affection', 'Support', 'Trust Building', 'Celebration'].includes(tag)
-      ))) {
+      // Count by emoji for regular moments
+      else if (moment.emoji === '😊') {
         activityCounts.positive++;
+      }
+      else if (moment.emoji === '😕') {
+        activityCounts.negative++;
+      }
+      else if (moment.emoji === '🌱') {
+        activityCounts.neutral++;
+      }
+      // Fallback: check tags for older entries
+      else if (moment.tags && moment.tags.some((tag: string) => 
+        ['Quality Time', 'Affection', 'Support', 'Trust Building', 'Celebration'].includes(tag)
+      )) {
+        activityCounts.positive++;
+      }
+      else if (moment.tags && moment.tags.some((tag: string) => 
+        ['Sexual Intimacy', 'Physical Intimacy', 'Emotional Intimacy'].includes(tag)
+      )) {
+        activityCounts.intimacy++;
+      }
+      else {
+        // Default to neutral if can't categorize
+        activityCounts.neutral++;
       }
     });
   }
@@ -339,38 +351,47 @@ export default function ConnectionDetail() {
             </div>
             
             <div className="border-t pt-4 mt-4">
-              <h4 className="font-medium mb-2">Activity Summary</h4>
-              <div className="grid grid-cols-2 gap-3">
+              <h4 className="font-medium mb-3">Activity Summary</h4>
+              <div className="grid grid-cols-3 gap-2 mb-2">
                 <div className="text-center">
-                  <div className="bg-neutral-50 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 text-lg font-semibold rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-1">
-                    {activityCounts.totalMoments}
-                  </div>
-                  <div className="text-xs">Total Moments</div>
-                </div>
-                
-                <div className="text-center">
-                  <div className="bg-green-50 dark:bg-green-950 text-green-600 dark:text-green-400 text-lg font-semibold rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-1">
+                  <div className="bg-green-50 dark:bg-green-950 text-green-600 dark:text-green-400 text-sm font-semibold rounded-full w-10 h-10 flex items-center justify-center mx-auto mb-1">
                     {activityCounts.positive}
                   </div>
-                  <div className="text-xs">Positive</div>
+                  <div className="text-xs">Positive 😊</div>
                 </div>
                 
                 <div className="text-center">
-                  <div className="bg-red-50 dark:bg-red-950 text-red-600 dark:text-red-400 text-lg font-semibold rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-1">
-                    {activityCounts.conflicts}
+                  <div className="bg-orange-50 dark:bg-orange-950 text-orange-600 dark:text-orange-400 text-sm font-semibold rounded-full w-10 h-10 flex items-center justify-center mx-auto mb-1">
+                    {activityCounts.negative}
                   </div>
-                  <div className="text-xs">Conflicts</div>
+                  <div className="text-xs">Negative 😕</div>
                 </div>
                 
                 <div className="text-center">
-                  <div className="bg-pink-50 dark:bg-pink-950 text-pink-600 dark:text-pink-400 text-lg font-semibold rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-1">
-                    {activityCounts.intimacy}
+                  <div className="bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-400 text-sm font-semibold rounded-full w-10 h-10 flex items-center justify-center mx-auto mb-1">
+                    {activityCounts.neutral}
                   </div>
-                  <div className="text-xs">Intimacy</div>
+                  <div className="text-xs">Neutral 🌱</div>
                 </div>
               </div>
               
-              {activityCounts.totalMoments === 0 && (
+              <div className="grid grid-cols-2 gap-2">
+                <div className="text-center">
+                  <div className="bg-red-50 dark:bg-red-950 text-red-600 dark:text-red-400 text-sm font-semibold rounded-full w-10 h-10 flex items-center justify-center mx-auto mb-1">
+                    {activityCounts.conflicts}
+                  </div>
+                  <div className="text-xs">Conflicts ⚡</div>
+                </div>
+                
+                <div className="text-center">
+                  <div className="bg-pink-50 dark:bg-pink-950 text-pink-600 dark:text-pink-400 text-sm font-semibold rounded-full w-10 h-10 flex items-center justify-center mx-auto mb-1">
+                    {activityCounts.intimacy}
+                  </div>
+                  <div className="text-xs">Intimacy 💕</div>
+                </div>
+              </div>
+              
+              {Object.values(activityCounts).every(count => count === 0) && (
                 <div className="text-neutral-500 text-sm py-3 text-center w-full">
                   No moments tracked yet. Start adding moments to see activity summary.
                 </div>
