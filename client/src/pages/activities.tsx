@@ -282,7 +282,7 @@ export default function Activities() {
                   <ChevronDown className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-full" sideOffset={4}>
+              <DropdownMenuContent className="w-[var(--radix-dropdown-menu-trigger-width)]" sideOffset={4}>
                 <DropdownMenuItem 
                   onClick={() => setSelectedConnection(null)}
                   className="py-3 px-4 text-base"
