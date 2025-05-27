@@ -300,42 +300,25 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
                   variant="outline"
                   className={cn(
                     "w-full justify-start text-left font-normal",
-                    !formData.date && "text-muted-foreground"
+                    !formData.scheduledDate && "text-muted-foreground"
                   )}
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
-                  {formData.date ? format(formData.date, "PPP") : <span>Pick a date</span>}
+                  {formData.scheduledDate ? format(formData.scheduledDate, "PPP") : <span>Pick a date</span>}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0">
                 <Calendar
                   mode="single"
-                  selected={formData.date}
-                  onSelect={(date) => setFormData(prev => ({ ...prev, date: date || new Date() }))}
+                  selected={formData.scheduledDate}
+                  onSelect={(date) => setFormData(prev => ({ ...prev, scheduledDate: date || new Date() }))}
                   initialFocus
                 />
               </PopoverContent>
             </Popover>
           </div>
 
-          {/* Icon Selection */}
-          <div className="space-y-2">
-            <Label>Icon</Label>
-            <div className="grid grid-cols-5 gap-2">
-              {commonIcons.map((icon) => (
-                <Button
-                  key={icon}
-                  type="button"
-                  variant={formData.icon === icon ? "default" : "outline"}
-                  size="sm"
-                  className="h-10 text-lg"
-                  onClick={() => setFormData(prev => ({ ...prev, icon }))}
-                >
-                  {icon}
-                </Button>
-              ))}
-            </div>
-          </div>
+
 
           {/* Description */}
           <div className="space-y-2">
