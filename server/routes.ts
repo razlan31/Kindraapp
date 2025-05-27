@@ -682,30 +682,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
   
   app.post("/api/milestones", isAuthenticated, async (req, res) => {
+    console.log("🚨 MILESTONE ROUTE HIT - Starting request");
     try {
       const userId = req.session.userId as number;
       const milestoneData = req.body;
       
+      console.log("🚨 MILESTONE ROUTE - Original data:", JSON.stringify(milestoneData, null, 2));
+      
       // Convert date string to Date object before validation
       if (milestoneData.date && typeof milestoneData.date === 'string') {
+        console.log("🚨 MILESTONE ROUTE - Converting date from string to Date object");
         milestoneData.date = new Date(milestoneData.date);
+        console.log("🚨 MILESTONE ROUTE - Date after conversion:", milestoneData.date);
       }
       
-      console.log("📋 MILESTONE DEBUG - Request body:", JSON.stringify(milestoneData, null, 2));
-      console.log("📋 MILESTONE DEBUG - With userId:", JSON.stringify({ ...milestoneData, userId }, null, 2));
+      console.log("🚨 MILESTONE ROUTE - Data with userId:", JSON.stringify({ ...milestoneData, userId }, null, 2));
       
       const result = milestoneSchema.safeParse({ ...milestoneData, userId });
       
       if (!result.success) {
-        console.log("📋 MILESTONE DEBUG - Validation errors:", JSON.stringify(result.error.format(), null, 2));
+        console.log("🚨 MILESTONE ROUTE - Validation failed:", JSON.stringify(result.error.format(), null, 2));
         return res.status(400).json({ message: "Invalid milestone data", errors: result.error.format() });
       }
       
-      console.log("📋 MILESTONE DEBUG - Validation successful, creating milestone");
+      console.log("🚨 MILESTONE ROUTE - Validation successful, creating milestone");
       const milestone = await storage.createMilestone(result.data);
+      console.log("🚨 MILESTONE ROUTE - Milestone created:", milestone);
       res.status(201).json(milestone);
     } catch (error) {
-      console.log("📋 MILESTONE DEBUG - Server error:", error);
+      console.log("🚨 MILESTONE ROUTE - Server error:", error);
       res.status(500).json({ message: "Failed to create milestone" });
     }
   });
