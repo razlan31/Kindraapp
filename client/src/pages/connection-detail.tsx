@@ -5,12 +5,13 @@ import { Connection } from "@shared/schema";
 import { BottomNavigation } from "@/components/layout/bottom-navigation";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Heart, Calendar, Star, MessageCircle, Edit, Trash2, Plus, Activity } from "lucide-react";
+import { ArrowLeft, Heart, Calendar, Star, MessageCircle, Edit, Trash2, Plus, Activity, Trophy } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatDistanceToNow, format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
 import { useModal } from "@/contexts/modal-context";
 import { useRelationshipFocus } from "@/contexts/relationship-focus-context";
+import { MilestoneModal } from "@/components/modals/milestone-modal";
 
 export default function ConnectionDetail() {
   const { id } = useParams();
@@ -112,6 +113,7 @@ export default function ConnectionDetail() {
   }
   
   const [isDeleting, setIsDeleting] = useState(false);
+  const [milestoneModalOpen, setMilestoneModalOpen] = useState(false);
 
   const handleDelete = async () => {
     if (isDeleting) return; // Prevent double-clicking
@@ -443,6 +445,15 @@ export default function ConnectionDetail() {
               View Calendar
             </Button>
           </div>
+          
+          <Button 
+            variant="outline" 
+            className="w-full"
+            onClick={() => setMilestoneModalOpen(true)}
+          >
+            <Trophy className="h-4 w-4 mr-2" />
+            Add Milestone / Anniversary
+          </Button>
         </div>
       </div>
       
