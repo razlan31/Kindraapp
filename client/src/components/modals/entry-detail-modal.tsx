@@ -468,10 +468,6 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection }: EntryD
                 </>
               ) : (
                 <>
-                  <Button variant="outline" onClick={handleEdit}>
-                    <Edit2 className="h-4 w-4 mr-1" />
-                    Edit
-                  </Button>
                   <Button 
                     variant="destructive" 
                     size="sm"
