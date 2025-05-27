@@ -290,83 +290,115 @@ export default function Activities() {
               <p>Loading moments...</p>
             </div>
           ) : activeTab === 'timeline' ? (
-            // Timeline View - All activities in chronological order
+            // Timeline View - All activities in chronological order grouped by date
             filteredMoments.length > 0 ? (
               <div className="relative">
                 {/* Timeline line */}
                 <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gradient-to-b from-blue-200 via-purple-200 to-pink-200 dark:from-blue-800 dark:via-purple-800 dark:to-pink-800"></div>
                 
-                <div className="space-y-6">
-                  {filteredMoments
-                    .sort((a, b) => new Date(b.createdAt || '').getTime() - new Date(a.createdAt || '').getTime())
-                    .map((moment, index) => {
-                      const connection = connections.find(c => c.id === moment.connectionId);
-                      if (!connection) return null;
+                <div className="space-y-8">
+                  {(() => {
+                    // Group timeline entries by date
+                    const timelineGrouped = filteredMoments
+                      .sort((a, b) => new Date(b.createdAt || '').getTime() - new Date(a.createdAt || '').getTime())
+                      .reduce((groups: Record<string, Moment[]>, moment) => {
+                        const date = format(new Date(moment.createdAt || new Date()), 'yyyy-MM-dd');
+                        if (!groups[date]) groups[date] = [];
+                        groups[date].push(moment);
+                        return groups;
+                      }, {});
 
-                      const getActivityType = (moment: Moment) => {
-                        if (moment.isIntimate) return 'intimacy';
-                        if (moment.tags?.includes('Red Flag') || moment.emoji === '😠') return 'conflict';
-                        return 'moment';
-                      };
+                    const sortedTimelineDates = Object.keys(timelineGrouped).sort((a, b) => 
+                      new Date(b).getTime() - new Date(a).getTime()
+                    );
 
-                      const activityType = getActivityType(moment);
-                      const typeColors = {
-                        moment: 'bg-green-100 border-green-300 text-green-700 dark:bg-green-900/20 dark:border-green-700 dark:text-green-300',
-                        conflict: 'bg-red-100 border-red-300 text-red-700 dark:bg-red-900/20 dark:border-red-700 dark:text-red-300',
-                        intimacy: 'bg-pink-100 border-pink-300 text-pink-700 dark:bg-pink-900/20 dark:border-pink-700 dark:text-pink-300'
-                      };
-
-                      return (
-                        <div key={moment.id} className="relative pl-12">
-                          {/* Timeline dot */}
-                          <div className={`absolute left-4 w-4 h-4 rounded-full border-2 ${typeColors[activityType]} flex items-center justify-center -translate-x-1/2`}>
-                            <div className="w-2 h-2 rounded-full bg-current"></div>
+                    return sortedTimelineDates.map((date) => (
+                      <div key={date} className="relative">
+                        {/* Date separator */}
+                        <div className="relative mb-6">
+                          <div className="absolute left-4 w-6 h-6 bg-primary rounded-full flex items-center justify-center -translate-x-1/2 z-10 border-2 border-background">
+                            <Calendar className="h-3 w-3 text-primary-foreground" />
                           </div>
-                          
-                          {/* Timeline content */}
-                          <Card className="p-4 shadow-sm hover:shadow-md transition-shadow cursor-pointer" onClick={() => handleViewEntryDetail(moment.id)}>
-                            <div className="flex items-start justify-between mb-3">
-                              <div className="flex items-center gap-2">
-                                <span className="text-lg">{moment.emoji}</span>
-                                <span className="font-medium text-sm">{connection.name}</span>
-                                <span className={`px-2 py-1 rounded-full text-xs capitalize ${typeColors[activityType]}`}>
-                                  {activityType}
-                                </span>
-                              </div>
-                              <div className="text-right">
-                                <div className="text-sm font-medium text-foreground">
-                                  {moment.createdAt ? format(new Date(moment.createdAt), 'MMM d') : ''}
-                                </div>
-                                <div className="text-xs text-muted-foreground">
-                                  {moment.createdAt ? format(new Date(moment.createdAt), 'h:mm a') : ''}
-                                </div>
-                              </div>
+                          <div className="pl-12">
+                            <div className="bg-muted/50 rounded-lg px-4 py-2 inline-block">
+                              <span className="text-sm font-semibold text-foreground">
+                                {format(new Date(date), 'EEEE, MMMM d, yyyy')}
+                              </span>
                             </div>
-                            
-                            {moment.content && (
-                              <p className="text-sm text-muted-foreground mb-2 line-clamp-2">
-                                {moment.content}
-                              </p>
-                            )}
-                            
-                            {moment.tags && moment.tags.length > 0 && (
-                              <div className="flex flex-wrap gap-1">
-                                {moment.tags.slice(0, 2).map(tag => (
-                                  <span key={tag} className="px-2 py-1 bg-muted rounded-full text-xs">
-                                    {tag}
-                                  </span>
-                                ))}
-                                {moment.tags.length > 2 && (
-                                  <span className="px-2 py-1 bg-muted rounded-full text-xs">
-                                    +{moment.tags.length - 2} more
-                                  </span>
-                                )}
-                              </div>
-                            )}
-                          </Card>
+                          </div>
                         </div>
-                      );
-                    })}
+                        
+                        {/* Activities for this date */}
+                        <div className="space-y-6">
+                          {timelineGrouped[date].map((moment) => {
+                            const connection = connections.find(c => c.id === moment.connectionId);
+                            if (!connection) return null;
+
+                            const getActivityType = (moment: Moment) => {
+                              if (moment.isIntimate) return 'intimacy';
+                              if (moment.tags?.includes('Red Flag') || moment.emoji === '😠') return 'conflict';
+                              return 'moment';
+                            };
+
+                            const activityType = getActivityType(moment);
+                            const typeColors = {
+                              moment: 'bg-green-100 border-green-300 text-green-700 dark:bg-green-900/20 dark:border-green-700 dark:text-green-300',
+                              conflict: 'bg-red-100 border-red-300 text-red-700 dark:bg-red-900/20 dark:border-red-700 dark:text-red-300',
+                              intimacy: 'bg-pink-100 border-pink-300 text-pink-700 dark:bg-pink-900/20 dark:border-pink-700 dark:text-pink-300'
+                            };
+
+                            return (
+                              <div key={moment.id} className="relative pl-12">
+                                {/* Timeline dot */}
+                                <div className={`absolute left-4 w-4 h-4 rounded-full border-2 ${typeColors[activityType]} flex items-center justify-center -translate-x-1/2`}>
+                                  <div className="w-2 h-2 rounded-full bg-current"></div>
+                                </div>
+                                
+                                {/* Timeline content */}
+                                <Card className="p-4 shadow-sm hover:shadow-md transition-shadow cursor-pointer" onClick={() => handleViewEntryDetail(moment.id)}>
+                                  <div className="flex items-start justify-between mb-3">
+                                    <div className="flex items-center gap-2">
+                                      <span className="text-lg">{moment.emoji}</span>
+                                      <span className="font-medium text-sm">{connection.name}</span>
+                                      <span className={`px-2 py-1 rounded-full text-xs capitalize ${typeColors[activityType]}`}>
+                                        {activityType}
+                                      </span>
+                                    </div>
+                                    <div className="text-right">
+                                      <div className="text-xs text-muted-foreground">
+                                        {moment.createdAt ? format(new Date(moment.createdAt), 'h:mm a') : ''}
+                                      </div>
+                                    </div>
+                                  </div>
+                                  
+                                  {moment.content && (
+                                    <p className="text-sm text-muted-foreground mb-2 line-clamp-2">
+                                      {moment.content}
+                                    </p>
+                                  )}
+                                  
+                                  {moment.tags && moment.tags.length > 0 && (
+                                    <div className="flex flex-wrap gap-1">
+                                      {moment.tags.slice(0, 2).map(tag => (
+                                        <span key={tag} className="px-2 py-1 bg-muted rounded-full text-xs">
+                                          {tag}
+                                        </span>
+                                      ))}
+                                      {moment.tags.length > 2 && (
+                                        <span className="px-2 py-1 bg-muted rounded-full text-xs">
+                                          +{moment.tags.length - 2} more
+                                        </span>
+                                      )}
+                                    </div>
+                                  )}
+                                </Card>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    ));
+                  })()}
                 </div>
               </div>
             ) : (
