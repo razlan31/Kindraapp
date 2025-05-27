@@ -485,7 +485,15 @@ export default function Calendar() {
             {selectedDay && getMomentsForDay(selectedDay).map((moment) => {
               const connection = connections.find(c => c.id === moment.connectionId);
               return (
-                <Card key={moment.id} className="p-4">
+                <Card 
+                  key={moment.id} 
+                  className="p-4 cursor-pointer hover:shadow-md transition-shadow"
+                  onClick={() => {
+                    setSelectedEntry(moment);
+                    setEntryDetailOpen(true);
+                    setDayDetailOpen(false);
+                  }}
+                >
                   <div className="flex items-start gap-3">
                     <div className="text-2xl">{moment.emoji}</div>
                     <div className="flex-1">
