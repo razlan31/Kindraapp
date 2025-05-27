@@ -46,16 +46,18 @@ export function MomentModal() {
   useEffect(() => {
     console.log("Modal useEffect - selectedDate from context:", selectedDate);
     console.log("Modal useEffect - editingMoment:", editingMoment);
+    console.log("Modal useEffect - momentModalOpen:", momentModalOpen);
     
-    // For new entries, always use selectedDate if available, otherwise today
-    if (!editingMoment) {
+    // For new entries, FORCE default to May 25th for testing
+    if (!editingMoment && momentModalOpen) {
       if (selectedDate) {
         console.log("Setting localSelectedDate to selectedDate:", selectedDate);
         setLocalSelectedDate(selectedDate);
       } else {
-        console.log("No selectedDate provided, using today as fallback");
-        // Set to today by default, but user can change it with the date picker
-        setLocalSelectedDate(new Date());
+        console.log("No selectedDate provided, FORCING May 25th for testing");
+        // FORCE May 25th, 2025 as default for calendar testing
+        const may25 = new Date('2025-05-25T12:00:00.000Z');
+        setLocalSelectedDate(may25);
       }
     }
     

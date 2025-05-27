@@ -55,11 +55,22 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   const openMomentModal = (activityType: 'moment' | 'conflict' | 'intimacy' = 'moment', moment?: Moment, date?: Date) => {
-    console.log("openMomentModal called with date:", date);
+    console.log("openMomentModal called with:", { activityType, moment: !!moment, date });
+    console.log("Date details:", date ? { 
+      iso: date.toISOString(), 
+      dateString: date.toDateString(),
+      valueOf: date.valueOf()
+    } : 'No date provided');
+    
     setActivityType(activityType);
     setEditingMoment(moment || null);
     setSelectedDate(date || null);
     setMomentModalOpen(true);
+    
+    console.log("Modal state after setting:", { 
+      selectedDate: date || null, 
+      momentModalOpen: true 
+    });
   };
 
   const closeMomentModal = () => {
