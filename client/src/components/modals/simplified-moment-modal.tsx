@@ -317,7 +317,7 @@ export function MomentModal() {
                 <SelectContent>
                   <SelectItem value="positive">Positive</SelectItem>
                   <SelectItem value="negative">Negative</SelectItem>
-                  <SelectItem value="neutral">Growth</SelectItem>
+                  <SelectItem value="neutral">Neutral</SelectItem>
                 </SelectContent>
               </Select>
             </div>

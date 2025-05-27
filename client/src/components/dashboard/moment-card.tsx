@@ -87,7 +87,7 @@ export function MomentCard({ moment, connection, onAddReflection, onViewDetail, 
                   }`}>
                     {moment.emoji === '😊' ? 'Positive' :
                      moment.emoji === '😕' ? 'Negative' :
-                     moment.emoji === '🌱' ? 'Growth' :
+                     moment.emoji === '🌱' ? 'Neutral' :
                      ['❤️', '😍', '🥰', '💖', '✨', '🔥'].includes(moment.emoji) ? 'Positive' :
                      ['😢', '😠', '😞', '😤'].includes(moment.emoji) ? 'Negative' : 'Neutral'}
                   </Badge>

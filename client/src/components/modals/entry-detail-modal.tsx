@@ -264,7 +264,7 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection }: EntryD
                   size="sm"
                   onClick={() => setEditedEmoji("🌱")}
                 >
-                  🌱 Growth
+                  🌱 Neutral
                 </Button>
               </div>
             </div>
