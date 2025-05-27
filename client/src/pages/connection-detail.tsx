@@ -389,7 +389,9 @@ export default function ConnectionDetail() {
             
             <Button 
               variant="outline" 
-              onClick={() => {
+              onClick={(e) => {
+                e.preventDefault();
+                console.log("Calendar button clicked! connectionId:", connectionId);
                 const url = `/calendar?connection=${connectionId}`;
                 console.log("Navigating to calendar with URL:", url);
                 setLocation(url);
