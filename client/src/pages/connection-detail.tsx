@@ -12,12 +12,13 @@ import { useToast } from "@/hooks/use-toast";
 import { useModal } from "@/contexts/modal-context";
 import { useRelationshipFocus } from "@/contexts/relationship-focus-context";
 import { MilestoneModal } from "@/components/modals/milestone-modal";
+import { PlanModal } from "@/components/modals/plan-modal";
 
 export default function ConnectionDetail() {
   const { id } = useParams();
   const [, setLocation] = useLocation();
   const { toast } = useToast();
-  const { openMomentModal, setSelectedConnection } = useModal();
+  const { openMomentModal, openPlanModal, planModalOpen, closePlanModal, setSelectedConnection } = useModal();
   const { mainFocusConnection, setMainFocusConnection } = useRelationshipFocus();
   const queryClient = useQueryClient();
   const connectionId = parseInt(id as string);
@@ -490,6 +491,14 @@ export default function ConnectionDetail() {
         isOpen={milestoneModalOpen}
         onClose={() => setMilestoneModalOpen(false)}
         connectionId={connectionId}
+      />
+      
+      <PlanModal
+        isOpen={planModalOpen}
+        onClose={closePlanModal}
+        selectedConnection={connection}
+        selectedDate={null}
+        showConnectionPicker={false}
       />
     </div>
   );
