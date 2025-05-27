@@ -588,7 +588,14 @@ export default function Activities() {
                   const planDate = new Date(plan.createdAt || new Date());
 
                   return (
-                    <Card key={plan.id} className="p-4">
+                    <Card 
+                      key={plan.id} 
+                      className="p-4 cursor-pointer hover:shadow-md transition-shadow"
+                      onClick={() => {
+                        setSelectedMoment(plan);
+                        setEntryDetailModalOpen(true);
+                      }}
+                    >
                       <div className="flex items-start justify-between mb-2">
                         <div className="flex items-center gap-2">
                           <span className="text-lg">{plan.emoji}</span>
