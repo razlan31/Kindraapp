@@ -49,29 +49,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
     })
   );
 
-  // Plan routes - use different endpoint to bypass Vite conflicts
-  app.get("/api/user-plans", (req: Request, res: Response, next: Function) => {
-    console.log('🚀 PLANS API HIT - This should show if route is working');
-    // Skip to our handler, bypassing any middleware conflicts
-    isAuthenticated(req, res, async () => {
-      try {
-        const userId = req.session.userId as number;
-        console.log('📋 GET /api/plans - Fetching for user', userId);
-        const plans = await storage.getPlans(userId);
-        console.log('📋 Plans found:', plans.length);
-        console.log('📋 Plans data:', JSON.stringify(plans, null, 2));
-        
-        // Force JSON response with explicit headers
-        res.setHeader('Content-Type', 'application/json');
-        res.status(200).json(plans);
-      } catch (error) {
-        console.error('Error fetching plans:', error);
-        res.status(500).json({ message: "Failed to fetch plans" });
-      }
-    });
+  // Plan routes - use unique endpoint to bypass Vite conflicts
+  app.get("/api/kindra-plans", isAuthenticated, async (req: Request, res: Response) => {
+    console.log('🚀 KINDRA PLANS API HIT - This should show if route is working');
+    try {
+      const userId = req.session.userId as number;
+      console.log('📋 GET /api/kindra-plans - Fetching for user', userId);
+      const plans = await storage.getPlans(userId);
+      console.log('📋 Plans found:', plans.length);
+      console.log('📋 Plans data:', JSON.stringify(plans, null, 2));
+      
+      // Force JSON response with explicit headers
+      res.setHeader('Content-Type', 'application/json');
+      res.status(200).json(plans);
+    } catch (error) {
+      console.error('Error fetching plans:', error);
+      res.status(500).json({ message: "Failed to fetch plans" });
+    }
   });
 
-  app.post("/api/plans", isAuthenticated, async (req: Request, res: Response) => {
+  app.post("/api/kindra-plans", isAuthenticated, async (req: Request, res: Response) => {
     try {
       const userId = req.session.userId as number;
       const planData = { ...req.body, userId };

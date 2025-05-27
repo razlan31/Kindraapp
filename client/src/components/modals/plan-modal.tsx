@@ -85,14 +85,14 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
 
   const createPlanMutation = useMutation({
     mutationFn: async (data: PlanFormData) => {
-      return apiRequest('POST', '/api/plans', data);
+      return apiRequest('POST', '/api/kindra-plans', data);
     },
     onSuccess: () => {
       toast({
         title: "Plan created!",
         description: "Your plan has been added successfully.",
       });
-      queryClient.invalidateQueries({ queryKey: ['/api/plans'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/kindra-plans'] });
       queryClient.invalidateQueries({ queryKey: ['/api/milestones'] });
       queryClient.invalidateQueries({ queryKey: ['/api/moments'] });
       onClose();
