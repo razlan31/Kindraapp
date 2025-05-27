@@ -5,6 +5,7 @@ import { BottomNavigation } from "@/components/layout/bottom-navigation";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Checkbox } from "@/components/ui/checkbox";
 import { ChevronLeft, ChevronRight, Heart, Calendar as CalendarIcon, Plus, Eye } from "lucide-react";
 import { useAuth } from "@/contexts/auth-context";
 import { useModal } from "@/contexts/modal-context";
@@ -18,13 +19,37 @@ export default function Calendar() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
   const [dayDetailOpen, setDayDetailOpen] = useState(false);
+  
+  // Filter states for different entry types
+  const [filters, setFilters] = useState({
+    positive: true,
+    negative: true,
+    neutral: true,
+    conflict: true,
+    intimacy: true,
+  });
 
   // Fetch moments (using exact same config as moments.tsx that works)
-  const { data: moments = [], isLoading: momentsLoading, refetch: refetchMoments } = useQuery<Moment[]>({
+  const { data: allMoments = [], isLoading: momentsLoading, refetch: refetchMoments } = useQuery<Moment[]>({
     queryKey: ["/api/moments"],
     enabled: !!user,
     refetchOnWindowFocus: true,
     staleTime: 0, // Always refetch to ensure fresh data
+  });
+
+  // Filter moments based on selected filters
+  const moments = allMoments.filter(moment => {
+    if (moment.tags?.includes('Conflict') && !filters.conflict) return false;
+    if (moment.tags?.includes('Intimacy') && !filters.intimacy) return false;
+    
+    // For regular moments, check emoji to determine type
+    if (!moment.tags?.includes('Conflict') && !moment.tags?.includes('Intimacy')) {
+      if ((moment.emoji === '😊' || moment.emoji === '😍' || moment.emoji === '❤️') && !filters.positive) return false;
+      if ((moment.emoji === '😕' || moment.emoji === '😔') && !filters.negative) return false;
+      if ((moment.emoji === '🌱' || moment.emoji === '🗣️') && !filters.neutral) return false;
+    }
+    
+    return true;
   });
 
   // Force refresh when component mounts and listen for updates
@@ -198,6 +223,63 @@ export default function Calendar() {
               <div className="flex items-center gap-2">
                 <span className="text-sm">💕</span>
                 <span>Intimacy</span>
+              </div>
+            </div>
+            
+            {/* Filter Checkboxes */}
+            <div className="mt-4 pt-3 border-t border-border/20">
+              <h4 className="text-xs font-medium mb-2 text-muted-foreground">Show on Calendar</h4>
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="positive"
+                    checked={filters.positive}
+                    onCheckedChange={(checked) => 
+                      setFilters(prev => ({ ...prev, positive: !!checked }))
+                    }
+                  />
+                  <label htmlFor="positive" className="text-xs cursor-pointer">Positive</label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="negative"
+                    checked={filters.negative}
+                    onCheckedChange={(checked) => 
+                      setFilters(prev => ({ ...prev, negative: !!checked }))
+                    }
+                  />
+                  <label htmlFor="negative" className="text-xs cursor-pointer">Negative</label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="neutral"
+                    checked={filters.neutral}
+                    onCheckedChange={(checked) => 
+                      setFilters(prev => ({ ...prev, neutral: !!checked }))
+                    }
+                  />
+                  <label htmlFor="neutral" className="text-xs cursor-pointer">Neutral</label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="conflict"
+                    checked={filters.conflict}
+                    onCheckedChange={(checked) => 
+                      setFilters(prev => ({ ...prev, conflict: !!checked }))
+                    }
+                  />
+                  <label htmlFor="conflict" className="text-xs cursor-pointer">Conflicts</label>
+                </div>
+                <div className="flex items-center space-x-2 col-span-2">
+                  <Checkbox
+                    id="intimacy"
+                    checked={filters.intimacy}
+                    onCheckedChange={(checked) => 
+                      setFilters(prev => ({ ...prev, intimacy: !!checked }))
+                    }
+                  />
+                  <label htmlFor="intimacy" className="text-xs cursor-pointer">Intimacy</label>
+                </div>
               </div>
             </div>
           </Card>
