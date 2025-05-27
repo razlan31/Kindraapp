@@ -54,21 +54,33 @@ export default function Calendar() {
   
   // Debug logging for allMoments
   console.log("All moments from query:", allMoments);
+  console.log("Calendar Debug - Total moments:", moments.length, moments);
 
   // Filter moments based on selected filters and connection
   const moments = allMoments.filter(moment => {
     // Connection filter
     if (selectedConnectionId && moment.connectionId !== selectedConnectionId) return false;
     
+    // Check if moment is a conflict or intimacy type
+    const isConflict = moment.tags?.includes('Conflict') || moment.emoji === '⚡';
+    const isIntimacy = moment.tags?.includes('Intimacy') || moment.isIntimate || moment.emoji === '💕';
+    
     // Type filters
-    if (moment.tags?.includes('Conflict') && !filters.conflict) return false;
-    if (moment.tags?.includes('Intimacy') && !filters.intimacy) return false;
+    if (isConflict && !filters.conflict) return false;
+    if (isIntimacy && !filters.intimacy) return false;
     
     // For regular moments, check emoji to determine type
-    if (!moment.tags?.includes('Conflict') && !moment.tags?.includes('Intimacy')) {
-      if ((moment.emoji === '😊' || moment.emoji === '😍' || moment.emoji === '❤️') && !filters.positive) return false;
-      if ((moment.emoji === '😕' || moment.emoji === '😔') && !filters.negative) return false;
-      if ((moment.emoji === '🌱' || moment.emoji === '🗣️') && !filters.neutral) return false;
+    if (!isConflict && !isIntimacy) {
+      const isPositive = ['😊', '😍', '❤️', '🥰', '💖', '✨', '🔥'].includes(moment.emoji);
+      const isNegative = ['😕', '😔', '😢', '😠', '😞', '😤'].includes(moment.emoji);
+      const isNeutral = ['🌱', '🗣️'].includes(moment.emoji);
+      
+      if (isPositive && !filters.positive) return false;
+      if (isNegative && !filters.negative) return false;
+      if (isNeutral && !filters.neutral) return false;
+      
+      // If none of the above, treat as positive (default for unknown emojis)
+      if (!isPositive && !isNegative && !isNeutral && !filters.positive) return false;
     }
     
     return true;
