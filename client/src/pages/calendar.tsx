@@ -76,12 +76,15 @@ export default function Calendar() {
     queryFn: async () => {
       const queryString = selectedConnectionId ? `?connectionId=${selectedConnectionId}` : '';
       console.log("🔍 CALENDAR DEBUG - Fetching milestones with query:", queryString);
-      const response = await fetch(`/api/milestones${queryString}`);
+      const response = await fetch(`/api/milestones${queryString}`, {
+        credentials: 'include'
+      });
       const data = await response.json();
       console.log("🔍 CALENDAR DEBUG - Milestones fetched:", data);
       return data;
     },
     enabled: !!user,
+    staleTime: 0,
   });
 
   console.log("🔍 CALENDAR DEBUG - Current milestones state:", milestones);
