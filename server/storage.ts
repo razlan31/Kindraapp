@@ -172,6 +172,7 @@ export class MemStorage implements IStorage {
         isResolved: false,
         resolvedAt: null,
         resolutionNotes: null,
+        reflection: null,
         createdAt: new Date('2025-05-24T19:30:00')
       },
       {
@@ -183,10 +184,12 @@ export class MemStorage implements IStorage {
         tags: ["Red Flag", "Conflict", "Communication"],
         isPrivate: false,
         isIntimate: false,
+        intimacyRating: null,
         relatedToMenstrualCycle: false,
         isResolved: false,
         resolvedAt: null,
         resolutionNotes: null,
+        reflection: null,
         createdAt: new Date('2025-05-23T14:20:00')
       },
       {
@@ -462,7 +465,11 @@ export class MemStorage implements IStorage {
   async getMomentsByConnectionId(connectionId: number): Promise<Moment[]> {
     return Array.from(this.moments.values())
       .filter((moment) => moment.connectionId === connectionId)
-      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+      .sort((a, b) => {
+        const dateA = new Date(a.createdAt || 0);
+        const dateB = new Date(b.createdAt || 0);
+        return dateB.getTime() - dateA.getTime();
+      });
   }
 
   async createMoment(insertMoment: InsertMoment): Promise<Moment> {
