@@ -34,7 +34,6 @@ const planSchema = z.object({
   description: z.string().optional(),
   scheduledDate: z.date(),
   connectionId: z.number(),
-  category: z.string().default("other"),
   notes: z.string().optional(),
   isCompleted: z.boolean().optional()
 });
@@ -53,7 +52,6 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
     description: "",
     scheduledDate: selectedDate || new Date(),
     connectionId: localSelectedConnection?.id || selectedConnection?.id,
-    category: "other",
     notes: "",
     isCompleted: false
   });
@@ -88,9 +86,9 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
       // Convert plan data to moment format with 'Plan' tag
       const momentData = {
         title: data.title,
-        content: data.description || `${data.category} scheduled for ${data.scheduledDate}`,
+        content: data.description || `Plan scheduled for ${data.scheduledDate}`,
         emoji: "📅", // Calendar emoji for plans
-        tags: ["Plan", data.category],
+        tags: ["Plan"],
         connectionId: data.connectionId,
         createdAt: data.scheduledDate, // Use scheduled date as the moment date
         isCompleted: data.isCompleted || false,
