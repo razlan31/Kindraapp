@@ -79,7 +79,7 @@ export default function Activities() {
 
   // Fetch plans
   const { data: plans = [], isLoading: plansLoading, error: plansError } = useQuery<Plan[]>({
-    queryKey: ["/api/plans"],
+    queryKey: ["/api/user-plans"],
     staleTime: 0,
   });
 

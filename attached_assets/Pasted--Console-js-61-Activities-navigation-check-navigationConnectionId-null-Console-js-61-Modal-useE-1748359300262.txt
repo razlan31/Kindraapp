@@ -1,0 +1,37 @@
+
+Console.js:61 Activities navigation check: 
+{navigationConnectionId: null}
+Console.js:61 Modal useEffect - selectedDate from context: null
+Console.js:61 Modal useEffect - editingMoment: null
+Console.js:61 Modal useEffect - momentModalOpen: false
+Console.js:61 Plans Debug: 
+{plans: Array(0), plansLoading: true, plansError: null, activeTab: 'moments', user: false, …}
+Console.js:61 Plans Debug: 
+{plans: Array(0), plansLoading: true, plansError: null, activeTab: 'moments', user: false, …}
+Console.js:61 Focus Context Debug: 
+{savedId: '2', connectionsLength: 2, connections: Array(2)}
+Console.js:61 Found saved connection: 
+{id: 2, userId: 1, name: 'Alex', relationshipStage: 'Talking', startDate: '2025-05-01T00:00:00.000Z', …}
+Console.js:61 Plans Debug: 
+{plans: Array(0), plansLoading: true, plansError: null, activeTab: 'moments', user: false, …}
+Console.js:61 Activities navigation check: 
+{navigationConnectionId: null}
+Console.js:61 Setting activities connection from main focus: 2
+Console.js:61 Plans Debug: 
+{plans: Array(0), plansLoading: true, plansError: null, activeTab: 'moments', user: false, …}
+Console.js:61 Activities navigation check: 
+{navigationConnectionId: null}
+Console.js:61 getCurrentUser successful: 
+{id: 1, username: 'testuser', email: 'test@example.com', displayName: 'Test User', zodiacSign: 'Gemini', …}
+Console.js:61 Auth context setting user: 
+{id: 1, username: 'testuser', email: 'test@example.com', displayName: 'Test User', zodiacSign: 'Gemini', …}
+Console.js:61 Plans Debug: 
+{plans: Array(0), plansLoading: false, plansError: SyntaxError: Unexpected token '<', "<!DOCTYPE "... is not valid JSON, activeTab: 'moments', user: false, …}
+Console.js:61 Plans Debug: 
+{plans: Array(0), plansLoading: false, plansError: SyntaxError: Unexpected token '<', "<!DOCTYPE "... is not valid JSON, activeTab: 'plans', user: false, …}
+Console.js:61 Plans Debug: 
+{plans: Array(0), plansLoading: false, plansError: SyntaxError: Unexpected token '<', "<!DOCTYPE "... is not valid JSON, activeTab: 'intimacy', user: false, …}
+Console.js:61 Plans Debug: 
+{plans: Array(0), plansLoading: false, plansError: SyntaxError: Unexpected token '<', "<!DOCTYPE "... is not valid JSON, activeTab: 'plans', user: false, …}
+﻿
+

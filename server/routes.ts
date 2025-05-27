@@ -49,8 +49,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     })
   );
 
-  // Plan routes - ensure they bypass Vite middleware
-  app.get("/api/plans", (req: Request, res: Response, next: Function) => {
+  // Plan routes - use different endpoint to bypass Vite conflicts
+  app.get("/api/user-plans", (req: Request, res: Response, next: Function) => {
     console.log('🚀 PLANS API HIT - This should show if route is working');
     // Skip to our handler, bypassing any middleware conflicts
     isAuthenticated(req, res, async () => {
