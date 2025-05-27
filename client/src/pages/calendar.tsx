@@ -89,6 +89,8 @@ export default function Calendar() {
 
   console.log("🔍 CALENDAR DEBUG - Current milestones state:", milestones);
   console.log("🔍 CALENDAR DEBUG - Selected connection ID:", selectedConnectionId);
+  console.log("🔍 CALENDAR DEBUG - User state:", !!user);
+  console.log("🔍 CALENDAR DEBUG - Query enabled condition:", !!user);
   
   // Debug logging for allMoments
   console.log("All moments from query:", allMoments);
