@@ -242,6 +242,9 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection, onUpdate
   if (!freshMoment || !connection) return null;
 
   const activityType = getActivityType(freshMoment);
+  console.log("Entry Detail Modal - activityType:", activityType);
+  console.log("Entry Detail Modal - moment tags:", freshMoment.tags);
+  console.log("Entry Detail Modal - moment:", freshMoment);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
