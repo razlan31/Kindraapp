@@ -213,6 +213,7 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection, onUpdate
   const getActivityType = (moment: Moment) => {
     if (moment.tags?.includes('Conflict')) return 'conflict';
     if (moment.isIntimate) return 'intimacy';
+    if (moment.tags?.includes('Plan')) return 'plan';
     return 'moment';
   };
 
@@ -220,6 +221,7 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection, onUpdate
     switch (type) {
       case 'conflict': return 'Conflict';
       case 'intimacy': return 'Intimacy';
+      case 'plan': return 'Plan';
       default: return 'Moment';
     }
   };

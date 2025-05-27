@@ -489,6 +489,9 @@ export default function Activities() {
                                   moment.isResolved === true || 
                                   (moment.resolutionNotes && moment.resolutionNotes.trim() !== '')) return 'conflict';
                               
+                              // Priority 3: Check if it's a plan (has Plan tag)
+                              if (moment.tags?.includes('Plan')) return 'plan';
+                              
                               // Priority 3: Check what tab it would appear in based on the filtering logic
                               const tags = moment.tags || [];
                               
@@ -513,7 +516,8 @@ export default function Activities() {
                               negative: 'bg-orange-100 border-orange-300 text-orange-700 dark:bg-orange-900/20 dark:border-orange-700 dark:text-orange-300',
                               neutral: 'bg-blue-100 border-blue-300 text-blue-700 dark:bg-blue-900/20 dark:border-blue-700 dark:text-blue-300',
                               conflict: 'bg-red-100 border-red-300 text-red-700 dark:bg-red-900/20 dark:border-red-700 dark:text-red-300',
-                              intimacy: 'bg-pink-100 border-pink-300 text-pink-700 dark:bg-pink-900/20 dark:border-pink-700 dark:text-pink-300'
+                              intimacy: 'bg-pink-100 border-pink-300 text-pink-700 dark:bg-pink-900/20 dark:border-pink-700 dark:text-pink-300',
+                              plan: 'bg-purple-100 border-purple-300 text-purple-700 dark:bg-purple-900/20 dark:border-purple-700 dark:text-purple-300'
                             };
 
                             return (
