@@ -211,12 +211,16 @@ export function MomentModal() {
       return response.json();
     },
     onSuccess: () => {
+      console.log("🎉 Update successful - Reloading page for immediate calendar update");
       toast({
         title: "Entry updated successfully",
         description: "Your changes have been saved.",
       });
-      closeMomentModal();
-      setIsSubmitting(false);
+      
+      // Force immediate page reload to show changes on calendar
+      setTimeout(() => {
+        window.location.reload();
+      }, 100);
       
       // Instantly update the cache instead of full page reload
       queryClient.invalidateQueries({ queryKey: ['/api/moments'] });
