@@ -472,7 +472,13 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection, onUpdate
                     <X className="h-4 w-4 mr-1" />
                     Cancel
                   </Button>
-                  <Button onClick={handleSave} disabled={isSubmitting}>
+                  <Button 
+                    onClick={() => {
+                      console.log("🔥 SAVE BUTTON CLICKED!");
+                      handleSave();
+                    }} 
+                    disabled={isSubmitting}
+                  >
                     {isSubmitting ? "Saving..." : "Save"}
                   </Button>
                 </>
