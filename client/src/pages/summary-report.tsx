@@ -335,14 +335,14 @@ export default function SummaryReport() {
             </Select>
 
             <Select
-              value={selectedConnection ? selectedConnection.toString() : ""}
-              onValueChange={(value) => setSelectedConnection(value ? parseInt(value) : null)}
+              value={selectedConnection ? selectedConnection.toString() : "all"}
+              onValueChange={(value) => setSelectedConnection(value === "all" ? null : parseInt(value))}
             >
               <SelectTrigger className="flex-1">
                 <SelectValue placeholder="All connections" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">
+                <SelectItem value="all">
                   <div className="flex items-center gap-2">
                     <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center">
                       <span className="text-xs font-medium">All</span>
