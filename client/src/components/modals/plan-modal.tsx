@@ -60,8 +60,8 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
 
   // Milestone state
   const [isMilestone, setIsMilestone] = useState(false);
-  const [milestoneIcon, setMilestoneIcon] = useState("🎉");
-  const [milestoneColor, setMilestoneColor] = useState("#3b82f6");
+  const [milestoneIcon, setMilestoneIcon] = useState("");
+  const [milestoneColor, setMilestoneColor] = useState("");
   const [isAnniversary, setIsAnniversary] = useState(false);
   const [isRecurring, setIsRecurring] = useState(false);
 
@@ -359,7 +359,16 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Milestone Icon</label>
                   <div className="grid grid-cols-5 gap-2">
-                    {["🎉", "💝", "🌟", "❤️", "🎊", "💎", "🏆", "🎈", "💕", "⭐"].map((icon) => (
+                    <Button
+                      type="button"
+                      variant={milestoneIcon === "" ? "default" : "outline"}
+                      size="sm"
+                      className="h-10 text-xs"
+                      onClick={() => setMilestoneIcon("")}
+                    >
+                      None
+                    </Button>
+                    {["🎉", "💝", "🌟", "❤️", "🎊", "💎", "🏆", "🎈", "💕"].map((icon) => (
                       <Button
                         key={icon}
                         type="button"
@@ -378,6 +387,16 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Color</label>
                   <div className="flex gap-2">
+                    <Button
+                      type="button"
+                      variant={milestoneColor === "" ? "default" : "outline"}
+                      size="sm"
+                      className="w-12 h-8 p-0 text-xs"
+                      onClick={() => setMilestoneColor("")}
+                      title="None"
+                    >
+                      None
+                    </Button>
                     {[
                       { color: "#3b82f6", name: "Blue" },
                       { color: "#ef4444", name: "Red" },
