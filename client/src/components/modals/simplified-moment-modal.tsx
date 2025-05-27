@@ -54,10 +54,8 @@ export function MomentModal() {
         console.log("Setting localSelectedDate to selectedDate:", selectedDate);
         setLocalSelectedDate(selectedDate);
       } else {
-        console.log("No selectedDate provided, FORCING May 25th for testing");
-        // FORCE May 25th, 2025 as default for calendar testing
-        const may25 = new Date('2025-05-25T12:00:00.000Z');
-        setLocalSelectedDate(may25);
+        console.log("No selectedDate provided, using current date");
+        setLocalSelectedDate(new Date());
       }
     }
     
