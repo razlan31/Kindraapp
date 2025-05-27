@@ -115,17 +115,11 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection, onUpdate
       setIsEditing(false);
       setIsSubmitting(false);
       
-      // Trigger calendar refresh immediately using window events
-      console.log("Entry Detail Modal - Dispatching momentUpdated event");
-      window.dispatchEvent(new CustomEvent('momentUpdated'));
-      
-      // Trigger parent component refresh immediately
-      if (onUpdate) {
-        onUpdate();
-      }
-      
-      // Then update the cache
-      queryClient.invalidateQueries({ queryKey: ['/api/moments'] });
+      // IMMEDIATE SOLUTION - Force page reload for instant visual update
+      console.log("Entry Detail Modal - Forcing immediate page reload for instant update");
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
     },
     onError: () => {
       toast({ title: "Failed to update entry", variant: "destructive" });
@@ -190,6 +184,11 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection, onUpdate
       
       // Force query invalidation
       queryClient.invalidateQueries({ queryKey: ['/api/moments'] });
+      
+      // Force immediate page refresh as backup solution
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
       
     } finally {
       setIsSubmitting(false);
