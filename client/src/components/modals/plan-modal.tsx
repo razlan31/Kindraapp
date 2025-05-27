@@ -58,12 +58,16 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
     icon: "📅"
   });
 
+  // Milestone state
+  const [isMilestone, setIsMilestone] = useState(false);
+  const [milestoneIcon, setMilestoneIcon] = useState("🎉");
+  const [milestoneColor, setMilestoneColor] = useState("#3b82f6");
+  const [isAnniversary, setIsAnniversary] = useState(false);
+  const [isRecurring, setIsRecurring] = useState(false);
+
   // Update local state when selectedConnection prop changes
   useEffect(() => {
-    console.log("Plan Modal - selectedConnection prop changed:", selectedConnection);
-    console.log("Plan Modal - current localSelectedConnection:", localSelectedConnection);
     if (selectedConnection && selectedConnection.id !== localSelectedConnection?.id) {
-      console.log("Plan Modal - updating connection to:", selectedConnection.name);
       setLocalSelectedConnection(selectedConnection);
       setFormData(prev => ({ ...prev, connectionId: selectedConnection.id }));
     }
@@ -121,6 +125,48 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
         title: "Missing information",
         description: "Please fill in all required fields and select a connection.",
         variant: "destructive",
+      });
+      return;
+    }
+
+    // If marked as milestone, create milestone instead of plan
+    if (isMilestone) {
+      const milestoneData = {
+        connectionId,
+        title: formData.title.trim(),
+        description: formData.description?.trim() || "",
+        date: formData.date.toISOString(),
+        icon: milestoneIcon,
+        color: milestoneColor,
+        isAnniversary,
+        isRecurring,
+      };
+      
+      console.log("Creating milestone from plan:", milestoneData);
+      
+      // Create milestone using API
+      fetch('/api/milestones', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(milestoneData),
+      })
+      .then(response => response.json())
+      .then(() => {
+        toast({
+          title: "Success!",
+          description: "Milestone created successfully",
+        });
+        queryClient.invalidateQueries({ queryKey: ['/api/milestones'] });
+        queryClient.invalidateQueries({ queryKey: ['/api/moments'] });
+        handleClose();
+      })
+      .catch(error => {
+        console.error('Error creating milestone:', error);
+        toast({
+          title: "Error",
+          description: "Failed to create milestone. Please try again.",
+          variant: "destructive",
+        });
       });
       return;
     }
@@ -290,6 +336,105 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
               </p>
             </div>
           )}
+
+          {/* Milestone Toggle */}
+          <div className="space-y-4 pt-4 border-t">
+            <div className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                id="milestone-toggle"
+                checked={isMilestone}
+                onChange={(e) => setIsMilestone(e.target.checked)}
+                className="rounded border-gray-300"
+              />
+              <label htmlFor="milestone-toggle" className="text-sm font-medium">
+                Mark as milestone
+              </label>
+            </div>
+
+            {/* Milestone Options - Show when toggle is enabled */}
+            {isMilestone && (
+              <div className="space-y-4 pl-6 border-l-2 border-primary/20">
+                {/* Icon Selection */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Milestone Icon</label>
+                  <div className="grid grid-cols-5 gap-2">
+                    {["🎉", "💝", "🌟", "❤️", "🎊", "💎", "🏆", "🎈", "💕", "⭐"].map((icon) => (
+                      <Button
+                        key={icon}
+                        type="button"
+                        variant={milestoneIcon === icon ? "default" : "outline"}
+                        size="sm"
+                        className="h-10 text-lg"
+                        onClick={() => setMilestoneIcon(icon)}
+                      >
+                        {icon}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Color Selection */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Color</label>
+                  <div className="flex gap-2">
+                    {[
+                      { color: "#3b82f6", name: "Blue" },
+                      { color: "#ef4444", name: "Red" },
+                      { color: "#22c55e", name: "Green" },
+                      { color: "#f59e0b", name: "Yellow" },
+                      { color: "#8b5cf6", name: "Purple" },
+                      { color: "#ec4899", name: "Pink" }
+                    ].map(({ color, name }) => (
+                      <Button
+                        key={color}
+                        type="button"
+                        variant={milestoneColor === color ? "default" : "outline"}
+                        size="sm"
+                        className="w-8 h-8 p-0"
+                        style={{ backgroundColor: milestoneColor === color ? color : undefined }}
+                        onClick={() => setMilestoneColor(color)}
+                        title={name}
+                      >
+                        <div 
+                          className="w-4 h-4 rounded-full" 
+                          style={{ backgroundColor: color }}
+                        />
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Anniversary Toggle */}
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id="anniversary-toggle"
+                    checked={isAnniversary}
+                    onChange={(e) => setIsAnniversary(e.target.checked)}
+                    className="rounded border-gray-300"
+                  />
+                  <label htmlFor="anniversary-toggle" className="text-sm">
+                    Mark as anniversary
+                  </label>
+                </div>
+
+                {/* Recurring Toggle */}
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id="recurring-toggle"
+                    checked={isRecurring}
+                    onChange={(e) => setIsRecurring(e.target.checked)}
+                    className="rounded border-gray-300"
+                  />
+                  <label htmlFor="recurring-toggle" className="text-sm">
+                    Recurring annually
+                  </label>
+                </div>
+              </div>
+            )}
+          </div>
 
           {/* Submit Buttons */}
           <div className="flex gap-2 pt-4">
