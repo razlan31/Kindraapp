@@ -121,11 +121,12 @@ export function MomentModal() {
     }
   }, [momentModalOpen, selectedConnectionId, activityType]);
   
-  // Success and error handlers - now unused since we handle success directly in mutations
+  // Success and error handlers - now optimized for instant updates
   const handleSuccess = () => {
     closeMomentModal();
     setIsSubmitting(false);
-    window.location.reload();
+    // Instantly update the cache instead of full page reload
+    queryClient.invalidateQueries({ queryKey: ['/api/moments'] });
   };
 
   const handleError = (error: any) => {
@@ -154,11 +155,10 @@ export function MomentModal() {
         title: `${activityType === 'conflict' ? 'Conflict' : activityType === 'intimacy' ? 'Intimacy' : 'Moment'} logged successfully`,
         description: "Your entry has been recorded.",
       });
-      // Close modal immediately
+      // Close modal and update cache instantly
       closeMomentModal();
       setIsSubmitting(false);
-      // Force page reload - the most reliable way to show changes
-      window.location.reload();
+      queryClient.invalidateQueries({ queryKey: ['/api/moments'] });
     },
     onError: (error: any) => handleError(error),
   });
@@ -182,8 +182,8 @@ export function MomentModal() {
       closeMomentModal();
       setIsSubmitting(false);
       
-      // Force immediate refresh using the proven approach from entry detail modal
-      window.location.reload();
+      // Instantly update the cache instead of full page reload
+      queryClient.invalidateQueries({ queryKey: ['/api/moments'] });
     },
     onError: (error: any) => handleError(error),
   });
