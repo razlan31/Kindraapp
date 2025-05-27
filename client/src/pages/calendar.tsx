@@ -543,13 +543,14 @@ export default function Calendar() {
       {selectedEntry && (
         <EntryDetailModal
           isOpen={entryDetailOpen}
-          onClose={() => {
+          onClose={async () => {
             setEntryDetailOpen(false);
-            // Force immediate refresh by invalidating cache and refetching
-            queryClient.invalidateQueries({ queryKey: ["/api/moments"] });
-            refetchMoments();
-            // Force a re-render by updating state
             setSelectedEntry(null);
+            // Force immediate refresh with multiple approaches
+            await queryClient.invalidateQueries({ queryKey: ["/api/moments"] });
+            await queryClient.refetchQueries({ queryKey: ["/api/moments"] });
+            // Also trigger a component re-render by updating current date slightly
+            setCurrentDate(new Date(currentDate.getTime()));
           }}
           moment={selectedEntry}
           connection={connections.find(c => c.id === selectedEntry.connectionId) || null}
