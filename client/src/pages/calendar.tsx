@@ -25,11 +25,7 @@ export default function Calendar() {
   const [selectedEntry, setSelectedEntry] = useState<Moment | null>(null);
   const [entryDetailOpen, setEntryDetailOpen] = useState(false);
   
-  // Force refresh state to trigger re-renders
-  const [refreshKey, setRefreshKey] = useState(0);
-  
-  // Local optimistic updates for immediate UI response
-  const [optimisticMoments, setOptimisticMoments] = useState<Moment[]>([]);
+
   
   // Filter states for different entry types
   const [filters, setFilters] = useState({
@@ -40,13 +36,10 @@ export default function Calendar() {
     intimacy: true,
   });
 
-  // Fetch moments with aggressive refresh settings
+  // Fetch moments with stable settings
   const { data: allMoments = [], isLoading: momentsLoading, refetch: refetchMoments } = useQuery<Moment[]>({
-    queryKey: ["/api/moments"], // Simplified query key
+    queryKey: ["/api/moments"],
     enabled: !!user,
-    refetchOnWindowFocus: true,
-    staleTime: 0, // Always refetch to ensure fresh data
-    refetchOnMount: "always", // Always refetch on mount
   });
   
   // Debug logging for allMoments
@@ -70,31 +63,13 @@ export default function Calendar() {
     return true;
   });
 
-  // Force refresh when component mounts and listen for updates
-  useEffect(() => {
-    if (user) {
-      console.log('Calendar - User authenticated, fetching moments...');
-      refetchMoments();
-    }
-  }, [user, refetchMoments]);
-
-  // Listen for moment creation and update events to refetch data immediately
+  // Simple event listeners for cache invalidation only
   useEffect(() => {
     const handleMomentCreated = () => {
-      console.log("Calendar - Received momentCreated event, refreshing...");
-      setRefreshKey(prev => prev + 1);
-      refetchMoments();
-    };
-    const handleMomentUpdated = async () => {
-      console.log("Calendar - Received momentUpdated event, refreshing...");
-      setRefreshKey(prev => prev + 1);
-      // Force immediate cache invalidation and refetch
       queryClient.invalidateQueries({ queryKey: ['/api/moments'] });
-      await refetchMoments();
-      // Double-trigger refresh to ensure visual update
-      setTimeout(() => {
-        setRefreshKey(prev => prev + 1);
-      }, 50);
+    };
+    const handleMomentUpdated = () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/moments'] });
     };
     
     window.addEventListener('momentCreated', handleMomentCreated);
@@ -104,7 +79,7 @@ export default function Calendar() {
       window.removeEventListener('momentCreated', handleMomentCreated);
       window.removeEventListener('momentUpdated', handleMomentUpdated);
     };
-  }, [refetchMoments]);
+  }, [queryClient]);
 
   // Fetch connections
   const { data: connections = [] } = useQuery<Connection[]>({
@@ -133,14 +108,6 @@ export default function Calendar() {
 
   // Debug moments loading
   console.log('Calendar Debug - Total moments:', moments.length, moments);
-  
-  // Force refetch if no moments but user is authenticated
-  useEffect(() => {
-    if (user && moments.length === 0 && !momentsLoading) {
-      console.log('Calendar - No moments found, refetching...');
-      setTimeout(() => refetchMoments(), 100);
-    }
-  }, [user, moments.length, momentsLoading, refetchMoments]);
 
 
 
@@ -206,7 +173,7 @@ export default function Calendar() {
   const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted" key={refreshKey}>
+    <div className="min-h-screen bg-gradient-to-br from-background to-muted">
       <Header />
       
       <main className="pb-20 pt-16">
