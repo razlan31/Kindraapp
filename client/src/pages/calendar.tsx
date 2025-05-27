@@ -25,6 +25,9 @@ export default function Calendar() {
   const [selectedEntry, setSelectedEntry] = useState<Moment | null>(null);
   const [entryDetailOpen, setEntryDetailOpen] = useState(false);
   
+  // Force refresh state to trigger re-renders
+  const [refreshKey, setRefreshKey] = useState(0);
+  
   // Filter states for different entry types
   const [filters, setFilters] = useState({
     positive: true,
@@ -179,7 +182,7 @@ export default function Calendar() {
   const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted">
+    <div className="min-h-screen bg-gradient-to-br from-background to-muted" key={refreshKey}>
       <Header />
       
       <main className="pb-20 pt-16">
@@ -543,14 +546,13 @@ export default function Calendar() {
       {selectedEntry && (
         <EntryDetailModal
           isOpen={entryDetailOpen}
-          onClose={async () => {
+          onClose={() => {
             setEntryDetailOpen(false);
             setSelectedEntry(null);
-            // Force immediate refresh with multiple approaches
-            await queryClient.invalidateQueries({ queryKey: ["/api/moments"] });
-            await queryClient.refetchQueries({ queryKey: ["/api/moments"] });
-            // Also trigger a component re-render by updating current date slightly
-            setCurrentDate(new Date(currentDate.getTime()));
+            // Force immediate visual refresh
+            setRefreshKey(prev => prev + 1);
+            // Invalidate cache to get fresh data
+            queryClient.invalidateQueries({ queryKey: ["/api/moments"] });
           }}
           moment={selectedEntry}
           connection={connections.find(c => c.id === selectedEntry.connectionId) || null}
