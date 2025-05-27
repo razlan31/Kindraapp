@@ -85,11 +85,7 @@ export default function Calendar() {
     }
   }, [user, moments.length, momentsLoading, refetchMoments]);
 
-  // Force calendar re-render when moments change
-  const [forceUpdate, setForceUpdate] = useState(0);
-  useEffect(() => {
-    setForceUpdate(prev => prev + 1);
-  }, [moments]);
+
 
   // Get moment type and display info
   const getMomentDisplayInfo = (moment: Moment) => {
@@ -126,19 +122,9 @@ export default function Calendar() {
 
   // Handle day click
   const handleDayClick = (day: Date) => {
-    const dayMoments = getMomentsForDay(day);
-    
-    if (dayMoments.length > 0) {
-      // Show day details if there are moments
-      setSelectedDay(day);
-      setDayDetailOpen(true);
-    } else {
-      // Create new moment if no moments exist for this day
-      if (connections.length > 0) {
-        setSelectedConnection(connections[0].id, connections[0]);
-      }
-      openMomentModal();
-    }
+    // Always set the selected day first
+    setSelectedDay(day);
+    setDayDetailOpen(true);
   };
 
   // Handle adding new moment from day detail
@@ -228,7 +214,7 @@ export default function Calendar() {
             </div>
 
             {/* Calendar Days */}
-            <div key={`calendar-${forceUpdate}-${moments.length}`} className="grid grid-cols-7 gap-1">
+            <div className="grid grid-cols-7 gap-1">
               {/* Empty cells for days before month start */}
               {Array.from({ length: getDay(monthStart) }).map((_, index) => (
                 <div key={`empty-${index}`} className="h-16"></div>
