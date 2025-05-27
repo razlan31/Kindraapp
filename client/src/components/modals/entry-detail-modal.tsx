@@ -281,7 +281,7 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection, onUpdate
             )}
             
             {/* Show moment type for regular moments based on emoji/content sentiment */}
-            {!freshMoment.tags?.includes('Conflict') && !freshMoment.isIntimate && !freshMoment.tags?.includes('Intimacy') && (
+            {!freshMoment.tags?.includes('Conflict') && !freshMoment.isIntimate && !freshMoment.tags?.includes('Intimacy') && !freshMoment.tags?.includes('Plan') && (
               <Badge variant="outline" className="text-xs">
                 {['😊', '❤️', '😍', '🥰', '💖', '✨', '🔥'].includes(freshMoment.emoji) ? 'Positive' :
                  ['😕', '😢', '😠', '😞', '😤'].includes(freshMoment.emoji) ? 'Negative' : 'Neutral'}
