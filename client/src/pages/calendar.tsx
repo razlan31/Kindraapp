@@ -134,7 +134,8 @@ export default function Calendar() {
     if (connections.length > 0) {
       setSelectedConnection(connections[0].id, connections[0]);
     }
-    openMomentModal('moment', undefined, selectedDay || undefined);
+    // Pass the selected day as a Date object, not undefined
+    openMomentModal('moment', undefined, selectedDay || new Date());
   };
 
   // Get weekday names
@@ -360,7 +361,7 @@ export default function Calendar() {
               size="sm" 
               onClick={() => {
                 console.log("Conflict button clicked - selectedDay:", selectedDay);
-                openMomentModal('conflict', undefined, selectedDay || undefined);
+                openMomentModal('conflict', undefined, selectedDay || new Date());
                 setDayDetailOpen(false);
               }}
               className="flex flex-col h-16 text-xs"
@@ -373,7 +374,7 @@ export default function Calendar() {
               size="sm" 
               onClick={() => {
                 console.log("Intimacy button clicked - selectedDay:", selectedDay);
-                openMomentModal('intimacy', undefined, selectedDay || undefined);
+                openMomentModal('intimacy', undefined, selectedDay || new Date());
                 setDayDetailOpen(false);
               }}
               className="flex flex-col h-16 text-xs"
