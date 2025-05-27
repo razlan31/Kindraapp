@@ -12,7 +12,6 @@ import { Button } from "@/components/ui/button";
 import { useModal } from "@/contexts/modal-context";
 import { Sparkles, Calendar, ChevronDown, Heart } from "lucide-react";
 import { Link } from "wouter";
-import { SimplifiedCalendar } from "@/components/calendar/simplified-calendar";
 import { FocusSelector } from "@/components/relationships/focus-selector";
 import { useRelationshipFocus } from "@/contexts/relationship-focus-context";
 
@@ -20,7 +19,6 @@ export default function Dashboard() {
   const { user, loading } = useAuth();
   const { openMomentModal, openConnectionModal, setSelectedConnection } = useModal();
   const [insight, setInsight] = useState<string>("");
-  const [selectedCalendarConnection, setSelectedCalendarConnection] = useState<Connection | null>(null);
   const [dashboardConnection, setDashboardConnection] = useState<Connection | null>(null);
   const { mainFocusConnection } = useRelationshipFocus();
 
@@ -413,15 +411,7 @@ export default function Dashboard() {
           <BadgeShowcase badges={badges} userBadges={userBadges.map(ub => ub.badge)} />
         </section>
 
-        {/* Calendar Section */}
-        <section className="px-4 py-5">
-          <SimplifiedCalendar 
-            moments={filteredMoments}
-            connections={connections}
-            selectedConnection={focusConnection || selectedCalendarConnection}
-            onSelectConnection={setSelectedCalendarConnection}
-          />
-        </section>
+
       </main>
 
       <BottomNavigation />
