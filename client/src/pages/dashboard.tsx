@@ -10,7 +10,7 @@ import { Connection, Moment, Badge } from "@shared/schema";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
 import { useModal } from "@/contexts/modal-context";
-import { Sparkles, Calendar, ChevronDown } from "lucide-react";
+import { Sparkles, Calendar, ChevronDown, Heart } from "lucide-react";
 import { Link } from "wouter";
 import { SimplifiedCalendar } from "@/components/calendar/simplified-calendar";
 import { FocusSelector } from "@/components/relationships/focus-selector";
@@ -182,7 +182,7 @@ export default function Dashboard() {
                   <option value="all">All Connections</option>
                   {connections.map((connection) => (
                     <option key={connection.id} value={connection.id}>
-                      {connection.name}
+                      {connection.name} {mainFocusConnection?.id === connection.id ? '♥' : ''}
                     </option>
                   ))}
                 </select>
