@@ -29,7 +29,7 @@ export default function Activities() {
   const [location] = useLocation();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedConnection, setSelectedConnection] = useState<number | null>(null);
-  const [activeTab, setActiveTab] = useState<'moments' | 'conflicts' | 'intimacy' | 'timeline' | 'milestones'>('moments');
+  const [activeTab, setActiveTab] = useState<'moments' | 'conflicts' | 'intimacy' | 'timeline'>('moments');
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   // Handle navigation connection filtering
@@ -314,16 +314,7 @@ export default function Activities() {
             >
               Intimacy
             </button>
-            <button 
-              onClick={() => setActiveTab('milestones')}
-              className={`py-2 px-2 rounded-md text-xs font-medium transition-colors ${
-                activeTab === 'milestones' 
-                  ? 'bg-background text-foreground shadow-sm' 
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              Milestones
-            </button>
+
           </div>
           
           {/* Timeline Overview - Below main tabs */}
@@ -538,78 +529,6 @@ export default function Activities() {
                 </p>
               </Card>
             )
-          ) : activeTab === 'milestones' ? (
-            // Milestones tab - display milestones
-            (() => {
-              const filteredMilestones = (milestones as any[]).filter((milestone: any) => {
-                if (selectedConnection && milestone.connectionId !== selectedConnection) return false;
-                if (searchTerm) {
-                  return milestone.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         milestone.description?.toLowerCase().includes(searchTerm.toLowerCase());
-                }
-                return true;
-              });
-
-              return filteredMilestones.length > 0 ? (
-                <div className="space-y-4">
-                  {filteredMilestones.map((milestone: any) => {
-                    const connection = connections.find(c => c.id === milestone.connectionId);
-                    const getIcon = () => {
-                      switch (milestone.icon) {
-                        case 'heart': return '💖';
-                        case 'star': return '⭐';
-                        case 'gift': return '🎁';
-                        case 'trophy': return '🏆';
-                        case 'home': return '🏠';
-                        case 'plane': return '✈️';
-                        case 'ring': return '💍';
-                        default: return '🎂';
-                      }
-                    };
-
-                    return (
-                      <Card key={milestone.id} className="p-4">
-                        <div className="flex items-start gap-3">
-                          <div 
-                            className="w-10 h-10 rounded-full flex items-center justify-center text-lg"
-                            style={{ backgroundColor: milestone.color + '20', color: milestone.color }}
-                          >
-                            {getIcon()}
-                          </div>
-                          <div className="flex-1">
-                            <div className="flex items-center justify-between mb-1">
-                              <h3 className="font-semibold">{milestone.title}</h3>
-                              {milestone.isAnniversary && (
-                                <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded-full">
-                                  Anniversary
-                                </span>
-                              )}
-                            </div>
-                            {milestone.description && (
-                              <p className="text-sm text-muted-foreground mb-2">{milestone.description}</p>
-                            )}
-                            <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                              <span>{format(new Date(milestone.date), 'MMM d, yyyy')}</span>
-                              {connection && <span>with {connection.name}</span>}
-                            </div>
-                          </div>
-                        </div>
-                      </Card>
-                    );
-                  })}
-                </div>
-              ) : (
-                <Card className="flex flex-col items-center justify-center py-10 px-4 text-center">
-                  <div className="rounded-full bg-primary/10 p-3 mb-3">
-                    <Calendar className="h-6 w-6 text-primary" />
-                  </div>
-                  <h3 className="font-semibold mb-1">No Milestones Yet</h3>
-                  <p className="text-muted-foreground text-sm mb-4">
-                    Create your first milestone to celebrate important moments
-                  </p>
-                </Card>
-              );
-            })()
           ) : filteredMoments.length > 0 ? (
             // Regular tabbed view
             <div>

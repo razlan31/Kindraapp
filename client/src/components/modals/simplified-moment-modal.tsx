@@ -328,6 +328,47 @@ export function MomentModal() {
       createdAtField: localSelectedDate.toISOString()
     });
     
+    // If marked as milestone, create milestone instead of moment
+    if (isMilestone && activityType === 'moment') {
+      const milestoneData = {
+        connectionId,
+        title: title.trim() || "",
+        description: content.trim() || "",
+        date: localSelectedDate.toISOString(),
+        icon: milestoneIcon,
+        color: milestoneColor,
+        isAnniversary,
+        isRecurring,
+      };
+      
+      console.log("Creating milestone:", milestoneData);
+      
+      // Create milestone using API
+      fetch('/api/milestones', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(milestoneData),
+      })
+      .then(response => {
+        if (!response.ok) throw new Error('Failed to create milestone');
+        return response.json();
+      })
+      .then(() => {
+        toast({
+          title: "Milestone created successfully",
+          description: "Your milestone has been recorded.",
+        });
+        
+        // Invalidate milestone queries to refresh the data
+        queryClient.invalidateQueries({ queryKey: ['/api/milestones'] });
+        
+        handleSuccess();
+      })
+      .catch((error) => handleError(error));
+      
+      return;
+    }
+    
     const momentData = {
       connectionId,
       title: title.trim() || "",
