@@ -192,6 +192,16 @@ export default function Activities() {
           {/* Activity Type Tabs */}
           <div className="flex space-x-1 bg-muted rounded-lg p-1 mb-4">
             <button 
+              onClick={() => setActiveTab('timeline')}
+              className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+                activeTab === 'timeline' 
+                  ? 'bg-background text-foreground shadow-sm' 
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              Timeline
+            </button>
+            <button 
               onClick={() => setActiveTab('moments')}
               className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
                 activeTab === 'moments' 
@@ -220,16 +230,6 @@ export default function Activities() {
               }`}
             >
               Intimacy
-            </button>
-            <button 
-              onClick={() => setActiveTab('timeline')}
-              className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
-                activeTab === 'timeline' 
-                  ? 'bg-background text-foreground shadow-sm' 
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              Timeline
             </button>
           </div>
 
