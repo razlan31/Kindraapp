@@ -542,14 +542,10 @@ export default function Calendar() {
       {/* Entry Detail Modal */}
       {selectedEntry && (
         <EntryDetailModal
+          isOpen={entryDetailOpen}
+          onClose={() => setEntryDetailOpen(false)}
           moment={selectedEntry}
-          open={entryDetailOpen}
-          onOpenChange={setEntryDetailOpen}
-          connections={connections}
-          onUpdate={() => {
-            refetchMoments();
-            window.dispatchEvent(new CustomEvent('momentUpdated'));
-          }}
+          connection={connections.find(c => c.id === selectedEntry.connectionId) || null}
         />
       )}
 
