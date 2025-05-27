@@ -49,6 +49,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
     })
   );
 
+  // Plan routes - moved to top to prevent route conflicts
+  app.get("/api/plans", isAuthenticated, async (req: Request, res: Response) => {
+    try {
+      const userId = req.session.userId as number;
+      console.log('📋 GET /api/plans - Fetching for user', userId);
+      const plans = await storage.getPlans(userId);
+      console.log('📋 Plans found:', plans.length);
+      console.log('📋 Plans data:', JSON.stringify(plans, null, 2));
+      res.status(200).json(plans);
+    } catch (error) {
+      console.error('Error fetching plans:', error);
+      res.status(500).json({ message: "Failed to fetch plans" });
+    }
+  });
+
+  app.post("/api/plans", isAuthenticated, async (req: Request, res: Response) => {
+    try {
+      const userId = req.session.userId as number;
+      const planData = { ...req.body, userId };
+      console.log('📋 Creating plan for user', userId, 'data:', planData);
+      
+      const plan = await storage.createPlan(planData);
+      console.log('📋 Plan created successfully:', plan);
+      res.status(201).json(plan);
+    } catch (error) {
+      console.error('Error creating plan:', error);
+      res.status(500).json({ message: "Failed to create plan" });
+    }
+  });
+
   // Auth Routes
   app.post("/api/register", async (req, res) => {
     try {
@@ -763,35 +793,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Plan routes
-  app.get("/api/plans", isAuthenticated, async (req: Request, res: Response) => {
-    try {
-      const userId = req.session.userId as number;
-      console.log('📋 GET /api/plans - Fetching for user', userId);
-      const plans = await storage.getPlans(userId);
-      console.log('📋 Plans found:', plans.length);
-      console.log('📋 Plans data:', JSON.stringify(plans, null, 2));
-      res.status(200).json(plans);
-    } catch (error) {
-      console.error('Error fetching plans:', error);
-      res.status(500).json({ message: "Failed to fetch plans" });
-    }
-  });
 
-  app.post("/api/plans", isAuthenticated, async (req: Request, res: Response) => {
-    try {
-      const userId = req.session.userId as number;
-      const planData = { ...req.body, userId };
-      console.log('📋 Creating plan for user', userId, 'data:', planData);
-      
-      const plan = await storage.createPlan(planData);
-      console.log('📋 Plan created successfully:', plan);
-      res.status(201).json(plan);
-    } catch (error) {
-      console.error('Error creating plan:', error);
-      res.status(500).json({ message: "Failed to create plan" });
-    }
-  });
 
   // Helper function to check and award badges
   async function checkAndAwardBadges(userId: number) {
