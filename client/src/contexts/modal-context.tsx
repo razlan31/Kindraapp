@@ -9,11 +9,11 @@ type ModalContextType = {
   selectedConnectionId: number | null;
   selectedConnection: Connection | null;
   mainFocusConnection: Connection | null;
-  activityType: 'moment' | 'conflict' | 'intimacy';
+  activityType: 'moment' | 'conflict' | 'intimacy' | 'plan';
   editingMoment: Moment | null;
   selectedDate: Date | null;
   navigationConnectionId: number | null;
-  openMomentModal: (activityType?: 'moment' | 'conflict' | 'intimacy', moment?: Moment, date?: Date) => void;
+  openMomentModal: (activityType?: 'moment' | 'conflict' | 'intimacy' | 'plan', moment?: Moment, date?: Date) => void;
   closeMomentModal: () => void;
   openConnectionModal: () => void;
   closeConnectionModal: () => void;
@@ -61,12 +61,12 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [selectedConnectionId, setSelectedConnectionId] = useState<number | null>(null);
   const [selectedConnection, setSelectedConnectionObject] = useState<Connection | null>(null);
   const [mainFocusConnection, setMainFocusConnectionObject] = useState<Connection | null>(null);
-  const [activityType, setActivityType] = useState<'moment' | 'conflict' | 'intimacy'>('moment');
+  const [activityType, setActivityType] = useState<'moment' | 'conflict' | 'intimacy' | 'plan'>('moment');
   const [editingMoment, setEditingMoment] = useState<Moment | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [navigationConnectionId, setNavigationConnectionId] = useState<number | null>(null);
 
-  const openMomentModal = (activityType: 'moment' | 'conflict' | 'intimacy' = 'moment', moment?: Moment, date?: Date) => {
+  const openMomentModal = (activityType: 'moment' | 'conflict' | 'intimacy' | 'plan' = 'moment', moment?: Moment, date?: Date) => {
     console.log("openMomentModal called with:", { activityType, moment: !!moment, date });
     console.log("Date details:", date ? { 
       iso: date.toISOString(), 
@@ -74,14 +74,21 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       valueOf: date.valueOf()
     } : 'No date provided');
     
-    setActivityType(activityType);
-    setEditingMoment(moment || null);
-    setSelectedDate(date || null);
-    setMomentModalOpen(true);
+    if (activityType === 'plan') {
+      // For plans, open the plan modal instead
+      setEditingMoment(moment || null);
+      setSelectedDate(date || null);
+      setPlanModalOpen(true);
+    } else {
+      setActivityType(activityType);
+      setEditingMoment(moment || null);
+      setSelectedDate(date || null);
+      setMomentModalOpen(true);
+    }
     
     console.log("Modal state after setting:", { 
       selectedDate: date || null, 
-      momentModalOpen: true 
+      modalOpen: activityType === 'plan' ? 'plan' : 'moment'
     });
   };
 

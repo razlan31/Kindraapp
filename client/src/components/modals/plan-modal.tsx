@@ -9,7 +9,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { CalendarIcon, Plus, ChevronDown } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
-import { Connection } from "@shared/schema";
+import { Connection, Moment } from "@shared/schema";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -27,6 +27,7 @@ interface PlanModalProps {
   selectedConnection: Connection | null;
   selectedDate?: Date | null;
   showConnectionPicker?: boolean; // New prop to control picker visibility
+  editingMoment?: Moment | null; // For editing existing plans
 }
 
 const planSchema = z.object({

@@ -626,14 +626,20 @@ export default function Activities() {
                       )}
                       
                       <div className="flex items-center justify-between">
-                        <span className="text-xs px-2 py-1 bg-purple-100 text-purple-800 rounded-full">
-                          Plan
-                        </span>
-                        {plan.notes && (
-                          <span className="text-xs px-2 py-1 bg-green-100 text-green-800 rounded-full">
-                            Completed
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs px-2 py-1 bg-purple-100 text-purple-800 rounded-full">
+                            Plan
                           </span>
-                        )}
+                          {plan.notes && plan.notes.trim() !== '' ? (
+                            <span className="text-xs px-2 py-1 bg-green-100 text-green-800 rounded-full">
+                              ✓ Completed
+                            </span>
+                          ) : (
+                            <span className="text-xs px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full">
+                              Pending
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </Card>
                   );
