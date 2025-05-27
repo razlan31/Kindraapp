@@ -7,7 +7,7 @@ import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ChevronLeft, ChevronRight, Heart, Calendar as CalendarIcon, Plus, Eye } from "lucide-react";
+import { ChevronLeft, ChevronRight, Heart, Calendar as CalendarIcon, Plus, Eye, ChevronDown, ChevronUp } from "lucide-react";
 import { useAuth } from "@/contexts/auth-context";
 import { useModal } from "@/contexts/modal-context";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, getDay } from "date-fns";
@@ -39,6 +39,9 @@ export default function Calendar() {
   
   // Connection filter state
   const [selectedConnectionId, setSelectedConnectionId] = useState<number | null>(null);
+  
+  // Legend collapse state
+  const [isLegendCollapsed, setIsLegendCollapsed] = useState(false);
 
   // Fetch moments with same settings as other pages
   const { data: allMoments = [], isLoading: momentsLoading, refetch: refetchMoments } = useQuery<Moment[]>({
@@ -244,10 +247,32 @@ export default function Calendar() {
                 <SelectValue placeholder="Show all connections" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Connections</SelectItem>
+                <SelectItem value="all">
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center">
+                      <span className="text-xs font-medium">All</span>
+                    </div>
+                    <span>All Connections</span>
+                  </div>
+                </SelectItem>
                 {connections.map((connection) => (
                   <SelectItem key={connection.id} value={connection.id.toString()}>
-                    {connection.name}
+                    <div className="flex items-center gap-2">
+                      {connection.profileImage ? (
+                        <img 
+                          src={connection.profileImage} 
+                          alt={connection.name}
+                          className="w-6 h-6 rounded-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
+                          <span className="text-xs font-medium text-primary">
+                            {connection.name.charAt(0).toUpperCase()}
+                          </span>
+                        </div>
+                      )}
+                      <span>{connection.name}</span>
+                    </div>
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -259,87 +284,103 @@ export default function Calendar() {
         <section className="px-4 py-4">
           <Card className="p-4 bg-card/50 backdrop-blur-sm">
             <div className="flex items-center justify-between mb-2">
-              <h3 className="text-sm font-medium">Legend</h3>
+              <h3 className="text-sm font-medium">Legend & Filters</h3>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsLegendCollapsed(!isLegendCollapsed)}
+                className="h-6 w-6 p-0"
+              >
+                {isLegendCollapsed ? (
+                  <ChevronDown className="h-4 w-4" />
+                ) : (
+                  <ChevronUp className="h-4 w-4" />
+                )}
+              </Button>
             </div>
-            <div className="grid grid-cols-2 gap-2 text-xs">
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                <span>Positive Moments</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-orange-500"></div>
-                <span>Negative Moments</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-                <span>Neutral Moments</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-sm">⚡</span>
-                <span>Conflicts</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-sm">💕</span>
-                <span>Intimacy</span>
-              </div>
-            </div>
-            
-            {/* Filter Checkboxes */}
-            <div className="mt-4 pt-3 border-t border-border/20">
-              <h4 className="text-xs font-medium mb-2 text-muted-foreground">Show on Calendar</h4>
-              <div className="grid grid-cols-2 gap-2 text-xs">
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="positive"
-                    checked={filters.positive}
-                    onCheckedChange={(checked) => 
-                      setFilters(prev => ({ ...prev, positive: !!checked }))
-                    }
-                  />
-                  <label htmlFor="positive" className="text-xs cursor-pointer">Positive</label>
+            {!isLegendCollapsed && (
+              <>
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                    <span>Positive Moments</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-orange-500"></div>
+                    <span>Negative Moments</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+                    <span>Neutral Moments</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm">⚡</span>
+                    <span>Conflicts</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm">💕</span>
+                    <span>Intimacy</span>
+                  </div>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="negative"
-                    checked={filters.negative}
-                    onCheckedChange={(checked) => 
-                      setFilters(prev => ({ ...prev, negative: !!checked }))
-                    }
-                  />
-                  <label htmlFor="negative" className="text-xs cursor-pointer">Negative</label>
+                
+                {/* Filter Checkboxes */}
+                <div className="mt-4 pt-3 border-t border-border/20">
+                  <h4 className="text-xs font-medium mb-2 text-muted-foreground">Show on Calendar</h4>
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="positive"
+                        checked={filters.positive}
+                        onCheckedChange={(checked) => 
+                          setFilters(prev => ({ ...prev, positive: !!checked }))
+                        }
+                      />
+                      <label htmlFor="positive" className="text-xs cursor-pointer">Positive</label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="negative"
+                        checked={filters.negative}
+                        onCheckedChange={(checked) => 
+                          setFilters(prev => ({ ...prev, negative: !!checked }))
+                        }
+                      />
+                      <label htmlFor="negative" className="text-xs cursor-pointer">Negative</label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="neutral"
+                        checked={filters.neutral}
+                        onCheckedChange={(checked) => 
+                          setFilters(prev => ({ ...prev, neutral: !!checked }))
+                        }
+                      />
+                      <label htmlFor="neutral" className="text-xs cursor-pointer">Neutral</label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="conflict"
+                        checked={filters.conflict}
+                        onCheckedChange={(checked) => 
+                          setFilters(prev => ({ ...prev, conflict: !!checked }))
+                        }
+                      />
+                      <label htmlFor="conflict" className="text-xs cursor-pointer">Conflicts</label>
+                    </div>
+                    <div className="flex items-center space-x-2 col-span-2">
+                      <Checkbox
+                        id="intimacy"
+                        checked={filters.intimacy}
+                        onCheckedChange={(checked) => 
+                          setFilters(prev => ({ ...prev, intimacy: !!checked }))
+                        }
+                      />
+                      <label htmlFor="intimacy" className="text-xs cursor-pointer">Intimacy</label>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="neutral"
-                    checked={filters.neutral}
-                    onCheckedChange={(checked) => 
-                      setFilters(prev => ({ ...prev, neutral: !!checked }))
-                    }
-                  />
-                  <label htmlFor="neutral" className="text-xs cursor-pointer">Neutral</label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="conflict"
-                    checked={filters.conflict}
-                    onCheckedChange={(checked) => 
-                      setFilters(prev => ({ ...prev, conflict: !!checked }))
-                    }
-                  />
-                  <label htmlFor="conflict" className="text-xs cursor-pointer">Conflicts</label>
-                </div>
-                <div className="flex items-center space-x-2 col-span-2">
-                  <Checkbox
-                    id="intimacy"
-                    checked={filters.intimacy}
-                    onCheckedChange={(checked) => 
-                      setFilters(prev => ({ ...prev, intimacy: !!checked }))
-                    }
-                  />
-                  <label htmlFor="intimacy" className="text-xs cursor-pointer">Intimacy</label>
-                </div>
-              </div>
-            </div>
+              </>
+            )}
           </Card>
         </section>
 

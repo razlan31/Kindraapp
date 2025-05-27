@@ -342,10 +342,32 @@ export default function SummaryReport() {
                 <SelectValue placeholder="All connections" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All connections</SelectItem>
+                <SelectItem value="">
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center">
+                      <span className="text-xs font-medium">All</span>
+                    </div>
+                    <span>All connections</span>
+                  </div>
+                </SelectItem>
                 {connections.map((connection) => (
                   <SelectItem key={connection.id} value={connection.id.toString()}>
-                    {connection.name}
+                    <div className="flex items-center gap-2">
+                      {connection.profileImage ? (
+                        <img 
+                          src={connection.profileImage} 
+                          alt={connection.name}
+                          className="w-6 h-6 rounded-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
+                          <span className="text-xs font-medium text-primary">
+                            {connection.name.charAt(0).toUpperCase()}
+                          </span>
+                        </div>
+                      )}
+                      <span>{connection.name}</span>
+                    </div>
                   </SelectItem>
                 ))}
               </SelectContent>
