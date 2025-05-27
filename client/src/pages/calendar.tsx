@@ -80,8 +80,16 @@ export default function Calendar() {
 
   // Listen for moment creation and update events to refetch data immediately
   useEffect(() => {
-    const handleMomentCreated = () => refetchMoments();
-    const handleMomentUpdated = () => refetchMoments();
+    const handleMomentCreated = () => {
+      console.log("Calendar - Received momentCreated event, refreshing...");
+      setRefreshKey(prev => prev + 1);
+      refetchMoments();
+    };
+    const handleMomentUpdated = () => {
+      console.log("Calendar - Received momentUpdated event, refreshing...");
+      setRefreshKey(prev => prev + 1);
+      refetchMoments();
+    };
     
     window.addEventListener('momentCreated', handleMomentCreated);
     window.addEventListener('momentUpdated', handleMomentUpdated);

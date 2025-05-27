@@ -115,6 +115,9 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection, onUpdate
       setIsEditing(false);
       setIsSubmitting(false);
       
+      // Trigger calendar refresh immediately using window events
+      window.dispatchEvent(new CustomEvent('momentUpdated'));
+      
       // Trigger parent component refresh immediately
       if (onUpdate) {
         onUpdate();
