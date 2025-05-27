@@ -85,7 +85,7 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
 
   const createPlanMutation = useMutation({
     mutationFn: async (data: PlanFormData) => {
-      return apiRequest('/api/plans', 'POST', data);
+      return apiRequest('POST', '/api/plans', data);
     },
     onSuccess: () => {
       toast({
