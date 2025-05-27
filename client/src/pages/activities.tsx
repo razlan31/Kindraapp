@@ -292,8 +292,18 @@ export default function Activities() {
             </DropdownMenu>
           </Card>
           
-          {/* Main Activity Types - Grid Layout */}
-          <div className="grid grid-cols-2 gap-1 bg-muted rounded-lg p-1 mb-3">
+          {/* All Activity Types - Single Row */}
+          <div className="grid grid-cols-5 gap-1 bg-muted rounded-lg p-1 mb-3">
+            <button 
+              onClick={() => setActiveTab('timeline')}
+              className={`py-2 px-2 rounded-md text-xs font-medium transition-colors ${
+                activeTab === 'timeline' 
+                  ? 'bg-background text-foreground shadow-sm' 
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              Timeline
+            </button>
             <button 
               onClick={() => setActiveTab('moments')}
               className={`py-2 px-2 rounded-md text-xs font-medium transition-colors ${
@@ -333,20 +343,6 @@ export default function Activities() {
               }`}
             >
               Plans
-            </button>
-          </div>
-          
-          {/* Timeline Overview - Below main tabs */}
-          <div className="mb-4">
-            <button 
-              onClick={() => setActiveTab('timeline')}
-              className={`w-full py-3 px-4 rounded-lg text-sm font-medium transition-colors border ${
-                activeTab === 'timeline' 
-                  ? 'border-primary bg-primary text-primary-foreground shadow-sm' 
-                  : 'border-muted bg-background text-foreground hover:border-primary/50'
-              }`}
-            >
-              📅 Timeline
             </button>
           </div>
 
