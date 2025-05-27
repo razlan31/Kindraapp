@@ -41,7 +41,7 @@ const planSchema = z.object({
 
 type PlanFormData = z.infer<typeof planSchema>;
 
-export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, showConnectionPicker = true }: PlanModalProps) {
+export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, showConnectionPicker = true, editingMoment }: PlanModalProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
