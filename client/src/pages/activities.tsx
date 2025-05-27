@@ -244,7 +244,7 @@ export default function Activities() {
           )}
         </div>
 
-        {/* Search and Filter Section */}
+        {/* Search Section */}
         <section className="px-4 pb-2 sticky top-0 bg-white dark:bg-neutral-900 z-10">
           <div className="flex items-center gap-2 mb-3">
             <div className="relative flex-1">
@@ -257,13 +257,32 @@ export default function Activities() {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
+          </div>
+
+          {/* Connection Filter - More Visible */}
+          <Card className="p-4 bg-card/50 backdrop-blur-sm mb-3">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-medium">Filter by Connection</h3>
+              <span className="text-xs text-muted-foreground">
+                {selectedConnection ? 
+                  connections.find(c => c.id === selectedConnection)?.name || 'Unknown' : 
+                  'All Connections'
+                }
+              </span>
+            </div>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="icon" className="rounded-full">
+                <Button variant="outline" className="w-full justify-between">
+                  <span>
+                    {selectedConnection ? 
+                      connections.find(c => c.id === selectedConnection)?.name || 'Select Connection' : 
+                      'All Connections'
+                    }
+                  </span>
                   <ChevronDown className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
+              <DropdownMenuContent className="w-full">
                 <DropdownMenuItem onClick={() => setSelectedConnection(null)}>
                   All Connections
                 </DropdownMenuItem>
@@ -277,8 +296,7 @@ export default function Activities() {
                 ))}
               </DropdownMenuContent>
             </DropdownMenu>
-
-          </div>
+          </Card>
           
 
         </section>
