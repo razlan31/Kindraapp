@@ -6,14 +6,20 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon, Plus } from "lucide-react";
+import { CalendarIcon, Plus, ChevronDown } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { Connection } from "@shared/schema";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuTrigger 
+} from "@/components/ui/dropdown-menu";
 
 interface PlanModalProps {
   isOpen: boolean;
@@ -39,13 +45,22 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate }:
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
+  // Local connection state for picker
+  const [localSelectedConnection, setLocalSelectedConnection] = useState<Connection | null>(selectedConnection);
+  
   const [formData, setFormData] = useState<Partial<PlanFormData>>({
     title: "",
     description: "",
     date: selectedDate || new Date(),
-    connectionId: selectedConnection?.id,
+    connectionId: localSelectedConnection?.id || selectedConnection?.id,
     color: "#3b82f6", // Default blue color
     icon: "📅"
+  });
+
+  // Fetch connections for the picker
+  const { data: connections = [] } = useQuery<Connection[]>({
+    queryKey: ['/api/connections'],
+    enabled: isOpen, // Only fetch when modal is open
   });
 
   const createPlanMutation = useMutation({
@@ -77,26 +92,29 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate }:
       title: "",
       description: "",
       date: selectedDate || new Date(),
-      connectionId: selectedConnection?.id,
+      connectionId: localSelectedConnection?.id || selectedConnection?.id,
       color: "#3b82f6",
       icon: "📅"
     });
+    setLocalSelectedConnection(selectedConnection);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.title || !formData.date || !formData.connectionId) {
+    const connectionId = localSelectedConnection?.id || formData.connectionId;
+    
+    if (!formData.title || !formData.date || !connectionId) {
       toast({
         title: "Missing information",
-        description: "Please fill in all required fields.",
+        description: "Please fill in all required fields and select a connection.",
         variant: "destructive",
       });
       return;
     }
 
     try {
-      const validatedData = planSchema.parse(formData);
+      const validatedData = planSchema.parse({ ...formData, connectionId });
       createPlanMutation.mutate(validatedData);
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -122,6 +140,64 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate }:
         <DialogHeader>
           <DialogTitle>Add Plan</DialogTitle>
         </DialogHeader>
+        
+        {/* Connection Picker - Only show when no connection is pre-selected */}
+        {!selectedConnection && (
+          <div className="space-y-2">
+            <Label>Select Connection</Label>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="w-full justify-between">
+                  {localSelectedConnection ? (
+                    <div className="flex items-center gap-2">
+                      {localSelectedConnection.profileImage ? (
+                        <img 
+                          src={localSelectedConnection.profileImage} 
+                          alt={localSelectedConnection.name}
+                          className="w-6 h-6 rounded-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-6 h-6 rounded-full bg-gray-300 flex items-center justify-center text-xs font-medium">
+                          {localSelectedConnection.name.charAt(0).toUpperCase()}
+                        </div>
+                      )}
+                      <span>{localSelectedConnection.name}</span>
+                    </div>
+                  ) : (
+                    <span className="text-muted-foreground">Choose a connection...</span>
+                  )}
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-full">
+                {connections.map((connection) => (
+                  <DropdownMenuItem
+                    key={connection.id}
+                    onClick={() => {
+                      setLocalSelectedConnection(connection);
+                      setFormData(prev => ({ ...prev, connectionId: connection.id }));
+                    }}
+                  >
+                    <div className="flex items-center gap-2">
+                      {connection.profileImage ? (
+                        <img 
+                          src={connection.profileImage} 
+                          alt={connection.name}
+                          className="w-6 h-6 rounded-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-6 h-6 rounded-full bg-gray-300 flex items-center justify-center text-xs font-medium">
+                          {connection.name.charAt(0).toUpperCase()}
+                        </div>
+                      )}
+                      <span>{connection.name}</span>
+                    </div>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        )}
         
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Title */}
