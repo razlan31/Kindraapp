@@ -291,16 +291,6 @@ export default function Activities() {
               Timeline
             </button>
             <button 
-              onClick={() => setActiveTab('milestones')}
-              className={`py-2 px-3 rounded-md text-sm font-medium transition-colors ${
-                activeTab === 'milestones' 
-                  ? 'bg-background text-foreground shadow-sm' 
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              Milestones
-            </button>
-            <button 
               onClick={() => setActiveTab('moments')}
               className={`py-2 px-3 rounded-md text-sm font-medium transition-colors ${
                 activeTab === 'moments' 
@@ -311,6 +301,16 @@ export default function Activities() {
               Moments
             </button>
             <button 
+              onClick={() => setActiveTab('conflicts')}
+              className={`py-2 px-3 rounded-md text-sm font-medium transition-colors ${
+                activeTab === 'conflicts' 
+                  ? 'bg-background text-foreground shadow-sm' 
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              Conflicts
+            </button>
+            <button 
               onClick={() => setActiveTab('intimacy')}
               className={`py-2 px-3 rounded-md text-sm font-medium transition-colors ${
                 activeTab === 'intimacy' 
@@ -319,6 +319,20 @@ export default function Activities() {
               }`}
             >
               Intimacy
+            </button>
+          </div>
+          
+          {/* Milestones Section - Show below tabs when relevant */}
+          <div className="mb-4">
+            <button 
+              onClick={() => setActiveTab('milestones')}
+              className={`w-full py-3 px-4 rounded-lg text-sm font-medium transition-colors border-2 border-dashed ${
+                activeTab === 'milestones' 
+                  ? 'border-primary bg-primary/5 text-primary' 
+                  : 'border-muted-foreground/30 text-muted-foreground hover:border-primary/50 hover:text-primary'
+              }`}
+            >
+              ✨ Milestones & Special Occasions
             </button>
           </div>
 
