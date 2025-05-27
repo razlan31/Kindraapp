@@ -111,9 +111,11 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection }: EntryD
     },
     onSuccess: () => {
       toast({ title: "Entry updated successfully!" });
+      setIsEditing(false);
+      setIsSubmitting(false);
       
-      // Force immediate page refresh for instant updates
-      window.location.reload();
+      // Instantly update the cache instead of full page reload
+      queryClient.invalidateQueries({ queryKey: ['/api/moments'] });
     },
     onError: () => {
       toast({ title: "Failed to update entry", variant: "destructive" });
