@@ -458,6 +458,12 @@ export default function ConnectionDetail() {
       </div>
       
       <BottomNavigation />
+      
+      <MilestoneModal
+        isOpen={milestoneModalOpen}
+        onClose={() => setMilestoneModalOpen(false)}
+        connectionId={connectionId}
+      />
     </div>
   );
 }
