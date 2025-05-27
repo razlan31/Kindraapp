@@ -26,7 +26,7 @@ export default function Activities() {
   const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedConnection, setSelectedConnection] = useState<number | null>(null);
-  const [activeTab, setActiveTab] = useState<'moments' | 'conflicts' | 'intimacy'>('moments');
+  const [activeTab, setActiveTab] = useState<'moments' | 'conflicts' | 'intimacy' | 'timeline'>('moments');
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   // Fetch moments - use simple approach like Dashboard
@@ -218,15 +218,27 @@ export default function Activities() {
             >
               Intimacy
             </button>
+            <button 
+              onClick={() => setActiveTab('timeline')}
+              className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+                activeTab === 'timeline' 
+                  ? 'bg-background text-foreground shadow-sm' 
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              Timeline
+            </button>
           </div>
 
-          {/* Add Button for Active Tab */}
-          <div className="mb-4">
-            <Button onClick={() => openMomentModal(activeTab === 'moments' ? 'moment' : activeTab === 'conflicts' ? 'conflict' : 'intimacy')} className="w-full">
-              <Plus className="h-4 w-4 mr-2" />
-              Add {activeTab === 'moments' ? 'Moment' : activeTab === 'conflicts' ? 'Conflict' : 'Intimacy'}
-            </Button>
-          </div>
+          {/* Add Button for Active Tab - Hide for Timeline */}
+          {activeTab !== 'timeline' && (
+            <div className="mb-4">
+              <Button onClick={() => openMomentModal(activeTab === 'moments' ? 'moment' : activeTab === 'conflicts' ? 'conflict' : 'intimacy')} className="w-full">
+                <Plus className="h-4 w-4 mr-2" />
+                Add {activeTab === 'moments' ? 'Moment' : activeTab === 'conflicts' ? 'Conflict' : 'Intimacy'}
+              </Button>
+            </div>
+          )}
         </div>
 
         {/* Search and Filter Section */}
@@ -268,13 +280,100 @@ export default function Activities() {
 
         </section>
 
-        {/* Moments List */}
+        {/* Content Area */}
         <section className="px-4 py-3">
           {isLoading ? (
             <div className="text-center py-10">
               <p>Loading moments...</p>
             </div>
+          ) : activeTab === 'timeline' ? (
+            // Timeline View - All activities in chronological order
+            filteredMoments.length > 0 ? (
+              <div className="relative">
+                {/* Timeline line */}
+                <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gradient-to-b from-blue-200 via-purple-200 to-pink-200 dark:from-blue-800 dark:via-purple-800 dark:to-pink-800"></div>
+                
+                <div className="space-y-6">
+                  {filteredMoments
+                    .sort((a, b) => new Date(b.createdAt || '').getTime() - new Date(a.createdAt || '').getTime())
+                    .map((moment, index) => {
+                      const connection = connections.find(c => c.id === moment.connectionId);
+                      if (!connection) return null;
+
+                      const getActivityType = (moment: Moment) => {
+                        if (moment.isIntimate) return 'intimacy';
+                        if (moment.tags?.includes('Red Flag') || moment.emoji === '😠') return 'conflict';
+                        return 'moment';
+                      };
+
+                      const activityType = getActivityType(moment);
+                      const typeColors = {
+                        moment: 'bg-green-100 border-green-300 text-green-700 dark:bg-green-900/20 dark:border-green-700 dark:text-green-300',
+                        conflict: 'bg-red-100 border-red-300 text-red-700 dark:bg-red-900/20 dark:border-red-700 dark:text-red-300',
+                        intimacy: 'bg-pink-100 border-pink-300 text-pink-700 dark:bg-pink-900/20 dark:border-pink-700 dark:text-pink-300'
+                      };
+
+                      return (
+                        <div key={moment.id} className="relative pl-12">
+                          {/* Timeline dot */}
+                          <div className={`absolute left-4 w-4 h-4 rounded-full border-2 ${typeColors[activityType]} flex items-center justify-center -translate-x-1/2`}>
+                            <div className="w-2 h-2 rounded-full bg-current"></div>
+                          </div>
+                          
+                          {/* Timeline content */}
+                          <Card className="p-4 shadow-sm hover:shadow-md transition-shadow cursor-pointer" onClick={() => handleViewEntryDetail(moment)}>
+                            <div className="flex items-start justify-between mb-2">
+                              <div className="flex items-center gap-2">
+                                <span className="text-lg">{moment.emoji}</span>
+                                <span className="font-medium text-sm">{connection.name}</span>
+                                <span className={`px-2 py-1 rounded-full text-xs capitalize ${typeColors[activityType]}`}>
+                                  {activityType}
+                                </span>
+                              </div>
+                              <span className="text-xs text-muted-foreground">
+                                {moment.createdAt ? format(new Date(moment.createdAt), 'MMM d, h:mm a') : ''}
+                              </span>
+                            </div>
+                            
+                            {moment.content && (
+                              <p className="text-sm text-muted-foreground mb-2 line-clamp-2">
+                                {moment.content}
+                              </p>
+                            )}
+                            
+                            {moment.tags && moment.tags.length > 0 && (
+                              <div className="flex flex-wrap gap-1">
+                                {moment.tags.slice(0, 2).map(tag => (
+                                  <span key={tag} className="px-2 py-1 bg-muted rounded-full text-xs">
+                                    {tag}
+                                  </span>
+                                ))}
+                                {moment.tags.length > 2 && (
+                                  <span className="px-2 py-1 bg-muted rounded-full text-xs">
+                                    +{moment.tags.length - 2} more
+                                  </span>
+                                )}
+                              </div>
+                            )}
+                          </Card>
+                        </div>
+                      );
+                    })}
+                </div>
+              </div>
+            ) : (
+              <Card className="flex flex-col items-center justify-center py-10 px-4 text-center">
+                <div className="rounded-full bg-primary/10 p-3 mb-3">
+                  <Calendar className="h-6 w-6 text-primary" />
+                </div>
+                <h3 className="font-heading font-semibold mb-1">No Activities Yet</h3>
+                <p className="text-neutral-500 dark:text-neutral-400 text-sm mb-4">
+                  Start logging your relationship journey to see your timeline
+                </p>
+              </Card>
+            )
           ) : filteredMoments.length > 0 ? (
+            // Regular tabbed view
             <div>
               {sortedDates.map(date => (
                 <div key={date} className="mb-6">
