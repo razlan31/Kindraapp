@@ -51,12 +51,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Plan routes - moved to top to prevent route conflicts
   app.get("/api/plans", isAuthenticated, async (req: Request, res: Response) => {
+    console.log('🚀 PLANS API HIT - This should show if route is working');
     try {
       const userId = req.session.userId as number;
       console.log('📋 GET /api/plans - Fetching for user', userId);
       const plans = await storage.getPlans(userId);
       console.log('📋 Plans found:', plans.length);
       console.log('📋 Plans data:', JSON.stringify(plans, null, 2));
+      
+      // Force JSON response with explicit headers
+      res.setHeader('Content-Type', 'application/json');
       res.status(200).json(plans);
     } catch (error) {
       console.error('Error fetching plans:', error);
