@@ -26,7 +26,7 @@ import { useRelationshipFocus } from "@/contexts/relationship-focus-context";
 
 export default function Activities() {
   const { user, isAuthenticated, loading } = useAuth();
-  const { openMomentModal, openPlanModal, closePlanModal, planModalOpen, setSelectedConnection: setModalConnection } = useModal();
+  const { openMomentModal, openPlanModal, closePlanModal, planModalOpen, setSelectedConnection: setModalConnection, editingMoment } = useModal();
   const { mainFocusConnection, loading: focusLoading } = useRelationshipFocus();
   const queryClient = useQueryClient();
   const [location] = useLocation();
@@ -762,6 +762,7 @@ export default function Activities() {
           connections?.find(c => c.id === selectedConnection) || null : null}
         selectedDate={null}
         showConnectionPicker={true}
+        editingMoment={editingMoment}
       />
     </div>
   );
