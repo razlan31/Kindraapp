@@ -686,6 +686,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = req.session.userId as number;
       const milestoneData = req.body;
       
+      // Convert date string to Date object before validation
+      if (milestoneData.date && typeof milestoneData.date === 'string') {
+        milestoneData.date = new Date(milestoneData.date);
+      }
+      
       console.log("📋 MILESTONE DEBUG - Request body:", JSON.stringify(milestoneData, null, 2));
       console.log("📋 MILESTONE DEBUG - With userId:", JSON.stringify({ ...milestoneData, userId }, null, 2));
       
