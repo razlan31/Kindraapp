@@ -769,7 +769,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = req.session.userId as number;
       console.log('📋 GET /api/plans - Fetching for user', userId);
       const plans = await storage.getPlans(userId);
-      console.log('📋 Plans found:', plans.length, plans);
+      console.log('📋 Plans found:', plans.length);
+      console.log('📋 Plans data:', JSON.stringify(plans, null, 2));
       res.json(plans);
     } catch (error) {
       console.error('Error fetching plans:', error);
