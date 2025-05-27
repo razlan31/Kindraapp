@@ -567,7 +567,7 @@ export function MomentModal() {
           )}
 
           {/* Action Buttons */}
-          <div className="flex justify-end space-x-2 pt-4">
+          <div className="flex justify-between items-center pt-4">
             {editingMoment && (
               <Button 
                 variant="destructive" 
@@ -578,12 +578,15 @@ export function MomentModal() {
                 {isSubmitting ? "Deleting..." : "Delete"}
               </Button>
             )}
-            <Button variant="outline" onClick={closeMomentModal} disabled={isSubmitting}>
-              Cancel
-            </Button>
-            <Button onClick={handleSubmit} disabled={isSubmitting}>
-              {isSubmitting ? "Saving..." : "Save"}
-            </Button>
+            
+            <div className="flex space-x-2 ml-auto">
+              <Button variant="outline" onClick={closeMomentModal} disabled={isSubmitting}>
+                Cancel
+              </Button>
+              <Button onClick={handleSubmit} disabled={isSubmitting}>
+                {isSubmitting ? "Saving..." : "Save"}
+              </Button>
+            </div>
           </div>
         </div>
       </DialogContent>

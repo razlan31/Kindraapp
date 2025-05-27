@@ -438,44 +438,39 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection }: EntryD
           </div>
 
           {/* Action Buttons */}
-          <div className="flex justify-end space-x-2 pt-4">
-            {isEditing ? (
-              <>
-                <Button 
-                  variant="destructive" 
-                  size="sm"
-                  onClick={handleDelete} 
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? "Deleting..." : "Delete"}
-                </Button>
-                <Button variant="outline" onClick={handleCancel} disabled={isSubmitting}>
-                  <X className="h-4 w-4 mr-1" />
-                  Cancel
-                </Button>
-                <Button onClick={handleSave} disabled={isSubmitting}>
-                  {isSubmitting ? "Saving..." : "Save"}
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button variant="outline" onClick={handleEdit}>
-                  <Edit2 className="h-4 w-4 mr-1" />
-                  Edit
-                </Button>
-                <Button 
-                  variant="destructive" 
-                  size="sm"
-                  onClick={handleDelete} 
-                  disabled={isSubmitting}
-                >
-                  Delete
-                </Button>
-                <Button variant="outline" onClick={onClose}>
-                  Close
-                </Button>
-              </>
-            )}
+          <div className="flex justify-between items-center pt-4">
+            <Button 
+              variant="destructive" 
+              size="sm"
+              onClick={handleDelete} 
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Deleting..." : "Delete"}
+            </Button>
+            
+            <div className="flex space-x-2">
+              {isEditing ? (
+                <>
+                  <Button variant="outline" onClick={handleCancel} disabled={isSubmitting}>
+                    <X className="h-4 w-4 mr-1" />
+                    Cancel
+                  </Button>
+                  <Button onClick={handleSave} disabled={isSubmitting}>
+                    {isSubmitting ? "Saving..." : "Save"}
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button variant="outline" onClick={handleEdit}>
+                    <Edit2 className="h-4 w-4 mr-1" />
+                    Edit
+                  </Button>
+                  <Button variant="outline" onClick={onClose}>
+                    Close
+                  </Button>
+                </>
+              )}
+            </div>
           </div>
         </div>
       </DialogContent>
