@@ -109,7 +109,6 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
 
   const createPlanMutation = useMutation({
     mutationFn: async (data: PlanFormData) => {
-      // Convert plan data to moment format with 'Plan' tag
       const momentData = {
         title: data.title,
         content: data.description || `Plan scheduled for ${data.scheduledDate}`,
@@ -120,23 +119,28 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
         isCompleted: data.isCompleted || false,
         notes: data.notes
       };
-      return apiRequest('POST', '/api/moments', momentData);
+
+      // If editing, use PATCH; otherwise, use POST
+      if (editingMoment) {
+        return apiRequest('PATCH', `/api/moments/${editingMoment.id}`, momentData);
+      } else {
+        return apiRequest('POST', '/api/moments', momentData);
+      }
     },
     onSuccess: () => {
       toast({
-        title: "Plan created!",
-        description: "Your plan has been added successfully.",
+        title: editingMoment ? "Plan updated!" : "Plan created!",
+        description: editingMoment ? "Your plan has been updated successfully." : "Your plan has been added successfully.",
       });
       queryClient.invalidateQueries({ queryKey: ['/api/moments'] });
       queryClient.invalidateQueries({ queryKey: ['/api/milestones'] });
-      onClose();
-      resetForm();
+      handleClose();
     },
     onError: (error) => {
-      console.error('Error creating plan:', error);
+      console.error('Error saving plan:', error);
       toast({
         title: "Error",
-        description: "Failed to create plan. Please try again.",
+        description: editingMoment ? "Failed to update plan. Please try again." : "Failed to create plan. Please try again.",
         variant: "destructive",
       });
     }
@@ -148,7 +152,7 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
       description: "",
       scheduledDate: selectedDate || new Date(),
       connectionId: localSelectedConnection?.id || selectedConnection?.id,
-      category: "other",
+
       notes: "",
       isCompleted: false
     });
@@ -164,6 +168,12 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
     // Reset completion state
     setIsCompleted(false);
     setReflection("");
+  };
+
+  // Handle modal close
+  const handleClose = () => {
+    resetForm();
+    onClose();
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -241,10 +251,7 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
     }
   };
 
-  const handleClose = () => {
-    onClose();
-    resetForm();
-  };
+
 
   const commonIcons = ["📅", "🍽️", "🎬", "🚶", "☕", "🎉", "💌", "🌮", "🍕", "🎵"];
 

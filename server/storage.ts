@@ -167,7 +167,7 @@ export class MemStorage implements IStorage {
     this.createSampleMoments();
     
     // Add sample plans for testing
-    this.createSamplePlans();
+    // Sample plans will be created as moments with 'Plan' tags
   }
 
   private createSampleMoments() {
