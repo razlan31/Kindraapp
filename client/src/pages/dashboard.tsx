@@ -32,7 +32,7 @@ export default function Dashboard() {
   // Fetch recent moments
   const { data: moments = [], isLoading: momentsLoading, error: momentsError, refetch: refetchMoments } = useQuery<Moment[]>({
     queryKey: ["/api/moments"],
-    enabled: true, // Always enabled since backend auto-authenticates
+    enabled: true,
   });
 
   // Listen for moment creation and update events to refetch data immediately
@@ -71,102 +71,76 @@ export default function Dashboard() {
     moments 
   });
 
-  // Calculate stats
+  // Determine which connection to focus on
+  const focusConnection = mainFocusConnection || null;
+  
+  // Filter moments based on focus connection
+  const filteredMoments = focusConnection 
+    ? moments.filter(m => m.connectionId === focusConnection.id)
+    : moments;
+
+  // Calculate stats based on filtered data
   const activeConnections = connections.length;
-  const recentMoments = moments.length;
+  const totalMoments = filteredMoments.length;
   const earnedBadges = userBadges.length;
 
-  // Generate a simple insight based on the data
+  // Calculate detailed stats for the focused connection
+  const positiveMoments = filteredMoments.filter(m => 
+    ['😊', '❤️', '😍', '🥰', '💖', '✨', '🌱'].includes(m.emoji)
+  ).length;
+  
+  const conflictMoments = filteredMoments.filter(m => 
+    m.emoji === '⚡' || (m.tags && m.tags.includes('Conflict'))
+  ).length;
+  
+  const intimateMoments = filteredMoments.filter(m => 
+    m.emoji === '💕' || m.isIntimate
+  ).length;
+
+  // Generate insights based on focused connection or all connections
   useEffect(() => {
-    // Only generate insights if user is authenticated
     if (!user) {
       setInsight("Sign in to start tracking your relationships and building insights!");
       return;
     }
 
-    if (connections.length > 0 && moments.length > 0) {
-      // Find the connection with the most moments
-      const connectionMoments: Record<number, number> = {};
-      moments.forEach(moment => {
-        if (moment.connectionId) {
-          connectionMoments[moment.connectionId] = (connectionMoments[moment.connectionId] || 0) + 1;
-        }
-      });
+    if (focusConnection) {
+      // Insights for main connection
+      const connectionMoments = moments.filter(m => m.connectionId === focusConnection.id);
       
-      const connectionIds = Object.keys(connectionMoments);
-      if (connectionIds.length > 0) {
-        const mostActiveConnectionId = connectionIds.reduce((a, b) => 
-          connectionMoments[Number(a)] > connectionMoments[Number(b)] ? Number(a) : Number(b)
-        , Number(connectionIds[0]));
-        
-        const mostActiveConnection = connections.find(c => c.id === Number(mostActiveConnectionId));
-        
-        if (mostActiveConnection) {
-          const isPositive = moments.filter(m => 
-            m.connectionId === mostActiveConnectionId && 
-            ['😊', '❤️', '😍', '🥰', '💖', '✨'].includes(m.emoji)
-          ).length > moments.filter(m => 
-            m.connectionId === mostActiveConnectionId && 
-            ['😕', '😢', '😠'].includes(m.emoji)
-          ).length;
-          
-          if (isPositive) {
-            setInsight(`You've been consistently logging positive moments with ${mostActiveConnection.name}. This is great for building your connection!`);
-          } else {
-            setInsight(`You've had some mixed feelings with ${mostActiveConnection.name} lately. Consider having a conversation about your needs.`);
-          }
+      if (connectionMoments.length === 0) {
+        setInsight(`Start logging moments with ${focusConnection.name} to build relationship insights!`);
+      } else if (connectionMoments.length >= 5) {
+        const positiveRatio = positiveMoments / connectionMoments.length;
+        if (positiveRatio > 0.7) {
+          setInsight(`Your relationship with ${focusConnection.name} is flourishing! ${Math.round(positiveRatio * 100)}% of moments are positive.`);
+        } else if (conflictMoments > 0) {
+          setInsight(`You've had ${conflictMoments} conflicts with ${focusConnection.name}. Consider focusing on communication and resolution.`);
+        } else {
+          setInsight(`You're building a solid foundation with ${focusConnection.name}. Keep nurturing this connection!`);
         }
+      } else {
+        setInsight(`You have ${connectionMoments.length} moments with ${focusConnection.name}. Keep logging to unlock deeper insights!`);
       }
-    } else if (connections.length === 0) {
-      setInsight("Add your first connection to start tracking your relationships!");
-    } else if (moments.length === 0) {
-      setInsight("Log your first moment to start building insights about your relationships!");
+    } else {
+      // Insights for all connections
+      if (connections.length === 0) {
+        setInsight("Add your first connection to start tracking your relationships!");
+      } else if (moments.length === 0) {
+        setInsight("Log your first moment to start building insights about your relationships!");
+      } else {
+        const avgMomentsPerConnection = moments.length / connections.length;
+        setInsight(`You're actively tracking ${connections.length} relationships with an average of ${Math.round(avgMomentsPerConnection)} moments each.`);
+      }
     }
-  }, [connections, moments, user]);
+  }, [connections, moments, user, focusConnection, positiveMoments, conflictMoments]);
 
   const handleSelectConnection = (connection: Connection) => {
     setSelectedConnection(connection.id);
   };
 
   const handleAddReflection = (momentId: number) => {
-    // This would open a reflection modal in a full implementation
     console.log("Add reflection for moment:", momentId);
-  };
-
-  const handleAddTestMoment = async () => {
-    if (connections.length === 0) return;
-    
-    const testMoments = [
-      { content: "Had an amazing dinner together", emoji: "🍽️", tags: ["Green Flag", "Quality Time"] },
-      { content: "Great communication about future plans", emoji: "💬", tags: ["Green Flag", "Communication"] },
-      { content: "Feeling really connected today", emoji: "❤️", tags: ["Intimacy", "Growth"] }
-    ];
-    
-    const randomMoment = testMoments[Math.floor(Math.random() * testMoments.length)];
-    const randomConnection = connections[Math.floor(Math.random() * connections.length)];
-    
-    try {
-      const response = await fetch('/api/moments', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          connectionId: randomConnection.id,
-          content: randomMoment.content,
-          emoji: randomMoment.emoji,
-          tags: randomMoment.tags,
-          isPrivate: false
-        })
-      });
-      
-      if (response.ok) {
-        // Force refresh the page to show new moment
-        window.location.reload();
-      } else {
-        console.error('Failed to create moment:', response.statusText);
-      }
-    } catch (error) {
-      console.error('Failed to create test moment:', error);
-    }
   };
 
   return (
@@ -177,17 +151,27 @@ export default function Dashboard() {
         {/* Welcome Section */}
         <section className="px-4 pt-5 pb-3">
           <h2 className="text-xl font-heading font-semibold">
-            Welcome back, {user?.displayName || user?.username || "Friend"}!
+            {focusConnection ? `${focusConnection.name} Summary` : `Welcome back, ${user?.displayName || user?.username || "Friend"}!`}
           </h2>
           <p className="text-neutral-600 dark:text-neutral-400 text-sm">
-            Track your relationships and emotional connections
+            {focusConnection ? `Your relationship insights and activity` : `Track your relationships and emotional connections`}
           </p>
           
           {/* Quick Stats */}
           <div className="mt-4 grid grid-cols-3 gap-3">
-            <StatCard value={activeConnections} label="Active Connections" color="primary" />
-            <StatCard value={recentMoments} label="Recent Moments" color="secondary" />
-            <StatCard value={earnedBadges} label="Badges Earned" color="accent" />
+            {focusConnection ? (
+              <>
+                <StatCard value={positiveMoments} label="Positive Moments" color="primary" />
+                <StatCard value={conflictMoments} label="Conflicts" color="secondary" />
+                <StatCard value={intimateMoments} label="Intimate Moments" color="accent" />
+              </>
+            ) : (
+              <>
+                <StatCard value={activeConnections} label="Active Connections" color="primary" />
+                <StatCard value={totalMoments} label="Total Moments" color="secondary" />
+                <StatCard value={earnedBadges} label="Badges Earned" color="accent" />
+              </>
+            )}
           </div>
         </section>
 
@@ -197,7 +181,9 @@ export default function Dashboard() {
             <div className="bg-primary/10 rounded-xl p-4">
               <div className="flex justify-between items-start">
                 <div>
-                  <h3 className="font-heading font-medium text-primary">Today's Insight</h3>
+                  <h3 className="font-heading font-medium text-primary">
+                    {focusConnection ? "Relationship Insight" : "Today's Insight"}
+                  </h3>
                   <p className="text-sm mt-1">{insight}</p>
                 </div>
                 <Sparkles className="text-primary h-5 w-5" />
@@ -205,104 +191,75 @@ export default function Dashboard() {
             </div>
           </section>
         )}
-        
 
+        {/* Connection Focus Section */}
+        {focusConnection && (
+          <section className="px-4 py-3">
+            <div className="bg-neutral-50 dark:bg-neutral-800 rounded-xl p-4">
+              <div className="flex items-center gap-3 mb-3">
+                {focusConnection.profileImage ? (
+                  <img 
+                    src={focusConnection.profileImage} 
+                    alt={focusConnection.name}
+                    className="w-12 h-12 rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
+                    <span className="text-primary font-semibold">
+                      {focusConnection.name.charAt(0).toUpperCase()}
+                    </span>
+                  </div>
+                )}
+                <div>
+                  <h3 className="font-semibold">{focusConnection.name}</h3>
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                    {focusConnection.relationshipStage}
+                  </p>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4 text-center">
+                <div className="bg-white dark:bg-neutral-700 rounded-lg p-3">
+                  <div className="text-lg font-semibold text-green-600">{positiveMoments}</div>
+                  <div className="text-xs text-neutral-500">Positive</div>
+                </div>
+                <div className="bg-white dark:bg-neutral-700 rounded-lg p-3">
+                  <div className="text-lg font-semibold text-red-600">{conflictMoments}</div>
+                  <div className="text-xs text-neutral-500">Conflicts</div>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
 
-        {/* Your Connections */}
+        {/* Recent Activities */}
         <section className="px-4 py-3">
           <div className="flex justify-between items-center mb-3">
-            <h3 className="font-heading font-semibold">Your Connections</h3>
+            <h3 className="font-heading font-semibold">
+              {focusConnection ? `Recent with ${focusConnection.name}` : "Recent Activities"}
+            </h3>
             <Button 
               variant="ghost" 
               size="sm"
               className="text-sm text-primary font-medium flex items-center"
-              onClick={openConnectionModal}
+              onClick={() => {
+                if (focusConnection) {
+                  setSelectedConnection(focusConnection.id);
+                }
+                openMomentModal();
+              }}
             >
               <i className="fa-solid fa-plus mr-1"></i> Add
             </Button>
           </div>
           
-          {/* Connection Cards */}
+          {/* Recent Moments */}
           <div className="space-y-3">
-            {connections.length > 0 ? (
+            {filteredMoments.length > 0 ? (
               <>
-                {connections.slice(0, 3).map((connection) => (
-                  <ConnectionCard 
-                    key={connection.id} 
-                    connection={connection} 
-                    onSelect={handleSelectConnection}
-                    // In a full implementation, we would fetch actual emoji data and flag counts
-                    recentEmojis={['😊', '❤️', '✨']}
-                    flagCount={{ 
-                      green: moments.filter(m => 
-                        m.connectionId === connection.id && 
-                        m.tags?.includes('Green Flag')
-                      ).length,
-                      red: moments.filter(m => 
-                        m.connectionId === connection.id && 
-                        m.tags?.includes('Red Flag')
-                      ).length,
-                      blue: moments.filter(m => 
-                        m.connectionId === connection.id && 
-                        m.tags?.includes('Blue Flag')
-                      ).length
-                    }}
-                  />
-                ))}
-
-                {connections.length > 3 && (
-                  <div className="text-center">
-                    <Button variant="link" className="text-primary text-sm font-medium py-2" asChild>
-                      <Link href="/connections">View All Connections</Link>
-                    </Button>
-                  </div>
-                )}
-              </>
-            ) : (
-              <div className="text-center py-8 text-neutral-500 dark:text-neutral-400">
-                <p>No connections yet</p>
-                <Button 
-                  variant="outline" 
-                  className="mt-2"
-                  asChild
-                >
-                  <Link href="/connections-new">Add Your First Connection</Link>
-                </Button>
-              </div>
-            )}
-          </div>
-        </section>
-
-        {/* Recent Moments */}
-        <section className="px-4 py-3">
-          <div className="flex justify-between items-center mb-3">
-            <h3 className="font-heading font-semibold">Recent Activities</h3>
-            <Button 
-              variant="ghost" 
-              size="sm"
-              className="text-sm text-primary font-medium flex items-center"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                console.log("Dashboard Log button clicked!");
-                // Set the main focus connection when opening the modal
-                if (mainFocusConnection) {
-                  setSelectedConnection(mainFocusConnection.id, mainFocusConnection);
-                }
-                openMomentModal('moment', undefined, new Date());
-              }}
-            >
-              <i className="fa-solid fa-plus mr-1"></i> Log
-            </Button>
-          </div>
-          
-          <div className="space-y-4">
-            {moments.length > 0 ? (
-              <>
-                {moments.slice(0, 2).map((moment) => {
+                {filteredMoments.slice(0, 4).map((moment) => {
                   const connection = connections.find(c => c.id === moment.connectionId);
                   if (!connection) return null;
-
                   return (
                     <MomentCard 
                       key={moment.id} 
@@ -310,76 +267,122 @@ export default function Dashboard() {
                       connection={{
                         id: connection.id,
                         name: connection.name,
-                        profileImage: connection.profileImage ? connection.profileImage : undefined
+                        profileImage: connection.profileImage || undefined
                       }}
-                      onAddReflection={handleAddReflection}
-                      // In a full implementation, we would determine if there's an AI reflection
-                      hasAiReflection={moment.id % 2 === 0} 
+                      onAddReflection={() => handleAddReflection(moment.id)}
                     />
                   );
                 })}
-
-                <div className="text-center">
-                  <Button variant="link" className="text-primary text-sm font-medium py-2" asChild>
-                    <Link href="/moments">View All Moments</Link>
-                  </Button>
-                </div>
+                {filteredMoments.length > 4 && (
+                  <div className="text-center">
+                    <Button variant="link" className="text-primary text-sm font-medium py-2" asChild>
+                      <Link href="/activities">View All Activities</Link>
+                    </Button>
+                  </div>
+                )}
               </>
             ) : (
-              <div className="text-center py-8 text-neutral-500">
-                <div className="text-4xl mb-3">💭</div>
-                <p className="text-sm mb-4">No moments recorded yet</p>
-                <div className="space-y-2">
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    onClick={() => {
-                      console.log("Log Your First Moment button clicked!");
-                      openMomentModal('moment', undefined, new Date());
-                    }}
-                    className="text-primary mr-2"
-                  >
-                    <i className="fa-solid fa-plus mr-2"></i>Log Your First Moment
-                  </Button>
-                  {connections.length > 0 && (
-                    <Button 
-                      variant="ghost" 
-                      size="sm"
-                      onClick={handleAddTestMoment}
-                      className="text-xs"
-                    >
-                      Add Sample Moment
-                    </Button>
-                  )}
-                </div>
+              <div className="text-center py-8 text-neutral-500 dark:text-neutral-400">
+                <p>{focusConnection ? `No moments with ${focusConnection.name} yet` : "No activities yet"}</p>
+                <Button 
+                  variant="outline" 
+                  className="mt-2"
+                  onClick={() => {
+                    if (focusConnection) {
+                      setSelectedConnection(focusConnection.id);
+                    }
+                    openMomentModal();
+                  }}
+                >
+                  {focusConnection ? `Add First Moment with ${focusConnection.name}` : "Log Your First Moment"}
+                </Button>
               </div>
             )}
           </div>
         </section>
 
-        {/* Badge Showcase */}
+        {/* Connection Management */}
+        {!focusConnection && (
+          <section className="px-4 py-3">
+            <div className="flex justify-between items-center mb-3">
+              <h3 className="font-heading font-semibold">Your Connections</h3>
+              <Button 
+                variant="ghost" 
+                size="sm"
+                className="text-sm text-primary font-medium flex items-center"
+                onClick={openConnectionModal}
+              >
+                <i className="fa-solid fa-plus mr-1"></i> Add
+              </Button>
+            </div>
+          
+            {/* Connection Cards */}
+            <div className="space-y-3">
+              {connections.length > 0 ? (
+                <>
+                  {connections.slice(0, 3).map((connection) => (
+                    <div key={connection.id} className="bg-neutral-50 dark:bg-neutral-800 rounded-lg p-3">
+                      <div className="flex items-center gap-3">
+                        {connection.profileImage ? (
+                          <img 
+                            src={connection.profileImage} 
+                            alt={connection.name}
+                            className="w-10 h-10 rounded-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+                            <span className="text-primary font-semibold text-sm">
+                              {connection.name.charAt(0).toUpperCase()}
+                            </span>
+                          </div>
+                        )}
+                        <div className="flex-1">
+                          <h4 className="font-medium">{connection.name}</h4>
+                          <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                            {connection.relationshipStage}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+
+                  {connections.length > 3 && (
+                    <div className="text-center">
+                      <Button variant="link" className="text-primary text-sm font-medium py-2" asChild>
+                        <Link href="/activities">View All Connections</Link>
+                      </Button>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div className="text-center py-8 text-neutral-500 dark:text-neutral-400">
+                  <p>No connections yet</p>
+                  <Button 
+                    variant="outline" 
+                    className="mt-2"
+                    onClick={openConnectionModal}
+                  >
+                    Add Your First Connection
+                  </Button>
+                </div>
+              )}
+            </div>
+          </section>
+        )}
+
+        {/* Badges Section */}
         <section className="px-4 py-3">
-          <h3 className="font-heading font-semibold mb-3">Your Badges</h3>
-          
-          <BadgeShowcase 
-            badges={badges}
-            earnedBadgeIds={userBadges.map(ub => ub.badgeId)}
-          />
+          <BadgeShowcase badges={badges} userBadges={userBadges.map(ub => ub.badge)} />
         </section>
-        
-        {/* Relationship Calendar */}
-        <section className="px-4 py-3 mb-16">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="font-heading font-semibold">Your Calendar</h3>
-          </div>
-          
-          {/* Display relationship focus selector for non-monogamous relationships */}
-          {connections.length > 1 && (
-            <FocusSelector connections={connections} />
-          )}
-          
-          {/* Calendar view that shows data based on main focus connection */}
-          <SimplifiedCalendar selectedConnection={mainFocusConnection || selectedCalendarConnection} />
+
+        {/* Calendar Section */}
+        <section className="px-4 py-5">
+          <SimplifiedCalendar 
+            moments={filteredMoments}
+            connections={connections}
+            selectedConnection={focusConnection || selectedCalendarConnection}
+            onSelectConnection={setSelectedCalendarConnection}
+          />
         </section>
       </main>
 
