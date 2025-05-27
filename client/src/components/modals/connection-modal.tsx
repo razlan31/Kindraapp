@@ -224,7 +224,7 @@ export function ConnectionModal() {
                   <SelectValue placeholder="Select sign" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">None</SelectItem>
+                  <SelectItem value="none">None</SelectItem>
                   {zodiacSigns.map((sign) => (
                     <SelectItem key={sign} value={sign}>
                       {sign}
@@ -241,7 +241,7 @@ export function ConnectionModal() {
                   <SelectValue placeholder="Select love language" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">None</SelectItem>
+                  <SelectItem value="none">None</SelectItem>
                   {loveLanguages.map((language) => (
                     <SelectItem key={language} value={language}>
                       {language}
