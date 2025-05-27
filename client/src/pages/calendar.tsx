@@ -72,27 +72,28 @@ export default function Calendar() {
   // Debug moments loading
   console.log('Calendar Debug - Total moments:', moments.length, moments);
 
-  // Get moment color based on tags
-  const getMomentColor = (moment: Moment) => {
+  // Get moment type and display info
+  const getMomentDisplayInfo = (moment: Moment) => {
     const tags = moment.tags || [];
     
-    // Priority order: Intimacy > Conflict > Positive > Negative > Neutral
-    if (tags.includes("Intimacy")) {
-      return "bg-pink-500";
-    }
+    // Check if it's a conflict
     if (tags.includes("Conflict")) {
-      return "bg-red-500";
+      return { type: 'emoji', value: '⚡', color: 'text-red-500' };
     }
-    if (tags.includes("Positive")) {
-      return "bg-green-500";
+    
+    // Check if it's intimacy
+    if (moment.isIntimate || tags.includes("Intimacy")) {
+      return { type: 'emoji', value: '💕', color: 'text-pink-500' };
     }
-    if (tags.includes("Negative")) {
-      return "bg-orange-500";
+    
+    // For regular moments, show colored circles based on type
+    if (['😊', '❤️', '😍', '🥰', '💖', '✨', '🔥'].includes(moment.emoji)) {
+      return { type: 'circle', value: '', color: 'bg-green-500' };
+    } else if (['😕', '😢', '😠', '😞', '😤'].includes(moment.emoji)) {
+      return { type: 'circle', value: '', color: 'bg-orange-500' };
+    } else {
+      return { type: 'circle', value: '', color: 'bg-blue-500' };
     }
-    if (tags.includes("Neutral")) {
-      return "bg-blue-500";
-    }
-    return "bg-gray-400";
   };
 
   // Navigate months
@@ -230,14 +231,25 @@ export default function Calendar() {
                     </div>
                     
                     {/* Moment indicators */}
-                    <div className="flex flex-wrap gap-0.5">
-                      {dayMoments.slice(0, 3).map((moment, index) => (
-                        <div
-                          key={moment.id}
-                          className={`w-2 h-2 rounded-full ${getMomentColor(moment)}`}
-                          title={moment.content || moment.emoji}
-                        />
-                      ))}
+                    <div className="flex flex-wrap gap-0.5 items-center">
+                      {dayMoments.slice(0, 3).map((moment, index) => {
+                        const displayInfo = getMomentDisplayInfo(moment);
+                        return displayInfo.type === 'emoji' ? (
+                          <span
+                            key={moment.id}
+                            className={`text-[8px] ${displayInfo.color}`}
+                            title={moment.content || moment.emoji}
+                          >
+                            {displayInfo.value}
+                          </span>
+                        ) : (
+                          <div
+                            key={moment.id}
+                            className={`w-2 h-2 rounded-full ${displayInfo.color}`}
+                            title={moment.content || moment.emoji}
+                          />
+                        );
+                      })}
                       {dayMoments.length > 3 && (
                         <div className="w-2 h-2 rounded-full bg-gray-300 text-[6px] flex items-center justify-center font-bold">
                           +
