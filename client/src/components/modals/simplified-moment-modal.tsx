@@ -187,6 +187,39 @@ export function MomentModal() {
     },
     onError: (error: any) => handleError(error),
   });
+
+  // Delete moment mutation
+  const { mutate: deleteMoment } = useMutation({
+    mutationFn: async (id: number) => {
+      const response = await fetch(`/api/moments/${id}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) throw new Error('Failed to delete moment');
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Entry deleted successfully",
+        description: "The entry has been removed.",
+      });
+      closeMomentModal();
+      setIsSubmitting(false);
+      queryClient.invalidateQueries({ queryKey: ['/api/moments'] });
+    },
+    onError: (error: any) => handleError(error),
+  });
+
+  const handleDelete = () => {
+    if (!editingMoment) return;
+    
+    // Show confirmation before deleting
+    if (!confirm("Are you sure you want to delete this entry? This action cannot be undone.")) {
+      return;
+    }
+    
+    setIsSubmitting(true);
+    deleteMoment(editingMoment.id);
+  };
   
   const handleSubmit = () => {
     setIsSubmitting(true);
@@ -535,6 +568,16 @@ export function MomentModal() {
 
           {/* Action Buttons */}
           <div className="flex justify-end space-x-2 pt-4">
+            {editingMoment && (
+              <Button 
+                variant="destructive" 
+                size="sm"
+                onClick={handleDelete} 
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Deleting..." : "Delete"}
+              </Button>
+            )}
             <Button variant="outline" onClick={closeMomentModal} disabled={isSubmitting}>
               Cancel
             </Button>
