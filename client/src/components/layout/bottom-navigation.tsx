@@ -30,13 +30,13 @@ export function BottomNavigation() {
         >
           <Plus className="h-5 w-5" />
         </button>
-        <Link href="/calendar" className={`bottom-tab flex flex-col items-center justify-center ${location === '/calendar' ? 'active' : ''}`}>
-          <Calendar className="h-5 w-5" />
-          <span className="text-xs mt-1">Calendar</span>
-        </Link>
         <Link href="/activities" className={`bottom-tab flex flex-col items-center justify-center ${location === '/activities' ? 'active' : ''}`}>
           <Heart className="h-5 w-5" />
           <span className="text-xs mt-1">Activities</span>
+        </Link>
+        <Link href="/calendar" className={`bottom-tab flex flex-col items-center justify-center ${location === '/calendar' ? 'active' : ''}`}>
+          <Calendar className="h-5 w-5" />
+          <span className="text-xs mt-1">Calendar</span>
         </Link>
       </div>
     </nav>
