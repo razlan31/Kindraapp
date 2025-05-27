@@ -395,16 +395,16 @@ export default function Activities() {
                                     </p>
                                   )}
                                   
-                                  {moment.tags && moment.tags.length > 0 && (
+                                  {moment.tags && moment.tags.filter(tag => !['Positive', 'Negative', 'Neutral', 'Conflict', 'Intimacy'].includes(tag)).length > 0 && (
                                     <div className="flex flex-wrap gap-1">
-                                      {moment.tags.slice(0, 2).map(tag => (
+                                      {moment.tags.filter(tag => !['Positive', 'Negative', 'Neutral', 'Conflict', 'Intimacy'].includes(tag)).slice(0, 2).map(tag => (
                                         <span key={tag} className="px-2 py-1 bg-muted rounded-full text-xs">
                                           {tag}
                                         </span>
                                       ))}
-                                      {moment.tags.length > 2 && (
+                                      {moment.tags.filter(tag => !['Positive', 'Negative', 'Neutral', 'Conflict', 'Intimacy'].includes(tag)).length > 2 && (
                                         <span className="px-2 py-1 bg-muted rounded-full text-xs">
-                                          +{moment.tags.length - 2} more
+                                          +{moment.tags.filter(tag => !['Positive', 'Negative', 'Neutral', 'Conflict', 'Intimacy'].includes(tag)).length - 2} more
                                         </span>
                                       )}
                                     </div>
