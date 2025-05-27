@@ -217,7 +217,12 @@ export default function Activities() {
                   onClick={() => setSelectedConnection(null)}
                   className="py-3 px-4 text-base"
                 >
-                  All Connections
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
+                      <span className="text-xs font-medium">All</span>
+                    </div>
+                    <span>All Connections</span>
+                  </div>
                 </DropdownMenuItem>
                 {connections.map((connection) => (
                   <DropdownMenuItem 
@@ -225,7 +230,22 @@ export default function Activities() {
                     onClick={() => setSelectedConnection(connection.id)}
                     className="py-3 px-4 text-base"
                   >
-                    {connection.name}
+                    <div className="flex items-center gap-3">
+                      {connection.profileImage ? (
+                        <img 
+                          src={connection.profileImage} 
+                          alt={connection.name}
+                          className="w-8 h-8 rounded-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                          <span className="text-xs font-medium text-primary">
+                            {connection.name.charAt(0).toUpperCase()}
+                          </span>
+                        </div>
+                      )}
+                      <span>{connection.name}</span>
+                    </div>
                   </DropdownMenuItem>
                 ))}
               </DropdownMenuContent>
