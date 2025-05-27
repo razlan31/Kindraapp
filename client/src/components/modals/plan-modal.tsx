@@ -370,7 +370,7 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
                 className="rounded border-gray-300"
               />
               <label htmlFor="completion-toggle" className="text-sm font-medium">
-                {isCompleted ? "Done" : "Not done yet"}
+                Mark as complete
               </label>
             </div>
 
