@@ -119,6 +119,30 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection }: EntryD
     },
     onError: () => {
       toast({ title: "Failed to update entry", variant: "destructive" });
+      setIsSubmitting(false);
+    },
+  });
+
+  // Delete mutation
+  const deleteMomentMutation = useMutation({
+    mutationFn: async (id: number) => {
+      const response = await fetch(`/api/moments/${id}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) throw new Error('Failed to delete entry');
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({ title: "Entry deleted successfully!" });
+      setIsSubmitting(false);
+      onClose(); // Close the modal
+      
+      // Instantly update the cache
+      queryClient.invalidateQueries({ queryKey: ['/api/moments'] });
+    },
+    onError: () => {
+      toast({ title: "Failed to delete entry", variant: "destructive" });
+      setIsSubmitting(false);
     },
   });
 
@@ -154,6 +178,22 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection }: EntryD
     setIsEditing(false);
     setEditedContent("");
     setEditedReflection("");
+  };
+
+  const handleDelete = async () => {
+    if (!moment) return;
+    
+    // Show confirmation before deleting
+    if (!confirm("Are you sure you want to delete this entry? This action cannot be undone.")) {
+      return;
+    }
+    
+    setIsSubmitting(true);
+    try {
+      await deleteMomentMutation.mutateAsync(moment.id);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const getActivityType = (moment: Moment) => {
@@ -403,22 +443,35 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection }: EntryD
           </div>
 
           {/* Action Buttons */}
-          <div className="flex justify-end space-x-2 pt-4">
-            {isEditing ? (
-              <>
-                <Button variant="outline" onClick={handleCancel} disabled={isSubmitting}>
-                  <X className="h-4 w-4 mr-1" />
-                  Cancel
-                </Button>
-                <Button onClick={handleSave} disabled={isSubmitting}>
-                  {isSubmitting ? "Saving..." : "Save Changes"}
-                </Button>
-              </>
-            ) : (
-              <Button variant="outline" onClick={onClose}>
-                Close
+          <div className="flex justify-between items-center pt-4">
+            {isEditing && (
+              <Button 
+                variant="destructive" 
+                size="sm"
+                onClick={handleDelete} 
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Deleting..." : "Delete Entry"}
               </Button>
             )}
+            
+            <div className="flex space-x-2 ml-auto">
+              {isEditing ? (
+                <>
+                  <Button variant="outline" onClick={handleCancel} disabled={isSubmitting}>
+                    <X className="h-4 w-4 mr-1" />
+                    Cancel
+                  </Button>
+                  <Button onClick={handleSave} disabled={isSubmitting}>
+                    {isSubmitting ? "Saving..." : "Save Changes"}
+                  </Button>
+                </>
+              ) : (
+                <Button variant="outline" onClick={onClose}>
+                  Close
+                </Button>
+              )}
+            </div>
           </div>
         </div>
       </DialogContent>
