@@ -542,8 +542,6 @@ export default function Calendar() {
             setSelectedEntry(null);
           }}
           onUpdate={() => {
-            // Force immediate refresh with multiple strategies
-            setRefreshKey(prev => prev + 1);
             // Invalidate all moments queries
             queryClient.invalidateQueries({ queryKey: ["/api/moments"] });
             // Force immediate refetch
