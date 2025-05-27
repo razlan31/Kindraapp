@@ -78,11 +78,14 @@ export default function Activities() {
   });
 
   // Fetch plans
-  const { data: plans = [] } = useQuery<Plan[]>({
-    queryKey: ["/api/plans", selectedConnection],
+  const { data: plans = [], isLoading: plansLoading } = useQuery<Plan[]>({
+    queryKey: ["/api/plans"],
     staleTime: 0,
     enabled: !!user,
   });
+
+  // Debug plans data
+  console.log("Plans Debug:", { plans, plansLoading, activeTab });
 
 
   
