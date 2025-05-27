@@ -37,7 +37,9 @@ const planSchema = z.object({
   color: z.string().optional(),
   icon: z.string().optional(),
   isAnniversary: z.boolean().optional(),
-  isRecurring: z.boolean().optional()
+  isRecurring: z.boolean().optional(),
+  isCompleted: z.boolean().optional(),
+  reflection: z.string().optional()
 });
 
 type PlanFormData = z.infer<typeof planSchema>;
@@ -64,6 +66,10 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
   const [milestoneColor, setMilestoneColor] = useState("");
   const [isAnniversary, setIsAnniversary] = useState(false);
   const [isRecurring, setIsRecurring] = useState(false);
+
+  // Completion state
+  const [isCompleted, setIsCompleted] = useState(false);
+  const [reflection, setReflection] = useState("");
 
   // Update local state when selectedConnection prop changes
   useEffect(() => {
@@ -113,6 +119,17 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
       icon: "📅"
     });
     setLocalSelectedConnection(selectedConnection);
+    
+    // Reset milestone state
+    setIsMilestone(false);
+    setMilestoneIcon("");
+    setMilestoneColor("");
+    setIsAnniversary(false);
+    setIsRecurring(false);
+    
+    // Reset completion state
+    setIsCompleted(false);
+    setReflection("");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -172,7 +189,12 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
     }
 
     try {
-      const validatedData = planSchema.parse({ ...formData, connectionId });
+      const validatedData = planSchema.parse({ 
+        ...formData, 
+        connectionId,
+        isCompleted,
+        reflection: isCompleted ? reflection : undefined
+      });
       createPlanMutation.mutate(validatedData);
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -336,6 +358,36 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
               </p>
             </div>
           )}
+
+          {/* Completion Toggle */}
+          <div className="space-y-4 pt-4 border-t">
+            <div className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                id="completion-toggle"
+                checked={isCompleted}
+                onChange={(e) => setIsCompleted(e.target.checked)}
+                className="rounded border-gray-300"
+              />
+              <label htmlFor="completion-toggle" className="text-sm font-medium">
+                {isCompleted ? "Done" : "Not done yet"}
+              </label>
+            </div>
+
+            {/* Reflection Input - Show when plan is marked as done */}
+            {isCompleted && (
+              <div className="space-y-2 pl-6 border-l-2 border-green-200">
+                <label className="text-sm font-medium text-green-700">Reflection</label>
+                <Textarea
+                  value={reflection}
+                  onChange={(e) => setReflection(e.target.value)}
+                  placeholder="How did this plan go? What did you learn or enjoy about it?"
+                  rows={3}
+                  className="border-green-200 focus:border-green-300"
+                />
+              </div>
+            )}
+          </div>
 
           {/* Milestone Toggle */}
           <div className="space-y-4 pt-4 border-t">
