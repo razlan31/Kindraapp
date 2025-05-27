@@ -466,8 +466,7 @@ export default function ConnectionDetail() {
                 // Set the connection in modal context before opening
                 setSelectedConnection(connection.id, connection);
                 if (activeTab === 'plans') {
-                  // TODO: Open plans modal when implemented
-                  console.log('Plans modal would open here');
+                  openPlanModal(connection);
                 } else {
                   openMomentModal(activeTab === 'moments' ? 'moment' : activeTab === 'conflicts' ? 'conflict' : 'intimacy');
                 }

@@ -26,6 +26,7 @@ interface PlanModalProps {
   onClose: () => void;
   selectedConnection: Connection | null;
   selectedDate?: Date | null;
+  showConnectionPicker?: boolean; // New prop to control picker visibility
 }
 
 const planSchema = z.object({
@@ -41,7 +42,7 @@ const planSchema = z.object({
 
 type PlanFormData = z.infer<typeof planSchema>;
 
-export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate }: PlanModalProps) {
+export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, showConnectionPicker = true }: PlanModalProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
@@ -141,8 +142,8 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate }:
           <DialogTitle>Add Plan</DialogTitle>
         </DialogHeader>
         
-        {/* Connection Picker - Only show when no connection is pre-selected */}
-        {!selectedConnection && (
+        {/* Connection Picker - Show when enabled */}
+        {showConnectionPicker && (
           <div className="space-y-2">
             <Label>Select Connection</Label>
             <DropdownMenu>

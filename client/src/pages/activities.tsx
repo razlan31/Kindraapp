@@ -656,8 +656,10 @@ export default function Activities() {
       <PlanModal
         isOpen={planModalOpen}
         onClose={closePlanModal}
-        selectedConnection={null} // Always null on activities page to show connection picker
+        selectedConnection={selectedConnection ? 
+          connections.find(c => c.id === selectedConnection) || null : null}
         selectedDate={null}
+        showConnectionPicker={true}
       />
     </div>
   );
