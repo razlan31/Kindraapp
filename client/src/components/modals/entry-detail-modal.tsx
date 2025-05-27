@@ -236,12 +236,7 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection }: EntryD
               <span className="text-2xl">{freshMoment.emoji}</span>
               {getActivityTypeLabel(activityType)} Details
             </DialogTitle>
-            {!isEditing && (
-              <Button variant="outline" size="sm" onClick={handleEdit}>
-                <Edit2 className="h-4 w-4 mr-1" />
-                Edit
-              </Button>
-            )}
+
           </div>
         </DialogHeader>
         
