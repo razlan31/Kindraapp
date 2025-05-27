@@ -36,10 +36,10 @@ export default function Calendar() {
     intimacy: true,
   });
 
-  // Fetch moments with stable settings
+  // Fetch moments with same settings as other pages
   const { data: allMoments = [], isLoading: momentsLoading, refetch: refetchMoments } = useQuery<Moment[]>({
     queryKey: ["/api/moments"],
-    enabled: !!user,
+    staleTime: 0,
   });
   
   // Debug logging for allMoments
