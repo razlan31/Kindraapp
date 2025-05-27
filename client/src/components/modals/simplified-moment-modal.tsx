@@ -50,14 +50,27 @@ export function MomentModal() {
       setContent(editingMoment.content || "");
       setSelectedDate(new Date(editingMoment.createdAt || new Date()));
       setSelectedTags(editingMoment.tags || []);
+      setReflection(editingMoment.reflection || "");
       
-      // Determine activity type from existing moment
-      if (editingMoment.tags?.includes('Conflict')) {
+      // Initialize conflict-specific fields
+      setIsResolved(editingMoment.isResolved || false);
+      setResolutionNotes(editingMoment.resolutionNotes || "");
+      if (editingMoment.resolvedAt) {
+        setResolvedDate(new Date(editingMoment.resolvedAt));
+      }
+      
+      // Initialize intimacy-specific fields
+      if (editingMoment.intimacyRating) {
+        setIntimacyRating(editingMoment.intimacyRating);
+      }
+      
+      // Determine moment type from existing moment emoji
+      if (['😊', '❤️', '😍', '🥰', '💖', '✨', '🔥'].includes(editingMoment.emoji)) {
+        setMomentType('positive');
+      } else if (['😕', '😢', '😠', '😞', '😤'].includes(editingMoment.emoji)) {
         setMomentType('negative');
-      } else if (editingMoment.isIntimate) {
-        setMomentType('positive');
       } else {
-        setMomentType('positive');
+        setMomentType('neutral');
       }
     } else {
       // Reset form for new entries
@@ -68,6 +81,11 @@ export function MomentModal() {
       setMomentType('positive');
       setSelectedTags([]);
       setCustomTag("");
+      setReflection("");
+      setIsResolved(false);
+      setResolutionNotes("");
+      setResolvedDate(new Date());
+      setIntimacyRating(5);
     }
   }, [editingMoment, selectedConnectionId, activityType]);
 
@@ -100,6 +118,9 @@ export function MomentModal() {
   const [isResolved, setIsResolved] = useState(false);
   const [resolutionNotes, setResolutionNotes] = useState('');
   const [resolvedDate, setResolvedDate] = useState<Date>(new Date());
+  
+  // Intimacy fields
+  const [intimacyRating, setIntimacyRating] = useState<number>(5);
   
   // Reflection field
   const [reflection, setReflection] = useState('');
