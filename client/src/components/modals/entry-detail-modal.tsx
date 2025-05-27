@@ -365,9 +365,9 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection }: EntryD
               </div>
             ) : (
               <div className="flex flex-wrap gap-2">
-                {freshMoment.tags && freshMoment.tags.filter(tag => !['Positive', 'Negative', 'Neutral'].includes(tag)).length > 0 ? (
+                {freshMoment.tags && freshMoment.tags.filter(tag => !['Positive', 'Negative', 'Neutral', 'Conflict', 'Intimacy'].includes(tag)).length > 0 ? (
                   freshMoment.tags
-                    .filter(tag => !['Positive', 'Negative', 'Neutral'].includes(tag))
+                    .filter(tag => !['Positive', 'Negative', 'Neutral', 'Conflict', 'Intimacy'].includes(tag))
                     .map((tag: string, index: number) => (
                       <Badge key={index} className={getTagColor(tag)} variant="secondary">
                         {tag}
