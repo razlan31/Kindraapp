@@ -282,14 +282,18 @@ export default function Activities() {
                   <ChevronDown className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-full">
-                <DropdownMenuItem onClick={() => setSelectedConnection(null)}>
+              <DropdownMenuContent className="w-56">
+                <DropdownMenuItem 
+                  onClick={() => setSelectedConnection(null)}
+                  className="py-3 px-4 text-base"
+                >
                   All Connections
                 </DropdownMenuItem>
                 {connections.map((connection) => (
                   <DropdownMenuItem 
                     key={connection.id}
                     onClick={() => setSelectedConnection(connection.id)}
+                    className="py-3 px-4 text-base"
                   >
                     {connection.name}
                   </DropdownMenuItem>
