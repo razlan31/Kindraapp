@@ -45,6 +45,16 @@ export function MomentModal() {
   // Initialize form with existing data when editing
   useEffect(() => {
     console.log("Modal useEffect - selectedDate from context:", selectedDate);
+    
+    // Set the local selected date from context or default to today
+    if (selectedDate) {
+      console.log("Setting localSelectedDate to selectedDate:", selectedDate);
+      setLocalSelectedDate(selectedDate);
+    } else if (!editingMoment) {
+      console.log("No selectedDate, defaulting to today");
+      setLocalSelectedDate(new Date());
+    }
+    
     if (editingMoment) {
       setConnectionId(editingMoment.connectionId);
       setEmoji(editingMoment.emoji);
