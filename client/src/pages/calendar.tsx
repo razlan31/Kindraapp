@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ChevronLeft, ChevronRight, Heart, Calendar as CalendarIcon, Plus, Eye } from "lucide-react";
 import { useAuth } from "@/contexts/auth-context";
 import { useModal } from "@/contexts/modal-context";
@@ -35,21 +36,31 @@ export default function Calendar() {
     conflict: true,
     intimacy: true,
   });
+  
+  // Connection filter state
+  const [selectedConnectionId, setSelectedConnectionId] = useState<number | null>(null);
 
   // Fetch moments with same settings as other pages
   const { data: allMoments = [], isLoading: momentsLoading, refetch: refetchMoments } = useQuery<Moment[]>({
     queryKey: ["/api/moments"],
     staleTime: 0,
   });
+
+  // Fetch connections for the picker
+  const { data: connections = [] } = useQuery<Connection[]>({
+    queryKey: ["/api/connections"],
+    staleTime: 0,
+  });
   
   // Debug logging for allMoments
   console.log("All moments from query:", allMoments);
 
-  // Filter moments based on selected filters
+  // Filter moments based on selected filters and connection
   const moments = allMoments.filter(moment => {
-    // Debug logging
-    console.log("Filtering moment:", moment);
+    // Connection filter
+    if (selectedConnectionId && moment.connectionId !== selectedConnectionId) return false;
     
+    // Type filters
     if (moment.tags?.includes('Conflict') && !filters.conflict) return false;
     if (moment.tags?.includes('Intimacy') && !filters.intimacy) return false;
     
@@ -81,11 +92,7 @@ export default function Calendar() {
     };
   }, [queryClient]);
 
-  // Fetch connections
-  const { data: connections = [] } = useQuery<Connection[]>({
-    queryKey: ["/api/connections"],
-    enabled: !!user,
-  });
+
 
   // Generate calendar days
   const monthStart = startOfMonth(currentDate);
@@ -201,6 +208,37 @@ export default function Calendar() {
               <ChevronRight className="h-4 w-4" />
             </Button>
           </div>
+        </section>
+
+        {/* Connection Filter */}
+        <section className="px-4 py-2">
+          <Card className="p-4 bg-card/50 backdrop-blur-sm">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-medium">View Calendar For</h3>
+              <span className="text-xs text-muted-foreground">
+                {selectedConnectionId ? 
+                  connections.find(c => c.id === selectedConnectionId)?.name || 'Unknown' : 
+                  'All Connections'
+                }
+              </span>
+            </div>
+            <Select
+              value={selectedConnectionId ? selectedConnectionId.toString() : ""}
+              onValueChange={(value) => setSelectedConnectionId(value ? parseInt(value) : null)}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Show all connections" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">All Connections</SelectItem>
+                {connections.map((connection) => (
+                  <SelectItem key={connection.id} value={connection.id.toString()}>
+                    {connection.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </Card>
         </section>
 
         {/* Legend */}
