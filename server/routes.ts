@@ -763,6 +763,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Plan routes
+  app.post("/api/plans", isAuthenticated, async (req: Request, res: Response) => {
+    try {
+      const userId = req.session.userId as number;
+      const planData = { ...req.body, userId };
+      
+      const plan = await storage.createPlan(planData);
+      res.status(201).json(plan);
+    } catch (error) {
+      console.error('Error creating plan:', error);
+      res.status(500).json({ message: "Failed to create plan" });
+    }
+  });
+
   // Helper function to check and award badges
   async function checkAndAwardBadges(userId: number) {
     try {

@@ -651,6 +651,14 @@ export default function Activities() {
         selectedConnection={selectedConnection ? 
           connections.find(c => c.id === selectedConnection) || null : null}
       />
+      
+      {/* Plan Modal */}
+      <PlanModal
+        isOpen={planModalOpen}
+        onClose={closePlanModal}
+        selectedConnection={selectedConnection ? 
+          connections.find(c => c.id === selectedConnection) || null : null}
+      />
     </div>
   );
 }

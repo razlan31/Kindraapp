@@ -621,6 +621,34 @@ export class MemStorage implements IStorage {
   async deleteMilestone(id: number): Promise<boolean> {
     return this.milestones.delete(id);
   }
+
+  async getPlans(userId: number): Promise<Plan[]> {
+    return Array.from(this.plans.values()).filter(plan => plan.userId === userId);
+  }
+
+  async getPlansByConnectionId(connectionId: number): Promise<Plan[]> {
+    return Array.from(this.plans.values()).filter(plan => plan.connectionId === connectionId);
+  }
+
+  async createPlan(plan: InsertPlan): Promise<Plan> {
+    const id = this.planId++;
+    const newPlan: Plan = { ...plan, id };
+    this.plans.set(id, newPlan);
+    return newPlan;
+  }
+
+  async updatePlan(id: number, data: Partial<Plan>): Promise<Plan | undefined> {
+    const plan = this.plans.get(id);
+    if (!plan) return undefined;
+    
+    const updatedPlan = { ...plan, ...data };
+    this.plans.set(id, updatedPlan);
+    return updatedPlan;
+  }
+
+  async deletePlan(id: number): Promise<boolean> {
+    return this.plans.delete(id);
+  }
 }
 
 export const storage = new MemStorage();
