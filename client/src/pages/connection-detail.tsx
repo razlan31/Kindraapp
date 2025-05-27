@@ -401,60 +401,6 @@ export default function ConnectionDetail() {
             </div>
           </div>
         </div>
-        
-        {/* Quick Actions */}
-        <div className="mt-4 p-4 space-y-3">
-          <Button 
-            className="w-full h-12"
-            onClick={() => {
-              console.log("Setting connection before modal:", connection);
-              setSelectedConnection(connectionId, connection);
-              // Add small delay to ensure connection is set before opening modal
-              setTimeout(() => {
-                openMomentModal();
-              }, 10);
-            }}
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            Add Moment with {connection.name}
-          </Button>
-          
-          <div className="grid grid-cols-2 gap-3">
-            <Button 
-              variant="outline" 
-              onClick={() => {
-                localStorage.setItem('navigationConnectionId', connectionId.toString());
-                setLocation('/activities');
-              }}
-            >
-              <Activity className="h-4 w-4 mr-2" />
-              View Activities
-            </Button>
-            
-            <Button 
-              variant="outline" 
-              onClick={(e) => {
-                e.preventDefault();
-                console.log("Calendar button clicked! connectionId:", connectionId);
-                // Store connection ID in localStorage for navigation
-                localStorage.setItem('navigationConnectionId', connectionId.toString());
-                setLocation('/calendar');
-              }}
-            >
-              <Calendar className="h-4 w-4 mr-2" />
-              View Calendar
-            </Button>
-          </div>
-          
-          <Button 
-            variant="outline" 
-            className="w-full"
-            onClick={() => setMilestoneModalOpen(true)}
-          >
-            <Trophy className="h-4 w-4 mr-2" />
-            Add Milestone / Anniversary
-          </Button>
-        </div>
       </div>
       
       <BottomNavigation />
