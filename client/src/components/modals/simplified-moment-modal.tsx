@@ -225,7 +225,7 @@ export function MomentModal() {
           finalEmoji = '😕';
           break;
         case 'neutral':
-          finalEmoji = '🙂';
+          finalEmoji = '🌱';
           break;
         default:
           finalEmoji = emoji;
@@ -317,7 +317,7 @@ export function MomentModal() {
                 <SelectContent>
                   <SelectItem value="positive">Positive</SelectItem>
                   <SelectItem value="negative">Negative</SelectItem>
-                  <SelectItem value="neutral">Neutral</SelectItem>
+                  <SelectItem value="neutral">Growth</SelectItem>
                 </SelectContent>
               </Select>
             </div>
