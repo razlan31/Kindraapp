@@ -28,6 +28,9 @@ export default function Calendar() {
   // Force refresh state to trigger re-renders
   const [refreshKey, setRefreshKey] = useState(0);
   
+  // Local optimistic updates for immediate UI response
+  const [optimisticMoments, setOptimisticMoments] = useState<Moment[]>([]);
+  
   // Filter states for different entry types
   const [filters, setFilters] = useState({
     positive: true,
@@ -37,12 +40,14 @@ export default function Calendar() {
     intimacy: true,
   });
 
-  // Fetch moments (using exact same config as moments.tsx that works)
+  // Fetch moments with aggressive refresh settings
   const { data: allMoments = [], isLoading: momentsLoading, refetch: refetchMoments } = useQuery<Moment[]>({
-    queryKey: ["/api/moments"],
+    queryKey: ["/api/moments", refreshKey], // Include refreshKey to force new queries
     enabled: !!user,
     refetchOnWindowFocus: true,
     staleTime: 0, // Always refetch to ensure fresh data
+    gcTime: 0, // Don't cache results (new property name in React Query v5)
+    refetchOnMount: "always", // Always refetch on mount
   });
 
   // Filter moments based on selected filters
@@ -553,8 +558,10 @@ export default function Calendar() {
           onUpdate={() => {
             // Force immediate refresh with multiple strategies
             setRefreshKey(prev => prev + 1);
-            refetchMoments();
+            // Invalidate all moments queries
             queryClient.invalidateQueries({ queryKey: ["/api/moments"] });
+            // Force immediate refetch
+            refetchMoments();
           }}
           moment={selectedEntry}
           connection={connections.find(c => c.id === selectedEntry.connectionId) || null}

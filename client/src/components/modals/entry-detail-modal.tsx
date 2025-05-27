@@ -115,13 +115,13 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection, onUpdate
       setIsEditing(false);
       setIsSubmitting(false);
       
-      // Instantly update the cache instead of full page reload
-      queryClient.invalidateQueries({ queryKey: ['/api/moments'] });
-      
-      // Trigger parent component refresh
+      // Trigger parent component refresh immediately
       if (onUpdate) {
         onUpdate();
       }
+      
+      // Then update the cache
+      queryClient.invalidateQueries({ queryKey: ['/api/moments'] });
     },
     onError: () => {
       toast({ title: "Failed to update entry", variant: "destructive" });
