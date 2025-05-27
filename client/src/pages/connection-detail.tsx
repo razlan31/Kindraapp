@@ -381,7 +381,10 @@ export default function ConnectionDetail() {
           <div className="grid grid-cols-2 gap-3">
             <Button 
               variant="outline" 
-              onClick={() => setLocation(`/activities?connection=${connectionId}`)}
+              onClick={() => {
+                localStorage.setItem('navigationConnectionId', connectionId.toString());
+                setLocation('/activities');
+              }}
             >
               <Activity className="h-4 w-4 mr-2" />
               View Activities
@@ -392,9 +395,9 @@ export default function ConnectionDetail() {
               onClick={(e) => {
                 e.preventDefault();
                 console.log("Calendar button clicked! connectionId:", connectionId);
-                const url = `/calendar?connection=${connectionId}`;
-                console.log("Navigating to calendar with URL:", url);
-                setLocation(url);
+                // Store connection ID in localStorage for navigation
+                localStorage.setItem('navigationConnectionId', connectionId.toString());
+                setLocation('/calendar');
               }}
             >
               <Calendar className="h-4 w-4 mr-2" />

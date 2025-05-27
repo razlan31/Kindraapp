@@ -11,6 +11,7 @@ type ModalContextType = {
   activityType: 'moment' | 'conflict' | 'intimacy';
   editingMoment: Moment | null;
   selectedDate: Date | null;
+  navigationConnectionId: number | null;
   openMomentModal: (activityType?: 'moment' | 'conflict' | 'intimacy', moment?: Moment, date?: Date) => void;
   closeMomentModal: () => void;
   openConnectionModal: () => void;
@@ -19,6 +20,7 @@ type ModalContextType = {
   closeMoodTrackerModal: () => void;
   setSelectedConnection: (connectionId: number | null, connection?: Connection | null) => void;
   setMainFocusConnection: (connection: Connection | null) => void;
+  setNavigationConnectionId: (connectionId: number | null) => void;
 };
 
 const ModalContext = createContext<ModalContextType>({
@@ -31,6 +33,7 @@ const ModalContext = createContext<ModalContextType>({
   activityType: 'moment',
   editingMoment: null,
   selectedDate: null,
+  navigationConnectionId: null,
   openMomentModal: () => {},
   closeMomentModal: () => {},
   openConnectionModal: () => {},
@@ -39,6 +42,7 @@ const ModalContext = createContext<ModalContextType>({
   closeMoodTrackerModal: () => {},
   setSelectedConnection: () => {},
   setMainFocusConnection: () => {},
+  setNavigationConnectionId: () => {},
 });
 
 export const useModal = () => useContext(ModalContext);
@@ -53,6 +57,7 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [activityType, setActivityType] = useState<'moment' | 'conflict' | 'intimacy'>('moment');
   const [editingMoment, setEditingMoment] = useState<Moment | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [navigationConnectionId, setNavigationConnectionId] = useState<number | null>(null);
 
   const openMomentModal = (activityType: 'moment' | 'conflict' | 'intimacy' = 'moment', moment?: Moment, date?: Date) => {
     console.log("openMomentModal called with:", { activityType, moment: !!moment, date });

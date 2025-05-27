@@ -31,14 +31,18 @@ export default function Activities() {
   const [activeTab, setActiveTab] = useState<'moments' | 'conflicts' | 'intimacy' | 'timeline'>('moments');
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
-  // Handle URL parameters for connection filtering
+  // Handle navigation connection filtering
   useEffect(() => {
-    const urlParams = new URLSearchParams(location.split('?')[1] || '');
-    const connectionParam = urlParams.get('connection');
-    if (connectionParam) {
-      setSelectedConnection(parseInt(connectionParam));
+    const navigationConnectionId = localStorage.getItem('navigationConnectionId');
+    console.log("Activities navigation check:", { navigationConnectionId });
+    if (navigationConnectionId) {
+      const connectionId = parseInt(navigationConnectionId);
+      console.log("Setting activities connection from navigation:", connectionId);
+      setSelectedConnection(connectionId);
+      // Clear the navigation state after using it
+      localStorage.removeItem('navigationConnectionId');
     }
-  }, [location]);
+  }, []);
 
   // Fetch moments - use simple approach like Dashboard
   const { data: moments = [], isLoading, refetch: refetchMoments } = useQuery<Moment[]>({

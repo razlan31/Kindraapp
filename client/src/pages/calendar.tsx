@@ -42,17 +42,18 @@ export default function Calendar() {
   // Connection filter state
   const [selectedConnectionId, setSelectedConnectionId] = useState<number | null>(null);
 
-  // Handle URL parameters for connection filtering
+  // Handle navigation connection filtering
   useEffect(() => {
-    const urlParams = new URLSearchParams(location.split('?')[1] || '');
-    const connectionParam = urlParams.get('connection');
-    console.log("Calendar URL param check:", { connectionParam, location });
-    if (connectionParam) {
-      const connectionId = parseInt(connectionParam);
-      console.log("Setting calendar connection from URL:", connectionId);
+    const navigationConnectionId = localStorage.getItem('navigationConnectionId');
+    console.log("Calendar navigation check:", { navigationConnectionId });
+    if (navigationConnectionId) {
+      const connectionId = parseInt(navigationConnectionId);
+      console.log("Setting calendar connection from navigation:", connectionId);
       setSelectedConnectionId(connectionId);
+      // Clear the navigation state after using it
+      localStorage.removeItem('navigationConnectionId');
     }
-  }, [location]);
+  }, []);
   
   // Legend collapse state
   const [isLegendCollapsed, setIsLegendCollapsed] = useState(false);
