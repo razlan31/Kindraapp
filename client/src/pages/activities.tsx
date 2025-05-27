@@ -131,9 +131,12 @@ export default function Activities() {
   };
 
   const handleViewEntryDetail = (momentId: number) => {
+    console.log("handleViewEntryDetail called with momentId:", momentId);
     const moment = moments.find(m => m.id === momentId);
     const connection = connections.find(c => c.id === moment?.connectionId);
+    console.log("Found moment and connection:", { moment, connection });
     if (moment && connection) {
+      console.log("Setting entry detail modal state");
       setSelectedMomentForDetail(moment);
       setSelectedConnectionForDetail(connection);
       setEntryDetailModalOpen(true);
