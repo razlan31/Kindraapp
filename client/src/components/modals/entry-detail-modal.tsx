@@ -175,13 +175,12 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection, onUpdate
       
       if (!response.ok) throw new Error('Failed to update');
       
-      console.log("✅ Save successful - Reloading page now");
       toast({ title: "Entry updated successfully!" });
+      setIsEditing(false);
+      setIsSubmitting(false);
       
-      // Force immediate page reload
-      setTimeout(() => {
-        window.location.reload();
-      }, 100);
+      // Invalidate cache to trigger immediate refetch
+      queryClient.invalidateQueries({ queryKey: ['/api/moments'] });
       
     } catch (error) {
       console.error("❌ HandleSave - Error:", error);

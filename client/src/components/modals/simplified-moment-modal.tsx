@@ -150,13 +150,10 @@ export function MomentModal() {
   
   // Success and error handlers - now optimized for instant updates
   const handleSuccess = () => {
-    console.log("🎉 Save successful - Reloading page for immediate calendar update");
-    toast({ title: "Entry saved successfully!" });
-    
-    // Force immediate page reload to show changes on calendar
-    setTimeout(() => {
-      window.location.reload();
-    }, 100);
+    closeMomentModal();
+    setIsSubmitting(false);
+    // Invalidate cache to trigger immediate refetch
+    queryClient.invalidateQueries({ queryKey: ['/api/moments'] });
   };
 
   const handleError = (error: any) => {
@@ -192,9 +189,7 @@ export function MomentModal() {
         title: `${activityType === 'conflict' ? 'Conflict' : activityType === 'intimacy' ? 'Intimacy' : 'Moment'} logged successfully`,
         description: "Your entry has been recorded.",
       });
-      console.log("Creation successful! Reloading page for instant calendar update");
-      // Simple, reliable solution - reload page to show new entry immediately
-      window.location.reload();
+      handleSuccess();
     },
     onError: (error: any) => handleError(error),
   });
@@ -211,18 +206,14 @@ export function MomentModal() {
       return response.json();
     },
     onSuccess: () => {
-      console.log("🎉 Update successful - Reloading page for immediate calendar update");
       toast({
         title: "Entry updated successfully",
         description: "Your changes have been saved.",
       });
+      closeMomentModal();
+      setIsSubmitting(false);
       
-      // Force immediate page reload to show changes on calendar
-      setTimeout(() => {
-        window.location.reload();
-      }, 100);
-      
-      // Instantly update the cache instead of full page reload
+      // Properly invalidate cache to trigger immediate refetch
       queryClient.invalidateQueries({ queryKey: ['/api/moments'] });
     },
     onError: (error: any) => handleError(error),
