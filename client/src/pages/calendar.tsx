@@ -70,7 +70,7 @@ export default function Calendar() {
     staleTime: 0,
   });
 
-  // Fetch milestones
+  // Fetch milestones - FORCE EXECUTION FOR DEBUGGING
   const { data: milestones = [] } = useQuery({
     queryKey: ["/api/milestones", selectedConnectionId],
     queryFn: async () => {
@@ -83,7 +83,6 @@ export default function Calendar() {
       console.log("🔍 CALENDAR DEBUG - Milestones fetched:", data);
       return data;
     },
-    enabled: !!user,
     staleTime: 0,
   });
 
