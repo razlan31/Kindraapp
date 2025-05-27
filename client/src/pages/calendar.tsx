@@ -85,10 +85,16 @@ export default function Calendar() {
       setRefreshKey(prev => prev + 1);
       refetchMoments();
     };
-    const handleMomentUpdated = () => {
+    const handleMomentUpdated = async () => {
       console.log("Calendar - Received momentUpdated event, refreshing...");
       setRefreshKey(prev => prev + 1);
-      refetchMoments();
+      // Force immediate cache invalidation and refetch
+      queryClient.invalidateQueries({ queryKey: ['/api/moments'] });
+      await refetchMoments();
+      // Double-trigger refresh to ensure visual update
+      setTimeout(() => {
+        setRefreshKey(prev => prev + 1);
+      }, 50);
     };
     
     window.addEventListener('momentCreated', handleMomentCreated);

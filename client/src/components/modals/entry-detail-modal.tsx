@@ -179,6 +179,18 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection, onUpdate
         reflection: editedReflection.trim(),
         tags: editedTags
       } as any);
+      
+      // Force calendar refresh immediately after successful update
+      console.log("HandleSave - Dispatching momentUpdated event for immediate refresh");
+      window.dispatchEvent(new CustomEvent('momentUpdated'));
+      
+      if (onUpdate) {
+        onUpdate();
+      }
+      
+      // Force query invalidation
+      queryClient.invalidateQueries({ queryKey: ['/api/moments'] });
+      
     } finally {
       setIsSubmitting(false);
     }
