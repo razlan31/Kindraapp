@@ -125,7 +125,20 @@ export function MomentModal() {
   };
 
   const addCustomTag = () => {
+    const tagToAdd = customTag.trim().toLowerCase();
+    const restrictedTags = ['plan', 'conflict', 'intimacy', 'positive', 'negative', 'neutral'];
+    
     if (customTag.trim() && !selectedTags.includes(customTag.trim())) {
+      // Check if the tag is restricted
+      if (restrictedTags.includes(tagToAdd)) {
+        toast({
+          title: "Tag not allowed",
+          description: `"${customTag.trim()}" is a system tag and cannot be used. Please choose a different tag.`,
+          variant: "destructive",
+        });
+        return;
+      }
+      
       setSelectedTags([...selectedTags, customTag.trim()]);
       setCustomTag("");
     }
