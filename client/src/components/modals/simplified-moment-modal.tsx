@@ -45,8 +45,8 @@ export function MomentModal() {
   
   // Milestone-specific state
   const [isMilestone, setIsMilestone] = useState<boolean>(false);
-  const [milestoneColor, setMilestoneColor] = useState<string>("#3b82f6");
-  const [milestoneIcon, setMilestoneIcon] = useState<string>("star");
+  const [milestoneColor, setMilestoneColor] = useState<string>("");
+  const [milestoneIcon, setMilestoneIcon] = useState<string>("");
   const [isAnniversary, setIsAnniversary] = useState<boolean>(false);
   const [isRecurring, setIsRecurring] = useState<boolean>(false);
 
@@ -699,6 +699,15 @@ export function MomentModal() {
                   <div className="space-y-2">
                     <label className="text-sm font-medium">Icon</label>
                     <div className="flex flex-wrap gap-2">
+                      <Button
+                        type="button"
+                        variant={milestoneIcon === "" ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setMilestoneIcon("")}
+                        className="text-xs"
+                      >
+                        None
+                      </Button>
                       {['star', 'heart', 'gift', 'trophy', 'home', 'plane', 'ring'].map((icon) => (
                         <Button
                           key={icon}
@@ -724,6 +733,15 @@ export function MomentModal() {
                   <div className="space-y-2">
                     <label className="text-sm font-medium">Color</label>
                     <div className="flex flex-wrap gap-2">
+                      <Button
+                        type="button"
+                        variant={milestoneColor === "" ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setMilestoneColor("")}
+                        className="text-xs"
+                      >
+                        None
+                      </Button>
                       {['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899'].map((color) => (
                         <Button
                           key={color}
