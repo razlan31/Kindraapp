@@ -21,13 +21,13 @@ export function ConnectionDetailsModal({ isOpen, onClose, connection }: Connecti
   const [showDetailedModal, setShowDetailedModal] = useState(false);
   const [showTimelineModal, setShowTimelineModal] = useState(false);
 
-  if (!connection) return null;
-
-  // Fetch moments for this connection
+  // Fetch moments for this connection (hooks must be called before early returns)
   const { data: moments = [] } = useQuery<Moment[]>({
     queryKey: ["/api/moments"],
-    enabled: isOpen,
+    enabled: isOpen && !!connection,
   });
+
+  if (!connection) return null;
 
   const connectionMoments = moments.filter(m => m.connectionId === connection.id);
 
