@@ -492,17 +492,19 @@ export function MomentModal() {
             </div>
           )}
 
-          {/* Title */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Title</label>
-            <Input
-              placeholder="Give this moment a title..."
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="w-full"
-              required
-            />
-          </div>
+          {/* Title - Only show for regular moments and conflicts */}
+          {activityType !== 'intimacy' && (
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Title</label>
+              <Input
+                placeholder="Give this moment a title..."
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                className="w-full"
+                required
+              />
+            </div>
+          )}
 
           {/* Description */}
           <div className="space-y-2">
