@@ -659,17 +659,18 @@ export default function Calendar() {
                     key={day.toISOString()}
                     onClick={() => handleDayClick(day)}
                     className={`
-                      h-16 p-1 border border-border/20 rounded-lg transition-colors hover:bg-accent/50
+                      ${viewMode === 'daily' ? 'h-32 p-3' : viewMode === 'weekly' ? 'h-24 p-2' : 'h-16 p-1'} 
+                      border border-border/20 rounded-lg transition-colors hover:bg-accent/50
                       ${isToday ? 'bg-primary/10 border-primary/30' : 'bg-background/50'}
                       ${!isSameMonth(day, currentDate) ? 'opacity-30' : ''}
                     `}
                   >
-                    <div className="text-xs font-medium mb-1">
+                    <div className={`${viewMode === 'daily' ? 'text-lg' : viewMode === 'weekly' ? 'text-sm' : 'text-xs'} font-medium mb-1`}>
                       {format(day, 'd')}
                     </div>
                     
                     {/* Moment and Milestone indicators */}
-                    <div className="flex flex-wrap gap-0.5 items-center">
+                    <div className={`flex flex-wrap ${viewMode === 'daily' ? 'gap-2' : viewMode === 'weekly' ? 'gap-1' : 'gap-0.5'} items-center`}>
                       {/* Show milestones first */}
                       {dayMilestones.map((milestone) => {
                         const getIcon = () => {
@@ -688,7 +689,7 @@ export default function Calendar() {
                         return (
                           <span
                             key={`milestone-${milestone.id}`}
-                            className="text-[10px] cursor-pointer hover:scale-110 transition-transform"
+                            className={`${viewMode === 'daily' ? 'text-lg' : viewMode === 'weekly' ? 'text-sm' : 'text-[10px]'} cursor-pointer hover:scale-110 transition-transform`}
                             title={`${milestone.title}: ${milestone.description || ''}`}
                             style={{ color: milestone.color }}
                           >
@@ -698,12 +699,12 @@ export default function Calendar() {
                       })}
                       
                       {/* Show moments */}
-                      {dayMoments.slice(0, dayMilestones.length > 0 ? 2 : 3).map((moment, index) => {
+                      {dayMoments.slice(0, viewMode === 'daily' ? 6 : viewMode === 'weekly' ? 4 : (dayMilestones.length > 0 ? 2 : 3)).map((moment, index) => {
                         const displayInfo = getMomentDisplayInfo(moment);
                         return displayInfo.type === 'emoji' ? (
                           <span
                             key={moment.id}
-                            className={`text-[8px] ${displayInfo.color} cursor-pointer hover:scale-110 transition-transform`}
+                            className={`${viewMode === 'daily' ? 'text-base' : viewMode === 'weekly' ? 'text-xs' : 'text-[8px]'} ${displayInfo.color} cursor-pointer hover:scale-110 transition-transform`}
                             title={moment.content || moment.emoji}
                             onClick={(e) => handleEntryClick(moment, e)}
                           >
@@ -712,7 +713,7 @@ export default function Calendar() {
                         ) : (
                           <div
                             key={moment.id}
-                            className={`w-2 h-2 rounded-full ${displayInfo.color} cursor-pointer hover:scale-110 transition-transform`}
+                            className={`${viewMode === 'daily' ? 'w-4 h-4' : viewMode === 'weekly' ? 'w-3 h-3' : 'w-2 h-2'} rounded-full ${displayInfo.color} cursor-pointer hover:scale-110 transition-transform`}
                             title={moment.content || moment.emoji}
                             onClick={(e) => handleEntryClick(moment, e)}
                           />
