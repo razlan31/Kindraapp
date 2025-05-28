@@ -13,6 +13,7 @@ import { Card } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
+import { compressImage } from "@/lib/image-utils";
 
 export default function Connections() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -296,15 +297,22 @@ export default function Connections() {
                       className="hidden"
                       id="fileUpload"
                       name="profileImageFile"
-                      onChange={(e) => {
+                      onChange={async (e) => {
                         const file = e.target.files?.[0];
                         if (file) {
-                          const reader = new FileReader();
-                          reader.onload = (event) => {
-                            const result = event.target?.result as string;
-                            setUploadedImage(result);
-                          };
-                          reader.readAsDataURL(file);
+                          try {
+                            const compressedImage = await compressImage(file);
+                            setUploadedImage(compressedImage);
+                          } catch (error) {
+                            console.error('Error compressing image:', error);
+                            // Fallback to original file if compression fails
+                            const reader = new FileReader();
+                            reader.onload = (event) => {
+                              const result = event.target?.result as string;
+                              setUploadedImage(result);
+                            };
+                            reader.readAsDataURL(file);
+                          }
                         }
                       }}
                     />

@@ -7,10 +7,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowLeft, Camera, Calendar } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
 import { relationshipStages } from "@shared/schema";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
+import { compressImage } from "@/lib/image-utils";
 
 export default function ConnectionEdit() {
   const { id } = useParams();
@@ -246,15 +246,22 @@ export default function ConnectionEdit() {
                     accept="image/*"
                     className="hidden"
                     id="fileUploadEdit"
-                    onChange={(e) => {
+                    onChange={async (e) => {
                       const file = e.target.files?.[0];
                       if (file) {
-                        const reader = new FileReader();
-                        reader.onload = (event) => {
-                          const result = event.target?.result as string;
-                          setUploadedImage(result);
-                        };
-                        reader.readAsDataURL(file);
+                        try {
+                          const compressedImage = await compressImage(file);
+                          setUploadedImage(compressedImage);
+                        } catch (error) {
+                          console.error('Error compressing image:', error);
+                          // Fallback to original file if compression fails
+                          const reader = new FileReader();
+                          reader.onload = (event) => {
+                            const result = event.target?.result as string;
+                            setUploadedImage(result);
+                          };
+                          reader.readAsDataURL(file);
+                        }
                       }
                     }}
                   />
