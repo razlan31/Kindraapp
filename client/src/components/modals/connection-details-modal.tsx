@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { Calendar, Heart, MessageCircle, Sparkles, Edit, Trash2 } from 'lucide-react';
+import { Calendar, Heart, MessageCircle, Sparkles, Edit, Trash2, Activity } from 'lucide-react';
 import { format } from 'date-fns';
 import { useQuery } from '@tanstack/react-query';
 import type { Connection, Moment } from '@shared/schema';
