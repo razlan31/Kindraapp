@@ -60,6 +60,7 @@ export function ConnectionDetailsModal({ isOpen, onClose, connection }: Connecti
   };
 
   const duration = calculateDuration(connection.startDate);
+  console.log('Duration Debug:', { startDate: connection.startDate, duration });
 
   // Calculate stats
   const totalMoments = connectionMoments.length;
