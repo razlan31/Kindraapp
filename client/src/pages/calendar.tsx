@@ -346,22 +346,22 @@ export default function Calendar() {
             </div>
             {!isLegendCollapsed && (
               <>
-                <div className="flex flex-col gap-2 text-xs">
+                <div className="grid grid-cols-3 gap-2 text-xs">
                   <div className="flex items-center gap-2">
                     <div className="w-3 h-3 rounded-full bg-green-500"></div>
                     <span>Positive Moments</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-orange-500"></div>
-                    <span>Negative Moments</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-                    <span>Neutral Moments</span>
-                  </div>
-                  <div className="flex items-center gap-2">
                     <span className="text-sm">⚡</span>
                     <span>Conflicts</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm">🏆</span>
+                    <span>Milestones</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-orange-500"></div>
+                    <span>Negative Moments</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-sm">💕</span>
@@ -372,15 +372,15 @@ export default function Calendar() {
                     <span>Plans</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm">🏆</span>
-                    <span>Milestones</span>
+                    <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+                    <span>Neutral Moments</span>
                   </div>
                 </div>
                 
                 {/* Filter Checkboxes */}
                 <div className="mt-4 pt-3 border-t border-border/20">
                   <h4 className="text-xs font-medium mb-2 text-muted-foreground">Show on Calendar</h4>
-                  <div className="flex flex-col gap-2 text-xs">
+                  <div className="grid grid-cols-3 gap-2 text-xs">
                     <div className="flex items-center space-x-2">
                       <Checkbox
                         id="positive"
@@ -393,26 +393,6 @@ export default function Calendar() {
                     </div>
                     <div className="flex items-center space-x-2">
                       <Checkbox
-                        id="negative"
-                        checked={filters.negative}
-                        onCheckedChange={(checked) => 
-                          setFilters(prev => ({ ...prev, negative: !!checked }))
-                        }
-                      />
-                      <label htmlFor="negative" className="text-xs cursor-pointer">Negative</label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="neutral"
-                        checked={filters.neutral}
-                        onCheckedChange={(checked) => 
-                          setFilters(prev => ({ ...prev, neutral: !!checked }))
-                        }
-                      />
-                      <label htmlFor="neutral" className="text-xs cursor-pointer">Neutral</label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
                         id="conflict"
                         checked={filters.conflict}
                         onCheckedChange={(checked) => 
@@ -420,6 +400,26 @@ export default function Calendar() {
                         }
                       />
                       <label htmlFor="conflict" className="text-xs cursor-pointer">Conflicts</label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="milestone"
+                        checked={filters.milestone}
+                        onCheckedChange={(checked) => 
+                          setFilters(prev => ({ ...prev, milestone: !!checked }))
+                        }
+                      />
+                      <label htmlFor="milestone" className="text-xs cursor-pointer">Milestones</label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="negative"
+                        checked={filters.negative}
+                        onCheckedChange={(checked) => 
+                          setFilters(prev => ({ ...prev, negative: !!checked }))
+                        }
+                      />
+                      <label htmlFor="negative" className="text-xs cursor-pointer">Negative</label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <Checkbox
@@ -443,13 +443,13 @@ export default function Calendar() {
                     </div>
                     <div className="flex items-center space-x-2">
                       <Checkbox
-                        id="milestone"
-                        checked={filters.milestone}
+                        id="neutral"
+                        checked={filters.neutral}
                         onCheckedChange={(checked) => 
-                          setFilters(prev => ({ ...prev, milestone: !!checked }))
+                          setFilters(prev => ({ ...prev, neutral: !!checked }))
                         }
                       />
-                      <label htmlFor="milestone" className="text-xs cursor-pointer">Milestones</label>
+                      <label htmlFor="neutral" className="text-xs cursor-pointer">Neutral</label>
                     </div>
                   </div>
                 </div>
