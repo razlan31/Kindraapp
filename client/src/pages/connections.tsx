@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { Header } from "@/components/layout/header";
-import { Connection, connectionInsertSchema, relationshipStages } from "@shared/schema";
+import { Connection, relationshipStages } from "@shared/schema";
 import { Button } from "@/components/ui/button";
 import { useModal } from "@/contexts/modal-context";
 import { useRelationshipFocus } from "@/contexts/relationship-focus-context";
@@ -17,7 +17,7 @@ export default function Connections() {
   const [filterStage, setFilterStage] = useState<string | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [viewMode, setViewMode] = useState<'connections' | 'activity' | 'stages' | 'timeline'>('connections');
-  const { openModal } = useModal();
+  const { openMomentModal, openConnectionModal } = useModal();
   const { mainFocusConnection, setMainFocusConnection } = useRelationshipFocus();
   const { toast } = useToast();
 
@@ -26,7 +26,7 @@ export default function Connections() {
     queryKey: ['/api/connections'],
   });
 
-  const { data: moments = [] } = useQuery({
+  const { data: moments = [] } = useQuery<any[]>({
     queryKey: ['/api/moments'],
   });
 
@@ -39,7 +39,7 @@ export default function Connections() {
 
   // Handle connection selection for navigation
   const handleSelectConnection = (connection: Connection) => {
-    window.location.href = `/connection/${connection.id}`;
+    window.location.href = `/connections/${connection.id}`;
   };
 
   // Get recent emojis for a connection
@@ -121,10 +121,7 @@ export default function Connections() {
   // Create connection mutation
   const { mutate: createConnection, isPending } = useMutation({
     mutationFn: async (data: any) => {
-      return await apiRequest('/api/connections', {
-        method: 'POST',
-        body: JSON.stringify(data),
-      });
+      return await apiRequest('POST', '/api/connections', data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/connections'] });
