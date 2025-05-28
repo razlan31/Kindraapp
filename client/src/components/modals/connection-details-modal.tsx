@@ -7,6 +7,8 @@ import { Separator } from '@/components/ui/separator';
 import { Calendar, Heart, MessageCircle, Sparkles, Edit, Trash2, Activity } from 'lucide-react';
 import { format } from 'date-fns';
 import { useQuery } from '@tanstack/react-query';
+import { ConnectionDetailedModal } from './connection-detailed-modal';
+import { ConnectionTimelineModal } from './connection-timeline-modal';
 import type { Connection, Moment } from '@shared/schema';
 
 interface ConnectionDetailsModalProps {
@@ -16,6 +18,9 @@ interface ConnectionDetailsModalProps {
 }
 
 export function ConnectionDetailsModal({ isOpen, onClose, connection }: ConnectionDetailsModalProps) {
+  const [showDetailedModal, setShowDetailedModal] = useState(false);
+  const [showTimelineModal, setShowTimelineModal] = useState(false);
+
   if (!connection) return null;
 
   // Fetch moments for this connection
@@ -197,8 +202,8 @@ export function ConnectionDetailsModal({ isOpen, onClose, connection }: Connecti
                 size="sm" 
                 className="flex-1"
                 onClick={() => {
-                  // TODO: Open detailed modal with full history
-                  alert('Detailed Modal - Coming soon!');
+                  onClose();
+                  setShowDetailedModal(true);
                 }}
               >
                 <Calendar className="h-4 w-4 mr-2" />
@@ -209,8 +214,8 @@ export function ConnectionDetailsModal({ isOpen, onClose, connection }: Connecti
                 size="sm" 
                 className="flex-1"
                 onClick={() => {
-                  // TODO: Open timeline view
-                  alert('Timeline View - Coming soon!');
+                  onClose();
+                  setShowTimelineModal(true);
                 }}
               >
                 <Heart className="h-4 w-4 mr-2" />
@@ -220,6 +225,19 @@ export function ConnectionDetailsModal({ isOpen, onClose, connection }: Connecti
           </div>
         </div>
       </DialogContent>
+      
+      {/* Additional Modals */}
+      <ConnectionDetailedModal
+        isOpen={showDetailedModal}
+        onClose={() => setShowDetailedModal(false)}
+        connection={connection}
+      />
+      
+      <ConnectionTimelineModal
+        isOpen={showTimelineModal}
+        onClose={() => setShowTimelineModal(false)}
+        connection={connection}
+      />
     </Dialog>
   );
 }
