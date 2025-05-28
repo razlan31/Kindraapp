@@ -260,7 +260,7 @@ export default function ConnectionDetail() {
   }
   
   return (
-    <div className="min-h-screen pb-16">
+    <div className="min-h-screen pb-24">
       <div className="max-w-md mx-auto">
         {/* Header */}
         <div className="bg-white dark:bg-neutral-900 border-b px-4 py-3 flex items-center gap-2">
@@ -415,7 +415,7 @@ export default function ConnectionDetail() {
         </div>
         
         {/* Timeline Section */}
-        <div className="mt-4 px-4">
+        <div className="mt-4 px-4 pb-8 mb-20">
           <div className="bg-white dark:bg-neutral-900 rounded-lg border">
             <div className="p-4 border-b">
               <h3 className="font-semibold text-lg">Timeline</h3>
