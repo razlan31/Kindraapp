@@ -6,6 +6,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CalendarIcon, Plus, ChevronDown } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
@@ -34,9 +36,12 @@ const planSchema = z.object({
   title: z.string().min(1, "Title is required"),
   description: z.string().optional(),
   scheduledDate: z.date(),
+  scheduledTime: z.string().optional(),
   connectionId: z.number(),
   notes: z.string().optional(),
-  isCompleted: z.boolean().optional()
+  isCompleted: z.boolean().optional(),
+  hasReminder: z.boolean().optional(),
+  reminderMinutes: z.number().optional()
 });
 
 type PlanFormData = z.infer<typeof planSchema>;
@@ -52,9 +57,12 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
     title: "",
     description: "",
     scheduledDate: selectedDate || new Date(),
+    scheduledTime: "",
     connectionId: localSelectedConnection?.id || selectedConnection?.id,
     notes: "",
-    isCompleted: false
+    isCompleted: false,
+    hasReminder: false,
+    reminderMinutes: 15
   });
 
   // Milestone state
@@ -92,9 +100,12 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
         title: editingMoment.title || "",
         description: editingMoment.content || "",
         scheduledDate: editingMoment.createdAt ? new Date(editingMoment.createdAt) : new Date(),
+        scheduledTime: "", // Will extract from date if stored
         connectionId: editingMoment.connectionId,
         notes: editingMoment.content || "",
-        isCompleted: false // Plans stored as moments don't have completion status
+        isCompleted: false, // Plans stored as moments don't have completion status
+        hasReminder: false,
+        reminderMinutes: 15
       });
       
       // Set the connection for the picker
@@ -365,7 +376,55 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
             </Popover>
           </div>
 
+          {/* Time */}
+          <div className="space-y-2">
+            <Label htmlFor="scheduledTime">Time (optional)</Label>
+            <Input
+              id="scheduledTime"
+              type="time"
+              value={formData.scheduledTime || ""}
+              onChange={(e) => setFormData(prev => ({ ...prev, scheduledTime: e.target.value }))}
+              className="w-full"
+            />
+          </div>
 
+          {/* Reminder Settings */}
+          <div className="space-y-3">
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="hasReminder"
+                checked={formData.hasReminder || false}
+                onCheckedChange={(checked) => setFormData(prev => ({ ...prev, hasReminder: checked as boolean }))}
+              />
+              <Label htmlFor="hasReminder" className="text-sm font-medium">
+                Set reminder
+              </Label>
+            </div>
+            
+            {formData.hasReminder && (
+              <div className="ml-6 space-y-2">
+                <Label htmlFor="reminderMinutes" className="text-sm text-muted-foreground">
+                  Remind me before:
+                </Label>
+                <Select
+                  value={formData.reminderMinutes?.toString() || "15"}
+                  onValueChange={(value) => setFormData(prev => ({ ...prev, reminderMinutes: parseInt(value) }))}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="5">5 minutes</SelectItem>
+                    <SelectItem value="15">15 minutes</SelectItem>
+                    <SelectItem value="30">30 minutes</SelectItem>
+                    <SelectItem value="60">1 hour</SelectItem>
+                    <SelectItem value="120">2 hours</SelectItem>
+                    <SelectItem value="1440">1 day</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+          </div>
 
           {/* Description */}
           <div className="space-y-2">
