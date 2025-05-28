@@ -34,7 +34,7 @@ export default function Activities() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedConnection, setSelectedConnection] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState<'moments' | 'conflicts' | 'intimacy' | 'plans' | 'timeline'>('moments');
-  const [timelineFilter, setTimelineFilter] = useState<'all' | 'moments' | 'conflicts' | 'intimacy'>('all');
+  const [timelineFilter, setTimelineFilter] = useState<'all' | 'moments' | 'conflicts' | 'intimacy' | 'plans'>('all');
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [viewMode, setViewMode] = useState<'activity' | 'people'>('activity');
 
@@ -247,6 +247,9 @@ export default function Activities() {
       } else if (timelineFilter === 'intimacy') {
         // Show intimacy entries
         matchesTab = moment.isIntimate === true || tags.includes('Intimacy') || moment.emoji === '💕';
+      } else if (timelineFilter === 'plans') {
+        // Show plan entries
+        matchesTab = tags.includes('Plan');
       }
     } else if (activeTab === 'moments') {
       // Show regular moments (positive, negative, neutral) - exclude conflicts, intimacy, and plans
@@ -521,6 +524,12 @@ export default function Activities() {
                     className="py-2 px-3"
                   >
                     Intimacy
+                  </DropdownMenuItem>
+                  <DropdownMenuItem 
+                    onClick={() => setTimelineFilter('plans')}
+                    className="py-2 px-3"
+                  >
+                    Plans
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
