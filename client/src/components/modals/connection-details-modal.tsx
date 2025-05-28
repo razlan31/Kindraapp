@@ -163,15 +163,60 @@ export function ConnectionDetailsModal({ isOpen, onClose, connection }: Connecti
           )}
 
           {/* Action Buttons */}
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm" className="flex-1">
-              <Edit className="h-4 w-4 mr-2" />
-              Edit
-            </Button>
-            <Button variant="outline" size="sm" className="flex-1">
-              <Heart className="h-4 w-4 mr-2" />
-              View All
-            </Button>
+          <div className="space-y-2">
+            <div className="flex gap-2">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="flex-1"
+                onClick={() => {
+                  // Navigate to connection detail page
+                  window.location.href = `/connections/${connection.id}`;
+                }}
+              >
+                <Edit className="h-4 w-4 mr-2" />
+                Full Profile
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="flex-1"
+                onClick={() => {
+                  // Navigate to activities page with this connection selected
+                  localStorage.setItem('navigation-connection-id', connection.id.toString());
+                  window.location.href = '/activities';
+                }}
+              >
+                <Activity className="h-4 w-4 mr-2" />
+                Activities
+              </Button>
+            </div>
+            <div className="flex gap-2">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="flex-1"
+                onClick={() => {
+                  // TODO: Open detailed modal with full history
+                  alert('Detailed Modal - Coming soon!');
+                }}
+              >
+                <Calendar className="h-4 w-4 mr-2" />
+                Detailed View
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="flex-1"
+                onClick={() => {
+                  // TODO: Open timeline view
+                  alert('Timeline View - Coming soon!');
+                }}
+              >
+                <Heart className="h-4 w-4 mr-2" />
+                Timeline
+              </Button>
+            </div>
           </div>
         </div>
       </DialogContent>
