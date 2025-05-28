@@ -373,7 +373,11 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
       {/* Edit Modal */}
       <EditConnectionModal
         isOpen={showEditModal}
-        onClose={() => setShowEditModal(false)}
+        onClose={() => {
+          setShowEditModal(false);
+          // Refresh connection data after edit
+          queryClient.invalidateQueries({ queryKey: ['/api/connections'] });
+        }}
         connection={connection}
       />
     </Dialog>
