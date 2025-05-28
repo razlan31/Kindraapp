@@ -346,41 +346,41 @@ export default function Calendar() {
             </div>
             {!isLegendCollapsed && (
               <>
-                <div className="grid grid-cols-3 gap-2 text-xs">
+                <div className="grid grid-cols-3 grid-rows-3 gap-2 text-xs" style={{ gridAutoFlow: 'column' }}>
                   <div className="flex items-center gap-2">
                     <div className="w-3 h-3 rounded-full bg-green-500"></div>
                     <span>Positive Moments</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm">⚡</span>
-                    <span>Conflicts</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm">🏆</span>
-                    <span>Milestones</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="w-3 h-3 rounded-full bg-blue-500"></div>
                     <span>Neutral Moments</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm">💕</span>
-                    <span>Intimacy</span>
-                  </div>
-                  <div className="flex items-center gap-2">
                     <div className="w-3 h-3 rounded-full bg-orange-500"></div>
                     <span>Negative Moments</span>
                   </div>
                   <div className="flex items-center gap-2">
+                    <span className="text-sm">⚡</span>
+                    <span>Conflicts</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm">💕</span>
+                    <span>Intimacy</span>
+                  </div>
+                  <div className="flex items-center gap-2">
                     <span className="text-sm text-purple-500">📅</span>
                     <span>Plans</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm">🏆</span>
+                    <span>Milestones</span>
                   </div>
                 </div>
                 
                 {/* Filter Checkboxes */}
                 <div className="mt-4 pt-3 border-t border-border/20">
                   <h4 className="text-xs font-medium mb-2 text-muted-foreground">Show on Calendar</h4>
-                  <div className="grid grid-cols-3 gap-2 text-xs">
+                  <div className="grid grid-cols-3 grid-rows-3 gap-2 text-xs" style={{ gridAutoFlow: 'column' }}>
                     <div className="flex items-center space-x-2">
                       <Checkbox
                         id="positive"
@@ -390,26 +390,6 @@ export default function Calendar() {
                         }
                       />
                       <label htmlFor="positive" className="text-xs cursor-pointer">Positive</label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="conflict"
-                        checked={filters.conflict}
-                        onCheckedChange={(checked) => 
-                          setFilters(prev => ({ ...prev, conflict: !!checked }))
-                        }
-                      />
-                      <label htmlFor="conflict" className="text-xs cursor-pointer">Conflicts</label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="milestone"
-                        checked={filters.milestone}
-                        onCheckedChange={(checked) => 
-                          setFilters(prev => ({ ...prev, milestone: !!checked }))
-                        }
-                      />
-                      <label htmlFor="milestone" className="text-xs cursor-pointer">Milestones</label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <Checkbox
@@ -423,16 +403,6 @@ export default function Calendar() {
                     </div>
                     <div className="flex items-center space-x-2">
                       <Checkbox
-                        id="intimacy"
-                        checked={filters.intimacy}
-                        onCheckedChange={(checked) => 
-                          setFilters(prev => ({ ...prev, intimacy: !!checked }))
-                        }
-                      />
-                      <label htmlFor="intimacy" className="text-xs cursor-pointer">Intimacy</label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
                         id="negative"
                         checked={filters.negative}
                         onCheckedChange={(checked) => 
@@ -443,6 +413,26 @@ export default function Calendar() {
                     </div>
                     <div className="flex items-center space-x-2">
                       <Checkbox
+                        id="conflict"
+                        checked={filters.conflict}
+                        onCheckedChange={(checked) => 
+                          setFilters(prev => ({ ...prev, conflict: !!checked }))
+                        }
+                      />
+                      <label htmlFor="conflict" className="text-xs cursor-pointer">Conflicts</label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="intimacy"
+                        checked={filters.intimacy}
+                        onCheckedChange={(checked) => 
+                          setFilters(prev => ({ ...prev, intimacy: !!checked }))
+                        }
+                      />
+                      <label htmlFor="intimacy" className="text-xs cursor-pointer">Intimacy</label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
                         id="plan"
                         checked={filters.plan}
                         onCheckedChange={(checked) => 
@@ -450,6 +440,16 @@ export default function Calendar() {
                         }
                       />
                       <label htmlFor="plan" className="text-xs cursor-pointer">Plans</label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="milestone"
+                        checked={filters.milestone}
+                        onCheckedChange={(checked) => 
+                          setFilters(prev => ({ ...prev, milestone: !!checked }))
+                        }
+                      />
+                      <label htmlFor="milestone" className="text-xs cursor-pointer">Milestones</label>
                     </div>
                   </div>
                 </div>
