@@ -39,6 +39,8 @@ export default function Activities() {
   const [viewMode, setViewMode] = useState<'activity' | 'people'>('activity');
 
   // Handle navigation connection filtering and focus connection
+  const [hasUserSelectedConnection, setHasUserSelectedConnection] = useState(false);
+  
   useEffect(() => {
     // First check for navigation connection (highest priority)
     const navigationConnectionId = localStorage.getItem('navigationConnectionId');
@@ -47,17 +49,18 @@ export default function Activities() {
       const connectionId = parseInt(navigationConnectionId);
       console.log("Setting activities connection from navigation:", connectionId);
       setSelectedConnection(connectionId);
+      setHasUserSelectedConnection(true);
       // Clear the navigation state after using it
       localStorage.removeItem('navigationConnectionId');
       return;
     }
 
-    // If no navigation connection but main focus is set, use that
-    if (!focusLoading && mainFocusConnection && !selectedConnection) {
+    // Only use focus connection if user hasn't explicitly selected a connection
+    if (!focusLoading && mainFocusConnection && !hasUserSelectedConnection) {
       console.log("Setting activities connection from main focus:", mainFocusConnection.id);
       setSelectedConnection(mainFocusConnection.id);
     }
-  }, [mainFocusConnection, focusLoading, selectedConnection]);
+  }, [mainFocusConnection, focusLoading, hasUserSelectedConnection]);
 
   // Fetch moments - use simple approach like Dashboard
   const { data: moments = [], isLoading, refetch: refetchMoments } = useQuery<Moment[]>({
@@ -342,7 +345,10 @@ export default function Activities() {
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-[var(--radix-dropdown-menu-trigger-width)]" sideOffset={4}>
                 <DropdownMenuItem 
-                  onClick={() => setSelectedConnection(null)}
+                  onClick={() => {
+                    setSelectedConnection(null);
+                    setHasUserSelectedConnection(true);
+                  }}
                   className="py-3 px-4 text-base"
                 >
                   <div className="flex items-center gap-3">
@@ -355,7 +361,10 @@ export default function Activities() {
                 {connections.map((connection) => (
                   <DropdownMenuItem 
                     key={connection.id}
-                    onClick={() => setSelectedConnection(connection.id)}
+                    onClick={() => {
+                      setSelectedConnection(connection.id);
+                      setHasUserSelectedConnection(true);
+                    }}
                     className="py-3 px-4 text-base"
                   >
                     <div className="flex items-center gap-3">
