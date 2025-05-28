@@ -22,10 +22,25 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
   const [showEditModal, setShowEditModal] = useState(false);
   const { toast } = useToast();
 
+  // Fetch fresh connection data
+  const { data: freshConnection } = useQuery<Connection>({
+    queryKey: ["/api/connections", connection?.id],
+    queryFn: async () => {
+      if (!connection?.id) throw new Error('No connection ID');
+      const response = await fetch(`/api/connections/${connection.id}`);
+      if (!response.ok) throw new Error('Failed to fetch connection');
+      return response.json();
+    },
+    enabled: isOpen && !!connection?.id,
+  });
+
+  // Use fresh connection data if available, fallback to prop
+  const currentConnection = freshConnection || connection;
+
   // Fetch moments for this connection (must be before early return)
   const { data: moments = [] } = useQuery<Moment[]>({
     queryKey: ["/api/moments"],
-    enabled: isOpen && !!connection,
+    enabled: isOpen && !!currentConnection,
   });
 
   // Update connection mutation (must be before early return)
@@ -58,10 +73,10 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
     }
   });
 
-  if (!connection) return null;
+  if (!currentConnection) return null;
 
   const connectionMoments = moments
-    .filter(m => m.connectionId === connection.id)
+    .filter(m => m.connectionId === currentConnection.id)
     .sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime());
 
   // Calculate relationship duration
@@ -377,8 +392,9 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
           setShowEditModal(false);
           // Refresh connection data after edit
           queryClient.invalidateQueries({ queryKey: ['/api/connections'] });
+          queryClient.invalidateQueries({ queryKey: ['/api/connections', currentConnection.id] });
         }}
-        connection={connection}
+        connection={currentConnection}
       />
     </Dialog>
   );
