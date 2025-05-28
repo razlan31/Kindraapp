@@ -261,6 +261,7 @@ export default function Connections() {
                   onImageClick={(imageUrl, name) => {
                     setImagePreview({ isOpen: true, imageUrl, name });
                   }}
+                  isLoading={loadingConnectionId === connection.id}
                 />
               );
             })}
