@@ -45,10 +45,13 @@ export default function Connections() {
 
   // Simple connection filtering and processing
   const displayConnections = connections
-    .filter(connection => 
-      connection.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (selectedStage === "all" || connection.relationshipStage === selectedStage)
-    )
+    .filter(connection => {
+      const matchesSearch = connection.name.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesStage = selectedStage === "all" || 
+                          (selectedStage === "main-focus" ? mainFocusConnection?.id === connection.id :
+                          connection.relationshipStage === selectedStage);
+      return matchesSearch && matchesStage;
+    })
     .map(connection => {
       const connectionMoments = moments.filter((m: any) => m.connectionId === connection.id);
       const lastActivity = connectionMoments.length > 0 
@@ -175,6 +178,16 @@ export default function Connections() {
                 }`}
               >
                 All ({connections.length})
+              </button>
+              <button
+                onClick={() => setSelectedStage("main-focus")}
+                className={`shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                  selectedStage === "main-focus"
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                }`}
+              >
+                Main Focus ({mainFocusConnection ? 1 : 0})
               </button>
               {availableStages.map(stage => {
                 const count = connections.filter(c => c.relationshipStage === stage).length;
