@@ -397,8 +397,9 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
       {/* Edit Modal */}
       <EditConnectionModal
         isOpen={showEditModal}
-        onClose={handleEditSuccess}
+        onClose={() => setShowEditModal(false)}
         connection={currentConnection}
+        onEditSuccess={handleEditSuccess}
       />
     </Dialog>
   );

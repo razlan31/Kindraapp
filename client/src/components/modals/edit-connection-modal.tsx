@@ -17,9 +17,10 @@ interface EditConnectionModalProps {
   isOpen: boolean;
   onClose: () => void;
   connection: Connection | null;
+  onEditSuccess?: () => void;
 }
 
-export function EditConnectionModal({ isOpen, onClose, connection }: EditConnectionModalProps) {
+export function EditConnectionModal({ isOpen, onClose, connection, onEditSuccess }: EditConnectionModalProps) {
   const [editData, setEditData] = useState<Partial<Connection>>({});
   const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
@@ -63,6 +64,7 @@ export function EditConnectionModal({ isOpen, onClose, connection }: EditConnect
       queryClient.invalidateQueries({ queryKey: ['/api/connections'] });
       
       toast({ title: 'Connection updated successfully!' });
+      onEditSuccess?.();
       onClose();
     },
     onError: (error: any) => {
