@@ -29,6 +29,22 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
     enabled: isOpen,
   });
 
+  // Listen for connection update events
+  useEffect(() => {
+    const handleConnectionUpdated = () => {
+      console.log("Connection updated event received, forcing refresh...");
+      setRenderKey(prev => prev + 1);
+      refetchConnections();
+      queryClient.invalidateQueries({ queryKey: ['/api/connections'] });
+    };
+
+    window.addEventListener('connectionUpdated', handleConnectionUpdated);
+    
+    return () => {
+      window.removeEventListener('connectionUpdated', handleConnectionUpdated);
+    };
+  }, [refetchConnections, queryClient]);
+
   // Always use the most up-to-date connection data
   const currentConnection = connection?.id 
     ? (allConnections as Connection[]).find(c => c.id === connection.id) || connection

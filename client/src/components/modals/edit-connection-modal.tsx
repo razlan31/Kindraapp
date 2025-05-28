@@ -64,6 +64,12 @@ export function EditConnectionModal({ isOpen, onClose, connection, onEditSuccess
       queryClient.invalidateQueries({ queryKey: ['/api/connections'] });
       
       toast({ title: 'Connection updated successfully!' });
+      
+      // Dispatch custom event to notify other components
+      window.dispatchEvent(new CustomEvent('connectionUpdated', { 
+        detail: { connectionId: updatedConnection.id, updatedConnection }
+      }));
+      
       onEditSuccess?.();
       onClose();
     },
