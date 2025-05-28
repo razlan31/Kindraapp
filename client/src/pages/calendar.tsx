@@ -12,7 +12,7 @@ import { ChevronLeft, ChevronRight, Heart, Calendar as CalendarIcon, Plus, Eye, 
 import { useAuth } from "@/contexts/auth-context";
 import { useModal } from "@/contexts/modal-context";
 import { useRelationshipFocus } from "@/contexts/relationship-focus-context";
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, getDay } from "date-fns";
+import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, getDay, startOfWeek, endOfWeek, addDays, startOfDay, endOfDay } from "date-fns";
 import type { Moment, Connection } from "@shared/schema";
 import { EntryDetailModal } from "@/components/modals/entry-detail-modal";
 import { PlanModal } from "@/components/modals/plan-modal";
@@ -27,6 +27,7 @@ export default function Calendar() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
   const [dayDetailOpen, setDayDetailOpen] = useState(false);
+  const [viewMode, setViewMode] = useState<'daily' | 'weekly' | 'monthly'>('monthly');
   
   // Entry detail modal state
   const [selectedEntry, setSelectedEntry] = useState<Moment | null>(null);
@@ -205,13 +206,81 @@ export default function Calendar() {
     }
   };
 
-  // Navigate months
-  const previousMonth = () => {
-    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1));
+  // Get date range based on view mode
+  const getDateRange = () => {
+    switch (viewMode) {
+      case 'daily':
+        return {
+          start: startOfDay(currentDate),
+          end: endOfDay(currentDate),
+          days: [currentDate]
+        };
+      case 'weekly':
+        const weekStart = startOfWeek(currentDate);
+        const weekEnd = endOfWeek(currentDate);
+        return {
+          start: weekStart,
+          end: weekEnd,
+          days: eachDayOfInterval({ start: weekStart, end: weekEnd })
+        };
+      case 'monthly':
+      default:
+        const monthStart = startOfMonth(currentDate);
+        const monthEnd = endOfMonth(currentDate);
+        const firstDayOfWeek = startOfWeek(monthStart);
+        const lastDayOfWeek = endOfWeek(monthEnd);
+        return {
+          start: monthStart,
+          end: monthEnd,
+          days: eachDayOfInterval({ start: firstDayOfWeek, end: lastDayOfWeek })
+        };
+    }
   };
 
-  const nextMonth = () => {
-    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1));
+  // Navigate based on view mode
+  const navigatePrevious = () => {
+    switch (viewMode) {
+      case 'daily':
+        setCurrentDate(addDays(currentDate, -1));
+        break;
+      case 'weekly':
+        setCurrentDate(addDays(currentDate, -7));
+        break;
+      case 'monthly':
+      default:
+        setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1));
+        break;
+    }
+  };
+
+  const navigateNext = () => {
+    switch (viewMode) {
+      case 'daily':
+        setCurrentDate(addDays(currentDate, 1));
+        break;
+      case 'weekly':
+        setCurrentDate(addDays(currentDate, 7));
+        break;
+      case 'monthly':
+      default:
+        setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1));
+        break;
+    }
+  };
+
+  // Get title based on view mode
+  const getViewTitle = () => {
+    switch (viewMode) {
+      case 'daily':
+        return format(currentDate, 'EEEE, MMMM d, yyyy');
+      case 'weekly':
+        const weekStart = startOfWeek(currentDate);
+        const weekEnd = endOfWeek(currentDate);
+        return `${format(weekStart, 'MMM d')} - ${format(weekEnd, 'MMM d, yyyy')}`;
+      case 'monthly':
+      default:
+        return format(currentDate, 'MMMM yyyy');
+    }
   };
 
   // Handle day click
@@ -259,17 +328,47 @@ export default function Calendar() {
             <CalendarIcon className="h-8 w-8 text-primary" />
           </div>
 
-          {/* Month Navigation */}
-          <div className="flex items-center justify-between">
-            <Button variant="outline" size="icon" onClick={previousMonth}>
+          {/* Navigation */}
+          <div className="flex items-center justify-between mb-4">
+            <Button variant="outline" size="icon" onClick={navigatePrevious}>
               <ChevronLeft className="h-4 w-4" />
             </Button>
             <h2 className="text-xl font-semibold">
-              {format(currentDate, 'MMMM yyyy')}
+              {getViewTitle()}
             </h2>
-            <Button variant="outline" size="icon" onClick={nextMonth}>
+            <Button variant="outline" size="icon" onClick={navigateNext}>
               <ChevronRight className="h-4 w-4" />
             </Button>
+          </div>
+
+          {/* View Mode Selector */}
+          <div className="flex items-center justify-center">
+            <div className="flex bg-muted/50 rounded-lg p-1">
+              <Button
+                variant={viewMode === 'daily' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => setViewMode('daily')}
+                className="text-xs px-3"
+              >
+                Daily
+              </Button>
+              <Button
+                variant={viewMode === 'weekly' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => setViewMode('weekly')}
+                className="text-xs px-3"
+              >
+                Weekly
+              </Button>
+              <Button
+                variant={viewMode === 'monthly' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => setViewMode('monthly')}
+                className="text-xs px-3"
+              >
+                Monthly
+              </Button>
+            </div>
           </div>
         </section>
 
