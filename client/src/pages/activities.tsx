@@ -405,9 +405,10 @@ export default function Activities() {
               Plans
             </button>
           </div>
+          )}
 
           {/* Add Button for Active Tab - Hide for Timeline */}
-          {activeTab !== 'timeline' && (
+          {viewMode === 'activity' && activeTab !== 'timeline' && (
             <div className="mb-4">
               <Button onClick={() => {
                 console.log("Add button clicked:", { activeTab, selectedConnection, connectionsLength: connections.length });

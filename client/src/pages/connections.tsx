@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useModal } from "@/contexts/modal-context";
 import { useRelationshipFocus } from "@/contexts/relationship-focus-context";
 import { Input } from "@/components/ui/input";
-import { Search, Plus, X, Camera, Heart, Users, Activity, BarChart3, Clock } from "lucide-react";
+import { Search, Plus, X, Camera, Heart, Users, Activity, BarChart3, Clock, Calendar } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -18,6 +18,7 @@ export default function Connections() {
   const [filterStage, setFilterStage] = useState<string | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [viewMode, setViewMode] = useState<'connections' | 'activity' | 'stages' | 'timeline'>('connections');
+  const [perspectiveMode, setPerspectiveMode] = useState<'people' | 'activities'>('people');
   const { openMomentModal, openConnectionModal } = useModal();
   const { mainFocusConnection, setMainFocusConnection } = useRelationshipFocus();
   const { toast } = useToast();
@@ -168,10 +169,36 @@ export default function Connections() {
                 Manage and explore your relationships
               </p>
             </div>
-            <Users className="h-8 w-8 text-primary" />
+            
+            {/* Perspective Mode Toggle */}
+            <div className="bg-muted rounded-lg p-1 flex">
+              <button
+                onClick={() => setPerspectiveMode('people')}
+                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors flex items-center gap-1.5 ${
+                  perspectiveMode === 'people'
+                    ? 'bg-background text-foreground shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                <Users className="h-4 w-4" />
+                People
+              </button>
+              <button
+                onClick={() => setPerspectiveMode('activities')}
+                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors flex items-center gap-1.5 ${
+                  perspectiveMode === 'activities'
+                    ? 'bg-background text-foreground shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                <Calendar className="h-4 w-4" />
+                Activities
+              </button>
+            </div>
           </div>
 
-          {/* View Mode Switcher */}
+          {/* View Mode Switcher - Only show in People perspective */}
+          {perspectiveMode === 'people' && (
           <div className="flex gap-1 mb-4 p-1 bg-muted rounded-lg">
             <Button
               variant={viewMode === 'connections' ? 'default' : 'ghost'}
@@ -210,6 +237,7 @@ export default function Connections() {
               Timeline
             </Button>
           </div>
+          )}
         </section>
 
         {/* Search and Filter Section */}
