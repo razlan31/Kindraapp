@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { useModal } from "@/contexts/modal-context";
 import { useRelationshipFocus } from "@/contexts/relationship-focus-context";
 import { Input } from "@/components/ui/input";
-import { Search, Plus, X, Camera, Heart } from "lucide-react";
+import { Search, Plus, X, Camera, Heart, Users, Activity, BarChart3, Clock } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { relationshipStages } from "@shared/schema";
 import { useToast } from "@/hooks/use-toast";
@@ -28,6 +28,7 @@ export default function Connections() {
   const [filterStage, setFilterStage] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [showQuickAdd, setShowQuickAdd] = useState(false);
+  const [viewMode, setViewMode] = useState<'connections' | 'activity' | 'stages' | 'timeline'>('connections');
   const [quickName, setQuickName] = useState("");
   const [quickStage, setQuickStage] = useState("Talking Stage");
   const [isCreating, setIsCreating] = useState(false);
@@ -128,6 +129,59 @@ export default function Connections() {
     };
   };
 
+  // Get connection activity data
+  const getConnectionActivity = (connectionId: number) => {
+    const connectionMoments = moments.filter(m => m.connectionId === connectionId);
+    const now = new Date();
+    const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+    
+    const recentMoments = connectionMoments.filter(m => new Date(m.createdAt) > weekAgo);
+    const monthlyMoments = connectionMoments.filter(m => new Date(m.createdAt) > monthAgo);
+    
+    return {
+      total: connectionMoments.length,
+      thisWeek: recentMoments.length,
+      thisMonth: monthlyMoments.length,
+      lastActivity: connectionMoments.length > 0 ? 
+        Math.max(...connectionMoments.map(m => new Date(m.createdAt).getTime())) : 
+        0
+    };
+  };
+
+  // Organize connections by different perspectives
+  const getConnectionsByPerspective = () => {
+    const baseConnections = filteredConnections;
+    
+    switch (viewMode) {
+      case 'activity':
+        return baseConnections.sort((a, b) => {
+          const aActivity = getConnectionActivity(a.id);
+          const bActivity = getConnectionActivity(b.id);
+          return bActivity.thisWeek - aActivity.thisWeek || bActivity.total - aActivity.total;
+        });
+      
+      case 'stages':
+        return relationshipStages.reduce((acc, stage) => {
+          const stageConnections = baseConnections.filter(c => c.relationshipStage === stage);
+          if (stageConnections.length > 0) {
+            acc[stage] = stageConnections;
+          }
+          return acc;
+        }, {} as Record<string, typeof baseConnections>);
+      
+      case 'timeline':
+        return baseConnections.sort((a, b) => {
+          const aActivity = getConnectionActivity(a.id);
+          const bActivity = getConnectionActivity(b.id);
+          return bActivity.lastActivity - aActivity.lastActivity;
+        });
+      
+      default:
+        return baseConnections;
+    }
+  };
+
   // Create connection mutation
   const { mutate: createConnection, isPending } = useMutation({
     mutationFn: async (data: any) => {
@@ -213,8 +267,61 @@ export default function Connections() {
       <Header />
 
       <main className="flex-1 overflow-y-auto pb-20">
+        {/* Header with View Switcher */}
+        <section className="px-4 pt-4 pb-2 border-b border-border/40 bg-card/30 backdrop-blur-sm">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h1 className="text-2xl font-bold text-foreground">Connections</h1>
+              <p className="text-sm text-muted-foreground">
+                Manage and explore your relationships
+              </p>
+            </div>
+            <Users className="h-8 w-8 text-primary" />
+          </div>
+
+          {/* View Mode Switcher */}
+          <div className="flex gap-1 mb-4 p-1 bg-muted rounded-lg">
+            <Button
+              variant={viewMode === 'connections' ? 'default' : 'ghost'}
+              size="sm"
+              className="flex-1 text-xs"
+              onClick={() => setViewMode('connections')}
+            >
+              <Users className="h-3 w-3 mr-1" />
+              All
+            </Button>
+            <Button
+              variant={viewMode === 'activity' ? 'default' : 'ghost'}
+              size="sm"
+              className="flex-1 text-xs"
+              onClick={() => setViewMode('activity')}
+            >
+              <Activity className="h-3 w-3 mr-1" />
+              Activity
+            </Button>
+            <Button
+              variant={viewMode === 'stages' ? 'default' : 'ghost'}
+              size="sm"
+              className="flex-1 text-xs"
+              onClick={() => setViewMode('stages')}
+            >
+              <BarChart3 className="h-3 w-3 mr-1" />
+              Stages
+            </Button>
+            <Button
+              variant={viewMode === 'timeline' ? 'default' : 'ghost'}
+              size="sm"
+              className="flex-1 text-xs"
+              onClick={() => setViewMode('timeline')}
+            >
+              <Clock className="h-3 w-3 mr-1" />
+              Timeline
+            </Button>
+          </div>
+        </section>
+
         {/* Search and Filter Section */}
-        <section className="px-4 pt-4 pb-2 sticky top-0 bg-white dark:bg-neutral-900 z-10">
+        <section className="px-4 pt-2 pb-2 sticky top-0 bg-white dark:bg-neutral-900 z-10">
           <div className="flex items-center gap-2 mb-3">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-neutral-500" />
@@ -332,7 +439,6 @@ export default function Connections() {
                 <div key={connection.id} className="relative">
                   <ConnectionCard 
                     connection={connection} 
-                    onSelect={handleSelectConnection}
                     recentEmojis={getConnectionEmojis(connection.id)}
                     flagCount={getConnectionFlagCounts(connection.id)}
                   />
@@ -341,7 +447,6 @@ export default function Connections() {
                       <Heart className="h-4 w-4 text-white fill-white" />
                     </div>
                   )}
-
                 </div>
               ))}
             </div>
@@ -380,5 +485,4 @@ export default function Connections() {
   );
 }
 
-// Import at the top of the file
-import { Users } from "lucide-react";
+
