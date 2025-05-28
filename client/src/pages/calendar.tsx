@@ -690,7 +690,7 @@ export default function Calendar() {
                         return (
                           <span
                             key={`milestone-${milestone.id}`}
-                            className={`${viewMode === 'daily' ? 'text-2xl' : viewMode === 'weekly' ? 'text-lg' : 'text-[10px]'} cursor-pointer hover:scale-110 transition-transform`}
+                            className={`${viewMode === 'daily' ? 'text-4xl' : viewMode === 'weekly' ? 'text-lg' : 'text-[10px]'} cursor-pointer hover:scale-110 transition-transform`}
                             title={`${milestone.title}: ${milestone.description || ''}`}
                             style={{ color: milestone.color }}
                           >
@@ -705,7 +705,7 @@ export default function Calendar() {
                         return displayInfo.type === 'emoji' ? (
                           <span
                             key={moment.id}
-                            className={`${viewMode === 'daily' ? 'text-xl' : viewMode === 'weekly' ? 'text-sm' : 'text-[8px]'} ${displayInfo.color} cursor-pointer hover:scale-110 transition-transform`}
+                            className={`${viewMode === 'daily' ? 'text-3xl' : viewMode === 'weekly' ? 'text-sm' : 'text-[8px]'} ${displayInfo.color} cursor-pointer hover:scale-110 transition-transform`}
                             title={moment.content || moment.emoji}
                             onClick={(e) => handleEntryClick(moment, e)}
                           >
@@ -714,7 +714,7 @@ export default function Calendar() {
                         ) : (
                           <div
                             key={moment.id}
-                            className={`${viewMode === 'daily' ? 'w-6 h-6' : viewMode === 'weekly' ? 'w-4 h-4' : 'w-2 h-2'} rounded-full ${displayInfo.color} cursor-pointer hover:scale-110 transition-transform`}
+                            className={`${viewMode === 'daily' ? 'w-8 h-8' : viewMode === 'weekly' ? 'w-4 h-4' : 'w-2 h-2'} rounded-full ${displayInfo.color} cursor-pointer hover:scale-110 transition-transform`}
                             title={moment.content || moment.emoji}
                             onClick={(e) => handleEntryClick(moment, e)}
                           />
