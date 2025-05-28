@@ -30,6 +30,37 @@ export function ConnectionDetailsModal({ isOpen, onClose, connection }: Connecti
 
   const connectionMoments = moments.filter(m => m.connectionId === connection.id);
 
+  // Calculate relationship duration
+  const calculateDuration = (startDate: Date | null) => {
+    if (!startDate) return null;
+    
+    const start = new Date(startDate);
+    const now = new Date();
+    const diffTime = Math.abs(now.getTime() - start.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays === 1) return "1 day";
+    if (diffDays < 30) return `${diffDays} days`;
+    
+    const diffMonths = Math.floor(diffDays / 30);
+    const remainingDays = diffDays % 30;
+    
+    if (diffMonths === 1 && remainingDays === 0) return "1 month";
+    if (diffMonths < 12) {
+      if (remainingDays === 0) return `${diffMonths} months`;
+      return `${diffMonths} month${diffMonths > 1 ? 's' : ''}, ${remainingDays} day${remainingDays > 1 ? 's' : ''}`;
+    }
+    
+    const diffYears = Math.floor(diffMonths / 12);
+    const remainingMonths = diffMonths % 12;
+    
+    if (diffYears === 1 && remainingMonths === 0) return "1 year";
+    if (remainingMonths === 0) return `${diffYears} years`;
+    return `${diffYears} year${diffYears > 1 ? 's' : ''}, ${remainingMonths} month${remainingMonths > 1 ? 's' : ''}`;
+  };
+
+  const duration = calculateDuration(connection.startDate);
+
   // Calculate stats
   const totalMoments = connectionMoments.length;
   const positiveMoments = connectionMoments.filter(m => 
@@ -77,9 +108,16 @@ export function ConnectionDetailsModal({ isOpen, onClose, connection }: Connecti
             )}
             <div>
               <h2 className="text-xl font-bold">{connection.name}</h2>
-              <Badge variant="secondary" className="text-xs">
-                {connection.relationshipStage}
-              </Badge>
+              <div className="flex items-center gap-2">
+                <Badge variant="secondary" className="text-xs">
+                  {connection.relationshipStage}
+                </Badge>
+                {duration && (
+                  <Badge variant="outline" className="text-xs text-muted-foreground">
+                    {duration}
+                  </Badge>
+                )}
+              </div>
             </div>
           </DialogTitle>
         </DialogHeader>
