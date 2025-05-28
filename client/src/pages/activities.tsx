@@ -13,7 +13,7 @@ import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
 import { useModal } from "@/contexts/modal-context";
 import { Input } from "@/components/ui/input";
-import { Search, Plus, Calendar, ChevronDown } from "lucide-react";
+import { Search, Plus, Calendar, ChevronDown, Activity, Users } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { 
   DropdownMenu, 
@@ -34,6 +34,7 @@ export default function Activities() {
   const [selectedConnection, setSelectedConnection] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState<'moments' | 'conflicts' | 'intimacy' | 'plans' | 'timeline'>('moments');
   const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const [viewMode, setViewMode] = useState<'activity' | 'people'>('activity');
 
   // Handle navigation connection filtering and focus connection
   useEffect(() => {
@@ -255,9 +256,38 @@ export default function Activities() {
       <main className="flex-1 overflow-y-auto pb-20">
         {/* Page Title and Connection Picker */}
         <div className="px-4 pt-4 pb-2">
-          <h1 className="text-2xl font-bold mb-4">Activities</h1>
+          <div className="flex items-center justify-between mb-4">
+            <h1 className="text-2xl font-bold">Activities</h1>
+            
+            {/* View Mode Toggle */}
+            <div className="bg-muted rounded-lg p-1 flex">
+              <button
+                onClick={() => setViewMode('activity')}
+                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors flex items-center gap-1.5 ${
+                  viewMode === 'activity'
+                    ? 'bg-background text-foreground shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                <Activity className="h-4 w-4" />
+                Activity
+              </button>
+              <button
+                onClick={() => setViewMode('people')}
+                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors flex items-center gap-1.5 ${
+                  viewMode === 'people'
+                    ? 'bg-background text-foreground shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                <Users className="h-4 w-4" />
+                People
+              </button>
+            </div>
+          </div>
           
-          {/* Connection Picker - Primary Selection */}
+          {/* Connection Picker - Primary Selection (Only show in Activity mode) */}
+          {viewMode === 'activity' && (
           <Card className="p-4 bg-card/50 backdrop-blur-sm mb-4">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm font-medium">Viewing activities for</h3>
@@ -319,8 +349,10 @@ export default function Activities() {
               </DropdownMenuContent>
             </DropdownMenu>
           </Card>
+          )}
           
-          {/* All Activity Types - Single Row */}
+          {/* Activity Types - Only show in Activity mode */}
+          {viewMode === 'activity' && (
           <div className="grid grid-cols-5 gap-1 bg-muted rounded-lg p-1 mb-3">
             <button 
               onClick={() => setActiveTab('timeline')}
