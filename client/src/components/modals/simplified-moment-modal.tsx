@@ -624,45 +624,46 @@ export function MomentModal() {
           </div>
           )}
 
-          {/* Conflict Resolution Toggle - Only for conflicts */}
+          {/* Conflict Resolution - Only for conflicts */}
           {activityType === 'conflict' && (
-            <>
-              <div className="space-y-2">
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    id="isResolved"
-                    checked={isResolved}
-                    onChange={(e) => setIsResolved(e.target.checked)}
-                    className="h-4 w-4 rounded border-gray-300"
-                  />
-                  <label htmlFor="isResolved" className="text-sm font-medium">
-                    Mark as resolved
-                  </label>
-                </div>
+            <div className="space-y-3 pt-2 border-t">
+              <div className="flex items-center justify-between">
+                <label className="text-sm font-medium">Resolution Status</label>
+                <Button
+                  type="button"
+                  variant={isResolved ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setIsResolved(!isResolved)}
+                  className={cn(
+                    "px-4 py-2",
+                    isResolved ? "bg-green-600 hover:bg-green-700 text-white" : "hover:bg-gray-50"
+                  )}
+                >
+                  {isResolved ? "✓ Resolved" : "Mark as Resolved"}
+                </Button>
               </div>
 
-              {/* Resolution fields - Only show when resolved */}
+              {/* Resolution notes - Show when resolved */}
               {isResolved && (
-                <>
+                <div className="space-y-3 pl-4 border-l-2 border-green-200">
                   <div className="space-y-2">
-                    <label className="text-sm font-medium">Resolution Notes</label>
+                    <label className="text-sm font-medium text-green-700">Resolution Notes</label>
                     <Textarea
                       value={resolutionNotes}
                       onChange={(e) => setResolutionNotes(e.target.value)}
-                      placeholder="How was this conflict resolved?"
-                      className="min-h-[80px]"
+                      placeholder="How was this conflict resolved? What was the outcome?"
+                      className="min-h-[80px] border-green-200 focus:border-green-400"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-sm font-medium">Resolution Date</label>
+                    <label className="text-sm font-medium text-green-700">Resolution Date</label>
                     <Popover>
                       <PopoverTrigger asChild>
                         <Button
                           variant="outline"
                           className={cn(
-                            "w-full justify-start text-left font-normal",
+                            "w-full justify-start text-left font-normal border-green-200",
                             !resolvedDate && "text-muted-foreground"
                           )}
                         >
@@ -677,7 +678,6 @@ export function MomentModal() {
                           onSelect={(date) => {
                             if (date) {
                               setResolvedDate(date);
-                              // Auto-close popover when date is selected
                               document.body.click();
                             }
                           }}
@@ -705,9 +705,9 @@ export function MomentModal() {
                       </PopoverContent>
                     </Popover>
                   </div>
-                </>
+                </div>
               )}
-            </>
+            </div>
           )}
 
           {/* Reflection Field - Only for regular moments */}
