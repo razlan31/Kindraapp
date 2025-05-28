@@ -115,7 +115,6 @@ export default function ConnectionDetail() {
   
   const [isDeleting, setIsDeleting] = useState(false);
   const [milestoneModalOpen, setMilestoneModalOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<'moments' | 'conflicts' | 'intimacy' | 'plans' | 'timeline'>('moments');
 
   const handleDelete = async () => {
     if (isDeleting) return; // Prevent double-clicking
@@ -415,84 +414,73 @@ export default function ConnectionDetail() {
           </div>
         </div>
         
-        {/* Activities Section */}
+        {/* Timeline Section */}
         <div className="mt-4 px-4">
-          {/* All Activity Types - Single Row */}
-          <div className="grid grid-cols-5 gap-1 bg-muted rounded-lg p-1 mb-3">
-            <button 
-              onClick={() => setActiveTab('timeline')}
-              className={`py-2 px-2 rounded-md text-xs font-medium transition-colors ${
-                activeTab === 'timeline' 
-                  ? 'bg-background text-foreground shadow-sm' 
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              Timeline
-            </button>
-            <button 
-              onClick={() => setActiveTab('moments')}
-              className={`py-2 px-2 rounded-md text-xs font-medium transition-colors ${
-                activeTab === 'moments' 
-                  ? 'bg-background text-foreground shadow-sm' 
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              Moments
-            </button>
-            <button 
-              onClick={() => setActiveTab('conflicts')}
-              className={`py-2 px-2 rounded-md text-xs font-medium transition-colors ${
-                activeTab === 'conflicts' 
-                  ? 'bg-background text-foreground shadow-sm' 
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              Conflicts
-            </button>
-            <button 
-              onClick={() => setActiveTab('intimacy')}
-              className={`py-2 px-2 rounded-md text-xs font-medium transition-colors ${
-                activeTab === 'intimacy' 
-                  ? 'bg-background text-foreground shadow-sm' 
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              Intimacy
-            </button>
-            <button 
-              onClick={() => setActiveTab('plans')}
-              className={`py-2 px-2 rounded-md text-xs font-medium transition-colors ${
-                activeTab === 'plans' 
-                  ? 'bg-background text-foreground shadow-sm' 
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              Plans
-            </button>
-          </div>
-
-          {/* Add Button for Active Tab - Hide for Timeline */}
-          {activeTab !== 'timeline' && (
-            <div className="mb-4">
-              <Button onClick={() => {
-                // Set the connection in modal context before opening
-                setSelectedConnection(connection.id, connection);
-                if (activeTab === 'plans') {
-                  openPlanModal(connection);
-                } else {
-                  openMomentModal(activeTab === 'moments' ? 'moment' : activeTab === 'conflicts' ? 'conflict' : 'intimacy');
-                }
-              }} className="w-full">
-                <Plus className="h-4 w-4 mr-2" />
-                Add {activeTab === 'moments' ? 'Moment' : 
-                     activeTab === 'conflicts' ? 'Conflict' : 
-                     activeTab === 'intimacy' ? 'Intimacy' : 
-                     activeTab === 'plans' ? 'Plan' : ''}
-              </Button>
+          <div className="bg-white dark:bg-neutral-900 rounded-lg border">
+            <div className="p-4 border-b">
+              <h3 className="font-semibold text-lg">Timeline</h3>
+              <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                View all activities for this connection
+              </p>
             </div>
-          )}
+            
+            {/* Timeline content */}
+            <div className="p-4">
+              {moments && moments.length > 0 ? (
+                <div className="space-y-4">
+                  {moments
+                    .filter((moment: any) => moment.connectionId === connectionId)
+                    .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+                    .map((moment: any) => (
+                    <div key={moment.id} className="flex gap-3 p-3 bg-neutral-50 dark:bg-neutral-800 rounded-lg">
+                      <div className="text-2xl">{moment.emoji}</div>
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between mb-1">
+                          <h4 className="font-medium text-sm">{moment.title || 'Untitled Moment'}</h4>
+                          <span className="text-xs text-neutral-500">
+                            {format(new Date(moment.createdAt), 'MMM d, yyyy')}
+                          </span>
+                        </div>
+                        <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                          {moment.content}
+                        </p>
+                        {moment.tags && moment.tags.length > 0 && (
+                          <div className="flex flex-wrap gap-1 mt-2">
+                            {moment.tags.map((tag: string, index: number) => (
+                              <Badge key={index} variant="secondary" className="text-xs px-2 py-0.5">
+                                {tag}
+                              </Badge>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center text-neutral-500 py-8">
+                  <Calendar className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                  <p className="font-medium mb-1">No moments yet</p>
+                  <p className="text-sm">Start tracking your relationship by adding moments!</p>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
 
+        {/* Floating Add Button */}
+        <div className="fixed bottom-20 right-4">
+          <Button
+            size="lg"
+            className="rounded-full h-14 w-14 shadow-lg"
+            onClick={() => {
+              setSelectedConnection(connection.id, connection);
+              openMomentModal('moment');
+            }}
+          >
+            <Plus className="h-6 w-6" />
+          </Button>
+        </div>
 
       </div>
       
