@@ -78,7 +78,10 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
 
   // Initialize form data when editing an existing plan
   useEffect(() => {
-    if (editingMoment && isOpen) {
+    if (editingMoment && isOpen && connections.length > 0) {
+      // Find the connection for the editing moment
+      const momentConnection = connections.find(c => c.id === editingMoment.connectionId);
+      
       setFormData({
         title: editingMoment.title || "",
         description: editingMoment.content || "",
@@ -87,7 +90,9 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
         notes: editingMoment.content || "",
         isCompleted: false // Plans stored as moments don't have completion status
       });
-      setLocalSelectedConnection(selectedConnection);
+      
+      // Set the connection for the picker
+      setLocalSelectedConnection(momentConnection || selectedConnection);
     } else if (!editingMoment && isOpen) {
       // Reset form for new plans
       setFormData({
@@ -99,7 +104,7 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
         isCompleted: false
       });
     }
-  }, [editingMoment, isOpen, selectedConnection, selectedDate, localSelectedConnection?.id]);
+  }, [editingMoment, isOpen, selectedConnection, selectedDate, localSelectedConnection?.id, connections]);
 
   // Fetch connections for the picker
   const { data: connections = [] } = useQuery<Connection[]>({
