@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowLeft, Camera, Calendar } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
 import { relationshipStages } from "@shared/schema";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
@@ -26,6 +26,7 @@ export default function ConnectionEdit() {
   const [zodiacSign, setZodiacSign] = useState("");
   const [loveLanguages, setLoveLanguages] = useState<string[]>([]);
   const [profileImage, setProfileImage] = useState("");
+  const [uploadedImage, setUploadedImage] = useState<string>('');
   const [birthday, setBirthday] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   
@@ -110,8 +111,8 @@ export default function ConnectionEdit() {
         connectionData.loveLanguage = loveLanguages.join(', ');
       }
       
-      if (profileImage) {
-        connectionData.profileImage = profileImage;
+      if (uploadedImage || profileImage) {
+        connectionData.profileImage = uploadedImage || profileImage;
       }
       
       // Add birthday if provided
@@ -229,8 +230,8 @@ export default function ConnectionEdit() {
               <div className="mb-4">
                 <div className="flex items-center justify-center mb-3">
                   <Avatar className="h-20 w-20 border-2 border-blue-100 dark:border-blue-900">
-                    {profileImage ? (
-                      <AvatarImage src={profileImage} alt="Profile preview" />
+                    {uploadedImage || profileImage ? (
+                      <AvatarImage src={uploadedImage || profileImage} alt="Profile preview" />
                     ) : (
                       <AvatarFallback className="bg-blue-50 dark:bg-blue-950 text-blue-500">
                         <Camera className="h-6 w-6" />
@@ -239,68 +240,38 @@ export default function ConnectionEdit() {
                   </Avatar>
                 </div>
                 
-                <Tabs defaultValue="presets" className="w-full">
-                  <TabsList className="grid w-full grid-cols-2 mb-2">
-                    <TabsTrigger value="presets">Presets</TabsTrigger>
-                    <TabsTrigger value="url">URL</TabsTrigger>
-                  </TabsList>
-                  
-                  <TabsContent value="presets" className="mt-0">
-                    <div className="grid grid-cols-4 gap-2">
-                      {[
-                        "https://randomuser.me/api/portraits/women/32.jpg",
-                        "https://randomuser.me/api/portraits/men/22.jpg",
-                        "https://randomuser.me/api/portraits/women/44.jpg",
-                        "https://randomuser.me/api/portraits/men/42.jpg",
-                        "https://randomuser.me/api/portraits/women/68.jpg",
-                        "https://randomuser.me/api/portraits/men/91.jpg",
-                        "https://randomuser.me/api/portraits/women/17.jpg",
-                        "https://randomuser.me/api/portraits/men/54.jpg"
-                      ].map((src, index) => (
-                        <button
-                          key={index}
-                          type="button"
-                          onClick={() => setProfileImage(src)}
-                          className={`p-1 rounded-md ${
-                            profileImage === src ? 'ring-2 ring-blue-500' : 'hover:bg-gray-100 dark:hover:bg-gray-800'
-                          }`}
-                        >
-                          <img 
-                            src={src} 
-                            alt={`Preset avatar ${index + 1}`} 
-                            className="w-full aspect-square rounded-md object-cover"
-                          />
-                        </button>
-                      ))}
-                    </div>
-                  </TabsContent>
-                  
-                  <TabsContent value="url" className="mt-0">
-                    <div className="space-y-2">
-                      <div className="flex">
-                        <Input
-                          placeholder="Enter image URL"
-                          value={profileImage}
-                          onChange={(e) => setProfileImage(e.target.value)}
-                          className="flex-1"
-                        />
-                        {profileImage && (
-                          <Button 
-                            variant="ghost" 
-                            size="icon" 
-                            onClick={() => setProfileImage("")}
-                            className="ml-1"
-                          >
-                            <ArrowLeft className="h-4 w-4" />
-                          </Button>
-                        )}
-                      </div>
-                      <p className="text-xs text-neutral-500">
-                        Enter a direct URL to an image (JPG, PNG, etc.)
-                      </p>
-                    </div>
-                  </TabsContent>
-                </Tabs>
+                <div>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    id="fileUploadEdit"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (event) => {
+                          const result = event.target?.result as string;
+                          setUploadedImage(result);
+                        };
+                        reader.readAsDataURL(file);
+                      }
+                    }}
+                  />
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    onClick={() => document.getElementById('fileUploadEdit')?.click()}
+                    className="w-full"
+                  >
+                    <Camera className="h-4 w-4 mr-2" />
+                    Upload Photo from Device
+                  </Button>
+                </div>
+                
+                <p className="text-xs text-neutral-500 mt-1">
+                  Choose a photo from your device to update this connection's image
+                </p>
               </div>
             </div>
             
