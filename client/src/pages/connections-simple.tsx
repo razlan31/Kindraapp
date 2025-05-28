@@ -252,11 +252,130 @@ export default function Connections() {
 
       {/* Add Connection Modal */}
       {showAddModal && (
-        <AddConnectionModal 
-          onClose={() => setShowAddModal(false)}
-          onSubmit={handleAddConnection}
-          isLoading={isPending}
-        />
+        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between p-4 border-b">
+              <h2 className="font-heading font-semibold text-lg">Add New Connection</h2>
+              <Button variant="ghost" size="icon" onClick={() => setShowAddModal(false)}>
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+            
+            <form onSubmit={(e) => {
+              e.preventDefault();
+              const formData = new FormData(e.currentTarget);
+              handleAddConnection(formData);
+            }} className="p-4 space-y-4">
+              <div className="space-y-2">
+                <label className="block text-sm font-medium">Name</label>
+                <Input 
+                  name="name"
+                  required
+                  placeholder="Enter name" 
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <label className="block text-sm font-medium">Profile Photo</label>
+                <div className="border border-dashed border-neutral-300 dark:border-neutral-700 rounded-lg p-4 flex flex-col items-center">
+                  <div className="h-16 w-16 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-2">
+                    <Camera className="h-6 w-6 text-neutral-400" />
+                  </div>
+                  <Input 
+                    name="profileImage"
+                    type="url"
+                    placeholder="Enter image URL"
+                    className="mt-2"
+                  />
+                </div>
+                <p className="text-sm text-gray-500">Choose a profile photo for this connection</p>
+              </div>
+              
+              <div className="space-y-2">
+                <label className="block text-sm font-medium">Relationship Stage</label>
+                <select name="relationshipStage" className="w-full p-2 border rounded-md bg-background">
+                  {relationshipStages.map((stage) => (
+                    <option key={stage} value={stage}>
+                      {stage}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              
+              <div className="space-y-2">
+                <label className="block text-sm font-medium">Started talking/dating</label>
+                <Input 
+                  name="startDate"
+                  type="date" 
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="block text-sm font-medium">Birthday</label>
+                <Input 
+                  name="birthday"
+                  type="date" 
+                />
+              </div>
+              
+              <div className="space-y-3 bg-neutral-50 dark:bg-neutral-900 p-4 rounded-lg">
+                <h3 className="text-sm font-medium">Optional Details</h3>
+                
+                <div className="space-y-2">
+                  <label className="block text-xs text-neutral-500">Zodiac Sign</label>
+                  <select name="zodiacSign" className="w-full p-2 border rounded-md bg-background text-sm">
+                    <option value="">Select sign</option>
+                    <option value="Aries">Aries</option>
+                    <option value="Taurus">Taurus</option>
+                    <option value="Gemini">Gemini</option>
+                    <option value="Cancer">Cancer</option>
+                    <option value="Leo">Leo</option>
+                    <option value="Virgo">Virgo</option>
+                    <option value="Libra">Libra</option>
+                    <option value="Scorpio">Scorpio</option>
+                    <option value="Sagittarius">Sagittarius</option>
+                    <option value="Capricorn">Capricorn</option>
+                    <option value="Aquarius">Aquarius</option>
+                    <option value="Pisces">Pisces</option>
+                  </select>
+                </div>
+                
+                <div className="space-y-2">
+                  <label className="block text-xs text-neutral-500">Love Language</label>
+                  <select name="loveLanguage" className="w-full p-2 border rounded-md bg-background text-sm">
+                    <option value="">Select love language</option>
+                    <option value="Words of Affirmation">Words of Affirmation</option>
+                    <option value="Quality Time">Quality Time</option>
+                    <option value="Physical Touch">Physical Touch</option>
+                    <option value="Acts of Service">Acts of Service</option>
+                    <option value="Receiving Gifts">Receiving Gifts</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div className="flex items-start space-x-3 space-y-0 rounded-md border p-4">
+                <input 
+                  type="checkbox" 
+                  name="isPrivate" 
+                  id="private"
+                  className="mt-1"
+                />
+                <div className="space-y-1 leading-none">
+                  <label htmlFor="private" className="text-sm font-medium">Keep this connection private</label>
+                  <p className="text-sm text-gray-500">
+                    Private connections are only visible to you
+                  </p>
+                </div>
+              </div>
+              
+              <div className="pt-2">
+                <Button type="submit" className="w-full bg-primary text-white" disabled={isPending}>
+                  {isPending ? "Adding..." : "Add Connection"}
+                </Button>
+              </div>
+            </form>
+          </div>
+        </div>
       )}
 
       <BottomNavigation />
@@ -398,182 +517,3 @@ function ConnectionCard({
   );
 }
 
-// Add Connection Modal Component
-interface AddConnectionModalProps {
-  onClose: () => void;
-  onSubmit: (formData: FormData) => void;
-  isLoading: boolean;
-}
-
-function AddConnectionModal({ onClose, onSubmit, isLoading }: AddConnectionModalProps) {
-  const [profileImage, setProfileImage] = useState<string>('');
-  const [previewName, setPreviewName] = useState<string>('');
-
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const result = e.target?.result as string;
-        setProfileImage(result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-neutral-800 rounded-lg w-full max-w-md max-h-[80vh] overflow-y-auto">
-        <div className="p-4 border-b">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold">Add Connection</h2>
-            <Button variant="ghost" size="sm" onClick={onClose}>
-              <X className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-        
-        <form onSubmit={(e) => {
-          e.preventDefault();
-          onSubmit(new FormData(e.currentTarget));
-        }} className="p-4 space-y-4">
-          <div>
-            <label className="block text-sm font-medium mb-1">Name *</label>
-            <Input 
-              name="name" 
-              required 
-              placeholder="Enter their name"
-              onChange={(e) => setPreviewName(e.target.value)}
-            />
-          </div>
-
-          {/* Profile Picture Section */}
-          <div className="space-y-3">
-            <label className="block text-sm font-medium">Profile Picture</label>
-            
-            {/* Preview */}
-            <div className="flex items-center space-x-4">
-              <div className="relative">
-                {profileImage ? (
-                  <img 
-                    src={profileImage} 
-                    alt="Profile preview"
-                    className="w-16 h-16 rounded-full object-cover border-2 border-border"
-                  />
-                ) : (
-                  <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center border-2 border-border">
-                    {previewName ? (
-                      <span className="text-xl font-medium text-primary">
-                        {previewName.charAt(0).toUpperCase()}
-                      </span>
-                    ) : (
-                      <Camera className="h-6 w-6 text-muted-foreground" />
-                    )}
-                  </div>
-                )}
-              </div>
-              
-              {/* Upload Options */}
-              <div className="flex-1 space-y-2">
-                <div>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleFileUpload}
-                    className="hidden"
-                    id="fileUpload"
-                  />
-                  <Button 
-                    type="button" 
-                    variant="outline" 
-                    size="sm"
-                    onClick={() => document.getElementById('fileUpload')?.click()}
-                    className="w-full"
-                  >
-                    <Camera className="h-4 w-4 mr-2" />
-                    Upload Photo
-                  </Button>
-                </div>
-                <div className="text-xs text-center text-muted-foreground">or</div>
-                <Input 
-                  name="profileImage" 
-                  type="url" 
-                  placeholder="Enter image URL" 
-                  value={profileImage}
-                  onChange={(e) => setProfileImage(e.target.value)}
-                  className="text-sm"
-                />
-              </div>
-            </div>
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium mb-1">Relationship Stage</label>
-            <select name="relationshipStage" className="w-full p-2 border rounded-md bg-background">
-              {relationshipStages.map(stage => (
-                <option key={stage} value={stage}>{stage}</option>
-              ))}
-            </select>
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium mb-1">Start Date</label>
-            <Input name="startDate" type="date" />
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium mb-1">Birthday</label>
-            <Input name="birthday" type="date" />
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium mb-1">Zodiac Sign</label>
-            <select name="zodiacSign" className="w-full p-2 border rounded-md bg-background">
-              <option value="">Select zodiac sign</option>
-              <option value="Aries">Aries</option>
-              <option value="Taurus">Taurus</option>
-              <option value="Gemini">Gemini</option>
-              <option value="Cancer">Cancer</option>
-              <option value="Leo">Leo</option>
-              <option value="Virgo">Virgo</option>
-              <option value="Libra">Libra</option>
-              <option value="Scorpio">Scorpio</option>
-              <option value="Sagittarius">Sagittarius</option>
-              <option value="Capricorn">Capricorn</option>
-              <option value="Aquarius">Aquarius</option>
-              <option value="Pisces">Pisces</option>
-            </select>
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium mb-1">Love Language</label>
-            <select name="loveLanguage" className="w-full p-2 border rounded-md bg-background">
-              <option value="">Select love language</option>
-              <option value="Words of Affirmation">Words of Affirmation</option>
-              <option value="Physical Touch">Physical Touch</option>
-              <option value="Receiving Gifts">Receiving Gifts</option>
-              <option value="Quality Time">Quality Time</option>
-              <option value="Acts of Service">Acts of Service</option>
-            </select>
-          </div>
-          
-
-          
-          <div className="flex items-center space-x-2">
-            <input type="checkbox" name="isPrivate" id="isPrivate" className="rounded" />
-            <label htmlFor="isPrivate" className="text-sm">Keep this connection private</label>
-          </div>
-          
-          <div className="flex gap-4 pt-2">
-            <Button type="button" variant="outline" onClick={onClose} className="flex-1">
-              Cancel
-            </Button>
-            <Button type="submit" className="flex-1" disabled={isLoading}>
-              {isLoading ? 'Adding...' : 'Add Connection'}
-            </Button>
-          </div>
-        </form>
-      </div>
-    </div>
-  );
-}
