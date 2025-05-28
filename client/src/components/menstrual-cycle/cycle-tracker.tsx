@@ -206,39 +206,42 @@ export function CycleTracker({ cycles }: CycleTrackerProps) {
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={endDate}
-                    onSelect={(date) => {
-                      setEndDate(date);
-                      // Auto-close popover when date is selected
-                      if (date) document.body.click();
-                    }}
-                    initialFocus
-                    disabled={(date) => 
-                      selectedDate ? date < selectedDate : false
-                    }
-                  />
-                  <div className="flex justify-between p-3 border-t">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => document.body.click()} // Close popover
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        setEndDate(new Date());
-                        document.body.click(); // Close popover
+                  <div className="p-3">
+                    <Calendar
+                      mode="single"
+                      selected={endDate}
+                      onSelect={(date) => {
+                        if (date) {
+                          setEndDate(date);
+                          // Will need to add state control for this popover
+                        }
                       }}
-                    >
-                      Today
-                    </Button>
+                      initialFocus
+                      disabled={(date) => 
+                        selectedDate ? date < selectedDate : false
+                      }
+                    />
+                    <div className="flex justify-between mt-3 pt-3 border-t">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {}} // Will need popover close handler
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          setEndDate(new Date());
+                          // Will need popover close handler
+                        }}
+                      >
+                        Today
+                      </Button>
+                    </div>
                   </div>
                 </PopoverContent>
               </Popover>

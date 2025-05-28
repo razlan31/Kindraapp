@@ -378,29 +378,39 @@ export default function Activities() {
           {activeTab !== 'timeline' && (
             <div className="mb-4">
               <Button onClick={() => {
+                console.log("Add button clicked:", { activeTab, selectedConnection, connectionsLength: connections.length });
+                
                 if (activeTab === 'plans') {
                   // Open plan modal
                   if (selectedConnection && connections.length > 0) {
                     const connection = connections.find(c => c.id === selectedConnection);
+                    console.log("Opening plan modal with connection:", connection);
                     if (connection) {
+                      setModalConnection(selectedConnection, connection);
                       openPlanModal(connection);
                     }
                   } else {
                     // If "All Connections" is selected, open plan modal without specific connection
+                    console.log("Opening plan modal without specific connection");
+                    setModalConnection(null, null);
                     openPlanModal();
                   }
                 } else {
                   // Set the connection in modal context before opening
                   if (selectedConnection && connections.length > 0) {
                     const connection = connections.find(c => c.id === selectedConnection);
+                    console.log("Opening moment modal with connection:", connection);
                     if (connection) {
                       setModalConnection(selectedConnection, connection);
                     }
                   } else {
                     // If "All Connections" is selected, clear the modal connection so user can choose
+                    console.log("Opening moment modal without specific connection");
                     setModalConnection(null, null);
                   }
-                  openMomentModal(activeTab === 'moments' ? 'moment' : activeTab === 'conflicts' ? 'conflict' : 'intimacy');
+                  const activityType = activeTab === 'moments' ? 'moment' : activeTab === 'conflicts' ? 'conflict' : 'intimacy';
+                  console.log("Opening moment modal with activity type:", activityType);
+                  openMomentModal(activityType);
                 }
               }} className="w-full">
                 <Plus className="h-4 w-4 mr-2" />
