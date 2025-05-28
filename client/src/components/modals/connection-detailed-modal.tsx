@@ -20,32 +20,36 @@ interface ConnectionDetailedModalProps {
 
 export function ConnectionDetailedModal({ isOpen, onClose, connection }: ConnectionDetailedModalProps) {
   const [showEditModal, setShowEditModal] = useState(false);
-  const [refreshKey, setRefreshKey] = useState(0);
+  const [localConnection, setLocalConnection] = useState<Connection | null>(connection);
   const { toast } = useToast();
+
+  // Update local connection when prop changes
+  useEffect(() => {
+    setLocalConnection(connection);
+  }, [connection]);
 
   // Use fresh connection data from the connections list
   const { data: allConnections = [], refetch: refetchConnections } = useQuery<Connection[]>({
-    queryKey: ["/api/connections", refreshKey],
+    queryKey: ["/api/connections"],
     enabled: isOpen,
   });
 
-  // Force refetch when modal opens or refresh key changes
-  useEffect(() => {
-    if (isOpen && connection?.id) {
-      refetchConnections();
-    }
-  }, [isOpen, connection?.id, refreshKey, refetchConnections]);
-
-  // Always use fresh connection data if available
+  // Always use the most up-to-date connection data
   const currentConnection = connection?.id 
-    ? (allConnections as Connection[]).find(c => c.id === connection.id) || connection
-    : connection;
+    ? (allConnections as Connection[]).find(c => c.id === connection.id) || localConnection || connection
+    : localConnection || connection;
 
   const handleEditSuccess = () => {
-    // Force immediate refetch of connections data
+    // Force immediate refetch and update local state
+    refetchConnections().then((result) => {
+      if (result.data && connection?.id) {
+        const updatedConnection = result.data.find(c => c.id === connection.id);
+        if (updatedConnection) {
+          setLocalConnection(updatedConnection);
+        }
+      }
+    });
     queryClient.invalidateQueries({ queryKey: ['/api/connections'] });
-    refetchConnections();
-    setRefreshKey(prev => prev + 1);
     setShowEditModal(false);
   };
 
