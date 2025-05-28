@@ -239,6 +239,9 @@ export default function Connections() {
                   }}
                   daysSinceActivity={connection.daysSinceActivity}
                   activityCount={connection.activityCount}
+                  onImageClick={(imageUrl, name) => {
+                    setImagePreview({ isOpen: true, imageUrl, name });
+                  }}
                 />
               );
             })}
@@ -475,6 +478,14 @@ export default function Connections() {
           </div>
         </div>
       )}
+
+      {/* Image Preview Modal */}
+      <ImagePreviewModal
+        isOpen={imagePreview.isOpen}
+        onClose={() => setImagePreview({ isOpen: false, imageUrl: '', name: '' })}
+        imageUrl={imagePreview.imageUrl}
+        name={imagePreview.name}
+      />
 
       <BottomNavigation />
     </div>
