@@ -123,6 +123,8 @@ export default function Connections() {
       birthday: formData.get('birthday') ? new Date(formData.get('birthday') as string) : null,
       zodiacSign: formData.get('zodiacSign') as string || null,
       loveLanguage: formData.get('loveLanguage') as string || null,
+      profileImage: formData.get('profileImage') as string || null,
+      isPrivate: formData.get('isPrivate') === 'on',
     };
 
     createConnection(data);
@@ -422,13 +424,13 @@ function AddConnectionModal({ onClose, onSubmit, isLoading }: AddConnectionModal
         }} className="p-4 space-y-4">
           <div>
             <label className="block text-sm font-medium mb-1">Name *</label>
-            <Input name="name" required />
+            <Input name="name" required placeholder="Enter their name" />
           </div>
           
           <div>
             <label className="block text-sm font-medium mb-1">Relationship Stage</label>
-            <select name="relationshipStage" className="w-full p-2 border rounded-md">
-              {relationshipStages.map(stage => (
+            <select name="relationshipStage" className="w-full p-2 border rounded-md bg-background">
+              {stageOrder.map(stage => (
                 <option key={stage} value={stage}>{stage}</option>
               ))}
             </select>
@@ -444,7 +446,48 @@ function AddConnectionModal({ onClose, onSubmit, isLoading }: AddConnectionModal
             <Input name="birthday" type="date" />
           </div>
           
-          <div className="flex gap-4">
+          <div>
+            <label className="block text-sm font-medium mb-1">Zodiac Sign</label>
+            <select name="zodiacSign" className="w-full p-2 border rounded-md bg-background">
+              <option value="">Select zodiac sign</option>
+              <option value="Aries">Aries</option>
+              <option value="Taurus">Taurus</option>
+              <option value="Gemini">Gemini</option>
+              <option value="Cancer">Cancer</option>
+              <option value="Leo">Leo</option>
+              <option value="Virgo">Virgo</option>
+              <option value="Libra">Libra</option>
+              <option value="Scorpio">Scorpio</option>
+              <option value="Sagittarius">Sagittarius</option>
+              <option value="Capricorn">Capricorn</option>
+              <option value="Aquarius">Aquarius</option>
+              <option value="Pisces">Pisces</option>
+            </select>
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium mb-1">Love Language</label>
+            <select name="loveLanguage" className="w-full p-2 border rounded-md bg-background">
+              <option value="">Select love language</option>
+              <option value="Words of Affirmation">Words of Affirmation</option>
+              <option value="Physical Touch">Physical Touch</option>
+              <option value="Receiving Gifts">Receiving Gifts</option>
+              <option value="Quality Time">Quality Time</option>
+              <option value="Acts of Service">Acts of Service</option>
+            </select>
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium mb-1">Profile Image URL</label>
+            <Input name="profileImage" type="url" placeholder="https://example.com/image.jpg" />
+          </div>
+          
+          <div className="flex items-center space-x-2">
+            <input type="checkbox" name="isPrivate" id="isPrivate" className="rounded" />
+            <label htmlFor="isPrivate" className="text-sm">Keep this connection private</label>
+          </div>
+          
+          <div className="flex gap-4 pt-2">
             <Button type="button" variant="outline" onClick={onClose} className="flex-1">
               Cancel
             </Button>
