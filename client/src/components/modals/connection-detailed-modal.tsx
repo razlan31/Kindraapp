@@ -165,11 +165,9 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
                   <Badge variant="secondary" className="text-xs">
                     {connection.relationshipStage}
                   </Badge>
-                  {duration && (
-                    <Badge variant="outline" className="text-xs text-muted-foreground">
-                      {duration}
-                    </Badge>
-                  )}
+                  <Badge variant="outline" className="text-xs text-muted-foreground">
+                    {duration || 'No duration'}
+                  </Badge>
                 </div>
               </div>
             </div>

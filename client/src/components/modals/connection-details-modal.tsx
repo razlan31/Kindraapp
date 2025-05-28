@@ -60,7 +60,6 @@ export function ConnectionDetailsModal({ isOpen, onClose, connection }: Connecti
   };
 
   const duration = calculateDuration(connection.startDate);
-  console.log('Duration Debug:', { startDate: connection.startDate, duration });
 
   // Calculate stats
   const totalMoments = connectionMoments.length;
@@ -113,11 +112,9 @@ export function ConnectionDetailsModal({ isOpen, onClose, connection }: Connecti
                 <Badge variant="secondary" className="text-xs">
                   {connection.relationshipStage}
                 </Badge>
-                {duration && (
-                  <Badge variant="outline" className="text-xs text-muted-foreground">
-                    {duration}
-                  </Badge>
-                )}
+                <Badge variant="outline" className="text-xs text-muted-foreground">
+                  {duration || 'No duration'}
+                </Badge>
               </div>
             </div>
           </DialogTitle>
