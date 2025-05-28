@@ -8,7 +8,7 @@ import { Calendar, Heart, MessageCircle, Sparkles, Edit, Trash2, Activity } from
 import { format } from 'date-fns';
 import { useQuery } from '@tanstack/react-query';
 import { ConnectionDetailedModal } from './connection-detailed-modal';
-import { ConnectionTimelineModal } from './connection-timeline-modal';
+
 import type { Connection, Moment } from '@shared/schema';
 
 interface ConnectionDetailsModalProps {
@@ -19,7 +19,6 @@ interface ConnectionDetailsModalProps {
 
 export function ConnectionDetailsModal({ isOpen, onClose, connection }: ConnectionDetailsModalProps) {
   const [showDetailedModal, setShowDetailedModal] = useState(false);
-  const [showTimelineModal, setShowTimelineModal] = useState(false);
 
   // Fetch moments for this connection (hooks must be called before early returns)
   const { data: moments = [] } = useQuery<Moment[]>({
@@ -167,75 +166,28 @@ export function ConnectionDetailsModal({ isOpen, onClose, connection }: Connecti
             </Card>
           )}
 
-          {/* Action Buttons */}
-          <div className="space-y-2">
-            <div className="flex gap-2">
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="flex-1"
-                onClick={() => {
-                  // Navigate to connection detail page
-                  window.location.href = `/connections/${connection.id}`;
-                }}
-              >
-                <Edit className="h-4 w-4 mr-2" />
-                Full Profile
-              </Button>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="flex-1"
-                onClick={() => {
-                  // Navigate to activities page with this connection selected
-                  localStorage.setItem('navigation-connection-id', connection.id.toString());
-                  window.location.href = '/activities';
-                }}
-              >
-                <Activity className="h-4 w-4 mr-2" />
-                Activities
-              </Button>
-            </div>
-            <div className="flex gap-2">
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="flex-1"
-                onClick={() => {
-                  onClose();
-                  setShowDetailedModal(true);
-                }}
-              >
-                <Calendar className="h-4 w-4 mr-2" />
-                Detailed View
-              </Button>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="flex-1"
-                onClick={() => {
-                  onClose();
-                  setShowTimelineModal(true);
-                }}
-              >
-                <Heart className="h-4 w-4 mr-2" />
-                Timeline
-              </Button>
-            </div>
+          {/* Action Button */}
+          <div className="flex justify-center">
+            <Button 
+              variant="default" 
+              size="sm" 
+              className="w-full"
+              onClick={() => {
+                onClose();
+                setShowDetailedModal(true);
+              }}
+            >
+              <Edit className="h-4 w-4 mr-2" />
+              View Details
+            </Button>
           </div>
         </div>
       </DialogContent>
       
-      {/* Additional Modals */}
+      {/* Detailed Modal */}
       <ConnectionDetailedModal
         isOpen={showDetailedModal}
         onClose={() => setShowDetailedModal(false)}
-        connection={connection}
-      />
-      
-      <ConnectionTimelineModal
-        isOpen={showTimelineModal}
-        onClose={() => setShowTimelineModal(false)}
         connection={connection}
       />
     </Dialog>
