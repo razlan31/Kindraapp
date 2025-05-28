@@ -8,6 +8,7 @@ import { ReflectionModal } from "@/components/modals/reflection-modal";
 import { EntryDetailModal } from "@/components/modals/entry-detail-modal";
 import { MilestoneModal } from "@/components/modals/milestone-modal";
 import { PlanModal } from "@/components/modals/plan-modal";
+import { ConflictResolutionModal } from "@/components/modals/conflict-resolution-modal";
 import { Moment, Connection, Plan } from "@shared/schema";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
@@ -120,6 +121,10 @@ export default function Activities() {
   
   // Milestone modal state
   const [milestoneModalOpen, setMilestoneModalOpen] = useState(false);
+  
+  // Conflict resolution modal state
+  const [conflictResolutionModalOpen, setConflictResolutionModalOpen] = useState(false);
+  const [selectedMomentForResolution, setSelectedMomentForResolution] = useState<Moment | null>(null);
 
   const handleAddReflection = (momentId: number) => {
     console.log("Add reflection for moment:", momentId);
@@ -134,12 +139,9 @@ export default function Activities() {
   const handleResolveConflict = (momentId: number) => {
     console.log("Handle resolve conflict for moment:", momentId);
     const moment = moments.find(m => m.id === momentId);
-    const connection = connections.find(c => c.id === moment?.connectionId);
-    if (moment && connection) {
-      // Open the edit modal for this conflict
-      setSelectedConnection(connection.id);
-      setModalConnection(connection.id, connection);
-      openMomentModal('conflict', moment);
+    if (moment) {
+      setSelectedMomentForResolution(moment);
+      setConflictResolutionModalOpen(true);
     }
   };
 
@@ -817,6 +819,16 @@ export default function Activities() {
         selectedDate={null}
         showConnectionPicker={true}
         editingMoment={editingMoment}
+      />
+      
+      {/* Conflict Resolution Modal */}
+      <ConflictResolutionModal
+        isOpen={conflictResolutionModalOpen}
+        onClose={() => {
+          setConflictResolutionModalOpen(false);
+          setSelectedMomentForResolution(null);
+        }}
+        moment={selectedMomentForResolution}
       />
     </div>
   );
