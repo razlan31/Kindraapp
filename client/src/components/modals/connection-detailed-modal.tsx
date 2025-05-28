@@ -23,13 +23,15 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
   const { toast } = useToast();
 
   // Use fresh connection data from the connections list
-  const { data: allConnections = [], refetch } = useQuery<Connection[]>({
+  const { data: allConnections = [] } = useQuery<Connection[]>({
     queryKey: ["/api/connections"],
-    enabled: isOpen && !!connection?.id,
+    enabled: isOpen,
   });
 
-  // Find the fresh connection data from the list
-  const currentConnection = allConnections.find(c => c.id === connection?.id) || connection;
+  // Always use fresh connection data if available
+  const currentConnection = connection?.id 
+    ? allConnections.find(c => c.id === connection.id) || connection
+    : connection;
 
   // Fetch moments for this connection (must be before early return)
   const { data: moments = [] } = useQuery<Moment[]>({
