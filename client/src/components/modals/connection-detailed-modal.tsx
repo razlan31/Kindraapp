@@ -42,6 +42,9 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
     : connection;
 
   const handleEditSuccess = () => {
+    // Force immediate refetch of connections data
+    queryClient.invalidateQueries({ queryKey: ['/api/connections'] });
+    refetchConnections();
     setRefreshKey(prev => prev + 1);
     setShowEditModal(false);
   };
