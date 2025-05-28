@@ -582,88 +582,6 @@ export default function Calendar() {
           </Card>
         </section>
 
-        {/* Quick Stats */}
-        <section className="px-4 py-4">
-          <Card className="p-4 bg-card/50 backdrop-blur-sm">
-            <h3 className="text-sm font-medium mb-3">This Month</h3>
-            <div className="grid grid-cols-7 gap-2 text-center">
-              <div>
-                <div className="text-lg font-bold text-green-600">
-                  {moments.filter(m => {
-                    const momentDate = new Date(m.createdAt || new Date());
-                    return isSameMonth(momentDate, currentDate) && 
-                           !m.tags?.includes("Conflict") && !m.isIntimate &&
-                           ['😊', '❤️', '😍', '🥰', '💖', '✨', '🔥'].includes(m.emoji);
-                  }).length}
-                </div>
-                <div className="text-xs text-muted-foreground">Positive</div>
-              </div>
-              <div>
-                <div className="text-lg font-bold text-orange-600">
-                  {moments.filter(m => {
-                    const momentDate = new Date(m.createdAt || new Date());
-                    return isSameMonth(momentDate, currentDate) && 
-                           !m.tags?.includes("Conflict") && !m.isIntimate &&
-                           ['😕', '😢', '😠', '😞', '😤'].includes(m.emoji);
-                  }).length}
-                </div>
-                <div className="text-xs text-muted-foreground">Negative</div>
-              </div>
-              <div>
-                <div className="text-lg font-bold text-blue-600">
-                  {moments.filter(m => {
-                    const momentDate = new Date(m.createdAt || new Date());
-                    return isSameMonth(momentDate, currentDate) && 
-                           !m.tags?.includes("Conflict") && !m.isIntimate &&
-                           !['😊', '❤️', '😍', '🥰', '💖', '✨', '🔥', '😕', '😢', '😠', '😞', '😤'].includes(m.emoji);
-                  }).length}
-                </div>
-                <div className="text-xs text-muted-foreground">Neutral</div>
-              </div>
-              <div>
-                <div className="text-lg font-bold text-red-600">
-                  {moments.filter(m => {
-                    const momentDate = new Date(m.createdAt || new Date());
-                    return isSameMonth(momentDate, currentDate) && 
-                           m.tags?.includes("Conflict");
-                  }).length}
-                </div>
-                <div className="text-xs text-muted-foreground">Conflicts</div>
-              </div>
-              <div>
-                <div className="text-lg font-bold text-pink-600">
-                  {moments.filter(m => {
-                    const momentDate = new Date(m.createdAt || new Date());
-                    return isSameMonth(momentDate, currentDate) && 
-                           (m.isIntimate || m.tags?.includes("Intimacy"));
-                  }).length}
-                </div>
-                <div className="text-xs text-muted-foreground">Intimacy</div>
-              </div>
-              <div>
-                <div className="text-lg font-bold text-purple-600">
-                  {moments.filter(m => {
-                    const momentDate = new Date(m.createdAt || new Date());
-                    return isSameMonth(momentDate, currentDate) && 
-                           m.tags?.includes("Plan");
-                  }).length}
-                </div>
-                <div className="text-xs text-muted-foreground">Plans</div>
-              </div>
-              <div>
-                <div className="text-lg font-bold text-amber-600">
-                  {moments.filter(m => {
-                    const momentDate = new Date(m.createdAt || new Date());
-                    return isSameMonth(momentDate, currentDate) && 
-                           m.isMilestone;
-                  }).length}
-                </div>
-                <div className="text-xs text-muted-foreground">Milestones</div>
-              </div>
-            </div>
-          </Card>
-        </section>
-
         {/* Calendar Grid */}
         <section className="px-4">
           <Card className="p-4 bg-card/50 backdrop-blur-sm">
@@ -852,12 +770,84 @@ export default function Calendar() {
                 </div>
                 <div className="text-xs text-muted-foreground">Plans</div>
               </div>
+            </div>
+          </Card>
+        </section>
+
+        {/* This Month Statistics */}
+        <section className="px-4 py-4">
+          <Card className="p-4 bg-card/50 backdrop-blur-sm">
+            <h3 className="text-sm font-medium mb-3">This Month</h3>
+            <div className="grid grid-cols-7 gap-2 text-center">
+              <div>
+                <div className="text-lg font-bold text-green-600">
+                  {moments.filter(m => {
+                    const momentDate = new Date(m.createdAt || new Date());
+                    return isSameMonth(momentDate, currentDate) && 
+                           !m.tags?.includes("Conflict") && !m.isIntimate &&
+                           ['😊', '❤️', '😍', '🥰', '💖', '✨', '🔥'].includes(m.emoji);
+                  }).length}
+                </div>
+                <div className="text-xs text-muted-foreground">Positive</div>
+              </div>
+              <div>
+                <div className="text-lg font-bold text-orange-600">
+                  {moments.filter(m => {
+                    const momentDate = new Date(m.createdAt || new Date());
+                    return isSameMonth(momentDate, currentDate) && 
+                           !m.tags?.includes("Conflict") && !m.isIntimate &&
+                           ['😕', '😢', '😠', '😞', '😤'].includes(m.emoji);
+                  }).length}
+                </div>
+                <div className="text-xs text-muted-foreground">Negative</div>
+              </div>
+              <div>
+                <div className="text-lg font-bold text-blue-600">
+                  {moments.filter(m => {
+                    const momentDate = new Date(m.createdAt || new Date());
+                    return isSameMonth(momentDate, currentDate) && 
+                           !m.tags?.includes("Conflict") && !m.isIntimate &&
+                           !['😊', '❤️', '😍', '🥰', '💖', '✨', '🔥', '😕', '😢', '😠', '😞', '😤'].includes(m.emoji);
+                  }).length}
+                </div>
+                <div className="text-xs text-muted-foreground">Neutral</div>
+              </div>
+              <div>
+                <div className="text-lg font-bold text-red-600">
+                  {moments.filter(m => {
+                    const momentDate = new Date(m.createdAt || new Date());
+                    return isSameMonth(momentDate, currentDate) && 
+                           m.tags?.includes("Conflict");
+                  }).length}
+                </div>
+                <div className="text-xs text-muted-foreground">Conflicts</div>
+              </div>
+              <div>
+                <div className="text-lg font-bold text-pink-600">
+                  {moments.filter(m => {
+                    const momentDate = new Date(m.createdAt || new Date());
+                    return isSameMonth(momentDate, currentDate) && 
+                           (m.isIntimate || m.tags?.includes("Intimacy"));
+                  }).length}
+                </div>
+                <div className="text-xs text-muted-foreground">Intimacy</div>
+              </div>
+              <div>
+                <div className="text-lg font-bold text-purple-600">
+                  {moments.filter(m => {
+                    const momentDate = new Date(m.createdAt || new Date());
+                    return isSameMonth(momentDate, currentDate) && 
+                           m.tags?.includes("Plan");
+                  }).length}
+                </div>
+                <div className="text-xs text-muted-foreground">Plans</div>
+              </div>
               <div>
                 <div className="text-lg font-bold text-amber-600">
                   {moments.filter(m => {
                     const momentDate = new Date(m.createdAt || new Date());
                     return isSameMonth(momentDate, currentDate) && 
-                           m.isMilestone;
+                           (m.tags?.includes("milestone") || m.milestoneTitle);
                   }).length}
                 </div>
                 <div className="text-xs text-muted-foreground">Milestones</div>
