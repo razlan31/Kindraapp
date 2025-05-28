@@ -22,20 +22,14 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
   const [showEditModal, setShowEditModal] = useState(false);
   const { toast } = useToast();
 
-  // Fetch fresh connection data
-  const { data: freshConnection } = useQuery<Connection>({
-    queryKey: ["/api/connections", connection?.id],
-    queryFn: async () => {
-      if (!connection?.id) throw new Error('No connection ID');
-      const response = await fetch(`/api/connections/${connection.id}`);
-      if (!response.ok) throw new Error('Failed to fetch connection');
-      return response.json();
-    },
+  // Use fresh connection data from the connections list
+  const { data: allConnections = [], refetch } = useQuery<Connection[]>({
+    queryKey: ["/api/connections"],
     enabled: isOpen && !!connection?.id,
   });
 
-  // Use fresh connection data if available, fallback to prop
-  const currentConnection = freshConnection || connection;
+  // Find the fresh connection data from the list
+  const currentConnection = allConnections.find(c => c.id === connection?.id) || connection;
 
   // Fetch moments for this connection (must be before early return)
   const { data: moments = [] } = useQuery<Moment[]>({
@@ -388,11 +382,10 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
       {/* Edit Modal */}
       <EditConnectionModal
         isOpen={showEditModal}
-        onClose={() => {
+        onClose={async () => {
           setShowEditModal(false);
-          // Refresh connection data after edit
-          queryClient.invalidateQueries({ queryKey: ['/api/connections'] });
-          queryClient.invalidateQueries({ queryKey: ['/api/connections', currentConnection.id] });
+          // Force immediate refresh of connection data
+          await refetch();
         }}
         connection={currentConnection}
       />

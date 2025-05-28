@@ -171,12 +171,25 @@ export function EditConnectionModal({ isOpen, onClose, connection }: EditConnect
               </div>
               <div>
                 <Label htmlFor="relationshipStage">Relationship Stage</Label>
-                <Input
+                <select
                   id="relationshipStage"
                   value={editData.relationshipStage || ''}
                   onChange={(e) => handleEditChange('relationshipStage', e.target.value)}
-                  className="mt-1"
-                />
+                  className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  <option value="">Select relationship stage</option>
+                  <option value="Potential">Potential</option>
+                  <option value="Talking">Talking</option>
+                  <option value="Situationship">Situationship</option>
+                  <option value="It's Complicated">It's Complicated</option>
+                  <option value="Dating">Dating</option>
+                  <option value="Spouse">Spouse</option>
+                  <option value="FWB">FWB</option>
+                  <option value="Ex">Ex</option>
+                  <option value="Friend">Friend</option>
+                  <option value="Best Friend">Best Friend</option>
+                  <option value="Siblings">Siblings</option>
+                </select>
               </div>
               <div>
                 <Label htmlFor="startDate">Start Date</Label>
