@@ -471,18 +471,6 @@ export function MomentModal() {
             </Select>
           </div>
 
-          {/* Title */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Title</label>
-            <Input
-              placeholder="Give this moment a title..."
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="w-full"
-              required
-            />
-          </div>
-
           {/* Moment Type - Only for regular moments */}
           {activityType === 'moment' && (
             <div className="space-y-2">
@@ -500,6 +488,18 @@ export function MomentModal() {
             </div>
           )}
 
+          {/* Title */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Title</label>
+            <Input
+              placeholder="Give this moment a title..."
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="w-full"
+              required
+            />
+          </div>
+
           {/* Description */}
           <div className="space-y-2">
             <label className="text-sm font-medium">Description (Optional)</label>
@@ -510,47 +510,6 @@ export function MomentModal() {
               className="min-h-[100px]"
             />
           </div>
-
-          {/* Tags Selection - Only show for regular moments */}
-          {activityType === 'moment' && (
-          <div className="space-y-3">
-            <label className="text-sm font-medium">Tags (Optional)</label>
-            
-            {/* Selected Tags Display */}
-            {selectedTags.length > 0 && (
-              <div className="flex flex-wrap gap-2">
-                {selectedTags.map((tag, index) => (
-                  <Badge key={index} variant="secondary" className="flex items-center gap-1">
-                    {tag}
-                    <X className="h-3 w-3 cursor-pointer" onClick={() => removeTag(tag)} />
-                  </Badge>
-                ))}
-              </div>
-            )}
-
-
-
-            {/* Custom Tag Input */}
-            <div className="flex gap-2">
-              <Input
-                placeholder="Add custom tag..."
-                value={customTag}
-                onChange={(e) => setCustomTag(e.target.value)}
-                onKeyPress={handleCustomTagKeyPress}
-                className="text-sm"
-              />
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={addCustomTag}
-                disabled={!customTag.trim()}
-              >
-                <Plus className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-          )}
 
           {/* Date Selection */}
           <div className="space-y-2">
@@ -604,6 +563,45 @@ export function MomentModal() {
               </PopoverContent>
             </Popover>
           </div>
+
+          {/* Tags Selection - Only show for regular moments */}
+          {activityType === 'moment' && (
+          <div className="space-y-3">
+            <label className="text-sm font-medium">Tags (Optional)</label>
+            
+            {/* Selected Tags Display */}
+            {selectedTags.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {selectedTags.map((tag, index) => (
+                  <Badge key={index} variant="secondary" className="flex items-center gap-1">
+                    {tag}
+                    <X className="h-3 w-3 cursor-pointer" onClick={() => removeTag(tag)} />
+                  </Badge>
+                ))}
+              </div>
+            )}
+
+            {/* Custom Tag Input */}
+            <div className="flex gap-2">
+              <Input
+                placeholder="Add custom tag..."
+                value={customTag}
+                onChange={(e) => setCustomTag(e.target.value)}
+                onKeyPress={handleCustomTagKeyPress}
+                className="text-sm"
+              />
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={addCustomTag}
+                disabled={!customTag.trim()}
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+          )}
 
           {/* Conflict Resolution Toggle - Only for conflicts */}
           {activityType === 'conflict' && (
