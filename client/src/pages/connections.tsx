@@ -1,151 +1,87 @@
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Link, useLocation } from "wouter";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { format } from "date-fns";
 import { Header } from "@/components/layout/header";
-import { BottomNavigation } from "@/components/layout/bottom-navigation";
-import { ConnectionCard } from "@/components/dashboard/connection-card";
-import { Connection, Moment } from "@shared/schema";
-import { useAuth } from "@/contexts/auth-context";
+import { Connection, connectionInsertSchema, relationshipStages } from "@shared/schema";
 import { Button } from "@/components/ui/button";
 import { useModal } from "@/contexts/modal-context";
 import { useRelationshipFocus } from "@/contexts/relationship-focus-context";
 import { Input } from "@/components/ui/input";
 import { Search, Plus, X, Camera, Heart, Users, Activity, BarChart3, Clock } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import { relationshipStages } from "@shared/schema";
 import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 
 export default function Connections() {
-  const { user } = useAuth();
-  const { setSelectedConnection } = useModal();
-  const { mainFocusConnection } = useRelationshipFocus();
-  const [, setLocation] = useLocation();
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStage, setFilterStage] = useState<string | null>(null);
-  const [showModal, setShowModal] = useState(false);
-  const [showQuickAdd, setShowQuickAdd] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
   const [viewMode, setViewMode] = useState<'connections' | 'activity' | 'stages' | 'timeline'>('connections');
-  const [quickName, setQuickName] = useState("");
-  const [quickStage, setQuickStage] = useState("Talking Stage");
-  const [isCreating, setIsCreating] = useState(false);
+  const { openModal } = useModal();
+  const { mainFocusConnection, setMainFocusConnection } = useRelationshipFocus();
   const { toast } = useToast();
-  const queryClient = useQueryClient();
-  
-  const createConnectionMutation = useMutation({
-    mutationFn: async (data: { name: string; relationshipStage: string }) => {
-      const response = await fetch('/api/connections', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-      if (!response.ok) throw new Error('Failed to create connection');
-      return response.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/connections'] });
-      setShowQuickAdd(false);
-      setQuickName("");
-      setQuickStage("Talking Stage");
-      toast({
-        title: "Success",
-        description: "Connection created successfully!",
-      });
-    },
-    onError: (error) => {
-      toast({
-        title: "Error",
-        description: "Failed to create connection",
-        variant: "destructive",
-      });
-    },
-  });
-  
-  // Form state for connection modal
-  const [name, setName] = useState("");
-  const [profileImage, setProfileImage] = useState("");
-  const [relationshipStage, setRelationshipStage] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [zodiacSign, setZodiacSign] = useState("");
-  const [loveLanguage, setLoveLanguage] = useState("");
-  const [isPrivate, setIsPrivate] = useState(false);
-  const [errors, setErrors] = useState<Record<string, string>>({});
 
-  // Fetch connections
+  // Fetch connections and moments
   const { data: connections = [], isLoading } = useQuery<Connection[]>({
-    queryKey: ["/api/connections"],
-    enabled: !!user,
+    queryKey: ['/api/connections'],
   });
 
-  // Fetch moments to calculate emoji data and flag counts
-  const { data: moments = [] } = useQuery<Moment[]>({
-    queryKey: ["/api/moments"],
-    enabled: !!user,
+  const { data: moments = [] } = useQuery({
+    queryKey: ['/api/moments'],
   });
 
+  // Filter connections based on search and stage
+  const filteredConnections = connections.filter(connection => {
+    const matchesSearch = connection.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStage = !filterStage || connection.relationshipStage === filterStage;
+    return matchesSearch && matchesStage;
+  });
+
+  // Handle connection selection for navigation
   const handleSelectConnection = (connection: Connection) => {
-    setSelectedConnection(connection.id);
-    setLocation(`/connections/${connection.id}`);
+    window.location.href = `/connection/${connection.id}`;
   };
 
-  // Filter and sort connections - put main focus at the top
-  const filteredConnections = connections
-    .filter(connection => {
-      const matchesSearch = connection.name.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesStage = filterStage ? connection.relationshipStage === filterStage : true;
-      return matchesSearch && matchesStage;
-    })
-    .sort((a, b) => {
-      // Main focus connection always comes first
-      if (mainFocusConnection?.id === a.id) return -1;
-      if (mainFocusConnection?.id === b.id) return 1;
-      // Then sort by creation date (newest first)
-      return new Date(b.createdAt!).getTime() - new Date(a.createdAt!).getTime();
-    });
-
-  // Get recent emojis for each connection
+  // Get recent emojis for a connection
   const getConnectionEmojis = (connectionId: number) => {
-    const connectionMoments = moments.filter(m => m.connectionId === connectionId);
-    const recentEmojis = connectionMoments
-      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-      .slice(0, 3)
-      .map(m => m.emoji);
+    const connectionMoments = moments
+      .filter((m: any) => m.connectionId === connectionId)
+      .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+      .slice(0, 3);
     
+    const recentEmojis = connectionMoments.map((m: any) => m.emoji);
     return recentEmojis.length > 0 ? recentEmojis : ["😊", "❤️", "✨"];
   };
 
   // Calculate flag counts for each connection
   const getConnectionFlagCounts = (connectionId: number) => {
-    const connectionMoments = moments.filter(m => m.connectionId === connectionId);
+    const connectionMoments = moments.filter((m: any) => m.connectionId === connectionId);
     
     return {
-      green: connectionMoments.filter(m => m.tags?.includes('Green Flag')).length,
-      red: connectionMoments.filter(m => m.tags?.includes('Red Flag')).length
+      green: connectionMoments.filter((m: any) => m.tags?.includes('Green Flag')).length,
+      red: connectionMoments.filter((m: any) => m.tags?.includes('Red Flag')).length
     };
   };
 
   // Get connection activity data
   const getConnectionActivity = (connectionId: number) => {
-    const connectionMoments = moments.filter(m => m.connectionId === connectionId);
+    const connectionMoments = moments.filter((m: any) => m.connectionId === connectionId);
     const now = new Date();
     const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-    const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
     
-    const recentMoments = connectionMoments.filter(m => new Date(m.createdAt) > weekAgo);
-    const monthlyMoments = connectionMoments.filter(m => new Date(m.createdAt) > monthAgo);
+    const recentMoments = connectionMoments.filter((m: any) => {
+      const createdAt = m.createdAt ? new Date(m.createdAt) : null;
+      return createdAt && createdAt > weekAgo;
+    });
     
     return {
       total: connectionMoments.length,
       thisWeek: recentMoments.length,
-      thisMonth: monthlyMoments.length,
       lastActivity: connectionMoments.length > 0 ? 
-        Math.max(...connectionMoments.map(m => new Date(m.createdAt).getTime())) : 
-        0
+        Math.max(...connectionMoments.map((m: any) => {
+          const createdAt = m.createdAt ? new Date(m.createdAt) : null;
+          return createdAt ? createdAt.getTime() : 0;
+        })) : 0
     };
   };
 
@@ -185,83 +121,41 @@ export default function Connections() {
   // Create connection mutation
   const { mutate: createConnection, isPending } = useMutation({
     mutationFn: async (data: any) => {
-      const response = await apiRequest("POST", "/api/connections", data);
-      return response.json();
+      return await apiRequest('/api/connections', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      });
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/connections'] });
+      setShowAddModal(false);
       toast({
-        title: "Connection added successfully",
-        description: "Your new connection has been saved.",
+        title: "Success",
+        description: "Connection added successfully!",
       });
-      queryClient.invalidateQueries({ queryKey: ["/api/connections"] });
-      setShowModal(false);
-      resetForm();
     },
     onError: (error) => {
       toast({
-        title: "Failed to add connection",
-        description: error.message || "Please try again later.",
+        title: "Error",
+        description: "Failed to add connection. Please try again.",
         variant: "destructive",
       });
-    },
+    }
   });
-  
-  const resetForm = () => {
-    setName("");
-    setProfileImage("");
-    setRelationshipStage("");
-    setStartDate("");
-    setZodiacSign("");
-    setLoveLanguage("");
-    setIsPrivate(false);
-    setErrors({});
-  };
-  
-  const validateForm = () => {
-    const newErrors: Record<string, string> = {};
-    
-    if (!name.trim()) {
-      newErrors.name = "Name is required";
-    } else if (name.length < 2) {
-      newErrors.name = "Name must be at least 2 characters";
-    }
-    
-    if (!relationshipStage) {
-      newErrors.relationshipStage = "Please select a relationship stage";
-    }
-    
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-  
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!validateForm() || !user) return;
-    
+
+  const handleAddConnection = (formData: FormData) => {
     const data = {
-      name,
-      profileImage: profileImage || null,
-      relationshipStage,
-      startDate: startDate ? new Date(startDate).toISOString() : null,
-      zodiacSign: zodiacSign || null,
-      loveLanguage: loveLanguage || null,
-      isPrivate,
+      name: formData.get('name') as string,
+      relationshipStage: formData.get('relationshipStage') as string,
+      startDate: formData.get('startDate') ? new Date(formData.get('startDate') as string) : null,
+      birthday: formData.get('birthday') ? new Date(formData.get('birthday') as string) : null,
+      zodiacSign: formData.get('zodiacSign') as string || null,
+      loveLanguage: formData.get('loveLanguage') as string || null,
     };
-    
+
     createConnection(data);
   };
-  
-  const zodiacSigns = [
-    "Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo",
-    "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"
-  ];
-  
-  const loveLanguages = [
-    "Words of Affirmation", "Quality Time", "Physical Touch",
-    "Acts of Service", "Receiving Gifts"
-  ];
-  
+
   return (
     <div className="max-w-md mx-auto bg-white dark:bg-neutral-900 min-h-screen flex flex-col relative">
       <Header />
@@ -326,100 +220,36 @@ export default function Connections() {
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-neutral-500" />
               <Input
-                type="text"
                 placeholder="Search connections..."
-                className="pl-9"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-9"
               />
             </div>
-            <Button 
-              variant="default" 
-              size="sm"
-              className="bg-blue-600 hover:bg-blue-700 text-white"
-              onClick={() => setLocation("/connections/basic")}
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => setShowAddModal(true)}
             >
-              <Plus className="h-4 w-4 mr-2" />
-              Add Connection
+              <Plus className="h-4 w-4" />
             </Button>
           </div>
 
-          {/* Quick Add Form */}
-          {showQuickAdd && (
-            <div className="bg-white dark:bg-gray-800 border rounded-lg p-4 mb-4">
-              <h3 className="text-lg font-semibold mb-3">Create New Connection</h3>
-              <div className="space-y-3">
-                <div>
-                  <Label htmlFor="quickName">Name</Label>
-                  <Input
-                    id="quickName"
-                    value={quickName}
-                    onChange={(e) => setQuickName(e.target.value)}
-                    placeholder="Enter person's name"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="quickStage">Relationship Stage</Label>
-                  <Select value={quickStage} onValueChange={setQuickStage}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select stage" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Talking Stage">Talking Stage</SelectItem>
-                      <SelectItem value="Dating">Dating</SelectItem>
-                      <SelectItem value="In a Relationship">In a Relationship</SelectItem>
-                      <SelectItem value="It's Complicated">It's Complicated</SelectItem>
-                      <SelectItem value="Friends">Friends</SelectItem>
-                      <SelectItem value="Ex">Ex</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="flex gap-2 pt-2">
-                  <Button
-                    onClick={() => {
-                      if (quickName.trim()) {
-                        createConnectionMutation.mutate({
-                          name: quickName.trim(),
-                          relationshipStage: quickStage
-                        });
-                      }
-                    }}
-                    disabled={!quickName.trim() || createConnectionMutation.isPending}
-                    className="bg-blue-600 hover:bg-blue-700"
-                  >
-                    {createConnectionMutation.isPending ? "Creating..." : "Create"}
-                  </Button>
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      setShowQuickAdd(false);
-                      setQuickName("");
-                      setQuickStage("Talking Stage");
-                    }}
-                  >
-                    Cancel
-                  </Button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          <div className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1">
+          {/* Relationship Stage Filter */}
+          <div className="flex flex-wrap gap-2">
             <Button
               variant={filterStage === null ? "default" : "outline"}
               size="sm"
-              className="rounded-full text-xs"
               onClick={() => setFilterStage(null)}
             >
-              All
+              All Stages
             </Button>
             {relationshipStages.map((stage) => (
               <Button
                 key={stage}
                 variant={filterStage === stage ? "default" : "outline"}
                 size="sm"
-                className="rounded-full text-xs whitespace-nowrap"
-                onClick={() => setFilterStage(stage === filterStage ? null : stage)}
+                onClick={() => setFilterStage(filterStage === stage ? null : stage)}
               >
                 {stage}
               </Button>
@@ -433,24 +263,84 @@ export default function Connections() {
             <div className="text-center py-10">
               <p>Loading connections...</p>
             </div>
-          ) : filteredConnections.length > 0 ? (
-            <div className="space-y-3">
-              {filteredConnections.map((connection) => (
-                <div key={connection.id} className="relative">
-                  <ConnectionCard 
-                    connection={connection} 
-                    recentEmojis={getConnectionEmojis(connection.id)}
-                    flagCount={getConnectionFlagCounts(connection.id)}
-                  />
-                  {mainFocusConnection?.id === connection.id && (
-                    <div className="absolute top-3 right-3 bg-red-500 rounded-full p-2 shadow-lg border-2 border-white z-10">
-                      <Heart className="h-4 w-4 text-white fill-white" />
+          ) : (() => {
+            const connectionsData = getConnectionsByPerspective();
+            
+            if (viewMode === 'stages' && typeof connectionsData === 'object' && !Array.isArray(connectionsData)) {
+              // Render grouped by relationship stages
+              return Object.keys(connectionsData).length > 0 ? (
+                <div className="space-y-6">
+                  {Object.entries(connectionsData).map(([stage, stageConnections]) => (
+                    <div key={stage}>
+                      <div className="flex items-center justify-between mb-3">
+                        <h3 className="text-sm font-semibold text-foreground">{stage}</h3>
+                        <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">
+                          {stageConnections.length}
+                        </span>
+                      </div>
+                      <div className="space-y-3">
+                        {stageConnections.map((connection) => (
+                          <ConnectionCard 
+                            key={connection.id}
+                            connection={connection} 
+                            onSelect={handleSelectConnection}
+                            recentEmojis={getConnectionEmojis(connection.id)}
+                            flagCount={getConnectionFlagCounts(connection.id)}
+                            mainFocusConnection={mainFocusConnection}
+                          />
+                        ))}
+                      </div>
                     </div>
-                  )}
+                  ))}
                 </div>
-              ))}
-            </div>
-          ) : connections.length > 0 ? (
+              ) : (
+                <div className="text-center py-8">
+                  <p className="text-neutral-500 dark:text-neutral-400">No connections found</p>
+                </div>
+              );
+            } else {
+              // Render as regular list with activity indicators
+              const connectionsList = Array.isArray(connectionsData) ? connectionsData : [];
+              return connectionsList.length > 0 ? (
+                <div className="space-y-3">
+                  {connectionsList.map((connection) => {
+                    const activity = getConnectionActivity(connection.id);
+                    return (
+                      <div key={connection.id} className="relative">
+                        <ConnectionCard 
+                          connection={connection} 
+                          onSelect={handleSelectConnection}
+                          recentEmojis={getConnectionEmojis(connection.id)}
+                          flagCount={getConnectionFlagCounts(connection.id)}
+                          mainFocusConnection={mainFocusConnection}
+                        />
+                        {(viewMode === 'activity' || viewMode === 'timeline') && (
+                          <div className="absolute bottom-3 left-3 flex gap-1">
+                            {activity.thisWeek > 0 && (
+                              <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
+                                {activity.thisWeek} this week
+                              </span>
+                            )}
+                            {viewMode === 'timeline' && activity.lastActivity > 0 && (
+                              <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
+                                {Math.floor((Date.now() - activity.lastActivity) / (1000 * 60 * 60 * 24))}d ago
+                              </span>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <p className="text-neutral-500 dark:text-neutral-400">No connections found</p>
+                </div>
+              );
+            }
+          })()}
+          
+          {!isLoading && filteredConnections.length === 0 && connections.length > 0 && (
             <div className="text-center py-8">
               <p className="text-neutral-500 dark:text-neutral-400 mb-2">No connections found matching your filters</p>
               <Button 
@@ -463,26 +353,157 @@ export default function Connections() {
                 Clear Filters
               </Button>
             </div>
-          ) : (
+          )}
+          
+          {!isLoading && connections.length === 0 && (
             <Card className="flex flex-col items-center justify-center py-10 px-4 text-center">
-              <div className="rounded-full bg-primary/10 p-3 mb-3">
-                <Users className="h-6 w-6 text-primary" />
-              </div>
-              <h3 className="font-heading font-semibold mb-1">No Connections Yet</h3>
-              <p className="text-neutral-500 dark:text-neutral-400 text-sm mb-4">
-                Add your first connection to start tracking your relationships
+              <Users className="h-12 w-12 text-neutral-400 mb-4" />
+              <h3 className="text-lg font-semibold mb-2">No connections yet</h3>
+              <p className="text-neutral-500 dark:text-neutral-400 mb-4">
+                Start building your relationship network by adding your first connection.
               </p>
-              <p className="text-neutral-400 text-sm">
-                Use the "Add Connection" button at the top to get started
-              </p>
+              <Button onClick={() => setShowAddModal(true)}>
+                <Plus className="h-4 w-4 mr-2" />
+                Add Your First Connection
+              </Button>
             </Card>
           )}
         </section>
       </main>
 
-      <BottomNavigation />
+      {/* Add Connection Modal */}
+      {showAddModal && (
+        <AddConnectionModal 
+          onClose={() => setShowAddModal(false)}
+          onSubmit={handleAddConnection}
+          isLoading={isPending}
+        />
+      )}
     </div>
   );
 }
 
+// Connection Card Component
+interface ConnectionCardProps {
+  connection: Connection;
+  onSelect: (connection: Connection) => void;
+  recentEmojis: string[];
+  flagCount: { green: number; red: number };
+  mainFocusConnection: Connection | null;
+}
 
+function ConnectionCard({ connection, onSelect, recentEmojis, flagCount, mainFocusConnection }: ConnectionCardProps) {
+  return (
+    <div className="relative">
+      <Card 
+        className="p-4 cursor-pointer hover:shadow-md transition-shadow"
+        onClick={() => onSelect(connection)}
+      >
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-pink-400 to-purple-600 flex items-center justify-center text-white font-semibold">
+              {connection.profileImage ? (
+                <img 
+                  src={connection.profileImage} 
+                  alt={connection.name}
+                  className="w-12 h-12 rounded-full object-cover"
+                />
+              ) : (
+                connection.name.charAt(0).toUpperCase()
+              )}
+            </div>
+            <div>
+              <h3 className="font-semibold text-foreground">{connection.name}</h3>
+              <p className="text-sm text-muted-foreground">{connection.relationshipStage}</p>
+              <div className="flex space-x-1 mt-1">
+                {recentEmojis.map((emoji, index) => (
+                  <span key={index} className="text-lg">{emoji}</span>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-col items-end space-y-1">
+            {flagCount.green > 0 && (
+              <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
+                {flagCount.green} 🟢
+              </span>
+            )}
+            {flagCount.red > 0 && (
+              <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full">
+                {flagCount.red} 🔴
+              </span>
+            )}
+          </div>
+        </div>
+      </Card>
+      {mainFocusConnection?.id === connection.id && (
+        <div className="absolute top-3 right-3 bg-red-500 rounded-full p-2 shadow-lg border-2 border-white z-10">
+          <Heart className="h-4 w-4 text-white fill-white" />
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Add Connection Modal Component
+interface AddConnectionModalProps {
+  onClose: () => void;
+  onSubmit: (data: FormData) => void;
+  isLoading: boolean;
+}
+
+function AddConnectionModal({ onClose, onSubmit, isLoading }: AddConnectionModalProps) {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    onSubmit(formData);
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white dark:bg-neutral-800 rounded-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
+        <div className="flex items-center justify-between p-4 border-b">
+          <h2 className="text-lg font-semibold">Add New Connection</h2>
+          <Button variant="ghost" size="sm" onClick={onClose}>
+            <X className="h-4 w-4" />
+          </Button>
+        </div>
+        
+        <form onSubmit={handleSubmit} className="p-4 space-y-4">
+          <div>
+            <label className="block text-sm font-medium mb-1">Name *</label>
+            <Input name="name" required />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium mb-1">Relationship Stage</label>
+            <select name="relationshipStage" className="w-full p-2 border rounded">
+              {relationshipStages.map(stage => (
+                <option key={stage} value={stage}>{stage}</option>
+              ))}
+            </select>
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium mb-1">Start Date</label>
+            <Input name="startDate" type="date" />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium mb-1">Birthday</label>
+            <Input name="birthday" type="date" />
+          </div>
+          
+          <div className="flex gap-2 pt-4">
+            <Button type="button" variant="outline" onClick={onClose} className="flex-1">
+              Cancel
+            </Button>
+            <Button type="submit" disabled={isLoading} className="flex-1">
+              {isLoading ? "Adding..." : "Add Connection"}
+            </Button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
