@@ -59,8 +59,11 @@ export default function Connections() {
     })
     .sort((a, b) => b.priority - a.priority);
 
-  // Get unique stages for the picker
-  const availableStages = Array.from(new Set(connections.map(c => c.relationshipStage))).sort();
+  // Get stages in the specified order
+  const stageOrder = ["Potential", "Talking", "Situationship", "It's Complicated", "Dating", "Spouse", "FWB", "Ex", "Friend", "Best Friend", "Siblings"];
+  const availableStages = stageOrder.filter(stage => 
+    connections.some(c => c.relationshipStage === stage)
+  );
 
   // Handle connection selection for navigation
   const handleSelectConnection = (connection: Connection) => {
