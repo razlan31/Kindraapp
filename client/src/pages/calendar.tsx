@@ -576,7 +576,7 @@ export default function Calendar() {
         <section className="px-4 py-4">
           <Card className="p-4 bg-card/50 backdrop-blur-sm">
             <h3 className="text-sm font-medium mb-3">This Month</h3>
-            <div className="grid grid-cols-5 gap-2 text-center">
+            <div className="grid grid-cols-7 gap-2 text-center">
               <div>
                 <div className="text-lg font-bold text-green-600">
                   {moments.filter(m => {
@@ -629,6 +629,26 @@ export default function Calendar() {
                   }).length}
                 </div>
                 <div className="text-xs text-muted-foreground">Intimacy</div>
+              </div>
+              <div>
+                <div className="text-lg font-bold text-purple-600">
+                  {moments.filter(m => {
+                    const momentDate = new Date(m.createdAt || new Date());
+                    return isSameMonth(momentDate, currentDate) && 
+                           m.tags?.includes("Plan");
+                  }).length}
+                </div>
+                <div className="text-xs text-muted-foreground">Plans</div>
+              </div>
+              <div>
+                <div className="text-lg font-bold text-amber-600">
+                  {moments.filter(m => {
+                    const momentDate = new Date(m.createdAt || new Date());
+                    return isSameMonth(momentDate, currentDate) && 
+                           m.isMilestone;
+                  }).length}
+                </div>
+                <div className="text-xs text-muted-foreground">Milestones</div>
               </div>
             </div>
           </Card>
