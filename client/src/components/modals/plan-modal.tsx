@@ -76,6 +76,12 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
     }
   }, [selectedConnection, localSelectedConnection?.id]);
 
+  // Fetch connections for the picker
+  const { data: connections = [] } = useQuery<Connection[]>({
+    queryKey: ['/api/connections'],
+    enabled: isOpen, // Only fetch when modal is open
+  });
+
   // Initialize form data when editing an existing plan
   useEffect(() => {
     if (editingMoment && isOpen && connections.length > 0) {
@@ -105,12 +111,6 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
       });
     }
   }, [editingMoment, isOpen, selectedConnection, selectedDate, localSelectedConnection?.id, connections]);
-
-  // Fetch connections for the picker
-  const { data: connections = [] } = useQuery<Connection[]>({
-    queryKey: ['/api/connections'],
-    enabled: isOpen, // Only fetch when modal is open
-  });
 
   const createPlanMutation = useMutation({
     mutationFn: async (data: PlanFormData) => {
