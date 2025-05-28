@@ -34,6 +34,7 @@ export default function Activities() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedConnection, setSelectedConnection] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState<'moments' | 'conflicts' | 'intimacy' | 'plans' | 'timeline'>('moments');
+  const [timelineFilter, setTimelineFilter] = useState<'all' | 'moments' | 'conflicts' | 'intimacy'>('all');
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [viewMode, setViewMode] = useState<'activity' | 'people'>('activity');
 
@@ -231,8 +232,22 @@ export default function Activities() {
     // Filter by tab type
     let matchesTab = false;
     if (activeTab === 'timeline') {
-      // Timeline shows ALL entries regardless of type
-      matchesTab = true;
+      // Timeline shows entries based on the timeline filter
+      if (timelineFilter === 'all') {
+        matchesTab = true;
+      } else if (timelineFilter === 'moments') {
+        // Show regular moments (exclude conflicts, intimacy, and plans)
+        const isConflict = tags.includes('Conflict') || moment.emoji === '⚡';
+        const isIntimacy = moment.isIntimate === true || tags.includes('Intimacy') || moment.emoji === '💕';
+        const isPlan = tags.includes('Plan');
+        matchesTab = !isConflict && !isIntimacy && !isPlan;
+      } else if (timelineFilter === 'conflicts') {
+        // Show conflicts
+        matchesTab = tags.includes('Conflict') || moment.emoji === '⚡';
+      } else if (timelineFilter === 'intimacy') {
+        // Show intimacy entries
+        matchesTab = moment.isIntimate === true || tags.includes('Intimacy') || moment.emoji === '💕';
+      }
     } else if (activeTab === 'moments') {
       // Show regular moments (positive, negative, neutral) - exclude conflicts, intimacy, and plans
       const isConflict = tags.includes('Conflict') || moment.emoji === '⚡';
@@ -468,21 +483,74 @@ export default function Activities() {
           )}
         </div>
 
-        {/* Search Section */}
-        <section className="px-4 pb-2 sticky top-0 bg-white dark:bg-neutral-900 z-10">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-neutral-500" />
-              <Input
-                type="text"
-                placeholder="Search activities..."
-                className="pl-9"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
+        {/* Activities Filter Section - Only show in Timeline mode */}
+        {activeTab === 'timeline' && (
+          <section className="px-4 pb-2 sticky top-0 bg-white dark:bg-neutral-900 z-10">
+            <div className="mb-3">
+              <h3 className="text-sm font-medium mb-2">Filter Activities</h3>
+              <div className="grid grid-cols-4 gap-1 bg-muted rounded-lg p-1">
+                <button 
+                  onClick={() => setTimelineFilter('all')}
+                  className={`py-2 px-2 rounded-md text-xs font-medium transition-colors ${
+                    timelineFilter === 'all' 
+                      ? 'bg-background text-foreground shadow-sm' 
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  All
+                </button>
+                <button 
+                  onClick={() => setTimelineFilter('moments')}
+                  className={`py-2 px-2 rounded-md text-xs font-medium transition-colors ${
+                    timelineFilter === 'moments' 
+                      ? 'bg-background text-foreground shadow-sm' 
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  Moments
+                </button>
+                <button 
+                  onClick={() => setTimelineFilter('conflicts')}
+                  className={`py-2 px-2 rounded-md text-xs font-medium transition-colors ${
+                    timelineFilter === 'conflicts' 
+                      ? 'bg-background text-foreground shadow-sm' 
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  Conflicts
+                </button>
+                <button 
+                  onClick={() => setTimelineFilter('intimacy')}
+                  className={`py-2 px-2 rounded-md text-xs font-medium transition-colors ${
+                    timelineFilter === 'intimacy' 
+                      ? 'bg-background text-foreground shadow-sm' 
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  Intimacy
+                </button>
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
+
+        {/* Search Section - Show for other tabs */}
+        {activeTab !== 'timeline' && (
+          <section className="px-4 pb-2 sticky top-0 bg-white dark:bg-neutral-900 z-10">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-neutral-500" />
+                <Input
+                  type="text"
+                  placeholder="Search activities..."
+                  className="pl-9"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* Content Area */}
         <section className="px-4 py-3">
