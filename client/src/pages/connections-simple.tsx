@@ -409,6 +409,18 @@ function AddConnectionModal({ onClose, onSubmit, isLoading }: AddConnectionModal
   const [profileImage, setProfileImage] = useState<string>('');
   const [previewName, setPreviewName] = useState<string>('');
 
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const result = e.target?.result as string;
+        setProfileImage(result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <div className="bg-white dark:bg-neutral-800 rounded-lg w-full max-w-md max-h-[80vh] overflow-y-auto">
@@ -425,32 +437,6 @@ function AddConnectionModal({ onClose, onSubmit, isLoading }: AddConnectionModal
           e.preventDefault();
           onSubmit(new FormData(e.currentTarget));
         }} className="p-4 space-y-4">
-          {/* Profile Picture Preview */}
-          <div className="flex flex-col items-center mb-6">
-            <div className="relative mb-3">
-              {profileImage ? (
-                <img 
-                  src={profileImage} 
-                  alt="Profile preview"
-                  className="w-20 h-20 rounded-full object-cover border-2 border-border"
-                />
-              ) : (
-                <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center border-2 border-border">
-                  {previewName ? (
-                    <span className="text-2xl font-medium text-primary">
-                      {previewName.charAt(0).toUpperCase()}
-                    </span>
-                  ) : (
-                    <Camera className="h-8 w-8 text-muted-foreground" />
-                  )}
-                </div>
-              )}
-            </div>
-            <p className="text-xs text-muted-foreground text-center">
-              Profile picture preview
-            </p>
-          </div>
-
           <div>
             <label className="block text-sm font-medium mb-1">Name *</label>
             <Input 
@@ -459,6 +445,66 @@ function AddConnectionModal({ onClose, onSubmit, isLoading }: AddConnectionModal
               placeholder="Enter their name"
               onChange={(e) => setPreviewName(e.target.value)}
             />
+          </div>
+
+          {/* Profile Picture Section */}
+          <div className="space-y-3">
+            <label className="block text-sm font-medium">Profile Picture</label>
+            
+            {/* Preview */}
+            <div className="flex items-center space-x-4">
+              <div className="relative">
+                {profileImage ? (
+                  <img 
+                    src={profileImage} 
+                    alt="Profile preview"
+                    className="w-16 h-16 rounded-full object-cover border-2 border-border"
+                  />
+                ) : (
+                  <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center border-2 border-border">
+                    {previewName ? (
+                      <span className="text-xl font-medium text-primary">
+                        {previewName.charAt(0).toUpperCase()}
+                      </span>
+                    ) : (
+                      <Camera className="h-6 w-6 text-muted-foreground" />
+                    )}
+                  </div>
+                )}
+              </div>
+              
+              {/* Upload Options */}
+              <div className="flex-1 space-y-2">
+                <div>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileUpload}
+                    className="hidden"
+                    id="fileUpload"
+                  />
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => document.getElementById('fileUpload')?.click()}
+                    className="w-full"
+                  >
+                    <Camera className="h-4 w-4 mr-2" />
+                    Upload Photo
+                  </Button>
+                </div>
+                <div className="text-xs text-center text-muted-foreground">or</div>
+                <Input 
+                  name="profileImage" 
+                  type="url" 
+                  placeholder="Enter image URL" 
+                  value={profileImage}
+                  onChange={(e) => setProfileImage(e.target.value)}
+                  className="text-sm"
+                />
+              </div>
+            </div>
           </div>
           
           <div>
@@ -511,16 +557,7 @@ function AddConnectionModal({ onClose, onSubmit, isLoading }: AddConnectionModal
             </select>
           </div>
           
-          <div>
-            <label className="block text-sm font-medium mb-1">Profile Image URL</label>
-            <Input 
-              name="profileImage" 
-              type="url" 
-              placeholder="https://example.com/image.jpg" 
-              value={profileImage}
-              onChange={(e) => setProfileImage(e.target.value)}
-            />
-          </div>
+
           
           <div className="flex items-center space-x-2">
             <input type="checkbox" name="isPrivate" id="isPrivate" className="rounded" />
