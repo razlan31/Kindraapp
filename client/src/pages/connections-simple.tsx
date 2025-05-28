@@ -17,6 +17,7 @@ export default function Connections() {
   const [searchTerm, setSearchTerm] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
   const [selectedStage, setSelectedStage] = useState<string>("all");
+  const [sortMode, setSortMode] = useState<'priority' | 'grouped'>('priority');
   const { openMomentModal, openConnectionModal } = useModal();
   const { mainFocusConnection, setMainFocusConnection } = useRelationshipFocus();
   const { toast } = useToast();
@@ -30,8 +31,12 @@ export default function Connections() {
     queryKey: ['/api/moments'],
   });
 
+  // Show all stages in the specified order (including those with 0 entries)
+  const stageOrder = ["Potential", "Talking", "Situationship", "It's Complicated", "Dating", "Spouse", "FWB", "Ex", "Friend", "Best Friend", "Siblings"];
+  const availableStages = stageOrder;
+
   // Smart prioritization algorithm with stage filtering
-  const displayConnections = connections
+  const filteredConnections = connections
     .filter(connection => 
       connection.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
       (selectedStage === "all" || connection.relationshipStage === selectedStage)
@@ -56,12 +61,23 @@ export default function Connections() {
       const priority = (stageWeight * 10) + (activityCount * 2) - Math.min(daysSinceActivity, 30);
       
       return { ...connection, priority, daysSinceActivity, activityCount };
-    })
-    .sort((a, b) => b.priority - a.priority);
+    });
 
-  // Show all stages in the specified order (including those with 0 entries)
-  const stageOrder = ["Potential", "Talking", "Situationship", "It's Complicated", "Dating", "Spouse", "FWB", "Ex", "Friend", "Best Friend", "Siblings"];
-  const availableStages = stageOrder;
+  // Sort connections based on mode
+  const displayConnections = sortMode === 'priority' 
+    ? filteredConnections.sort((a, b) => b.priority - a.priority)
+    : filteredConnections.sort((a, b) => a.name.localeCompare(b.name));
+
+  // Group connections by stage when in grouped mode
+  const groupedConnections = sortMode === 'grouped' 
+    ? stageOrder.reduce((groups, stage) => {
+        const stageConnections = displayConnections.filter(c => c.relationshipStage === stage);
+        if (stageConnections.length > 0) {
+          groups[stage] = stageConnections;
+        }
+        return groups;
+      }, {} as Record<string, typeof displayConnections>)
+    : null;
 
   // Handle connection selection for navigation
   const handleSelectConnection = (connection: Connection) => {
@@ -152,6 +168,17 @@ export default function Connections() {
                 {connections.length} people in your network
               </p>
             </div>
+            
+            {/* Sort Toggle */}
+            <Button
+              variant={sortMode === 'priority' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setSortMode(sortMode === 'priority' ? 'grouped' : 'priority')}
+              className="ml-2"
+            >
+              {sortMode === 'priority' ? <Activity className="h-4 w-4 mr-1" /> : <Users className="h-4 w-4 mr-1" />}
+              {sortMode === 'priority' ? 'Priority' : 'Groups'}
+            </Button>
             <Users className="h-8 w-8 text-primary" />
           </div>
         </section>
@@ -211,32 +238,69 @@ export default function Connections() {
         {/* Connections List */}
         <section className="px-4 pb-4">
           <div className="space-y-3">
-            {displayConnections.map((connection: any) => {
-              const emojis = getConnectionEmojis(connection.id);
-              const { greenFlags, redFlags } = getFlagCounts(connection.id);
-              const isMainFocus = mainFocusConnection?.id === connection.id;
+            {sortMode === 'priority' ? (
+              displayConnections.map((connection: any) => {
+                const emojis = getConnectionEmojis(connection.id);
+                const { greenFlags, redFlags } = getFlagCounts(connection.id);
+                const isMainFocus = mainFocusConnection?.id === connection.id;
 
-              return (
-                <ConnectionCard
-                  key={connection.id}
-                  connection={connection}
-                  emojis={emojis}
-                  greenFlags={greenFlags}
-                  redFlags={redFlags}
-                  isMainFocus={isMainFocus}
-                  onSelect={handleSelectConnection}
-                  onToggleFocus={() => {
-                    if (isMainFocus) {
-                      setMainFocusConnection(null);
-                    } else {
-                      setMainFocusConnection(connection);
-                    }
-                  }}
-                  daysSinceActivity={connection.daysSinceActivity}
-                  activityCount={connection.activityCount}
-                />
-              );
-            })}
+                return (
+                  <ConnectionCard
+                    key={connection.id}
+                    connection={connection}
+                    emojis={emojis}
+                    greenFlags={greenFlags}
+                    redFlags={redFlags}
+                    isMainFocus={isMainFocus}
+                    onSelect={handleSelectConnection}
+                    onToggleFocus={() => {
+                      if (isMainFocus) {
+                        setMainFocusConnection(null);
+                      } else {
+                        setMainFocusConnection(connection);
+                      }
+                    }}
+                    daysSinceActivity={connection.daysSinceActivity}
+                    activityCount={connection.activityCount}
+                  />
+                );
+              })
+            ) : (
+              /* Grouped View */
+              groupedConnections && Object.entries(groupedConnections).map(([stage, stageConnections]) => (
+                <div key={stage} className="mb-6">
+                  <h3 className="text-lg font-semibold text-foreground mb-3 px-2">{stage}</h3>
+                  <div className="space-y-3">
+                    {stageConnections.map((connection: any) => {
+                      const emojis = getConnectionEmojis(connection.id);
+                      const { greenFlags, redFlags } = getFlagCounts(connection.id);
+                      const isMainFocus = mainFocusConnection?.id === connection.id;
+
+                      return (
+                        <ConnectionCard
+                          key={connection.id}
+                          connection={connection}
+                          emojis={emojis}
+                          greenFlags={greenFlags}
+                          redFlags={redFlags}
+                          isMainFocus={isMainFocus}
+                          onSelect={handleSelectConnection}
+                          onToggleFocus={() => {
+                            if (isMainFocus) {
+                              setMainFocusConnection(null);
+                            } else {
+                              setMainFocusConnection(connection);
+                            }
+                          }}
+                          daysSinceActivity={connection.daysSinceActivity}
+                          activityCount={connection.activityCount}
+                        />
+                      );
+                    })}
+                  </div>
+                </div>
+              ))
+            )}
 
             {displayConnections.length === 0 && searchTerm && (
               <div className="text-center py-8 text-neutral-500">
