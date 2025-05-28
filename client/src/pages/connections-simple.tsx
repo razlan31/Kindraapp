@@ -46,7 +46,11 @@ export default function Connections() {
       const activityCount = connectionMoments.length;
       
       // Priority score: recent activity + relationship importance + total activity
-      const stageWeights = { 'Married': 5, 'Dating': 4, 'Best Friend': 4, 'Talking': 3, 'Ex': 1 };
+      const stageWeights = { 
+        'Spouse': 6, 'Dating': 5, 'Best Friend': 5, 'Siblings': 4, 
+        'It\'s Complicated': 4, 'Situationship': 3, 'Talking': 3, 
+        'Friend': 3, 'FWB': 2, 'Potential': 2, 'Ex': 1 
+      };
       const stageWeight = stageWeights[connection.relationshipStage as keyof typeof stageWeights] || 2;
       
       const priority = (stageWeight * 10) + (activityCount * 2) - Math.min(daysSinceActivity, 30);
@@ -153,18 +157,36 @@ export default function Connections() {
 
         {/* Controls Section */}
         <section className="px-4 pt-2 pb-2 sticky top-0 bg-white dark:bg-neutral-900 z-10">
-          {/* Stage Filter - Full Width */}
+          {/* Horizontal Stage Bubbles */}
           <div className="mb-3">
-            <select
-              value={selectedStage}
-              onChange={(e) => setSelectedStage(e.target.value)}
-              className="w-full p-3 bg-muted rounded-lg text-sm border-0 focus:ring-2 focus:ring-primary h-12"
-            >
-              <option value="all">All Stages</option>
-              {availableStages.map(stage => (
-                <option key={stage} value={stage}>{stage}</option>
-              ))}
-            </select>
+            <div className="flex overflow-x-auto gap-2 pb-2 scrollbar-hide">
+              <button
+                onClick={() => setSelectedStage("all")}
+                className={`shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                  selectedStage === "all"
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                }`}
+              >
+                All ({connections.length})
+              </button>
+              {availableStages.map(stage => {
+                const count = connections.filter(c => c.relationshipStage === stage).length;
+                return (
+                  <button
+                    key={stage}
+                    onClick={() => setSelectedStage(stage)}
+                    className={`shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                      selectedStage === stage
+                        ? 'bg-primary text-primary-foreground'
+                        : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                    }`}
+                  >
+                    {stage} ({count})
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           {/* Search and Add Button - Same Width */}
@@ -273,6 +295,25 @@ function ConnectionCard({
   daysSinceActivity,
   activityCount 
 }: ConnectionCardProps) {
+  // Calculate relationship insights
+  const getRelationshipInsight = () => {
+    if (daysSinceActivity === 0) return { text: "Active today", color: "text-green-600" };
+    if (daysSinceActivity <= 3) return { text: "Recently active", color: "text-green-500" };
+    if (daysSinceActivity <= 7) return { text: "Needs attention", color: "text-yellow-600" };
+    if (daysSinceActivity <= 14) return { text: "Low contact", color: "text-orange-500" };
+    return { text: "Distant", color: "text-red-500" };
+  };
+
+  const getConnectionStrength = () => {
+    if (activityCount >= 10) return { level: "Strong", color: "bg-green-100 text-green-800" };
+    if (activityCount >= 5) return { level: "Growing", color: "bg-blue-100 text-blue-800" };
+    if (activityCount >= 2) return { level: "New", color: "bg-purple-100 text-purple-800" };
+    return { level: "Building", color: "bg-gray-100 text-gray-800" };
+  };
+
+  const insight = getRelationshipInsight();
+  const strength = getConnectionStrength();
+
   return (
     <Card 
       className={`p-4 cursor-pointer transition-all hover:shadow-md ${
@@ -280,8 +321,8 @@ function ConnectionCard({
       }`}
       onClick={() => onSelect(connection)}
     >
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-3 flex-1">
+      <div className="flex items-start justify-between">
+        <div className="flex items-start space-x-3 flex-1">
           {/* Profile Image or Initial */}
           <div className="relative">
             {connection.profileImage ? (
@@ -313,20 +354,36 @@ function ConnectionCard({
               </span>
             </div>
             
+            {/* Insights Row */}
+            <div className="flex items-center gap-2 mb-2">
+              <span className={`text-xs px-2 py-1 rounded ${strength.color}`}>
+                {strength.level}
+              </span>
+              <span className={`text-xs ${insight.color}`}>
+                {insight.text}
+              </span>
+            </div>
+
+            {/* Activity and Emojis */}
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                {emojis && <span>{emojis}</span>}
-                {greenFlags > 0 && <span className="text-green-600">🟢{greenFlags}</span>}
-                {redFlags > 0 && <span className="text-red-600">🔴{redFlags}</span>}
+              <div className="flex items-center gap-2 text-sm">
+                {emojis && <span className="text-sm">{emojis}</span>}
+                {greenFlags > 0 && <span className="text-green-600 text-xs">+{greenFlags}</span>}
+                {redFlags > 0 && <span className="text-red-500 text-xs">-{redFlags}</span>}
               </div>
               
               <div className="text-xs text-muted-foreground">
-                {daysSinceActivity === 0 ? 'Today' : 
-                 daysSinceActivity === 1 ? '1 day ago' : 
-                 daysSinceActivity < 7 ? `${daysSinceActivity} days ago` : 
-                 daysSinceActivity < 30 ? `${Math.floor(daysSinceActivity / 7)} weeks ago` : 
-                 '30+ days ago'}
+                {activityCount} memories
               </div>
+            </div>
+
+            {/* Last Contact */}
+            <div className="text-xs text-muted-foreground mt-1">
+              Last contact: {daysSinceActivity === 0 ? 'Today' : 
+               daysSinceActivity === 1 ? '1 day ago' : 
+               daysSinceActivity < 7 ? `${daysSinceActivity} days ago` : 
+               daysSinceActivity < 30 ? `${Math.floor(daysSinceActivity / 7)}w ago` : 
+               '30+ days ago'}
             </div>
           </div>
         </div>
@@ -339,7 +396,7 @@ function ConnectionCard({
             e.stopPropagation();
             onToggleFocus();
           }}
-          className="ml-2"
+          className="ml-2 mt-1"
         >
           <Heart className={`h-4 w-4 ${isMainFocus ? 'fill-current text-primary' : ''}`} />
         </Button>

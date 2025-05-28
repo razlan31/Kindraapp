@@ -21,13 +21,17 @@ export type User = typeof users.$inferSelect;
 
 // Relationship stages enum
 export const relationshipStages = [
-  "Talking",
-  "Situationship",
-  "FWB",
-  "Exclusive",
-  "Sneaky Link",
-  "Best Friend",
   "Potential",
+  "Talking", 
+  "Situationship",
+  "It's Complicated",
+  "Dating",
+  "Spouse",
+  "FWB",
+  "Ex",
+  "Friend",
+  "Best Friend",
+  "Siblings"
 ] as const;
 
 // Connections (relationships)
