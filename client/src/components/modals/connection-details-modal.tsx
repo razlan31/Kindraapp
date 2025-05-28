@@ -4,13 +4,11 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { Input } from '@/components/ui/input';
 import { Calendar, Heart, MessageCircle, Sparkles, Edit, Trash2, Activity } from 'lucide-react';
 import { format } from 'date-fns';
-import { useQuery, useMutation } from '@tanstack/react-query';
-import { apiRequest, queryClient } from '@/lib/queryClient';
-import { useToast } from '@/hooks/use-toast';
+import { useQuery } from '@tanstack/react-query';
 import { ConnectionDetailedModal } from './connection-detailed-modal';
+import { EditConnectionModal } from './edit-connection-modal';
 
 import type { Connection, Moment } from '@shared/schema';
 
@@ -22,44 +20,12 @@ interface ConnectionDetailsModalProps {
 
 export function ConnectionDetailsModal({ isOpen, onClose, connection }: ConnectionDetailsModalProps) {
   const [showDetailedModal, setShowDetailedModal] = useState(false);
-  const [editMode, setEditMode] = useState(false);
-  const [editData, setEditData] = useState<Partial<Connection>>({});
-  const { toast } = useToast();
+  const [showEditModal, setShowEditModal] = useState(false);
 
   // Fetch moments for this connection (hooks must be called before early returns)
   const { data: moments = [] } = useQuery<Moment[]>({
     queryKey: ["/api/moments"],
     enabled: isOpen && !!connection,
-  });
-
-  // Update connection mutation (moved before early return)
-  const updateConnection = useMutation({
-    mutationFn: async (data: Partial<Connection>) => {
-      if (!connection) throw new Error('No connection');
-      const response = await fetch(`/api/connections/${connection.id}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-      if (!response.ok) {
-        throw new Error('Failed to update connection');
-      }
-      return response.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/connections'] });
-      setEditMode(false);
-      toast({ title: 'Connection updated successfully!' });
-    },
-    onError: (error: any) => {
-      toast({ 
-        title: 'Error updating connection', 
-        description: error.message,
-        variant: 'destructive'
-      });
-    }
   });
 
   if (!connection) return null;
@@ -96,14 +62,6 @@ export function ConnectionDetailsModal({ isOpen, onClose, connection }: Connecti
   };
 
   const duration = calculateDuration(connection.startDate);
-
-  const handleSave = () => {
-    updateConnection.mutate(editData);
-  };
-
-  const handleEditChange = (field: keyof Connection, value: any) => {
-    setEditData(prev => ({ ...prev, [field]: value }));
-  };
 
   // Calculate stats
   const totalMoments = connectionMoments.length;
@@ -161,18 +119,10 @@ export function ConnectionDetailsModal({ isOpen, onClose, connection }: Connecti
             <Button
               variant="outline"
               size="sm"
-              onClick={() => {
-                if (editMode) {
-                  setEditMode(false);
-                  setEditData({});
-                } else {
-                  setEditMode(true);
-                  setEditData(connection);
-                }
-              }}
+              onClick={() => setShowEditModal(true)}
             >
               <Edit className="h-4 w-4 mr-2" />
-              {editMode ? 'Cancel' : 'Edit'}
+              Edit
             </Button>
           </DialogTitle>
         </DialogHeader>
@@ -186,41 +136,8 @@ export function ConnectionDetailsModal({ isOpen, onClose, connection }: Connecti
             </h3>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Name:</span>
-                {editMode ? (
-                  <Input
-                    value={editData.name || ''}
-                    onChange={(e) => handleEditChange('name', e.target.value)}
-                    className="h-6 text-sm w-32"
-                  />
-                ) : (
-                  <span>{connection.name}</span>
-                )}
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Stage:</span>
-                {editMode ? (
-                  <Input
-                    value={editData.relationshipStage || ''}
-                    onChange={(e) => handleEditChange('relationshipStage', e.target.value)}
-                    className="h-6 text-sm w-32"
-                  />
-                ) : (
-                  <span>{connection.relationshipStage}</span>
-                )}
-              </div>
-              <div className="flex justify-between">
                 <span className="text-muted-foreground">Started:</span>
-                {editMode ? (
-                  <Input
-                    type="date"
-                    value={editData.startDate ? format(new Date(editData.startDate), 'yyyy-MM-dd') : ''}
-                    onChange={(e) => handleEditChange('startDate', new Date(e.target.value))}
-                    className="h-6 text-sm w-32"
-                  />
-                ) : (
-                  <span>{formatDate(connection.startDate)}</span>
-                )}
+                <span>{formatDate(connection.startDate)}</span>
               </div>
               {duration && (
                 <div className="flex justify-between">
@@ -230,50 +147,21 @@ export function ConnectionDetailsModal({ isOpen, onClose, connection }: Connecti
               )}
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Birthday:</span>
-                {editMode ? (
-                  <Input
-                    type="date"
-                    value={editData.birthday ? format(new Date(editData.birthday), 'yyyy-MM-dd') : ''}
-                    onChange={(e) => handleEditChange('birthday', new Date(e.target.value))}
-                    className="h-6 text-sm w-32"
-                  />
-                ) : (
-                  <span>{formatDate(connection.birthday)}</span>
-                )}
+                <span>{formatDate(connection.birthday)}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Zodiac:</span>
-                {editMode ? (
-                  <Input
-                    value={editData.zodiacSign || ''}
-                    onChange={(e) => handleEditChange('zodiacSign', e.target.value)}
-                    className="h-6 text-sm w-32"
-                  />
-                ) : (
-                  <span>{connection.zodiacSign || 'Not set'}</span>
-                )}
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Love Language:</span>
-                {editMode ? (
-                  <Input
-                    value={editData.loveLanguage || ''}
-                    onChange={(e) => handleEditChange('loveLanguage', e.target.value)}
-                    className="h-6 text-sm w-32"
-                  />
-                ) : (
-                  <span className="text-right">{connection.loveLanguage || 'Not set'}</span>
-                )}
-              </div>
+              {connection.zodiacSign && (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Zodiac:</span>
+                  <span>{connection.zodiacSign}</span>
+                </div>
+              )}
+              {connection.loveLanguage && (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Love Language:</span>
+                  <span className="text-right">{connection.loveLanguage}</span>
+                </div>
+              )}
             </div>
-            
-            {editMode && (
-              <div className="mt-4 flex gap-2">
-                <Button onClick={handleSave} disabled={updateConnection.isPending} size="sm">
-                  {updateConnection.isPending ? 'Saving...' : 'Save Changes'}
-                </Button>
-              </div>
-            )}
           </Card>
 
           {/* Stats */}
@@ -345,6 +233,13 @@ export function ConnectionDetailsModal({ isOpen, onClose, connection }: Connecti
         </div>
       </DialogContent>
       
+      {/* Edit Modal */}
+      <EditConnectionModal
+        isOpen={showEditModal}
+        onClose={() => setShowEditModal(false)}
+        connection={connection}
+      />
+
       {/* Detailed Modal */}
       <ConnectionDetailedModal
         isOpen={showDetailedModal}
