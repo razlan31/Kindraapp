@@ -51,13 +51,17 @@ export function EditConnectionModal({ isOpen, onClose, connection }: EditConnect
       return response.json();
     },
     onSuccess: (updatedConnection) => {
-      // Update the cache immediately with the new data
+      // Update ALL possible cache keys to force refresh everywhere
       queryClient.setQueryData(['/api/connections'], (oldData: Connection[] | undefined) => {
         if (!oldData) return [updatedConnection];
         return oldData.map(conn => 
           conn.id === updatedConnection.id ? updatedConnection : conn
         );
       });
+      
+      // Force invalidate all connection queries to trigger refetch
+      queryClient.invalidateQueries({ queryKey: ['/api/connections'] });
+      
       toast({ title: 'Connection updated successfully!' });
       onClose();
     },
