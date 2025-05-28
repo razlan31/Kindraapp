@@ -103,6 +103,7 @@ export default function Connections() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/connections'] });
       setShowAddModal(false);
+      setUploadedImage(''); // Reset uploaded image
       toast({
         title: "Connection created",
         description: "New connection has been added successfully.",
@@ -128,7 +129,7 @@ export default function Connections() {
       birthday: formData.get('birthday') ? new Date(formData.get('birthday') as string) : null,
       zodiacSign: formData.get('zodiacSign') as string || null,
       loveLanguage: loveLanguages.length > 0 ? loveLanguages.join(', ') : null,
-      profileImage: formData.get('profileImage') as string || null,
+      profileImage: uploadedImage || null,
       isPrivate: formData.get('isPrivate') === 'on',
     };
 
@@ -278,57 +279,48 @@ export default function Connections() {
                 <div className="mb-4">
                   <div className="flex items-center justify-center mb-3">
                     <Avatar className="h-20 w-20 border-2 border-blue-100 dark:border-blue-900">
-                      <AvatarFallback className="bg-blue-50 dark:bg-blue-950 text-blue-500">
-                        <Camera className="h-6 w-6" />
-                      </AvatarFallback>
+                      {uploadedImage ? (
+                        <AvatarImage src={uploadedImage} alt="Profile preview" />
+                      ) : (
+                        <AvatarFallback className="bg-blue-50 dark:bg-blue-950 text-blue-500">
+                          <Camera className="h-6 w-6" />
+                        </AvatarFallback>
+                      )}
                     </Avatar>
                   </div>
                   
-                  <div className="space-y-2">
-                    <div>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        className="hidden"
-                        id="fileUpload"
-                        onChange={(e) => {
-                          const file = e.target.files?.[0];
-                          if (file) {
-                            const reader = new FileReader();
-                            reader.onload = (event) => {
-                              const result = event.target?.result as string;
-                              // Update the avatar preview
-                              const avatar = document.querySelector('#profilePreview') as HTMLImageElement;
-                              if (avatar) {
-                                avatar.src = result;
-                              }
-                            };
-                            reader.readAsDataURL(file);
-                          }
-                        }}
-                      />
-                      <Button 
-                        type="button" 
-                        variant="outline" 
-                        onClick={() => document.getElementById('fileUpload')?.click()}
-                        className="w-full"
-                      >
-                        <Camera className="h-4 w-4 mr-2" />
-                        Upload from Device
-                      </Button>
-                    </div>
-                    
-                    <div className="text-xs text-center text-muted-foreground">or</div>
-                    
-                    <Input 
-                      name="profileImage"
-                      type="url"
-                      placeholder="Enter image URL"
+                  <div>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      id="fileUpload"
+                      name="profileImageFile"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          const reader = new FileReader();
+                          reader.onload = (event) => {
+                            const result = event.target?.result as string;
+                            setUploadedImage(result);
+                          };
+                          reader.readAsDataURL(file);
+                        }
+                      }}
                     />
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      onClick={() => document.getElementById('fileUpload')?.click()}
+                      className="w-full"
+                    >
+                      <Camera className="h-4 w-4 mr-2" />
+                      Upload Photo from Device
+                    </Button>
                   </div>
                   
                   <p className="text-xs text-neutral-500 mt-1">
-                    Upload a photo from your device or enter an image URL
+                    Choose a photo from your device to personalize this connection
                   </p>
                 </div>
               </div>
