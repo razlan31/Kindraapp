@@ -24,13 +24,13 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
   const [editData, setEditData] = useState<Partial<Connection>>({});
   const { toast } = useToast();
 
-  if (!connection) return null;
-
-  // Fetch moments for this connection
+  // Fetch moments for this connection (must be before early return)
   const { data: moments = [] } = useQuery<Moment[]>({
     queryKey: ["/api/moments"],
-    enabled: isOpen,
+    enabled: isOpen && !!connection,
   });
+
+  if (!connection) return null;
 
   const connectionMoments = moments
     .filter(m => m.connectionId === connection.id)
