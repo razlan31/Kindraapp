@@ -37,10 +37,12 @@ export default function Calendar() {
   // Filter states for different entry types
   const [filters, setFilters] = useState({
     positive: true,
-    negative: true,
-    neutral: true,
-    conflict: true,
     intimacy: true,
+    neutral: true,
+    negative: true,
+    conflict: true,
+    plan: true,
+    milestone: true,
   });
   
   // Connection filter state
@@ -67,8 +69,8 @@ export default function Calendar() {
     }
   }, [mainFocusConnection, focusLoading, selectedConnectionId]);
   
-  // Legend collapse state
-  const [isLegendCollapsed, setIsLegendCollapsed] = useState(false);
+  // Legend collapse state - start collapsed by default
+  const [isLegendCollapsed, setIsLegendCollapsed] = useState(true);
 
   // Fetch moments with same settings as other pages
   const { data: allMoments = [], isLoading: momentsLoading, refetch: refetchMoments } = useQuery<Moment[]>({
@@ -98,16 +100,20 @@ export default function Calendar() {
     // Connection filter
     if (selectedConnectionId && moment.connectionId !== selectedConnectionId) return false;
     
-    // Check if moment is a conflict or intimacy type
+    // Check different moment types
     const isConflict = moment.tags?.includes('Conflict') || moment.emoji === '⚡';
     const isIntimacy = moment.tags?.includes('Intimacy') || moment.isIntimate || moment.emoji === '💕';
+    const isPlan = moment.tags?.includes('Plan') || moment.emoji === '📅';
+    const isMilestone = moment.isMilestone || moment.emoji === '🏆';
     
     // Type filters
     if (isConflict && !filters.conflict) return false;
     if (isIntimacy && !filters.intimacy) return false;
+    if (isPlan && !filters.plan) return false;
+    if (isMilestone && !filters.milestone) return false;
     
     // For regular moments, check emoji to determine type
-    if (!isConflict && !isIntimacy) {
+    if (!isConflict && !isIntimacy && !isPlan && !isMilestone) {
       const isPositive = ['😊', '😍', '❤️', '🥰', '💖', '✨', '🔥'].includes(moment.emoji);
       const isNegative = ['😕', '😔', '😢', '😠', '😞', '😤'].includes(moment.emoji);
       const isNeutral = ['🌱', '🗣️'].includes(moment.emoji);
@@ -346,20 +352,28 @@ export default function Calendar() {
                     <span>Positive Moments</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-orange-500"></div>
-                    <span>Negative Moments</span>
+                    <span className="text-sm">💕</span>
+                    <span>Intimacy</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="w-3 h-3 rounded-full bg-blue-500"></div>
                     <span>Neutral Moments</span>
                   </div>
                   <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-orange-500"></div>
+                    <span>Negative Moments</span>
+                  </div>
+                  <div className="flex items-center gap-2">
                     <span className="text-sm">⚡</span>
                     <span>Conflicts</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm">💕</span>
-                    <span>Intimacy</span>
+                    <span className="text-sm text-purple-500">📅</span>
+                    <span>Plans</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm">🏆</span>
+                    <span>Milestones</span>
                   </div>
                 </div>
                 
@@ -379,13 +393,13 @@ export default function Calendar() {
                     </div>
                     <div className="flex items-center space-x-2">
                       <Checkbox
-                        id="negative"
-                        checked={filters.negative}
+                        id="intimacy"
+                        checked={filters.intimacy}
                         onCheckedChange={(checked) => 
-                          setFilters(prev => ({ ...prev, negative: !!checked }))
+                          setFilters(prev => ({ ...prev, intimacy: !!checked }))
                         }
                       />
-                      <label htmlFor="negative" className="text-xs cursor-pointer">Negative</label>
+                      <label htmlFor="intimacy" className="text-xs cursor-pointer">Intimacy</label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <Checkbox
@@ -399,6 +413,16 @@ export default function Calendar() {
                     </div>
                     <div className="flex items-center space-x-2">
                       <Checkbox
+                        id="negative"
+                        checked={filters.negative}
+                        onCheckedChange={(checked) => 
+                          setFilters(prev => ({ ...prev, negative: !!checked }))
+                        }
+                      />
+                      <label htmlFor="negative" className="text-xs cursor-pointer">Negative</label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
                         id="conflict"
                         checked={filters.conflict}
                         onCheckedChange={(checked) => 
@@ -407,15 +431,25 @@ export default function Calendar() {
                       />
                       <label htmlFor="conflict" className="text-xs cursor-pointer">Conflicts</label>
                     </div>
-                    <div className="flex items-center space-x-2 col-span-2">
+                    <div className="flex items-center space-x-2">
                       <Checkbox
-                        id="intimacy"
-                        checked={filters.intimacy}
+                        id="plan"
+                        checked={filters.plan}
                         onCheckedChange={(checked) => 
-                          setFilters(prev => ({ ...prev, intimacy: !!checked }))
+                          setFilters(prev => ({ ...prev, plan: !!checked }))
                         }
                       />
-                      <label htmlFor="intimacy" className="text-xs cursor-pointer">Intimacy</label>
+                      <label htmlFor="plan" className="text-xs cursor-pointer">Plans</label>
+                    </div>
+                    <div className="flex items-center space-x-2 col-span-2">
+                      <Checkbox
+                        id="milestone"
+                        checked={filters.milestone}
+                        onCheckedChange={(checked) => 
+                          setFilters(prev => ({ ...prev, milestone: !!checked }))
+                        }
+                      />
+                      <label htmlFor="milestone" className="text-xs cursor-pointer">Milestones</label>
                     </div>
                   </div>
                 </div>
