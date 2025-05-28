@@ -20,25 +20,31 @@ interface ConnectionDetailedModalProps {
 
 export function ConnectionDetailedModal({ isOpen, onClose, connection }: ConnectionDetailedModalProps) {
   const [showEditModal, setShowEditModal] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
   const { toast } = useToast();
 
   // Use fresh connection data from the connections list
   const { data: allConnections = [], refetch: refetchConnections } = useQuery<Connection[]>({
-    queryKey: ["/api/connections"],
+    queryKey: ["/api/connections", refreshKey],
     enabled: isOpen,
   });
 
-  // Force refetch when modal opens
+  // Force refetch when modal opens or refresh key changes
   useEffect(() => {
     if (isOpen && connection?.id) {
       refetchConnections();
     }
-  }, [isOpen, connection?.id, refetchConnections]);
+  }, [isOpen, connection?.id, refreshKey, refetchConnections]);
 
   // Always use fresh connection data if available
   const currentConnection = connection?.id 
     ? (allConnections as Connection[]).find(c => c.id === connection.id) || connection
     : connection;
+
+  const handleEditSuccess = () => {
+    setRefreshKey(prev => prev + 1);
+    setShowEditModal(false);
+  };
 
   // Fetch moments for this connection (must be before early return)
   const { data: moments = [] } = useQuery<Moment[]>({
@@ -391,9 +397,7 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
       {/* Edit Modal */}
       <EditConnectionModal
         isOpen={showEditModal}
-        onClose={() => {
-          setShowEditModal(false);
-        }}
+        onClose={handleEditSuccess}
         connection={currentConnection}
       />
     </Dialog>
