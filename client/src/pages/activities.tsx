@@ -226,10 +226,8 @@ export default function Activities() {
       const isPlan = tags.includes('Plan');
       matchesTab = !isConflict && !isIntimacy && !isPlan;
     } else if (activeTab === 'conflicts') {
-      // Show conflicts - check for conflict indicators
-      matchesTab = tags.includes('Conflict') || moment.emoji === '⚡' || 
-                   (moment.isResolved !== undefined) || 
-                   (moment.resolutionNotes && moment.resolutionNotes.trim() !== '');
+      // Show conflicts - only show entries that are actually conflicts
+      matchesTab = tags.includes('Conflict') || moment.emoji === '⚡';
     } else if (activeTab === 'intimacy') {
       // Show intimacy entries
       matchesTab = moment.isIntimate === true || tags.includes('Intimacy') || moment.emoji === '💕';
