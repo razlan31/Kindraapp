@@ -162,7 +162,7 @@ export default function Connections() {
         {/* Header */}
         <section className="px-4 pt-4 pb-2 border-b border-border/40 bg-card/30 backdrop-blur-sm">
           <div className="flex items-center justify-between mb-4">
-            <div>
+            <div className="flex-1">
               <h1 className="text-2xl font-bold text-foreground">Connections</h1>
               <p className="text-sm text-muted-foreground">
                 {connections.length} people in your network
@@ -174,12 +174,10 @@ export default function Connections() {
               variant={sortMode === 'priority' ? 'default' : 'outline'}
               size="sm"
               onClick={() => setSortMode(sortMode === 'priority' ? 'grouped' : 'priority')}
-              className="ml-2"
             >
               {sortMode === 'priority' ? <Activity className="h-4 w-4 mr-1" /> : <Users className="h-4 w-4 mr-1" />}
               {sortMode === 'priority' ? 'Priority' : 'Groups'}
             </Button>
-            <Users className="h-8 w-8 text-primary" />
           </div>
         </section>
 
