@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { Header } from "@/components/layout/header";
+import { BottomNavigation } from "@/components/layout/bottom-navigation";
 import { Connection, relationshipStages } from "@shared/schema";
 import { Button } from "@/components/ui/button";
 import { useModal } from "@/contexts/modal-context";
@@ -376,6 +377,8 @@ export default function Connections() {
           isLoading={isPending}
         />
       )}
+
+      <BottomNavigation />
     </div>
   );
 }
