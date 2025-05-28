@@ -179,7 +179,7 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog key={`connection-${connection?.id}-${renderKey}`} open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl mx-auto max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center justify-between">
