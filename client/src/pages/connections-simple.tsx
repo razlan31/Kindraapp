@@ -406,6 +406,9 @@ interface AddConnectionModalProps {
 }
 
 function AddConnectionModal({ onClose, onSubmit, isLoading }: AddConnectionModalProps) {
+  const [profileImage, setProfileImage] = useState<string>('');
+  const [previewName, setPreviewName] = useState<string>('');
+
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <div className="bg-white dark:bg-neutral-800 rounded-lg w-full max-w-md max-h-[80vh] overflow-y-auto">
@@ -422,9 +425,40 @@ function AddConnectionModal({ onClose, onSubmit, isLoading }: AddConnectionModal
           e.preventDefault();
           onSubmit(new FormData(e.currentTarget));
         }} className="p-4 space-y-4">
+          {/* Profile Picture Preview */}
+          <div className="flex flex-col items-center mb-6">
+            <div className="relative mb-3">
+              {profileImage ? (
+                <img 
+                  src={profileImage} 
+                  alt="Profile preview"
+                  className="w-20 h-20 rounded-full object-cover border-2 border-border"
+                />
+              ) : (
+                <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center border-2 border-border">
+                  {previewName ? (
+                    <span className="text-2xl font-medium text-primary">
+                      {previewName.charAt(0).toUpperCase()}
+                    </span>
+                  ) : (
+                    <Camera className="h-8 w-8 text-muted-foreground" />
+                  )}
+                </div>
+              )}
+            </div>
+            <p className="text-xs text-muted-foreground text-center">
+              Profile picture preview
+            </p>
+          </div>
+
           <div>
             <label className="block text-sm font-medium mb-1">Name *</label>
-            <Input name="name" required placeholder="Enter their name" />
+            <Input 
+              name="name" 
+              required 
+              placeholder="Enter their name"
+              onChange={(e) => setPreviewName(e.target.value)}
+            />
           </div>
           
           <div>
@@ -479,7 +513,13 @@ function AddConnectionModal({ onClose, onSubmit, isLoading }: AddConnectionModal
           
           <div>
             <label className="block text-sm font-medium mb-1">Profile Image URL</label>
-            <Input name="profileImage" type="url" placeholder="https://example.com/image.jpg" />
+            <Input 
+              name="profileImage" 
+              type="url" 
+              placeholder="https://example.com/image.jpg" 
+              value={profileImage}
+              onChange={(e) => setProfileImage(e.target.value)}
+            />
           </div>
           
           <div className="flex items-center space-x-2">
