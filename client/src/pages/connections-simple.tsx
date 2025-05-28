@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useModal } from "@/contexts/modal-context";
 import { useRelationshipFocus } from "@/contexts/relationship-focus-context";
 import { Input } from "@/components/ui/input";
-import { Search, Plus, X, Camera, Heart, Users, Clock, Activity } from "lucide-react";
+import { Search, Plus, X, Camera, Heart, Users, Clock, Activity, Calendar } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -275,25 +275,35 @@ export default function Connections() {
                 />
               </div>
               
-              <div className="space-y-2">
-                <label className="block text-sm font-medium">Profile Photo</label>
-                <div className="border border-dashed border-neutral-300 dark:border-neutral-700 rounded-lg p-4 flex flex-col items-center">
-                  <div className="h-16 w-16 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-2">
-                    <Camera className="h-6 w-6 text-neutral-400" />
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Profile Image
+                </label>
+                <div className="mb-4">
+                  <div className="flex items-center justify-center mb-3">
+                    <div className="h-20 w-20 border-2 border-blue-100 dark:border-blue-900 rounded-full bg-blue-50 dark:bg-blue-950 flex items-center justify-center">
+                      <Camera className="h-6 w-6 text-blue-500" />
+                    </div>
                   </div>
                   <Input 
                     name="profileImage"
                     type="url"
                     placeholder="Enter image URL"
-                    className="mt-2"
                   />
+                  <p className="text-xs text-neutral-500 mt-1">
+                    Add a photo to personalize this connection
+                  </p>
                 </div>
-                <p className="text-sm text-gray-500">Choose a profile photo for this connection</p>
               </div>
               
-              <div className="space-y-2">
-                <label className="block text-sm font-medium">Relationship Stage</label>
-                <select name="relationshipStage" className="w-full p-2 border rounded-md bg-background">
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Relationship Stage <span className="text-red-500">*</span>
+                </label>
+                <select
+                  name="relationshipStage"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md"
+                >
                   {relationshipStages.map((stage) => (
                     <option key={stage} value={stage}>
                       {stage}
@@ -302,20 +312,42 @@ export default function Connections() {
                 </select>
               </div>
               
-              <div className="space-y-2">
-                <label className="block text-sm font-medium">Started talking/dating</label>
-                <Input 
-                  name="startDate"
-                  type="date" 
-                />
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  When did you start this connection?
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                    <Calendar className="h-4 w-4 text-gray-400" />
+                  </div>
+                  <Input
+                    name="startDate"
+                    type="date"
+                    className="pl-10"
+                  />
+                </div>
+                <p className="text-xs text-neutral-500 mt-1">
+                  Track when you first connected with this person
+                </p>
               </div>
 
-              <div className="space-y-2">
-                <label className="block text-sm font-medium">Birthday</label>
-                <Input 
-                  name="birthday"
-                  type="date" 
-                />
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Birthday
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                    <Calendar className="h-4 w-4 text-gray-400" />
+                  </div>
+                  <Input
+                    name="birthday"
+                    type="date"
+                    className="pl-10"
+                  />
+                </div>
+                <p className="text-xs text-neutral-500 mt-1">
+                  Remember important dates
+                </p>
               </div>
               
               <div className="space-y-3 bg-neutral-50 dark:bg-neutral-900 p-4 rounded-lg">
