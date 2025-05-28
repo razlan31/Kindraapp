@@ -272,6 +272,29 @@ export default function Connections() {
             }} className="p-4 space-y-6">
               <div>
                 <label className="block text-sm font-medium mb-2">
+                  Profile Image
+                </label>
+                <div className="mb-4">
+                  <div className="flex items-center justify-center mb-3">
+                    <Avatar className="h-20 w-20 border-2 border-blue-100 dark:border-blue-900">
+                      <AvatarFallback className="bg-blue-50 dark:bg-blue-950 text-blue-500">
+                        <Camera className="h-6 w-6" />
+                      </AvatarFallback>
+                    </Avatar>
+                  </div>
+                  <Input 
+                    name="profileImage"
+                    type="url"
+                    placeholder="Enter image URL"
+                  />
+                  <p className="text-xs text-neutral-500 mt-1">
+                    Add a photo to personalize this connection
+                  </p>
+                </div>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium mb-2">
                   Name <span className="text-red-500">*</span>
                 </label>
                 <Input
@@ -315,29 +338,6 @@ export default function Connections() {
                 <p className="text-xs text-neutral-500 mt-1">
                   Track when you first connected with this person
                 </p>
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium mb-2">
-                  Profile Image
-                </label>
-                <div className="mb-4">
-                  <div className="flex items-center justify-center mb-3">
-                    <Avatar className="h-20 w-20 border-2 border-blue-100 dark:border-blue-900">
-                      <AvatarFallback className="bg-blue-50 dark:bg-blue-950 text-blue-500">
-                        <Camera className="h-6 w-6" />
-                      </AvatarFallback>
-                    </Avatar>
-                  </div>
-                  <Input 
-                    name="profileImage"
-                    type="url"
-                    placeholder="Enter image URL"
-                  />
-                  <p className="text-xs text-neutral-500 mt-1">
-                    Add a photo to personalize this connection
-                  </p>
-                </div>
               </div>
 
               <div>

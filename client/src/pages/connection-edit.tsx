@@ -224,54 +224,6 @@ export default function ConnectionEdit() {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label className="block text-sm font-medium mb-2">
-                Name <span className="text-red-500">*</span>
-              </label>
-              <Input
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Enter name"
-                className="w-full"
-                autoFocus
-              />
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium mb-2">
-                Relationship Stage <span className="text-red-500">*</span>
-              </label>
-              <select
-                value={stage}
-                onChange={(e) => setStage(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md"
-              >
-                {relationshipStages.map((s) => (
-                  <option key={s} value={s}>{s}</option>
-                ))}
-              </select>
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium mb-2">
-                When did you start this connection?
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                  <Calendar className="h-4 w-4 text-gray-400" />
-                </div>
-                <Input
-                  type="date"
-                  value={startDate || ''}
-                  onChange={(e) => setStartDate(e.target.value || null)}
-                  className="pl-10"
-                />
-              </div>
-              <p className="text-xs text-neutral-500 mt-1">
-                Track when you first connected with this person
-              </p>
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium mb-2">
                 Profile Image
               </label>
               <div className="mb-4">
@@ -350,6 +302,54 @@ export default function ConnectionEdit() {
                   </TabsContent>
                 </Tabs>
               </div>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Name <span className="text-red-500">*</span>
+              </label>
+              <Input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Enter name"
+                className="w-full"
+                autoFocus
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Relationship Stage <span className="text-red-500">*</span>
+              </label>
+              <select
+                value={stage}
+                onChange={(e) => setStage(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md"
+              >
+                {relationshipStages.map((s) => (
+                  <option key={s} value={s}>{s}</option>
+                ))}
+              </select>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                When did you start this connection?
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                  <Calendar className="h-4 w-4 text-gray-400" />
+                </div>
+                <Input
+                  type="date"
+                  value={startDate || ''}
+                  onChange={(e) => setStartDate(e.target.value || null)}
+                  className="pl-10"
+                />
+              </div>
+              <p className="text-xs text-neutral-500 mt-1">
+                Track when you first connected with this person
+              </p>
             </div>
             
             <div>
