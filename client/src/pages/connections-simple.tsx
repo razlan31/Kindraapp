@@ -10,6 +10,7 @@ import { useRelationshipFocus } from "@/contexts/relationship-focus-context";
 import { Input } from "@/components/ui/input";
 import { Search, Plus, X, Camera, Heart, Users, Clock, Activity, Calendar } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 
@@ -265,35 +266,17 @@ export default function Connections() {
               e.preventDefault();
               const formData = new FormData(e.currentTarget);
               handleAddConnection(formData);
-            }} className="p-4 space-y-4">
-              <div className="space-y-2">
-                <label className="block text-sm font-medium">Name</label>
-                <Input 
-                  name="name"
-                  required
-                  placeholder="Enter name" 
-                />
-              </div>
-              
+            }} className="p-4 space-y-6">
               <div>
                 <label className="block text-sm font-medium mb-2">
-                  Profile Image
+                  Name <span className="text-red-500">*</span>
                 </label>
-                <div className="mb-4">
-                  <div className="flex items-center justify-center mb-3">
-                    <div className="h-20 w-20 border-2 border-blue-100 dark:border-blue-900 rounded-full bg-blue-50 dark:bg-blue-950 flex items-center justify-center">
-                      <Camera className="h-6 w-6 text-blue-500" />
-                    </div>
-                  </div>
-                  <Input 
-                    name="profileImage"
-                    type="url"
-                    placeholder="Enter image URL"
-                  />
-                  <p className="text-xs text-neutral-500 mt-1">
-                    Add a photo to personalize this connection
-                  </p>
-                </div>
+                <Input
+                  name="name"
+                  required
+                  placeholder="Enter name"
+                  className="w-full"
+                />
               </div>
               
               <div>
@@ -329,6 +312,29 @@ export default function Connections() {
                 <p className="text-xs text-neutral-500 mt-1">
                   Track when you first connected with this person
                 </p>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Profile Image
+                </label>
+                <div className="mb-4">
+                  <div className="flex items-center justify-center mb-3">
+                    <Avatar className="h-20 w-20 border-2 border-blue-100 dark:border-blue-900">
+                      <AvatarFallback className="bg-blue-50 dark:bg-blue-950 text-blue-500">
+                        <Camera className="h-6 w-6" />
+                      </AvatarFallback>
+                    </Avatar>
+                  </div>
+                  <Input 
+                    name="profileImage"
+                    type="url"
+                    placeholder="Enter image URL"
+                  />
+                  <p className="text-xs text-neutral-500 mt-1">
+                    Add a photo to personalize this connection
+                  </p>
+                </div>
               </div>
 
               <div>
