@@ -18,6 +18,7 @@ export default function Connections() {
   const [searchTerm, setSearchTerm] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
   const [selectedStage, setSelectedStage] = useState<string>("all");
+  const [uploadedImage, setUploadedImage] = useState<string>('');
   const { openMomentModal, openConnectionModal } = useModal();
   const { mainFocusConnection, setMainFocusConnection } = useRelationshipFocus();
   const { toast } = useToast();
@@ -282,13 +283,52 @@ export default function Connections() {
                       </AvatarFallback>
                     </Avatar>
                   </div>
-                  <Input 
-                    name="profileImage"
-                    type="url"
-                    placeholder="Enter image URL"
-                  />
+                  
+                  <div className="space-y-2">
+                    <div>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        id="fileUpload"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            const reader = new FileReader();
+                            reader.onload = (event) => {
+                              const result = event.target?.result as string;
+                              // Update the avatar preview
+                              const avatar = document.querySelector('#profilePreview') as HTMLImageElement;
+                              if (avatar) {
+                                avatar.src = result;
+                              }
+                            };
+                            reader.readAsDataURL(file);
+                          }
+                        }}
+                      />
+                      <Button 
+                        type="button" 
+                        variant="outline" 
+                        onClick={() => document.getElementById('fileUpload')?.click()}
+                        className="w-full"
+                      >
+                        <Camera className="h-4 w-4 mr-2" />
+                        Upload from Device
+                      </Button>
+                    </div>
+                    
+                    <div className="text-xs text-center text-muted-foreground">or</div>
+                    
+                    <Input 
+                      name="profileImage"
+                      type="url"
+                      placeholder="Enter image URL"
+                    />
+                  </div>
+                  
                   <p className="text-xs text-neutral-500 mt-1">
-                    Add a photo to personalize this connection
+                    Upload a photo from your device or enter an image URL
                   </p>
                 </div>
               </div>
