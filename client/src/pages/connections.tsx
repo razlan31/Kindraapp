@@ -15,10 +15,7 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 
 export default function Connections() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [filterStage, setFilterStage] = useState<string | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
-  const [viewMode, setViewMode] = useState<'connections' | 'activity' | 'stages' | 'timeline'>('connections');
-  const [perspectiveMode, setPerspectiveMode] = useState<'people' | 'activities'>('people');
   const { openMomentModal, openConnectionModal } = useModal();
   const { mainFocusConnection, setMainFocusConnection } = useRelationshipFocus();
   const { toast } = useToast();
@@ -160,84 +157,17 @@ export default function Connections() {
       <Header />
 
       <main className="flex-1 overflow-y-auto pb-20">
-        {/* Header with View Switcher */}
+        {/* Header */}
         <section className="px-4 pt-4 pb-2 border-b border-border/40 bg-card/30 backdrop-blur-sm">
           <div className="flex items-center justify-between mb-4">
             <div>
               <h1 className="text-2xl font-bold text-foreground">Connections</h1>
               <p className="text-sm text-muted-foreground">
-                Manage and explore your relationships
+                {connections.length} people in your network
               </p>
             </div>
-            
-            {/* Perspective Mode Toggle */}
-            <div className="bg-muted rounded-lg p-1 flex">
-              <button
-                onClick={() => setPerspectiveMode('people')}
-                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors flex items-center gap-1.5 ${
-                  perspectiveMode === 'people'
-                    ? 'bg-background text-foreground shadow-sm'
-                    : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                <Users className="h-4 w-4" />
-                People
-              </button>
-              <button
-                onClick={() => setPerspectiveMode('activities')}
-                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors flex items-center gap-1.5 ${
-                  perspectiveMode === 'activities'
-                    ? 'bg-background text-foreground shadow-sm'
-                    : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                <Calendar className="h-4 w-4" />
-                Activities
-              </button>
-            </div>
+            <Users className="h-8 w-8 text-primary" />
           </div>
-
-          {/* View Mode Switcher - Only show in People perspective */}
-          {perspectiveMode === 'people' && (
-          <div className="flex gap-1 mb-4 p-1 bg-muted rounded-lg">
-            <Button
-              variant={viewMode === 'connections' ? 'default' : 'ghost'}
-              size="sm"
-              className="flex-1 text-xs"
-              onClick={() => setViewMode('connections')}
-            >
-              <Users className="h-3 w-3 mr-1" />
-              All
-            </Button>
-            <Button
-              variant={viewMode === 'activity' ? 'default' : 'ghost'}
-              size="sm"
-              className="flex-1 text-xs"
-              onClick={() => setViewMode('activity')}
-            >
-              <Activity className="h-3 w-3 mr-1" />
-              Activity
-            </Button>
-            <Button
-              variant={viewMode === 'stages' ? 'default' : 'ghost'}
-              size="sm"
-              className="flex-1 text-xs"
-              onClick={() => setViewMode('stages')}
-            >
-              <BarChart3 className="h-3 w-3 mr-1" />
-              Stages
-            </Button>
-            <Button
-              variant={viewMode === 'timeline' ? 'default' : 'ghost'}
-              size="sm"
-              className="flex-1 text-xs"
-              onClick={() => setViewMode('timeline')}
-            >
-              <Clock className="h-3 w-3 mr-1" />
-              Timeline
-            </Button>
-          </div>
-          )}
         </section>
 
         {/* Search and Filter Section */}
