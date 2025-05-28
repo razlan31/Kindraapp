@@ -196,96 +196,34 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
                 <Users className="h-4 w-4" />
                 Basic Information
               </h3>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-medium">Name</label>
-                  {editMode ? (
-                    <Input
-                      value={editData.name || ''}
-                      onChange={(e) => handleEditChange('name', e.target.value)}
-                      className="mt-1"
-                    />
-                  ) : (
-                    <div className="text-sm mt-1">{connection.name}</div>
-                  )}
-                </div>
-                <div>
-                  <label className="text-sm font-medium">Relationship Stage</label>
-                  {editMode ? (
-                    <Input
-                      value={editData.relationshipStage || ''}
-                      onChange={(e) => handleEditChange('relationshipStage', e.target.value)}
-                      className="mt-1"
-                    />
-                  ) : (
-                    <div className="text-sm mt-1">{connection.relationshipStage}</div>
-                  )}
-                </div>
-                <div>
-                  <label className="text-sm font-medium">Start Date</label>
-                  {editMode ? (
-                    <Input
-                      type="date"
-                      value={editData.startDate ? format(new Date(editData.startDate), 'yyyy-MM-dd') : ''}
-                      onChange={(e) => handleEditChange('startDate', new Date(e.target.value))}
-                      className="mt-1"
-                    />
-                  ) : (
-                    <div className="text-sm mt-1">{formatDate(connection.startDate)}</div>
-                  )}
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Started:</span>
+                  <span>{formatDate(connection.startDate)}</span>
                 </div>
                 {duration && (
-                  <div>
-                    <label className="text-sm font-medium">Duration</label>
-                    <div className="text-sm mt-1">{duration}</div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Duration:</span>
+                    <span>{duration}</span>
                   </div>
                 )}
-                <div>
-                  <label className="text-sm font-medium">Birthday</label>
-                  {editMode ? (
-                    <Input
-                      type="date"
-                      value={editData.birthday ? format(new Date(editData.birthday), 'yyyy-MM-dd') : ''}
-                      onChange={(e) => handleEditChange('birthday', new Date(e.target.value))}
-                      className="mt-1"
-                    />
-                  ) : (
-                    <div className="text-sm mt-1">{formatDate(connection.birthday)}</div>
-                  )}
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Birthday:</span>
+                  <span>{formatDate(connection.birthday)}</span>
                 </div>
-                <div>
-                  <label className="text-sm font-medium">Zodiac Sign</label>
-                  {editMode ? (
-                    <Input
-                      value={editData.zodiacSign || ''}
-                      onChange={(e) => handleEditChange('zodiacSign', e.target.value)}
-                      className="mt-1"
-                    />
-                  ) : (
-                    <div className="text-sm mt-1">{connection.zodiacSign || 'Not set'}</div>
-                  )}
-                </div>
-                <div>
-                  <label className="text-sm font-medium">Love Language</label>
-                  {editMode ? (
-                    <Input
-                      value={editData.loveLanguage || ''}
-                      onChange={(e) => handleEditChange('loveLanguage', e.target.value)}
-                      className="mt-1"
-                    />
-                  ) : (
-                    <div className="text-sm mt-1">{connection.loveLanguage || 'Not set'}</div>
-                  )}
-                </div>
+                {connection.zodiacSign && (
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Zodiac:</span>
+                    <span>{connection.zodiacSign}</span>
+                  </div>
+                )}
+                {connection.loveLanguage && (
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Love Language:</span>
+                    <span className="text-right">{connection.loveLanguage}</span>
+                  </div>
+                )}
               </div>
-
-              {editMode && (
-                <div className="mt-4 flex gap-2">
-                  <Button onClick={handleSave} disabled={updateConnection.isPending}>
-                    {updateConnection.isPending ? 'Saving...' : 'Save Changes'}
-                  </Button>
-                </div>
-              )}
             </Card>
 
             {/* Quick Stats */}
