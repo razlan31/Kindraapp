@@ -360,20 +360,20 @@ export default function Calendar() {
                     <span>Milestones</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-orange-500"></div>
-                    <span>Negative Moments</span>
+                    <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+                    <span>Neutral Moments</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-sm">💕</span>
                     <span>Intimacy</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm text-purple-500">📅</span>
-                    <span>Plans</span>
+                    <div className="w-3 h-3 rounded-full bg-orange-500"></div>
+                    <span>Negative Moments</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-                    <span>Neutral Moments</span>
+                    <span className="text-sm text-purple-500">📅</span>
+                    <span>Plans</span>
                   </div>
                 </div>
                 
@@ -413,13 +413,13 @@ export default function Calendar() {
                     </div>
                     <div className="flex items-center space-x-2">
                       <Checkbox
-                        id="negative"
-                        checked={filters.negative}
+                        id="neutral"
+                        checked={filters.neutral}
                         onCheckedChange={(checked) => 
-                          setFilters(prev => ({ ...prev, negative: !!checked }))
+                          setFilters(prev => ({ ...prev, neutral: !!checked }))
                         }
                       />
-                      <label htmlFor="negative" className="text-xs cursor-pointer">Negative</label>
+                      <label htmlFor="neutral" className="text-xs cursor-pointer">Neutral</label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <Checkbox
@@ -433,6 +433,16 @@ export default function Calendar() {
                     </div>
                     <div className="flex items-center space-x-2">
                       <Checkbox
+                        id="negative"
+                        checked={filters.negative}
+                        onCheckedChange={(checked) => 
+                          setFilters(prev => ({ ...prev, negative: !!checked }))
+                        }
+                      />
+                      <label htmlFor="negative" className="text-xs cursor-pointer">Negative</label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
                         id="plan"
                         checked={filters.plan}
                         onCheckedChange={(checked) => 
@@ -440,16 +450,6 @@ export default function Calendar() {
                         }
                       />
                       <label htmlFor="plan" className="text-xs cursor-pointer">Plans</label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="neutral"
-                        checked={filters.neutral}
-                        onCheckedChange={(checked) => 
-                          setFilters(prev => ({ ...prev, neutral: !!checked }))
-                        }
-                      />
-                      <label htmlFor="neutral" className="text-xs cursor-pointer">Neutral</label>
                     </div>
                   </div>
                 </div>
