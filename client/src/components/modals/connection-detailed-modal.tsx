@@ -4,13 +4,12 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Calendar, Heart, MessageCircle, Sparkles, Edit, Trash2, Activity, Clock, TrendingUp, Users } from 'lucide-react';
 import { format } from 'date-fns';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
+import { EditConnectionModal } from './edit-connection-modal';
 import type { Connection, Moment } from '@shared/schema';
 
 interface ConnectionDetailedModalProps {
@@ -20,8 +19,7 @@ interface ConnectionDetailedModalProps {
 }
 
 export function ConnectionDetailedModal({ isOpen, onClose, connection }: ConnectionDetailedModalProps) {
-  const [editMode, setEditMode] = useState(false);
-  const [editData, setEditData] = useState<Partial<Connection>>({});
+  const [showEditModal, setShowEditModal] = useState(false);
   const { toast } = useToast();
 
   // Fetch moments for this connection (must be before early return)
@@ -167,22 +165,7 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
                 </Badge>
               </div>
             </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                if (editMode) {
-                  setEditMode(false);
-                  setEditData({});
-                } else {
-                  setEditMode(true);
-                  setEditData(connection);
-                }
-              }}
-            >
-              <Edit className="h-4 w-4 mr-2" />
-              {editMode ? 'Cancel' : 'Edit'}
-            </Button>
+
           </DialogTitle>
         </DialogHeader>
 
@@ -195,6 +178,18 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
           </TabsList>
 
           <TabsContent value="overview" className="space-y-4">
+            {/* Edit Button */}
+            <div className="flex justify-end mb-4">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowEditModal(true)}
+              >
+                <Edit className="h-4 w-4 mr-2" />
+                Edit Connection
+              </Button>
+            </div>
+
             {/* Basic Information */}
             <Card className="p-4">
               <h3 className="font-semibold mb-3 flex items-center gap-2">
@@ -436,6 +431,13 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
           </TabsContent>
         </Tabs>
       </DialogContent>
+
+      {/* Edit Modal */}
+      <EditConnectionModal
+        isOpen={showEditModal}
+        onClose={() => setShowEditModal(false)}
+        connection={connection}
+      />
     </Dialog>
   );
 }

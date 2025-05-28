@@ -208,13 +208,41 @@ export function EditConnectionModal({ isOpen, onClose, connection }: EditConnect
                 />
               </div>
               <div>
-                <Label htmlFor="loveLanguage">Love Language</Label>
-                <Input
-                  id="loveLanguage"
-                  value={editData.loveLanguage || ''}
-                  onChange={(e) => handleEditChange('loveLanguage', e.target.value)}
-                  className="mt-1"
-                />
+                <Label htmlFor="loveLanguages">Love Languages</Label>
+                <div className="mt-2 space-y-2">
+                  {["Words of Affirmation", "Quality Time", "Physical Touch", "Acts of Service", "Receiving Gifts"].map((language) => {
+                    const currentLanguages = editData.loveLanguage ? editData.loveLanguage.split(', ') : [];
+                    const isSelected = currentLanguages.includes(language);
+                    
+                    return (
+                      <div key={language} className="flex items-center space-x-2">
+                        <input
+                          type="checkbox"
+                          id={`love-${language.replace(/\s+/g, '-').toLowerCase()}`}
+                          checked={isSelected}
+                          onChange={(e) => {
+                            let newLanguages = [...currentLanguages];
+                            if (e.target.checked) {
+                              if (!newLanguages.includes(language)) {
+                                newLanguages.push(language);
+                              }
+                            } else {
+                              newLanguages = newLanguages.filter(l => l !== language);
+                            }
+                            handleEditChange('loveLanguage', newLanguages.join(', '));
+                          }}
+                          className="rounded"
+                        />
+                        <Label
+                          htmlFor={`love-${language.replace(/\s+/g, '-').toLowerCase()}`}
+                          className="text-sm font-normal cursor-pointer"
+                        >
+                          {language}
+                        </Label>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             </div>
           </Card>
