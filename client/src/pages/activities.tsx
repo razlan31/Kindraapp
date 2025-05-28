@@ -36,7 +36,6 @@ export default function Activities() {
   const [activeTab, setActiveTab] = useState<'moments' | 'conflicts' | 'intimacy' | 'plans' | 'timeline'>('moments');
   const [timelineFilter, setTimelineFilter] = useState<'all' | 'moments' | 'conflicts' | 'intimacy' | 'plans'>('all');
   const [refreshTrigger, setRefreshTrigger] = useState(0);
-  const [viewMode, setViewMode] = useState<'activity' | 'people'>('activity');
 
   // Handle navigation connection filtering and focus connection
   const [hasUserSelectedConnection, setHasUserSelectedConnection] = useState(false);
@@ -287,40 +286,69 @@ export default function Activities() {
       <Header />
 
       <main className="flex-1 overflow-y-auto pb-20">
-        {/* Page Title and Connection Picker */}
+        {/* Page Title */}
         <div className="px-4 pt-4 pb-2">
           <div className="flex items-center justify-between mb-4">
             <h1 className="text-2xl font-bold">Activities</h1>
-            
-            {/* View Mode Toggle */}
-            <div className="bg-muted rounded-lg p-1 flex">
-              <button
-                onClick={() => setViewMode('activity')}
-                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors flex items-center gap-1.5 ${
-                  viewMode === 'activity'
-                    ? 'bg-background text-foreground shadow-sm'
-                    : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                <Activity className="h-4 w-4" />
-                Activity
-              </button>
-              <button
-                onClick={() => setViewMode('people')}
-                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors flex items-center gap-1.5 ${
-                  viewMode === 'people'
-                    ? 'bg-background text-foreground shadow-sm'
-                    : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                <Users className="h-4 w-4" />
-                People
-              </button>
-            </div>
           </div>
           
-          {/* Connection Picker - Primary Selection (Only show in Activity mode) */}
-          {viewMode === 'activity' && (
+
+          
+          {/* Activity Types */}
+          <div className="grid grid-cols-5 gap-1 bg-muted rounded-lg p-1 mb-3">
+            <button 
+              onClick={() => setActiveTab('timeline')}
+              className={`py-2 px-2 rounded-md text-xs font-medium transition-colors ${
+                activeTab === 'timeline' 
+                  ? 'bg-background text-foreground shadow-sm' 
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              Timeline
+            </button>
+            <button 
+              onClick={() => setActiveTab('moments')}
+              className={`py-2 px-2 rounded-md text-xs font-medium transition-colors ${
+                activeTab === 'moments' 
+                  ? 'bg-background text-foreground shadow-sm' 
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              Moments
+            </button>
+            <button 
+              onClick={() => setActiveTab('conflicts')}
+              className={`py-2 px-2 rounded-md text-xs font-medium transition-colors ${
+                activeTab === 'conflicts' 
+                  ? 'bg-background text-foreground shadow-sm' 
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              Conflicts
+            </button>
+            <button 
+              onClick={() => setActiveTab('intimacy')}
+              className={`py-2 px-2 rounded-md text-xs font-medium transition-colors ${
+                activeTab === 'intimacy' 
+                  ? 'bg-background text-foreground shadow-sm' 
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              Intimacy
+            </button>
+            <button 
+              onClick={() => setActiveTab('plans')}
+              className={`py-2 px-2 rounded-md text-xs font-medium transition-colors ${
+                activeTab === 'plans' 
+                  ? 'bg-background text-foreground shadow-sm' 
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              Plans
+            </button>
+          </div>
+
+          {/* Connection Picker */}
           <Card className="p-4 bg-card/50 backdrop-blur-sm mb-4">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm font-medium">Viewing activities for</h3>
@@ -388,66 +416,9 @@ export default function Activities() {
               </DropdownMenuContent>
             </DropdownMenu>
           </Card>
-          )}
-          
-          {/* Activity Types - Only show in Activity mode */}
-          {viewMode === 'activity' && (
-          <div className="grid grid-cols-5 gap-1 bg-muted rounded-lg p-1 mb-3">
-            <button 
-              onClick={() => setActiveTab('timeline')}
-              className={`py-2 px-2 rounded-md text-xs font-medium transition-colors ${
-                activeTab === 'timeline' 
-                  ? 'bg-background text-foreground shadow-sm' 
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              Timeline
-            </button>
-            <button 
-              onClick={() => setActiveTab('moments')}
-              className={`py-2 px-2 rounded-md text-xs font-medium transition-colors ${
-                activeTab === 'moments' 
-                  ? 'bg-background text-foreground shadow-sm' 
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              Moments
-            </button>
-            <button 
-              onClick={() => setActiveTab('conflicts')}
-              className={`py-2 px-2 rounded-md text-xs font-medium transition-colors ${
-                activeTab === 'conflicts' 
-                  ? 'bg-background text-foreground shadow-sm' 
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              Conflicts
-            </button>
-            <button 
-              onClick={() => setActiveTab('intimacy')}
-              className={`py-2 px-2 rounded-md text-xs font-medium transition-colors ${
-                activeTab === 'intimacy' 
-                  ? 'bg-background text-foreground shadow-sm' 
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              Intimacy
-            </button>
-            <button 
-              onClick={() => setActiveTab('plans')}
-              className={`py-2 px-2 rounded-md text-xs font-medium transition-colors ${
-                activeTab === 'plans' 
-                  ? 'bg-background text-foreground shadow-sm' 
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              Plans
-            </button>
-          </div>
-          )}
 
           {/* Add Button for Active Tab - Hide for Timeline */}
-          {viewMode === 'activity' && activeTab !== 'timeline' && (
+          {activeTab !== 'timeline' && (
             <div className="mb-4">
               <Button onClick={() => {
                 console.log("Add button clicked:", { activeTab, selectedConnection, connectionsLength: connections.length });
