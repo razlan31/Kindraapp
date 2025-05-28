@@ -108,14 +108,9 @@ export function ConnectionDetailsModal({ isOpen, onClose, connection }: Connecti
             )}
             <div>
               <h2 className="text-xl font-bold">{connection.name}</h2>
-              <div className="flex items-center gap-2">
-                <Badge variant="secondary" className="text-xs">
-                  {connection.relationshipStage}
-                </Badge>
-                <Badge variant="outline" className="text-xs text-muted-foreground">
-                  {duration || 'No duration'}
-                </Badge>
-              </div>
+              <Badge variant="secondary" className="text-xs">
+                {connection.relationshipStage}
+              </Badge>
             </div>
           </DialogTitle>
         </DialogHeader>
@@ -132,6 +127,12 @@ export function ConnectionDetailsModal({ isOpen, onClose, connection }: Connecti
                 <span className="text-muted-foreground">Started:</span>
                 <span>{formatDate(connection.startDate)}</span>
               </div>
+              {duration && (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Duration:</span>
+                  <span>{duration}</span>
+                </div>
+              )}
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Birthday:</span>
                 <span>{formatDate(connection.birthday)}</span>
