@@ -15,6 +15,7 @@ import { Connection, Moment } from "@shared/schema";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { useModal } from "@/contexts/modal-context";
 import { z } from "zod";
 import { 
   DropdownMenu, 
@@ -48,6 +49,7 @@ type PlanFormData = z.infer<typeof planSchema>;
 
 export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, showConnectionPicker = true, editingMoment }: PlanModalProps) {
   const { toast } = useToast();
+  const { selectedDate: contextSelectedDate } = useModal();
   const queryClient = useQueryClient();
   
   // Local connection state for picker
@@ -93,7 +95,7 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
     enabled: isOpen, // Only fetch when modal is open
   });
 
-  // Initialize form data when editing an existing plan
+  // Initialize form data when editing an existing plan or creating new one
   useEffect(() => {
     if (editingMoment && isOpen && connections.length > 0) {
       // Find the connection for the editing moment
@@ -114,11 +116,11 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
       // Set the connection for the picker
       setLocalSelectedConnection(momentConnection || selectedConnection);
     } else if (!editingMoment && isOpen) {
-      // Reset form for new plans
+      // Reset form for new plans - use selectedDate from modal context if available
       setFormData({
         title: "",
         description: "",
-        scheduledDate: selectedDate || new Date(),
+        scheduledDate: contextSelectedDate || selectedDate || new Date(),
         connectionId: localSelectedConnection?.id || selectedConnection?.id,
         notes: "",
         isCompleted: false
