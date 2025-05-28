@@ -8,6 +8,8 @@ import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar as DatePicker } from "@/components/ui/calendar";
 import { ChevronLeft, ChevronRight, Heart, Calendar as CalendarIcon, Plus, Eye, ChevronDown, ChevronUp } from "lucide-react";
 import { useAuth } from "@/contexts/auth-context";
 import { useModal } from "@/contexts/modal-context";
@@ -28,6 +30,7 @@ export default function Calendar() {
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
   const [dayDetailOpen, setDayDetailOpen] = useState(false);
   const [viewMode, setViewMode] = useState<'daily' | 'weekly' | 'monthly'>('monthly');
+  const [datePickerOpen, setDatePickerOpen] = useState(false);
   
   // Entry detail modal state
   const [selectedEntry, setSelectedEntry] = useState<Moment | null>(null);
@@ -333,9 +336,31 @@ export default function Calendar() {
             <Button variant="outline" size="icon" onClick={navigatePrevious}>
               <ChevronLeft className="h-4 w-4" />
             </Button>
-            <h2 className="text-xl font-semibold">
-              {getViewTitle()}
-            </h2>
+            <div className="flex items-center gap-2">
+              <h2 className="text-xl font-semibold">
+                {getViewTitle()}
+              </h2>
+              <Popover open={datePickerOpen} onOpenChange={setDatePickerOpen}>
+                <PopoverTrigger asChild>
+                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                    <CalendarIcon className="h-4 w-4 text-muted-foreground" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="center">
+                  <DatePicker
+                    mode="single"
+                    selected={currentDate}
+                    onSelect={(date) => {
+                      if (date) {
+                        setCurrentDate(date);
+                        setDatePickerOpen(false);
+                      }
+                    }}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
             <Button variant="outline" size="icon" onClick={navigateNext}>
               <ChevronRight className="h-4 w-4" />
             </Button>
