@@ -384,9 +384,6 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
         isOpen={showEditModal}
         onClose={() => {
           setShowEditModal(false);
-          // Force immediate refresh of connection data
-          queryClient.invalidateQueries({ queryKey: ['/api/connections'] });
-          refetch();
         }}
         connection={currentConnection}
       />

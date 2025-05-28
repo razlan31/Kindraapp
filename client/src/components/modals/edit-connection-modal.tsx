@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -20,10 +20,19 @@ interface EditConnectionModalProps {
 }
 
 export function EditConnectionModal({ isOpen, onClose, connection }: EditConnectionModalProps) {
-  const [editData, setEditData] = useState<Partial<Connection>>(connection || {});
+  const [editData, setEditData] = useState<Partial<Connection>>({});
   const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const { toast } = useToast();
+
+  // Initialize editData when connection changes
+  useEffect(() => {
+    if (connection && isOpen) {
+      setEditData(connection);
+      setPreviewImage(null);
+      setProfileImageFile(null);
+    }
+  }, [connection, isOpen]);
 
   // Update connection mutation
   const updateConnection = useMutation({
@@ -42,6 +51,7 @@ export function EditConnectionModal({ isOpen, onClose, connection }: EditConnect
       return response.json();
     },
     onSuccess: () => {
+      // Clear all connection-related queries
       queryClient.invalidateQueries({ queryKey: ['/api/connections'] });
       toast({ title: 'Connection updated successfully!' });
       onClose();
