@@ -88,7 +88,7 @@ export function EditConnectionModal({ isOpen, onClose, connection }: EditConnect
   const handleRemoveImage = () => {
     setProfileImageFile(null);
     setPreviewImage(null);
-    setEditData(prev => ({ ...prev, profileImage: null }));
+    handleEditChange('profileImage', null);
   };
 
   if (!connection) return null;

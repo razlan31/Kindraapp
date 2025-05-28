@@ -382,10 +382,11 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
       {/* Edit Modal */}
       <EditConnectionModal
         isOpen={showEditModal}
-        onClose={async () => {
+        onClose={() => {
           setShowEditModal(false);
           // Force immediate refresh of connection data
-          await refetch();
+          queryClient.invalidateQueries({ queryKey: ['/api/connections'] });
+          refetch();
         }}
         connection={currentConnection}
       />
