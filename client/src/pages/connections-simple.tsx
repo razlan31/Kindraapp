@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useModal } from "@/contexts/modal-context";
 import { useRelationshipFocus } from "@/contexts/relationship-focus-context";
 import { Input } from "@/components/ui/input";
-import { Search, Plus, X, Camera, Heart, Users, Clock, Activity, Calendar } from "lucide-react";
+import { Search, Plus, X, Camera, Heart, Users, Clock, Activity, Calendar, Loader2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
@@ -26,6 +26,7 @@ export default function Connections() {
     imageUrl: '',
     name: ''
   });
+  const [loadingConnectionId, setLoadingConnectionId] = useState<number | null>(null);
   const { openMomentModal, openConnectionModal } = useModal();
   const { mainFocusConnection, setMainFocusConnection } = useRelationshipFocus();
   const { toast } = useToast();
@@ -67,7 +68,12 @@ export default function Connections() {
 
   // Handle connection selection for navigation
   const handleSelectConnection = (connection: Connection) => {
-    window.location.href = `/connections/${connection.id}`;
+    setLoadingConnectionId(connection.id);
+    
+    // Use a small delay to show loading state, then navigate
+    setTimeout(() => {
+      window.location.href = `/connections/${connection.id}`;
+    }, 100);
   };
 
   // Get recent emojis for a connection
@@ -517,6 +523,7 @@ interface ConnectionCardProps {
   daysSinceActivity: number;
   activityCount: number;
   onImageClick?: (imageUrl: string, name: string) => void;
+  isLoading?: boolean;
 }
 
 function ConnectionCard({ 
@@ -529,7 +536,8 @@ function ConnectionCard({
   onToggleFocus,
   daysSinceActivity,
   activityCount,
-  onImageClick 
+  onImageClick,
+  isLoading = false
 }: ConnectionCardProps) {
   // Calculate relationship insights
   const getRelationshipInsight = () => {
@@ -554,8 +562,8 @@ function ConnectionCard({
     <Card 
       className={`p-4 cursor-pointer transition-all hover:shadow-md ${
         isMainFocus ? 'ring-2 ring-primary bg-primary/5' : ''
-      }`}
-      onClick={() => onSelect(connection)}
+      } ${isLoading ? 'opacity-70 pointer-events-none' : ''}`}
+      onClick={() => !isLoading && onSelect(connection)}
     >
       <div className="flex items-start justify-between">
         <div className="flex items-start space-x-3 flex-1">
@@ -628,18 +636,24 @@ function ConnectionCard({
           </div>
         </div>
 
-        {/* Focus Toggle */}
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={(e) => {
-            e.stopPropagation();
-            onToggleFocus();
-          }}
-          className="ml-2 mt-1"
-        >
-          <Heart className={`h-4 w-4 ${isMainFocus ? 'fill-current text-primary' : ''}`} />
-        </Button>
+        {/* Focus Toggle or Loading */}
+        {isLoading ? (
+          <div className="ml-2 mt-1 p-2">
+            <Loader2 className="h-4 w-4 animate-spin text-primary" />
+          </div>
+        ) : (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleFocus();
+            }}
+            className="ml-2 mt-1"
+          >
+            <Heart className={`h-4 w-4 ${isMainFocus ? 'fill-current text-primary' : ''}`} />
+          </Button>
+        )}
       </div>
     </Card>
   );
