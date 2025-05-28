@@ -215,7 +215,7 @@ export function ConnectionDetailsModal({ isOpen, onClose, connection }: Connecti
               }}
             >
               <Edit className="h-4 w-4 mr-2" />
-              View Details
+              View Full Details
             </Button>
           </div>
         </div>
