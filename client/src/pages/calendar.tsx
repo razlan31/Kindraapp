@@ -604,7 +604,7 @@ export default function Calendar() {
           </DialogHeader>
           
           {/* Add Entry Buttons */}
-          <div className="grid grid-cols-3 gap-2 mb-4">
+          <div className="grid grid-cols-4 gap-2 mb-4">
             <Button 
               size="sm" 
               onClick={handleAddMomentFromDay}
@@ -639,6 +639,19 @@ export default function Calendar() {
             >
               <div className="text-lg mb-1">💕</div>
               <span>Intimacy</span>
+            </Button>
+            <Button 
+              size="sm" 
+              onClick={() => {
+                console.log("Plan button clicked - selectedDay:", selectedDay);
+                openMomentModal('plan', undefined, selectedDay || new Date());
+                setDayDetailOpen(false);
+              }}
+              className="flex flex-col h-16 text-xs"
+              variant="outline"
+            >
+              <div className="text-lg mb-1">📅</div>
+              <span>Plan</span>
             </Button>
           </div>
           

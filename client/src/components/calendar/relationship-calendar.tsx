@@ -448,7 +448,7 @@ export function RelationshipCalendar({ selectedConnection }: RelationshipCalenda
           </div>
           <div className="flex items-center gap-1.5">
             <div className="h-3 w-3 rounded-full bg-amber-400" />
-            <span className="text-xs">Milestones</span>
+            <span className="text-xs">🏆 Milestones</span>
           </div>
           <div className="flex items-center gap-1.5">
             <div className="h-3 w-3 rounded-full bg-pink-50 dark:bg-pink-950/20 border border-pink-200 dark:border-pink-800" />
