@@ -538,17 +538,40 @@ export default function Calendar() {
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="center">
-                    <DatePicker
-                      mode="single"
-                      selected={currentDate}
-                      onSelect={(date) => {
-                        if (date) {
-                          setCurrentDate(date);
-                          setDatePickerOpen(false);
-                        }
-                      }}
-                      initialFocus
-                    />
+                    <div className="p-3">
+                      <DatePicker
+                        mode="single"
+                        selected={currentDate}
+                        onSelect={(date) => {
+                          if (date) {
+                            setCurrentDate(date);
+                            setDatePickerOpen(false);
+                          }
+                        }}
+                        initialFocus
+                      />
+                      <div className="flex gap-2 pt-3 border-t border-border">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setDatePickerOpen(false)}
+                          className="flex-1"
+                        >
+                          Cancel
+                        </Button>
+                        <Button
+                          variant="default"
+                          size="sm"
+                          onClick={() => {
+                            setCurrentDate(new Date());
+                            setDatePickerOpen(false);
+                          }}
+                          className="flex-1"
+                        >
+                          Today
+                        </Button>
+                      </div>
+                    </div>
                   </PopoverContent>
                 </Popover>
               </div>
