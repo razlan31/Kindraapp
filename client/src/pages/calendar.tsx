@@ -15,10 +15,12 @@ import { useRelationshipFocus } from "@/contexts/relationship-focus-context";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, getDay } from "date-fns";
 import type { Moment, Connection } from "@shared/schema";
 import { EntryDetailModal } from "@/components/modals/entry-detail-modal";
+import { PlanModal } from "@/components/modals/plan-modal";
+import { MomentModal } from "@/components/modals/moment-modal";
 
 export default function Calendar() {
   const { user } = useAuth();
-  const { openMomentModal, setSelectedConnection } = useModal();
+  const { openMomentModal, setSelectedConnection, momentModalOpen, closeMomentModal, planModalOpen, closePlanModal } = useModal();
   const { mainFocusConnection, loading: focusLoading } = useRelationshipFocus();
   const queryClient = useQueryClient();
   const [location] = useLocation();
@@ -733,6 +735,22 @@ export default function Calendar() {
       )}
 
       <BottomNavigation />
+      
+      {/* Moment Modal */}
+      <MomentModal
+        isOpen={momentModalOpen}
+        onClose={closeMomentModal}
+        selectedConnection={connections.find(c => c.id === selectedConnectionId) || mainFocusConnection}
+      />
+      
+      {/* Plan Modal */}
+      <PlanModal
+        isOpen={planModalOpen}
+        onClose={closePlanModal}
+        selectedConnection={connections.find(c => c.id === selectedConnectionId) || mainFocusConnection}
+        selectedDate={null}
+        showConnectionPicker={true}
+      />
     </div>
   );
 }
