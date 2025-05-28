@@ -506,6 +506,13 @@ export default function Connections() {
         name={imagePreview.name}
       />
 
+      {/* Connection Details Modal */}
+      <ConnectionDetailsModal
+        isOpen={showConnectionDetails}
+        onClose={() => setShowConnectionDetails(false)}
+        connection={selectedConnection}
+      />
+
       <BottomNavigation />
     </div>
   );
