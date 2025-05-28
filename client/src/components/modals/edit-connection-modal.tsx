@@ -50,9 +50,14 @@ export function EditConnectionModal({ isOpen, onClose, connection }: EditConnect
       }
       return response.json();
     },
-    onSuccess: () => {
-      // Clear all connection-related queries
-      queryClient.invalidateQueries({ queryKey: ['/api/connections'] });
+    onSuccess: (updatedConnection) => {
+      // Update the cache immediately with the new data
+      queryClient.setQueryData(['/api/connections'], (oldData: Connection[] | undefined) => {
+        if (!oldData) return [updatedConnection];
+        return oldData.map(conn => 
+          conn.id === updatedConnection.id ? updatedConnection : conn
+        );
+      });
       toast({ title: 'Connection updated successfully!' });
       onClose();
     },

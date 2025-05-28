@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -22,17 +22,22 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
   const [showEditModal, setShowEditModal] = useState(false);
   const { toast } = useToast();
 
-  // Use fresh connection data from the connections list with forced refetch
-  const { data: allConnections = [] } = useQuery<Connection[]>({
+  // Use fresh connection data from the connections list
+  const { data: allConnections = [], refetch: refetchConnections } = useQuery<Connection[]>({
     queryKey: ["/api/connections"],
     enabled: isOpen,
-    staleTime: 0, // Always consider data stale
-    cacheTime: 0, // Don't cache
   });
+
+  // Force refetch when modal opens
+  useEffect(() => {
+    if (isOpen && connection?.id) {
+      refetchConnections();
+    }
+  }, [isOpen, connection?.id, refetchConnections]);
 
   // Always use fresh connection data if available
   const currentConnection = connection?.id 
-    ? allConnections.find(c => c.id === connection.id) || connection
+    ? (allConnections as Connection[]).find(c => c.id === connection.id) || connection
     : connection;
 
   // Fetch moments for this connection (must be before early return)
