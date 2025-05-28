@@ -126,8 +126,34 @@ export function MomentCard({ moment, connection, onAddReflection, onViewDetail, 
               </div>
             )}
             
-            {/* Only show reflection for regular moments, not conflicts or intimacy */}
-            {getMomentType(moment) === null && (
+            {/* Action buttons based on moment type */}
+            {getMomentType(moment) === 'Conflict' ? (
+              /* Conflict Resolution Button */
+              <div className="flex items-center justify-between">
+                <Button
+                  variant={moment.isResolved ? "default" : "outline"}
+                  size="sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onAddReflection(moment.id);
+                  }}
+                  className={`text-xs h-8 ${
+                    moment.isResolved 
+                      ? "bg-green-600 hover:bg-green-700 text-white" 
+                      : "hover:bg-gray-50"
+                  }`}
+                >
+                  {moment.isResolved ? "✓ Resolved" : "Mark as Resolved"}
+                </Button>
+                
+                {moment.isResolved && moment.resolutionNotes && (
+                  <Badge variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200">
+                    Has Notes
+                  </Badge>
+                )}
+              </div>
+            ) : getMomentType(moment) === null ? (
+              /* Regular moment reflection button */
               <div className="flex items-center justify-between">
                 <Button
                   variant="ghost"
@@ -149,7 +175,7 @@ export function MomentCard({ moment, connection, onAddReflection, onViewDetail, 
                   </Badge>
                 )}
               </div>
-            )}
+            ) : null}
           </div>
         </div>
       </CardContent>
