@@ -215,6 +215,26 @@ export function CycleTracker({ cycles }: CycleTrackerProps) {
                       selectedDate ? date < selectedDate : false
                     }
                   />
+                  <div className="flex gap-2 p-3 border-t">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setEndDate(new Date())}
+                      className="flex-1"
+                    >
+                      Today
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => document.body.click()} // Close popover
+                      className="flex-1"
+                    >
+                      Done
+                    </Button>
+                  </div>
                 </PopoverContent>
               </Popover>
             </div>

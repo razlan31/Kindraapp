@@ -372,6 +372,26 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
                   onSelect={(date) => setFormData(prev => ({ ...prev, scheduledDate: date || new Date() }))}
                   initialFocus
                 />
+                <div className="flex gap-2 p-3 border-t">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setFormData(prev => ({ ...prev, scheduledDate: new Date() }))}
+                    className="flex-1"
+                  >
+                    Today
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => document.body.click()} // Close popover
+                    className="flex-1"
+                  >
+                    Done
+                  </Button>
+                </div>
               </PopoverContent>
             </Popover>
           </div>
@@ -379,17 +399,61 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
           {/* Time */}
           <div className="space-y-2">
             <Label htmlFor="scheduledTime">Time (optional)</Label>
-            <Input
-              id="scheduledTime"
-              type="time"
-              value={formData.scheduledTime || ""}
-              onChange={(e) => setFormData(prev => ({ ...prev, scheduledTime: e.target.value }))}
-              className="w-full"
+            <div className="flex gap-2">
+              <Input
+                id="scheduledTime"
+                type="time"
+                value={formData.scheduledTime || ""}
+                onChange={(e) => setFormData(prev => ({ ...prev, scheduledTime: e.target.value }))}
+                onFocus={(e) => {
+                  // Auto-select current time if no time is set
+                  if (!formData.scheduledTime) {
+                    const now = new Date();
+                    const currentTime = now.toTimeString().slice(0, 5);
+                    setFormData(prev => ({ ...prev, scheduledTime: currentTime }));
+                  }
+                }}
+                className="flex-1"
+              />
+              {formData.scheduledTime && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setFormData(prev => ({ ...prev, scheduledTime: "" }))}
+                  className="px-3"
+                >
+                  Clear
+                </Button>
+              )}
+            </div>
+          </div>
+
+
+
+          {/* Description */}
+          <div className="space-y-2">
+            <Label htmlFor="description">Description</Label>
+            <Textarea
+              id="description"
+              value={formData.description || ""}
+              onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+              placeholder="Additional details about the plan..."
+              rows={3}
             />
           </div>
 
-          {/* Reminder Settings */}
-          <div className="space-y-3">
+          {/* Connection Info */}
+          {selectedConnection && (
+            <div className="p-3 bg-muted rounded-lg">
+              <p className="text-sm text-muted-foreground">
+                Plan with: <span className="font-medium text-foreground">{selectedConnection.name}</span>
+              </p>
+            </div>
+          )}
+
+          {/* Reminder Settings - Moved above completion toggle */}
+          <div className="space-y-3 pt-4 border-t">
             <div className="flex items-center space-x-2">
               <Checkbox
                 id="hasReminder"
@@ -425,27 +489,6 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
               </div>
             )}
           </div>
-
-          {/* Description */}
-          <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
-            <Textarea
-              id="description"
-              value={formData.description || ""}
-              onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-              placeholder="Additional details about the plan..."
-              rows={3}
-            />
-          </div>
-
-          {/* Connection Info */}
-          {selectedConnection && (
-            <div className="p-3 bg-muted rounded-lg">
-              <p className="text-sm text-muted-foreground">
-                Plan with: <span className="font-medium text-foreground">{selectedConnection.name}</span>
-              </p>
-            </div>
-          )}
 
           {/* Completion Toggle */}
           <div className="space-y-4 pt-4 border-t">
