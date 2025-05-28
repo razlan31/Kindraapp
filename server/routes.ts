@@ -197,6 +197,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get individual connection
+  app.get("/api/connections/:id", isAuthenticated, async (req, res) => {
+    try {
+      const connectionId = parseInt(req.params.id);
+      const connection = await storage.getConnection(connectionId);
+      
+      if (!connection) {
+        return res.status(404).json({ message: "Connection not found" });
+      }
+      
+      // Verify ownership
+      if (connection.userId !== req.session.userId) {
+        return res.status(403).json({ message: "Access denied" });
+      }
+      
+      res.status(200).json(connection);
+    } catch (error) {
+      console.error("Error fetching connection:", error);
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
   app.post("/api/connections", isAuthenticated, async (req, res) => {
     try {
       console.log("Received connection creation request:", req.body);
