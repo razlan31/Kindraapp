@@ -13,7 +13,7 @@ import { EmojiPicker } from "@/components/ui/emoji-picker";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon, X, Plus } from "lucide-react";
+import { CalendarIcon, X, Plus, ChevronDown, ChevronUp } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -164,6 +164,10 @@ export function MomentModal() {
   
   // Date picker state
   const [datePickerOpen, setDatePickerOpen] = useState(false);
+  
+  // Collapsible sections state
+  const [isTagsCollapsed, setIsTagsCollapsed] = useState(true);
+  const [isReflectionCollapsed, setIsReflectionCollapsed] = useState(true);
   
   // Fetch user connections
   const { data: connections = [] } = useQuery<Connection[]>({
@@ -567,39 +571,54 @@ export function MomentModal() {
           {/* Tags Selection - Only show for regular moments */}
           {activityType === 'moment' && (
           <div className="space-y-3">
-            <label className="text-sm font-medium">Tags (Optional)</label>
-            
-            {/* Selected Tags Display */}
-            {selectedTags.length > 0 && (
-              <div className="flex flex-wrap gap-2">
-                {selectedTags.map((tag, index) => (
-                  <Badge key={index} variant="secondary" className="flex items-center gap-1">
-                    {tag}
-                    <X className="h-3 w-3 cursor-pointer" onClick={() => removeTag(tag)} />
-                  </Badge>
-                ))}
-              </div>
-            )}
-
-            {/* Custom Tag Input */}
-            <div className="flex gap-2">
-              <Input
-                placeholder="Add custom tag..."
-                value={customTag}
-                onChange={(e) => setCustomTag(e.target.value)}
-                onKeyPress={handleCustomTagKeyPress}
-                className="text-sm"
-              />
+            <div className="flex items-center justify-between">
+              <label className="text-sm font-medium">Tags (Optional)</label>
               <Button
                 type="button"
-                variant="outline"
+                variant="ghost"
                 size="sm"
-                onClick={addCustomTag}
-                disabled={!customTag.trim()}
+                onClick={() => setIsTagsCollapsed(!isTagsCollapsed)}
+                className="p-1 h-6 w-6"
               >
-                <Plus className="h-4 w-4" />
+                {isTagsCollapsed ? <ChevronDown className="h-4 w-4" /> : <ChevronUp className="h-4 w-4" />}
               </Button>
             </div>
+            
+            {!isTagsCollapsed && (
+              <>
+                {/* Selected Tags Display */}
+                {selectedTags.length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {selectedTags.map((tag, index) => (
+                      <Badge key={index} variant="secondary" className="flex items-center gap-1">
+                        {tag}
+                        <X className="h-3 w-3 cursor-pointer" onClick={() => removeTag(tag)} />
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+
+                {/* Custom Tag Input */}
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="Add custom tag..."
+                    value={customTag}
+                    onChange={(e) => setCustomTag(e.target.value)}
+                    onKeyPress={handleCustomTagKeyPress}
+                    className="text-sm"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={addCustomTag}
+                    disabled={!customTag.trim()}
+                  >
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
+              </>
+            )}
           </div>
           )}
 
@@ -692,16 +711,32 @@ export function MomentModal() {
           {/* Reflection Field - Only for regular moments */}
           {activityType === 'moment' && (
             <div className="space-y-2">
-              <label className="text-sm font-medium">Reflection (Optional)</label>
-              <Textarea
-                value={reflection}
-                onChange={(e) => setReflection(e.target.value)}
-                placeholder="What deeper thoughts do you have about this moment? How did it make you feel? What did you learn?"
-                className="min-h-[80px]"
-              />
-              <p className="text-xs text-gray-500">
-                Add your personal insights and thoughts about this experience
-              </p>
+              <div className="flex items-center justify-between">
+                <label className="text-sm font-medium">Reflection (Optional)</label>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setIsReflectionCollapsed(!isReflectionCollapsed)}
+                  className="p-1 h-6 w-6"
+                >
+                  {isReflectionCollapsed ? <ChevronDown className="h-4 w-4" /> : <ChevronUp className="h-4 w-4" />}
+                </Button>
+              </div>
+              
+              {!isReflectionCollapsed && (
+                <>
+                  <Textarea
+                    value={reflection}
+                    onChange={(e) => setReflection(e.target.value)}
+                    placeholder="What deeper thoughts do you have about this moment? How did it make you feel? What did you learn?"
+                    className="min-h-[80px]"
+                  />
+                  <p className="text-xs text-gray-500">
+                    Add your personal insights and thoughts about this experience
+                  </p>
+                </>
+              )}
             </div>
           )}
 
