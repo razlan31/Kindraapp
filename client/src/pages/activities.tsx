@@ -131,6 +131,18 @@ export default function Activities() {
     }
   };
 
+  const handleResolveConflict = (momentId: number) => {
+    console.log("Handle resolve conflict for moment:", momentId);
+    const moment = moments.find(m => m.id === momentId);
+    const connection = connections.find(c => c.id === moment?.connectionId);
+    if (moment && connection) {
+      // Open the edit modal for this conflict
+      setSelectedConnection(connection.id);
+      setModalConnection(connection.id, connection);
+      openMomentModal('conflict', moment);
+    }
+  };
+
   const handleViewEntryDetail = (momentId: number) => {
     console.log("handleViewEntryDetail called with momentId:", momentId);
     const moment = moments.find(m => m.id === momentId);
@@ -727,6 +739,7 @@ export default function Activities() {
                           }}
                           onAddReflection={handleAddReflection}
                           onViewDetail={handleViewEntryDetail}
+                          onResolveConflict={handleResolveConflict}
                           hasAiReflection={moment.id % 3 === 0} // Simulated AI reflection flag
                         />
                       );

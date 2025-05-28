@@ -15,10 +15,11 @@ interface MomentCardProps {
   };
   onAddReflection: (momentId: number) => void;
   onViewDetail?: (momentId: number) => void;
+  onResolveConflict?: (momentId: number) => void;
   hasAiReflection?: boolean;
 }
 
-export function MomentCard({ moment, connection, onAddReflection, onViewDetail, hasAiReflection }: MomentCardProps) {
+export function MomentCard({ moment, connection, onAddReflection, onViewDetail, onResolveConflict, hasAiReflection }: MomentCardProps) {
   const getInitials = (name: string) => {
     return name.split(' ').map(part => part[0]).join('').toUpperCase();
   };
@@ -135,7 +136,7 @@ export function MomentCard({ moment, connection, onAddReflection, onViewDetail, 
                   size="sm"
                   onClick={(e) => {
                     e.stopPropagation();
-                    onAddReflection(moment.id);
+                    onResolveConflict ? onResolveConflict(moment.id) : onAddReflection(moment.id);
                   }}
                   className={`text-xs h-8 ${
                     moment.isResolved 
