@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useModal } from "@/contexts/modal-context";
 import { useRelationshipFocus } from "@/contexts/relationship-focus-context";
 import { Input } from "@/components/ui/input";
-import { Search, Plus, X, Camera, Heart, Users } from "lucide-react";
+import { Search, Plus, X, Camera, Heart, Users, Clock, Activity } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -16,6 +16,8 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 export default function Connections() {
   const [searchTerm, setSearchTerm] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
+  const [viewMode, setViewMode] = useState<"recent" | "stages">("recent");
+  const [selectedStage, setSelectedStage] = useState<string>("all");
   const { openMomentModal, openConnectionModal } = useModal();
   const { mainFocusConnection, setMainFocusConnection } = useRelationshipFocus();
   const { toast } = useToast();
@@ -29,31 +31,67 @@ export default function Connections() {
     queryKey: ['/api/moments'],
   });
 
-  // Smart prioritization algorithm
-  const prioritizeConnections = (connections: Connection[]) => {
-    return connections
-      .filter(connection => connection.name.toLowerCase().includes(searchTerm.toLowerCase()))
-      .map(connection => {
-        const connectionMoments = moments.filter((m: any) => m.connectionId === connection.id);
-        const lastActivity = connectionMoments.length > 0 
-          ? new Date(Math.max(...connectionMoments.map((m: any) => new Date(m.createdAt).getTime())))
-          : new Date(connection.createdAt);
-        
-        const daysSinceActivity = Math.floor((Date.now() - lastActivity.getTime()) / (1000 * 60 * 60 * 24));
-        const activityCount = connectionMoments.length;
-        
-        // Priority score: recent activity + relationship importance + total activity
-        const stageWeights = { 'Married': 5, 'Dating': 4, 'Best Friend': 4, 'Talking': 3, 'Ex': 1 };
-        const stageWeight = stageWeights[connection.relationshipStage as keyof typeof stageWeights] || 2;
-        
-        const priority = (stageWeight * 10) + (activityCount * 2) - Math.min(daysSinceActivity, 30);
-        
-        return { ...connection, priority, daysSinceActivity, activityCount };
-      })
-      .sort((a, b) => b.priority - a.priority);
+  // Filter and sort connections based on view mode
+  const getDisplayConnections = () => {
+    let filteredConnections = connections.filter(connection => 
+      connection.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      (selectedStage === "all" || connection.relationshipStage === selectedStage)
+    );
+
+    if (viewMode === "recent") {
+      // Smart prioritization algorithm for recent view
+      return filteredConnections
+        .map(connection => {
+          const connectionMoments = moments.filter((m: any) => m.connectionId === connection.id);
+          const lastActivity = connectionMoments.length > 0 
+            ? new Date(Math.max(...connectionMoments.map((m: any) => new Date(m.createdAt || m.createdAt).getTime())))
+            : new Date(connection.createdAt || Date.now());
+          
+          const daysSinceActivity = Math.floor((Date.now() - lastActivity.getTime()) / (1000 * 60 * 60 * 24));
+          const activityCount = connectionMoments.length;
+          
+          // Priority score: recent activity + relationship importance + total activity
+          const stageWeights = { 'Married': 5, 'Dating': 4, 'Best Friend': 4, 'Talking': 3, 'Ex': 1 };
+          const stageWeight = stageWeights[connection.relationshipStage as keyof typeof stageWeights] || 2;
+          
+          const priority = (stageWeight * 10) + (activityCount * 2) - Math.min(daysSinceActivity, 30);
+          
+          return { ...connection, priority, daysSinceActivity, activityCount };
+        })
+        .sort((a, b) => b.priority - a.priority);
+    } else {
+      // Stage view - group by relationship stage
+      return filteredConnections
+        .map(connection => {
+          const connectionMoments = moments.filter((m: any) => m.connectionId === connection.id);
+          const lastActivity = connectionMoments.length > 0 
+            ? new Date(Math.max(...connectionMoments.map((m: any) => new Date(m.createdAt || m.createdAt).getTime())))
+            : new Date(connection.createdAt || Date.now());
+          
+          const daysSinceActivity = Math.floor((Date.now() - lastActivity.getTime()) / (1000 * 60 * 60 * 24));
+          const activityCount = connectionMoments.length;
+          
+          return { ...connection, daysSinceActivity, activityCount };
+        })
+        .sort((a, b) => {
+          // First sort by stage priority, then by name
+          const stageOrder = ['Married', 'Dating', 'Best Friend', 'Talking', 'Ex'];
+          const aIndex = stageOrder.indexOf(a.relationshipStage);
+          const bIndex = stageOrder.indexOf(b.relationshipStage);
+          
+          if (aIndex !== bIndex) {
+            return (aIndex === -1 ? 999 : aIndex) - (bIndex === -1 ? 999 : bIndex);
+          }
+          
+          return a.name.localeCompare(b.name);
+        });
+    }
   };
 
-  const prioritizedConnections = prioritizeConnections(connections);
+  const displayConnections = getDisplayConnections();
+
+  // Get unique stages for the picker
+  const availableStages = Array.from(new Set(connections.map(c => c.relationshipStage))).sort();
 
   // Handle connection selection for navigation
   const handleSelectConnection = (connection: Connection) => {
@@ -86,10 +124,19 @@ export default function Connections() {
   // Create connection mutation
   const { mutate: createConnection, isPending } = useMutation({
     mutationFn: async (data: any) => {
-      return apiRequest('/api/connections', {
+      const response = await fetch('/api/connections', {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify(data),
       });
+      
+      if (!response.ok) {
+        throw new Error('Failed to create connection');
+      }
+      
+      return response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/connections'] });
@@ -139,8 +186,9 @@ export default function Connections() {
           </div>
         </section>
 
-        {/* Search Section */}
+        {/* Search and Controls Section */}
         <section className="px-4 pt-2 pb-2 sticky top-0 bg-white dark:bg-neutral-900 z-10">
+          {/* Search and Add Button */}
           <div className="flex items-center gap-2 mb-3">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-neutral-500" />
@@ -151,17 +199,58 @@ export default function Connections() {
                 className="pl-10"
               />
             </div>
-            <Button onClick={() => setShowAddModal(true)} size="sm" className="shrink-0">
-              <Plus className="h-4 w-4 mr-1" />
-              Add
+            <Button onClick={() => setShowAddModal(true)} size="lg" className="shrink-0 px-6">
+              <Plus className="h-5 w-5 mr-2" />
+              Add Connection
             </Button>
+          </div>
+
+          {/* View Toggle and Stage Filter */}
+          <div className="flex items-center gap-3 mb-2">
+            {/* View Mode Toggle */}
+            <div className="bg-muted rounded-lg p-1 flex">
+              <button
+                onClick={() => setViewMode('recent')}
+                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors flex items-center gap-1.5 ${
+                  viewMode === 'recent'
+                    ? 'bg-background text-foreground shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                <Clock className="h-4 w-4" />
+                Recent
+              </button>
+              <button
+                onClick={() => setViewMode('stages')}
+                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors flex items-center gap-1.5 ${
+                  viewMode === 'stages'
+                    ? 'bg-background text-foreground shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                <Activity className="h-4 w-4" />
+                Stages
+              </button>
+            </div>
+
+            {/* Stage Filter */}
+            <select
+              value={selectedStage}
+              onChange={(e) => setSelectedStage(e.target.value)}
+              className="px-3 py-1.5 bg-muted rounded-md text-sm border-0 focus:ring-2 focus:ring-primary"
+            >
+              <option value="all">All Stages</option>
+              {availableStages.map(stage => (
+                <option key={stage} value={stage}>{stage}</option>
+              ))}
+            </select>
           </div>
         </section>
 
         {/* Connections List */}
         <section className="px-4 pb-4">
           <div className="space-y-3">
-            {prioritizedConnections.map((connection: any) => {
+            {displayConnections.map((connection: any) => {
               const emojis = getConnectionEmojis(connection.id);
               const { greenFlags, redFlags } = getFlagCounts(connection.id);
               const isMainFocus = mainFocusConnection?.id === connection.id;
@@ -188,7 +277,7 @@ export default function Connections() {
               );
             })}
 
-            {prioritizedConnections.length === 0 && searchTerm && (
+            {displayConnections.length === 0 && searchTerm && (
               <div className="text-center py-8 text-neutral-500">
                 <Users className="h-12 w-12 mx-auto mb-2 opacity-50" />
                 <p>No connections found matching "{searchTerm}"</p>
