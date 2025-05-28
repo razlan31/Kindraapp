@@ -22,10 +22,12 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
   const [showEditModal, setShowEditModal] = useState(false);
   const { toast } = useToast();
 
-  // Use fresh connection data from the connections list
+  // Use fresh connection data from the connections list with forced refetch
   const { data: allConnections = [] } = useQuery<Connection[]>({
     queryKey: ["/api/connections"],
     enabled: isOpen,
+    staleTime: 0, // Always consider data stale
+    cacheTime: 0, // Don't cache
   });
 
   // Always use fresh connection data if available
