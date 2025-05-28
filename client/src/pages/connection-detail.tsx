@@ -156,13 +156,25 @@ export default function ConnectionDetail() {
 
   const handleSetAsFocus = () => {
     if (connection) {
-      console.log('Setting as focus:', connection);
-      setMainFocusConnection(connection);
-      
-      toast({
-        title: 'Focus updated',
-        description: 'This connection is now your main focus'
-      });
+      if (isMainFocus) {
+        // If already main focus, remove it
+        console.log('Removing focus from:', connection);
+        setMainFocusConnection(null);
+        
+        toast({
+          title: 'Focus removed',
+          description: 'This connection is no longer your main focus'
+        });
+      } else {
+        // Set as main focus
+        console.log('Setting as focus:', connection);
+        setMainFocusConnection(connection);
+        
+        toast({
+          title: 'Focus updated',
+          description: 'This connection is now your main focus'
+        });
+      }
     }
   };
   
@@ -298,10 +310,9 @@ export default function ConnectionDetail() {
               variant={isMainFocus ? "secondary" : "default"}
               className={`flex-1 ${isMainFocus ? 'bg-red-500 hover:bg-red-600 text-white' : 'bg-primary text-white'}`}
               onClick={handleSetAsFocus}
-              disabled={isMainFocus}
             >
               <Heart className={`mr-2 h-4 w-4 ${isMainFocus ? 'fill-white' : ''}`} />
-              {isMainFocus ? 'Main Focus' : 'Set as Focus'}
+              {isMainFocus ? 'Remove Focus' : 'Set as Focus'}
             </Button>
             
             <Button 
