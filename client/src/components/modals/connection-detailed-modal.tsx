@@ -30,6 +30,36 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
     enabled: isOpen && !!connection,
   });
 
+  // Update connection mutation (must be before early return)
+  const updateConnection = useMutation({
+    mutationFn: async (data: Partial<Connection>) => {
+      if (!connection) throw new Error('No connection');
+      const response = await fetch(`/api/connections/${connection.id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to update connection');
+      }
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/connections'] });
+      setEditMode(false);
+      toast({ title: 'Connection updated successfully!' });
+    },
+    onError: (error: any) => {
+      toast({ 
+        title: 'Error updating connection', 
+        description: error.message,
+        variant: 'destructive'
+      });
+    }
+  });
+
   if (!connection) return null;
 
   const connectionMoments = moments
@@ -66,35 +96,6 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
   };
 
   const duration = calculateDuration(connection.startDate);
-
-  // Update connection mutation
-  const updateConnection = useMutation({
-    mutationFn: async (data: Partial<Connection>) => {
-      const response = await fetch(`/api/connections/${connection.id}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-      if (!response.ok) {
-        throw new Error('Failed to update connection');
-      }
-      return response.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/connections'] });
-      setEditMode(false);
-      toast({ title: 'Connection updated successfully!' });
-    },
-    onError: (error: any) => {
-      toast({ 
-        title: 'Error updating connection', 
-        description: error.message,
-        variant: 'destructive'
-      });
-    }
-  });
 
   // Calculate detailed stats
   const stats = {
