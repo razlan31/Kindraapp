@@ -7,7 +7,7 @@ import NotFound from "@/pages/not-found";
 import Login from "@/pages/auth/login";
 import Register from "@/pages/auth/register";
 import Dashboard from "@/pages/dashboard";
-import Connections from "@/pages/connections";
+import Connections from "@/pages/connections-simple";
 import ConnectionsNew from "@/pages/connections-new";
 import ConnectionsFormNew from "./pages/connections-form-new";
 import SimpleConnectionForm from "./pages/simple-connection-form";

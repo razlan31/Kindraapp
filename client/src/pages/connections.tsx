@@ -29,12 +29,31 @@ export default function Connections() {
     queryKey: ['/api/moments'],
   });
 
-  // Filter connections based on search and stage
-  const filteredConnections = connections.filter(connection => {
-    const matchesSearch = connection.name.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStage = !filterStage || connection.relationshipStage === filterStage;
-    return matchesSearch && matchesStage;
-  });
+  // Smart prioritization algorithm
+  const prioritizeConnections = (connections: Connection[]) => {
+    return connections
+      .filter(connection => connection.name.toLowerCase().includes(searchTerm.toLowerCase()))
+      .map(connection => {
+        const connectionMoments = moments.filter((m: any) => m.connectionId === connection.id);
+        const lastActivity = connectionMoments.length > 0 
+          ? new Date(Math.max(...connectionMoments.map((m: any) => new Date(m.createdAt).getTime())))
+          : new Date(connection.createdAt);
+        
+        const daysSinceActivity = Math.floor((Date.now() - lastActivity.getTime()) / (1000 * 60 * 60 * 24));
+        const activityCount = connectionMoments.length;
+        
+        // Priority score: recent activity + relationship importance + total activity
+        const stageWeights = { 'Married': 5, 'Dating': 4, 'Best Friend': 4, 'Talking': 3, 'Ex': 1 };
+        const stageWeight = stageWeights[connection.relationshipStage as keyof typeof stageWeights] || 2;
+        
+        const priority = (stageWeight * 10) + (activityCount * 2) - Math.min(daysSinceActivity, 30);
+        
+        return { ...connection, priority, daysSinceActivity, activityCount };
+      })
+      .sort((a, b) => b.priority - a.priority);
+  };
+
+  const prioritizedConnections = prioritizeConnections(connections);
 
   // Handle connection selection for navigation
   const handleSelectConnection = (connection: Connection) => {
