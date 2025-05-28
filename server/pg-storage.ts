@@ -1,9 +1,9 @@
 import { eq, desc } from 'drizzle-orm';
 import { db } from './db';
 import {
-  users, connections, moments, badges, userBadges, menstrualCycles, milestones,
-  type User, type Connection, type Moment, type Badge, type UserBadge, type MenstrualCycle, type Milestone,
-  type InsertUser, type InsertConnection, type InsertMoment, type InsertBadge, type InsertUserBadge, type InsertMenstrualCycle, type InsertMilestone
+  users, connections, moments, badges, userBadges, menstrualCycles, milestones, plans,
+  type User, type Connection, type Moment, type Badge, type UserBadge, type MenstrualCycle, type Milestone, type Plan,
+  type InsertUser, type InsertConnection, type InsertMoment, type InsertBadge, type InsertUserBadge, type InsertMenstrualCycle, type InsertMilestone, type InsertPlan
 } from '@shared/schema';
 import type { IStorage } from './storage';
 import bcrypt from "bcryptjs";
@@ -265,6 +265,35 @@ export class PgStorage implements IStorage {
   async deleteMilestone(id: number): Promise<boolean> {
     await this.initialize();
     const result = await db.delete(milestones).where(eq(milestones.id, id));
+    return result.rowCount !== null && result.rowCount > 0;
+  }
+
+  // Plan operations
+  async getPlans(userId: number): Promise<Plan[]> {
+    await this.initialize();
+    return await db.select().from(plans).where(eq(plans.userId, userId));
+  }
+
+  async getPlansByConnectionId(connectionId: number): Promise<Plan[]> {
+    await this.initialize();
+    return await db.select().from(plans).where(eq(plans.connectionId, connectionId));
+  }
+
+  async createPlan(plan: InsertPlan): Promise<Plan> {
+    await this.initialize();
+    const result = await db.insert(plans).values(plan).returning();
+    return result[0];
+  }
+
+  async updatePlan(id: number, data: Partial<Plan>): Promise<Plan | undefined> {
+    await this.initialize();
+    const result = await db.update(plans).set(data).where(eq(plans.id, id)).returning();
+    return result[0];
+  }
+
+  async deletePlan(id: number): Promise<boolean> {
+    await this.initialize();
+    const result = await db.delete(plans).where(eq(plans.id, id));
     return result.rowCount !== null && result.rowCount > 0;
   }
 }

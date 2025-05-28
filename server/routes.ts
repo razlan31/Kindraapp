@@ -1,6 +1,10 @@
 import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
-import { storage } from "./storage";
+import { PgStorage } from "./pg-storage";
+
+const storage = new PgStorage();
+// Initialize the database with test data
+storage.initialize();
 import { z } from "zod";
 import { 
   userSchema, connectionSchema, momentSchema,
