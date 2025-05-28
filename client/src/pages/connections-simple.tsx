@@ -59,11 +59,9 @@ export default function Connections() {
     })
     .sort((a, b) => b.priority - a.priority);
 
-  // Get stages in the specified order
+  // Show all stages in the specified order (including those with 0 entries)
   const stageOrder = ["Potential", "Talking", "Situationship", "It's Complicated", "Dating", "Spouse", "FWB", "Ex", "Friend", "Best Friend", "Siblings"];
-  const availableStages = stageOrder.filter(stage => 
-    connections.some(c => c.relationshipStage === stage)
-  );
+  const availableStages = stageOrder;
 
   // Handle connection selection for navigation
   const handleSelectConnection = (connection: Connection) => {
