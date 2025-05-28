@@ -200,12 +200,26 @@ export function EditConnectionModal({ isOpen, onClose, connection }: EditConnect
               </div>
               <div>
                 <Label htmlFor="zodiacSign">Zodiac Sign</Label>
-                <Input
+                <select
                   id="zodiacSign"
                   value={editData.zodiacSign || ''}
                   onChange={(e) => handleEditChange('zodiacSign', e.target.value)}
-                  className="mt-1"
-                />
+                  className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  <option value="">Select zodiac sign</option>
+                  <option value="Aries">Aries</option>
+                  <option value="Taurus">Taurus</option>
+                  <option value="Gemini">Gemini</option>
+                  <option value="Cancer">Cancer</option>
+                  <option value="Leo">Leo</option>
+                  <option value="Virgo">Virgo</option>
+                  <option value="Libra">Libra</option>
+                  <option value="Scorpio">Scorpio</option>
+                  <option value="Sagittarius">Sagittarius</option>
+                  <option value="Capricorn">Capricorn</option>
+                  <option value="Aquarius">Aquarius</option>
+                  <option value="Pisces">Pisces</option>
+                </select>
               </div>
               <div>
                 <Label htmlFor="loveLanguages">Love Languages</Label>
