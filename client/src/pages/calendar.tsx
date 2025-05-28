@@ -331,70 +331,7 @@ export default function Calendar() {
             <CalendarIcon className="h-8 w-8 text-primary" />
           </div>
 
-          {/* Navigation */}
-          <div className="flex items-center justify-between mb-4">
-            <Button variant="outline" size="icon" onClick={navigatePrevious}>
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
-            <div className="flex items-center gap-2">
-              <h2 className="text-xl font-semibold">
-                {getViewTitle()}
-              </h2>
-              <Popover open={datePickerOpen} onOpenChange={setDatePickerOpen}>
-                <PopoverTrigger asChild>
-                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                    <CalendarIcon className="h-4 w-4 text-muted-foreground" />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="center">
-                  <DatePicker
-                    mode="single"
-                    selected={currentDate}
-                    onSelect={(date) => {
-                      if (date) {
-                        setCurrentDate(date);
-                        setDatePickerOpen(false);
-                      }
-                    }}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
-            </div>
-            <Button variant="outline" size="icon" onClick={navigateNext}>
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-          </div>
 
-          {/* View Mode Selector */}
-          <div className="flex items-center justify-center">
-            <div className="flex bg-muted/50 rounded-lg p-1">
-              <Button
-                variant={viewMode === 'daily' ? 'default' : 'ghost'}
-                size="sm"
-                onClick={() => setViewMode('daily')}
-                className="text-xs px-3"
-              >
-                Daily
-              </Button>
-              <Button
-                variant={viewMode === 'weekly' ? 'default' : 'ghost'}
-                size="sm"
-                onClick={() => setViewMode('weekly')}
-                className="text-xs px-3"
-              >
-                Weekly
-              </Button>
-              <Button
-                variant={viewMode === 'monthly' ? 'default' : 'ghost'}
-                size="sm"
-                onClick={() => setViewMode('monthly')}
-                className="text-xs px-3"
-              >
-                Monthly
-              </Button>
-            </div>
-          </div>
         </section>
 
         {/* Connection Filter */}
@@ -579,6 +516,76 @@ export default function Calendar() {
                 </div>
               </>
             )}
+          </Card>
+        </section>
+
+        {/* Date Navigation */}
+        <section className="px-4 py-4">
+          <Card className="p-4 bg-card/50 backdrop-blur-sm">
+            {/* Navigation */}
+            <div className="flex items-center justify-between mb-4">
+              <Button variant="outline" size="icon" onClick={navigatePrevious}>
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+              <div className="flex items-center gap-2">
+                <h2 className="text-xl font-semibold">
+                  {getViewTitle()}
+                </h2>
+                <Popover open={datePickerOpen} onOpenChange={setDatePickerOpen}>
+                  <PopoverTrigger asChild>
+                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                      <CalendarIcon className="h-4 w-4 text-muted-foreground" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="center">
+                    <DatePicker
+                      mode="single"
+                      selected={currentDate}
+                      onSelect={(date) => {
+                        if (date) {
+                          setCurrentDate(date);
+                          setDatePickerOpen(false);
+                        }
+                      }}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
+              <Button variant="outline" size="icon" onClick={navigateNext}>
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
+
+            {/* View Mode Selector */}
+            <div className="flex items-center justify-center">
+              <div className="flex bg-muted/50 rounded-lg p-1">
+                <Button
+                  variant={viewMode === 'daily' ? 'default' : 'ghost'}
+                  size="sm"
+                  onClick={() => setViewMode('daily')}
+                  className="text-xs px-3"
+                >
+                  Daily
+                </Button>
+                <Button
+                  variant={viewMode === 'weekly' ? 'default' : 'ghost'}
+                  size="sm"
+                  onClick={() => setViewMode('weekly')}
+                  className="text-xs px-3"
+                >
+                  Weekly
+                </Button>
+                <Button
+                  variant={viewMode === 'monthly' ? 'default' : 'ghost'}
+                  size="sm"
+                  onClick={() => setViewMode('monthly')}
+                  className="text-xs px-3"
+                >
+                  Monthly
+                </Button>
+              </div>
+            </div>
           </Card>
         </section>
 
