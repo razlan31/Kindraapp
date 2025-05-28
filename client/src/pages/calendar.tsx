@@ -176,7 +176,7 @@ export default function Calendar() {
     
     // Check if it's a plan
     if (tags.includes("Plan")) {
-      return { type: 'dot', value: '', color: 'bg-purple-500' };
+      return { type: 'emoji', value: '📅', color: 'text-purple-500' };
     }
     
     // Check if it's a conflict
