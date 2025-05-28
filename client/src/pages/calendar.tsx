@@ -628,7 +628,7 @@ export default function Calendar() {
 
             {/* Calendar Days */}
             <div className={`grid gap-1 ${
-              viewMode === 'daily' ? 'grid-cols-1' : 
+              viewMode === 'daily' ? 'grid-cols-1 gap-4' : 
               viewMode === 'weekly' ? 'grid-cols-7' : 
               'grid-cols-7'
             }`}>
@@ -659,10 +659,11 @@ export default function Calendar() {
                     key={day.toISOString()}
                     onClick={() => handleDayClick(day)}
                     className={`
-                      ${viewMode === 'daily' ? 'h-32 p-3' : viewMode === 'weekly' ? 'h-24 p-2' : 'h-16 p-1'} 
+                      ${viewMode === 'daily' ? 'min-h-20 p-4 flex-col items-start justify-start text-left' : viewMode === 'weekly' ? 'h-24 p-2' : 'h-16 p-1'} 
                       border border-border/20 rounded-lg transition-colors hover:bg-accent/50
                       ${isToday ? 'bg-primary/10 border-primary/30' : 'bg-background/50'}
                       ${!isSameMonth(day, currentDate) ? 'opacity-30' : ''}
+                      ${viewMode === 'daily' ? 'flex' : 'block'}
                     `}
                   >
                     <div className={`${viewMode === 'daily' ? 'text-lg' : viewMode === 'weekly' ? 'text-sm' : 'text-xs'} font-medium mb-1`}>
