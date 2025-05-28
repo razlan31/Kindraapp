@@ -15,7 +15,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { compressImage } from "@/lib/image-utils";
 import { ImagePreviewModal } from "@/components/ui/image-preview-modal";
-import { ConnectionDetailsModal } from "@/components/modals/connection-details-modal";
+import { ConnectionDetailedModal } from "@/components/modals/connection-detailed-modal";
 
 export default function Connections() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -507,7 +507,7 @@ export default function Connections() {
       />
 
       {/* Connection Details Modal */}
-      <ConnectionDetailsModal
+      <ConnectionDetailedModal
         isOpen={showConnectionDetails}
         onClose={() => setShowConnectionDetails(false)}
         connection={selectedConnection}
