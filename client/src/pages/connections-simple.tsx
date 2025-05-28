@@ -14,12 +14,18 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { compressImage } from "@/lib/image-utils";
+import { ImagePreviewModal } from "@/components/ui/image-preview-modal";
 
 export default function Connections() {
   const [searchTerm, setSearchTerm] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
   const [selectedStage, setSelectedStage] = useState<string>("all");
   const [uploadedImage, setUploadedImage] = useState<string>('');
+  const [imagePreview, setImagePreview] = useState<{isOpen: boolean, imageUrl: string, name: string}>({
+    isOpen: false,
+    imageUrl: '',
+    name: ''
+  });
   const { openMomentModal, openConnectionModal } = useModal();
   const { mainFocusConnection, setMainFocusConnection } = useRelationshipFocus();
   const { toast } = useToast();
@@ -486,6 +492,7 @@ interface ConnectionCardProps {
   onToggleFocus: () => void;
   daysSinceActivity: number;
   activityCount: number;
+  onImageClick?: (imageUrl: string, name: string) => void;
 }
 
 function ConnectionCard({ 
@@ -497,7 +504,8 @@ function ConnectionCard({
   onSelect, 
   onToggleFocus,
   daysSinceActivity,
-  activityCount 
+  activityCount,
+  onImageClick 
 }: ConnectionCardProps) {
   // Calculate relationship insights
   const getRelationshipInsight = () => {
@@ -533,7 +541,11 @@ function ConnectionCard({
               <img 
                 src={connection.profileImage} 
                 alt={connection.name}
-                className="w-12 h-12 rounded-full object-cover"
+                className="w-12 h-12 rounded-full object-cover cursor-pointer hover:opacity-80 transition-opacity"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onImageClick?.(connection.profileImage, connection.name);
+                }}
               />
             ) : (
               <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
