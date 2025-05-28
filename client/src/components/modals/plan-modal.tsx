@@ -75,6 +75,9 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
   // Completion state
   const [isCompleted, setIsCompleted] = useState(false);
   const [reflection, setReflection] = useState("");
+  
+  // Date picker state
+  const [datePickerOpen, setDatePickerOpen] = useState(false);
 
   // Update local state when selectedConnection prop changes
   useEffect(() => {
@@ -352,7 +355,7 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
           {/* Date */}
           <div className="space-y-2">
             <Label>Date *</Label>
-            <Popover>
+            <Popover open={datePickerOpen} onOpenChange={setDatePickerOpen}>
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
@@ -370,9 +373,10 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
                   mode="single"
                   selected={formData.scheduledDate}
                   onSelect={(date) => {
-                    setFormData(prev => ({ ...prev, scheduledDate: date || new Date() }));
-                    // Auto-close popover when date is selected
-                    document.body.click();
+                    if (date) {
+                      setFormData(prev => ({ ...prev, scheduledDate: date }));
+                      setDatePickerOpen(false);
+                    }
                   }}
                   initialFocus
                 />
@@ -381,7 +385,7 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => document.body.click()} // Close popover
+                    onClick={() => setDatePickerOpen(false)}
                   >
                     Cancel
                   </Button>
@@ -391,7 +395,7 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
                     size="sm"
                     onClick={() => {
                       setFormData(prev => ({ ...prev, scheduledDate: new Date() }));
-                      document.body.click(); // Close popover
+                      setDatePickerOpen(false);
                     }}
                   >
                     Today
