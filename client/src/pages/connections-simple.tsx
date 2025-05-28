@@ -117,13 +117,16 @@ export default function Connections() {
   });
 
   const handleAddConnection = (formData: FormData) => {
+    // Collect multiple love languages
+    const loveLanguages = formData.getAll('loveLanguages') as string[];
+    
     const data = {
       name: formData.get('name') as string,
       relationshipStage: formData.get('relationshipStage') as string,
       startDate: formData.get('startDate') ? new Date(formData.get('startDate') as string) : null,
       birthday: formData.get('birthday') ? new Date(formData.get('birthday') as string) : null,
       zodiacSign: formData.get('zodiacSign') as string || null,
-      loveLanguage: formData.get('loveLanguage') as string || null,
+      loveLanguage: loveLanguages.length > 0 ? loveLanguages.join(', ') : null,
       profileImage: formData.get('profileImage') as string || null,
       isPrivate: formData.get('isPrivate') === 'on',
     };
@@ -379,15 +382,26 @@ export default function Connections() {
                 </div>
                 
                 <div className="space-y-2">
-                  <label className="block text-xs text-neutral-500">Love Language</label>
-                  <select name="loveLanguage" className="w-full p-2 border rounded-md bg-background text-sm">
-                    <option value="">Select love language</option>
-                    <option value="Words of Affirmation">Words of Affirmation</option>
-                    <option value="Quality Time">Quality Time</option>
-                    <option value="Physical Touch">Physical Touch</option>
-                    <option value="Acts of Service">Acts of Service</option>
-                    <option value="Receiving Gifts">Receiving Gifts</option>
-                  </select>
+                  <label className="block text-xs text-neutral-500">Love Languages</label>
+                  <div className="space-y-2">
+                    {["Words of Affirmation", "Quality Time", "Physical Touch", "Acts of Service", "Receiving Gifts"].map((language) => (
+                      <div key={language} className="flex items-center space-x-2">
+                        <input 
+                          type="checkbox" 
+                          name="loveLanguages" 
+                          value={language}
+                          id={`love-${language.replace(/\s+/g, '-').toLowerCase()}`}
+                          className="rounded"
+                        />
+                        <label 
+                          htmlFor={`love-${language.replace(/\s+/g, '-').toLowerCase()}`}
+                          className="text-sm"
+                        >
+                          {language}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
               
