@@ -153,59 +153,6 @@ export default function Calendar() {
 
 
 
-  // Generate calendar days
-  const monthStart = startOfMonth(currentDate);
-  const monthEnd = endOfMonth(currentDate);
-  const calendarDays = eachDayOfInterval({ start: monthStart, end: monthEnd });
-
-  // Get moments for a specific day
-  const getMomentsForDay = (day: Date) => {
-    const dayMoments = moments.filter(moment => {
-      const momentDate = new Date(moment.createdAt || new Date());
-      const same = isSameDay(momentDate, day);
-      // Debug for today's date
-      if (format(day, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd')) {
-        console.log(`Today ${format(day, 'yyyy-MM-dd')} - Moment ${moment.id}: ${format(momentDate, 'yyyy-MM-dd')} - Match: ${same}`, moment);
-      }
-      return same;
-    });
-    return dayMoments;
-  };
-
-  // Debug moments loading
-  console.log('Calendar Debug - Total moments:', moments.length, moments);
-
-
-
-  // Get moment type and display info
-  const getMomentDisplayInfo = (moment: Moment) => {
-    const tags = moment.tags || [];
-    
-    // Check if it's a plan
-    if (tags.includes("Plan")) {
-      return { type: 'emoji', value: '📅', color: 'text-purple-500' };
-    }
-    
-    // Check if it's a conflict
-    if (tags.includes("Conflict")) {
-      return { type: 'emoji', value: '⚡', color: 'text-red-500' };
-    }
-    
-    // Check if it's intimacy
-    if (moment.isIntimate || tags.includes("Intimacy")) {
-      return { type: 'emoji', value: '💕', color: 'text-pink-500' };
-    }
-    
-    // For regular moments, show colored circles based on type
-    if (['😊', '❤️', '😍', '🥰', '💖', '✨', '🔥'].includes(moment.emoji)) {
-      return { type: 'circle', value: '', color: 'bg-green-500' };
-    } else if (['😕', '😢', '😠', '😞', '😤'].includes(moment.emoji)) {
-      return { type: 'circle', value: '', color: 'bg-orange-500' };
-    } else {
-      return { type: 'circle', value: '', color: 'bg-blue-500' };
-    }
-  };
-
   // Get date range based on view mode
   const getDateRange = () => {
     switch (viewMode) {
@@ -282,6 +229,59 @@ export default function Calendar() {
         return format(currentDate, 'MMMM yyyy');
     }
   };
+
+  // Generate calendar days based on view mode
+  const { days: calendarDays, start: viewStart, end: viewEnd } = getDateRange();
+
+  // Get moments for a specific day
+  const getMomentsForDay = (day: Date) => {
+    const dayMoments = moments.filter(moment => {
+      const momentDate = new Date(moment.createdAt || new Date());
+      const same = isSameDay(momentDate, day);
+      // Debug for today's date
+      if (format(day, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd')) {
+        console.log(`Today ${format(day, 'yyyy-MM-dd')} - Moment ${moment.id}: ${format(momentDate, 'yyyy-MM-dd')} - Match: ${same}`, moment);
+      }
+      return same;
+    });
+    return dayMoments;
+  };
+
+  // Debug moments loading
+  console.log('Calendar Debug - Total moments:', moments.length, moments);
+
+
+
+  // Get moment type and display info
+  const getMomentDisplayInfo = (moment: Moment) => {
+    const tags = moment.tags || [];
+    
+    // Check if it's a plan
+    if (tags.includes("Plan")) {
+      return { type: 'emoji', value: '📅', color: 'text-purple-500' };
+    }
+    
+    // Check if it's a conflict
+    if (tags.includes("Conflict")) {
+      return { type: 'emoji', value: '⚡', color: 'text-red-500' };
+    }
+    
+    // Check if it's intimacy
+    if (moment.isIntimate || tags.includes("Intimacy")) {
+      return { type: 'emoji', value: '💕', color: 'text-pink-500' };
+    }
+    
+    // For regular moments, show colored circles based on type
+    if (['😊', '❤️', '😍', '🥰', '💖', '✨', '🔥'].includes(moment.emoji)) {
+      return { type: 'circle', value: '', color: 'bg-green-500' };
+    } else if (['😕', '😢', '😠', '😞', '😤'].includes(moment.emoji)) {
+      return { type: 'circle', value: '', color: 'bg-orange-500' };
+    } else {
+      return { type: 'circle', value: '', color: 'bg-blue-500' };
+    }
+  };
+
+
 
   // Handle day click
   const handleDayClick = (day: Date) => {
@@ -560,19 +560,25 @@ export default function Calendar() {
         {/* Calendar Grid */}
         <section className="px-4">
           <Card className="p-4 bg-card/50 backdrop-blur-sm">
-            {/* Weekday Headers */}
-            <div className="grid grid-cols-7 gap-1 mb-2">
-              {weekdays.map(day => (
-                <div key={day} className="text-center text-xs font-medium text-muted-foreground py-2">
-                  {day}
-                </div>
-              ))}
-            </div>
+            {/* Weekday Headers - only show for weekly and monthly views */}
+            {viewMode !== 'daily' && (
+              <div className="grid grid-cols-7 gap-1 mb-2">
+                {weekdays.map(day => (
+                  <div key={day} className="text-center text-xs font-medium text-muted-foreground py-2">
+                    {day}
+                  </div>
+                ))}
+              </div>
+            )}
 
             {/* Calendar Days */}
-            <div className="grid grid-cols-7 gap-1">
-              {/* Empty cells for days before month start */}
-              {Array.from({ length: getDay(monthStart) }).map((_, index) => (
+            <div className={`grid gap-1 ${
+              viewMode === 'daily' ? 'grid-cols-1' : 
+              viewMode === 'weekly' ? 'grid-cols-7' : 
+              'grid-cols-7'
+            }`}>
+              {/* Empty cells for days before month start (monthly view only) */}
+              {viewMode === 'monthly' && Array.from({ length: getDay(viewStart) }).map((_, index) => (
                 <div key={`empty-${index}`} className="h-16"></div>
               ))}
               
