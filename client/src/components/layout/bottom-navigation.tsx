@@ -15,7 +15,8 @@ export function BottomNavigation() {
   
   return (
     <nav className="fixed bottom-0 w-full bg-white dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-800 z-40">
-      <div className="grid grid-cols-5 h-16">
+      <div className="max-w-md mx-auto">
+        <div className="grid grid-cols-5 h-16">
         <Link href="/" className={`bottom-tab flex flex-col items-center justify-center ${location === '/' ? 'active' : ''}`}>
           <Home className="h-5 w-5" />
           <span className="text-xs mt-1">Home</span>
@@ -38,6 +39,7 @@ export function BottomNavigation() {
           <Calendar className="h-5 w-5" />
           <span className="text-xs mt-1">Calendar</span>
         </Link>
+        </div>
       </div>
     </nav>
   );

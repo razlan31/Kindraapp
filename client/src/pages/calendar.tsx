@@ -318,7 +318,7 @@ export default function Calendar() {
     <div className="min-h-screen bg-gradient-to-br from-background to-muted">
       <Header />
       
-      <main className="pb-20 pt-16">
+      <main className="pb-20 pt-16 max-w-md mx-auto">
         {/* Header */}
         <section className="px-4 py-6 border-b border-border/40 bg-card/30 backdrop-blur-sm">
           <div className="flex items-center justify-between mb-4">
