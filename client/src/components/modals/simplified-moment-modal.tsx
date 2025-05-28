@@ -175,6 +175,26 @@ export function MomentModal() {
   
   // Success and error handlers - now optimized for instant updates
   const handleSuccess = () => {
+    // Only clear form if creating new entry (not editing)
+    if (!editingMoment) {
+      setTitle("");
+      setContent("");
+      setSelectedTags([]);
+      setCustomTag("");
+      setReflection("");
+      setResolutionNotes("");
+      setIsResolved(false);
+      setIsMilestone(false);
+      setMilestoneColor("");
+      setMilestoneIcon("");
+      setIsAnniversary(false);
+      setIsRecurring(false);
+      setLocalSelectedDate(new Date());
+      setMomentType("positive");
+      setEmoji("😊");
+      setIntimacyRating(5);
+    }
+    
     closeMomentModal();
     setIsSubmitting(false);
     // Invalidate cache to trigger immediate refetch
