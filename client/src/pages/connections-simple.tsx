@@ -15,6 +15,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { compressImage } from "@/lib/image-utils";
 import { ImagePreviewModal } from "@/components/ui/image-preview-modal";
+import { ConnectionDetailsModal } from "@/components/modals/connection-details-modal";
 
 export default function Connections() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -27,6 +28,8 @@ export default function Connections() {
     name: ''
   });
   const [loadingConnectionId, setLoadingConnectionId] = useState<number | null>(null);
+  const [selectedConnection, setSelectedConnection] = useState<Connection | null>(null);
+  const [showConnectionDetails, setShowConnectionDetails] = useState(false);
   const { openMomentModal, openConnectionModal } = useModal();
   const { mainFocusConnection, setMainFocusConnection } = useRelationshipFocus();
   const { toast } = useToast();
@@ -68,12 +71,8 @@ export default function Connections() {
 
   // Handle connection selection for navigation
   const handleSelectConnection = (connection: Connection) => {
-    setLoadingConnectionId(connection.id);
-    
-    // Use a small delay to show loading state, then navigate
-    setTimeout(() => {
-      window.location.href = `/connections/${connection.id}`;
-    }, 100);
+    setSelectedConnection(connection);
+    setShowConnectionDetails(true);
   };
 
   // Get recent emojis for a connection
