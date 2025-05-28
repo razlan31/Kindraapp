@@ -430,7 +430,7 @@ function AddConnectionModal({ onClose, onSubmit, isLoading }: AddConnectionModal
           <div>
             <label className="block text-sm font-medium mb-1">Relationship Stage</label>
             <select name="relationshipStage" className="w-full p-2 border rounded-md bg-background">
-              {stageOrder.map(stage => (
+              {relationshipStages.map(stage => (
                 <option key={stage} value={stage}>{stage}</option>
               ))}
             </select>
