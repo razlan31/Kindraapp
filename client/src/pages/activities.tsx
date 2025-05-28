@@ -486,50 +486,44 @@ export default function Activities() {
         {/* Activities Filter Section - Only show in Timeline mode */}
         {activeTab === 'timeline' && (
           <section className="px-4 pb-2 sticky top-0 bg-white dark:bg-neutral-900 z-10">
-            <div className="mb-3">
-              <h3 className="text-sm font-medium mb-2">Filter Activities</h3>
-              <div className="grid grid-cols-4 gap-1 bg-muted rounded-lg p-1">
-                <button 
-                  onClick={() => setTimelineFilter('all')}
-                  className={`py-2 px-2 rounded-md text-xs font-medium transition-colors ${
-                    timelineFilter === 'all' 
-                      ? 'bg-background text-foreground shadow-sm' 
-                      : 'text-muted-foreground hover:text-foreground'
-                  }`}
-                >
-                  All
-                </button>
-                <button 
-                  onClick={() => setTimelineFilter('moments')}
-                  className={`py-2 px-2 rounded-md text-xs font-medium transition-colors ${
-                    timelineFilter === 'moments' 
-                      ? 'bg-background text-foreground shadow-sm' 
-                      : 'text-muted-foreground hover:text-foreground'
-                  }`}
-                >
-                  Moments
-                </button>
-                <button 
-                  onClick={() => setTimelineFilter('conflicts')}
-                  className={`py-2 px-2 rounded-md text-xs font-medium transition-colors ${
-                    timelineFilter === 'conflicts' 
-                      ? 'bg-background text-foreground shadow-sm' 
-                      : 'text-muted-foreground hover:text-foreground'
-                  }`}
-                >
-                  Conflicts
-                </button>
-                <button 
-                  onClick={() => setTimelineFilter('intimacy')}
-                  className={`py-2 px-2 rounded-md text-xs font-medium transition-colors ${
-                    timelineFilter === 'intimacy' 
-                      ? 'bg-background text-foreground shadow-sm' 
-                      : 'text-muted-foreground hover:text-foreground'
-                  }`}
-                >
-                  Intimacy
-                </button>
-              </div>
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-sm font-medium">Filter:</span>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" className="justify-between min-w-[120px]">
+                    <span className="capitalize">
+                      {timelineFilter === 'all' ? 'All Activities' : timelineFilter}
+                    </span>
+                    <ChevronDown className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-[var(--radix-dropdown-menu-trigger-width)]" sideOffset={4}>
+                  <DropdownMenuItem 
+                    onClick={() => setTimelineFilter('all')}
+                    className="py-2 px-3"
+                  >
+                    All Activities
+                  </DropdownMenuItem>
+                  <DropdownMenuItem 
+                    onClick={() => setTimelineFilter('moments')}
+                    className="py-2 px-3"
+                  >
+                    Moments
+                  </DropdownMenuItem>
+                  <DropdownMenuItem 
+                    onClick={() => setTimelineFilter('conflicts')}
+                    className="py-2 px-3"
+                  >
+                    Conflicts
+                  </DropdownMenuItem>
+                  <DropdownMenuItem 
+                    onClick={() => setTimelineFilter('intimacy')}
+                    className="py-2 px-3"
+                  >
+                    Intimacy
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </section>
         )}
