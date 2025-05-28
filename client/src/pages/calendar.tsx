@@ -51,6 +51,7 @@ export default function Calendar() {
   
   // Connection filter state
   const [selectedConnectionId, setSelectedConnectionId] = useState<number | null>(null);
+  const [hasUserSelectedConnection, setHasUserSelectedConnection] = useState(false);
 
   // Handle navigation connection filtering and focus connection
   useEffect(() => {
@@ -61,17 +62,18 @@ export default function Calendar() {
       const connectionId = parseInt(navigationConnectionId);
       console.log("Setting calendar connection from navigation:", connectionId);
       setSelectedConnectionId(connectionId);
+      setHasUserSelectedConnection(true);
       // Clear the navigation state after using it
       localStorage.removeItem('navigationConnectionId');
       return;
     }
 
-    // If no navigation connection but main focus is set, use that
-    if (!focusLoading && mainFocusConnection && !selectedConnectionId) {
+    // Only use focus connection if user hasn't explicitly selected a connection
+    if (!focusLoading && mainFocusConnection && !hasUserSelectedConnection) {
       console.log("Setting calendar connection from main focus:", mainFocusConnection.id);
       setSelectedConnectionId(mainFocusConnection.id);
     }
-  }, [mainFocusConnection, focusLoading, selectedConnectionId]);
+  }, [mainFocusConnection, focusLoading, hasUserSelectedConnection]);
   
   // Legend collapse state - start collapsed by default
   const [isLegendCollapsed, setIsLegendCollapsed] = useState(true);
@@ -348,7 +350,10 @@ export default function Calendar() {
             </div>
             <Select
               value={selectedConnectionId ? selectedConnectionId.toString() : "all"}
-              onValueChange={(value) => setSelectedConnectionId(value === "all" ? null : parseInt(value))}
+              onValueChange={(value) => {
+                setSelectedConnectionId(value === "all" ? null : parseInt(value));
+                setHasUserSelectedConnection(true);
+              }}
             >
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Show all connections" />
