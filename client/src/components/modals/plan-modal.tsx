@@ -123,10 +123,12 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
         scheduledDate: contextSelectedDate || selectedDate || new Date(),
         connectionId: localSelectedConnection?.id || selectedConnection?.id,
         notes: "",
-        isCompleted: false
+        isCompleted: false,
+        hasReminder: false,
+        reminderMinutes: 15
       });
     }
-  }, [editingMoment, isOpen, selectedConnection, selectedDate, localSelectedConnection?.id, connections]);
+  }, [editingMoment, isOpen, selectedConnection, selectedDate, contextSelectedDate, localSelectedConnection?.id, connections]);
 
   const createPlanMutation = useMutation({
     mutationFn: async (data: PlanFormData) => {

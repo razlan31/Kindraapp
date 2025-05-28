@@ -174,6 +174,11 @@ export default function Calendar() {
   const getMomentDisplayInfo = (moment: Moment) => {
     const tags = moment.tags || [];
     
+    // Check if it's a plan
+    if (tags.includes("Plan")) {
+      return { type: 'dot', value: '', color: 'bg-purple-500' };
+    }
+    
     // Check if it's a conflict
     if (tags.includes("Conflict")) {
       return { type: 'emoji', value: '⚡', color: 'text-red-500' };
