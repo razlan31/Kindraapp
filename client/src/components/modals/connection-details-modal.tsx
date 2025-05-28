@@ -4,9 +4,12 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import { Input } from '@/components/ui/input';
 import { Calendar, Heart, MessageCircle, Sparkles, Edit, Trash2, Activity } from 'lucide-react';
 import { format } from 'date-fns';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
+import { apiRequest, queryClient } from '@/lib/queryClient';
+import { useToast } from '@/hooks/use-toast';
 import { ConnectionDetailedModal } from './connection-detailed-modal';
 
 import type { Connection, Moment } from '@shared/schema';
@@ -19,6 +22,9 @@ interface ConnectionDetailsModalProps {
 
 export function ConnectionDetailsModal({ isOpen, onClose, connection }: ConnectionDetailsModalProps) {
   const [showDetailedModal, setShowDetailedModal] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [editData, setEditData] = useState<Partial<Connection>>({});
+  const { toast } = useToast();
 
   // Fetch moments for this connection (hooks must be called before early returns)
   const { data: moments = [] } = useQuery<Moment[]>({
@@ -61,6 +67,43 @@ export function ConnectionDetailsModal({ isOpen, onClose, connection }: Connecti
 
   const duration = calculateDuration(connection.startDate);
 
+  // Update connection mutation
+  const updateConnection = useMutation({
+    mutationFn: async (data: Partial<Connection>) => {
+      const response = await fetch(`/api/connections/${connection.id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to update connection');
+      }
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/connections'] });
+      setEditMode(false);
+      toast({ title: 'Connection updated successfully!' });
+    },
+    onError: (error: any) => {
+      toast({ 
+        title: 'Error updating connection', 
+        description: error.message,
+        variant: 'destructive'
+      });
+    }
+  });
+
+  const handleSave = () => {
+    updateConnection.mutate(editData);
+  };
+
+  const handleEditChange = (field: keyof Connection, value: any) => {
+    setEditData(prev => ({ ...prev, [field]: value }));
+  };
+
   // Calculate stats
   const totalMoments = connectionMoments.length;
   const positiveMoments = connectionMoments.filter(m => 
@@ -92,26 +135,44 @@ export function ConnectionDetailsModal({ isOpen, onClose, connection }: Connecti
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-md mx-auto max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-3">
-            {connection.profileImage ? (
-              <img 
-                src={connection.profileImage} 
-                alt={connection.name}
-                className="w-12 h-12 rounded-full object-cover"
-              />
-            ) : (
-              <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
-                <span className="text-primary font-semibold text-lg">
-                  {connection.name.charAt(0).toUpperCase()}
-                </span>
+          <DialogTitle className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              {connection.profileImage ? (
+                <img 
+                  src={connection.profileImage} 
+                  alt={connection.name}
+                  className="w-12 h-12 rounded-full object-cover"
+                />
+              ) : (
+                <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
+                  <span className="text-primary font-semibold text-lg">
+                    {connection.name.charAt(0).toUpperCase()}
+                  </span>
+                </div>
+              )}
+              <div>
+                <h2 className="text-xl font-bold">{connection.name}</h2>
+                <Badge variant="secondary" className="text-xs">
+                  {connection.relationshipStage}
+                </Badge>
               </div>
-            )}
-            <div>
-              <h2 className="text-xl font-bold">{connection.name}</h2>
-              <Badge variant="secondary" className="text-xs">
-                {connection.relationshipStage}
-              </Badge>
             </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                if (editMode) {
+                  setEditMode(false);
+                  setEditData({});
+                } else {
+                  setEditMode(true);
+                  setEditData(connection);
+                }
+              }}
+            >
+              <Edit className="h-4 w-4 mr-2" />
+              {editMode ? 'Cancel' : 'Edit'}
+            </Button>
           </DialogTitle>
         </DialogHeader>
 
@@ -124,8 +185,41 @@ export function ConnectionDetailsModal({ isOpen, onClose, connection }: Connecti
             </h3>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
+                <span className="text-muted-foreground">Name:</span>
+                {editMode ? (
+                  <Input
+                    value={editData.name || ''}
+                    onChange={(e) => handleEditChange('name', e.target.value)}
+                    className="h-6 text-sm w-32"
+                  />
+                ) : (
+                  <span>{connection.name}</span>
+                )}
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Stage:</span>
+                {editMode ? (
+                  <Input
+                    value={editData.relationshipStage || ''}
+                    onChange={(e) => handleEditChange('relationshipStage', e.target.value)}
+                    className="h-6 text-sm w-32"
+                  />
+                ) : (
+                  <span>{connection.relationshipStage}</span>
+                )}
+              </div>
+              <div className="flex justify-between">
                 <span className="text-muted-foreground">Started:</span>
-                <span>{formatDate(connection.startDate)}</span>
+                {editMode ? (
+                  <Input
+                    type="date"
+                    value={editData.startDate ? format(new Date(editData.startDate), 'yyyy-MM-dd') : ''}
+                    onChange={(e) => handleEditChange('startDate', new Date(e.target.value))}
+                    className="h-6 text-sm w-32"
+                  />
+                ) : (
+                  <span>{formatDate(connection.startDate)}</span>
+                )}
               </div>
               {duration && (
                 <div className="flex justify-between">
@@ -135,21 +229,50 @@ export function ConnectionDetailsModal({ isOpen, onClose, connection }: Connecti
               )}
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Birthday:</span>
-                <span>{formatDate(connection.birthday)}</span>
+                {editMode ? (
+                  <Input
+                    type="date"
+                    value={editData.birthday ? format(new Date(editData.birthday), 'yyyy-MM-dd') : ''}
+                    onChange={(e) => handleEditChange('birthday', new Date(e.target.value))}
+                    className="h-6 text-sm w-32"
+                  />
+                ) : (
+                  <span>{formatDate(connection.birthday)}</span>
+                )}
               </div>
-              {connection.zodiacSign && (
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Zodiac:</span>
-                  <span>{connection.zodiacSign}</span>
-                </div>
-              )}
-              {connection.loveLanguage && (
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Love Language:</span>
-                  <span className="text-right">{connection.loveLanguage}</span>
-                </div>
-              )}
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Zodiac:</span>
+                {editMode ? (
+                  <Input
+                    value={editData.zodiacSign || ''}
+                    onChange={(e) => handleEditChange('zodiacSign', e.target.value)}
+                    className="h-6 text-sm w-32"
+                  />
+                ) : (
+                  <span>{connection.zodiacSign || 'Not set'}</span>
+                )}
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Love Language:</span>
+                {editMode ? (
+                  <Input
+                    value={editData.loveLanguage || ''}
+                    onChange={(e) => handleEditChange('loveLanguage', e.target.value)}
+                    className="h-6 text-sm w-32"
+                  />
+                ) : (
+                  <span className="text-right">{connection.loveLanguage || 'Not set'}</span>
+                )}
+              </div>
             </div>
+            
+            {editMode && (
+              <div className="mt-4 flex gap-2">
+                <Button onClick={handleSave} disabled={updateConnection.isPending} size="sm">
+                  {updateConnection.isPending ? 'Saving...' : 'Save Changes'}
+                </Button>
+              </div>
+            )}
           </Card>
 
           {/* Stats */}
