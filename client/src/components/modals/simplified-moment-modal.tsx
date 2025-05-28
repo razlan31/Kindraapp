@@ -561,7 +561,14 @@ export function MomentModal() {
                     }}
                     initialFocus
                   />
-                  <div className="flex justify-between items-center mt-3 pt-3 border-t">
+                  <div className="flex justify-between mt-3 pt-3 border-t">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={() => setDatePickerOpen(false)}
+                    >
+                      Cancel
+                    </Button>
                     <Button
                       variant="outline"
                       size="sm"
@@ -572,21 +579,6 @@ export function MomentModal() {
                     >
                       Today
                     </Button>
-                    <div className="flex gap-2">
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        onClick={() => setDatePickerOpen(false)}
-                      >
-                        Cancel
-                      </Button>
-                      <Button 
-                        size="sm" 
-                        onClick={() => setDatePickerOpen(false)}
-                      >
-                        Done
-                      </Button>
-                    </div>
                   </div>
                 </div>
               </PopoverContent>
@@ -640,30 +632,36 @@ export function MomentModal() {
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-auto p-0">
-                        <div className="p-3">
-                          <Calendar
-                            mode="single"
-                            selected={resolvedDate}
-                            onSelect={(date) => date && setResolvedDate(date)}
-                            initialFocus
-                          />
-                          <div className="flex justify-between items-center mt-3 pt-3 border-t">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => setResolvedDate(new Date())}
-                            >
-                              Today
-                            </Button>
-                            <div className="flex gap-2">
-                              <Button variant="outline" size="sm" onClick={() => {}}>
-                                Cancel
-                              </Button>
-                              <Button size="sm" onClick={() => {}}>
-                                Done
-                              </Button>
-                            </div>
-                          </div>
+                        <Calendar
+                          mode="single"
+                          selected={resolvedDate}
+                          onSelect={(date) => {
+                            if (date) {
+                              setResolvedDate(date);
+                              // Auto-close popover when date is selected
+                              document.body.click();
+                            }
+                          }}
+                          initialFocus
+                        />
+                        <div className="flex justify-between p-3 border-t">
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            onClick={() => document.body.click()}
+                          >
+                            Cancel
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              setResolvedDate(new Date());
+                              document.body.click();
+                            }}
+                          >
+                            Today
+                          </Button>
                         </div>
                       </PopoverContent>
                     </Popover>

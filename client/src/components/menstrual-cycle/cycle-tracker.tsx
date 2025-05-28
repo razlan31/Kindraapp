@@ -209,30 +209,35 @@ export function CycleTracker({ cycles }: CycleTrackerProps) {
                   <Calendar
                     mode="single"
                     selected={endDate}
-                    onSelect={setEndDate}
+                    onSelect={(date) => {
+                      setEndDate(date);
+                      // Auto-close popover when date is selected
+                      if (date) document.body.click();
+                    }}
                     initialFocus
                     disabled={(date) => 
                       selectedDate ? date < selectedDate : false
                     }
                   />
-                  <div className="flex gap-2 p-3 border-t">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setEndDate(new Date())}
-                      className="flex-1"
-                    >
-                      Today
-                    </Button>
+                  <div className="flex justify-between p-3 border-t">
                     <Button
                       type="button"
                       variant="outline"
                       size="sm"
                       onClick={() => document.body.click()} // Close popover
-                      className="flex-1"
                     >
-                      Done
+                      Cancel
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setEndDate(new Date());
+                        document.body.click(); // Close popover
+                      }}
+                    >
+                      Today
                     </Button>
                   </div>
                 </PopoverContent>

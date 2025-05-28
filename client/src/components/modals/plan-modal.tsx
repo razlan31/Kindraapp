@@ -369,27 +369,32 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
                 <Calendar
                   mode="single"
                   selected={formData.scheduledDate}
-                  onSelect={(date) => setFormData(prev => ({ ...prev, scheduledDate: date || new Date() }))}
+                  onSelect={(date) => {
+                    setFormData(prev => ({ ...prev, scheduledDate: date || new Date() }));
+                    // Auto-close popover when date is selected
+                    document.body.click();
+                  }}
                   initialFocus
                 />
-                <div className="flex gap-2 p-3 border-t">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setFormData(prev => ({ ...prev, scheduledDate: new Date() }))}
-                    className="flex-1"
-                  >
-                    Today
-                  </Button>
+                <div className="flex justify-between p-3 border-t">
                   <Button
                     type="button"
                     variant="outline"
                     size="sm"
                     onClick={() => document.body.click()} // Close popover
-                    className="flex-1"
                   >
-                    Done
+                    Cancel
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setFormData(prev => ({ ...prev, scheduledDate: new Date() }));
+                      document.body.click(); // Close popover
+                    }}
+                  >
+                    Today
                   </Button>
                 </div>
               </PopoverContent>
