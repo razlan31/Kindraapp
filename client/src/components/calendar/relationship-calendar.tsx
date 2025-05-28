@@ -119,26 +119,33 @@ export function RelationshipCalendar({ selectedConnection }: RelationshipCalenda
     
     const hasIntimacyMoment = dayMoments.some(m => m.isIntimate);
     
+    const hasPlanMoment = dayMoments.some(m => 
+      m.tags?.includes('Plan')
+    );
+    
     const hasConflictMoment = dayMoments.some(m => 
       m.tags?.includes('Conflict') || 
       m.tags?.includes('Red Flag')
     );
     
     const hasHappyMoment = dayMoments.some(m => 
-      ['😃', '🙂', '😊', '❤️', '😍', '🥰'].includes(m.emoji)
+      ['😃', '🙂', '😊', '❤️', '😍', '🥰'].includes(m.emoji) && 
+      !m.tags?.includes('Plan') && !m.tags?.includes('Conflict')
     );
     
     const hasSadMoment = dayMoments.some(m => 
-      ['😕', '😞', '😢', '😠', '😡'].includes(m.emoji)
+      ['😕', '😞', '😢', '😠', '😡'].includes(m.emoji) && 
+      !m.tags?.includes('Plan') && !m.tags?.includes('Conflict')
     );
     
     const hasCycleMoment = dayMoments.some(m => 
-      m.relatedToMenstrualCycle
+      m.relatedToMenstrualCycle && !m.tags?.includes('Plan')
     );
     
     return {
       inMenstrualCycle,
       hasIntimacyMoment,
+      hasPlanMoment,
       hasConflictMoment,
       hasHappyMoment,
       hasSadMoment,
@@ -154,6 +161,7 @@ export function RelationshipCalendar({ selectedConnection }: RelationshipCalenda
     const { 
       inMenstrualCycle, 
       hasIntimacyMoment, 
+      hasPlanMoment,
       hasConflictMoment, 
       hasHappyMoment,
       hasSadMoment,
@@ -165,12 +173,13 @@ export function RelationshipCalendar({ selectedConnection }: RelationshipCalenda
     
     const formatMoments = (moments: Moment[]) => {
       return moments.map(m => ({
-        type: m.isIntimate ? 'Intimacy' : 
+        type: m.tags?.includes('Plan') ? 'Plan' :
+              m.isIntimate ? 'Intimacy' : 
               m.tags?.includes('Conflict') ? 'Conflict' : 
               m.tags?.includes('Red Flag') ? 'Red Flag' : 
               m.tags?.includes('Green Flag') ? 'Green Flag' : 
               m.relatedToMenstrualCycle ? 'Menstrual' : 'Moment',
-        emoji: m.emoji,
+        emoji: m.tags?.includes('Plan') ? '📅' : m.emoji,
         content: m.content
       }));
     };
@@ -186,6 +195,19 @@ export function RelationshipCalendar({ selectedConnection }: RelationshipCalenda
             
             {/* Indicator dots - positioned at the bottom of the date */}
             <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 flex gap-0.5">
+              {hasPlanMoment && (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="h-1.5 w-1.5 rounded-full bg-purple-400" />
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom">
+                      <p className="text-xs">Plan</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              )}
+              
               {hasIntimacyMoment && (
                 <TooltipProvider>
                   <Tooltip>
@@ -405,8 +427,8 @@ export function RelationshipCalendar({ selectedConnection }: RelationshipCalenda
         {/* Calendar legend */}
         <div className="flex flex-wrap gap-3 mt-4 justify-center">
           <div className="flex items-center gap-1.5">
-            <div className="h-3 w-3 rounded-full bg-pink-50 dark:bg-pink-950/20 border border-pink-200 dark:border-pink-800" />
-            <span className="text-xs">Menstrual Cycle</span>
+            <div className="h-3 w-3 rounded-full bg-purple-400" />
+            <span className="text-xs">Plans</span>
           </div>
           <div className="flex items-center gap-1.5">
             <div className="h-3 w-3 rounded-full bg-pink-400" />
@@ -422,11 +444,15 @@ export function RelationshipCalendar({ selectedConnection }: RelationshipCalenda
           </div>
           <div className="flex items-center gap-1.5">
             <div className="h-3 w-3 rounded-full bg-blue-400" />
-            <span className="text-xs">Sad</span>
+            <span className="text-xs">Neutral</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <div className="h-3 w-3 rounded-full bg-purple-400" />
-            <span className="text-xs">Cycle-Related</span>
+            <div className="h-3 w-3 rounded-full bg-amber-400" />
+            <span className="text-xs">Milestones</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <div className="h-3 w-3 rounded-full bg-pink-50 dark:bg-pink-950/20 border border-pink-200 dark:border-pink-800" />
+            <span className="text-xs">Menstrual Cycle</span>
           </div>
         </div>
         
