@@ -310,7 +310,7 @@ export class MemStorage implements IStorage {
         icon: "✨",
         category: "Getting Started",
         unlockCriteria: { connectionsAdded: 1 },
-        isRepeatable: false,
+        isRepeatable: true,
       },
       {
         name: "Touch Grass",

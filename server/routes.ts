@@ -1233,11 +1233,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
         // Connection-based badges
         if (criteria.connectionsAdded && connections.length >= criteria.connectionsAdded) {
-          isEarned = true;
+          // For repeatable connection badges, award each time the criteria is met
+          // For non-repeatable ones, only award if user doesn't have it yet
+          if (badge.isRepeatable || !earnedBadgeIds.includes(badge.id)) {
+            isEarned = true;
+          }
         }
 
         if (criteria.firstConnection && connections.length >= 1) {
-          isEarned = true;
+          // Only award if it's repeatable or user doesn't have this badge yet
+          if (badge.isRepeatable || !earnedBadgeIds.includes(badge.id)) {
+            isEarned = true;
+          }
         }
 
         // Stage progression badges
