@@ -28,6 +28,9 @@ export default function ProfilePage() {
     loveLanguage: "Quality Time"
   };
 
+  // Edit mode state
+  const [isEditing, setIsEditing] = useState(false);
+
   // Form state
   const [formData, setFormData] = useState({
     displayName: displayUser.displayName || "",
