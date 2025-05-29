@@ -17,7 +17,7 @@ import SimpleForm from "./pages/simple-form";
 import Activities from "@/pages/activities";
 import Calendar from "@/pages/calendar";
 import Insights from "@/pages/insights";
-import Profile from "@/pages/profile-clean";
+import Profile from "@/pages/profile";
 import CycleTracking from "@/pages/cycle-tracking";
 import AICoach from "@/pages/ai-coach";
 import SummaryReport from "@/pages/summary-report";

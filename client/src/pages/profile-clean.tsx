@@ -40,13 +40,21 @@ export default function ProfileCleanPage() {
 
   // Update profile mutation
   const updateProfileMutation = useMutation({
-    mutationFn: (data: any) => apiRequest('/api/me', {
-      method: 'PUT',
-      body: JSON.stringify(data),
-      headers: {
-        'Content-Type': 'application/json'
+    mutationFn: async (data: any) => {
+      const response = await fetch('/api/me', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to update profile');
       }
-    }),
+      
+      return response.json();
+    },
     onSuccess: () => {
       toast({
         title: "Profile updated",
