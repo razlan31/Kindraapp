@@ -237,64 +237,7 @@ export default function Activities() {
     return matchesSearch && matchesConnection;
   });
 
-  // Create connection milestone events for timeline
-  const createConnectionMilestones = () => {
-    const milestones: any[] = [];
-    
-    connections.forEach(connection => {
-      // Add relationship start milestone
-      if (connection.startDate) {
-        milestones.push({
-          id: `start-${connection.id}`,
-          userId: user?.id || 0,
-          connectionId: connection.id,
-          emoji: '💫',
-          content: `Started ${connection.relationshipStage} relationship`,
-          title: 'Relationship Started',
-          tags: ['Milestone', 'Relationship Start'],
-          isPrivate: false,
-          createdAt: connection.startDate,
-          isConnectionMilestone: true,
-          isIntimate: false,
-          intimacyRating: null,
-          relatedToMenstrualCycle: false,
-          isResolved: false,
-          resolvedAt: null,
-          resolutionNotes: null,
-          reflection: null
-        });
-      }
-      
-      // Add birthday milestone for current year if birthday exists
-      if (connection.birthday) {
-        const birthdayThisYear = new Date(connection.birthday);
-        const currentYear = new Date().getFullYear();
-        birthdayThisYear.setFullYear(currentYear);
-        
-        milestones.push({
-          id: `birthday-${connection.id}-${currentYear}`,
-          userId: user?.id || 0,
-          connectionId: connection.id,
-          emoji: '🎂',
-          content: `${connection.name}'s Birthday`,
-          title: 'Birthday',
-          tags: ['Milestone', 'Birthday'],
-          isPrivate: false,
-          createdAt: birthdayThisYear.toISOString(),
-          isConnectionMilestone: true,
-          isIntimate: false,
-          intimacyRating: null,
-          relatedToMenstrualCycle: false,
-          isResolved: false,
-          resolvedAt: null,
-          resolutionNotes: null,
-          reflection: null
-        });
-      }
-    });
-    
-    return milestones;
-  };
+
 
   // Use only real moments from the database (including real milestones)
   const allTimelineEntries = moments;

@@ -101,46 +101,8 @@ export default function Calendar() {
   // Debug logging for allMoments
   console.log("All moments from query:", allMoments);
 
-  // Create birthday events for calendar display
-  const createBirthdayEvents = () => {
-    const birthdayEvents: any[] = [];
-    
-    if (connections) {
-      connections.forEach(connection => {
-        if (connection.birthday && (!selectedConnectionId || connection.id === selectedConnectionId)) {
-          // Create birthday event for current year
-          const birthdayThisYear = new Date(connection.birthday);
-          const currentYear = new Date().getFullYear();
-          birthdayThisYear.setFullYear(currentYear);
-          
-          birthdayEvents.push({
-            id: `birthday-${connection.id}-${currentYear}`,
-            userId: user?.id || 0,
-            connectionId: connection.id,
-            emoji: '🎂',
-            content: `${connection.name}'s Birthday`,
-            title: 'Birthday',
-            tags: ['Milestone', 'Birthday'],
-            isPrivate: false,
-            createdAt: birthdayThisYear.toISOString(),
-            isBirthday: true,
-            isIntimate: false,
-            intimacyRating: null,
-            relatedToMenstrualCycle: false,
-            isResolved: false,
-            resolvedAt: null,
-            resolutionNotes: null,
-            reflection: null
-          });
-        }
-      });
-    }
-    
-    return birthdayEvents;
-  };
-
-  // Combine moments with birthday events
-  const allCalendarEntries = [...allMoments, ...createBirthdayEvents()];
+  // Use only real moments from the database
+  const allCalendarEntries = allMoments;
 
   // Filter moments based on selected filters and connection
   const moments = allCalendarEntries.filter(moment => {
