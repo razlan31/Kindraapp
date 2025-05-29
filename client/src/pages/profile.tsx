@@ -100,15 +100,18 @@ export default function ProfilePage() {
       return response.json();
     },
     onSuccess: async () => {
-      console.log("Profile save successful - invalidating cache");
       toast({
         title: "Profile updated",
         description: "Your profile has been updated successfully.",
       });
-      await queryClient.invalidateQueries({ queryKey: ['/api/me'] });
-      console.log("Cache invalidated - calling refreshUser");
+      // Optimistic update - update cache immediately
+      queryClient.setQueryData(['/api/me'], (oldData: any) => ({
+        ...oldData,
+        ...Object.fromEntries(
+          Object.entries(formData).filter(([_, value]) => value !== undefined && value !== null)
+        )
+      }));
       await refreshUser(); // Refresh the auth context user data
-      console.log("RefreshUser complete - setting edit mode off");
       setIsEditing(false);
     },
     onError: (error: any) => {
@@ -153,10 +156,41 @@ export default function ProfilePage() {
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
+      // Compress and resize the image for better performance
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+      
+      img.onload = () => {
+        // Set canvas size to 200x200 for profile images
+        canvas.width = 200;
+        canvas.height = 200;
+        
+        // Calculate aspect ratio to center the image
+        const aspectRatio = img.width / img.height;
+        let sourceX = 0, sourceY = 0, sourceWidth = img.width, sourceHeight = img.height;
+        
+        if (aspectRatio > 1) {
+          // Image is wider - crop from center
+          sourceWidth = img.height;
+          sourceX = (img.width - sourceWidth) / 2;
+        } else {
+          // Image is taller - crop from center
+          sourceHeight = img.width;
+          sourceY = (img.height - sourceHeight) / 2;
+        }
+        
+        // Draw the cropped and resized image
+        ctx?.drawImage(img, sourceX, sourceY, sourceWidth, sourceHeight, 0, 0, 200, 200);
+        
+        // Convert to base64 with reduced quality for faster uploads
+        const compressedImage = canvas.toDataURL('image/jpeg', 0.8);
+        setFormData(prev => ({ ...prev, profileImage: compressedImage }));
+      };
+      
       const reader = new FileReader();
       reader.onload = (e) => {
-        const result = e.target?.result as string;
-        setFormData(prev => ({ ...prev, profileImage: result }));
+        img.src = e.target?.result as string;
       };
       reader.readAsDataURL(file);
     }

@@ -16,8 +16,6 @@ export function Header() {
     enabled: isAuthenticated,
   });
   
-  console.log("Header: user data:", user?.profileImage ? "HAS IMAGE" : "NO IMAGE", user?.displayName);
-  
   const getInitials = (name: string) => {
     return name
       .split(' ')
