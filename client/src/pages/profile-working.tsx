@@ -148,7 +148,7 @@ export default function ProfilePage() {
             className="hidden"
           />
           <h1 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">Profile & Settings</h1>
-          <p className="text-neutral-600 dark:text-neutral-400 mt-1">Manage your personal information and relationship preferences</p>
+          <p className="text-neutral-600 dark:text-neutral-400 mt-1">Edit your information below and click Save Changes when done</p>
         </div>
 
         {/* Profile Information */}
@@ -326,16 +326,19 @@ export default function ProfilePage() {
           </CardContent>
         </Card>
 
-        {/* Save Button */}
-        <div className="flex justify-end">
-          <Button 
-            onClick={handleSave}
-            disabled={saveMutation.isPending}
-            className="flex items-center gap-2"
-          >
-            <Save className="h-4 w-4" />
-            {saveMutation.isPending ? "Saving..." : "Save Changes"}
-          </Button>
+        {/* Save Button - Fixed at bottom */}
+        <div className="fixed bottom-20 left-0 right-0 p-4 bg-white dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-700 z-10">
+          <div className="max-w-2xl mx-auto">
+            <Button 
+              onClick={handleSave}
+              disabled={saveMutation.isPending}
+              className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-white py-3"
+              size="lg"
+            >
+              <Save className="h-5 w-5" />
+              {saveMutation.isPending ? "Saving..." : "Save Changes"}
+            </Button>
+          </div>
         </div>
       </div>
     </div>
