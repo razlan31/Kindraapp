@@ -39,6 +39,9 @@ export function EditConnectionModal({ isOpen, onClose, connection, onEditSuccess
   const updateConnection = useMutation({
     mutationFn: async (data: Partial<Connection>) => {
       if (!connection) throw new Error('No connection');
+      console.log("Making PATCH request to:", `/api/connections/${connection.id}`);
+      console.log("Request data:", data);
+      
       const response = await fetch(`/api/connections/${connection.id}`, {
         method: 'PATCH',
         headers: {
@@ -46,10 +49,17 @@ export function EditConnectionModal({ isOpen, onClose, connection, onEditSuccess
         },
         body: JSON.stringify(data),
       });
+      
+      console.log("Response status:", response.status);
+      console.log("Response headers:", response.headers);
+      
       if (!response.ok) {
         throw new Error('Failed to update connection');
       }
-      return response.json();
+      
+      const result = await response.json();
+      console.log("Raw response from server:", result);
+      return result;
     },
     onSuccess: (data) => {
       console.log("Connection update response:", data);
