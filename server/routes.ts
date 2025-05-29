@@ -650,6 +650,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/badges", isAuthenticated, async (req, res) => {
     try {
       const userId = req.session.userId as number;
+      
+      // Check for any new badges before returning the list
+      await checkAndAwardBadges(userId);
+      
       const userBadges = await storage.getUserBadges(userId);
       
       console.log(`🏆 Fetched ${userBadges.length} badges for user ${userId}`);
@@ -1180,6 +1184,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const newBadges: Array<{badgeId: number, name: string, icon: string, description: string, category: string}> = [];
       
       console.log(`🏆 Badge Check - User ${userId}: ${moments.length} moments, ${connections.length} connections, ${userBadges.length} badges earned`);
+      console.log("Available badges:", allBadges.length);
+      console.log("First few badges:", allBadges.slice(0, 3).map(b => ({ name: b.name, criteria: b.unlockCriteria })));
 
       // Process each badge
       for (const badge of allBadges) {
