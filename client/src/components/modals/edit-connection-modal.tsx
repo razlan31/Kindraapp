@@ -63,6 +63,9 @@ export function EditConnectionModal({ isOpen, onClose, connection, onEditSuccess
       // Force invalidate all connection queries to trigger refetch
       queryClient.invalidateQueries({ queryKey: ['/api/connections'] });
       
+      // CRITICAL: Also invalidate moments cache since relationship stage changes create new milestone entries
+      queryClient.invalidateQueries({ queryKey: ['/api/moments'] });
+      
       toast({ title: 'Connection updated successfully!' });
       
       // Dispatch custom event to notify other components
