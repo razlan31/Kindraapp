@@ -52,8 +52,12 @@ export function EditConnectionModal({ isOpen, onClose, connection, onEditSuccess
       return response.json();
     },
     onSuccess: (data) => {
+      console.log("Connection update response:", data);
+      console.log("New badges:", data.newBadges);
+      
       // Check if any new badges were earned
       if (data.newBadges && data.newBadges.length > 0) {
+        console.log("Showing badge notifications for:", data.newBadges);
         // Show celebratory toast for each new badge
         data.newBadges.forEach((badge: any) => {
           toast({
