@@ -132,7 +132,17 @@ export function ConnectionModal() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!validateForm() || !user) return;
+    console.log("Form submitted with data:", { name, relationshipStage, user: !!user });
+    
+    if (!validateForm()) {
+      console.log("Form validation failed");
+      return;
+    }
+    
+    if (!user) {
+      console.log("No user found");
+      return;
+    }
     
     const data = {
       name,
@@ -144,6 +154,7 @@ export function ConnectionModal() {
       isPrivate,
     };
     
+    console.log("Submitting connection data:", data);
     createConnection(data);
   };
   
