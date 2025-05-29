@@ -305,8 +305,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const connectionMilestone = await storage.createMoment(connectionStartData);
         console.log("Created connection start milestone:", connectionMilestone);
 
-        // Then, create the initial relationship stage milestone (if not default)
-        if (connectionData.relationshipStage && connectionData.relationshipStage !== "Potential") {
+        // Then, create the initial relationship stage milestone for any stage
+        if (connectionData.relationshipStage) {
           const stageTitle = getMilestoneTitle('', connectionData.relationshipStage);
           const stageEmoji = getMilestoneEmoji(connectionData.relationshipStage);
           
@@ -460,8 +460,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
             const connectionMilestone = await storage.createMoment(connectionStartData);
             console.log("Created missing connection start milestone:", connectionMilestone);
 
-            // Then, create the initial relationship stage milestone (if the old stage wasn't default)
-            if (oldStage && oldStage !== "Potential") {
+            // Then, create the initial relationship stage milestone for any stage
+            if (oldStage) {
               const initialStageTitle = getMilestoneTitle('', oldStage);
               const initialStageEmoji = getMilestoneEmoji(oldStage);
               
