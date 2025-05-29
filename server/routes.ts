@@ -555,19 +555,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
           console.log("Created relationship stage milestone:", milestone);
 
           // Create anniversary milestone for significant relationship stages
-          const anniversaryStages = ['Dating', 'Spouse'];
+          const anniversaryStages = ['Dating', 'Spouse', 'Friend', 'Best Friend'];
           if (anniversaryStages.includes(newStage)) {
             try {
               const currentDate = new Date();
               const nextYear = new Date(currentDate);
               nextYear.setFullYear(currentDate.getFullYear() + 1);
               
+              // Get appropriate emoji and title for each stage
+              let emoji, anniversaryType;
+              switch (newStage) {
+                case 'Spouse':
+                  emoji = '💍';
+                  anniversaryType = 'Wedding';
+                  break;
+                case 'Dating':
+                  emoji = '💕';
+                  anniversaryType = 'Dating';
+                  break;
+                case 'Best Friend':
+                  emoji = '👯';
+                  anniversaryType = 'Best Friendship';
+                  break;
+                case 'Friend':
+                  emoji = '🤝';
+                  anniversaryType = 'Friendship';
+                  break;
+                default:
+                  emoji = '🎉';
+                  anniversaryType = 'Relationship';
+              }
+              
               const anniversaryData = {
                 userId: userId,
                 connectionId: connectionId,
-                emoji: newStage === 'Spouse' ? '💍' : '💕',
-                content: `${newStage === 'Spouse' ? 'Wedding' : 'Dating'} Anniversary with ${updatedConnection.name}`,
-                title: `${newStage === 'Spouse' ? 'Wedding' : 'Dating'} Anniversary`,
+                emoji: emoji,
+                content: `${anniversaryType} Anniversary with ${updatedConnection.name}`,
+                title: `${anniversaryType} Anniversary`,
                 tags: ['Milestone', 'Anniversary', newStage],
                 isPrivate: false,
                 isIntimate: false,
@@ -578,7 +602,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
                 resolutionNotes: null,
                 reflection: null,
                 isMilestone: true,
-                milestoneTitle: `${newStage === 'Spouse' ? 'Wedding' : 'Dating'} Anniversary`,
+                milestoneTitle: `${anniversaryType} Anniversary`,
                 createdAt: nextYear
               };
               
