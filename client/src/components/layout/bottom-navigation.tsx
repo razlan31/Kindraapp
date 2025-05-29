@@ -22,7 +22,7 @@ export function BottomNavigation() {
   return (
     <>
       {/* Floating Add Button */}
-      <div className="fixed bottom-20 left-1/2 transform -translate-x-1/2 z-50">
+      <div className="fixed bottom-20 right-4 z-50">
         <button 
           onClick={() => openMomentModal('moment')}
           className="bg-primary text-white rounded-full h-14 w-14 flex items-center justify-center shadow-lg hover:shadow-xl transition-all hover:scale-105"
