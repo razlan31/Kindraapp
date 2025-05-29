@@ -514,7 +514,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
             resolutionNotes: null,
             reflection: null,
             isMilestone: true,
-            milestoneTitle: milestoneTitle
+            milestoneTitle: milestoneTitle,
+            createdAt: new Date() // Explicitly set current date for progression milestone
           };
           
           const milestone = await storage.createMoment(milestoneData);

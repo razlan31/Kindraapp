@@ -296,10 +296,8 @@ export default function Activities() {
     return milestones;
   };
 
-  // Combine regular moments with connection milestones for timeline
-  const allTimelineEntries = activeTab === 'timeline' 
-    ? [...moments, ...createConnectionMilestones()]
-    : moments;
+  // Use only real moments from the database (including real milestones)
+  const allTimelineEntries = moments;
 
   // Filter moments based on tab, search and selected connection
   const filteredMoments = allTimelineEntries.filter(moment => {
