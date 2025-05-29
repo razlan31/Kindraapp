@@ -370,12 +370,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Check if any badges should be unlocked
-      await checkAndAwardBadges(userId);
+      const awardedBadges = await checkAndAwardBadges(userId);
       
       // Log the saved connection to verify all fields are preserved
       const savedConnection = await storage.getConnection(newConnection.id);
       console.log("Verification - saved connection:", savedConnection);
-      res.status(201).json(newConnection);
+      
+      // Return connection with any newly awarded badges
+      res.status(201).json({
+        ...newConnection,
+        badges: awardedBadges
+      });
     } catch (error) {
       console.error("Connection creation error:", error);
       res.status(500).json({ message: "Server error creating connection", details: error.message });
