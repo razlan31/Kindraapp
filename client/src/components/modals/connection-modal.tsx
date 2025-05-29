@@ -29,7 +29,7 @@ export function ConnectionModal() {
   const [relationshipStage, setRelationshipStage] = useState("");
   const [startDate, setStartDate] = useState("");
   const [zodiacSign, setZodiacSign] = useState("");
-  const [loveLanguage, setLoveLanguage] = useState("");
+  const [loveLanguages, setLoveLanguages] = useState<string[]>([]);
   const [isPrivate, setIsPrivate] = useState(false);
   
   // Validation
@@ -107,7 +107,7 @@ export function ConnectionModal() {
     setRelationshipStage("");
     setStartDate("");
     setZodiacSign("");
-    setLoveLanguage("");
+    setLoveLanguages([]);
     setIsPrivate(false);
     setErrors({});
   };
@@ -147,7 +147,7 @@ export function ConnectionModal() {
       relationshipStage,
       startDate: startDate ? new Date(startDate).toISOString() : null,
       zodiacSign: zodiacSign || null,
-      loveLanguage: loveLanguage || null,
+      loveLanguage: loveLanguages.length > 0 ? loveLanguages.join(', ') : null,
       isPrivate,
     };
     
@@ -165,7 +165,7 @@ export function ConnectionModal() {
     "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"
   ];
   
-  const loveLanguages = [
+  const loveLanguageOptions = [
     "Words of Affirmation", "Quality Time", "Physical Touch",
     "Acts of Service", "Receiving Gifts"
   ];
@@ -269,13 +269,13 @@ export function ConnectionModal() {
             
             <div className="space-y-2">
               <Label htmlFor="love" className="text-xs text-neutral-500">Love Language</Label>
-              <Select value={loveLanguage} onValueChange={setLoveLanguage}>
+              <Select value={loveLanguages.length > 0 ? loveLanguages[0] : ""} onValueChange={(value) => setLoveLanguages(value ? [value] : [])}>
                 <SelectTrigger id="love">
                   <SelectValue placeholder="Select love language" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="none">None</SelectItem>
-                  {loveLanguages.map((language) => (
+                  {loveLanguageOptions.map((language) => (
                     <SelectItem key={language} value={language}>
                       {language}
                     </SelectItem>
