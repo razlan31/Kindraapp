@@ -10,6 +10,43 @@ import bcrypt from "bcryptjs";
 import session from "express-session";
 import MemoryStore from "memorystore";
 
+// Helper functions for relationship stage milestones
+function getMilestoneTitle(oldStage: string, newStage: string): string {
+  const milestones: Record<string, string> = {
+    'Potential': 'New Connection',
+    'Talking': 'Started Talking',
+    'Situationship': 'Became Situationship',
+    'It\'s Complicated': 'Relationship Complicated',
+    'Dating': 'Started Dating',
+    'Spouse': 'Got Married',
+    'FWB': 'Friends with Benefits',
+    'Ex': 'Relationship Ended',
+    'Friend': 'Became Friends',
+    'Best Friend': 'Became Best Friends',
+    'Siblings': 'Sibling Bond'
+  };
+  
+  return milestones[newStage] || `Changed to ${newStage}`;
+}
+
+function getMilestoneEmoji(stage: string): string {
+  const emojis: Record<string, string> = {
+    'Potential': '👀',
+    'Talking': '💬',
+    'Situationship': '🤷',
+    'It\'s Complicated': '😵‍💫',
+    'Dating': '💕',
+    'Spouse': '💍',
+    'FWB': '🤝',
+    'Ex': '💔',
+    'Friend': '👫',
+    'Best Friend': '💖',
+    'Siblings': '👨‍👩‍👧‍👦'
+  };
+  
+  return emojis[stage] || '✨';
+}
+
 // Extend session types
 declare module "express-session" {
   interface SessionData {
@@ -242,6 +279,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const newConnection = await storage.createConnection(connectionData);
       console.log("Connection created successfully:", newConnection);
       
+      // Create initial milestone for new connection
+      try {
+        const milestoneTitle = getMilestoneTitle('', connectionData.relationshipStage);
+        const milestoneEmoji = getMilestoneEmoji(connectionData.relationshipStage);
+        
+        const initialMilestoneData = {
+          userId: userId,
+          connectionId: newConnection.id,
+          emoji: milestoneEmoji,
+          content: `Connection established as ${connectionData.relationshipStage}`,
+          title: milestoneTitle,
+          tags: ['Milestone', 'Connection Start', connectionData.relationshipStage],
+          isPrivate: false,
+          isIntimate: false,
+          intimacyRating: null,
+          relatedToMenstrualCycle: false,
+          isResolved: false,
+          resolvedAt: null,
+          resolutionNotes: null,
+          reflection: null,
+          isMilestone: true,
+          milestoneTitle: milestoneTitle
+        };
+        
+        const initialMilestone = await storage.createMoment(initialMilestoneData);
+        console.log("Created initial connection milestone:", initialMilestone);
+      } catch (milestoneError) {
+        console.error("Error creating initial milestone:", milestoneError);
+        // Don't fail the connection creation if milestone creation fails
+      }
+      
       // Log the saved connection to verify all fields are preserved
       const savedConnection = await storage.getConnection(newConnection.id);
       console.log("Verification - saved connection:", savedConnection);
@@ -314,9 +382,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Unauthorized to update this connection" });
       }
       
+      // Check if relationship stage has changed to create milestone
+      const oldStage = connection.relationshipStage;
+      const newStage = req.body.relationshipStage;
+      
       console.log("Updating connection with data:", req.body);
       const updatedConnection = await storage.updateConnection(connectionId, req.body);
       console.log("Updated connection result:", updatedConnection);
+      
+      // Create milestone entry if relationship stage changed
+      if (updatedConnection && newStage && oldStage !== newStage) {
+        console.log(`Relationship stage changed from ${oldStage} to ${newStage}, creating milestone`);
+        
+        const milestoneTitle = getMilestoneTitle(oldStage, newStage);
+        const milestoneEmoji = getMilestoneEmoji(newStage);
+        
+        try {
+          const milestoneData = {
+            userId: userId,
+            connectionId: connectionId,
+            emoji: milestoneEmoji,
+            content: `Relationship stage changed from ${oldStage} to ${newStage}`,
+            title: milestoneTitle,
+            tags: ['Milestone', 'Relationship Stage', newStage],
+            isPrivate: false,
+            isIntimate: false,
+            intimacyRating: null,
+            relatedToMenstrualCycle: false,
+            isResolved: false,
+            resolvedAt: null,
+            resolutionNotes: null,
+            reflection: null,
+            isMilestone: true,
+            milestoneTitle: milestoneTitle
+          };
+          
+          const milestone = await storage.createMoment(milestoneData);
+          console.log("Created relationship stage milestone:", milestone);
+        } catch (milestoneError) {
+          console.error("Error creating relationship stage milestone:", milestoneError);
+          // Don't fail the connection update if milestone creation fails
+        }
+      }
       
       if (!updatedConnection) {
         console.log("Update failed");
