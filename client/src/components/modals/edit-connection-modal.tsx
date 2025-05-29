@@ -68,13 +68,24 @@ export function EditConnectionModal({ isOpen, onClose, connection, onEditSuccess
       // Check if any new badges were earned
       if (data.newBadges && data.newBadges.length > 0) {
         console.log("Showing badge notifications for:", data.newBadges);
-        // Show celebratory toast for each new badge
-        data.newBadges.forEach((badge: any) => {
-          toast({
-            title: "🎉 New Badge Unlocked!",
-            description: `${badge.icon} ${badge.name} - ${badge.description}`,
-            duration: 5000,
-          });
+        
+        // Test with a simple toast first
+        toast({
+          title: `🎉 ${data.newBadges.length} New Badges Unlocked!`,
+          description: "Check the Badges tab to see your achievements!",
+          duration: 6000,
+        });
+        
+        // Show individual badge notifications with delays to prevent conflicts
+        data.newBadges.forEach((badge: any, index: number) => {
+          setTimeout(() => {
+            console.log(`Showing badge ${index + 1}:`, badge);
+            toast({
+              title: "🎉 Badge Unlocked!",
+              description: `${badge.icon} ${badge.name}`,
+              duration: 4000,
+            });
+          }, (index + 1) * 1000); // Stagger by 1 second each
         });
       }
       

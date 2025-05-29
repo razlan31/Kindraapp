@@ -1,0 +1,56 @@
+Allow attribute will take precedence over 'allowpaymentrequest'.Understand this warning
+Console.js:61 Dashboard Debug: Object
+Console.js:61 Modal useEffect - selectedDate from context: null
+Console.js:61 Modal useEffect - editingMoment: null
+Console.js:61 Modal useEffect - momentModalOpen: false
+Console.js:61 Dashboard Debug: Object
+Console.js:61 Dashboard Debug: Object
+Console.js:61 Dashboard Debug: Object
+Console.js:61 Dashboard Debug: Object
+Console.js:61 Dashboard Debug: Object
+Console.js:61 Focus Context Debug: Object
+Console.js:61 Found saved connection: undefined
+Console.js:61 getCurrentUser successful: Object
+Console.js:61 Auth context setting user: Object
+Console.js:61 Dashboard Debug: Object
+Console.js:61 Connection Data Debug: Object
+Console.js:61 Connection Data Debug: Object
+Console.js:61 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+Mt.forEach.n.<computed> @ Console.js:61Understand this warning
+Console.js:61 Connection Data Debug: Object
+Console.js:61 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+Mt.forEach.n.<computed> @ Console.js:61Understand this warning
+Console.js:61 Making PATCH request to: /api/connections/2
+Console.js:61 Request data: Object
+Console.js:61 Response status: 200
+Console.js:61 Response headers: Headers
+Console.js:61 Raw response from server: Object
+Console.js:61 Connection update response: Object
+Console.js:61 New badges: Array(10)
+Console.js:61 Showing badge notifications for: Array(10)
+Console.js:61 Connection updated event received, forcing refresh...
+Console.js:61 Connection Data Debug: Object
+Console.js:61 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+Mt.forEach.n.<computed> @ Console.js:61Understand this warning
+Console.js:61 Connection Data Debug: Object
+Console.js:61 Focus Context Debug: Object
+Console.js:61 Found saved connection: undefined
+Console.js:61 Connection Data Debug: Object
+Console.js:61 Connection Data Debug: Object
+Console.js:61 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+Mt.forEach.n.<computed> @ Console.js:61Understand this warning
+Console.js:61 Connection Data Debug: Object
+
+                
+          
+          
+          
+         Chrome is moving towards a new experience that allows users to choose to browse without third-party cookies.Understand this warning
+618 log entries are not shown.Understand this warning
+stallwart.build.js:1 stallwart: failed ping 1
+
+                
+          
+          
+          
+         Chrome is moving towards a new experience that allows users to choose to browse without third-party cookies.Understand this warning
