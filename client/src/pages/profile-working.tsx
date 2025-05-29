@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/contexts/auth-context";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,15 +8,17 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
-import { User, Settings, Target, Save } from "lucide-react";
+import { User, Settings, Target, Save, Camera, Upload } from "lucide-react";
 
 export default function ProfilePage() {
   const { user, loading } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Create a fallback user for display if auth is stuck
   const displayUser = user || {
@@ -31,13 +33,14 @@ export default function ProfilePage() {
     displayName: displayUser.displayName || "",
     email: displayUser.email || "",
     zodiacSign: displayUser.zodiacSign || "",
-    loveLanguage: displayUser.loveLanguage || "",
+    loveLanguages: displayUser.loveLanguage ? [displayUser.loveLanguage] : [] as string[],
     relationshipGoals: "Finding meaningful connections",
     relationshipStyle: "Exploring",
     bio: "Building deeper emotional connections and understanding relationship patterns.",
     notifications: true,
     privateMode: false,
-    analyticsSharing: true
+    analyticsSharing: true,
+    profileImage: displayUser.profileImage || ""
   });
 
   // Update form when user data loads
@@ -48,10 +51,34 @@ export default function ProfilePage() {
         displayName: user.displayName || "",
         email: user.email || "",
         zodiacSign: user.zodiacSign || "",
-        loveLanguage: user.loveLanguage || ""
+        loveLanguages: user.loveLanguage ? [user.loveLanguage] : [],
+        profileImage: user.profileImage || ""
       }));
     }
   }, [user]);
+
+  // Handle profile picture upload
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const result = e.target?.result as string;
+        setFormData(prev => ({ ...prev, profileImage: result }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Handle love language selection
+  const toggleLoveLanguage = (language: string) => {
+    setFormData(prev => ({
+      ...prev,
+      loveLanguages: prev.loveLanguages.includes(language)
+        ? prev.loveLanguages.filter(l => l !== language)
+        : [...prev.loveLanguages, language]
+    }));
+  };
 
   // Save mutation
   const saveMutation = useMutation({
@@ -93,6 +120,32 @@ export default function ProfilePage() {
       <div className="max-w-2xl mx-auto p-4 space-y-6">
         {/* Header */}
         <div className="text-center pt-6 pb-4">
+          <div className="mx-auto w-24 h-24 relative mb-4">
+            {formData.profileImage ? (
+              <img 
+                src={formData.profileImage} 
+                alt="Profile" 
+                className="w-24 h-24 rounded-full object-cover"
+              />
+            ) : (
+              <div className="w-24 h-24 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+                <User className="w-12 h-12 text-white" />
+              </div>
+            )}
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              className="absolute -bottom-2 -right-2 w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white hover:bg-primary/90 transition-colors"
+            >
+              <Camera className="w-4 h-4" />
+            </button>
+          </div>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleImageUpload}
+            className="hidden"
+          />
           <h1 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">Profile & Settings</h1>
           <p className="text-neutral-600 dark:text-neutral-400 mt-1">Manage your personal information and relationship preferences</p>
         </div>
