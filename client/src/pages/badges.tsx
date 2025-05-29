@@ -65,11 +65,7 @@ function BadgeCard({ badge, isEarned, earnedCount = 0, progress }: {
                   <span className="mr-1">{getCategoryIcon(badge.category)}</span>
                   {badge.category}
                 </Badge>
-                {badge.isRepeatable && (
-                  <Badge variant="outline" className="text-xs px-2 py-0">
-                    Repeatable
-                  </Badge>
-                )}
+
               </div>
             </div>
           </div>
