@@ -90,15 +90,7 @@ export default function ProfilePage() {
     },
   });
 
-  // Fetch user statistics
-  const { data: stats } = useQuery({
-    queryKey: ["/api/stats"],
-    queryFn: async () => {
-      const response = await fetch("/api/stats", { credentials: "include" });
-      if (!response.ok) throw new Error("Failed to fetch stats");
-      return response.json();
-    }
-  });
+
 
   // Handle photo upload
   const handlePhotoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -155,32 +147,7 @@ export default function ProfilePage() {
           <p className="text-neutral-600 dark:text-neutral-400 mt-1">Manage your personal information and relationship preferences</p>
         </div>
 
-        {/* Quick Stats Card */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <BarChart3 className="h-5 w-5" />
-              Your Journey
-            </CardTitle>
-            <CardDescription>Relationship tracking insights</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-3 gap-4 text-center">
-              <div>
-                <div className="text-2xl font-bold text-primary">{stats?.totalConnections || 0}</div>
-                <div className="text-sm text-neutral-600 dark:text-neutral-400">Connections</div>
-              </div>
-              <div>
-                <div className="text-2xl font-bold text-primary">{stats?.totalMoments || 0}</div>
-                <div className="text-sm text-neutral-600 dark:text-neutral-400">Moments</div>
-              </div>
-              <div>
-                <div className="text-2xl font-bold text-primary">{stats?.totalBadges || 0}</div>
-                <div className="text-sm text-neutral-600 dark:text-neutral-400">Badges</div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+
 
         {/* Profile Picture Card */}
         <Card>
