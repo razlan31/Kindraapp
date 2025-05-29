@@ -1,10 +1,13 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useLocation } from "wouter";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
-import { Trophy, Lock, Star, Award, Target, Calendar, Heart, MessageCircle, UserPlus, Zap } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Trophy, Lock, Star, Award, Target, Calendar, Heart, MessageCircle, UserPlus, Zap, ArrowLeft } from "lucide-react";
+import { BottomNavigation } from "@/components/layout/bottom-navigation";
 
 interface Badge {
   id: number;
@@ -154,6 +157,7 @@ function CategorySection({ title, badges, userBadges, icon }: {
 
 export default function BadgesPage() {
   const [activeTab, setActiveTab] = useState("all");
+  const [, setLocation] = useLocation();
 
   const { data: userBadges = [], isLoading: userBadgesLoading } = useQuery({
     queryKey: ["/api/badges"],
@@ -204,13 +208,26 @@ export default function BadgesPage() {
   const completionPercentage = Math.round((earnedBadgeIds.size / allBadges.length) * 100);
 
   return (
-    <div className="container mx-auto p-6 max-w-7xl">
+    <div className="container mx-auto p-6 max-w-7xl pb-20">
       {/* Header */}
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold mb-2">Badge Collection</h1>
-        <p className="text-gray-600 dark:text-gray-400 mb-4">
-          Track your relationship journey achievements
-        </p>
+      <div className="mb-8">
+        <div className="flex items-center gap-4 mb-4">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={() => setLocation("/")}
+            className="flex items-center gap-2"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back
+          </Button>
+        </div>
+        <div className="text-center">
+          <h1 className="text-3xl font-bold mb-2">Badge Collection</h1>
+          <p className="text-gray-600 dark:text-gray-400 mb-4">
+            Track your relationship journey achievements
+          </p>
+        </div>
         
         {/* Overall Progress */}
         <Card className="max-w-md mx-auto">
@@ -295,6 +312,8 @@ export default function BadgesPage() {
           )}
         </TabsContent>
       </Tabs>
+      
+      <BottomNavigation />
     </div>
   );
 }
