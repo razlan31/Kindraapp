@@ -148,9 +148,9 @@ export default function Activities() {
     }
   };
 
-  const handleViewEntryDetail = (momentId: number) => {
+  const handleViewEntryDetail = (momentId: number | string) => {
     console.log("handleViewEntryDetail called with momentId:", momentId);
-    const moment = moments.find(m => m.id === momentId);
+    const moment = filteredMoments.find(m => m.id === momentId);
     const connection = connections.find(c => c.id === moment?.connectionId);
     console.log("Found moment and connection:", { moment, connection });
     if (moment && connection) {
