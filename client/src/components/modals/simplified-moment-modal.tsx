@@ -233,7 +233,19 @@ export function MomentModal() {
       console.log("🔥 FORM SUBMISSION - result.createdAt:", result.createdAt);
       return result;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      // Check if any new badges were earned
+      if (data.newBadges && data.newBadges.length > 0) {
+        // Show celebratory toast for each new badge
+        data.newBadges.forEach((badge: any) => {
+          toast({
+            title: "🎉 New Badge Unlocked!",
+            description: `${badge.icon} ${badge.name} - ${badge.description}`,
+            duration: 5000,
+          });
+        });
+      }
+      
       toast({
         title: `${activityType === 'conflict' ? 'Conflict' : activityType === 'intimacy' ? 'Intimacy' : 'Moment'} logged successfully`,
         description: "Your entry has been recorded.",
