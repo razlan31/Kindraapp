@@ -31,6 +31,13 @@ export function BottomNavigation() {
               <Users className="h-5 w-5" />
               <span className="text-xs mt-1">Connections</span>
             </Link>
+            <button 
+              onClick={() => openMomentModal('moment')}
+              className="bottom-tab flex flex-col items-center justify-center h-full"
+            >
+              <Plus className="h-5 w-5" />
+              <span className="text-xs mt-1">Add</span>
+            </button>
             <Link href="/calendar" className={`bottom-tab flex flex-col items-center justify-center h-full ${location === '/calendar' ? 'active' : ''}`}>
               <Calendar className="h-5 w-5" />
               <span className="text-xs mt-1">Calendar</span>
