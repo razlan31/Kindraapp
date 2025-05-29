@@ -675,6 +675,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Manual badge check route for debugging
+  app.post("/api/badges/check", isAuthenticated, async (req, res) => {
+    try {
+      const userId = req.session.userId as number;
+      console.log(`🔍 Manual badge check triggered for user ${userId}`);
+      
+      const newBadges = await checkAndAwardBadges(userId);
+      
+      res.json({
+        message: `Badge check completed for user ${userId}`,
+        newBadges,
+        count: newBadges.length
+      });
+    } catch (error) {
+      console.error("Error in manual badge check:", error);
+      res.status(500).json({ message: "Error checking badges" });
+    }
+  });
+
   // Test route to verify API is working
   app.get("/api/test", (req, res) => {
     res.json({ message: "API is working", timestamp: new Date().toISOString() });
