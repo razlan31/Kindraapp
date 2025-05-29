@@ -397,12 +397,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         // Check if this is the first time we're setting up milestones for this connection
         const existingMoments = await storage.getMomentsByConnectionId(connectionId);
+        console.log("Existing moments for connection:", existingMoments.map(m => ({ id: m.id, tags: m.tags, content: m.content })));
+        
         const hasInitialMilestone = existingMoments.some(moment => 
           moment.tags?.includes('Connection Start')
         );
+        console.log("Has initial milestone:", hasInitialMilestone);
+        console.log("Connection start date:", updatedConnection.startDate);
         
         // If no initial milestone exists, create one with the connection's start date first
         if (!hasInitialMilestone && updatedConnection.startDate) {
+          console.log("Creating missing initial milestone for connection start");
           try {
             const initialMilestoneTitle = getMilestoneTitle('', oldStage);
             const initialMilestoneEmoji = getMilestoneEmoji(oldStage);
