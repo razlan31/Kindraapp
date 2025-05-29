@@ -638,7 +638,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log("=== UPDATE SUCCESSFUL ===");
       res.status(200).json({
         ...updatedConnection,
-        newBadges
+        badges: newBadges
       });
     } catch (error) {
       console.error("Update error:", error);
@@ -1339,13 +1339,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
           if (commCount >= criteria.communicationMoments) isEarned = true;
         }
 
-        // Streak days (simplified check)
+        // Streak days (improved check - exclude milestone moments)
         if (criteria.streakDays) {
-          // For now, just check if they have logged moments on multiple days
-          const uniqueDays = new Set(
-            moments.map(m => m.createdAt ? new Date(m.createdAt).toDateString() : '')
+          // Only count user-created moments, not system-generated milestones
+          const userMoments = moments.filter(m => 
+            !m.tags?.includes('Milestone') && 
+            !m.tags?.includes('Connection Start') &&
+            !m.tags?.includes('Anniversary')
           );
-          if (uniqueDays.size >= criteria.streakDays) isEarned = true;
+          
+          const uniqueDays = new Set(
+            userMoments.map(m => m.createdAt ? new Date(m.createdAt).toDateString() : '')
+          );
+          
+          // Only award if they have genuine user activity across multiple days
+          if (uniqueDays.size >= criteria.streakDays && userMoments.length >= criteria.streakDays) {
+            isEarned = true;
+          }
         }
 
         // Anniversaries

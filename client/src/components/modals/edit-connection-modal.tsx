@@ -100,6 +100,33 @@ export function EditConnectionModal({ isOpen, onClose, connection, onEditSuccess
         );
       });
       
+      // Check if any new badges were earned
+      if (data.badges && data.badges.length > 0) {
+        console.log("New badges earned from connection update:", data.badges);
+        
+        // Show summary toast
+        toast({
+          title: `🎉 ${data.badges.length} New Badges Unlocked!`,
+          description: "Check the Badges tab to see your achievements!",
+          duration: 6000,
+        });
+        
+        // Show individual badge notifications with delays
+        data.badges.forEach((badge: any, index: number) => {
+          setTimeout(() => {
+            console.log(`Showing badge ${index + 1}:`, badge);
+            toast({
+              title: "🎉 Badge Unlocked!",
+              description: `${badge.name}: ${badge.description}`,
+              duration: 5000,
+            });
+          }, (index + 1) * 1500); // Stagger notifications
+        });
+        
+        // Invalidate badges cache to refresh the badges page
+        queryClient.invalidateQueries({ queryKey: ['/api/badges'] });
+      }
+      
       // Force invalidate all connection queries to trigger refetch
       queryClient.invalidateQueries({ queryKey: ['/api/connections'] });
       
