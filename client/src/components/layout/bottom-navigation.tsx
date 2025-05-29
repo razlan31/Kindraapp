@@ -36,66 +36,56 @@ export function BottomNavigation() {
       <div className="fixed bottom-20 right-4 z-50">
         {/* Action Menu Items */}
         {isMenuOpen && (
-          <div className="absolute bottom-16 right-0 flex flex-col gap-2 animate-in slide-in-from-bottom-2 duration-200">
-            <div className="flex items-center gap-3">
-              <span className="bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white text-sm px-3 py-1 rounded-full shadow-lg whitespace-nowrap">
+          <div className="absolute bottom-16 right-0 flex flex-col items-end gap-2 animate-in slide-in-from-bottom-2 duration-200">
+            <button 
+              onClick={() => handleActionClick(() => openConnectionModal())}
+              className="bg-blue-500 text-white rounded-full h-12 w-12 flex items-center justify-center shadow-lg hover:shadow-xl transition-all hover:scale-105 relative group"
+            >
+              <UserPlus className="h-5 w-5" />
+              <span className="absolute right-14 bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap">
                 Add Connection
               </span>
-              <button 
-                onClick={() => handleActionClick(() => openConnectionModal())}
-                className="bg-blue-500 text-white rounded-full h-12 w-12 flex items-center justify-center shadow-lg hover:shadow-xl transition-all hover:scale-105"
-              >
-                <UserPlus className="h-5 w-5" />
-              </button>
-            </div>
+            </button>
             
-            <div className="flex items-center gap-3">
-              <span className="bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white text-sm px-3 py-1 rounded-full shadow-lg whitespace-nowrap">
+            <button 
+              onClick={() => handleActionClick(() => openPlanModal())}
+              className="bg-purple-500 text-white rounded-full h-12 w-12 flex items-center justify-center shadow-lg hover:shadow-xl transition-all hover:scale-105 relative group"
+            >
+              <CalendarPlus className="h-5 w-5" />
+              <span className="absolute right-14 bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap">
                 Add Plan
               </span>
-              <button 
-                onClick={() => handleActionClick(() => openPlanModal())}
-                className="bg-purple-500 text-white rounded-full h-12 w-12 flex items-center justify-center shadow-lg hover:shadow-xl transition-all hover:scale-105"
-              >
-                <CalendarPlus className="h-5 w-5" />
-              </button>
-            </div>
+            </button>
             
-            <div className="flex items-center gap-3">
-              <span className="bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white text-sm px-3 py-1 rounded-full shadow-lg whitespace-nowrap">
+            <button 
+              onClick={() => handleActionClick(() => openMomentModal('intimacy'))}
+              className="bg-pink-500 text-white rounded-full h-12 w-12 flex items-center justify-center shadow-lg hover:shadow-xl transition-all hover:scale-105 relative group"
+            >
+              <Heart className="h-5 w-5" />
+              <span className="absolute right-14 bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap">
                 Log Intimacy
               </span>
-              <button 
-                onClick={() => handleActionClick(() => openMomentModal('intimacy'))}
-                className="bg-pink-500 text-white rounded-full h-12 w-12 flex items-center justify-center shadow-lg hover:shadow-xl transition-all hover:scale-105"
-              >
-                <Heart className="h-5 w-5" />
-              </button>
-            </div>
+            </button>
             
-            <div className="flex items-center gap-3">
-              <span className="bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white text-sm px-3 py-1 rounded-full shadow-lg whitespace-nowrap">
+            <button 
+              onClick={() => handleActionClick(() => openMomentModal('conflict'))}
+              className="bg-red-500 text-white rounded-full h-12 w-12 flex items-center justify-center shadow-lg hover:shadow-xl transition-all hover:scale-105 relative group"
+            >
+              <AlertTriangle className="h-5 w-5" />
+              <span className="absolute right-14 bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap">
                 Log Conflict
               </span>
-              <button 
-                onClick={() => handleActionClick(() => openMomentModal('conflict'))}
-                className="bg-red-500 text-white rounded-full h-12 w-12 flex items-center justify-center shadow-lg hover:shadow-xl transition-all hover:scale-105"
-              >
-                <AlertTriangle className="h-5 w-5" />
-              </button>
-            </div>
+            </button>
             
-            <div className="flex items-center gap-3">
-              <span className="bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white text-sm px-3 py-1 rounded-full shadow-lg whitespace-nowrap">
+            <button 
+              onClick={() => handleActionClick(() => openMomentModal('moment'))}
+              className="bg-green-500 text-white rounded-full h-12 w-12 flex items-center justify-center shadow-lg hover:shadow-xl transition-all hover:scale-105 relative group"
+            >
+              <Smile className="h-5 w-5" />
+              <span className="absolute right-14 bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap">
                 Log Moment
               </span>
-              <button 
-                onClick={() => handleActionClick(() => openMomentModal('moment'))}
-                className="bg-green-500 text-white rounded-full h-12 w-12 flex items-center justify-center shadow-lg hover:shadow-xl transition-all hover:scale-105"
-              >
-                <Smile className="h-5 w-5" />
-              </button>
-            </div>
+            </button>
           </div>
         )}
         
