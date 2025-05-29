@@ -14,7 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Checkbox } from "@/components/ui/checkbox";
 
 export default function ProfilePage() {
-  const { logout } = useAuth();
+  const { logout, refreshUser } = useAuth();
   
   // Use React Query to fetch user data directly
   const { data: user, isLoading: loading } = useQuery({
@@ -105,6 +105,7 @@ export default function ProfilePage() {
         description: "Your profile has been updated successfully.",
       });
       queryClient.invalidateQueries({ queryKey: ['/api/me'] });
+      refreshUser(); // Refresh the auth context user data
       setIsEditing(false);
     },
     onError: (error: any) => {
