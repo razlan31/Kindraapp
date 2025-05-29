@@ -122,6 +122,7 @@ export default function ProfilePage() {
       email: formData.email,
       zodiacSign: formData.zodiacSign,
       loveLanguage: formData.loveLanguages.join(", "),
+      profileImage: formData.profileImage,
     });
   };
 
