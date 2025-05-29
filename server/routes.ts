@@ -1266,16 +1266,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
           if (greenFlagCount >= criteria.greenFlags) isEarned = true;
         }
 
-        // Red flags
+        // Red flags - only count if this is a repeatable badge or user doesn't have it yet
         if (criteria.redFlags) {
           const redFlagCount = moments.filter(m => m.tags?.includes('Red Flag')).length;
-          if (redFlagCount >= criteria.redFlags) isEarned = true;
+          if (redFlagCount >= criteria.redFlags) {
+            // Only award if it's repeatable or user doesn't have this badge yet
+            if (badge.isRepeatable || !earnedBadgeIds.includes(badge.id)) {
+              isEarned = true;
+            }
+          }
         }
 
         // Conflicts - check for different time periods
         if (criteria.conflicts) {
           const conflictCount = moments.filter(m => m.tags?.includes('Conflict')).length;
-          if (conflictCount >= criteria.conflicts) isEarned = true;
+          if (conflictCount >= criteria.conflicts) {
+            // Only award if it's repeatable or user doesn't have this badge yet
+            if (badge.isRepeatable || !earnedBadgeIds.includes(badge.id)) {
+              isEarned = true;
+            }
+          }
         }
 
         // Conflicts in specific time periods
