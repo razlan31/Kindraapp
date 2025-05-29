@@ -9,12 +9,18 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { ArrowLeft, Camera, Save, Edit, Shield, LogOut } from "lucide-react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { Checkbox } from "@/components/ui/checkbox";
 
 export default function ProfilePage() {
-  const { user, logout, loading } = useAuth();
+  const { logout } = useAuth();
+  
+  // Use React Query to fetch user data directly
+  const { data: user, isLoading: loading } = useQuery({
+    queryKey: ['/api/me'],
+    queryFn: () => fetch('/api/me').then(res => res.json())
+  });
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
