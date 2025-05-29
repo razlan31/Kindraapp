@@ -156,7 +156,8 @@ export default function ProfilePage() {
 
   console.log("Profile page - loading:", loading, "user:", user, "isEditing:", isEditing);
 
-  if (!user) {
+  // Show loading while auth is loading or user is not available
+  if (loading || !user) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">

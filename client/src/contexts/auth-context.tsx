@@ -39,9 +39,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         console.log("Auth: Starting to load user, setting loading to true");
         setLoading(true);
         const currentUser = await getCurrentUser();
-        console.log("Auth context setting user:", currentUser);
-        console.log("Auth: Setting loading to false");
+        console.log("getCurrentUser successful:", currentUser);
         setUser(currentUser);
+        console.log("Auth context setting user:", currentUser);
       } catch (error) {
         console.error("Failed to load user:", error);
         setUser(null);
