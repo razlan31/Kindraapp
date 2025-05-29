@@ -34,14 +34,16 @@ export default function ProfilePage() {
       console.log("Initializing form data with user:", user);
       setFormData({
         displayName: user.displayName || "",
+        email: user.email || "",
         zodiacSign: user.zodiacSign || "",
-        loveLanguage: user.loveLanguage || "",
-        relationshipGoals: user.relationshipGoals || "",
-        currentFocus: user.currentFocus || "",
-        relationshipStyle: user.relationshipStyle || "",
-        personalNotes: user.personalNotes || "",
-        profileImage: user.profileImage || "",
-        loveLanguages: user.loveLanguage ? [user.loveLanguage] : []
+        loveLanguages: user.loveLanguage ? user.loveLanguage.split(", ") : [],
+        relationshipGoals: "Finding meaningful connections",
+        relationshipStyle: "Exploring",
+        bio: "Building deeper emotional connections and understanding relationship patterns.",
+        notifications: true,
+        privateMode: false,
+        analyticsSharing: true,
+        profileImage: user.profileImage || ""
       });
     }
   }, [user]);
@@ -49,6 +51,7 @@ export default function ProfilePage() {
   // Form state
   const [formData, setFormData] = useState({
     displayName: "",
+    email: "",
     zodiacSign: "",
     loveLanguages: [] as string[],
     relationshipGoals: "Finding meaningful connections",
@@ -65,6 +68,7 @@ export default function ProfilePage() {
     if (user) {
       setFormData({
         displayName: user.displayName || "",
+        email: user.email || "",
         zodiacSign: user.zodiacSign || "",
         loveLanguages: user.loveLanguage ? [user.loveLanguage] : [],
         relationshipGoals: "Finding meaningful connections",
@@ -125,15 +129,16 @@ export default function ProfilePage() {
     if (user) {
       setFormData({
         displayName: user.displayName || "",
+        email: user.email || "",
         zodiacSign: user.zodiacSign || "",
-        loveLanguages: user.loveLanguage ? [user.loveLanguage] : [],
+        loveLanguages: user.loveLanguage ? user.loveLanguage.split(", ") : [],
         relationshipGoals: "Finding meaningful connections",
         relationshipStyle: "Exploring",
         bio: "Building deeper emotional connections and understanding relationship patterns.",
         notifications: true,
         privateMode: false,
         analyticsSharing: true,
-        profileImage: ""
+        profileImage: user.profileImage || ""
       });
     }
     setIsEditing(false);
@@ -272,9 +277,19 @@ export default function ProfilePage() {
 
               <div>
                 <Label htmlFor="email">Email Address</Label>
-                <p className="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
-                  {user.email}
-                </p>
+                {isEditing ? (
+                  <Input
+                    id="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                    className="mt-1"
+                  />
+                ) : (
+                  <p className="mt-1 text-sm text-neutral-900 dark:text-neutral-100">
+                    {user.email}
+                  </p>
+                )}
               </div>
 
               <div>
