@@ -214,7 +214,6 @@ export default function ProfilePage() {
                     relationshipStyle: "Exploring",
                     bio: "Building deeper emotional connections and understanding relationship patterns.",
                     notifications: true,
-                    privateMode: false,
                     analyticsSharing: true,
                     profileImage: user.profileImage || ""
                   });
@@ -447,20 +446,7 @@ export default function ProfilePage() {
 
             <Separator />
 
-            <div className="flex items-center justify-between">
-              <div>
-                <Label htmlFor="privateMode">Private Mode</Label>
-                <p className="text-sm text-neutral-600 dark:text-neutral-400">Hide your profile from other users</p>
-              </div>
-              <Switch
-                id="privateMode"
-                checked={formData.privateMode}
-                onCheckedChange={(checked) => setFormData(prev => ({ ...prev, privateMode: checked }))}
-                disabled={!isEditing}
-              />
-            </div>
 
-            <Separator />
 
             <div className="flex items-center justify-between">
               <div>
