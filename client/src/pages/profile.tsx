@@ -19,7 +19,7 @@ export default function ProfilePage() {
   const queryClient = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Edit mode state
+  // Edit mode state - always start in view mode
   const [isEditing, setIsEditing] = useState(false);
 
   // Form state
