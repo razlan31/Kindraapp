@@ -31,11 +31,14 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
 
   // Listen for connection update events
   useEffect(() => {
-    const handleConnectionUpdated = () => {
+    const handleConnectionUpdated = async () => {
       console.log("Connection updated event received, forcing refresh...");
+      // Invalidate queries first
+      await queryClient.invalidateQueries({ queryKey: ['/api/connections'] });
+      // Force refetch
+      await refetchConnections();
+      // Update render key to force complete re-render
       setRenderKey(prev => prev + 1);
-      refetchConnections();
-      queryClient.invalidateQueries({ queryKey: ['/api/connections'] });
     };
 
     window.addEventListener('connectionUpdated', handleConnectionUpdated);
@@ -49,6 +52,14 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
   const currentConnection = connection?.id 
     ? (allConnections as Connection[]).find(c => c.id === connection.id) || connection
     : connection;
+
+  // Debug connection data
+  console.log("Connection Data Debug:", {
+    originalConnection: connection,
+    allConnections: allConnections.length,
+    currentConnection,
+    renderKey
+  });
 
   const handleEditSuccess = () => {
     // Force complete re-render by updating key
