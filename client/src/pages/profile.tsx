@@ -25,6 +25,24 @@ export default function ProfilePage() {
 
   // Edit mode state - always start in view mode
   const [isEditing, setIsEditing] = useState(false);
+  
+  // Initialize form data when user loads
+  useEffect(() => {
+    if (user) {
+      console.log("Initializing form data with user:", user);
+      setFormData({
+        displayName: user.displayName || "",
+        zodiacSign: user.zodiacSign || "",
+        loveLanguage: user.loveLanguage || "",
+        relationshipGoals: user.relationshipGoals || "",
+        currentFocus: user.currentFocus || "",
+        relationshipStyle: user.relationshipStyle || "",
+        personalNotes: user.personalNotes || "",
+        profileImage: user.profileImage || "",
+        loveLanguages: user.loveLanguage ? [user.loveLanguage] : []
+      });
+    }
+  }, [user]);
 
   // Form state
   const [formData, setFormData] = useState({
