@@ -222,6 +222,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Update profile endpoint
+  app.patch("/api/profile", isAuthenticated, async (req, res) => {
+    try {
+      const userId = req.session.userId as number;
+      const updateData = req.body;
+      
+      // Validate the update data
+      const allowedFields = ['displayName', 'email', 'zodiacSign', 'loveLanguage'];
+      const filteredData = Object.keys(updateData)
+        .filter(key => allowedFields.includes(key))
+        .reduce((obj, key) => {
+          obj[key] = updateData[key];
+          return obj;
+        }, {} as any);
+      
+      const updatedUser = await storage.updateUser(userId, filteredData);
+      
+      if (!updatedUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Remove password from response
+      const { password, ...userWithoutPassword } = updatedUser;
+      
+      res.status(200).json(userWithoutPassword);
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      res.status(500).json({ message: "Failed to update profile" });
+    }
+  });
+
   // Connections Routes
   app.get("/api/connections", isAuthenticated, async (req, res) => {
     try {

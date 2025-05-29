@@ -1,233 +1,322 @@
-import { Header } from "@/components/layout/header";
-import { BottomNavigation } from "@/components/layout/bottom-navigation";
+import { useState } from "react";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { useQuery } from "@tanstack/react-query";
-import { Badge as BadgeType } from "@shared/schema";
-import { 
-  Award, 
-  Calendar, 
-  Edit, 
-  LogOut, 
-  Settings, 
-  Shield, 
-  User, 
-  Moon, 
-  Sun
-} from "lucide-react";
-import { useTheme } from "@/components/theme-provider";
+import { Switch } from "@/components/ui/switch";
+import { useToast } from "@/hooks/use-toast";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
+import { Camera, User, Settings, Bell, Shield, Palette, HelpCircle, LogOut } from "lucide-react";
 
-export default function Profile() {
-  const { user, logout } = useAuth();
-  const { theme, setTheme } = useTheme();
-
-  // Fetch user badges
-  const { data: userBadges = [] } = useQuery<any[]>({
-    queryKey: ["/api/user-badges"],
-    enabled: !!user,
-  });
-
-  // Fetch all badges for reference
-  const { data: allBadges = [] } = useQuery<BadgeType[]>({
-    queryKey: ["/api/badges"],
-    enabled: !!user,
-  });
-
-  const getInitials = (name: string) => {
-    return name
-      .split(' ')
-      .map(part => part[0])
-      .join('')
-      .toUpperCase();
-  };
+export default function ProfilePage() {
+  const { user, loading } = useAuth();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
   
-  const displayName = user?.displayName || user?.username || '';
-  const initials = getInitials(displayName);
+  // Profile form state
+  const [displayName, setDisplayName] = useState(user?.displayName || "");
+  const [email, setEmail] = useState(user?.email || "");
+  const [zodiacSign, setZodiacSign] = useState(user?.zodiacSign || "");
+  const [loveLanguage, setLoveLanguage] = useState(user?.loveLanguage || "");
+  
+  // Settings state
+  const [notifications, setNotifications] = useState(true);
+  const [privateMode, setPrivateMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
+  const [autoBackup, setAutoBackup] = useState(true);
 
-  const earnedBadgeIds = userBadges.map(ub => ub.badgeId);
+  const zodiacSigns = [
+    "Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo",
+    "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"
+  ];
 
-  const toggleTheme = () => {
-    setTheme(theme === 'light' ? 'dark' : 'light');
+  const loveLanguages = [
+    "Words of Affirmation", "Quality Time", "Physical Touch",
+    "Acts of Service", "Receiving Gifts"
+  ];
+
+  // Update profile mutation
+  const { mutate: updateProfile, isPending: isUpdatingProfile } = useMutation({
+    mutationFn: async (data: any) => {
+      const response = await fetch("/api/profile", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+        credentials: "include"
+      });
+      
+      if (!response.ok) {
+        throw new Error("Failed to update profile");
+      }
+      
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Profile updated",
+        description: "Your profile has been successfully updated.",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/me"] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: "Failed to update profile. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleProfileSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    updateProfile({
+      displayName,
+      email,
+      zodiacSign: zodiacSign === "none" ? null : zodiacSign,
+      loveLanguage: loveLanguage === "none" ? null : loveLanguage,
+    });
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-2 text-neutral-600 dark:text-neutral-400">Loading profile...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="max-w-md mx-auto bg-white dark:bg-neutral-900 min-h-screen flex flex-col relative">
-      <Header />
+    <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900 pb-20">
+      <div className="max-w-2xl mx-auto p-4 space-y-6">
+        {/* Header */}
+        <div className="text-center pt-6 pb-4">
+          <h1 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">Profile & Settings</h1>
+          <p className="text-neutral-600 dark:text-neutral-400 mt-1">Manage your account and preferences</p>
+        </div>
 
-      <main className="flex-1 overflow-y-auto pb-20">
-        {/* Profile Header */}
-        <section className="px-4 pt-5 pb-3">
-          <div className="flex justify-between items-start">
-            <div className="flex items-center">
-              <Avatar className="h-20 w-20 mr-4">
-                {user?.profileImage && user.profileImage !== null ? (
-                  <AvatarImage src={user.profileImage} alt={displayName} />
+        {/* Profile Picture Card */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Camera className="h-5 w-5" />
+              Profile Picture
+            </CardTitle>
+            <CardDescription>Update your profile photo</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center gap-4">
+              <div className="relative">
+                {user?.profileImage ? (
+                  <img 
+                    src={user.profileImage}
+                    alt={user.displayName || user.username}
+                    className="w-20 h-20 rounded-full object-cover"
+                  />
                 ) : (
-                  <AvatarFallback className="text-lg bg-primary text-white">
-                    {initials}
-                  </AvatarFallback>
+                  <div className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center">
+                    <span className="text-primary font-semibold text-2xl">
+                      {(user?.displayName || user?.username || "U").charAt(0).toUpperCase()}
+                    </span>
+                  </div>
                 )}
-              </Avatar>
-              <div>
-                <h2 className="text-xl font-heading font-semibold">{displayName}</h2>
-                <p className="text-neutral-600 dark:text-neutral-400">@{user?.username}</p>
-                <div className="flex flex-wrap gap-2 mt-2">
-                  {user?.zodiacSign && (
-                    <Badge variant="outline" className="bg-accent/10 text-neutral-700 dark:text-neutral-300">
-                      {user.zodiacSign}
-                    </Badge>
-                  )}
-                  {user?.loveLanguage && (
-                    <Badge variant="outline" className="bg-primary/10 text-primary">
-                      {user.loveLanguage}
-                    </Badge>
-                  )}
-                </div>
+              </div>
+              <div className="flex flex-col gap-2">
+                <Button variant="outline" size="sm">
+                  <Camera className="h-4 w-4 mr-2" />
+                  Change Photo
+                </Button>
+                <Button variant="outline" size="sm" disabled={!user?.profileImage}>
+                  Remove Photo
+                </Button>
               </div>
             </div>
-            <Button variant="outline" size="icon">
-              <Edit className="h-4 w-4" />
-            </Button>
-          </div>
-        </section>
+          </CardContent>
+        </Card>
 
-        <Separator className="mb-4" />
-
-        {/* Badges Section */}
-        <section className="px-4 py-3">
-          <div className="flex justify-between items-center mb-3">
-            <h3 className="font-heading font-semibold">Your Badges</h3>
-            <Button variant="ghost" size="sm" className="text-sm text-primary">
-              View All
-            </Button>
-          </div>
-          
-          <Card>
-            <CardContent className="p-4">
-              {userBadges.length > 0 ? (
-                <div className="grid grid-cols-4 gap-4">
-                  {allBadges.filter(badge => earnedBadgeIds.includes(badge.id))
-                    .slice(0, 4)
-                    .map(badge => (
-                      <div key={badge.id} className="flex flex-col items-center">
-                        <div className={`h-14 w-14 rounded-full bg-${getBadgeColorClass(badge.category)} flex items-center justify-center text-white text-xl mb-1 shadow-md`}>
-                          <i className={`fa-solid ${badge.icon}`}></i>
-                        </div>
-                        <span className="text-xs text-center">{badge.name}</span>
-                      </div>
-                    ))}
+        {/* Personal Information Card */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <User className="h-5 w-5" />
+              Personal Information
+            </CardTitle>
+            <CardDescription>Update your personal details</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleProfileSubmit} className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="displayName">Display Name</Label>
+                  <Input
+                    id="displayName"
+                    value={displayName}
+                    onChange={(e) => setDisplayName(e.target.value)}
+                    placeholder="Enter your display name"
+                  />
                 </div>
-              ) : (
-                <div className="text-center py-4">
-                  <Award className="h-8 w-8 text-neutral-300 mx-auto mb-2" />
-                  <p className="text-sm text-neutral-500">No badges earned yet</p>
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Enter your email"
+                  />
                 </div>
-              )}
-            </CardContent>
-          </Card>
-        </section>
-
-        {/* Settings Section */}
-        <section className="px-4 py-3">
-          <h3 className="font-heading font-semibold mb-3">Settings</h3>
-          
-          <Card>
-            <CardContent className="p-0">
-              <Button variant="ghost" className="w-full justify-start rounded-none h-12 px-4">
-                <User className="h-4 w-4 mr-3" />
-                Account Settings
-              </Button>
-              <Separator />
-              <Button variant="ghost" className="w-full justify-start rounded-none h-12 px-4">
-                <Shield className="h-4 w-4 mr-3" />
-                Privacy & Security
-              </Button>
-              <Separator />
-              <Button 
-                variant="ghost" 
-                className="w-full justify-start rounded-none h-12 px-4"
-                onClick={() => window.location.href = "/cycle-tracking"}
-              >
-                <Calendar className="h-4 w-4 mr-3" />
-                Menstrual Cycle Tracking
-              </Button>
-              <Separator />
-              <Button 
-                variant="ghost" 
-                className="w-full justify-start rounded-none h-12 px-4"
-                onClick={toggleTheme}
-              >
-                {theme === 'light' ? (
-                  <>
-                    <Moon className="h-4 w-4 mr-3" />
-                    Dark Mode
-                  </>
-                ) : (
-                  <>
-                    <Sun className="h-4 w-4 mr-3" />
-                    Light Mode
-                  </>
-                )}
-              </Button>
-              <Separator />
-              <Button 
-                variant="ghost" 
-                className="w-full justify-start rounded-none h-12 px-4 text-destructive hover:text-destructive"
-                onClick={logout}
-              >
-                <LogOut className="h-4 w-4 mr-3" />
-                Log Out
-              </Button>
-            </CardContent>
-          </Card>
-        </section>
-
-        {/* App Info Section */}
-        <section className="px-4 py-3">
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-lg">About Kindra</CardTitle>
-              <CardDescription>
-                Version 1.0.0
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-neutral-600 dark:text-neutral-400">
-                Kindra helps you track, reflect on, and grow your emotional connections across various relationship types and stages.
-              </p>
-              <div className="mt-3 text-sm text-neutral-500 dark:text-neutral-500">
-                <p>© 2023 Kindra. All rights reserved.</p>
               </div>
-            </CardContent>
-          </Card>
-        </section>
-      </main>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="zodiac">Zodiac Sign</Label>
+                  <Select value={zodiacSign} onValueChange={setZodiacSign}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select zodiac sign" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">None</SelectItem>
+                      {zodiacSigns.map((sign) => (
+                        <SelectItem key={sign} value={sign}>
+                          {sign}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="loveLanguage">Love Language</Label>
+                  <Select value={loveLanguage} onValueChange={setLoveLanguage}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select love language" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">None</SelectItem>
+                      {loveLanguages.map((language) => (
+                        <SelectItem key={language} value={language}>
+                          {language}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              
+              <Button type="submit" disabled={isUpdatingProfile} className="w-full">
+                {isUpdatingProfile ? "Updating..." : "Update Profile"}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
 
-      <BottomNavigation />
+        {/* App Settings Card */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Settings className="h-5 w-5" />
+              App Settings
+            </CardTitle>
+            <CardDescription>Customize your app experience</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div className="space-y-0.5">
+                <div className="flex items-center gap-2">
+                  <Bell className="h-4 w-4" />
+                  <Label className="text-base">Notifications</Label>
+                </div>
+                <p className="text-sm text-neutral-500">Receive notifications for reminders and updates</p>
+              </div>
+              <Switch checked={notifications} onCheckedChange={setNotifications} />
+            </div>
+            
+            <Separator />
+            
+            <div className="flex items-center justify-between">
+              <div className="space-y-0.5">
+                <div className="flex items-center gap-2">
+                  <Shield className="h-4 w-4" />
+                  <Label className="text-base">Private Mode</Label>
+                </div>
+                <p className="text-sm text-neutral-500">Hide sensitive information from quick previews</p>
+              </div>
+              <Switch checked={privateMode} onCheckedChange={setPrivateMode} />
+            </div>
+            
+            <Separator />
+            
+            <div className="flex items-center justify-between">
+              <div className="space-y-0.5">
+                <div className="flex items-center gap-2">
+                  <Palette className="h-4 w-4" />
+                  <Label className="text-base">Dark Mode</Label>
+                </div>
+                <p className="text-sm text-neutral-500">Use dark theme throughout the app</p>
+              </div>
+              <Switch checked={darkMode} onCheckedChange={setDarkMode} />
+            </div>
+            
+            <Separator />
+            
+            <div className="flex items-center justify-between">
+              <div className="space-y-0.5">
+                <Label className="text-base">Auto Backup</Label>
+                <p className="text-sm text-neutral-500">Automatically backup your data</p>
+              </div>
+              <Switch checked={autoBackup} onCheckedChange={setAutoBackup} />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Support & Help Card */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <HelpCircle className="h-5 w-5" />
+              Support & Help
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <Button variant="outline" className="w-full justify-start">
+              <HelpCircle className="h-4 w-4 mr-2" />
+              Help Center
+            </Button>
+            <Button variant="outline" className="w-full justify-start">
+              Privacy Policy
+            </Button>
+            <Button variant="outline" className="w-full justify-start">
+              Terms of Service
+            </Button>
+            <Button variant="outline" className="w-full justify-start">
+              Contact Support
+            </Button>
+          </CardContent>
+        </Card>
+
+        {/* Account Actions Card */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-red-600">Account Actions</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <Button variant="outline" className="w-full justify-start text-red-600 border-red-600 hover:bg-red-50">
+              <LogOut className="h-4 w-4 mr-2" />
+              Sign Out
+            </Button>
+            <Button variant="outline" className="w-full justify-start text-red-600 border-red-600 hover:bg-red-50">
+              Delete Account
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
-}
-
-// Helper function to determine badge color based on category
-function getBadgeColorClass(category: string): string {
-  switch (category) {
-    case "Emotional Growth":
-      return "accent";
-    case "Communication":
-      return "secondary";
-    case "Relationship Health":
-      return "primary";
-    case "Consistency":
-      return "success";
-    case "Self-care":
-      return "warning";
-    case "Diversity":
-      return "redFlag";
-    default:
-      return "primary";
-  }
 }
