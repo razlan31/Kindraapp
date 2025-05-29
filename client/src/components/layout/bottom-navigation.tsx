@@ -1,5 +1,6 @@
 import { useLocation, Link } from "wouter";
 import { useModal } from "@/contexts/modal-context";
+import { useState } from "react";
 import { 
   Calendar, 
   Heart,
@@ -11,23 +12,70 @@ import {
   AlertTriangle,
   Lock,
   CalendarPlus,
-  Trophy
+  Trophy,
+  UserPlus,
+  Smile,
+  X
 } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 export function BottomNavigation() {
   const [location] = useLocation();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { openMomentModal, openConnectionModal, openPlanModal } = useModal();
+
+  const handleActionClick = (action: () => void) => {
+    action();
+    setIsMenuOpen(false);
+  };
   
   return (
     <>
-      {/* Floating Add Button */}
+      {/* Floating Action Menu */}
       <div className="fixed bottom-20 right-4 z-50">
+        {/* Action Menu Items */}
+        {isMenuOpen && (
+          <div className="absolute bottom-16 right-0 flex flex-col gap-3 animate-in slide-in-from-bottom-2 duration-200">
+            <button 
+              onClick={() => handleActionClick(() => openConnectionModal())}
+              className="bg-blue-500 text-white rounded-full h-12 w-12 flex items-center justify-center shadow-lg hover:shadow-xl transition-all hover:scale-105 group"
+            >
+              <UserPlus className="h-5 w-5" />
+              <span className="absolute right-14 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                Add Connection
+              </span>
+            </button>
+            
+            <button 
+              onClick={() => handleActionClick(() => openPlanModal())}
+              className="bg-purple-500 text-white rounded-full h-12 w-12 flex items-center justify-center shadow-lg hover:shadow-xl transition-all hover:scale-105 group"
+            >
+              <CalendarPlus className="h-5 w-5" />
+              <span className="absolute right-14 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                Add Plan
+              </span>
+            </button>
+            
+            <button 
+              onClick={() => handleActionClick(() => openMomentModal('moment'))}
+              className="bg-green-500 text-white rounded-full h-12 w-12 flex items-center justify-center shadow-lg hover:shadow-xl transition-all hover:scale-105 group"
+            >
+              <Smile className="h-5 w-5" />
+              <span className="absolute right-14 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                Log Moment
+              </span>
+            </button>
+          </div>
+        )}
+        
+        {/* Main Toggle Button */}
         <button 
-          onClick={() => openMomentModal('moment')}
-          className="bg-primary text-white rounded-full h-14 w-14 flex items-center justify-center shadow-lg hover:shadow-xl transition-all hover:scale-105"
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          className={`bg-primary text-white rounded-full h-14 w-14 flex items-center justify-center shadow-lg hover:shadow-xl transition-all hover:scale-105 ${
+            isMenuOpen ? 'rotate-45' : ''
+          }`}
         >
-          <Plus className="h-6 w-6" />
+          {isMenuOpen ? <X className="h-6 w-6" /> : <Plus className="h-6 w-6" />}
         </button>
       </div>
 
