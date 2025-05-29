@@ -36,14 +36,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     const loadUser = async () => {
       try {
+        console.log("Auth: Starting to load user, setting loading to true");
         setLoading(true);
         const currentUser = await getCurrentUser();
         console.log("Auth context setting user:", currentUser);
+        console.log("Auth: Setting loading to false");
         setUser(currentUser);
       } catch (error) {
         console.error("Failed to load user:", error);
         setUser(null);
       } finally {
+        console.log("Auth: Finally block - setting loading to false");
         setLoading(false);
       }
     };
