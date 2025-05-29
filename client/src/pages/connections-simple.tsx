@@ -43,9 +43,11 @@ export default function Connections() {
     queryKey: ['/api/moments'],
   });
 
-  // Show all stages in the specified order (including those with 0 entries)
+  // Only show stages that have connections
   const stageOrder = ["Potential", "Talking", "Situationship", "It's Complicated", "Dating", "Spouse", "FWB", "Ex", "Friend", "Best Friend", "Siblings"];
-  const availableStages = stageOrder;
+  const availableStages = stageOrder.filter(stage => 
+    connections.some(c => c.relationshipStage === stage)
+  );
 
   // Simple connection filtering and processing
   const displayConnections = connections
