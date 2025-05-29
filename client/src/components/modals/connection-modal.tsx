@@ -269,46 +269,37 @@ export function ConnectionModal() {
             
             <div className="space-y-2">
               <Label className="text-xs text-neutral-500">Love Languages</Label>
-              <div className="flex flex-wrap gap-2 mt-2">
+              <div className="space-y-2">
                 {loveLanguageOptions.map((language) => {
                   const isSelected = loveLanguages.includes(language);
-                  const hasNotSpecified = loveLanguages.includes("Not Specified");
-                  const isNotSpecified = language === "Not Specified";
-                  const isDisabled = (hasNotSpecified && !isNotSpecified) || (!hasNotSpecified && isNotSpecified && loveLanguages.length > 0);
                   
                   return (
-                    <Button
-                      key={language}
-                      type="button"
-                      variant={isSelected ? "default" : "outline"}
-                      size="sm"
-                      className={`rounded-full text-xs ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
-                      disabled={isDisabled}
-                      onClick={() => {
-                        if (isSelected) {
-                          setLoveLanguages(loveLanguages.filter(l => l !== language));
-                        } else {
-                          if (isNotSpecified) {
-                            // If selecting "Not Specified", clear all others
-                            setLoveLanguages(["Not Specified"]);
+                    <div key={language} className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        id={`love-${language.replace(/\s+/g, '-').toLowerCase()}`}
+                        checked={isSelected}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            if (!loveLanguages.includes(language)) {
+                              setLoveLanguages([...loveLanguages, language]);
+                            }
                           } else {
-                            // If selecting any other, remove "Not Specified" and add this one
-                            const filteredLanguages = loveLanguages.filter(l => l !== "Not Specified");
-                            setLoveLanguages([...filteredLanguages, language]);
+                            setLoveLanguages(loveLanguages.filter(l => l !== language));
                           }
-                        }
-                      }}
-                    >
-                      {language}
-                    </Button>
+                        }}
+                        className="rounded"
+                      />
+                      <Label
+                        htmlFor={`love-${language.replace(/\s+/g, '-').toLowerCase()}`}
+                        className="text-sm font-normal cursor-pointer"
+                      >
+                        {language}
+                      </Label>
+                    </div>
                   );
                 })}
               </div>
-              {loveLanguages.length > 0 && (
-                <p className="text-xs text-neutral-500 mt-2">
-                  Selected: {loveLanguages.join(", ")}
-                </p>
-              )}
             </div>
           </div>
           
