@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -35,6 +35,16 @@ export default function ProfilePage() {
   const [notifications, setNotifications] = useState(true);
   const [privateMode, setPrivateMode] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
+
+  // Update form fields when user data loads
+  useEffect(() => {
+    if (user) {
+      setDisplayName(user.displayName || "");
+      setEmail(user.email || "");
+      setZodiacSign(user.zodiacSign || "");
+      setLoveLanguage(user.loveLanguage || "");
+    }
+  }, [user]);
 
   const zodiacSigns = [
     "Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo",
@@ -133,6 +143,27 @@ export default function ProfilePage() {
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
           <p className="mt-2 text-neutral-600 dark:text-neutral-400">Loading profile...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900 pb-20 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-neutral-600 dark:text-neutral-400">Loading profile...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900 pb-20 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-neutral-600 dark:text-neutral-400">User not found</p>
         </div>
       </div>
     );
