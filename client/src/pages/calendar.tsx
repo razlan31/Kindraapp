@@ -264,6 +264,11 @@ export default function Calendar() {
   const getMomentDisplayInfo = (moment: Moment) => {
     const tags = moment.tags || [];
     
+    // Check if it's a milestone (including birthdays)
+    if (tags.includes("Milestone")) {
+      return { type: 'emoji', value: moment.emoji, color: 'text-amber-500' };
+    }
+    
     // Check if it's a plan
     if (tags.includes("Plan")) {
       return { type: 'emoji', value: '📅', color: 'text-purple-500' };
