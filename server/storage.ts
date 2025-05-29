@@ -303,47 +303,388 @@ export class MemStorage implements IStorage {
 
   private initializeDefaultBadges() {
     const defaultBadges: InsertBadge[] = [
+      // First Connection & Starter Badges
       {
-        name: "Emotion Master",
-        description: "Log emotions in 10 different moments",
-        icon: "fa-heart",
-        category: "Emotional Growth",
+        name: "First Contact 👋",
+        description: "Added your very first connection. This is your main character moment!",
+        icon: "✨",
+        category: "Getting Started",
+        unlockCriteria: { connectionsAdded: 1 },
+      },
+      {
+        name: "Touch Grass",
+        description: "Made your first real-world connection. No more chronically online behavior!",
+        icon: "🌱",
+        category: "Getting Started", 
+        unlockCriteria: { firstConnection: true },
+      },
+      {
+        name: "Rizz Master 🔥",
+        description: "Successfully moved from Potential to Talking stage. Your game is strong!",
+        icon: "🔥",
+        category: "Relationship Progress",
+        unlockCriteria: { stageProgression: "Talking" },
+      },
+
+      // Stage Progression Badges
+      {
+        name: "It's Giving Situationship",
+        description: "Entered the complicated zone. We've all been there bestie!",
+        icon: "🤷",
+        category: "Relationship Progress",
+        unlockCriteria: { stageProgression: "Situationship" },
+      },
+      {
+        name: "Hard Launch 📸",
+        description: "Made it official with Dating status. Time to post those couple pics!",
+        icon: "💕",
+        category: "Relationship Progress",
+        unlockCriteria: { stageProgression: "Dating" },
+      },
+      {
+        name: "Put a Ring on It 💍",
+        description: "Reached Spouse status. Someone said yes to forever!",
+        icon: "💍",
+        category: "Relationship Progress",
+        unlockCriteria: { stageProgression: "Spouse" },
+      },
+      {
+        name: "Besties for Life",
+        description: "Upgraded to Best Friend status. Found your person!",
+        icon: "👯",
+        category: "Relationship Progress",
+        unlockCriteria: { stageProgression: "Best Friend" },
+      },
+
+      // Moment Tracking Badges
+      {
+        name: "Chronically Online",
+        description: "Logged 10 moments. You're really invested in this digital diary life!",
+        icon: "📱",
+        category: "Activity",
         unlockCriteria: { momentsLogged: 10 },
       },
       {
-        name: "Communication Pro",
-        description: "Have at least 5 positive communication moments",
-        icon: "fa-comments",
+        name: "Data Girlie 📊",
+        description: "Logged 50 moments. You love your analytics era!",
+        icon: "📊",
+        category: "Activity", 
+        unlockCriteria: { momentsLogged: 50 },
+      },
+      {
+        name: "No Life Energy",
+        description: "Logged 100 moments. Maybe touch some grass? JK, we love the dedication!",
+        icon: "💻",
+        category: "Activity",
+        unlockCriteria: { momentsLogged: 100 },
+      },
+
+      // Positive Moment Badges
+      {
+        name: "Good Vibes Only ✨",
+        description: "Logged 10 positive moments. Main character energy activated!",
+        icon: "✨",
+        category: "Positivity",
+        unlockCriteria: { positiveMoments: 10 },
+      },
+      {
+        name: "Living My Best Life",
+        description: "20 positive moments logged. You're absolutely glowing bestie!",
+        icon: "🌟",
+        category: "Positivity",
+        unlockCriteria: { positiveMoments: 20 },
+      },
+      {
+        name: "Serotonin Queen 👑",
+        description: "50 positive moments! You're literally radiating happiness!",
+        icon: "👑",
+        category: "Positivity",
+        unlockCriteria: { positiveMoments: 50 },
+      },
+
+      // Green Flag Badges
+      {
+        name: "Green Flag Collector",
+        description: "Spotted 5 green flags. Your standards are immaculate!",
+        icon: "🟢",
+        category: "Healthy Relationships",
+        unlockCriteria: { greenFlags: 5 },
+      },
+      {
+        name: "Healthy Habits Era",
+        description: "15 green flags collected. You know your worth!",
+        icon: "💚",
+        category: "Healthy Relationships",
+        unlockCriteria: { greenFlags: 15 },
+      },
+      {
+        name: "Boundary Goddess",
+        description: "25 green flags! You're the blueprint for healthy relationships!",
+        icon: "👸",
+        category: "Healthy Relationships", 
+        unlockCriteria: { greenFlags: 25 },
+      },
+
+      // Red Flag/Conflict Badges
+      {
+        name: "Red Flag Radar 🚩",
+        description: "Identified your first red flag. Trust your gut bestie!",
+        icon: "🚩",
+        category: "Self Protection",
+        unlockCriteria: { redFlags: 1 },
+      },
+      {
+        name: "Dodged a Bullet",
+        description: "Spotted 5 red flags. Your intuition is chef's kiss!",
+        icon: "🎯",
+        category: "Self Protection",
+        unlockCriteria: { redFlags: 5 },
+      },
+      {
+        name: "Drama Detective",
+        description: "Logged 3 conflicts. Sometimes you gotta call it like it is!",
+        icon: "🕵️",
+        category: "Conflict Resolution",
+        unlockCriteria: { conflicts: 3 },
+      },
+      {
+        name: "Peace Maker",
+        description: "Resolved 3 conflicts. Communication is your superpower!",
+        icon: "🕊️",
+        category: "Conflict Resolution",
+        unlockCriteria: { conflictsResolved: 3 },
+      },
+
+      // Intimacy Badges
+      {
+        name: "Spicy Content 🌶️",
+        description: "Logged your first intimate moment. We're not judging!",
+        icon: "🌶️",
+        category: "Intimacy",
+        unlockCriteria: { intimateMoments: 1 },
+      },
+      {
+        name: "Hot Girl Summer",
+        description: "5 intimate moments logged. Living your best life!",
+        icon: "🔥",
+        category: "Intimacy",
+        unlockCriteria: { intimateMoments: 5 },
+      },
+
+      // Communication Badges
+      {
+        name: "Chatty Bestie",
+        description: "Logged 10 communication moments. You love a good convo!",
+        icon: "💬",
         category: "Communication",
-        unlockCriteria: { positiveCommunication: 5 },
+        unlockCriteria: { communicationMoments: 10 },
       },
       {
-        name: "Green Flag Queen",
-        description: "Collect 10 green flags across all relationships",
-        icon: "fa-flag",
-        category: "Relationship Health",
-        unlockCriteria: { greenFlags: 10 },
+        name: "Emotional Intelligence Era",
+        description: "25 communication moments. You're the therapy friend!",
+        icon: "🧠",
+        category: "Communication",
+        unlockCriteria: { communicationMoments: 25 },
+      },
+
+      // Consistency Badges
+      {
+        name: "Daily Check-in Girlie",
+        description: "Logged moments for 3 days straight. Building habits like a boss!",
+        icon: "📅",
+        category: "Consistency",
+        unlockCriteria: { streakDays: 3 },
       },
       {
-        name: "Reflection Ritualist",
-        description: "Log moments consistently for 7 days",
-        icon: "fa-calendar-check",
+        name: "Habit Stacking Pro",
+        description: "7-day logging streak. You're in your routine era!",
+        icon: "⚡",
         category: "Consistency",
         unlockCriteria: { streakDays: 7 },
       },
       {
-        name: "Boundary Babe",
-        description: "Set and maintain healthy boundaries",
-        icon: "fa-shield",
-        category: "Self-care",
-        unlockCriteria: { boundariesSet: 3 },
+        name: "Consistency Queen",
+        description: "30-day streak! You're literally unstoppable!",
+        icon: "👑",
+        category: "Consistency",
+        unlockCriteria: { streakDays: 30 },
+      },
+
+      // Multiple Connections
+      {
+        name: "Social Butterfly 🦋",
+        description: "Added 3 connections. Your social circle is expanding!",
+        icon: "🦋",
+        category: "Social Life",
+        unlockCriteria: { connectionsAdded: 3 },
       },
       {
-        name: "Connection Champion",
-        description: "Track 3 different relationship types",
-        icon: "fa-people-group",
-        category: "Diversity",
-        unlockCriteria: { relationshipTypes: 3 },
+        name: "People Person",
+        description: "Managing 5 connections. You're everyone's favorite!",
+        icon: "🌈",
+        category: "Social Life",
+        unlockCriteria: { connectionsAdded: 5 },
+      },
+      {
+        name: "Main Character Energy",
+        description: "10 connections tracked. You're living in a rom-com!",
+        icon: "💫",
+        category: "Social Life",
+        unlockCriteria: { connectionsAdded: 10 },
+      },
+
+      // Anniversary & Milestone Badges
+      {
+        name: "Anniversary Keeper",
+        description: "Reached your first relationship anniversary. Time flies when you're happy!",
+        icon: "🎉",
+        category: "Milestones",
+        unlockCriteria: { anniversaries: 1 },
+      },
+      {
+        name: "Birthday Bestie",
+        description: "Never forgot a birthday. You're the friend everyone needs!",
+        icon: "🎂",
+        category: "Milestones",
+        unlockCriteria: { birthdaysTracked: 3 },
+      },
+
+      // Reflection Badges
+      {
+        name: "Self-Reflection Era",
+        description: "Added your first reflection. Growth mindset activated!",
+        icon: "🪞",
+        category: "Personal Growth",
+        unlockCriteria: { reflections: 1 },
+      },
+      {
+        name: "Therapy Girlie",
+        description: "10 reflections written. You're doing the inner work!",
+        icon: "✍️",
+        category: "Personal Growth",
+        unlockCriteria: { reflections: 10 },
+      },
+      {
+        name: "Enlightened Bestie",
+        description: "25 reflections! You're practically a life coach now!",
+        icon: "🧘",
+        category: "Personal Growth",
+        unlockCriteria: { reflections: 25 },
+      },
+
+      // Special Achievement Badges
+      {
+        name: "Glow Up Documented",
+        description: "Progressed through 3 different relationship stages. Character development!",
+        icon: "✨",
+        category: "Achievement",
+        unlockCriteria: { stageProgressions: 3 },
+      },
+      {
+        name: "That Girl Energy",
+        description: "Perfect balance of positive and growth moments. You're iconic!",
+        icon: "💅",
+        category: "Achievement",
+        unlockCriteria: { balancedLogging: true },
+      },
+      {
+        name: "Plot Twist Queen",
+        description: "Documented a major relationship stage change. Life keeps you guessing!",
+        icon: "🎭",
+        category: "Achievement",
+        unlockCriteria: { majorStageChange: true },
+      },
+
+      // Seasonal/Fun Badges
+      {
+        name: "Hot Girl Walk",
+        description: "Logged moments from 5 different locations. Touch grass queen!",
+        icon: "🚶‍♀️",
+        category: "Lifestyle",
+        unlockCriteria: { diverseLocations: 5 },
+      },
+      {
+        name: "Villain Era",
+        description: "Sometimes you need to choose yourself. We stan the character development!",
+        icon: "😈",
+        category: "Self Care",
+        unlockCriteria: { selfCareChoice: true },
+      },
+      {
+        name: "Clean Girl Aesthetic",
+        description: "Maintaining drama-free relationships. Effortlessly elegant!",
+        icon: "🤍",
+        category: "Peace",
+        unlockCriteria: { dramaFreeStreak: 14 },
+      },
+
+      // Expert Level Badges
+      {
+        name: "Relationship Guru",
+        description: "Mastered all relationship stages. You could write a book!",
+        icon: "📚",
+        category: "Mastery",
+        unlockCriteria: { allStagesExperienced: true },
+      },
+      {
+        name: "Digital Minimalist",
+        description: "Quality over quantity - meaningful moments only. Very mindful!",
+        icon: "🍃",
+        category: "Mindfulness",
+        unlockCriteria: { meaningfulMoments: 20 },
+      },
+      {
+        name: "Vibe Curator",
+        description: "Your relationship energy is immaculate. Others take notes from you!",
+        icon: "🎨",
+        category: "Mastery",
+        unlockCriteria: { curatedVibes: true },
+      },
+
+      // Ultra Rare Badges
+      {
+        name: "Kindra Connoisseur",
+        description: "You've unlocked the full potential of relationship tracking. Legendary status!",
+        icon: "💎",
+        category: "Legendary",
+        unlockCriteria: { masterUser: true },
+      },
+      {
+        name: "Love Language Expert",
+        description: "Documented all 5 love languages in action. You speak fluent love!",
+        icon: "💝",
+        category: "Legendary",
+        unlockCriteria: { loveLanguageMaster: true },
+      },
+      {
+        name: "Zodiac Compatibility Queen",
+        description: "Tracked relationships across all zodiac signs. Astrological genius!",
+        icon: "⭐",
+        category: "Legendary",
+        unlockCriteria: { zodiacExpert: true },
+      },
+
+      // Achievement Hunter Badges
+      {
+        name: "Badge Collector",
+        description: "Unlocked 10 badges. You're achievement hunting like a pro!",
+        icon: "🏆",
+        category: "Meta Achievement",
+        unlockCriteria: { badgesUnlocked: 10 },
+      },
+      {
+        name: "Trophy Wife/Husband",
+        description: "25 badges unlocked! You're basically a professional at this!",
+        icon: "🥇",
+        category: "Meta Achievement",
+        unlockCriteria: { badgesUnlocked: 25 },
+      },
+      {
+        name: "Hall of Fame",
+        description: "50 badges! You're literally the main character of relationship tracking!",
+        icon: "👑",
+        category: "Meta Achievement",
+        unlockCriteria: { badgesUnlocked: 50 },
       }
     ];
 

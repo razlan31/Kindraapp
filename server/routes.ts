@@ -369,6 +369,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Don't fail the connection creation if milestone creation fails
       }
       
+      // Check if any badges should be unlocked
+      await checkAndAwardBadges(userId);
+      
       // Log the saved connection to verify all fields are preserved
       const savedConnection = await storage.getConnection(newConnection.id);
       console.log("Verification - saved connection:", savedConnection);
@@ -624,6 +627,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Failed to update connection" });
       }
       
+      // Check if any badges should be unlocked
+      await checkAndAwardBadges(userId);
+      
       console.log("=== UPDATE SUCCESSFUL ===");
       res.status(200).json(updatedConnection);
     } catch (error) {
@@ -787,6 +793,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!updatedMoment) {
         return res.status(500).json({ message: "Failed to update moment" });
       }
+      
+      // Check if any badges should be unlocked
+      await checkAndAwardBadges(userId);
       
       res.json(updatedMoment);
     } catch (error) {
@@ -1126,69 +1135,199 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Helper function to check and award badges
   async function checkAndAwardBadges(userId: number) {
     try {
-      // Get all user moments
+      // Get all user data
       const moments = await storage.getMomentsByUserId(userId);
-      
-      // Get all user connections
       const connections = await storage.getConnectionsByUserId(userId);
-      
-      // Get all user badges
       const userBadges = await storage.getUserBadges(userId);
       const earnedBadgeIds = userBadges.map(ub => ub.badgeId);
-      
-      // Get all available badges
       const allBadges = await storage.getAllBadges();
       
-      // Check each badge criteria
+      console.log(`🏆 Badge Check - User ${userId}: ${moments.length} moments, ${connections.length} connections, ${userBadges.length} badges earned`);
+
+      // Process each badge
       for (const badge of allBadges) {
-        // Skip if already earned
         if (earnedBadgeIds.includes(badge.id)) continue;
 
         const criteria = badge.unlockCriteria as Record<string, any>;
         let isEarned = false;
 
-        // Check different criteria types
+        // Connection-based badges
+        if (criteria.connectionsAdded && connections.length >= criteria.connectionsAdded) {
+          isEarned = true;
+        }
+
+        if (criteria.firstConnection && connections.length >= 1) {
+          isEarned = true;
+        }
+
+        // Stage progression badges
+        if (criteria.stageProgression) {
+          const hasStage = connections.some(c => c.relationshipStage === criteria.stageProgression);
+          if (hasStage) isEarned = true;
+        }
+
+        // Moment counting badges
         if (criteria.momentsLogged && moments.length >= criteria.momentsLogged) {
           isEarned = true;
         }
-        
-        if (criteria.positiveCommunication) {
-          const positiveCommunicationCount = moments.filter(m => 
-            (m.tags?.includes('Positive') || m.tags?.includes('Communication')) &&
-            !m.tags?.includes('Conflict')
-          ).length;
-          
-          if (positiveCommunicationCount >= criteria.positiveCommunication) {
-            isEarned = true;
-          }
-        }
-        
-        if (criteria.greenFlags) {
-          const greenFlagCount = moments.filter(m => 
+
+        // Positive moments
+        if (criteria.positiveMoments) {
+          const positiveCount = moments.filter(m => 
+            ['😍', '❤️', '😊', '🥰', '💖', '✨', '🔥', '💕'].includes(m.emoji) ||
             m.tags?.includes('Green Flag')
           ).length;
-          
-          if (greenFlagCount >= criteria.greenFlags) {
-            isEarned = true;
-          }
+          if (positiveCount >= criteria.positiveMoments) isEarned = true;
         }
-        
-        if (criteria.relationshipTypes) {
-          const uniqueRelationshipTypes = new Set(
-            connections.map(c => c.relationshipStage)
+
+        // Green flags
+        if (criteria.greenFlags) {
+          const greenFlagCount = moments.filter(m => m.tags?.includes('Green Flag')).length;
+          if (greenFlagCount >= criteria.greenFlags) isEarned = true;
+        }
+
+        // Red flags
+        if (criteria.redFlags) {
+          const redFlagCount = moments.filter(m => m.tags?.includes('Red Flag')).length;
+          if (redFlagCount >= criteria.redFlags) isEarned = true;
+        }
+
+        // Conflicts
+        if (criteria.conflicts) {
+          const conflictCount = moments.filter(m => m.tags?.includes('Conflict')).length;
+          if (conflictCount >= criteria.conflicts) isEarned = true;
+        }
+
+        // Conflicts resolved
+        if (criteria.conflictsResolved) {
+          const resolvedCount = moments.filter(m => 
+            m.tags?.includes('Conflict') && m.isResolved
+          ).length;
+          if (resolvedCount >= criteria.conflictsResolved) isEarned = true;
+        }
+
+        // Intimate moments
+        if (criteria.intimateMoments) {
+          const intimateCount = moments.filter(m => 
+            m.isIntimate || m.tags?.includes('Intimacy')
+          ).length;
+          if (intimateCount >= criteria.intimateMoments) isEarned = true;
+        }
+
+        // Communication moments
+        if (criteria.communicationMoments) {
+          const commCount = moments.filter(m => 
+            m.tags?.includes('Communication')
+          ).length;
+          if (commCount >= criteria.communicationMoments) isEarned = true;
+        }
+
+        // Streak days (simplified check)
+        if (criteria.streakDays) {
+          // For now, just check if they have logged moments on multiple days
+          const uniqueDays = new Set(
+            moments.map(m => m.createdAt ? new Date(m.createdAt).toDateString() : '')
           );
-          
-          if (uniqueRelationshipTypes.size >= criteria.relationshipTypes) {
+          if (uniqueDays.size >= criteria.streakDays) isEarned = true;
+        }
+
+        // Anniversaries
+        if (criteria.anniversaries) {
+          const anniversaryCount = moments.filter(m => 
+            m.tags?.includes('Anniversary')
+          ).length;
+          if (anniversaryCount >= criteria.anniversaries) isEarned = true;
+        }
+
+        // Birthdays tracked
+        if (criteria.birthdaysTracked) {
+          const birthdayCount = moments.filter(m => 
+            m.tags?.includes('Birthday')
+          ).length;
+          if (birthdayCount >= criteria.birthdaysTracked) isEarned = true;
+        }
+
+        // Reflections
+        if (criteria.reflections) {
+          const reflectionCount = moments.filter(m => 
+            m.reflection && m.reflection.trim().length > 0
+          ).length;
+          if (reflectionCount >= criteria.reflections) isEarned = true;
+        }
+
+        // Stage progressions count
+        if (criteria.stageProgressions) {
+          const progressionCount = moments.filter(m => 
+            m.tags?.includes('Relationship Stage')
+          ).length;
+          if (progressionCount >= criteria.stageProgressions) isEarned = true;
+        }
+
+        // Special achievement badges
+        if (criteria.balancedLogging) {
+          const positiveCount = moments.filter(m => 
+            ['😍', '❤️', '😊', '🥰', '💖', '✨', '🔥'].includes(m.emoji)
+          ).length;
+          const reflectionCount = moments.filter(m => 
+            m.reflection && m.reflection.trim().length > 0
+          ).length;
+          if (positiveCount >= 10 && reflectionCount >= 5) isEarned = true;
+        }
+
+        if (criteria.majorStageChange) {
+          const hasProgression = moments.some(m => 
+            m.tags?.includes('Relationship Stage') && 
+            (m.content?.includes('Dating') || m.content?.includes('Spouse'))
+          );
+          if (hasProgression) isEarned = true;
+        }
+
+        if (criteria.dramaFreeStreak) {
+          const recentConflicts = moments.filter(m => 
+            m.tags?.includes('Conflict') && 
+            m.createdAt && new Date(m.createdAt) > new Date(Date.now() - 14 * 24 * 60 * 60 * 1000)
+          ).length;
+          if (recentConflicts === 0 && moments.length >= 10) isEarned = true;
+        }
+
+        // Meta achievement badges
+        if (criteria.badgesUnlocked && userBadges.length >= criteria.badgesUnlocked) {
+          isEarned = true;
+        }
+
+        // Legendary badges
+        if (criteria.allStagesExperienced) {
+          const uniqueStages = new Set(connections.map(c => c.relationshipStage));
+          if (uniqueStages.size >= 5) isEarned = true;
+        }
+
+        if (criteria.masterUser) {
+          if (moments.length >= 100 && connections.length >= 5 && userBadges.length >= 20) {
             isEarned = true;
           }
         }
-        
+
+        if (criteria.loveLanguageMaster) {
+          const uniqueLoveLanguages = new Set(
+            connections.filter(c => c.loveLanguage).map(c => c.loveLanguage)
+          );
+          if (uniqueLoveLanguages.size >= 3) isEarned = true;
+        }
+
+        if (criteria.zodiacExpert) {
+          const uniqueZodiacSigns = new Set(
+            connections.filter(c => c.zodiacSign).map(c => c.zodiacSign)
+          );
+          if (uniqueZodiacSigns.size >= 6) isEarned = true;
+        }
+
         // Award badge if earned
         if (isEarned) {
           await storage.addUserBadge({
             userId,
             badgeId: badge.id
           });
+          console.log(`🎉 NEW BADGE UNLOCKED: ${badge.name} for user ${userId}!`);
         }
       }
     } catch (error) {
