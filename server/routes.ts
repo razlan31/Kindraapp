@@ -775,9 +775,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log("🚀 ROUTES - Final createdAt:", newMoment.createdAt);
       
       // Check if any badges should be unlocked
-      await checkAndAwardBadges(userId);
+      const newBadges = await checkAndAwardBadges(userId);
       
-      res.status(201).json(newMoment);
+      res.status(201).json({ 
+        ...newMoment, 
+        newBadges 
+      });
     } catch (error) {
       console.error("🚀 ROUTES - Error creating moment:", error);
       if (error instanceof z.ZodError) {
@@ -1158,7 +1161,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
 
   // Helper function to check and award badges
-  async function checkAndAwardBadges(userId: number) {
+  async function checkAndAwardBadges(userId: number): Promise<Array<{badgeId: number, name: string, icon: string, description: string, category: string}>> {
     try {
       // Get all user data
       const moments = await storage.getMomentsByUserId(userId);
@@ -1166,6 +1169,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userBadges = await storage.getUserBadges(userId);
       const earnedBadgeIds = userBadges.map(ub => ub.badgeId);
       const allBadges = await storage.getAllBadges();
+      const newBadges: Array<{badgeId: number, name: string, icon: string, description: string, category: string}> = [];
       
       console.log(`🏆 Badge Check - User ${userId}: ${moments.length} moments, ${connections.length} connections, ${userBadges.length} badges earned`);
 
@@ -1433,10 +1437,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
             badgeId: badge.id
           });
           console.log(`🎉 NEW BADGE UNLOCKED: ${badge.name} for user ${userId}!`);
+          
+          // Add to newly earned badges array
+          newBadges.push({
+            badgeId: badge.id,
+            name: badge.name,
+            icon: badge.icon,
+            description: badge.description,
+            category: badge.category
+          });
         }
       }
+      
+      return newBadges;
     } catch (error) {
       console.error("Error checking badges:", error);
+      return [];
     }
   }
 
