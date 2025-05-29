@@ -99,13 +99,13 @@ export default function ProfilePage() {
       
       return response.json();
     },
-    onSuccess: () => {
+    onSuccess: async () => {
       toast({
         title: "Profile updated",
         description: "Your profile has been updated successfully.",
       });
-      queryClient.invalidateQueries({ queryKey: ['/api/me'] });
-      refreshUser(); // Refresh the auth context user data
+      await queryClient.invalidateQueries({ queryKey: ['/api/me'] });
+      await refreshUser(); // Refresh the auth context user data
       setIsEditing(false);
     },
     onError: (error: any) => {
