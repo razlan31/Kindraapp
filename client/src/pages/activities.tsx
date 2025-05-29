@@ -9,6 +9,7 @@ import { EntryDetailModal } from "@/components/modals/entry-detail-modal";
 import { MilestoneModal } from "@/components/modals/milestone-modal";
 import { PlanModal } from "@/components/modals/plan-modal";
 import { ConflictResolutionModal } from "@/components/modals/conflict-resolution-modal";
+import { ConnectionDetailedModal } from "@/components/modals/connection-detailed-modal";
 import { Moment, Connection, Plan } from "@shared/schema";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
@@ -128,6 +129,10 @@ export default function Activities() {
   // Conflict resolution modal state
   const [conflictResolutionModalOpen, setConflictResolutionModalOpen] = useState(false);
   const [selectedMomentForResolution, setSelectedMomentForResolution] = useState<Moment | null>(null);
+  
+  // Connection details modal state
+  const [connectionDetailModalOpen, setConnectionDetailModalOpen] = useState(false);
+  const [selectedConnectionForModal, setSelectedConnectionForModal] = useState<Connection | null>(null);
 
   const handleAddReflection = (momentId: number) => {
     console.log("Add reflection for moment:", momentId);
@@ -161,6 +166,14 @@ export default function Activities() {
       setEntryDetailModalOpen(true);
       console.log("Entry detail modal should now be open");
     }
+  };
+
+  const handleViewConnectionDetail = (connection: Connection, event?: React.MouseEvent) => {
+    if (event) {
+      event.stopPropagation(); // Prevent triggering the moment detail modal
+    }
+    setSelectedConnectionForModal(connection);
+    setConnectionDetailModalOpen(true);
   };
 
   const handleAddTestMoment = async () => {
@@ -712,7 +725,28 @@ export default function Activities() {
                                   <div className="flex items-start justify-between mb-3">
                                     <div className="flex items-center gap-2">
                                       <span className="text-lg">{moment.emoji}</span>
-                                      <span className="font-medium text-sm">{connection.name}</span>
+                                      <div 
+                                        className="flex items-center gap-2 cursor-pointer hover:bg-muted/50 rounded-lg p-1 -ml-1 transition-colors"
+                                        onClick={(e) => handleViewConnectionDetail(connection, e)}
+                                        title={`View ${connection.name}'s profile`}
+                                      >
+                                        {connection.profileImage ? (
+                                          <img 
+                                            src={connection.profileImage} 
+                                            alt={connection.name}
+                                            className="w-6 h-6 rounded-full object-cover"
+                                          />
+                                        ) : (
+                                          <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
+                                            <span className="text-xs font-medium text-primary">
+                                              {connection.name.charAt(0).toUpperCase()}
+                                            </span>
+                                          </div>
+                                        )}
+                                        <span className="font-medium text-sm hover:text-primary transition-colors">
+                                          {connection.name}
+                                        </span>
+                                      </div>
                                       <span className={`px-2 py-1 rounded-full text-xs capitalize ${typeColors[activityType]}`}>
                                         {activityType}
                                       </span>
@@ -954,6 +988,16 @@ export default function Activities() {
           setSelectedMomentForResolution(null);
         }}
         moment={selectedMomentForResolution}
+      />
+      
+      {/* Connection Detail Modal */}
+      <ConnectionDetailedModal
+        isOpen={connectionDetailModalOpen}
+        onClose={() => {
+          setConnectionDetailModalOpen(false);
+          setSelectedConnectionForModal(null);
+        }}
+        connection={selectedConnectionForModal}
       />
     </div>
   );
