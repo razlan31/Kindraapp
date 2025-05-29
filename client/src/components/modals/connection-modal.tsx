@@ -58,6 +58,31 @@ export function ConnectionModal() {
     },
     onSuccess: (data) => {
       console.log("Connection created successfully:", data);
+      
+      // Check if any new badges were earned
+      if (data.newBadges && data.newBadges.length > 0) {
+        console.log("New badges earned from connection creation:", data.newBadges);
+        
+        // Show summary toast
+        toast({
+          title: `🎉 ${data.newBadges.length} New Badges Unlocked!`,
+          description: "Check the Badges tab to see your achievements!",
+          duration: 6000,
+        });
+        
+        // Show individual badge notifications with delays
+        data.newBadges.forEach((badge: any, index: number) => {
+          setTimeout(() => {
+            console.log(`Showing badge ${index + 1}:`, badge);
+            toast({
+              title: "🎉 Badge Unlocked!",
+              description: `${badge.icon} ${badge.name}`,
+              duration: 4000,
+            });
+          }, (index + 1) * 1000);
+        });
+      }
+      
       toast({
         title: "Connection added successfully",
         description: "Your new connection has been saved.",
