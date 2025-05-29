@@ -334,6 +334,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const stageMilestone = await storage.createMoment(stageMilestoneData);
           console.log("Created initial stage milestone:", stageMilestone);
         }
+
+        // Create birthday milestone for current year if birthday exists
+        if (connectionData.birthday) {
+          const birthdayDate = new Date(connectionData.birthday);
+          const currentYear = new Date().getFullYear();
+          birthdayDate.setFullYear(currentYear);
+          
+          const birthdayMilestoneData = {
+            userId,
+            connectionId: newConnection.id,
+            emoji: '🎂',
+            content: `${newConnection.name}'s Birthday`,
+            title: 'Birthday',
+            tags: ['Milestone', 'Birthday'],
+            isPrivate: false,
+            isIntimate: false,
+            intimacyRating: null,
+            relatedToMenstrualCycle: false,
+            isResolved: false,
+            resolvedAt: null,
+            resolutionNotes: null,
+            reflection: null,
+            isMilestone: true,
+            milestoneTitle: 'Birthday',
+            createdAt: birthdayDate
+          };
+          
+          const birthdayMilestone = await storage.createMoment(birthdayMilestoneData);
+          console.log("Created birthday milestone:", birthdayMilestone);
+        }
       } catch (milestoneError) {
         console.error("Error creating initial milestones:", milestoneError);
         // Don't fail the connection creation if milestone creation fails
