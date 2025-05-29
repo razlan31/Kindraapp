@@ -724,7 +724,6 @@ export default function Activities() {
                                 <Card className="p-4 shadow-sm hover:shadow-md transition-shadow cursor-pointer" onClick={() => handleViewEntryDetail(moment.id)}>
                                   <div className="flex items-start justify-between mb-3">
                                     <div className="flex items-center gap-2">
-                                      <span className="text-lg">{moment.emoji}</span>
                                       <div 
                                         className="flex items-center gap-2 cursor-pointer hover:bg-muted/50 rounded-lg p-1 -ml-1 transition-colors"
                                         onClick={(e) => handleViewConnectionDetail(connection, e)}
@@ -747,6 +746,7 @@ export default function Activities() {
                                           {connection.name}
                                         </span>
                                       </div>
+                                      <span className="text-lg">{moment.emoji}</span>
                                       <span className={`px-2 py-1 rounded-full text-xs capitalize ${typeColors[activityType]}`}>
                                         {activityType}
                                       </span>
@@ -819,10 +819,31 @@ export default function Activities() {
                     >
                       <div className="flex items-start justify-between mb-2">
                         <div className="flex items-center gap-2">
+                          <div 
+                            className="flex items-center gap-2 cursor-pointer hover:bg-muted/50 rounded-lg p-1 -ml-1 transition-colors"
+                            onClick={(e) => handleViewConnectionDetail(connection, e)}
+                            title={`View ${connection.name}'s profile`}
+                          >
+                            {connection.profileImage ? (
+                              <img 
+                                src={connection.profileImage} 
+                                alt={connection.name}
+                                className="w-6 h-6 rounded-full object-cover"
+                              />
+                            ) : (
+                              <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
+                                <span className="text-xs font-medium text-primary">
+                                  {connection.name.charAt(0).toUpperCase()}
+                                </span>
+                              </div>
+                            )}
+                            <span className="font-medium text-sm hover:text-primary transition-colors">
+                              {connection.name}
+                            </span>
+                          </div>
                           <span className="text-lg">{plan.emoji}</span>
                           <div>
                             <h3 className="font-medium">{plan.title || 'Untitled Plan'}</h3>
-                            <p className="text-sm text-muted-foreground">with {connection.name}</p>
                           </div>
                         </div>
                         <div className="text-right">
