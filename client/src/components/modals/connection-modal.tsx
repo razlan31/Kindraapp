@@ -60,18 +60,18 @@ export function ConnectionModal() {
       console.log("Connection created successfully:", data);
       
       // Check if any new badges were earned
-      if (data.newBadges && data.newBadges.length > 0) {
-        console.log("New badges earned from connection creation:", data.newBadges);
+      if (data.badges && data.badges.length > 0) {
+        console.log("New badges earned from connection creation:", data.badges);
         
         // Show summary toast
         toast({
-          title: `🎉 ${data.newBadges.length} New Badges Unlocked!`,
+          title: `🎉 ${data.badges.length} New Badges Unlocked!`,
           description: "Check the Badges tab to see your achievements!",
           duration: 6000,
         });
         
         // Show individual badge notifications with delays
-        data.newBadges.forEach((badge: any, index: number) => {
+        data.badges.forEach((badge: any, index: number) => {
           setTimeout(() => {
             console.log(`Showing badge ${index + 1}:`, badge);
             toast({
