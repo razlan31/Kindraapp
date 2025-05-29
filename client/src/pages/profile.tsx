@@ -100,12 +100,15 @@ export default function ProfilePage() {
       return response.json();
     },
     onSuccess: async () => {
+      console.log("Profile save successful - invalidating cache");
       toast({
         title: "Profile updated",
         description: "Your profile has been updated successfully.",
       });
       await queryClient.invalidateQueries({ queryKey: ['/api/me'] });
+      console.log("Cache invalidated - calling refreshUser");
       await refreshUser(); // Refresh the auth context user data
+      console.log("RefreshUser complete - setting edit mode off");
       setIsEditing(false);
     },
     onError: (error: any) => {
