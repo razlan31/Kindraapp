@@ -14,7 +14,7 @@ import { Camera, X } from "lucide-react";
 
 export function ConnectionModal() {
   const { connectionModalOpen, closeConnectionModal } = useModal();
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [showModal, setShowModal] = useState(false);
@@ -132,7 +132,16 @@ export function ConnectionModal() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    console.log("Form submitted with data:", { name, relationshipStage, user: !!user });
+    console.log("Form submitted with data:", { name, relationshipStage, user: !!user, authLoading });
+    
+    if (authLoading) {
+      console.log("Authentication still loading");
+      toast({
+        title: "Please wait",
+        description: "Loading user information...",
+      });
+      return;
+    }
     
     if (!validateForm()) {
       console.log("Form validation failed");
@@ -140,7 +149,12 @@ export function ConnectionModal() {
     }
     
     if (!user) {
-      console.log("No user found");
+      console.log("No user found after auth loading completed");
+      toast({
+        title: "Authentication required",
+        description: "Please sign in to add connections.",
+        variant: "destructive",
+      });
       return;
     }
     
