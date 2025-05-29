@@ -75,7 +75,7 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
   // Fetch moments for this connection (must be before early return)
   const { data: moments = [] } = useQuery<Moment[]>({
     queryKey: ["/api/moments"],
-    enabled: isOpen && !!currentConnection,
+    enabled: isOpen && !!connection,
   });
 
   // Update connection mutation (must be before early return)
@@ -195,23 +195,23 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
         <DialogHeader>
           <DialogTitle className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              {connection.profileImage ? (
+              {currentConnection.profileImage ? (
                 <img 
-                  src={connection.profileImage} 
-                  alt={connection.name}
+                  src={currentConnection.profileImage} 
+                  alt={currentConnection.name}
                   className="w-12 h-12 rounded-full object-cover"
                 />
               ) : (
                 <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
                   <span className="text-primary font-semibold text-lg">
-                    {connection.name.charAt(0).toUpperCase()}
+                    {currentConnection.name.charAt(0).toUpperCase()}
                   </span>
                 </div>
               )}
               <div>
-                <h2 className="text-xl font-bold">{connection.name}</h2>
+                <h2 className="text-xl font-bold">{currentConnection.name}</h2>
                 <Badge variant="secondary" className="text-xs">
-                  {connection.relationshipStage}
+                  {currentConnection.relationshipStage}
                 </Badge>
               </div>
             </div>
@@ -249,7 +249,7 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Started:</span>
-                  <span>{formatDate(connection.startDate)}</span>
+                  <span>{formatDate(currentConnection.startDate)}</span>
                 </div>
                 {duration && (
                   <div className="flex justify-between">
@@ -259,18 +259,18 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
                 )}
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Birthday:</span>
-                  <span>{formatDate(connection.birthday)}</span>
+                  <span>{formatDate(currentConnection.birthday)}</span>
                 </div>
-                {connection.zodiacSign && (
+                {currentConnection.zodiacSign && (
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Zodiac:</span>
-                    <span>{connection.zodiacSign}</span>
+                    <span>{currentConnection.zodiacSign}</span>
                   </div>
                 )}
-                {connection.loveLanguage && (
+                {currentConnection.loveLanguage && (
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Love Language:</span>
-                    <span className="text-right">{connection.loveLanguage}</span>
+                    <span className="text-right">{currentConnection.loveLanguage}</span>
                   </div>
                 )}
               </div>
