@@ -1,9 +1,22 @@
+import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/auth-context";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { User, Settings, Target } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import { Separator } from "@/components/ui/separator";
+import { useToast } from "@/hooks/use-toast";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
+import { User, Settings, Target, Save } from "lucide-react";
 
 export default function ProfilePage() {
   const { user, loading } = useAuth();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   // Create a fallback user for display if auth is stuck
   const displayUser = user || {
@@ -11,6 +24,65 @@ export default function ProfilePage() {
     email: "test@example.com", 
     zodiacSign: "Gemini",
     loveLanguage: "Quality Time"
+  };
+
+  // Form state
+  const [formData, setFormData] = useState({
+    displayName: displayUser.displayName || "",
+    email: displayUser.email || "",
+    zodiacSign: displayUser.zodiacSign || "",
+    loveLanguage: displayUser.loveLanguage || "",
+    relationshipGoals: "Finding meaningful connections",
+    relationshipStyle: "Exploring",
+    bio: "Building deeper emotional connections and understanding relationship patterns.",
+    notifications: true,
+    privateMode: false,
+    analyticsSharing: true
+  });
+
+  // Update form when user data loads
+  useEffect(() => {
+    if (user) {
+      setFormData(prev => ({
+        ...prev,
+        displayName: user.displayName || "",
+        email: user.email || "",
+        zodiacSign: user.zodiacSign || "",
+        loveLanguage: user.loveLanguage || ""
+      }));
+    }
+  }, [user]);
+
+  // Save mutation
+  const saveMutation = useMutation({
+    mutationFn: async (data: typeof formData) => {
+      return apiRequest("/api/me", {
+        method: "PATCH",
+        body: JSON.stringify({
+          displayName: data.displayName,
+          zodiacSign: data.zodiacSign,
+          loveLanguage: data.loveLanguage
+        })
+      });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Profile updated",
+        description: "Your profile has been saved successfully."
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/me"] });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to update profile. Please try again.",
+        variant: "destructive"
+      });
+    }
+  });
+
+  const handleSave = () => {
+    saveMutation.mutate(formData);
   };
 
   // Show content even if loading is stuck
@@ -37,20 +109,60 @@ export default function ProfilePage() {
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="text-sm font-medium text-neutral-700 dark:text-neutral-300">Display Name</label>
-                <p className="text-neutral-900 dark:text-neutral-100">{displayUser.displayName || "Not set"}</p>
+                <Label htmlFor="displayName">Display Name</Label>
+                <Input
+                  id="displayName"
+                  value={formData.displayName}
+                  onChange={(e) => setFormData(prev => ({ ...prev, displayName: e.target.value }))}
+                  placeholder="Enter your display name"
+                />
               </div>
               <div>
-                <label className="text-sm font-medium text-neutral-700 dark:text-neutral-300">Email</label>
-                <p className="text-neutral-900 dark:text-neutral-100">{displayUser.email}</p>
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={formData.email}
+                  disabled
+                  className="bg-neutral-100 dark:bg-neutral-800"
+                />
               </div>
               <div>
-                <label className="text-sm font-medium text-neutral-700 dark:text-neutral-300">Zodiac Sign</label>
-                <p className="text-neutral-900 dark:text-neutral-100">{displayUser.zodiacSign || "Not set"}</p>
+                <Label htmlFor="zodiacSign">Zodiac Sign</Label>
+                <Select value={formData.zodiacSign} onValueChange={(value) => setFormData(prev => ({ ...prev, zodiacSign: value }))}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select zodiac sign" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Aries">Aries</SelectItem>
+                    <SelectItem value="Taurus">Taurus</SelectItem>
+                    <SelectItem value="Gemini">Gemini</SelectItem>
+                    <SelectItem value="Cancer">Cancer</SelectItem>
+                    <SelectItem value="Leo">Leo</SelectItem>
+                    <SelectItem value="Virgo">Virgo</SelectItem>
+                    <SelectItem value="Libra">Libra</SelectItem>
+                    <SelectItem value="Scorpio">Scorpio</SelectItem>
+                    <SelectItem value="Sagittarius">Sagittarius</SelectItem>
+                    <SelectItem value="Capricorn">Capricorn</SelectItem>
+                    <SelectItem value="Aquarius">Aquarius</SelectItem>
+                    <SelectItem value="Pisces">Pisces</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <div>
-                <label className="text-sm font-medium text-neutral-700 dark:text-neutral-300">Love Language</label>
-                <p className="text-neutral-900 dark:text-neutral-100">{displayUser.loveLanguage || "Not set"}</p>
+                <Label htmlFor="loveLanguage">Love Language</Label>
+                <Select value={formData.loveLanguage} onValueChange={(value) => setFormData(prev => ({ ...prev, loveLanguage: value }))}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select love language" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Words of Affirmation">Words of Affirmation</SelectItem>
+                    <SelectItem value="Quality Time">Quality Time</SelectItem>
+                    <SelectItem value="Physical Touch">Physical Touch</SelectItem>
+                    <SelectItem value="Acts of Service">Acts of Service</SelectItem>
+                    <SelectItem value="Receiving Gifts">Receiving Gifts</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           </CardContent>
@@ -66,18 +178,46 @@ export default function ProfilePage() {
             <CardDescription>Your relationship goals and style</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="space-y-3">
+            <div className="space-y-4">
               <div>
-                <label className="text-sm font-medium text-neutral-700 dark:text-neutral-300">Current Focus</label>
-                <p className="text-neutral-600 dark:text-neutral-400">Finding meaningful connections</p>
+                <Label htmlFor="relationshipGoals">Current Focus</Label>
+                <Select value={formData.relationshipGoals} onValueChange={(value) => setFormData(prev => ({ ...prev, relationshipGoals: value }))}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select your current focus" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Finding meaningful connections">Finding meaningful connections</SelectItem>
+                    <SelectItem value="Building long-term relationships">Building long-term relationships</SelectItem>
+                    <SelectItem value="Casual dating">Casual dating</SelectItem>
+                    <SelectItem value="Self-discovery">Self-discovery</SelectItem>
+                    <SelectItem value="Working on existing relationships">Working on existing relationships</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <div>
-                <label className="text-sm font-medium text-neutral-700 dark:text-neutral-300">Relationship Style</label>
-                <p className="text-neutral-600 dark:text-neutral-400">Exploring</p>
+                <Label htmlFor="relationshipStyle">Relationship Style</Label>
+                <Select value={formData.relationshipStyle} onValueChange={(value) => setFormData(prev => ({ ...prev, relationshipStyle: value }))}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select your relationship style" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Exploring">Exploring</SelectItem>
+                    <SelectItem value="Monogamous">Monogamous</SelectItem>
+                    <SelectItem value="Open to multiple connections">Open to multiple connections</SelectItem>
+                    <SelectItem value="Focused on one person">Focused on one person</SelectItem>
+                    <SelectItem value="Taking it slow">Taking it slow</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <div>
-                <label className="text-sm font-medium text-neutral-700 dark:text-neutral-300">Goals</label>
-                <p className="text-neutral-600 dark:text-neutral-400">Building deeper emotional connections and understanding relationship patterns.</p>
+                <Label htmlFor="bio">Personal Goals</Label>
+                <Textarea
+                  id="bio"
+                  value={formData.bio}
+                  onChange={(e) => setFormData(prev => ({ ...prev, bio: e.target.value }))}
+                  placeholder="Describe your relationship goals and what you're looking for..."
+                  rows={3}
+                />
               </div>
             </div>
           </CardContent>
@@ -93,28 +233,54 @@ export default function ProfilePage() {
             <CardDescription>Customize your app experience</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="space-y-3">
+            <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <label className="text-sm font-medium text-neutral-700 dark:text-neutral-300">Push Notifications</label>
+                  <Label className="text-sm font-medium">Push Notifications</Label>
                   <p className="text-xs text-neutral-600 dark:text-neutral-400">Receive reminders and insights</p>
                 </div>
-                <div className="w-12 h-6 bg-primary rounded-full flex items-center justify-end px-1">
-                  <div className="w-4 h-4 bg-white rounded-full"></div>
-                </div>
+                <Switch
+                  checked={formData.notifications}
+                  onCheckedChange={(checked) => setFormData(prev => ({ ...prev, notifications: checked }))}
+                />
               </div>
+              <Separator />
               <div className="flex items-center justify-between">
                 <div>
-                  <label className="text-sm font-medium text-neutral-700 dark:text-neutral-300">Private Mode</label>
+                  <Label className="text-sm font-medium">Private Mode</Label>
                   <p className="text-xs text-neutral-600 dark:text-neutral-400">Hide sensitive content</p>
                 </div>
-                <div className="w-12 h-6 bg-neutral-300 dark:bg-neutral-600 rounded-full flex items-center px-1">
-                  <div className="w-4 h-4 bg-white rounded-full"></div>
+                <Switch
+                  checked={formData.privateMode}
+                  onCheckedChange={(checked) => setFormData(prev => ({ ...prev, privateMode: checked }))}
+                />
+              </div>
+              <Separator />
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label className="text-sm font-medium">Analytics Sharing</Label>
+                  <p className="text-xs text-neutral-600 dark:text-neutral-400">Help improve the app</p>
                 </div>
+                <Switch
+                  checked={formData.analyticsSharing}
+                  onCheckedChange={(checked) => setFormData(prev => ({ ...prev, analyticsSharing: checked }))}
+                />
               </div>
             </div>
           </CardContent>
         </Card>
+
+        {/* Save Button */}
+        <div className="flex justify-end">
+          <Button 
+            onClick={handleSave}
+            disabled={saveMutation.isPending}
+            className="flex items-center gap-2"
+          >
+            <Save className="h-4 w-4" />
+            {saveMutation.isPending ? "Saving..." : "Save Changes"}
+          </Button>
+        </div>
       </div>
     </div>
   );
