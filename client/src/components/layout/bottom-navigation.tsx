@@ -15,7 +15,8 @@ import {
   Trophy,
   UserPlus,
   Smile,
-  X
+  X,
+  Zap
 } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
@@ -53,6 +54,26 @@ export function BottomNavigation() {
               <CalendarPlus className="h-5 w-5" />
               <span className="absolute right-14 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
                 Add Plan
+              </span>
+            </button>
+            
+            <button 
+              onClick={() => handleActionClick(() => openMomentModal('conflict'))}
+              className="bg-red-500 text-white rounded-full h-12 w-12 flex items-center justify-center shadow-lg hover:shadow-xl transition-all hover:scale-105 group"
+            >
+              <AlertTriangle className="h-5 w-5" />
+              <span className="absolute right-14 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                Log Conflict
+              </span>
+            </button>
+            
+            <button 
+              onClick={() => handleActionClick(() => openMomentModal('intimacy'))}
+              className="bg-pink-500 text-white rounded-full h-12 w-12 flex items-center justify-center shadow-lg hover:shadow-xl transition-all hover:scale-105 group"
+            >
+              <Heart className="h-5 w-5" />
+              <span className="absolute right-14 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                Log Intimacy
               </span>
             </button>
             
