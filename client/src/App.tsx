@@ -17,7 +17,7 @@ import SimpleForm from "./pages/simple-form";
 import Activities from "@/pages/activities";
 import Calendar from "@/pages/calendar";
 import Insights from "@/pages/insights";
-import ProfileTest from "@/pages/profile-test";
+import Profile from "@/pages/profile-simple";
 import CycleTracking from "@/pages/cycle-tracking";
 import AICoach from "@/pages/ai-coach";
 import SummaryReport from "@/pages/summary-report";
@@ -62,7 +62,7 @@ function Router() {
       <Route path="/calendar" component={Calendar} />
       <Route path="/badges" component={Badges} />
       <Route path="/insights" component={Insights} />
-      <Route path="/profile" component={ProfileTest} />
+      <Route path="/profile" component={Profile} />
       <Route path="/cycle-tracking" component={CycleTracking} />
       <Route path="/ai-coach" component={AICoach} />
       <Route path="/summary-report" component={SummaryReport} />
