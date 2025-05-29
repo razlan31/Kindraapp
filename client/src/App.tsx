@@ -31,7 +31,7 @@ import { ModalProvider } from "./contexts/modal-context";
 import { MomentModal } from "./components/modals/simplified-moment-modal";
 import { ConnectionModal } from "./components/modals/connection-modal";
 import { MoodTrackerModal } from "./components/modals/mood-tracker-modal";
-import { QuickMoodButton } from "./components/layout/quick-mood-button";
+
 import { useEffect } from "react";
 import { useLocation } from "wouter";
 
@@ -103,7 +103,7 @@ function ModalsContainer() {
         onClose={closeMoodTrackerModal}
         connection={selectedConnection}
       />
-      <QuickMoodButton />
+
     </>
   );
 }
