@@ -4,9 +4,17 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Bell, LogOut, Settings, User, Trophy } from "lucide-react";
 import { Link } from "wouter";
+import { useQuery } from "@tanstack/react-query";
 
 export function Header() {
-  const { user, logout } = useAuth();
+  const { logout, isAuthenticated } = useAuth();
+  
+  // Use React Query to get the latest user data including profile picture
+  const { data: user } = useQuery({
+    queryKey: ['/api/me'],
+    queryFn: () => fetch('/api/me').then(res => res.json()),
+    enabled: isAuthenticated,
+  });
   
   const getInitials = (name: string) => {
     return name
