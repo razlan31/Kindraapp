@@ -21,9 +21,9 @@ import {
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 export function BottomNavigation() {
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { openMomentModal, openConnectionModal, openPlanModal } = useModal();
+  const { openMomentModal, openPlanModal } = useModal();
 
   const handleActionClick = (action: () => void) => {
     action();
@@ -38,7 +38,7 @@ export function BottomNavigation() {
         {isMenuOpen && (
           <div className="absolute bottom-16 right-0 flex flex-col items-end gap-2 animate-in slide-in-from-bottom-2 duration-200">
             <button 
-              onClick={() => handleActionClick(() => openConnectionModal())}
+              onClick={() => handleActionClick(() => setLocation("/connections"))}
               className="bg-blue-500 text-white rounded-full h-12 w-12 flex items-center justify-center shadow-lg hover:shadow-xl transition-all hover:scale-105 relative group"
             >
               <UserPlus className="h-5 w-5" />
