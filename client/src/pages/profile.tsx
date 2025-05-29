@@ -136,9 +136,9 @@ export default function ProfilePage() {
     }));
   };
 
-  console.log("Profile page - loading:", loading, "user:", user);
+  console.log("Profile page - loading:", loading, "user:", user, "isEditing:", isEditing);
 
-  if (loading || !user) {
+  if (!user) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
