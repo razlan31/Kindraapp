@@ -922,6 +922,7 @@ export default function Activities() {
                           onAddReflection={handleAddReflection}
                           onViewDetail={handleViewEntryDetail}
                           onResolveConflict={handleResolveConflict}
+                          onViewConnection={handleViewConnectionDetail}
                           hasAiReflection={moment.id % 3 === 0} // Simulated AI reflection flag
                         />
                       );

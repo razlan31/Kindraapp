@@ -16,10 +16,11 @@ interface MomentCardProps {
   onAddReflection: (momentId: number) => void;
   onViewDetail?: (momentId: number) => void;
   onResolveConflict?: (momentId: number) => void;
+  onViewConnection?: (connection: { id: number; name: string; profileImage?: string }, event?: React.MouseEvent) => void;
   hasAiReflection?: boolean;
 }
 
-export function MomentCard({ moment, connection, onAddReflection, onViewDetail, onResolveConflict, hasAiReflection }: MomentCardProps) {
+export function MomentCard({ moment, connection, onAddReflection, onViewDetail, onResolveConflict, onViewConnection, hasAiReflection }: MomentCardProps) {
   const getInitials = (name: string) => {
     return name.split(' ').map(part => part[0]).join('').toUpperCase();
   };
@@ -56,18 +57,32 @@ export function MomentCard({ moment, connection, onAddReflection, onViewDetail, 
     >
       <CardContent className="p-0">
         <div className="flex items-start space-x-3">
-          <Avatar className="h-10 w-10">
-            {connection.profileImage ? (
-              <AvatarImage src={connection.profileImage} alt={connection.name} />
-            ) : (
-              <AvatarFallback>{getInitials(connection.name)}</AvatarFallback>
-            )}
-          </Avatar>
-          
           <div className="flex-1">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center space-x-2">
-                <span className="font-medium text-sm">{connection.name}</span>
+                <div 
+                  className="flex items-center gap-2 cursor-pointer hover:bg-muted/50 rounded-lg p-1 -ml-1 transition-colors"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onViewConnection?.(connection, e);
+                  }}
+                  title={`View ${connection.name}'s profile`}
+                >
+                  {connection.profileImage ? (
+                    <img 
+                      src={connection.profileImage} 
+                      alt={connection.name}
+                      className="w-8 h-8 rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                      <span className="text-xs font-medium text-primary">
+                        {getInitials(connection.name)}
+                      </span>
+                    </div>
+                  )}
+                  <span className="font-medium text-sm hover:text-primary transition-colors">{connection.name}</span>
+                </div>
                 <span className="text-2xl">{moment.emoji}</span>
                 {/* Moment Type Indicator */}
                 {(moment.tags?.includes('Conflict') || moment.isIntimate) ? (
