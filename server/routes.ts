@@ -249,8 +249,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = req.session.userId as number;
       const updateData = req.body;
       
-      // Validate the update data
-      const allowedFields = ['displayName', 'email', 'zodiacSign', 'loveLanguage'];
+      // Validate the update data - now includes relationship-focused fields
+      const allowedFields = [
+        'displayName', 'email', 'zodiacSign', 'loveLanguage', 'profileImage',
+        'relationshipGoals', 'currentFocus', 'relationshipStyle', 'personalNotes'
+      ];
       const filteredData = Object.keys(updateData)
         .filter(key => allowedFields.includes(key))
         .reduce((obj, key) => {

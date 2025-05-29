@@ -12,6 +12,10 @@ export const users = pgTable("users", {
   profileImage: text("profile_image"),
   zodiacSign: text("zodiac_sign"),
   loveLanguage: text("love_language"),
+  relationshipGoals: text("relationship_goals"),
+  currentFocus: text("current_focus"),
+  relationshipStyle: text("relationship_style"),
+  personalNotes: text("personal_notes"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
