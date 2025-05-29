@@ -119,6 +119,7 @@ export default function ProfilePage() {
   const handleSave = () => {
     saveMutation.mutate({
       displayName: formData.displayName,
+      email: formData.email,
       zodiacSign: formData.zodiacSign,
       loveLanguage: formData.loveLanguages.join(", "),
     });

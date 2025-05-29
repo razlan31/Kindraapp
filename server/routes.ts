@@ -250,7 +250,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Validate the update data
       const allowedFields = [
-        'displayName', 'zodiacSign', 'loveLanguage', 'profileImage'
+        'displayName', 'email', 'zodiacSign', 'loveLanguage', 'profileImage'
       ];
       const filteredData = Object.keys(updateData)
         .filter(key => allowedFields.includes(key))
