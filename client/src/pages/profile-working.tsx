@@ -326,19 +326,23 @@ export default function ProfilePage() {
           </CardContent>
         </Card>
 
-        {/* Save Button - Fixed at bottom */}
-        <div className="fixed bottom-20 left-0 right-0 p-4 bg-white dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-700 z-10">
-          <div className="max-w-2xl mx-auto">
-            <Button 
-              onClick={handleSave}
-              disabled={saveMutation.isPending}
-              className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-white py-3"
-              size="lg"
-            >
-              <Save className="h-5 w-5" />
-              {saveMutation.isPending ? "Saving..." : "Save Changes"}
-            </Button>
-          </div>
+        {/* Action Buttons */}
+        <div className="flex gap-3 pt-4">
+          <Button 
+            variant="outline"
+            onClick={() => window.history.back()}
+            className="flex-1"
+          >
+            Cancel
+          </Button>
+          <Button 
+            onClick={handleSave}
+            disabled={saveMutation.isPending}
+            className="flex-1 flex items-center justify-center gap-2"
+          >
+            <Save className="h-4 w-4" />
+            {saveMutation.isPending ? "Saving..." : "Save Changes"}
+          </Button>
         </div>
       </div>
     </div>
