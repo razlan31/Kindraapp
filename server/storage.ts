@@ -310,6 +310,7 @@ export class MemStorage implements IStorage {
         icon: "✨",
         category: "Getting Started",
         unlockCriteria: { connectionsAdded: 1 },
+        isRepeatable: false,
       },
       {
         name: "Touch Grass",
@@ -317,6 +318,7 @@ export class MemStorage implements IStorage {
         icon: "🌱",
         category: "Getting Started", 
         unlockCriteria: { firstConnection: true },
+        isRepeatable: false,
       },
       {
         name: "Rizz Master 🔥",
@@ -324,6 +326,7 @@ export class MemStorage implements IStorage {
         icon: "🔥",
         category: "Relationship Progress",
         unlockCriteria: { stageProgression: "Talking" },
+        isRepeatable: false,
       },
 
       // Stage Progression Badges
@@ -432,6 +435,7 @@ export class MemStorage implements IStorage {
         icon: "🚩",
         category: "Self Protection",
         unlockCriteria: { redFlags: 1 },
+        isRepeatable: false,
       },
       {
         name: "Pattern Recognition Pro",
@@ -446,6 +450,7 @@ export class MemStorage implements IStorage {
         icon: "📝",
         category: "Conflict Resolution",
         unlockCriteria: { conflicts: 1 },
+        isRepeatable: false,
       },
       {
         name: "Drama This Week",

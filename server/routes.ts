@@ -1339,7 +1339,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const intimateCount = moments.filter(m => 
             m.isIntimate || m.tags?.includes('Intimacy')
           ).length;
-          if (intimateCount >= criteria.intimateMoments) isEarned = true;
+          if (intimateCount >= criteria.intimateMoments) {
+            // Only award if it's repeatable or user doesn't have this badge yet
+            if (badge.isRepeatable || !earnedBadgeIds.includes(badge.id)) {
+              isEarned = true;
+            }
+          }
         }
 
         if (criteria.intimateMomentsThisWeek) {
