@@ -34,7 +34,7 @@ export default function Activities() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedConnection, setSelectedConnection] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState<'moments' | 'conflicts' | 'intimacy' | 'plans' | 'timeline'>('moments');
-  const [timelineFilter, setTimelineFilter] = useState<'all' | 'moments' | 'conflicts' | 'intimacy' | 'plans'>('all');
+  const [timelineFilter, setTimelineFilter] = useState<'all' | 'moments' | 'conflicts' | 'intimacy' | 'plans' | 'milestones'>('all');
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   // Handle navigation connection filtering and focus connection
@@ -216,16 +216,80 @@ export default function Activities() {
     const connection = connections.find(c => c.id === plan.connectionId);
     if (!connection) return false;
     
-    const matchesSearch = plan.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         (plan.description && plan.description.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    const matchesSearch = (plan.title || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         plan.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          connection.name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesConnection = selectedConnection ? plan.connectionId === selectedConnection : true;
     
     return matchesSearch && matchesConnection;
   });
 
+  // Create connection milestone events for timeline
+  const createConnectionMilestones = () => {
+    const milestones: any[] = [];
+    
+    connections.forEach(connection => {
+      // Add relationship start milestone
+      if (connection.startDate) {
+        milestones.push({
+          id: `start-${connection.id}`,
+          userId: user?.id || 0,
+          connectionId: connection.id,
+          emoji: '💫',
+          content: `Started ${connection.relationshipStage} relationship`,
+          title: 'Relationship Started',
+          tags: ['Milestone', 'Relationship Start'],
+          isPrivate: false,
+          createdAt: connection.startDate,
+          isConnectionMilestone: true,
+          isIntimate: false,
+          intimacyRating: null,
+          relatedToMenstrualCycle: false,
+          isResolved: false,
+          resolvedAt: null,
+          resolutionNotes: null,
+          reflection: null
+        });
+      }
+      
+      // Add birthday milestone for current year if birthday exists
+      if (connection.birthday) {
+        const birthdayThisYear = new Date(connection.birthday);
+        const currentYear = new Date().getFullYear();
+        birthdayThisYear.setFullYear(currentYear);
+        
+        milestones.push({
+          id: `birthday-${connection.id}-${currentYear}`,
+          userId: user?.id || 0,
+          connectionId: connection.id,
+          emoji: '🎂',
+          content: `${connection.name}'s Birthday`,
+          title: 'Birthday',
+          tags: ['Milestone', 'Birthday'],
+          isPrivate: false,
+          createdAt: birthdayThisYear.toISOString(),
+          isConnectionMilestone: true,
+          isIntimate: false,
+          intimacyRating: null,
+          relatedToMenstrualCycle: false,
+          isResolved: false,
+          resolvedAt: null,
+          resolutionNotes: null,
+          reflection: null
+        });
+      }
+    });
+    
+    return milestones;
+  };
+
+  // Combine regular moments with connection milestones for timeline
+  const allTimelineEntries = activeTab === 'timeline' 
+    ? [...moments, ...createConnectionMilestones()]
+    : moments;
+
   // Filter moments based on tab, search and selected connection
-  const filteredMoments = moments.filter(moment => {
+  const filteredMoments = allTimelineEntries.filter(moment => {
     const connection = connections.find(c => c.id === moment.connectionId);
     if (!connection) return false;
     
@@ -238,11 +302,12 @@ export default function Activities() {
       if (timelineFilter === 'all') {
         matchesTab = true;
       } else if (timelineFilter === 'moments') {
-        // Show regular moments (exclude conflicts, intimacy, and plans)
+        // Show regular moments (exclude conflicts, intimacy, plans, and milestones)
         const isConflict = tags.includes('Conflict') || moment.emoji === '⚡';
         const isIntimacy = moment.isIntimate === true || tags.includes('Intimacy') || moment.emoji === '💕';
         const isPlan = tags.includes('Plan');
-        matchesTab = !isConflict && !isIntimacy && !isPlan;
+        const isMilestone = tags.includes('Milestone') || (moment as any).isConnectionMilestone;
+        matchesTab = !isConflict && !isIntimacy && !isPlan && !isMilestone;
       } else if (timelineFilter === 'conflicts') {
         // Show conflicts
         matchesTab = tags.includes('Conflict') || moment.emoji === '⚡';
@@ -252,6 +317,9 @@ export default function Activities() {
       } else if (timelineFilter === 'plans') {
         // Show plan entries
         matchesTab = tags.includes('Plan');
+      } else if (timelineFilter === 'milestones') {
+        // Show milestone entries
+        matchesTab = tags.includes('Milestone') || (moment as any).isConnectionMilestone;
       }
     } else if (activeTab === 'moments') {
       // Show regular moments (positive, negative, neutral) - exclude conflicts, intimacy, and plans
@@ -510,6 +578,12 @@ export default function Activities() {
                     className="py-2 px-3"
                   >
                     Plans
+                  </DropdownMenuItem>
+                  <DropdownMenuItem 
+                    onClick={() => setTimelineFilter('milestones')}
+                    className="py-2 px-3"
+                  >
+                    Milestones
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
