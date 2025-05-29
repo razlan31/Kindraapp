@@ -279,18 +279,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const newConnection = await storage.createConnection(connectionData);
       console.log("Connection created successfully:", newConnection);
       
-      // Create initial milestone for new connection
+      // Create initial connection milestone for new connection
       try {
-        const milestoneTitle = getMilestoneTitle('', connectionData.relationshipStage);
-        const milestoneEmoji = getMilestoneEmoji(connectionData.relationshipStage);
-        
-        const initialMilestoneData = {
+        // First, create the connection start milestone
+        const connectionStartData = {
           userId: userId,
           connectionId: newConnection.id,
-          emoji: milestoneEmoji,
-          content: `Connection established as ${connectionData.relationshipStage}`,
-          title: milestoneTitle,
-          tags: ['Milestone', 'Connection Start', connectionData.relationshipStage],
+          emoji: "💫",
+          content: `Connected with ${connectionData.name}`,
+          title: "Connection Started",
+          tags: ['Milestone', 'Connection Start'],
           isPrivate: false,
           isIntimate: false,
           intimacyRating: null,
@@ -300,14 +298,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
           resolutionNotes: null,
           reflection: null,
           isMilestone: true,
-          milestoneTitle: milestoneTitle,
-          createdAt: connectionData.startDate || new Date() // Use connection start date
+          milestoneTitle: "Connection Started",
+          createdAt: connectionData.startDate || new Date()
         };
         
-        const initialMilestone = await storage.createMoment(initialMilestoneData);
-        console.log("Created initial connection milestone:", initialMilestone);
+        const connectionMilestone = await storage.createMoment(connectionStartData);
+        console.log("Created connection start milestone:", connectionMilestone);
+
+        // Then, create the initial relationship stage milestone (if not default)
+        if (connectionData.relationshipStage && connectionData.relationshipStage !== "Potential") {
+          const stageTitle = getMilestoneTitle('', connectionData.relationshipStage);
+          const stageEmoji = getMilestoneEmoji(connectionData.relationshipStage);
+          
+          const stageMilestoneData = {
+            userId: userId,
+            connectionId: newConnection.id,
+            emoji: stageEmoji,
+            content: `Relationship started as ${connectionData.relationshipStage}`,
+            title: stageTitle,
+            tags: ['Milestone', 'Relationship Stage', connectionData.relationshipStage],
+            isPrivate: false,
+            isIntimate: false,
+            intimacyRating: null,
+            relatedToMenstrualCycle: false,
+            isResolved: false,
+            resolvedAt: null,
+            resolutionNotes: null,
+            reflection: null,
+            isMilestone: true,
+            milestoneTitle: stageTitle,
+            createdAt: connectionData.startDate || new Date()
+          };
+          
+          const stageMilestone = await storage.createMoment(stageMilestoneData);
+          console.log("Created initial stage milestone:", stageMilestone);
+        }
       } catch (milestoneError) {
-        console.error("Error creating initial milestone:", milestoneError);
+        console.error("Error creating initial milestones:", milestoneError);
         // Don't fail the connection creation if milestone creation fails
       }
       
@@ -405,20 +432,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.log("Has initial milestone:", hasInitialMilestone);
         console.log("Connection start date:", updatedConnection.startDate);
         
-        // If no initial milestone exists, create one with the connection's start date first
+        // If no initial milestone exists, create missing milestones for this connection
         if (!hasInitialMilestone && updatedConnection.startDate) {
-          console.log("Creating missing initial milestone for connection start");
+          console.log("Creating missing initial milestones for existing connection");
           try {
-            const initialMilestoneTitle = getMilestoneTitle('', oldStage);
-            const initialMilestoneEmoji = getMilestoneEmoji(oldStage);
-            
-            const initialMilestoneData = {
+            // First, create the connection start milestone
+            const connectionStartData = {
               userId: userId,
               connectionId: connectionId,
-              emoji: initialMilestoneEmoji,
-              content: `Connection established as ${oldStage}`,
-              title: initialMilestoneTitle,
-              tags: ['Milestone', 'Connection Start', oldStage],
+              emoji: "💫",
+              content: `Connected with ${updatedConnection.name}`,
+              title: "Connection Started",
+              tags: ['Milestone', 'Connection Start'],
               isPrivate: false,
               isIntimate: false,
               intimacyRating: null,
@@ -428,14 +453,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
               resolutionNotes: null,
               reflection: null,
               isMilestone: true,
-              milestoneTitle: initialMilestoneTitle,
+              milestoneTitle: "Connection Started",
               createdAt: updatedConnection.startDate
             };
             
-            const initialMilestone = await storage.createMoment(initialMilestoneData);
-            console.log("Created missing initial milestone:", initialMilestone);
+            const connectionMilestone = await storage.createMoment(connectionStartData);
+            console.log("Created missing connection start milestone:", connectionMilestone);
+
+            // Then, create the initial relationship stage milestone (if the old stage wasn't default)
+            if (oldStage && oldStage !== "Potential") {
+              const initialStageTitle = getMilestoneTitle('', oldStage);
+              const initialStageEmoji = getMilestoneEmoji(oldStage);
+              
+              const initialStageMilestoneData = {
+                userId: userId,
+                connectionId: connectionId,
+                emoji: initialStageEmoji,
+                content: `Relationship started as ${oldStage}`,
+                title: initialStageTitle,
+                tags: ['Milestone', 'Relationship Stage', oldStage],
+                isPrivate: false,
+                isIntimate: false,
+                intimacyRating: null,
+                relatedToMenstrualCycle: false,
+                isResolved: false,
+                resolvedAt: null,
+                resolutionNotes: null,
+                reflection: null,
+                isMilestone: true,
+                milestoneTitle: initialStageTitle,
+                createdAt: updatedConnection.startDate
+              };
+              
+              const initialStageMilestone = await storage.createMoment(initialStageMilestoneData);
+              console.log("Created missing initial stage milestone:", initialStageMilestone);
+            }
           } catch (initialMilestoneError) {
-            console.error("Error creating initial milestone:", initialMilestoneError);
+            console.error("Error creating initial milestones:", initialMilestoneError);
           }
         }
         
