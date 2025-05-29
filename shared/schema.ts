@@ -152,6 +152,7 @@ export const badges = pgTable("badges", {
   icon: text("icon").notNull(),
   category: text("category").notNull(),
   unlockCriteria: json("unlock_criteria").notNull(),
+  isRepeatable: boolean("is_repeatable").default(false),
 });
 
 export const badgeSchema = createInsertSchema(badges).omit({ id: true });

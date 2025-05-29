@@ -453,6 +453,7 @@ export class MemStorage implements IStorage {
         icon: "🌪️",
         category: "Conflict Resolution",
         unlockCriteria: { conflictsThisWeek: 5 },
+        isRepeatable: true,
       },
       {
         name: "Monthly Drama Queen",
@@ -460,6 +461,7 @@ export class MemStorage implements IStorage {
         icon: "👑",
         category: "Conflict Resolution",
         unlockCriteria: { conflictsThisMonth: 10 },
+        isRepeatable: true,
       },
       {
         name: "First Peace Maker",
@@ -474,6 +476,7 @@ export class MemStorage implements IStorage {
         icon: "🌈",
         category: "Conflict Resolution",
         unlockCriteria: { conflictsResolvedThisMonth: 5 },
+        isRepeatable: true,
       },
 
       // Intimacy Badges - More nuanced approach
@@ -490,6 +493,7 @@ export class MemStorage implements IStorage {
         icon: "🔥",
         category: "Intimacy",
         unlockCriteria: { intimateMomentsThisWeek: 3 },
+        isRepeatable: true,
       },
       {
         name: "Monthly Romance",
@@ -497,6 +501,7 @@ export class MemStorage implements IStorage {
         icon: "💫",
         category: "Intimacy",
         unlockCriteria: { intimateMomentsThisMonth: 10 },
+        isRepeatable: true,
       },
 
       // Communication Badges
