@@ -256,56 +256,10 @@ export class MemStorage implements IStorage {
       this.moments.set(moment.id, moment);
     });
 
-    // Add sample milestone entries to show relationship progression
-    const sampleMilestones = [
-      {
-        id: this.momentId++,
-        userId: 1,
-        connectionId: 2,
-        emoji: "💫",
-        content: "Connection established as Talking",
-        title: "Started Talking",
-        tags: ["Milestone", "Connection Start", "Talking"],
-        isPrivate: false,
-        isIntimate: false,
-        intimacyRating: null,
-        relatedToMenstrualCycle: false,
-        isResolved: false,
-        resolvedAt: null,
-        resolutionNotes: null,
-        reflection: null,
-        isMilestone: true,
-        milestoneTitle: "Started Talking",
-        createdAt: new Date('2025-05-01T10:00:00')
-      },
-      {
-        id: this.momentId++,
-        userId: 1,
-        connectionId: 2,
-        emoji: "🤷",
-        content: "Relationship stage changed from Talking to Situationship",
-        title: "Became Situationship",
-        tags: ["Milestone", "Relationship Stage", "Situationship"],
-        isPrivate: false,
-        isIntimate: false,
-        intimacyRating: null,
-        relatedToMenstrualCycle: false,
-        isResolved: false,
-        resolvedAt: null,
-        resolutionNotes: null,
-        reflection: null,
-        isMilestone: true,
-        milestoneTitle: "Became Situationship",
-        createdAt: new Date('2025-05-15T14:30:00')
-      }
-    ];
+    // Note: Milestone entries are now created dynamically when connections are created or stages change
+    // This prevents duplicate milestone entries in the timeline
 
-    // Add the sample milestones to storage
-    sampleMilestones.forEach(milestone => {
-      this.moments.set(milestone.id, milestone);
-    });
-
-    console.log(`Created ${sampleMoments.length} sample moments and ${sampleMilestones.length} sample milestones with proper tags for calendar visualization`);
+    console.log(`Created ${sampleMoments.length} sample moments with proper tags for calendar visualization`);
   }
 
   private async initializeTestUser() {
