@@ -305,10 +305,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const connectionMilestone = await storage.createMoment(connectionStartData);
         console.log("Created connection start milestone:", connectionMilestone);
 
-        // Then, create the initial relationship stage milestone for any stage
+        // Then, create the initial relationship stage milestone for any stage (1 second later for proper ordering)
         if (connectionData.relationshipStage) {
           const stageTitle = getMilestoneTitle('', connectionData.relationshipStage);
           const stageEmoji = getMilestoneEmoji(connectionData.relationshipStage);
+          const baseTime = connectionData.startDate || new Date();
           
           const stageMilestoneData = {
             userId: userId,
@@ -327,7 +328,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             reflection: null,
             isMilestone: true,
             milestoneTitle: stageTitle,
-            createdAt: connectionData.startDate || new Date()
+            createdAt: new Date(baseTime.getTime() + 1000)
           };
           
           const stageMilestone = await storage.createMoment(stageMilestoneData);
@@ -465,6 +466,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
               const initialStageTitle = getMilestoneTitle('', oldStage);
               const initialStageEmoji = getMilestoneEmoji(oldStage);
               
+              const baseTime = updatedConnection.startDate ? new Date(updatedConnection.startDate) : new Date();
+              
               const initialStageMilestoneData = {
                 userId: userId,
                 connectionId: connectionId,
@@ -482,7 +485,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
                 reflection: null,
                 isMilestone: true,
                 milestoneTitle: initialStageTitle,
-                createdAt: updatedConnection.startDate
+                createdAt: new Date(baseTime.getTime() + 1000)
               };
               
               const initialStageMilestone = await storage.createMoment(initialStageMilestoneData);
