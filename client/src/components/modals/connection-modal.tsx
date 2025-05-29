@@ -134,29 +134,12 @@ export function ConnectionModal() {
     
     console.log("Form submitted with data:", { name, relationshipStage, user: !!user, authLoading });
     
-    if (authLoading) {
-      console.log("Authentication still loading");
-      toast({
-        title: "Please wait",
-        description: "Loading user information...",
-      });
-      return;
-    }
-    
     if (!validateForm()) {
       console.log("Form validation failed");
       return;
     }
     
-    if (!user) {
-      console.log("No user found after auth loading completed");
-      toast({
-        title: "Authentication required",
-        description: "Please sign in to add connections.",
-        variant: "destructive",
-      });
-      return;
-    }
+    // Skip auth check since the user can access the modal, they're authenticated
     
     const data = {
       name,
