@@ -5,7 +5,11 @@ import { User, Settings, Target } from "lucide-react";
 export default function ProfilePage() {
   const { user, loading } = useAuth();
 
+  // Debug logging
+  console.log("Profile page - loading:", loading, "user:", user);
+
   if (loading) {
+    console.log("Profile page - showing loading state");
     return (
       <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900 pb-20 flex items-center justify-center">
         <div className="text-center">
@@ -17,6 +21,7 @@ export default function ProfilePage() {
   }
 
   if (!user) {
+    console.log("Profile page - no user found");
     return (
       <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900 pb-20 flex items-center justify-center">
         <div className="text-center">
@@ -25,6 +30,8 @@ export default function ProfilePage() {
       </div>
     );
   }
+
+  console.log("Profile page - rendering main content for user:", user.displayName);
 
   return (
     <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900 pb-20">
