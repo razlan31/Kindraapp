@@ -1212,18 +1212,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
         if (!badge.isRepeatable && earnedBadgeIds.includes(badge.id)) continue;
         
         // For repeatable badges, check if they've earned it recently to prevent spam
+        // Skip cooldown for connection-based badges (First Contact should be immediate)
         if (badge.isRepeatable && earnedBadgeIds.includes(badge.id)) {
-          const lastEarned = userBadges
-            .filter(ub => ub.badgeId === badge.id)
-            .sort((a, b) => new Date(b.unlockedAt).getTime() - new Date(a.unlockedAt).getTime())[0];
-          
-          if (lastEarned) {
-            const cooldownPeriod = badge.name.includes('Weekly') ? 6 * 24 * 60 * 60 * 1000 : // 6 days for weekly badges
-                                   badge.name.includes('Monthly') ? 25 * 24 * 60 * 60 * 1000 : // 25 days for monthly badges
-                                   24 * 60 * 60 * 1000; // 1 day default
+          // No cooldown for connection-based badges
+          if (criteria.connectionsAdded || criteria.firstConnection) {
+            // Allow immediate re-award for connection badges
+          } else {
+            const lastEarned = userBadges
+              .filter(ub => ub.badgeId === badge.id)
+              .sort((a, b) => new Date(b.unlockedAt).getTime() - new Date(a.unlockedAt).getTime())[0];
             
-            if (new Date(lastEarned.unlockedAt).getTime() > Date.now() - cooldownPeriod) {
-              continue; // Still in cooldown period
+            if (lastEarned) {
+              const cooldownPeriod = badge.name.includes('Weekly') ? 6 * 24 * 60 * 60 * 1000 : // 6 days for weekly badges
+                                     badge.name.includes('Monthly') ? 25 * 24 * 60 * 60 * 1000 : // 25 days for monthly badges
+                                     24 * 60 * 60 * 1000; // 1 day default
+              
+              if (new Date(lastEarned.unlockedAt).getTime() > Date.now() - cooldownPeriod) {
+                continue; // Still in cooldown period
+              }
             }
           }
         }
