@@ -201,7 +201,26 @@ export default function ProfilePage() {
           </div>
           {!isEditing && (
             <Button
-              onClick={() => setIsEditing(true)}
+              onClick={() => {
+                // Initialize form data when entering edit mode
+                if (user) {
+                  const currentLoveLanguages = user.loveLanguage ? user.loveLanguage.split(", ").filter((lang: string, index: number, arr: string[]) => arr.indexOf(lang) === index) : [];
+                  setFormData({
+                    displayName: user.displayName || "",
+                    email: user.email || "",
+                    zodiacSign: user.zodiacSign || "",
+                    loveLanguages: currentLoveLanguages,
+                    relationshipGoals: "Finding meaningful connections",
+                    relationshipStyle: "Exploring",
+                    bio: "Building deeper emotional connections and understanding relationship patterns.",
+                    notifications: true,
+                    privateMode: false,
+                    analyticsSharing: true,
+                    profileImage: user.profileImage || ""
+                  });
+                }
+                setIsEditing(true);
+              }}
               className="flex items-center gap-2"
             >
               <Edit className="h-4 w-4" />
@@ -222,9 +241,9 @@ export default function ProfilePage() {
             <div className="flex items-center gap-4">
               <div className="relative">
                 <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden">
-                  {formData.profileImage ? (
+                  {(isEditing ? formData.profileImage : user.profileImage) ? (
                     <img 
-                      src={formData.profileImage} 
+                      src={isEditing ? formData.profileImage : user.profileImage} 
                       alt="Profile" 
                       className="w-full h-full object-cover"
                     />
