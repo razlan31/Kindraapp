@@ -553,6 +553,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
           
           const milestone = await storage.createMoment(milestoneData);
           console.log("Created relationship stage milestone:", milestone);
+
+          // Create anniversary milestone for significant relationship stages
+          const anniversaryStages = ['Dating', 'Spouse'];
+          if (anniversaryStages.includes(newStage)) {
+            try {
+              const currentDate = new Date();
+              const nextYear = new Date(currentDate);
+              nextYear.setFullYear(currentDate.getFullYear() + 1);
+              
+              const anniversaryData = {
+                userId: userId,
+                connectionId: connectionId,
+                emoji: newStage === 'Spouse' ? '💍' : '💕',
+                content: `${newStage === 'Spouse' ? 'Wedding' : 'Dating'} Anniversary with ${updatedConnection.name}`,
+                title: `${newStage === 'Spouse' ? 'Wedding' : 'Dating'} Anniversary`,
+                tags: ['Milestone', 'Anniversary', newStage],
+                isPrivate: false,
+                isIntimate: false,
+                intimacyRating: null,
+                relatedToMenstrualCycle: false,
+                isResolved: false,
+                resolvedAt: null,
+                resolutionNotes: null,
+                reflection: null,
+                isMilestone: true,
+                milestoneTitle: `${newStage === 'Spouse' ? 'Wedding' : 'Dating'} Anniversary`,
+                createdAt: nextYear
+              };
+              
+              const anniversaryMilestone = await storage.createMoment(anniversaryData);
+              console.log("Created anniversary milestone:", anniversaryMilestone);
+            } catch (anniversaryError) {
+              console.error("Error creating anniversary milestone:", anniversaryError);
+              // Don't fail the update if anniversary creation fails
+            }
+          }
         } catch (milestoneError) {
           console.error("Error creating relationship stage milestone:", milestoneError);
           // Don't fail the connection update if milestone creation fails
