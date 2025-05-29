@@ -1217,13 +1217,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
           if (redFlagCount >= criteria.redFlags) isEarned = true;
         }
 
-        // Conflicts
+        // Conflicts - check for different time periods
         if (criteria.conflicts) {
           const conflictCount = moments.filter(m => m.tags?.includes('Conflict')).length;
           if (conflictCount >= criteria.conflicts) isEarned = true;
         }
 
-        // Conflicts resolved
+        // Conflicts in specific time periods
+        if (criteria.conflictsThisMonth) {
+          const thisMonth = new Date();
+          thisMonth.setDate(1);
+          thisMonth.setHours(0, 0, 0, 0);
+          
+          const conflictsThisMonth = moments.filter(m => 
+            m.tags?.includes('Conflict') && 
+            m.createdAt && new Date(m.createdAt) >= thisMonth
+          ).length;
+          if (conflictsThisMonth >= criteria.conflictsThisMonth) isEarned = true;
+        }
+
+        if (criteria.conflictsThisWeek) {
+          const thisWeek = new Date();
+          thisWeek.setDate(thisWeek.getDate() - thisWeek.getDay());
+          thisWeek.setHours(0, 0, 0, 0);
+          
+          const conflictsThisWeek = moments.filter(m => 
+            m.tags?.includes('Conflict') && 
+            m.createdAt && new Date(m.createdAt) >= thisWeek
+          ).length;
+          if (conflictsThisWeek >= criteria.conflictsThisWeek) isEarned = true;
+        }
+
+        // Conflicts resolved - check for different criteria
         if (criteria.conflictsResolved) {
           const resolvedCount = moments.filter(m => 
             m.tags?.includes('Conflict') && m.isResolved
@@ -1231,12 +1256,49 @@ export async function registerRoutes(app: Express): Promise<Server> {
           if (resolvedCount >= criteria.conflictsResolved) isEarned = true;
         }
 
-        // Intimate moments
+        if (criteria.conflictsResolvedThisMonth) {
+          const thisMonth = new Date();
+          thisMonth.setDate(1);
+          thisMonth.setHours(0, 0, 0, 0);
+          
+          const resolvedThisMonth = moments.filter(m => 
+            m.tags?.includes('Conflict') && 
+            m.isResolved && 
+            m.resolvedAt && new Date(m.resolvedAt) >= thisMonth
+          ).length;
+          if (resolvedThisMonth >= criteria.conflictsResolvedThisMonth) isEarned = true;
+        }
+
+        // Intimate moments - with time-based criteria
         if (criteria.intimateMoments) {
           const intimateCount = moments.filter(m => 
             m.isIntimate || m.tags?.includes('Intimacy')
           ).length;
           if (intimateCount >= criteria.intimateMoments) isEarned = true;
+        }
+
+        if (criteria.intimateMomentsThisWeek) {
+          const thisWeek = new Date();
+          thisWeek.setDate(thisWeek.getDate() - thisWeek.getDay());
+          thisWeek.setHours(0, 0, 0, 0);
+          
+          const intimateThisWeek = moments.filter(m => 
+            (m.isIntimate || m.tags?.includes('Intimacy')) &&
+            m.createdAt && new Date(m.createdAt) >= thisWeek
+          ).length;
+          if (intimateThisWeek >= criteria.intimateMomentsThisWeek) isEarned = true;
+        }
+
+        if (criteria.intimateMomentsThisMonth) {
+          const thisMonth = new Date();
+          thisMonth.setDate(1);
+          thisMonth.setHours(0, 0, 0, 0);
+          
+          const intimateThisMonth = moments.filter(m => 
+            (m.isIntimate || m.tags?.includes('Intimacy')) &&
+            m.createdAt && new Date(m.createdAt) >= thisMonth
+          ).length;
+          if (intimateThisMonth >= criteria.intimateMomentsThisMonth) isEarned = true;
         }
 
         // Communication moments

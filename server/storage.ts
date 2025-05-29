@@ -425,7 +425,7 @@ export class MemStorage implements IStorage {
         unlockCriteria: { greenFlags: 25 },
       },
 
-      // Red Flag/Conflict Badges
+      // Red Flag/Conflict Badges - More sophisticated triggers
       {
         name: "Red Flag Radar 🚩",
         description: "Identified your first red flag. Trust your gut bestie!",
@@ -434,28 +434,49 @@ export class MemStorage implements IStorage {
         unlockCriteria: { redFlags: 1 },
       },
       {
-        name: "Dodged a Bullet",
-        description: "Spotted 5 red flags. Your intuition is chef's kiss!",
+        name: "Pattern Recognition Pro",
+        description: "Spotted 5 red flags total. Your intuition is chef's kiss!",
         icon: "🎯",
         category: "Self Protection",
         unlockCriteria: { redFlags: 5 },
       },
       {
-        name: "Drama Detective",
-        description: "Logged 3 conflicts. Sometimes you gotta call it like it is!",
-        icon: "🕵️",
+        name: "First Conflict Chronicler",
+        description: "Logged your first conflict. Growth starts with awareness!",
+        icon: "📝",
         category: "Conflict Resolution",
-        unlockCriteria: { conflicts: 3 },
+        unlockCriteria: { conflicts: 1 },
       },
       {
-        name: "Peace Maker",
-        description: "Resolved 3 conflicts. Communication is your superpower!",
+        name: "Drama This Week",
+        description: "5 conflicts in one week. Maybe it's time for some self-reflection?",
+        icon: "🌪️",
+        category: "Conflict Resolution",
+        unlockCriteria: { conflictsThisWeek: 5 },
+      },
+      {
+        name: "Monthly Drama Queen",
+        description: "10 conflicts this month. You're living in a soap opera!",
+        icon: "👑",
+        category: "Conflict Resolution",
+        unlockCriteria: { conflictsThisMonth: 10 },
+      },
+      {
+        name: "First Peace Maker",
+        description: "Resolved your first conflict. Communication is your superpower!",
         icon: "🕊️",
         category: "Conflict Resolution",
-        unlockCriteria: { conflictsResolved: 3 },
+        unlockCriteria: { conflictsResolved: 1 },
+      },
+      {
+        name: "Harmony Hero",
+        description: "Resolved 5 conflicts this month. You're the therapy friend!",
+        icon: "🌈",
+        category: "Conflict Resolution",
+        unlockCriteria: { conflictsResolvedThisMonth: 5 },
       },
 
-      // Intimacy Badges
+      // Intimacy Badges - More nuanced approach
       {
         name: "Spicy Content 🌶️",
         description: "Logged your first intimate moment. We're not judging!",
@@ -464,11 +485,18 @@ export class MemStorage implements IStorage {
         unlockCriteria: { intimateMoments: 1 },
       },
       {
-        name: "Hot Girl Summer",
-        description: "5 intimate moments logged. Living your best life!",
+        name: "Weekly Heat Wave",
+        description: "3 intimate moments this week. Someone's having fun!",
         icon: "🔥",
         category: "Intimacy",
-        unlockCriteria: { intimateMoments: 5 },
+        unlockCriteria: { intimateMomentsThisWeek: 3 },
+      },
+      {
+        name: "Monthly Romance",
+        description: "10 intimate moments this month. Living your best life!",
+        icon: "💫",
+        category: "Intimacy",
+        unlockCriteria: { intimateMomentsThisMonth: 10 },
       },
 
       // Communication Badges
