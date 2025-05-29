@@ -2,7 +2,7 @@ import { useAuth } from "@/contexts/auth-context";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Bell, LogOut, Settings, User } from "lucide-react";
+import { Bell, LogOut, Settings, User, Trophy } from "lucide-react";
 import { Link } from "wouter";
 
 export function Header() {
@@ -44,6 +44,12 @@ export function Header() {
               <Link href="/profile">
                 <User className="mr-2 h-4 w-4" />
                 <span>Profile</span>
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href="/badges">
+                <Trophy className="mr-2 h-4 w-4" />
+                <span>Badges</span>
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
