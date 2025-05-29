@@ -87,6 +87,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
   );
 
   // Plan routes - use non-api route to bypass ALL Vite middleware conflicts  
+  // Stats endpoint
+  app.get("/api/stats", isAuthenticated, async (req: Request, res: Response) => {
+    try {
+      const session = req.session as SessionData;
+      const userId = session.userId!;
+
+      const connections = await storage.getConnectionsByUserId(userId);
+      const moments = await storage.getMomentsByUserId(userId);
+      const badges = await storage.getUserBadges(userId);
+
+      res.json({
+        totalConnections: connections.length,
+        totalMoments: moments.length,
+        totalBadges: badges.length
+      });
+    } catch (error) {
+      console.error("Error fetching stats:", error);
+      res.status(500).json({ error: "Failed to fetch stats" });
+    }
+  });
+
   app.get("/plans-data", isAuthenticated, async (req: Request, res: Response) => {
     console.log('🚀 PLANS DATA ROUTE HIT - This should show if route is working');
     try {
