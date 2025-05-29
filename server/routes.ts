@@ -638,6 +638,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   };
 
+  // Get user badges
+  app.get("/api/badges", isAuthenticated, async (req, res) => {
+    try {
+      const userId = req.session.userId as number;
+      const userBadges = await storage.getUserBadges(userId);
+      
+      console.log(`🏆 Fetched ${userBadges.length} badges for user ${userId}`);
+      res.json(userBadges);
+    } catch (error) {
+      console.error("Error fetching user badges:", error);
+      res.status(500).json({ message: "Server error fetching badges" });
+    }
+  });
+
+  // Get all available badges
+  app.get("/api/badges/all", isAuthenticated, async (req, res) => {
+    try {
+      const allBadges = await storage.getAllBadges();
+      res.json(allBadges);
+    } catch (error) {
+      console.error("Error fetching all badges:", error);
+      res.status(500).json({ message: "Server error fetching all badges" });
+    }
+  });
+
   // Test route to verify API is working
   app.get("/api/test", (req, res) => {
     res.json({ message: "API is working", timestamp: new Date().toISOString() });
