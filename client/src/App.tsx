@@ -23,6 +23,7 @@ import AICoach from "@/pages/ai-coach";
 import SummaryReport from "@/pages/summary-report";
 import ConnectionDetail from "@/pages/connection-detail";
 import ConnectionEdit from "@/pages/connection-edit";
+import Badges from "@/pages/badges";
 import { useAuth } from "./contexts/auth-context";
 import { useModal } from "./contexts/modal-context";
 import { RelationshipFocusProvider } from "./contexts/relationship-focus-context";
@@ -59,6 +60,7 @@ function Router() {
       <Route path="/connections/:id" component={ConnectionDetail} />
       <Route path="/activities" component={Activities} />
       <Route path="/calendar" component={Calendar} />
+      <Route path="/badges" component={Badges} />
       <Route path="/insights" component={Insights} />
       <Route path="/profile" component={Profile} />
       <Route path="/cycle-tracking" component={CycleTracking} />

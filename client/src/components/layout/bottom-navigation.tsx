@@ -10,7 +10,8 @@ import {
   MessageSquare,
   AlertTriangle,
   Lock,
-  CalendarPlus
+  CalendarPlus,
+  Trophy
 } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
@@ -94,9 +95,9 @@ export function BottomNavigation() {
             <Heart className="h-5 w-5" />
             <span className="text-xs mt-1">Activities</span>
           </Link>
-          <Link href="/calendar" className={`bottom-tab flex flex-col items-center justify-center h-full ${location === '/calendar' ? 'active' : ''}`}>
-            <Calendar className="h-5 w-5" />
-            <span className="text-xs mt-1">Calendar</span>
+          <Link href="/badges" className={`bottom-tab flex flex-col items-center justify-center h-full ${location === '/badges' ? 'active' : ''}`}>
+            <Trophy className="h-5 w-5" />
+            <span className="text-xs mt-1">Badges</span>
           </Link>
         </div>
       </div>
