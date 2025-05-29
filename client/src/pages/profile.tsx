@@ -14,7 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Checkbox } from "@/components/ui/checkbox";
 
 export default function ProfilePage() {
-  const { user, logout } = useAuth();
+  const { user, logout, loading } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -136,7 +136,9 @@ export default function ProfilePage() {
     }));
   };
 
-  if (!user) {
+  console.log("Profile page - loading:", loading, "user:", user);
+
+  if (loading || !user) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
