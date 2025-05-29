@@ -628,10 +628,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Check if any badges should be unlocked
-      await checkAndAwardBadges(userId);
+      const newBadges = await checkAndAwardBadges(userId);
       
       console.log("=== UPDATE SUCCESSFUL ===");
-      res.status(200).json(updatedConnection);
+      res.status(200).json({
+        ...updatedConnection,
+        newBadges
+      });
     } catch (error) {
       console.error("Update error:", error);
       res.status(500).json({ message: "Server error updating connection" });

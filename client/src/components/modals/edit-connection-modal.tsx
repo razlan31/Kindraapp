@@ -51,7 +51,22 @@ export function EditConnectionModal({ isOpen, onClose, connection, onEditSuccess
       }
       return response.json();
     },
-    onSuccess: (updatedConnection) => {
+    onSuccess: (data) => {
+      // Check if any new badges were earned
+      if (data.newBadges && data.newBadges.length > 0) {
+        // Show celebratory toast for each new badge
+        data.newBadges.forEach((badge: any) => {
+          toast({
+            title: "🎉 New Badge Unlocked!",
+            description: `${badge.icon} ${badge.name} - ${badge.description}`,
+            duration: 5000,
+          });
+        });
+      }
+      
+      // Extract the connection data (remove newBadges property)
+      const { newBadges, ...updatedConnection } = data;
+      
       // Update ALL possible cache keys to force refresh everywhere
       queryClient.setQueryData(['/api/connections'], (oldData: Connection[] | undefined) => {
         if (!oldData) return [updatedConnection];
