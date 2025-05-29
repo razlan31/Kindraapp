@@ -95,8 +95,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const refreshUser = async () => {
     try {
+      console.log("Auth: refreshUser called");
       const currentUser = await getCurrentUser();
+      console.log("Auth: refreshUser got user:", currentUser);
       setUser(currentUser);
+      console.log("Auth: refreshUser updated context user");
     } catch (error) {
       console.error("Failed to refresh user:", error);
     }
