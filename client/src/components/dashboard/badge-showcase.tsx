@@ -6,7 +6,7 @@ interface BadgeShowcaseProps {
 }
 
 export function BadgeShowcase({ badges, earnedBadgeIds }: BadgeShowcaseProps) {
-  const earnedBadges = badges.filter(badge => earnedBadgeIds.includes(badge.id));
+  const earnedBadges = badges.filter(badge => earnedBadgeIds?.includes(badge.id));
   
   if (earnedBadges.length === 0) {
     return (
