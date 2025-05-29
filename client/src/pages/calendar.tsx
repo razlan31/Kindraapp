@@ -101,8 +101,49 @@ export default function Calendar() {
   // Debug logging for allMoments
   console.log("All moments from query:", allMoments);
 
+  // Create birthday events for calendar display
+  const createBirthdayEvents = () => {
+    const birthdayEvents: any[] = [];
+    
+    if (connections) {
+      connections.forEach(connection => {
+        if (connection.birthday && (!selectedConnectionId || connection.id === selectedConnectionId)) {
+          // Create birthday event for current year
+          const birthdayThisYear = new Date(connection.birthday);
+          const currentYear = new Date().getFullYear();
+          birthdayThisYear.setFullYear(currentYear);
+          
+          birthdayEvents.push({
+            id: `birthday-${connection.id}-${currentYear}`,
+            userId: user?.id || 0,
+            connectionId: connection.id,
+            emoji: '🎂',
+            content: `${connection.name}'s Birthday`,
+            title: 'Birthday',
+            tags: ['Milestone', 'Birthday'],
+            isPrivate: false,
+            createdAt: birthdayThisYear.toISOString(),
+            isBirthday: true,
+            isIntimate: false,
+            intimacyRating: null,
+            relatedToMenstrualCycle: false,
+            isResolved: false,
+            resolvedAt: null,
+            resolutionNotes: null,
+            reflection: null
+          });
+        }
+      });
+    }
+    
+    return birthdayEvents;
+  };
+
+  // Combine moments with birthday events
+  const allCalendarEntries = [...allMoments, ...createBirthdayEvents()];
+
   // Filter moments based on selected filters and connection
-  const moments = allMoments.filter(moment => {
+  const moments = allCalendarEntries.filter(moment => {
     // Connection filter
     if (selectedConnectionId && moment.connectionId !== selectedConnectionId) return false;
     
@@ -110,7 +151,7 @@ export default function Calendar() {
     const isConflict = moment.tags?.includes('Conflict') || moment.emoji === '⚡';
     const isIntimacy = moment.tags?.includes('Intimacy') || moment.isIntimate || moment.emoji === '💕';
     const isPlan = moment.tags?.includes('Plan') || moment.emoji === '📅';
-    const isMilestone = moment.isMilestone || moment.emoji === '🏆';
+    const isMilestone = moment.isMilestone || moment.tags?.includes('Milestone') || moment.emoji === '🏆' || (moment as any).isBirthday;
     
     // Type filters
     if (isConflict && !filters.conflict) return false;
