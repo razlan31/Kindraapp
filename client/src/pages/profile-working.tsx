@@ -88,7 +88,8 @@ export default function ProfilePage() {
         body: JSON.stringify({
           displayName: data.displayName,
           zodiacSign: data.zodiacSign,
-          loveLanguage: data.loveLanguage
+          loveLanguage: data.loveLanguages.join(", "), // Convert array to string for backend
+          profileImage: data.profileImage
         })
       });
     },
@@ -203,19 +204,21 @@ export default function ProfilePage() {
                 </Select>
               </div>
               <div>
-                <Label htmlFor="loveLanguage">Love Language</Label>
-                <Select value={formData.loveLanguage} onValueChange={(value) => setFormData(prev => ({ ...prev, loveLanguage: value }))}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select love language" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Words of Affirmation">Words of Affirmation</SelectItem>
-                    <SelectItem value="Quality Time">Quality Time</SelectItem>
-                    <SelectItem value="Physical Touch">Physical Touch</SelectItem>
-                    <SelectItem value="Acts of Service">Acts of Service</SelectItem>
-                    <SelectItem value="Receiving Gifts">Receiving Gifts</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Label>Love Languages (Select all that apply)</Label>
+                <div className="grid grid-cols-1 gap-2 mt-2">
+                  {["Words of Affirmation", "Quality Time", "Physical Touch", "Acts of Service", "Receiving Gifts"].map((language) => (
+                    <div key={language} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={language}
+                        checked={formData.loveLanguages.includes(language)}
+                        onCheckedChange={() => toggleLoveLanguage(language)}
+                      />
+                      <Label htmlFor={language} className="text-sm font-normal cursor-pointer">
+                        {language}
+                      </Label>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </CardContent>
