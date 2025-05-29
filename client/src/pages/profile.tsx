@@ -14,7 +14,11 @@ import { useToast } from "@/hooks/use-toast";
 import { Checkbox } from "@/components/ui/checkbox";
 
 export default function ProfilePage() {
-  const { user, logout, loading } = useAuth();
+  const authContext = useAuth();
+  const { user, logout, loading } = authContext;
+  
+  // Debug logging
+  console.log("Profile page - full auth context:", authContext);
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
