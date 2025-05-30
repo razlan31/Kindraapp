@@ -40,6 +40,7 @@ export function ConnectionModal() {
   const { mutate: createConnection, isPending } = useMutation({
     mutationFn: async (data: any) => {
       console.log("Sending data to server:", data);
+      console.log("Mutation received profileImage:", !!data.profileImage, "Length:", data.profileImage?.length || 0);
       const response = await fetch("/api/connections", {
         method: "POST",
         headers: {
