@@ -42,7 +42,7 @@ export default function Settings() {
       shareAnalytics: true,
     },
     preferences: {
-      theme: "light" as "light" | "dark" | "aesthetic", // light, dark, aesthetic
+      theme: "light" as "light" | "dark" | "minimal", // light, dark, minimal
       defaultTab: "dashboard" as const, // dashboard, connections, calendar, activities
       autoSave: true,
     }
@@ -278,7 +278,7 @@ export default function Settings() {
                 <Select 
                   value={theme} 
                   onValueChange={(value) => {
-                    setTheme(value as "light" | "dark" | "aesthetic");
+                    setTheme(value as "light" | "dark" | "minimal");
                     updatePreferenceSetting('theme', value);
                   }}
                 >
@@ -288,7 +288,7 @@ export default function Settings() {
                   <SelectContent>
                     <SelectItem value="light">Light</SelectItem>
                     <SelectItem value="dark">Dark</SelectItem>
-                    <SelectItem value="aesthetic">Aesthetic (Black & White)</SelectItem>
+                    <SelectItem value="minimal">Minimal (Black & White)</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
