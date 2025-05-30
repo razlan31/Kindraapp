@@ -151,22 +151,14 @@ export function ConnectionModal() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    console.log("Form submitted with data:", { 
-      name, 
-      relationshipStage, 
-      hasPreviewImage: !!previewImage,
-      previewImageLength: previewImage?.length || 0
-    });
-    
     if (!validateForm()) {
       console.log("Form validation failed");
       return;
     }
     
-    // Use preview image if available
+    // Build the final data object - exactly like EditConnectionModal
     let finalData = {
       name,
-      profileImage: previewImage || null,
       relationshipStage,
       startDate: startDate ? new Date(startDate).toISOString() : null,
       zodiacSign: zodiacSign || null,
@@ -174,7 +166,12 @@ export function ConnectionModal() {
       isPrivate,
     };
     
-    console.log("Submitting connection data with image length:", finalData.profileImage?.length || 0);
+    // If there's a preview image, use it as the profile image - same as EditConnectionModal
+    if (previewImage) {
+      finalData.profileImage = previewImage;
+    }
+    
+    console.log("Submitting connection data with image:", !!finalData.profileImage);
     createConnection(finalData);
   };
   
