@@ -26,57 +26,15 @@ function MenstrualCycleTracker() {
     queryKey: ['/api/menstrual-cycles'],
   });
 
-  const queryClient = useQueryClient();
-
-  const createCycleMutation = useMutation({
-    mutationFn: (data: { startDate: string; notes?: string }) => 
-      apiRequest('POST', '/api/menstrual-cycles', data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/menstrual-cycles'] });
-    },
-  });
-
-  const updateCycleMutation = useMutation({
-    mutationFn: ({ id, ...data }: { id: number; endDate?: string; notes?: string }) => 
-      apiRequest('PATCH', `/api/menstrual-cycles/${id}`, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/menstrual-cycles'] });
-    },
-  });
-
   const getCurrentCycle = () => {
     return cycles.find(cycle => !cycle.endDate);
-  };
-
-  const getLastCycle = () => {
-    return cycles
-      .filter(cycle => cycle.endDate)
-      .sort((a, b) => new Date(b.endDate!).getTime() - new Date(a.endDate!).getTime())[0];
   };
 
   const getDaysSinceStart = (startDate: string) => {
     return Math.floor((Date.now() - new Date(startDate).getTime()) / (1000 * 60 * 60 * 24));
   };
 
-  const getDaysSinceEnd = (endDate: string) => {
-    return Math.floor((Date.now() - new Date(endDate).getTime()) / (1000 * 60 * 60 * 24));
-  };
-
-  const handleLogStart = () => {
-    createCycleMutation.mutate({
-      startDate: new Date().toISOString(),
-    });
-  };
-
-  const handleLogEnd = () => {
-    const currentCycle = getCurrentCycle();
-    if (currentCycle) {
-      updateCycleMutation.mutate({
-        id: currentCycle.id,
-        endDate: new Date().toISOString(),
-      });
-    }
-  };
+  const [, setLocation] = useLocation();
 
   if (isLoading) {
     return (
@@ -92,7 +50,6 @@ function MenstrualCycleTracker() {
   }
 
   const currentCycle = getCurrentCycle();
-  const lastCycle = getLastCycle();
 
   return (
     <div className="px-4 py-3">
@@ -113,28 +70,24 @@ function MenstrualCycleTracker() {
               </p>
             </div>
             <Button 
-              onClick={handleLogEnd}
-              disabled={updateCycleMutation.isPending}
+              onClick={() => setLocation('/menstrual-cycle')}
               size="sm"
               className="w-full bg-pink-600 hover:bg-pink-700 text-white"
             >
-              {updateCycleMutation.isPending ? 'Ending...' : 'Log End'}
+              View Full Tracker
             </Button>
           </div>
         ) : (
           <div className="space-y-3">
-            {lastCycle && (
-              <p className="text-sm text-pink-600 dark:text-pink-300">
-                {getDaysSinceEnd(lastCycle.endDate!)} days since last cycle ended
-              </p>
-            )}
+            <p className="text-sm text-pink-600 dark:text-pink-300">
+              Track your menstrual cycle and symptoms
+            </p>
             <Button 
-              onClick={handleLogStart}
-              disabled={createCycleMutation.isPending}
+              onClick={() => setLocation('/menstrual-cycle')}
               size="sm"
               className="w-full bg-pink-600 hover:bg-pink-700 text-white"
             >
-              {createCycleMutation.isPending ? 'Starting...' : 'Log Start'}
+              Open Cycle Tracker
             </Button>
           </div>
         )}
