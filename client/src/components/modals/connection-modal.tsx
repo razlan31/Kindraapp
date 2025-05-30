@@ -172,6 +172,8 @@ export function ConnectionModal() {
     }
     
     console.log("Submitting connection data with image:", !!finalData.profileImage);
+    console.log("Image data length:", finalData.profileImage?.length || 0);
+    console.log("Preview image state:", !!previewImage);
     createConnection(finalData);
   };
   
