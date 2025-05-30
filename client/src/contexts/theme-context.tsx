@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 
-type Theme = "light" | "dark" | "minimal";
+type Theme = "light" | "dark" | "minimalist";
 
 interface ThemeContextType {
   theme: Theme;
@@ -22,13 +22,13 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const root = window.document.documentElement;
     
     // Remove previous theme classes
-    root.classList.remove("light", "dark", "minimal");
+    root.classList.remove("light", "dark", "minimalist");
     
     let effectiveTheme: "light" | "dark";
     
-    if (theme === "minimal") {
-      root.classList.add("minimal");
-      effectiveTheme = "light"; // minimal is based on light theme
+    if (theme === "minimalist") {
+      root.classList.add("minimalist");
+      effectiveTheme = "light"; // minimalist is based on light theme
     } else {
       effectiveTheme = theme as "light" | "dark";
       root.classList.add(effectiveTheme);

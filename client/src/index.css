@@ -104,7 +104,7 @@
   --greenFlag: 140 62% 55%; /* #47D16E */
 }
 
-.minimal {
+.minimalist {
   /* Same as light theme, but replace pink primary with black */
   --background: 0 0% 100%; /* #FFFFFF */
   --foreground: 220 9% 46%; /* #71717A */
@@ -131,16 +131,16 @@
   --chart-4: 43 74% 66%;
   --chart-5: 27 87% 67%;
 
-  /* Status colors - keep same as light theme except intimacy becomes black */
+  /* Status colors - replace green and purple with black, keep others */
   --neutral: 210 14% 83%; /* #CBD5E1 */
-  --positive: 142 71% 45%; /* #22C55E */
+  --positive: 0 0% 0%; /* Black instead of green */
   --negative: 25 95% 53%; /* #FB923C */
   --conflict: 0 84% 60%; /* #EF4444 */
   --intimacy: 0 0% 0%; /* Black instead of pink */
   --milestone: 45 93% 47%; /* #CA8A04 */
-  --plan: 262 83% 58%; /* #8B5CF6 */
+  --plan: 0 0% 0%; /* Black instead of purple */
   --redFlag: 357 100% 68%; /* #FF5A5F */
-  --greenFlag: 140 62% 55%; /* #47D16E */
+  --greenFlag: 0 0% 0%; /* Black instead of green */
 }
 
 @layer base {
