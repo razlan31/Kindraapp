@@ -24,6 +24,7 @@ export function ConnectionModal() {
   
   useEffect(() => {
     console.log("ConnectionModal - connectionModalOpen changed:", connectionModalOpen);
+    console.log("Setting showModal to:", connectionModalOpen);
     setShowModal(connectionModalOpen);
   }, [connectionModalOpen]);
   
@@ -195,6 +196,8 @@ export function ConnectionModal() {
   };
   
   const handleClose = () => {
+    console.log("handleClose called - modal closing");
+    console.trace("Close call stack");
     setShowModal(false);
     closeConnectionModal();
   };
