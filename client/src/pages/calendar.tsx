@@ -656,8 +656,8 @@ export default function Calendar() {
         </section>
 
         {/* Date Navigation */}
-        <section className="px-4 py-4">
-          <Card className="p-4 bg-card/50 backdrop-blur-sm">
+        <section className="px-3 py-2">
+          <Card className="p-3 bg-card/50 backdrop-blur-sm">
             {/* Navigation */}
             <div className="flex items-center justify-between mb-4">
               <Button variant="outline" size="icon" onClick={navigatePrevious}>
@@ -871,8 +871,8 @@ export default function Calendar() {
         </section>
 
         {/* This Month Statistics */}
-        <section className="px-4 py-4">
-          <Card className="p-4 bg-card/50 backdrop-blur-sm">
+        <section className="px-3 py-2">
+          <Card className="p-3 bg-card/50 backdrop-blur-sm">
             <h3 className="text-sm font-medium mb-3">This Month</h3>
             <div className="grid grid-cols-7 gap-2 text-center">
               <div>
@@ -953,7 +953,7 @@ export default function Calendar() {
         </section>
 
         {/* Menstrual Cycle Tracker */}
-        <section className="mb-4">
+        <section className="px-3 mb-2">
           <MenstrualCycleTracker />
         </section>
       </main>

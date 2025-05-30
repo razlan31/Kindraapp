@@ -358,8 +358,8 @@ function MenstrualCycleTracker() {
 
         {/* Daily Insight */}
         {insight && (
-          <section className="px-4 py-3">
-            <div className="bg-primary/10 rounded-xl p-4">
+          <section className="px-3 py-2">
+            <div className="bg-primary/10 rounded-xl p-3">
               <div className="flex justify-between items-start">
                 <div>
                   <h3 className="font-heading font-medium text-primary">
@@ -375,8 +375,8 @@ function MenstrualCycleTracker() {
 
         {/* Connection Focus Section */}
         {focusConnection && (
-          <section className="px-4 py-3">
-            <div className="bg-neutral-50 dark:bg-neutral-800 rounded-xl p-4">
+          <section className="px-3 py-2">
+            <div className="bg-neutral-50 dark:bg-neutral-800 rounded-xl p-3">
               <div className="flex items-center gap-3 mb-3">
                 {focusConnection.profileImage ? (
                   <img 
@@ -484,7 +484,7 @@ function MenstrualCycleTracker() {
 
         {/* Connection Management */}
         {!focusConnection && (
-          <section className="px-4 py-3">
+          <section className="px-3 py-2">
             <div className="flex justify-between items-center mb-3">
               <h3 className="font-heading font-semibold">Your Connections</h3>
               <Button 
