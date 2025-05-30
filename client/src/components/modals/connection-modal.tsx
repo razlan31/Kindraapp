@@ -157,7 +157,7 @@ export function ConnectionModal() {
     }
     
     // Build the final data object - exactly like EditConnectionModal
-    let finalData = {
+    let finalData: any = {
       name,
       relationshipStage,
       startDate: startDate ? new Date(startDate).toISOString() : null,
