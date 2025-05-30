@@ -510,67 +510,7 @@ export default function Settings() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label>Current Plan</Label>
-                <div className="flex items-center justify-between p-3 bg-neutral-50 dark:bg-neutral-800 rounded-lg">
-                  <div>
-                    <p className="font-medium">Premium Plan</p>
-                    <p className="text-sm text-neutral-600 dark:text-neutral-400">$9.99/month</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-sm font-medium text-green-600 dark:text-green-400">Active</p>
-                    <p className="text-xs text-neutral-600 dark:text-neutral-400">Renews Jan 30, 2025</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label>Payment Method</Label>
-                <div className="flex items-center justify-between p-3 bg-neutral-50 dark:bg-neutral-800 rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <CreditCard className="h-4 w-4" />
-                    <div>
-                      <p className="font-medium">•••• •••• •••• 4242</p>
-                      <p className="text-sm text-neutral-600 dark:text-neutral-400">Expires 12/26</p>
-                    </div>
-                  </div>
-                  <Button variant="outline" size="sm">
-                    Update
-                  </Button>
-                </div>
-              </div>
-
-              <Separator />
-
-              <div className="flex items-center justify-between">
-                <div>
-                  <Label>Billing History</Label>
-                  <p className="text-sm text-neutral-600 dark:text-neutral-400">View past invoices and payments</p>
-                </div>
-                <Button variant="outline">
-                  <Download className="h-4 w-4 mr-2" />
-                  View History
-                </Button>
-              </div>
-
-              <Separator />
-
-              <div className="flex items-center justify-between">
-                <div>
-                  <Label className="text-red-600 dark:text-red-400">Cancel Subscription</Label>
-                  <p className="text-sm text-neutral-600 dark:text-neutral-400">End your subscription and lose premium features</p>
-                </div>
-                <Button variant="destructive" onClick={() => {
-                  if (confirm('Are you sure you want to cancel your subscription? You will lose access to premium features at the end of your billing period.')) {
-                    toast({
-                      title: "Subscription Cancelled",
-                      description: "Your subscription will end on Jan 30, 2025",
-                    });
-                  }
-                }}>
-                  Cancel Plan
-                </Button>
-              </div>
+              <BillingContent />
             </CardContent>
           </Card>
 

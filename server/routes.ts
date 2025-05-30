@@ -9,6 +9,15 @@ import {
 import bcrypt from "bcryptjs";
 import session from "express-session";
 import MemoryStore from "memorystore";
+import Stripe from "stripe";
+
+// Initialize Stripe
+if (!process.env.STRIPE_SECRET_KEY) {
+  throw new Error('Missing required Stripe secret: STRIPE_SECRET_KEY');
+}
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+  apiVersion: "2023-10-16",
+});
 
 // Helper functions for relationship stage milestones
 function getMilestoneTitle(oldStage: string, newStage: string): string {
@@ -1664,6 +1673,106 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return [];
     }
   }
+
+  // Stripe billing endpoints
+  app.get("/api/billing/subscription", isAuthenticated, async (req: Request, res: Response) => {
+    try {
+      const userId = req.session.userId;
+      const user = await storage.getUser(userId);
+      
+      if (!user || !user.stripeSubscriptionId) {
+        return res.json({ subscription: null });
+      }
+
+      const subscription = await stripe.subscriptions.retrieve(user.stripeSubscriptionId, {
+        expand: ['default_payment_method', 'latest_invoice']
+      });
+
+      res.json({ subscription });
+    } catch (error: any) {
+      console.error("Error fetching subscription:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.get("/api/billing/customer", isAuthenticated, async (req: Request, res: Response) => {
+    try {
+      const userId = req.session.userId;
+      const user = await storage.getUser(userId);
+      
+      if (!user || !user.stripeCustomerId) {
+        return res.json({ customer: null });
+      }
+
+      const customer = await stripe.customers.retrieve(user.stripeCustomerId);
+      res.json({ customer });
+    } catch (error: any) {
+      console.error("Error fetching customer:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.post("/api/billing/create-customer-portal", isAuthenticated, async (req: Request, res: Response) => {
+    try {
+      const userId = req.session.userId;
+      const user = await storage.getUser(userId);
+      
+      if (!user || !user.stripeCustomerId) {
+        return res.status(400).json({ error: "No Stripe customer found" });
+      }
+
+      const session = await stripe.billingPortal.sessions.create({
+        customer: user.stripeCustomerId,
+        return_url: `${req.headers.origin}/settings`,
+      });
+
+      res.json({ url: session.url });
+    } catch (error: any) {
+      console.error("Error creating customer portal:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.post("/api/billing/cancel-subscription", isAuthenticated, async (req: Request, res: Response) => {
+    try {
+      const userId = req.session.userId;
+      const user = await storage.getUser(userId);
+      
+      if (!user || !user.stripeSubscriptionId) {
+        return res.status(400).json({ error: "No subscription found" });
+      }
+
+      const subscription = await stripe.subscriptions.update(user.stripeSubscriptionId, {
+        cancel_at_period_end: true,
+      });
+
+      res.json({ subscription });
+    } catch (error: any) {
+      console.error("Error cancelling subscription:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.get("/api/billing/invoices", isAuthenticated, async (req: Request, res: Response) => {
+    try {
+      const userId = req.session.userId;
+      const user = await storage.getUser(userId);
+      
+      if (!user || !user.stripeCustomerId) {
+        return res.json({ invoices: [] });
+      }
+
+      const invoices = await stripe.invoices.list({
+        customer: user.stripeCustomerId,
+        limit: 10,
+      });
+
+      res.json({ invoices: invoices.data });
+    } catch (error: any) {
+      console.error("Error fetching invoices:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
 
   const httpServer = createServer(app);
   return httpServer;

@@ -16,6 +16,8 @@ export const users = pgTable("users", {
   currentFocus: text("current_focus"),
   relationshipStyle: text("relationship_style"),
   personalNotes: text("personal_notes"),
+  stripeCustomerId: text("stripe_customer_id"),
+  stripeSubscriptionId: text("stripe_subscription_id"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
