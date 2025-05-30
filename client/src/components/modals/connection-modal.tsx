@@ -152,7 +152,7 @@ export function ConnectionModal() {
     e.preventDefault();
     
     if (!validateForm()) {
-      console.log("Form validation failed");
+      console.log("Form validation failed:", errors);
       return;
     }
     
