@@ -341,15 +341,15 @@ export default function Settings() {
             </CardContent>
           </Card>
 
-          {/* Privacy & Security */}
+          {/* Privacy, Security & Account */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Shield className="h-5 w-5" />
-                Privacy & Security
+                Privacy, Security & Account
               </CardTitle>
               <CardDescription>
-                Control your data privacy and security settings
+                Control your data privacy, security, and account settings
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -363,6 +363,32 @@ export default function Settings() {
                   checked={settings.privacy.shareAnalytics}
                   onCheckedChange={(checked) => updatePrivacySetting('shareAnalytics', checked)}
                 />
+              </div>
+
+              <Separator />
+
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label>Change Password</Label>
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400">Update your account password</p>
+                </div>
+                <Button variant="outline" onClick={handleChangePassword}>
+                  <Lock className="h-4 w-4 mr-2" />
+                  Change
+                </Button>
+              </div>
+
+              <Separator />
+
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label>Sign Out</Label>
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400">Sign out of your account</p>
+                </div>
+                <Button variant="outline" onClick={logout}>
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Sign Out
+                </Button>
               </div>
             </CardContent>
           </Card>
@@ -471,43 +497,7 @@ export default function Settings() {
             </CardContent>
           </Card>
 
-          {/* Account Actions */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Lock className="h-5 w-5" />
-                Account Actions
-              </CardTitle>
-              <CardDescription>
-                Manage your account security
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <Label>Change Password</Label>
-                  <p className="text-sm text-neutral-600 dark:text-neutral-400">Update your account password</p>
-                </div>
-                <Button variant="outline" onClick={handleChangePassword}>
-                  <Lock className="h-4 w-4 mr-2" />
-                  Change
-                </Button>
-              </div>
 
-              <Separator />
-
-              <div className="flex items-center justify-between">
-                <div>
-                  <Label>Sign Out</Label>
-                  <p className="text-sm text-neutral-600 dark:text-neutral-400">Sign out of your account</p>
-                </div>
-                <Button variant="outline" onClick={logout}>
-                  <LogOut className="h-4 w-4 mr-2" />
-                  Sign Out
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
         </div>
       </main>
 
