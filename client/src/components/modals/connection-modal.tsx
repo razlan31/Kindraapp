@@ -136,6 +136,8 @@ export function ConnectionModal() {
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
     
+    console.log("Validating form - name:", name, "relationshipStage:", relationshipStage);
+    
     if (!name.trim()) {
       newErrors.name = "Name is required";
     } else if (name.length < 2) {
@@ -146,6 +148,7 @@ export function ConnectionModal() {
       newErrors.relationshipStage = "Please select a relationship stage";
     }
     
+    console.log("Validation errors:", newErrors);
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -358,7 +361,12 @@ export function ConnectionModal() {
           </div>
           
           <div className="pt-2">
-            <Button type="submit" className="w-full bg-primary text-white" disabled={isPending}>
+            <Button 
+              type="submit" 
+              className="w-full bg-primary text-white" 
+              disabled={isPending}
+              onClick={() => console.log("Submit button clicked!")}
+            >
               {isPending ? "Adding..." : "Add Connection"}
             </Button>
           </div>
