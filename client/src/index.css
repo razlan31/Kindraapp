@@ -66,16 +66,16 @@
 }
 
 .dark {
-  --background: 240 10% 3.9%;
-  --foreground: 0 0% 98%;
-  --muted: 240 3.7% 15.9%;
-  --muted-foreground: 240 5% 64.9%;
-  --popover: 240 10% 3.9%;
-  --popover-foreground: 0 0% 98%;
-  --card: 240 10% 3.9%;
-  --card-foreground: 0 0% 98%;
-  --border: 240 3.7% 15.9%;
-  --input: 240 3.7% 15.9%;
+  --background: 222 25% 8%; /* #0F1420 - Dark blue background */
+  --foreground: 210 20% 95%; /* #EEEFF3 - Light blue-gray text */
+  --muted: 220 20% 15%; /* #1E2432 - Muted dark blue */
+  --muted-foreground: 215 15% 65%; /* #9BA3B0 - Muted blue-gray text */
+  --popover: 222 25% 10%; /* #131B28 - Slightly lighter dark blue */
+  --popover-foreground: 210 20% 95%; /* #EEEFF3 - Light text */
+  --card: 222 25% 10%; /* #131B28 - Card background */
+  --card-foreground: 210 20% 95%; /* #EEEFF3 - Card text */
+  --border: 220 20% 20%; /* #2A3441 - Border color */
+  --input: 220 20% 18%; /* #252E3B - Input background */
   --primary: 354 100% 70%;
   --primary-foreground: 0 0% 100%;
   --secondary: 174 65% 59%;
@@ -92,16 +92,16 @@
   --chart-3: 42 100% 70%;
   --chart-4: 160 64% 45.5%;
   --chart-5: 26 100% 53.5%;
-  --sidebar-background: 222.2 84% 4.9%;
-  --sidebar-foreground: 210 40% 98%;
-  --sidebar-primary: 217.2 91.2% 59.8%;
-  --sidebar-primary-foreground: 222.2 47.4% 11.2%;
-  --sidebar-accent: 217.2 32.6% 17.5%;
-  --sidebar-accent-foreground: 210 40% 98%;
-  --sidebar-border: 217.2 32.6% 17.5%;
-  --sidebar-ring: 224.3 76.3% 48%;
-  --redFlag: 357 100% 68%;
-  --greenFlag: 140 62% 55%;
+  --sidebar-background: 222 25% 10%; /* #131B28 - Dark blue sidebar */
+  --sidebar-foreground: 210 20% 95%; /* #EEEFF3 - Light text */
+  --sidebar-primary: 217 91% 60%; /* #4472C4 - Blue accent */
+  --sidebar-primary-foreground: 210 20% 95%; /* #EEEFF3 - Light text */
+  --sidebar-accent: 220 20% 18%; /* #252E3B - Accent background */
+  --sidebar-accent-foreground: 210 20% 95%; /* #EEEFF3 - Light text */
+  --sidebar-border: 220 20% 20%; /* #2A3441 - Border color */
+  --sidebar-ring: 217 91% 60%; /* #4472C4 - Blue ring */
+  --redFlag: 357 100% 68%; /* #FF5A5F */
+  --greenFlag: 140 62% 55%; /* #47D16E */
 }
 
 @layer base {
