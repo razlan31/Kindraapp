@@ -1,19 +1,21 @@
 import { useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Header } from "@/components/layout/header";
 import { BottomNavigation } from "@/components/layout/bottom-navigation";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { ConnectionCard } from "@/components/dashboard/connection-card";
 import { MomentCard } from "@/components/dashboard/moment-card";
 import { BadgeShowcase } from "@/components/dashboard/badge-showcase";
-import { Connection, Moment, Badge } from "@shared/schema";
+import { Connection, Moment, Badge, MenstrualCycle } from "@shared/schema";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
 import { useModal } from "@/contexts/modal-context";
-import { Sparkles, Calendar, ChevronDown, Heart } from "lucide-react";
+import { Sparkles, Calendar, ChevronDown, Heart, Plus, Circle } from "lucide-react";
 import { Link } from "wouter";
 import { FocusSelector } from "@/components/relationships/focus-selector";
 import { useRelationshipFocus } from "@/contexts/relationship-focus-context";
+import { apiRequest } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Dashboard() {
   const { user, loading } = useAuth();
@@ -148,6 +150,149 @@ export default function Dashboard() {
   const handleAddReflection = (momentId: number) => {
     console.log("Add reflection for moment:", momentId);
   };
+
+// Menstrual Cycle Tracker Component
+function MenstrualCycleTracker() {
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  // Fetch menstrual cycles
+  const { data: cycles = [], isLoading } = useQuery<MenstrualCycle[]>({
+    queryKey: ['/api/menstrual-cycles'],
+    enabled: !!user,
+  });
+
+  // Create cycle mutation
+  const createCycleMutation = useMutation({
+    mutationFn: (data: { startDate: string; endDate?: string; flowIntensity?: string; symptoms?: string[] }) =>
+      apiRequest("POST", "/api/menstrual-cycles", data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/menstrual-cycles'] });
+      toast({
+        title: "Cycle Logged",
+        description: "Your menstrual cycle has been recorded",
+      });
+    },
+  });
+
+  // Get current cycle status
+  const getCurrentCycleInfo = () => {
+    if (!cycles.length) return null;
+    
+    const currentCycle = cycles.find(cycle => !cycle.endDate);
+    const lastCycle = cycles.sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime())[0];
+    
+    if (currentCycle) {
+      const daysSince = Math.floor((Date.now() - new Date(currentCycle.startDate).getTime()) / (1000 * 60 * 60 * 24));
+      return { status: 'active', daysSince, cycle: currentCycle };
+    }
+    
+    if (lastCycle && lastCycle.endDate) {
+      const daysSince = Math.floor((Date.now() - new Date(lastCycle.endDate).getTime()) / (1000 * 60 * 60 * 24));
+      return { status: 'waiting', daysSince, cycle: lastCycle };
+    }
+    
+    return null;
+  };
+
+  const cycleInfo = getCurrentCycleInfo();
+
+  // Quick log cycle start
+  const handleQuickLog = () => {
+    createCycleMutation.mutate({
+      startDate: new Date().toISOString().split('T')[0],
+      flowIntensity: 'medium',
+    });
+  };
+
+  if (isLoading) {
+    return (
+      <section className="px-4 py-3">
+        <div className="bg-neutral-50 dark:bg-neutral-800 rounded-xl p-4">
+          <div className="animate-pulse">
+            <div className="h-4 bg-neutral-200 dark:bg-neutral-700 rounded w-1/3 mb-2"></div>
+            <div className="h-3 bg-neutral-200 dark:bg-neutral-700 rounded w-2/3"></div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <section className="px-4 py-3">
+      <div className="bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-900/20 dark:to-purple-900/20 rounded-xl p-4">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <Circle className="h-4 w-4 text-pink-500" />
+            <h3 className="font-heading font-semibold text-pink-700 dark:text-pink-300">
+              Cycle Tracker
+            </h3>
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleQuickLog}
+            disabled={createCycleMutation.isPending || (cycleInfo?.status === 'active')}
+            className="text-pink-600 dark:text-pink-400 border-pink-200 dark:border-pink-700"
+          >
+            <Plus className="h-3 w-3 mr-1" />
+            {cycleInfo?.status === 'active' ? 'Active' : 'Log Start'}
+          </Button>
+        </div>
+
+        {cycleInfo ? (
+          <div className="space-y-2">
+            {cycleInfo.status === 'active' ? (
+              <div>
+                <p className="text-sm font-medium text-pink-700 dark:text-pink-300">
+                  Current Cycle - Day {cycleInfo.daysSince + 1}
+                </p>
+                <p className="text-xs text-pink-600 dark:text-pink-400">
+                  Started {new Date(cycleInfo.cycle.startDate).toLocaleDateString()}
+                </p>
+              </div>
+            ) : (
+              <div>
+                <p className="text-sm font-medium text-pink-700 dark:text-pink-300">
+                  {cycleInfo.daysSince} days since last cycle
+                </p>
+                <p className="text-xs text-pink-600 dark:text-pink-400">
+                  Last cycle ended {new Date(cycleInfo.cycle.endDate!).toLocaleDateString()}
+                </p>
+              </div>
+            )}
+            
+            {cycles.length > 1 && (
+              <div className="flex items-center gap-4 text-xs text-pink-600 dark:text-pink-400">
+                <span>
+                  Avg Cycle: {Math.round(cycles.slice(0, 3).reduce((acc, cycle, i, arr) => {
+                    if (i === 0 || !cycle.endDate) return acc;
+                    const prevCycle = arr[i - 1];
+                    if (!prevCycle.endDate) return acc;
+                    const days = Math.floor((new Date(cycle.startDate).getTime() - new Date(prevCycle.startDate).getTime()) / (1000 * 60 * 60 * 24));
+                    return acc + days;
+                  }, 0) / Math.max(1, cycles.slice(0, 3).length - 1))} days
+                </span>
+                <span>•</span>
+                <span>{cycles.length} cycles tracked</span>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="text-center py-2">
+            <p className="text-sm text-pink-600 dark:text-pink-400 mb-2">
+              Start tracking your menstrual cycle
+            </p>
+            <p className="text-xs text-pink-500 dark:text-pink-500">
+              Get insights about your patterns and mood correlations
+            </p>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
 
   return (
     <div className="max-w-md mx-auto bg-white dark:bg-neutral-900 min-h-screen flex flex-col relative">
@@ -411,6 +556,8 @@ export default function Dashboard() {
           <BadgeShowcase badges={badges} userBadges={userBadges.map(ub => ub.badge)} />
         </section>
 
+        {/* Menstrual Cycle Tracker */}
+        <MenstrualCycleTracker />
 
       </main>
 
