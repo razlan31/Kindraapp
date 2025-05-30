@@ -35,8 +35,11 @@ export default function Settings() {
     notifications: {
       pushEnabled: true,
       momentReminders: true,
+      momentReminderFrequency: "daily" as "twice-daily" | "daily" | "every-2-days" | "weekly" | "never",
       cycleReminders: true,
       insightAlerts: true,
+      insightAlertFrequency: "weekly" as "daily" | "weekly" | "monthly" | "never",
+      soundEnabled: true,
     },
     privacy: {
       shareAnalytics: true,
@@ -193,18 +196,43 @@ export default function Settings() {
 
               <Separator />
 
-              <div className="flex items-center justify-between">
-                <div>
-                  <Label htmlFor="momentReminders">Moment Reminders</Label>
-                  <p className="text-sm text-neutral-600 dark:text-neutral-400">Daily prompts to log moments</p>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label htmlFor="momentReminders">Moment Reminders</Label>
+                    <p className="text-sm text-neutral-600 dark:text-neutral-400">Prompts to log moments</p>
+                  </div>
+                  <Switch
+                    id="momentReminders"
+                    checked={settings.notifications.momentReminders}
+                    onCheckedChange={(checked) => updateNotificationSetting('momentReminders', checked)}
+                    disabled={!settings.notifications.pushEnabled}
+                  />
                 </div>
-                <Switch
-                  id="momentReminders"
-                  checked={settings.notifications.momentReminders}
-                  onCheckedChange={(checked) => updateNotificationSetting('momentReminders', checked)}
-                  disabled={!settings.notifications.pushEnabled}
-                />
+                
+                {settings.notifications.momentReminders && (
+                  <div className="ml-4 space-y-2">
+                    <Label className="text-sm">Frequency</Label>
+                    <Select 
+                      value={settings.notifications.momentReminderFrequency} 
+                      onValueChange={(value) => updateNotificationSetting('momentReminderFrequency', value as any)}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="twice-daily">Twice Daily</SelectItem>
+                        <SelectItem value="daily">Daily</SelectItem>
+                        <SelectItem value="every-2-days">Every 2 Days</SelectItem>
+                        <SelectItem value="weekly">Weekly</SelectItem>
+                        <SelectItem value="never">Never</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
               </div>
+
+              <Separator />
 
               <div className="flex items-center justify-between">
                 <div>
@@ -219,15 +247,54 @@ export default function Settings() {
                 />
               </div>
 
+              <Separator />
+
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label htmlFor="insightAlerts">Insight Alerts</Label>
+                    <p className="text-sm text-neutral-600 dark:text-neutral-400">AI-powered relationship insights</p>
+                  </div>
+                  <Switch
+                    id="insightAlerts"
+                    checked={settings.notifications.insightAlerts}
+                    onCheckedChange={(checked) => updateNotificationSetting('insightAlerts', checked)}
+                    disabled={!settings.notifications.pushEnabled}
+                  />
+                </div>
+                
+                {settings.notifications.insightAlerts && (
+                  <div className="ml-4 space-y-2">
+                    <Label className="text-sm">Frequency</Label>
+                    <Select 
+                      value={settings.notifications.insightAlertFrequency} 
+                      onValueChange={(value) => updateNotificationSetting('insightAlertFrequency', value as any)}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="daily">Daily</SelectItem>
+                        <SelectItem value="weekly">Weekly</SelectItem>
+                        <SelectItem value="monthly">Monthly</SelectItem>
+                        <SelectItem value="never">Never</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+              </div>
+
+              <Separator />
+
               <div className="flex items-center justify-between">
                 <div>
-                  <Label htmlFor="insightAlerts">Insight Alerts</Label>
-                  <p className="text-sm text-neutral-600 dark:text-neutral-400">AI-powered relationship insights</p>
+                  <Label htmlFor="soundEnabled">Notification Sound</Label>
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400">Play sound with notifications</p>
                 </div>
                 <Switch
-                  id="insightAlerts"
-                  checked={settings.notifications.insightAlerts}
-                  onCheckedChange={(checked) => updateNotificationSetting('insightAlerts', checked)}
+                  id="soundEnabled"
+                  checked={settings.notifications.soundEnabled}
+                  onCheckedChange={(checked) => updateNotificationSetting('soundEnabled', checked)}
                   disabled={!settings.notifications.pushEnabled}
                 />
               </div>
