@@ -951,6 +951,11 @@ export default function Calendar() {
             </div>
           </Card>
         </section>
+
+        {/* Menstrual Cycle Tracker */}
+        <section className="mb-4">
+          <MenstrualCycleTracker />
+        </section>
       </main>
 
       {/* Day Detail Modal */}
@@ -1090,9 +1095,6 @@ export default function Calendar() {
           connection={connections.find(c => c.id === selectedEntry.connectionId) || null}
         />
       )}
-
-      {/* Menstrual Cycle Tracker */}
-      <MenstrualCycleTracker />
 
       <BottomNavigation />
       
