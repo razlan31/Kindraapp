@@ -309,8 +309,8 @@ export default function Activities() {
 
       <main className="flex-1 overflow-y-auto pb-20">
         {/* Page Title */}
-        <div className="px-4 pt-4 pb-2">
-          <div className="flex items-center justify-between mb-4">
+        <div className="px-3 pt-3 pb-2">
+          <div className="flex items-center justify-between mb-3">
             <h1 className="text-2xl font-bold">Activities</h1>
           </div>
           
@@ -490,7 +490,7 @@ export default function Activities() {
 
         {/* Activities Filter Section - Only show in Timeline mode */}
         {activeTab === 'timeline' && (
-          <section className="px-4 pb-2 sticky top-0 bg-white dark:bg-neutral-900 z-10">
+          <section className="px-3 pb-2 sticky top-0 bg-white dark:bg-neutral-900 z-10">
             <div className="flex items-center gap-2 mb-3">
               <span className="text-sm font-medium">Filter:</span>
               <DropdownMenu>

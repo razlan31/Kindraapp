@@ -351,8 +351,8 @@ export default function Settings() {
     <div className="max-w-md mx-auto bg-white dark:bg-neutral-900 min-h-screen flex flex-col relative">
       <Header />
       
-      <main className="flex-1 overflow-y-auto pb-20 px-4 pt-5">
-        <div className="flex justify-between items-center mb-6">
+      <main className="flex-1 overflow-y-auto pb-20 px-3 pt-4">
+        <div className="flex justify-between items-center mb-4">
           <div>
             <h2 className="text-xl font-heading font-semibold">Settings</h2>
             <p className="text-sm text-neutral-600 dark:text-neutral-400">Manage your preferences</p>
