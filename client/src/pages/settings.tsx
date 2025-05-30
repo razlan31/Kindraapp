@@ -256,21 +256,6 @@ export default function Settings() {
 
               <Separator />
 
-              <div className="flex items-center justify-between">
-                <div>
-                  <Label htmlFor="cycleReminders">Cycle Reminders</Label>
-                  <p className="text-sm text-neutral-600 dark:text-neutral-400">Menstrual cycle notifications</p>
-                </div>
-                <Switch
-                  id="cycleReminders"
-                  checked={settings.notifications.cycleReminders}
-                  onCheckedChange={(checked) => updateNotificationSetting('cycleReminders', checked)}
-                  disabled={!settings.notifications.pushEnabled}
-                />
-              </div>
-
-              <Separator />
-
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <div>
@@ -326,57 +311,17 @@ export default function Settings() {
 
               <Separator />
 
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <Label htmlFor="cycleReminders">Cycle Reminders</Label>
-                    <p className="text-sm text-neutral-600 dark:text-neutral-400">Menstrual cycle notifications</p>
-                  </div>
-                  <Switch
-                    id="cycleReminders"
-                    checked={settings.notifications.cycleReminders}
-                    onCheckedChange={(checked) => updateNotificationSetting('cycleReminders', checked)}
-                    disabled={!settings.notifications.pushEnabled}
-                  />
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label htmlFor="cycleReminders">Cycle Reminders</Label>
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400">Menstrual cycle notifications</p>
                 </div>
-                
-                {settings.notifications.cycleReminders && (
-                  <div className="ml-4 space-y-2">
-                    <Label className="text-sm">Frequency</Label>
-                    <Select 
-                      value={settings.notifications.cycleReminderFrequency} 
-                      onValueChange={(value) => updateNotificationSetting('cycleReminderFrequency', value as any)}
-                    >
-                      <SelectTrigger className="w-full">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="daily">Daily</SelectItem>
-                        <SelectItem value="twice-daily">Twice a Day</SelectItem>
-                        <SelectItem value="3-times-daily">3 Times a Day</SelectItem>
-                        <SelectItem value="weekly">Weekly</SelectItem>
-                        <SelectItem value="every-2-weeks">Every Two Weeks</SelectItem>
-                        <SelectItem value="monthly">Monthly</SelectItem>
-                        <SelectItem value="custom">Custom Time</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    
-                    {settings.notifications.cycleReminderFrequency === 'custom' && (
-                      <div className="space-y-1">
-                        <Label className="text-xs text-neutral-600 dark:text-neutral-400">Hour (0-23)</Label>
-                        <Input
-                          type="number"
-                          min="0"
-                          max="23"
-                          value={settings.notifications.cycleReminderCustomHour}
-                          onChange={(e) => updateNotificationSetting('cycleReminderCustomHour', e.target.value)}
-                          className="w-full"
-                          placeholder="8"
-                        />
-                      </div>
-                    )}
-                  </div>
-                )}
+                <Switch
+                  id="cycleReminders"
+                  checked={settings.notifications.cycleReminders}
+                  onCheckedChange={(checked) => updateNotificationSetting('cycleReminders', checked)}
+                  disabled={!settings.notifications.pushEnabled}
+                />
               </div>
 
               <Separator />
