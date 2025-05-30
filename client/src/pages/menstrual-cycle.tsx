@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { format, differenceInDays, addDays } from "date-fns";
-import { Calendar, Plus, Edit3, Trash2, Circle, ChevronLeft } from "lucide-react";
+import { format, differenceInDays, addDays, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, isSameMonth } from "date-fns";
+import { Calendar, Plus, Edit3, Trash2, Circle, ChevronLeft, ChevronRight, User } from "lucide-react";
 import { useLocation } from "wouter";
 
 import { Button } from "@/components/ui/button";
@@ -15,8 +15,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { MenstrualCycle } from "@shared/schema";
+import { MenstrualCycle, Connection } from "@shared/schema";
 import { Header } from "@/components/layout/header";
+import { useAuth } from "@/contexts/auth-context";
 
 const symptomsList = [
   "Cramps", "Bloating", "Headache", "Mood swings", "Fatigue", 
@@ -36,9 +37,13 @@ const moodOptions = [
 export default function MenstrualCyclePage() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
+  const { user } = useAuth();
   const queryClient = useQueryClient();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingCycle, setEditingCycle] = useState<MenstrualCycle | null>(null);
+  const [selectedPersonId, setSelectedPersonId] = useState<number | null>(null);
+  const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [viewMode, setViewMode] = useState<'calendar' | 'list'>('calendar');
 
   // Form state
   const [formData, setFormData] = useState({
@@ -47,13 +52,44 @@ export default function MenstrualCyclePage() {
     flowIntensity: '',
     mood: '',
     symptoms: [] as string[],
-    notes: ''
+    notes: '',
+    connectionId: null as number | null
+  });
+
+  // Fetch connections
+  const { data: connections = [] } = useQuery<Connection[]>({
+    queryKey: ['/api/connections'],
   });
 
   // Fetch cycles
   const { data: cycles = [], isLoading } = useQuery<MenstrualCycle[]>({
     queryKey: ['/api/menstrual-cycles'],
   });
+
+  // Create list of people who can have cycles (user + female connections)
+  const trackablePersons = useMemo(() => {
+    const persons = [];
+    
+    // Add user if they exist
+    if (user) {
+      persons.push({
+        id: 0, // Special ID for user
+        name: user.displayName || user.username || 'Me',
+        isUser: true
+      });
+    }
+    
+    // Add all connections (assuming they could have cycles)
+    connections.forEach(connection => {
+      persons.push({
+        id: connection.id,
+        name: connection.name,
+        isUser: false
+      });
+    });
+    
+    return persons;
+  }, [user, connections]);
 
   // Create cycle mutation
   const createCycleMutation = useMutation({
@@ -106,7 +142,8 @@ export default function MenstrualCyclePage() {
       flowIntensity: '',
       mood: '',
       symptoms: [],
-      notes: ''
+      notes: '',
+      connectionId: selectedPersonId
     });
   };
 
@@ -119,7 +156,8 @@ export default function MenstrualCyclePage() {
       flowIntensity: formData.flowIntensity || null,
       mood: formData.mood || null,
       symptoms: formData.symptoms.length > 0 ? formData.symptoms : null,
-      notes: formData.notes || null
+      notes: formData.notes || null,
+      connectionId: selectedPersonId === 0 ? null : selectedPersonId // 0 means user, null in DB
     };
 
     if (editingCycle) {
@@ -137,7 +175,8 @@ export default function MenstrualCyclePage() {
       flowIntensity: cycle.flowIntensity || '',
       mood: cycle.mood || '',
       symptoms: Array.isArray(cycle.symptoms) ? cycle.symptoms : [],
-      notes: cycle.notes || ''
+      notes: cycle.notes || '',
+      connectionId: cycle.connectionId || null
     });
     setIsDialogOpen(true);
   };

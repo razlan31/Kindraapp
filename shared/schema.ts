@@ -181,6 +181,7 @@ export type UserBadge = typeof userBadges.$inferSelect;
 export const menstrualCycles = pgTable("menstrual_cycles", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").notNull(),
+  connectionId: integer("connection_id"), // null means tracking for user themselves
   startDate: timestamp("start_date").notNull(),
   endDate: timestamp("end_date"),
   notes: text("notes"),
