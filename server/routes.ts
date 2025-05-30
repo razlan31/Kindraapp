@@ -371,6 +371,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         isPrivate: req.body.isPrivate || false
       };
       
+      console.log("Profile image received:", req.body.profileImage ? `${req.body.profileImage.substring(0, 50)}...` : "null");
+      
       console.log("Creating connection with data:", connectionData);
       const newConnection = await storage.createConnection(connectionData);
       console.log("Connection created successfully:", newConnection);

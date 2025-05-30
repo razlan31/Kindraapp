@@ -117,10 +117,13 @@ export function ConnectionModal() {
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      console.log("File selected:", file.name, file.size, file.type);
       setImageFile(file);
       const reader = new FileReader();
       reader.onload = (event) => {
-        setProfileImage(event.target?.result as string);
+        const result = event.target?.result as string;
+        console.log("Image converted to data URL, length:", result?.length);
+        setProfileImage(result);
       };
       reader.readAsDataURL(file);
     }
