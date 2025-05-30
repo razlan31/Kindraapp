@@ -452,207 +452,167 @@ export default function Calendar() {
       <Header />
       
       <main className="flex-1 overflow-y-auto pb-20">
-        {/* Header */}
-        <section className="px-4 pt-5 pb-3 border-b border-border/40 bg-card/30 backdrop-blur-sm">
-          <div className="flex items-center justify-between mb-2">
-            <div>
-              <h1 className="text-2xl font-bold text-foreground">Calendar</h1>
-              <p className="text-sm text-muted-foreground">
-                Track your relationship moments over time
+        {/* Compact Header with Connection Filter and Legend */}
+        <section className="px-4 pt-4 pb-2">
+          <div className="flex items-start justify-between mb-3">
+            <div className="flex-1">
+              <h1 className="text-xl font-bold text-foreground">Calendar</h1>
+              <p className="text-xs text-muted-foreground">
+                Track your relationship moments
               </p>
             </div>
-            <CalendarIcon className="h-8 w-8 text-primary" />
+            
+            {/* Compact Connection Filter */}
+            <div className="text-right">
+              <div className="text-xs text-muted-foreground mb-1">View For</div>
+              <Select
+                value={selectedConnectionId ? selectedConnectionId.toString() : "all"}
+                onValueChange={(value) => {
+                  setSelectedConnectionId(value === "all" ? null : parseInt(value));
+                  setHasUserSelectedConnection(true);
+                }}
+              >
+                <SelectTrigger className="w-28 h-7 text-xs">
+                  <SelectValue placeholder="All">
+                    {selectedConnectionId ? 
+                      connections.find(c => c.id === selectedConnectionId)?.name || 'Unknown'
+                      : 'All'
+                    }
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Connections</SelectItem>
+                  {connections.map((connection) => (
+                    <SelectItem key={connection.id} value={connection.id.toString()}>
+                      {connection.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
-
-        </section>
-
-        {/* Connection Filter */}
-        <section className="px-4 py-2">
-          <Card className="p-4 bg-card/50 backdrop-blur-sm">
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="text-sm font-medium">View Calendar For</h3>
-              <span className="text-xs text-muted-foreground">
-                {selectedConnectionId ? 
-                  connections.find(c => c.id === selectedConnectionId)?.name || 'Unknown' : 
-                  'All Connections'
-                }
-              </span>
+          {/* Inline Legend */}
+          <div className="flex items-center justify-between text-xs mb-2">
+            <div className="flex items-center gap-2 overflow-x-auto">
+              <div className="flex items-center gap-1">
+                <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div>
+                <span>+</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <div className="w-1.5 h-1.5 rounded-full bg-orange-500"></div>
+                <span>-</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
+                <span>○</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="text-xs">⚡</span>
+                <span>!</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="text-xs">💕</span>
+                <span>♥</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="text-xs">📅</span>
+                <span>□</span>
+              </div>
             </div>
-            <Select
-              value={selectedConnectionId ? selectedConnectionId.toString() : "all"}
-              onValueChange={(value) => {
-                setSelectedConnectionId(value === "all" ? null : parseInt(value));
-                setHasUserSelectedConnection(true);
-              }}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsLegendCollapsed(!isLegendCollapsed)}
+              className="text-xs px-1 py-0 h-5 shrink-0"
             >
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Show all connections" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">
-                  <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center">
-                      <span className="text-xs font-medium">All</span>
-                    </div>
-                    <span>All Connections</span>
-                  </div>
-                </SelectItem>
-                {connections.map((connection) => (
-                  <SelectItem key={connection.id} value={connection.id.toString()}>
-                    <div className="flex items-center gap-2">
-                      {connection.profileImage ? (
-                        <img 
-                          src={connection.profileImage} 
-                          alt={connection.name}
-                          className="w-6 h-6 rounded-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
-                          <span className="text-xs font-medium text-primary">
-                            {connection.name.charAt(0).toUpperCase()}
-                          </span>
-                        </div>
-                      )}
-                      <span>{connection.name}</span>
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </Card>
-        </section>
-
-        {/* Legend */}
-        <section className="px-4 py-4">
-          <Card className="p-4 bg-card/50 backdrop-blur-sm">
-            <div className="flex items-center justify-between mb-2">
-              <h3 className="text-sm font-medium">Legend & Filters</h3>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setIsLegendCollapsed(!isLegendCollapsed)}
-                className="h-6 w-6 p-0"
-              >
-                {isLegendCollapsed ? (
-                  <ChevronDown className="h-4 w-4" />
-                ) : (
-                  <ChevronUp className="h-4 w-4" />
-                )}
-              </Button>
+              {isLegendCollapsed ? "+" : "−"}
+            </Button>
+          </div>
+          
+          {!isLegendCollapsed && (
+            <div className="border-t border-border/20 pt-2">
+              <div className="grid grid-cols-4 gap-1 text-xs mb-2">
+                <div className="flex items-center space-x-1">
+                  <Checkbox
+                    id="positive"
+                    checked={filters.positive}
+                    onCheckedChange={(checked) => 
+                      setFilters(prev => ({ ...prev, positive: !!checked }))
+                    }
+                    className="h-3 w-3"
+                  />
+                  <label htmlFor="positive" className="text-xs cursor-pointer">+</label>
+                </div>
+                <div className="flex items-center space-x-1">
+                  <Checkbox
+                    id="negative"
+                    checked={filters.negative}
+                    onCheckedChange={(checked) => 
+                      setFilters(prev => ({ ...prev, negative: !!checked }))
+                    }
+                    className="h-3 w-3"
+                  />
+                  <label htmlFor="negative" className="text-xs cursor-pointer">−</label>
+                </div>
+                <div className="flex items-center space-x-1">
+                  <Checkbox
+                    id="neutral"
+                    checked={filters.neutral}
+                    onCheckedChange={(checked) => 
+                      setFilters(prev => ({ ...prev, neutral: !!checked }))
+                    }
+                    className="h-3 w-3"
+                  />
+                  <label htmlFor="neutral" className="text-xs cursor-pointer">○</label>
+                </div>
+                <div className="flex items-center space-x-1">
+                  <Checkbox
+                    id="conflict"
+                    checked={filters.conflict}
+                    onCheckedChange={(checked) => 
+                      setFilters(prev => ({ ...prev, conflict: !!checked }))
+                    }
+                    className="h-3 w-3"
+                  />
+                  <label htmlFor="conflict" className="text-xs cursor-pointer">!</label>
+                </div>
+                <div className="flex items-center space-x-1">
+                  <Checkbox
+                    id="intimacy"
+                    checked={filters.intimacy}
+                    onCheckedChange={(checked) => 
+                      setFilters(prev => ({ ...prev, intimacy: !!checked }))
+                    }
+                    className="h-3 w-3"
+                  />
+                  <label htmlFor="intimacy" className="text-xs cursor-pointer">♥</label>
+                </div>
+                <div className="flex items-center space-x-1">
+                  <Checkbox
+                    id="plan"
+                    checked={filters.plan}
+                    onCheckedChange={(checked) => 
+                      setFilters(prev => ({ ...prev, plan: !!checked }))
+                    }
+                    className="h-3 w-3"
+                  />
+                  <label htmlFor="plan" className="text-xs cursor-pointer">□</label>
+                </div>
+                <div className="flex items-center space-x-1">
+                  <Checkbox
+                    id="milestone"
+                    checked={filters.milestone}
+                    onCheckedChange={(checked) => 
+                      setFilters(prev => ({ ...prev, milestone: !!checked }))
+                    }
+                    className="h-3 w-3"
+                  />
+                  <label htmlFor="milestone" className="text-xs cursor-pointer">🏆</label>
+                </div>
+              </div>
             </div>
-            {!isLegendCollapsed && (
-              <>
-                <div className="grid grid-cols-3 grid-rows-3 gap-2 text-xs" style={{ gridAutoFlow: 'column' }}>
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                    <span>Positive Moments</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-                    <span>Neutral Moments</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-orange-500"></div>
-                    <span>Negative Moments</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm">⚡</span>
-                    <span>Conflicts</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm">💕</span>
-                    <span>Intimacy</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm text-purple-500">📅</span>
-                    <span>Plans</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm">🏆</span>
-                    <span>Milestones</span>
-                  </div>
-                </div>
-                
-                {/* Filter Checkboxes */}
-                <div className="mt-4 pt-3 border-t border-border/20">
-                  <h4 className="text-xs font-medium mb-2 text-muted-foreground">Show on Calendar</h4>
-                  <div className="grid grid-cols-3 grid-rows-3 gap-2 text-xs" style={{ gridAutoFlow: 'column' }}>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="positive"
-                        checked={filters.positive}
-                        onCheckedChange={(checked) => 
-                          setFilters(prev => ({ ...prev, positive: !!checked }))
-                        }
-                      />
-                      <label htmlFor="positive" className="text-xs cursor-pointer">Positive</label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="neutral"
-                        checked={filters.neutral}
-                        onCheckedChange={(checked) => 
-                          setFilters(prev => ({ ...prev, neutral: !!checked }))
-                        }
-                      />
-                      <label htmlFor="neutral" className="text-xs cursor-pointer">Neutral</label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="negative"
-                        checked={filters.negative}
-                        onCheckedChange={(checked) => 
-                          setFilters(prev => ({ ...prev, negative: !!checked }))
-                        }
-                      />
-                      <label htmlFor="negative" className="text-xs cursor-pointer">Negative</label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="conflict"
-                        checked={filters.conflict}
-                        onCheckedChange={(checked) => 
-                          setFilters(prev => ({ ...prev, conflict: !!checked }))
-                        }
-                      />
-                      <label htmlFor="conflict" className="text-xs cursor-pointer">Conflicts</label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="intimacy"
-                        checked={filters.intimacy}
-                        onCheckedChange={(checked) => 
-                          setFilters(prev => ({ ...prev, intimacy: !!checked }))
-                        }
-                      />
-                      <label htmlFor="intimacy" className="text-xs cursor-pointer">Intimacy</label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="plan"
-                        checked={filters.plan}
-                        onCheckedChange={(checked) => 
-                          setFilters(prev => ({ ...prev, plan: !!checked }))
-                        }
-                      />
-                      <label htmlFor="plan" className="text-xs cursor-pointer">Plans</label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="milestone"
-                        checked={filters.milestone}
-                        onCheckedChange={(checked) => 
-                          setFilters(prev => ({ ...prev, milestone: !!checked }))
-                        }
-                      />
-                      <label htmlFor="milestone" className="text-xs cursor-pointer">Milestones</label>
-                    </div>
-                  </div>
-                </div>
-              </>
-            )}
-          </Card>
+          )}
         </section>
 
         {/* Date Navigation */}
