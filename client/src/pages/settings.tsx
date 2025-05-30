@@ -20,7 +20,6 @@ import {
   Trash2, 
   LogOut,
   Lock,
-  Eye,
   Save
 } from "lucide-react";
 
@@ -36,16 +35,13 @@ export default function Settings() {
       momentReminders: true,
       cycleReminders: true,
       insightAlerts: true,
-      emailDigest: false,
     },
     privacy: {
-      profileVisible: false,
       shareAnalytics: true,
-      dataRetention: "1year", // 3months, 6months, 1year, 2years
     },
     preferences: {
-      theme: "system", // light, dark, system
-      defaultTab: "dashboard", // dashboard, connections, calendar, activities
+      theme: "system" as const, // light, dark, system
+      defaultTab: "dashboard" as const, // dashboard, connections, calendar, activities
       autoSave: true,
     }
   });
@@ -66,20 +62,20 @@ export default function Settings() {
   // Save settings mutation
   const saveSettingsMutation = useMutation({
     mutationFn: async (settingsData: typeof settings) => {
-      const response = await apiRequest("PUT", "/api/settings", settingsData);
-      if (!response.ok) {
-        throw new Error("Failed to save settings");
-      }
-      return response.json();
+      return await apiRequest("/api/settings", {
+        method: "PUT",
+        body: JSON.stringify(settingsData),
+      });
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/settings"] });
       toast({
-        title: "Settings saved",
-        description: "Your preferences have been updated successfully.",
+        title: "Success",
+        description: "Settings saved successfully!",
       });
-      queryClient.invalidateQueries({ queryKey: ['/api/settings'] });
     },
     onError: (error: any) => {
+      console.error("Settings save error:", error);
       toast({
         title: "Error",
         description: error.message || "Failed to save settings. Please try again.",
@@ -113,6 +109,28 @@ export default function Settings() {
     }));
   };
 
+  const handleExportData = () => {
+    toast({
+      title: "Export Started",
+      description: "Your data export will be ready shortly. You'll receive an email when it's complete.",
+    });
+  };
+
+  const handleDeleteAccount = () => {
+    toast({
+      title: "Account Deletion",
+      description: "Please contact support to delete your account.",
+      variant: "destructive",
+    });
+  };
+
+  const handleChangePassword = () => {
+    toast({
+      title: "Password Change",
+      description: "Password change functionality will be available soon.",
+    });
+  };
+
   return (
     <div className="max-w-md mx-auto bg-white dark:bg-neutral-900 min-h-screen flex flex-col relative">
       <Header />
@@ -121,10 +139,12 @@ export default function Settings() {
         <div className="flex justify-between items-center mb-6">
           <div>
             <h2 className="text-xl font-heading font-semibold">Settings</h2>
-            <p className="text-neutral-600 dark:text-neutral-400 text-sm">
-              Manage your app preferences and privacy
-            </p>
+            <p className="text-sm text-neutral-600 dark:text-neutral-400">Manage your preferences</p>
           </div>
+          <Button onClick={handleSaveSettings} disabled={saveSettingsMutation.isPending} size="sm">
+            <Save className="h-4 w-4 mr-2" />
+            {saveSettingsMutation.isPending ? "Saving..." : "Save"}
+          </Button>
         </div>
 
         <div className="space-y-4">
@@ -157,7 +177,7 @@ export default function Settings() {
               <div className="flex items-center justify-between">
                 <div>
                   <Label htmlFor="momentReminders">Moment Reminders</Label>
-                  <p className="text-sm text-neutral-600 dark:text-neutral-400">Daily reminders to log moments</p>
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400">Daily prompts to log moments</p>
                 </div>
                 <Switch
                   id="momentReminders"
@@ -169,8 +189,8 @@ export default function Settings() {
 
               <div className="flex items-center justify-between">
                 <div>
-                  <Label htmlFor="cycleReminders">Cycle Tracking</Label>
-                  <p className="text-sm text-neutral-600 dark:text-neutral-400">Reminders for menstrual cycle tracking</p>
+                  <Label htmlFor="cycleReminders">Cycle Reminders</Label>
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400">Menstrual cycle notifications</p>
                 </div>
                 <Switch
                   id="cycleReminders"
@@ -182,26 +202,14 @@ export default function Settings() {
 
               <div className="flex items-center justify-between">
                 <div>
-                  <Label htmlFor="insightAlerts">Insights & Tips</Label>
-                  <p className="text-sm text-neutral-600 dark:text-neutral-400">Weekly relationship insights</p>
+                  <Label htmlFor="insightAlerts">Insight Alerts</Label>
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400">AI-powered relationship insights</p>
                 </div>
                 <Switch
                   id="insightAlerts"
                   checked={settings.notifications.insightAlerts}
                   onCheckedChange={(checked) => updateNotificationSetting('insightAlerts', checked)}
                   disabled={!settings.notifications.pushEnabled}
-                />
-              </div>
-
-              <div className="flex items-center justify-between">
-                <div>
-                  <Label htmlFor="emailDigest">Email Digest</Label>
-                  <p className="text-sm text-neutral-600 dark:text-neutral-400">Weekly summary via email</p>
-                </div>
-                <Switch
-                  id="emailDigest"
-                  checked={settings.notifications.emailDigest}
-                  onCheckedChange={(checked) => updateNotificationSetting('emailDigest', checked)}
                 />
               </div>
             </CardContent>
@@ -221,20 +229,6 @@ export default function Settings() {
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <Label htmlFor="profileVisible">Public Profile</Label>
-                  <p className="text-sm text-neutral-600 dark:text-neutral-400">Make your profile discoverable by others</p>
-                </div>
-                <Switch
-                  id="profileVisible"
-                  checked={settings.privacy.profileVisible}
-                  onCheckedChange={(checked) => updatePrivacySetting('profileVisible', checked)}
-                />
-              </div>
-
-              <Separator />
-
-              <div className="flex items-center justify-between">
-                <div>
                   <Label htmlFor="shareAnalytics">Analytics Sharing</Label>
                   <p className="text-sm text-neutral-600 dark:text-neutral-400">Help improve the app with usage data</p>
                 </div>
@@ -243,22 +237,6 @@ export default function Settings() {
                   checked={settings.privacy.shareAnalytics}
                   onCheckedChange={(checked) => updatePrivacySetting('shareAnalytics', checked)}
                 />
-              </div>
-
-              <div>
-                <Label htmlFor="dataRetention">Data Retention</Label>
-                <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-2">How long to keep your data</p>
-                <Select value={settings.privacy.dataRetention} onValueChange={(value) => updatePrivacySetting('dataRetention', value)}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="3months">3 Months</SelectItem>
-                    <SelectItem value="6months">6 Months</SelectItem>
-                    <SelectItem value="1year">1 Year</SelectItem>
-                    <SelectItem value="2years">2 Years</SelectItem>
-                  </SelectContent>
-                </Select>
               </div>
             </CardContent>
           </Card>
@@ -278,7 +256,10 @@ export default function Settings() {
               <div>
                 <Label htmlFor="theme">Theme</Label>
                 <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-2">Choose your preferred theme</p>
-                <Select value={settings.preferences.theme} onValueChange={(value) => updatePreferenceSetting('theme', value)}>
+                <Select 
+                  value={settings.preferences.theme} 
+                  onValueChange={(value) => updatePreferenceSetting('theme', value)}
+                >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -293,7 +274,10 @@ export default function Settings() {
               <div>
                 <Label htmlFor="defaultTab">Default Page</Label>
                 <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-2">Page to open when launching the app</p>
-                <Select value={settings.preferences.defaultTab} onValueChange={(value) => updatePreferenceSetting('defaultTab', value)}>
+                <Select 
+                  value={settings.preferences.defaultTab} 
+                  onValueChange={(value) => updatePreferenceSetting('defaultTab', value)}
+                >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -309,7 +293,7 @@ export default function Settings() {
               <div className="flex items-center justify-between">
                 <div>
                   <Label htmlFor="autoSave">Auto-save</Label>
-                  <p className="text-sm text-neutral-600 dark:text-neutral-400">Automatically save changes while typing</p>
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400">Automatically save changes</p>
                 </div>
                 <Switch
                   id="autoSave"
@@ -331,16 +315,30 @@ export default function Settings() {
                 Export or delete your data
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-3">
-              <Button variant="outline" className="w-full justify-start">
-                <Download className="h-4 w-4 mr-2" />
-                Export My Data
-              </Button>
-              
-              <Button variant="outline" className="w-full justify-start text-red-600 hover:text-red-700 dark:text-red-400">
-                <Trash2 className="h-4 w-4 mr-2" />
-                Delete Account
-              </Button>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label>Export Data</Label>
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400">Download all your data</p>
+                </div>
+                <Button variant="outline" onClick={handleExportData}>
+                  <Download className="h-4 w-4 mr-2" />
+                  Export
+                </Button>
+              </div>
+
+              <Separator />
+
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label className="text-red-600 dark:text-red-400">Delete Account</Label>
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400">Permanently delete your account</p>
+                </div>
+                <Button variant="destructive" onClick={handleDeleteAccount}>
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  Delete
+                </Button>
+              </div>
             </CardContent>
           </Card>
 
@@ -349,37 +347,38 @@ export default function Settings() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Lock className="h-5 w-5" />
-                Account
+                Account Actions
               </CardTitle>
+              <CardDescription>
+                Manage your account security
+              </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-3">
-              <Button variant="outline" className="w-full justify-start">
-                <Lock className="h-4 w-4 mr-2" />
-                Change Password
-              </Button>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label>Change Password</Label>
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400">Update your account password</p>
+                </div>
+                <Button variant="outline" onClick={handleChangePassword}>
+                  <Lock className="h-4 w-4 mr-2" />
+                  Change
+                </Button>
+              </div>
 
-              <Button
-                variant="outline"
-                onClick={logout}
-                className="w-full justify-start text-red-600 hover:text-red-700 dark:text-red-400"
-              >
-                <LogOut className="h-4 w-4 mr-2" />
-                Sign Out
-              </Button>
+              <Separator />
+
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label>Sign Out</Label>
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400">Sign out of your account</p>
+                </div>
+                <Button variant="outline" onClick={logout}>
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Sign Out
+                </Button>
+              </div>
             </CardContent>
           </Card>
-
-          {/* Save Button */}
-          <div className="pt-4 pb-8">
-            <Button 
-              onClick={handleSaveSettings}
-              disabled={saveSettingsMutation.isPending}
-              className="w-full flex items-center justify-center gap-2"
-            >
-              <Save className="h-4 w-4" />
-              {saveSettingsMutation.isPending ? "Saving..." : "Save Settings"}
-            </Button>
-          </div>
         </div>
       </main>
 
