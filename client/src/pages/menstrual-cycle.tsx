@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { format, differenceInDays, addDays, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, isSameMonth, subMonths, addMonths, startOfWeek, getDay } from "date-fns";
-import { Calendar, Plus, Edit3, Trash2, Circle, ChevronLeft, ChevronRight, User } from "lucide-react";
+import { Calendar, Plus, Edit3, Trash2, Circle, ChevronLeft, ChevronRight, User, UserPlus } from "lucide-react";
 import { useLocation } from "wouter";
 
 import { Button } from "@/components/ui/button";
@@ -13,11 +13,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { MenstrualCycle, Connection } from "@shared/schema";
 import { Header } from "@/components/layout/header";
 import { useAuth } from "@/contexts/auth-context";
+import { ConnectionModal } from "@/components/modals/connection-modal";
 
 const symptomsList = [
   "Cramps", "Bloating", "Headache", "Mood swings", "Fatigue", 
@@ -44,6 +46,7 @@ export default function MenstrualCyclePage() {
   const [selectedPersonId, setSelectedPersonId] = useState<number | null>(null);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [viewMode, setViewMode] = useState<'calendar' | 'list'>('calendar');
+  const [isConnectionModalOpen, setIsConnectionModalOpen] = useState(false);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -326,7 +329,13 @@ export default function MenstrualCyclePage() {
             <Label className="text-sm font-medium">Tracking For:</Label>
             <Select 
               value={selectedPersonId?.toString() || "-1"} 
-              onValueChange={(value) => setSelectedPersonId(value === "-1" ? null : parseInt(value))}
+              onValueChange={(value) => {
+                if (value === "add_connection") {
+                  setIsConnectionModalOpen(true);
+                } else {
+                  setSelectedPersonId(value === "-1" ? null : parseInt(value));
+                }
+              }}
             >
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select person to track">
@@ -346,6 +355,13 @@ export default function MenstrualCyclePage() {
                     </div>
                   </SelectItem>
                 ))}
+                <Separator className="my-1" />
+                <SelectItem value="add_connection">
+                  <div className="flex items-center gap-2 text-blue-600">
+                    <UserPlus className="h-4 w-4" />
+                    Add New Connection
+                  </div>
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -805,6 +821,17 @@ export default function MenstrualCyclePage() {
             </form>
           </DialogContent>
         </Dialog>
+
+        {/* Connection Modal */}
+        <ConnectionModal
+          isOpen={isConnectionModalOpen}
+          onClose={() => setIsConnectionModalOpen(false)}
+          onConnectionAdded={(newConnection) => {
+            queryClient.invalidateQueries({ queryKey: ['/api/connections'] });
+            setSelectedPersonId(newConnection.id);
+            setIsConnectionModalOpen(false);
+          }}
+        />
       </main>
     </div>
   );
