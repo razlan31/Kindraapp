@@ -19,6 +19,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { MenstrualCycle, Connection } from "@shared/schema";
 import { Header } from "@/components/layout/header";
 import { useAuth } from "@/contexts/auth-context";
+import { useModal } from "@/contexts/modal-context";
 import { ConnectionModal } from "@/components/modals/connection-modal";
 
 const symptomsList = [
@@ -40,13 +41,13 @@ export default function MenstrualCyclePage() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const { user } = useAuth();
+  const { openConnectionModal } = useModal();
   const queryClient = useQueryClient();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingCycle, setEditingCycle] = useState<MenstrualCycle | null>(null);
   const [selectedPersonId, setSelectedPersonId] = useState<number | null>(null);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [viewMode, setViewMode] = useState<'calendar' | 'list'>('calendar');
-  const [isConnectionModalOpen, setIsConnectionModalOpen] = useState(false);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -331,7 +332,7 @@ export default function MenstrualCyclePage() {
               value={selectedPersonId?.toString() || "-1"} 
               onValueChange={(value) => {
                 if (value === "add_connection") {
-                  setIsConnectionModalOpen(true);
+                  openConnectionModal();
                 } else {
                   setSelectedPersonId(value === "-1" ? null : parseInt(value));
                 }
@@ -346,7 +347,12 @@ export default function MenstrualCyclePage() {
                 </SelectValue>
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="-1">All People</SelectItem>
+                <SelectItem value="-1">
+                  <div className="flex items-center gap-2">
+                    <Circle className="h-4 w-4" />
+                    All People
+                  </div>
+                </SelectItem>
                 {trackablePersons.map((person) => (
                   <SelectItem key={person.id} value={person.id.toString()}>
                     <div className="flex items-center gap-2">
@@ -823,15 +829,7 @@ export default function MenstrualCyclePage() {
         </Dialog>
 
         {/* Connection Modal */}
-        <ConnectionModal
-          isOpen={isConnectionModalOpen}
-          onClose={() => setIsConnectionModalOpen(false)}
-          onConnectionAdded={(newConnection) => {
-            queryClient.invalidateQueries({ queryKey: ['/api/connections'] });
-            setSelectedPersonId(newConnection.id);
-            setIsConnectionModalOpen(false);
-          }}
-        />
+        <ConnectionModal />
       </main>
     </div>
   );
