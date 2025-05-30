@@ -8,6 +8,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/auth-context";
 import { useTheme } from "@/contexts/theme-context";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -35,10 +36,14 @@ export default function Settings() {
     notifications: {
       pushEnabled: true,
       momentReminders: true,
-      momentReminderFrequency: "daily" as "twice-daily" | "daily" | "every-2-days" | "weekly" | "never",
-      cycleReminders: true,
+      momentReminderFrequency: "daily" as "daily" | "twice-daily" | "3-times-daily" | "weekly" | "every-2-weeks" | "monthly" | "custom",
+      momentReminderCustomHour: "9",
       insightAlerts: true,
-      insightAlertFrequency: "weekly" as "daily" | "weekly" | "monthly" | "never",
+      insightAlertFrequency: "weekly" as "daily" | "twice-daily" | "3-times-daily" | "weekly" | "every-2-weeks" | "monthly" | "custom",
+      insightAlertCustomHour: "18",
+      cycleReminders: true,
+      cycleReminderFrequency: "daily" as "daily" | "twice-daily" | "3-times-daily" | "weekly" | "every-2-weeks" | "monthly" | "custom",
+      cycleReminderCustomHour: "8",
       soundEnabled: true,
     },
     privacy: {
@@ -221,13 +226,30 @@ export default function Settings() {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="twice-daily">Twice Daily</SelectItem>
                         <SelectItem value="daily">Daily</SelectItem>
-                        <SelectItem value="every-2-days">Every 2 Days</SelectItem>
+                        <SelectItem value="twice-daily">Twice a Day</SelectItem>
+                        <SelectItem value="3-times-daily">3 Times a Day</SelectItem>
                         <SelectItem value="weekly">Weekly</SelectItem>
-                        <SelectItem value="never">Never</SelectItem>
+                        <SelectItem value="every-2-weeks">Every Two Weeks</SelectItem>
+                        <SelectItem value="monthly">Monthly</SelectItem>
+                        <SelectItem value="custom">Custom Time</SelectItem>
                       </SelectContent>
                     </Select>
+                    
+                    {settings.notifications.momentReminderFrequency === 'custom' && (
+                      <div className="space-y-1">
+                        <Label className="text-xs text-neutral-600 dark:text-neutral-400">Hour (0-23)</Label>
+                        <Input
+                          type="number"
+                          min="0"
+                          max="23"
+                          value={settings.notifications.momentReminderCustomHour}
+                          onChange={(e) => updateNotificationSetting('momentReminderCustomHour', e.target.value)}
+                          className="w-full"
+                          placeholder="9"
+                        />
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
@@ -275,11 +297,84 @@ export default function Settings() {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="daily">Daily</SelectItem>
+                        <SelectItem value="twice-daily">Twice a Day</SelectItem>
+                        <SelectItem value="3-times-daily">3 Times a Day</SelectItem>
                         <SelectItem value="weekly">Weekly</SelectItem>
+                        <SelectItem value="every-2-weeks">Every Two Weeks</SelectItem>
                         <SelectItem value="monthly">Monthly</SelectItem>
-                        <SelectItem value="never">Never</SelectItem>
+                        <SelectItem value="custom">Custom Time</SelectItem>
                       </SelectContent>
                     </Select>
+                    
+                    {settings.notifications.insightAlertFrequency === 'custom' && (
+                      <div className="space-y-1">
+                        <Label className="text-xs text-neutral-600 dark:text-neutral-400">Hour (0-23)</Label>
+                        <Input
+                          type="number"
+                          min="0"
+                          max="23"
+                          value={settings.notifications.insightAlertCustomHour}
+                          onChange={(e) => updateNotificationSetting('insightAlertCustomHour', e.target.value)}
+                          className="w-full"
+                          placeholder="18"
+                        />
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              <Separator />
+
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label htmlFor="cycleReminders">Cycle Reminders</Label>
+                    <p className="text-sm text-neutral-600 dark:text-neutral-400">Menstrual cycle notifications</p>
+                  </div>
+                  <Switch
+                    id="cycleReminders"
+                    checked={settings.notifications.cycleReminders}
+                    onCheckedChange={(checked) => updateNotificationSetting('cycleReminders', checked)}
+                    disabled={!settings.notifications.pushEnabled}
+                  />
+                </div>
+                
+                {settings.notifications.cycleReminders && (
+                  <div className="ml-4 space-y-2">
+                    <Label className="text-sm">Frequency</Label>
+                    <Select 
+                      value={settings.notifications.cycleReminderFrequency} 
+                      onValueChange={(value) => updateNotificationSetting('cycleReminderFrequency', value as any)}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="daily">Daily</SelectItem>
+                        <SelectItem value="twice-daily">Twice a Day</SelectItem>
+                        <SelectItem value="3-times-daily">3 Times a Day</SelectItem>
+                        <SelectItem value="weekly">Weekly</SelectItem>
+                        <SelectItem value="every-2-weeks">Every Two Weeks</SelectItem>
+                        <SelectItem value="monthly">Monthly</SelectItem>
+                        <SelectItem value="custom">Custom Time</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    
+                    {settings.notifications.cycleReminderFrequency === 'custom' && (
+                      <div className="space-y-1">
+                        <Label className="text-xs text-neutral-600 dark:text-neutral-400">Hour (0-23)</Label>
+                        <Input
+                          type="number"
+                          min="0"
+                          max="23"
+                          value={settings.notifications.cycleReminderCustomHour}
+                          onChange={(e) => updateNotificationSetting('cycleReminderCustomHour', e.target.value)}
+                          className="w-full"
+                          placeholder="8"
+                        />
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
