@@ -448,10 +448,10 @@ export default function Calendar() {
   const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted">
+    <div className="max-w-md mx-auto bg-white dark:bg-neutral-900 min-h-screen flex flex-col relative">
       <Header />
       
-      <main className="pb-20 pt-16 max-w-md mx-auto">
+      <main className="flex-1 overflow-y-auto pb-20">
         {/* Header */}
         <section className="px-4 pt-5 pb-3 border-b border-border/40 bg-card/30 backdrop-blur-sm">
           <div className="flex items-center justify-between mb-2">
