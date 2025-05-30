@@ -159,6 +159,10 @@ export function ConnectionModal() {
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    e.stopPropagation();
+    
+    console.log("=== HANDLESUBMIT CALLED ===");
+    console.log("Event prevented and stopped");
     
     // Debug all state values at submission time
     console.log("=== FORM SUBMISSION DEBUG ===");
@@ -192,6 +196,7 @@ export function ConnectionModal() {
     
     console.log("Final data object keys:", Object.keys(finalData));
     console.log("Final data profileImage exists:", !!finalData.profileImage);
+    console.log("About to call createConnection with:", finalData);
     createConnection(finalData);
   };
   
@@ -224,7 +229,7 @@ export function ConnectionModal() {
           </Button>
         </div>
         
-        <form onSubmit={handleSubmit} className="p-4 space-y-4 overflow-y-auto flex-1">
+        <form onSubmit={handleSubmit} className="p-4 space-y-4 overflow-y-auto flex-1" action="" method=""  onClick={() => console.log("Form clicked")}>
           <div className="space-y-2">
             <Label htmlFor="name">Name</Label>
             <Input 
