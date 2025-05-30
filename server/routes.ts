@@ -1774,6 +1774,59 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Menstrual cycle endpoints
+  app.get("/api/menstrual-cycles", isAuthenticated, async (req: Request, res: Response) => {
+    try {
+      const userId = req.session.userId!;
+      const cycles = await storage.getMenstrualCycles(userId);
+      res.json(cycles);
+    } catch (error: any) {
+      console.error("Error fetching menstrual cycles:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.post("/api/menstrual-cycles", isAuthenticated, async (req: Request, res: Response) => {
+    try {
+      const userId = req.session.userId!;
+      const { startDate, endDate, flowIntensity, symptoms } = req.body;
+      
+      const cycle = await storage.createMenstrualCycle({
+        userId,
+        startDate: new Date(startDate),
+        endDate: endDate ? new Date(endDate) : null,
+        flowIntensity: flowIntensity || null,
+        symptoms: symptoms || null,
+      });
+      
+      res.json(cycle);
+    } catch (error: any) {
+      console.error("Error creating menstrual cycle:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.patch("/api/menstrual-cycles/:id", isAuthenticated, async (req: Request, res: Response) => {
+    try {
+      const cycleId = parseInt(req.params.id);
+      const updates = req.body;
+      
+      if (updates.startDate) updates.startDate = new Date(updates.startDate);
+      if (updates.endDate) updates.endDate = new Date(updates.endDate);
+      
+      const cycle = await storage.updateMenstrualCycle(cycleId, updates);
+      
+      if (!cycle) {
+        return res.status(404).json({ error: "Cycle not found" });
+      }
+      
+      res.json(cycle);
+    } catch (error: any) {
+      console.error("Error updating menstrual cycle:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
