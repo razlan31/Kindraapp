@@ -200,6 +200,7 @@ export default function Calendar() {
   
   // Legend collapse state - start collapsed by default
   const [isLegendCollapsed, setIsLegendCollapsed] = useState(true);
+  const [isConnectionFilterCollapsed, setIsConnectionFilterCollapsed] = useState(true);
 
   // Fetch moments with same settings as other pages
   const { data: allMoments = [], isLoading: momentsLoading, refetch: refetchMoments } = useQuery<Moment[]>({
@@ -452,7 +453,7 @@ export default function Calendar() {
       <Header />
       
       <main className="flex-1 overflow-y-auto pb-20">
-        {/* Header with Connection Filter */}
+        {/* Header */}
         <section className="px-4 pt-5 pb-3">
           <div className="flex items-center justify-between mb-4">
             <div className="flex-1">
@@ -461,39 +462,64 @@ export default function Calendar() {
                 Track your relationship moments over time
               </p>
             </div>
-            
-            {/* Connection Filter - Wider */}
-            <div className="flex items-center gap-3">
-              <div className="text-right">
-                <div className="text-xs text-muted-foreground mb-1">View For</div>
-                <Select
-                  value={selectedConnectionId ? selectedConnectionId.toString() : "all"}
-                  onValueChange={(value) => {
-                    setSelectedConnectionId(value === "all" ? null : parseInt(value));
-                    setHasUserSelectedConnection(true);
-                  }}
-                >
-                  <SelectTrigger className="w-40 h-8 text-xs">
-                    <SelectValue placeholder="All">
-                      {selectedConnectionId ? 
-                        connections.find(c => c.id === selectedConnectionId)?.name || 'Unknown'
-                        : 'All'
-                      }
-                    </SelectValue>
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Connections</SelectItem>
-                    {connections.map((connection) => (
-                      <SelectItem key={connection.id} value={connection.id.toString()}>
-                        {connection.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <CalendarIcon className="h-8 w-8 text-primary" />
-            </div>
+            <CalendarIcon className="h-8 w-8 text-primary" />
           </div>
+        </section>
+
+        {/* Collapsible Connection Filter */}
+        <section className="px-4 pb-3">
+          <Card className="p-4 bg-card/50 backdrop-blur-sm">
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-sm font-medium">Viewing activities for</h3>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsConnectionFilterCollapsed(!isConnectionFilterCollapsed)}
+                className="h-6 w-6 p-0"
+              >
+                {isConnectionFilterCollapsed ? (
+                  <ChevronDown className="h-4 w-4" />
+                ) : (
+                  <ChevronUp className="h-4 w-4" />
+                )}
+              </Button>
+            </div>
+            
+            {/* Always show current selection */}
+            <div className="text-sm text-muted-foreground mb-2">
+              {selectedConnectionId ? 
+                connections.find(c => c.id === selectedConnectionId)?.name || 'Unknown Connection'
+                : 'All Connections'
+              }
+            </div>
+
+            {!isConnectionFilterCollapsed && (
+              <Select
+                value={selectedConnectionId ? selectedConnectionId.toString() : "all"}
+                onValueChange={(value) => {
+                  setSelectedConnectionId(value === "all" ? null : parseInt(value));
+                  setHasUserSelectedConnection(true);
+                }}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="All Connections">
+                    {selectedConnectionId ? 
+                      connections.find(c => c.id === selectedConnectionId)?.name || 'All Connections'
+                      : 'All Connections'
+                    }
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Connections</SelectItem>
+                  {connections.map((connection) => (
+                    <SelectItem key={connection.id} value={connection.id.toString()}>
+                      {connection.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          </Card>
         </section>
 
 
@@ -559,33 +585,7 @@ export default function Calendar() {
               </Button>
             </div>
 
-            {/* Simple View Mode Selector */}
-            <div className="flex gap-1 justify-center mb-2">
-              <Button
-                variant={viewMode === "month" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setViewMode("month")}
-                className="text-xs px-2 h-7"
-              >
-                Month
-              </Button>
-              <Button
-                variant={viewMode === "week" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setViewMode("week")}
-                className="text-xs px-2 h-7"
-              >
-                Week
-              </Button>
-              <Button
-                variant={viewMode === "day" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setViewMode("day")}
-                className="text-xs px-2 h-7"
-              >
-                Day
-              </Button>
-            </div>
+
           </Card>
         </section>
 
@@ -791,6 +791,36 @@ export default function Calendar() {
               </div>
             </div>
           </Card>
+        </section>
+
+        {/* View Mode Selector - Below Calendar */}
+        <section className="px-4 pb-3">
+          <div className="flex gap-1 justify-center">
+            <Button
+              variant={viewMode === "monthly" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setViewMode("monthly")}
+              className="text-xs px-2 h-7"
+            >
+              Month
+            </Button>
+            <Button
+              variant={viewMode === "weekly" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setViewMode("weekly")}
+              className="text-xs px-2 h-7"
+            >
+              Week
+            </Button>
+            <Button
+              variant={viewMode === "daily" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setViewMode("daily")}
+              className="text-xs px-2 h-7"
+            >
+              Day
+            </Button>
+          </div>
         </section>
 
         {/* Legend & Filters - Below Calendar */}
