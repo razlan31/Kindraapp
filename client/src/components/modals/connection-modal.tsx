@@ -152,6 +152,13 @@ export function ConnectionModal() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Debug all state values at submission time
+    console.log("=== FORM SUBMISSION DEBUG ===");
+    console.log("previewImage state:", !!previewImage);
+    console.log("previewImage length:", previewImage?.length || 0);
+    console.log("profileImageFile state:", !!profileImageFile);
+    console.log("profileImageFile name:", profileImageFile?.name);
+    
     if (!validateForm()) {
       console.log("Form validation failed:", errors);
       return;
@@ -170,11 +177,13 @@ export function ConnectionModal() {
     // If there's a preview image, use it as the profile image - same as EditConnectionModal
     if (previewImage) {
       finalData.profileImage = previewImage;
+      console.log("Added image to finalData, length:", finalData.profileImage.length);
+    } else {
+      console.log("No previewImage found, setting profileImage to null");
     }
     
-    console.log("Submitting connection data with image:", !!finalData.profileImage);
-    console.log("Image data length:", finalData.profileImage?.length || 0);
-    console.log("Preview image state:", !!previewImage);
+    console.log("Final data object keys:", Object.keys(finalData));
+    console.log("Final data profileImage exists:", !!finalData.profileImage);
     createConnection(finalData);
   };
   
