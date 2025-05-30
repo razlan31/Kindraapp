@@ -1,4 +1,5 @@
 import { useState } from "react";
+import * as React from "react";
 import { Header } from "@/components/layout/header";
 import { BottomNavigation } from "@/components/layout/bottom-navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -53,10 +54,14 @@ export default function Settings() {
   const { data: backendSettings } = useQuery({
     queryKey: ["/api/settings"],
     enabled: !!user,
-    onSuccess: (data) => {
-      setSettings(data);
-    }
   });
+
+  // Update local settings when backend data loads
+  React.useEffect(() => {
+    if (backendSettings && typeof backendSettings === 'object') {
+      setSettings(backendSettings as typeof settings);
+    }
+  }, [backendSettings]);
 
   // Save settings mutation
   const saveSettingsMutation = useMutation({
