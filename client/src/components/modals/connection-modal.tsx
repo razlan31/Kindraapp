@@ -20,6 +20,7 @@ export function ConnectionModal() {
   const [showModal, setShowModal] = useState(false);
   
   useEffect(() => {
+    console.log("ConnectionModal - connectionModalOpen changed:", connectionModalOpen);
     setShowModal(connectionModalOpen);
   }, [connectionModalOpen]);
   
