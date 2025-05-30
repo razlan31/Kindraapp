@@ -513,18 +513,105 @@ export default function MenstrualCyclePage() {
           </section>
         )}
 
-        {/* Stats */}
-        {avgLength && (
+        {/* List View */}
+        {viewMode === 'list' && selectedPersonId !== null && (
           <section className="px-4 py-2">
             <Card className="p-4">
-              <h3 className="font-semibold mb-3">Cycle Insights</h3>
+              <h3 className="font-medium text-foreground mb-4">Cycle History</h3>
+              
+              {filteredCycles.length === 0 ? (
+                <div className="text-center py-8">
+                  <Circle className="h-12 w-12 text-muted-foreground mx-auto mb-2" />
+                  <p className="text-muted-foreground">No cycles recorded yet</p>
+                  <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                    <DialogTrigger asChild>
+                      <Button 
+                        size="sm"
+                        className="mt-2"
+                        onClick={() => {
+                          setEditingCycle(null);
+                          resetForm();
+                        }}
+                      >
+                        <Plus className="h-4 w-4 mr-2" />
+                        Start First Cycle
+                      </Button>
+                    </DialogTrigger>
+                  </Dialog>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {filteredCycles
+                    .sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime())
+                    .map((cycle) => (
+                      <div key={cycle.id} className="border rounded-lg p-3">
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center gap-2">
+                            <div className={`w-3 h-3 rounded-full ${cycle.endDate ? 'bg-green-500' : 'bg-orange-500'}`} />
+                            <span className="font-medium">
+                              {cycle.endDate ? 'Completed' : 'Active'}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleEdit(cycle)}
+                              className="h-6 w-6"
+                            >
+                              <Edit3 className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        </div>
+                        
+                        <div className="space-y-1 text-sm">
+                          <p>
+                            <span className="text-muted-foreground">Started:</span>{' '}
+                            {format(new Date(cycle.startDate), 'MMM d, yyyy')}
+                          </p>
+                          {cycle.endDate && (
+                            <p>
+                              <span className="text-muted-foreground">Ended:</span>{' '}
+                              {format(new Date(cycle.endDate), 'MMM d, yyyy')}
+                            </p>
+                          )}
+                          <p>
+                            <span className="text-muted-foreground">Length:</span>{' '}
+                            {getCycleLength(cycle) ? `${getCycleLength(cycle)} days` : 'Ongoing'}
+                          </p>
+                          {cycle.flowIntensity && (
+                            <p>
+                              <span className="text-muted-foreground">Flow:</span>{' '}
+                              {cycle.flowIntensity}
+                            </p>
+                          )}
+                          {cycle.mood && (
+                            <p>
+                              <span className="text-muted-foreground">Mood:</span>{' '}
+                              {cycle.mood}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              )}
+            </Card>
+          </section>
+        )}
+
+        {/* Stats */}
+        {selectedPersonId !== null && getAverageCycleLength() && (
+          <section className="px-4 py-2">
+            <Card className="p-4">
+              <h3 className="font-semibold mb-3">Cycle Statistics for {getSelectedPersonName()}</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-pink-600">{avgLength}</div>
+                  <div className="text-2xl font-bold text-pink-600">{getAverageCycleLength()}</div>
                   <div className="text-xs text-muted-foreground">Avg Flow Days</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-purple-600">{pastCycles.length}</div>
+                  <div className="text-2xl font-bold text-purple-600">{getPastCycles().length}</div>
                   <div className="text-xs text-muted-foreground">Cycles Tracked</div>
                 </div>
               </div>
