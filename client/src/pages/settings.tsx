@@ -26,6 +26,194 @@ import {
   CreditCard
 } from "lucide-react";
 
+// Billing component that connects to real Stripe data
+function BillingSection() {
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  // Fetch subscription data from Stripe
+  const { data: subscriptionData, isLoading: subscriptionLoading } = useQuery({
+    queryKey: ['/api/billing/subscription'],
+  });
+
+  // Fetch billing invoices
+  const { data: invoicesData } = useQuery({
+    queryKey: ['/api/billing/invoices'],
+  });
+
+  // Cancel subscription mutation
+  const cancelSubscriptionMutation = useMutation({
+    mutationFn: () => apiRequest("POST", "/api/billing/cancel-subscription"),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/billing/subscription'] });
+      toast({
+        title: "Subscription Cancelled",
+        description: "Your subscription will end at the current billing period",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to cancel subscription",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Open Stripe customer portal
+  const openCustomerPortal = async () => {
+    try {
+      const response = await apiRequest("POST", "/api/billing/create-customer-portal");
+      const data = await response.json();
+      if (data.url) {
+        window.open(data.url, '_blank');
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to open billing portal",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const subscription = subscriptionData?.subscription;
+  const invoices = invoicesData?.invoices || [];
+
+  if (subscriptionLoading) {
+    return (
+      <div className="flex items-center justify-center py-8">
+        <div className="animate-spin w-6 h-6 border-2 border-primary border-t-transparent rounded-full" />
+      </div>
+    );
+  }
+
+  if (!subscription) {
+    return (
+      <div className="text-center py-8">
+        <p className="text-neutral-600 dark:text-neutral-400 mb-4">No active subscription found</p>
+        <Button variant="outline">
+          Subscribe to Premium
+        </Button>
+      </div>
+    );
+  }
+
+  const formatDate = (timestamp: number) => {
+    return new Date(timestamp * 1000).toLocaleDateString();
+  };
+
+  const getSubscriptionStatus = () => {
+    if (subscription.cancel_at_period_end) {
+      return { text: "Cancelling", color: "text-orange-600 dark:text-orange-400" };
+    }
+    if (subscription.status === 'active') {
+      return { text: "Active", color: "text-green-600 dark:text-green-400" };
+    }
+    if (subscription.status === 'past_due') {
+      return { text: "Past Due", color: "text-red-600 dark:text-red-400" };
+    }
+    return { text: subscription.status, color: "text-neutral-600 dark:text-neutral-400" };
+  };
+
+  const status = getSubscriptionStatus();
+
+  return (
+    <>
+      <div className="space-y-2">
+        <Label>Current Plan</Label>
+        <div className="flex items-center justify-between p-3 bg-neutral-50 dark:bg-neutral-800 rounded-lg">
+          <div>
+            <p className="font-medium">Premium Plan</p>
+            <p className="text-sm text-neutral-600 dark:text-neutral-400">
+              ${(subscription.items.data[0]?.price?.unit_amount / 100).toFixed(2)}/
+              {subscription.items.data[0]?.price?.recurring?.interval}
+            </p>
+          </div>
+          <div className="text-right">
+            <p className={`text-sm font-medium ${status.color}`}>{status.text}</p>
+            <p className="text-xs text-neutral-600 dark:text-neutral-400">
+              {subscription.cancel_at_period_end 
+                ? `Ends ${formatDate(subscription.current_period_end)}`
+                : `Renews ${formatDate(subscription.current_period_end)}`
+              }
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <Label>Payment Method</Label>
+        <div className="flex items-center justify-between p-3 bg-neutral-50 dark:bg-neutral-800 rounded-lg">
+          <div className="flex items-center gap-3">
+            <CreditCard className="h-4 w-4" />
+            <div>
+              {subscription.default_payment_method ? (
+                <>
+                  <p className="font-medium">
+                    •••• •••• •••• {subscription.default_payment_method.card?.last4}
+                  </p>
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                    Expires {subscription.default_payment_method.card?.exp_month}/
+                    {subscription.default_payment_method.card?.exp_year}
+                  </p>
+                </>
+              ) : (
+                <p className="font-medium">No payment method</p>
+              )}
+            </div>
+          </div>
+          <Button variant="outline" size="sm" onClick={openCustomerPortal}>
+            Update
+          </Button>
+        </div>
+      </div>
+
+      <Separator />
+
+      <div className="flex items-center justify-between">
+        <div>
+          <Label>Billing History</Label>
+          <p className="text-sm text-neutral-600 dark:text-neutral-400">
+            View past invoices and payments ({invoices.length} invoices)
+          </p>
+        </div>
+        <Button variant="outline" onClick={openCustomerPortal}>
+          <Download className="h-4 w-4 mr-2" />
+          View History
+        </Button>
+      </div>
+
+      <Separator />
+
+      <div className="flex items-center justify-between">
+        <div>
+          <Label className="text-red-600 dark:text-red-400">Cancel Subscription</Label>
+          <p className="text-sm text-neutral-600 dark:text-neutral-400">
+            {subscription.cancel_at_period_end 
+              ? "Subscription will end at current billing period"
+              : "End your subscription and lose premium features"
+            }
+          </p>
+        </div>
+        {!subscription.cancel_at_period_end && (
+          <Button 
+            variant="destructive" 
+            onClick={() => {
+              if (confirm('Are you sure you want to cancel your subscription? You will lose access to premium features at the end of your billing period.')) {
+                cancelSubscriptionMutation.mutate();
+              }
+            }}
+            disabled={cancelSubscriptionMutation.isPending}
+          >
+            {cancelSubscriptionMutation.isPending ? "Cancelling..." : "Cancel Plan"}
+          </Button>
+        )}
+      </div>
+    </>
+  );
+}
+
 export default function Settings() {
   const { user, logout } = useAuth();
   const { theme, setTheme } = useTheme();
@@ -510,7 +698,7 @@ export default function Settings() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <BillingContent />
+              <BillingSection />
             </CardContent>
           </Card>
 
