@@ -968,6 +968,9 @@ export default function Calendar() {
         />
       )}
 
+      {/* Menstrual Cycle Tracker */}
+      <MenstrualCycleTracker />
+
       <BottomNavigation />
       
       {/* Moment Modal */}

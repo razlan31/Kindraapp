@@ -1,11 +1,10 @@
 import { useAuth } from "@/contexts/auth-context";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-import { Bell, LogOut, Settings, User, Trophy, Circle } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Bell, LogOut, Settings, User, Trophy } from "lucide-react";
 import { Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
-import { MenstrualCycle } from "@shared/schema";
 
 export function Header() {
   const { logout, isAuthenticated } = useAuth();
@@ -16,12 +15,6 @@ export function Header() {
     queryFn: () => fetch('/api/me').then(res => res.json()),
     enabled: isAuthenticated,
   });
-
-  // Fetch menstrual cycles for header display
-  const { data: cycles = [] } = useQuery<MenstrualCycle[]>({
-    queryKey: ['/api/menstrual-cycles'],
-    enabled: isAuthenticated,
-  });
   
   const getInitials = (name: string) => {
     return name
@@ -30,30 +23,9 @@ export function Header() {
       .join('')
       .toUpperCase();
   };
-
-  // Get current cycle status for header
-  const getCurrentCycleStatus = () => {
-    if (!cycles.length) return null;
-    
-    const currentCycle = cycles.find(cycle => !cycle.endDate);
-    const lastCycle = cycles.sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime())[0];
-    
-    if (currentCycle) {
-      const daysSince = Math.floor((Date.now() - new Date(currentCycle.startDate).getTime()) / (1000 * 60 * 60 * 24));
-      return { status: 'active', day: daysSince + 1, cycle: currentCycle };
-    }
-    
-    if (lastCycle && lastCycle.endDate) {
-      const daysSince = Math.floor((Date.now() - new Date(lastCycle.endDate).getTime()) / (1000 * 60 * 60 * 24));
-      return { status: 'waiting', daysSince, cycle: lastCycle };
-    }
-    
-    return null;
-  };
   
   const displayName = user?.displayName || user?.username || '';
   const initials = getInitials(displayName);
-  const cycleStatus = getCurrentCycleStatus();
 
   return (
     <header className="sticky top-0 z-50 bg-white dark:bg-neutral-900 px-4 py-3 border-b border-neutral-200 dark:border-neutral-800 flex justify-between items-center">
@@ -76,27 +48,6 @@ export function Header() {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            {cycleStatus && (
-              <>
-                <div className="px-2 py-1.5">
-                  <div className="flex items-center gap-2">
-                    <Circle className="h-3 w-3 text-pink-500" />
-                    <div className="text-xs">
-                      {cycleStatus.status === 'active' ? (
-                        <span className="text-pink-600 dark:text-pink-400 font-medium">
-                          Cycle Day {cycleStatus.day}
-                        </span>
-                      ) : (
-                        <span className="text-neutral-600 dark:text-neutral-400">
-                          {cycleStatus.daysSince} days since cycle
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-                <DropdownMenuSeparator />
-              </>
-            )}
             <DropdownMenuItem asChild>
               <Link href="/profile">
                 <User className="mr-2 h-4 w-4" />

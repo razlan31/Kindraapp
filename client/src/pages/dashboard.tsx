@@ -556,8 +556,7 @@ function MenstrualCycleTracker() {
           <BadgeShowcase badges={badges} userBadges={userBadges.map(ub => ub.badge)} />
         </section>
 
-        {/* Menstrual Cycle Tracker */}
-        <MenstrualCycleTracker />
+
 
       </main>
 
