@@ -9,8 +9,8 @@ interface StatCardProps {
 export function StatCard({ value, label, color }: StatCardProps) {
   const colorClasses = {
     primary: "bg-primary/10 text-primary",
-    secondary: "bg-green-500/10 text-green-600",
-    accent: "bg-purple-500/10 text-purple-600"
+    secondary: "bg-[hsl(var(--positive))]/10 text-[hsl(var(--positive))]",
+    accent: "bg-[hsl(var(--plan))]/10 text-[hsl(var(--plan))]"
   };
 
   return (
