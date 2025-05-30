@@ -72,14 +72,15 @@ export default function MenstrualCyclePage() {
 
   // Create list of people who can have cycles (user + female connections)
   const trackablePersons = useMemo(() => {
-    const persons = [];
+    const persons: Array<{ id: number; name: string; isUser: boolean; profileImage?: string | null }> = [];
     
     // Add user if they exist
     if (user) {
       persons.push({
         id: 0, // Special ID for user
         name: user.displayName || user.username || 'Me',
-        isUser: true
+        isUser: true,
+        profileImage: user.profileImage
       });
     }
     
@@ -88,7 +89,8 @@ export default function MenstrualCyclePage() {
       persons.push({
         id: connection.id,
         name: connection.name,
-        isUser: false
+        isUser: false,
+        profileImage: connection.profileImage
       });
     });
     

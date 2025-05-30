@@ -146,7 +146,7 @@ export function ConnectionModal() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    console.log("Form submitted with data:", { name, relationshipStage, user: !!user, authLoading });
+    console.log("Form submitted with data:", { name, relationshipStage, profileImage: !!profileImage, user: !!user, authLoading });
     
     if (!validateForm()) {
       console.log("Form validation failed");
