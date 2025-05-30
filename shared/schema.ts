@@ -189,7 +189,20 @@ export const menstrualCycles = pgTable("menstrual_cycles", {
   flowIntensity: text("flow_intensity"),
 });
 
-export const menstrualCycleSchema = createInsertSchema(menstrualCycles).omit({ id: true });
+export const menstrualCycleSchema = createInsertSchema(menstrualCycles).omit({ id: true }).extend({
+  startDate: z.string().or(z.date()).transform((val) => {
+    if (typeof val === 'string') {
+      return new Date(val);
+    }
+    return val;
+  }),
+  endDate: z.string().or(z.date()).optional().transform((val) => {
+    if (typeof val === 'string') {
+      return new Date(val);
+    }
+    return val;
+  }),
+});
 export type InsertMenstrualCycle = z.infer<typeof menstrualCycleSchema>;
 export type MenstrualCycle = typeof menstrualCycles.$inferSelect;
 
