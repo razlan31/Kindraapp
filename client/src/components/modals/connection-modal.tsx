@@ -151,7 +151,12 @@ export function ConnectionModal() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    console.log("Form submitted with data:", { name, relationshipStage, previewImage: !!previewImage, user: !!user, authLoading });
+    console.log("Form submitted with data:", { 
+      name, 
+      relationshipStage, 
+      hasPreviewImage: !!previewImage,
+      previewImageLength: previewImage?.length || 0
+    });
     
     if (!validateForm()) {
       console.log("Form validation failed");
@@ -169,7 +174,7 @@ export function ConnectionModal() {
       isPrivate,
     };
     
-    console.log("Submitting connection data:", finalData);
+    console.log("Submitting connection data with image length:", finalData.profileImage?.length || 0);
     createConnection(finalData);
   };
   
