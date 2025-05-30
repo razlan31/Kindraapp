@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAuth } from "@/contexts/auth-context";
+import { useTheme } from "@/contexts/theme-context";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -25,6 +26,7 @@ import {
 
 export default function Settings() {
   const { user, logout } = useAuth();
+  const { theme, setTheme } = useTheme();
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -40,7 +42,7 @@ export default function Settings() {
       shareAnalytics: true,
     },
     preferences: {
-      theme: "system" as const, // light, dark, system
+      theme: "system" as "light" | "dark" | "system", // light, dark, system
       defaultTab: "dashboard" as const, // dashboard, connections, calendar, activities
       autoSave: true,
     }
@@ -58,6 +60,16 @@ export default function Settings() {
       setSettings(backendSettings as typeof settings);
     }
   }, [backendSettings]);
+
+  // Sync theme with settings
+  React.useEffect(() => {
+    if (settings.preferences.theme !== theme) {
+      setSettings(prev => ({
+        ...prev,
+        preferences: { ...prev.preferences, theme }
+      }));
+    }
+  }, [theme, settings.preferences.theme]);
 
   // Save settings mutation
   const saveSettingsMutation = useMutation({
@@ -264,8 +276,11 @@ export default function Settings() {
                 <Label htmlFor="theme">Theme</Label>
                 <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-2">Choose your preferred theme</p>
                 <Select 
-                  value={settings.preferences.theme} 
-                  onValueChange={(value) => updatePreferenceSetting('theme', value)}
+                  value={theme} 
+                  onValueChange={(value) => {
+                    setTheme(value as "light" | "dark" | "system");
+                    updatePreferenceSetting('theme', value);
+                  }}
                 >
                   <SelectTrigger>
                     <SelectValue />

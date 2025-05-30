@@ -29,6 +29,7 @@ import { useAuth } from "./contexts/auth-context";
 import { useModal } from "./contexts/modal-context";
 import { RelationshipFocusProvider } from "./contexts/relationship-focus-context";
 import { ModalProvider } from "./contexts/modal-context";
+import { ThemeProvider } from "./contexts/theme-context";
 import { MomentModal } from "./components/modals/simplified-moment-modal";
 import { ConnectionModal } from "./components/modals/connection-modal";
 import { MoodTrackerModal } from "./components/modals/mood-tracker-modal";
@@ -76,15 +77,17 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <RelationshipFocusProvider>
-        <ModalProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Router />
-            <ModalsContainer />
-          </TooltipProvider>
-        </ModalProvider>
-      </RelationshipFocusProvider>
+      <ThemeProvider>
+        <RelationshipFocusProvider>
+          <ModalProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Router />
+              <ModalsContainer />
+            </TooltipProvider>
+          </ModalProvider>
+        </RelationshipFocusProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }
