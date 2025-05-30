@@ -453,8 +453,8 @@ export default function Calendar() {
       
       <main className="pb-20 pt-16 max-w-md mx-auto">
         {/* Header */}
-        <section className="px-3 py-3 border-b border-border/40 bg-card/30 backdrop-blur-sm">
-          <div className="flex items-center justify-between mb-4">
+        <section className="px-4 pt-5 pb-3 border-b border-border/40 bg-card/30 backdrop-blur-sm">
+          <div className="flex items-center justify-between mb-2">
             <div>
               <h1 className="text-2xl font-bold text-foreground">Calendar</h1>
               <p className="text-sm text-muted-foreground">
@@ -468,8 +468,8 @@ export default function Calendar() {
         </section>
 
         {/* Connection Filter */}
-        <section className="px-3 py-2">
-          <Card className="p-3 bg-card/50 backdrop-blur-sm">
+        <section className="px-4 py-2">
+          <Card className="p-4 bg-card/50 backdrop-blur-sm">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm font-medium">View Calendar For</h3>
               <span className="text-xs text-muted-foreground">
@@ -656,8 +656,8 @@ export default function Calendar() {
         </section>
 
         {/* Date Navigation */}
-        <section className="px-3 py-2">
-          <Card className="p-3 bg-card/50 backdrop-blur-sm">
+        <section className="px-4 py-2">
+          <Card className="p-4 bg-card/50 backdrop-blur-sm">
             {/* Navigation */}
             <div className="flex items-center justify-between mb-4">
               <Button variant="outline" size="icon" onClick={navigatePrevious}>
