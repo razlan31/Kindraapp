@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { Header } from "@/components/layout/header";
 import { BottomNavigation } from "@/components/layout/bottom-navigation";
@@ -10,15 +10,138 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar as DatePicker } from "@/components/ui/calendar";
-import { ChevronLeft, ChevronRight, Heart, Calendar as CalendarIcon, Plus, Eye, ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronLeft, ChevronRight, Heart, Calendar as CalendarIcon, Plus, Eye, ChevronDown, ChevronUp, Circle } from "lucide-react";
 import { useAuth } from "@/contexts/auth-context";
 import { useModal } from "@/contexts/modal-context";
 import { useRelationshipFocus } from "@/contexts/relationship-focus-context";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, getDay, startOfWeek, endOfWeek, addDays, startOfDay, endOfDay } from "date-fns";
-import type { Moment, Connection } from "@shared/schema";
+import type { Moment, Connection, MenstrualCycle } from "@shared/schema";
 import { EntryDetailModal } from "@/components/modals/entry-detail-modal";
 import { PlanModal } from "@/components/modals/plan-modal";
 import { MomentModal } from "@/components/modals/moment-modal";
+import { apiRequest } from "@/lib/queryClient";
+
+function MenstrualCycleTracker() {
+  const { data: cycles = [], isLoading } = useQuery<MenstrualCycle[]>({
+    queryKey: ['/api/menstrual-cycles'],
+  });
+
+  const queryClient = useQueryClient();
+
+  const createCycleMutation = useMutation({
+    mutationFn: (data: { startDate: string; notes?: string }) => 
+      apiRequest('POST', '/api/menstrual-cycles', data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/menstrual-cycles'] });
+    },
+  });
+
+  const updateCycleMutation = useMutation({
+    mutationFn: ({ id, ...data }: { id: number; endDate?: string; notes?: string }) => 
+      apiRequest('PATCH', `/api/menstrual-cycles/${id}`, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/menstrual-cycles'] });
+    },
+  });
+
+  const getCurrentCycle = () => {
+    return cycles.find(cycle => !cycle.endDate);
+  };
+
+  const getLastCycle = () => {
+    return cycles
+      .filter(cycle => cycle.endDate)
+      .sort((a, b) => new Date(b.endDate!).getTime() - new Date(a.endDate!).getTime())[0];
+  };
+
+  const getDaysSinceStart = (startDate: string) => {
+    return Math.floor((Date.now() - new Date(startDate).getTime()) / (1000 * 60 * 60 * 24));
+  };
+
+  const getDaysSinceEnd = (endDate: string) => {
+    return Math.floor((Date.now() - new Date(endDate).getTime()) / (1000 * 60 * 60 * 24));
+  };
+
+  const handleLogStart = () => {
+    createCycleMutation.mutate({
+      startDate: new Date().toISOString(),
+    });
+  };
+
+  const handleLogEnd = () => {
+    const currentCycle = getCurrentCycle();
+    if (currentCycle) {
+      updateCycleMutation.mutate({
+        id: currentCycle.id,
+        endDate: new Date().toISOString(),
+      });
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="px-4 py-3">
+        <Card className="p-4">
+          <div className="animate-pulse">
+            <div className="h-4 bg-neutral-200 dark:bg-neutral-700 rounded w-1/4 mb-2"></div>
+            <div className="h-8 bg-neutral-200 dark:bg-neutral-700 rounded"></div>
+          </div>
+        </Card>
+      </div>
+    );
+  }
+
+  const currentCycle = getCurrentCycle();
+  const lastCycle = getLastCycle();
+
+  return (
+    <div className="px-4 py-3">
+      <Card className="p-4 bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-950 dark:to-purple-950 border-pink-200 dark:border-pink-800">
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="font-semibold text-pink-800 dark:text-pink-200">Cycle Tracker</h3>
+          <Circle className="h-4 w-4 text-pink-500" />
+        </div>
+        
+        {currentCycle ? (
+          <div className="space-y-3">
+            <div>
+              <p className="text-sm text-pink-600 dark:text-pink-300">
+                Day {getDaysSinceStart(currentCycle.startDate) + 1} of current cycle
+              </p>
+              <p className="text-xs text-pink-500 dark:text-pink-400">
+                Started {format(new Date(currentCycle.startDate), 'MMM d')}
+              </p>
+            </div>
+            <Button 
+              onClick={handleLogEnd}
+              disabled={updateCycleMutation.isPending}
+              size="sm"
+              className="w-full bg-pink-600 hover:bg-pink-700 text-white"
+            >
+              {updateCycleMutation.isPending ? 'Ending...' : 'Log End'}
+            </Button>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {lastCycle && (
+              <p className="text-sm text-pink-600 dark:text-pink-300">
+                {getDaysSinceEnd(lastCycle.endDate!)} days since last cycle ended
+              </p>
+            )}
+            <Button 
+              onClick={handleLogStart}
+              disabled={createCycleMutation.isPending}
+              size="sm"
+              className="w-full bg-pink-600 hover:bg-pink-700 text-white"
+            >
+              {createCycleMutation.isPending ? 'Starting...' : 'Log Start'}
+            </Button>
+          </div>
+        )}
+      </Card>
+    </div>
+  );
+}
 
 export default function Calendar() {
   const { user } = useAuth();
