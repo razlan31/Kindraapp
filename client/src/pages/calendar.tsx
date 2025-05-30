@@ -451,20 +451,14 @@ export default function Calendar() {
     <div className="max-w-md mx-auto bg-white dark:bg-neutral-900 min-h-screen flex flex-col relative">
       <Header />
       
-      <main className="flex-1 overflow-y-auto pb-20">
-        {/* Compact Header with Connection Filter and Legend */}
-        <section className="px-4 pt-4 pb-2">
-          <div className="flex items-start justify-between mb-3">
-            <div className="flex-1">
-              <h1 className="text-xl font-bold text-foreground">Calendar</h1>
-              <p className="text-xs text-muted-foreground">
-                Track your relationship moments
-              </p>
-            </div>
-            
-            {/* Compact Connection Filter */}
-            <div className="text-right">
-              <div className="text-xs text-muted-foreground mb-1">View For</div>
+      <main className="flex-1 flex flex-col pb-20 overflow-hidden">
+        {/* Horizontal Layout for Calendar */}
+        <div className="flex-1 flex">
+          {/* Main Calendar Area */}
+          <div className="flex-1 flex flex-col px-3 pt-3">
+            {/* Header */}
+            <div className="flex items-center justify-between mb-2">
+              <h1 className="text-lg font-bold">Calendar</h1>
               <Select
                 value={selectedConnectionId ? selectedConnectionId.toString() : "all"}
                 onValueChange={(value) => {
@@ -472,16 +466,16 @@ export default function Calendar() {
                   setHasUserSelectedConnection(true);
                 }}
               >
-                <SelectTrigger className="w-28 h-7 text-xs">
-                  <SelectValue placeholder="All">
+                <SelectTrigger className="w-20 h-6 text-xs">
+                  <SelectValue>
                     {selectedConnectionId ? 
-                      connections.find(c => c.id === selectedConnectionId)?.name || 'Unknown'
+                      connections.find(c => c.id === selectedConnectionId)?.name || 'All'
                       : 'All'
                     }
                   </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Connections</SelectItem>
+                  <SelectItem value="all">All</SelectItem>
                   {connections.map((connection) => (
                     <SelectItem key={connection.id} value={connection.id.toString()}>
                       {connection.name}
@@ -490,49 +484,177 @@ export default function Calendar() {
                 </SelectContent>
               </Select>
             </div>
+
+            {/* Navigation */}
+            <div className="flex items-center justify-between mb-2">
+              <Button variant="outline" size="sm" onClick={navigatePrevious} className="h-6 w-6 p-0">
+                <ChevronLeft className="h-3 w-3" />
+              </Button>
+              <h2 className="text-sm font-medium">{getViewTitle()}</h2>
+              <Button variant="outline" size="sm" onClick={navigateNext} className="h-6 w-6 p-0">
+                <ChevronRight className="h-3 w-3" />
+              </Button>
+            </div>
+
+            {/* View Mode Toggle */}
+            <div className="flex gap-1 justify-center mb-2">
+              <Button
+                variant={viewMode === "month" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setViewMode("month")}
+                className="h-5 px-2 text-xs"
+              >
+                Month
+              </Button>
+              <Button
+                variant={viewMode === "week" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setViewMode("week")}
+                className="h-5 px-2 text-xs"
+              >
+                Week
+              </Button>
+              <Button
+                variant={viewMode === "day" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setViewMode("day")}
+                className="h-5 px-2 text-xs"
+              >
+                Day
+              </Button>
+            </div>
+
+            {/* Calendar Grid */}
+            <div className="flex-1 flex flex-col">
+              {/* Weekday Headers */}
+              {viewMode === "month" && (
+                <div className="grid grid-cols-7 gap-px mb-1">
+                  {weekdays.map((day) => (
+                    <div key={day} className="p-1 text-center text-xs font-medium text-muted-foreground">
+                      {day.slice(0, 1)}
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Calendar Days */}
+              {(viewMode === "month" || viewMode === "week") && (
+                <div className={`grid ${viewMode === "month" ? "grid-cols-7" : "grid-cols-7"} gap-px flex-1`}>
+                  {(viewMode === "month" ? calendarDays : 
+                    Array.from({ length: 7 }, (_, i) => addDays(viewStart, i))).map((day) => {
+                    const dayMoments = getMomentsForDay(day);
+
+                    return (
+                      <div
+                        key={day.toISOString()}
+                        className={`
+                          p-1 border rounded cursor-pointer transition-colors h-10 flex flex-col
+                          ${handleDayClick ? 'hover:bg-muted/50' : ''}
+                          ${viewMode === "month" && !isSameMonth(day, currentDate) ? 'text-muted-foreground bg-muted/20' : ''}
+                          ${viewMode === "week" || viewMode === "month" ? 'bg-background' : ''}
+                          ${isSameDay(day, currentDate) && (viewMode === "week" || viewMode === "month") ? 'ring-1 ring-primary' : ''}
+                        `}
+                        onClick={() => viewMode === "month" || viewMode === "week" ? handleDayClick(day) : undefined}
+                      >
+                        <div className="text-xs font-medium mb-0.5">
+                          {format(day, 'd')}
+                        </div>
+                        
+                        {/* Entry dots */}
+                        <div className="flex flex-wrap gap-0.5">
+                          {dayMoments.slice(0, 3).map((moment, index) => {
+                            const displayInfo = getMomentDisplayInfo(moment);
+                            return (
+                              <div 
+                                key={index}
+                                className={`w-1.5 h-1.5 rounded-full ${displayInfo.color}`}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleEntryClick(moment, e);
+                                }}
+                              />
+                            );
+                          })}
+                          {dayMoments.length > 3 && (
+                            <div className="text-xs text-muted-foreground">+</div>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* Day View */}
+              {viewMode === "day" && (
+                <div className="space-y-2 flex-1 overflow-y-auto">
+                  {getMomentsForDay(currentDate).map((moment) => {
+                    const connection = connections.find(c => c.id === moment.connectionId);
+                    const displayInfo = getMomentDisplayInfo(moment);
+                    
+                    return (
+                      <div
+                        key={moment.id}
+                        className="p-2 border rounded-lg cursor-pointer hover:bg-muted/50"
+                        onClick={(e) => handleEntryClick(moment, e)}
+                      >
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="text-lg">{moment.emoji}</span>
+                          <span className="text-sm font-medium">{connection?.name}</span>
+                          <div className={`w-2 h-2 rounded-full ${displayInfo.color}`} />
+                        </div>
+                        <p className="text-sm text-muted-foreground">{moment.content}</p>
+                        {moment.tags && moment.tags.length > 0 && (
+                          <div className="flex gap-1 mt-1">
+                            {moment.tags.slice(0, 3).map((tag, index) => (
+                              <span key={index} className="text-xs bg-muted px-1 py-0.5 rounded">
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
           </div>
 
-          {/* Inline Legend */}
-          <div className="flex items-center justify-between text-xs mb-2">
-            <div className="flex items-center gap-2 overflow-x-auto">
-              <div className="flex items-center gap-1">
-                <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div>
-                <span>+</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <div className="w-1.5 h-1.5 rounded-full bg-orange-500"></div>
-                <span>-</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
-                <span>○</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <span className="text-xs">⚡</span>
-                <span>!</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <span className="text-xs">💕</span>
-                <span>♥</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <span className="text-xs">📅</span>
-                <span>□</span>
+          {/* Sidebar - Controls */}
+          <div className="w-16 border-l border-border/20 p-1 flex flex-col">
+            {/* Legend */}
+            <div className="mb-2">
+              <div className="text-xs font-medium mb-1">Legend</div>
+              <div className="space-y-0.5">
+                <div className="flex items-center gap-1">
+                  <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div>
+                  <span className="text-xs">+</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <div className="w-1.5 h-1.5 rounded-full bg-orange-500"></div>
+                  <span className="text-xs">-</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
+                  <span className="text-xs">○</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className="text-xs">⚡</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className="text-xs">💕</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className="text-xs">📅</span>
+                </div>
               </div>
             </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setIsLegendCollapsed(!isLegendCollapsed)}
-              className="text-xs px-1 py-0 h-5 shrink-0"
-            >
-              {isLegendCollapsed ? "+" : "−"}
-            </Button>
-          </div>
-          
-          {!isLegendCollapsed && (
-            <div className="border-t border-border/20 pt-2">
-              <div className="grid grid-cols-4 gap-1 text-xs mb-2">
+
+            {/* Filters */}
+            <div className="flex-1">
+              <div className="text-xs font-medium mb-1">Filter</div>
+              <div className="space-y-0.5">
                 <div className="flex items-center space-x-1">
                   <Checkbox
                     id="positive"
@@ -553,7 +675,7 @@ export default function Calendar() {
                     }
                     className="h-3 w-3"
                   />
-                  <label htmlFor="negative" className="text-xs cursor-pointer">−</label>
+                  <label htmlFor="negative" className="text-xs cursor-pointer">-</label>
                 </div>
                 <div className="flex items-center space-x-1">
                   <Checkbox
@@ -612,8 +734,8 @@ export default function Calendar() {
                 </div>
               </div>
             </div>
-          )}
-        </section>
+          </div>
+        </div>
 
         {/* Date Navigation */}
         <section className="px-4 py-2">
