@@ -26,6 +26,7 @@ export function ConnectionModal() {
   // Form state
   const [name, setName] = useState("");
   const [profileImage, setProfileImage] = useState("");
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const [relationshipStage, setRelationshipStage] = useState("");
   const [startDate, setStartDate] = useState("");
   const [zodiacSign, setZodiacSign] = useState("");
@@ -104,12 +105,25 @@ export function ConnectionModal() {
   const resetForm = () => {
     setName("");
     setProfileImage("");
+    setImageFile(null);
     setRelationshipStage("");
     setStartDate("");
     setZodiacSign("");
     setLoveLanguages([]);
     setIsPrivate(false);
     setErrors({});
+  };
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImageFile(file);
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setProfileImage(event.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
   };
   
   const validateForm = () => {
@@ -174,7 +188,7 @@ export function ConnectionModal() {
   
   return (
     <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
-      <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
+      <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg w-full max-w-md max-h-[90vh] flex flex-col">
         <div className="flex items-center justify-between p-4 border-b">
           <h2 className="font-heading font-semibold text-lg">Add New Connection</h2>
           <Button variant="ghost" size="icon" onClick={handleClose}>
@@ -182,7 +196,7 @@ export function ConnectionModal() {
           </Button>
         </div>
         
-        <form onSubmit={handleSubmit} className="p-4 space-y-4">
+        <form onSubmit={handleSubmit} className="p-4 space-y-4 overflow-y-auto flex-1">
           <div className="space-y-2">
             <Label htmlFor="name">Name</Label>
             <Input 
@@ -196,27 +210,34 @@ export function ConnectionModal() {
           
           <div className="space-y-2">
             <Label>Profile Photo</Label>
-            <Button 
-              type="button"
-              variant="outline"
-              className="w-full border border-dashed border-neutral-300 dark:border-neutral-700 rounded-lg p-4 flex flex-col items-center h-auto"
-              onClick={() => {
-                setProfileImage("https://randomuser.me/api/portraits/men/32.jpg");
-              }}
-            >
-              <div className="h-16 w-16 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-2">
-                {profileImage ? (
-                  <img 
-                    src={profileImage} 
-                    alt="Profile" 
-                    className="h-full w-full object-cover rounded-full"
-                  />
-                ) : (
-                  <Camera className="h-6 w-6 text-neutral-400" />
-                )}
-              </div>
-              <span className="text-sm text-primary font-medium">Upload Photo</span>
-            </Button>
+            <div className="relative">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                className="hidden"
+                id="image-upload"
+              />
+              <Button 
+                type="button"
+                variant="outline"
+                className="w-full border border-dashed border-neutral-300 dark:border-neutral-700 rounded-lg p-4 flex flex-col items-center h-auto"
+                onClick={() => document.getElementById('image-upload')?.click()}
+              >
+                <div className="h-16 w-16 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-2">
+                  {profileImage ? (
+                    <img 
+                      src={profileImage} 
+                      alt="Profile" 
+                      className="h-full w-full object-cover rounded-full"
+                    />
+                  ) : (
+                    <Camera className="h-6 w-6 text-neutral-400" />
+                  )}
+                </div>
+                <span className="text-sm text-primary font-medium">Upload Photo</span>
+              </Button>
+            </div>
             <p className="text-sm text-gray-500">Choose a profile photo for this connection</p>
           </div>
           

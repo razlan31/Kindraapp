@@ -356,7 +356,21 @@ export default function MenstrualCyclePage() {
                 {trackablePersons.map((person) => (
                   <SelectItem key={person.id} value={person.id.toString()}>
                     <div className="flex items-center gap-2">
-                      {person.isUser ? <User className="h-4 w-4" /> : <Circle className="h-4 w-4" />}
+                      {person.isUser ? (
+                        <User className="h-4 w-4" />
+                      ) : person.profileImage ? (
+                        <img 
+                          src={person.profileImage} 
+                          alt={person.name}
+                          className="w-4 h-4 rounded-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-4 h-4 rounded-full bg-primary/10 flex items-center justify-center">
+                          <span className="text-xs font-medium text-primary">
+                            {person.name.charAt(0).toUpperCase()}
+                          </span>
+                        </div>
+                      )}
                       {person.name}
                     </div>
                   </SelectItem>
