@@ -1139,12 +1139,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
           momentReminders: true,
           cycleReminders: true,
           insightAlerts: true,
-          emailDigest: false,
         },
         privacy: {
-          profileVisible: false,
           shareAnalytics: true,
-          dataRetention: "1year",
         },
         preferences: {
           theme: "system",

@@ -62,10 +62,17 @@ export default function Settings() {
   // Save settings mutation
   const saveSettingsMutation = useMutation({
     mutationFn: async (settingsData: typeof settings) => {
-      return await apiRequest("/api/settings", {
+      const response = await fetch("/api/settings", {
         method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(settingsData),
       });
+      if (!response.ok) {
+        throw new Error("Failed to save settings");
+      }
+      return response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/settings"] });
