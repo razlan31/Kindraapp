@@ -66,16 +66,16 @@
 }
 
 .dark {
-  --background: 222 25% 8%; /* #0F1420 - Dark blue background */
-  --foreground: 210 20% 95%; /* #EEEFF3 - Light blue-gray text */
-  --muted: 220 20% 15%; /* #1E2432 - Muted dark blue */
-  --muted-foreground: 215 15% 65%; /* #9BA3B0 - Muted blue-gray text */
-  --popover: 222 25% 10%; /* #131B28 - Slightly lighter dark blue */
-  --popover-foreground: 210 20% 95%; /* #EEEFF3 - Light text */
-  --card: 222 25% 10%; /* #131B28 - Card background */
-  --card-foreground: 210 20% 95%; /* #EEEFF3 - Card text */
-  --border: 220 20% 20%; /* #2A3441 - Border color */
-  --input: 220 20% 18%; /* #252E3B - Input background */
+  --background: 224 71% 4%; /* #0a0a23 - Deep navy background */
+  --foreground: 213 31% 91%; /* #e1e7ef - Light blue-white text */
+  --muted: 215 28% 17%; /* #1f2937 - Muted navy */
+  --muted-foreground: 215 20% 65%; /* #9ca3af - Cool gray text */
+  --popover: 224 71% 4%; /* #0a0a23 - Same as background */
+  --popover-foreground: 213 31% 91%; /* #e1e7ef - Light text */
+  --card: 220 13% 18%; /* #2d3748 - Card background */
+  --card-foreground: 213 31% 91%; /* #e1e7ef - Card text */
+  --border: 215 16% 27%; /* #4a5568 - Subtle border */
+  --input: 215 25% 27%; /* #4a5568 - Input background */
   --primary: 354 100% 70%;
   --primary-foreground: 0 0% 100%;
   --secondary: 174 65% 59%;
@@ -102,6 +102,45 @@
   --sidebar-ring: 217 91% 60%; /* #4472C4 - Blue ring */
   --redFlag: 357 100% 68%; /* #FF5A5F */
   --greenFlag: 140 62% 55%; /* #47D16E */
+}
+
+.aesthetic {
+  --background: 0 0% 0%; /* Pure black */
+  --foreground: 0 0% 100%; /* Pure white */
+  --muted: 0 0% 10%; /* Dark gray */
+  --muted-foreground: 0 0% 70%; /* Light gray */
+  --popover: 0 0% 0%; /* Pure black */
+  --popover-foreground: 0 0% 100%; /* Pure white */
+  --card: 0 0% 5%; /* Very dark gray */
+  --card-foreground: 0 0% 100%; /* Pure white */
+  --border: 0 0% 20%; /* Gray border */
+  --input: 0 0% 15%; /* Dark gray input */
+  --primary: 0 0% 100%; /* White primary */
+  --primary-foreground: 0 0% 0%; /* Black text on white */
+  --secondary: 0 0% 80%; /* Light gray secondary */
+  --secondary-foreground: 0 0% 0%; /* Black text */
+  --accent: 0 0% 90%; /* Very light gray accent */
+  --accent-foreground: 0 0% 0%; /* Black text */
+  --success: 0 0% 70%; /* Gray success */
+  --warning: 0 0% 60%; /* Gray warning */
+  --destructive: 0 0% 30%; /* Dark gray destructive */
+  --destructive-foreground: 0 0% 100%; /* White text */
+  --ring: 0 0% 100%; /* White ring */
+  --chart-1: 0 0% 80%;
+  --chart-2: 0 0% 60%;
+  --chart-3: 0 0% 40%;
+  --chart-4: 0 0% 20%;
+  --chart-5: 0 0% 10%;
+  --sidebar-background: 0 0% 0%; /* Pure black sidebar */
+  --sidebar-foreground: 0 0% 100%; /* Pure white text */
+  --sidebar-primary: 0 0% 100%; /* White accent */
+  --sidebar-primary-foreground: 0 0% 0%; /* Black text */
+  --sidebar-accent: 0 0% 10%; /* Dark gray accent */
+  --sidebar-accent-foreground: 0 0% 100%; /* White text */
+  --sidebar-border: 0 0% 20%; /* Gray border */
+  --sidebar-ring: 0 0% 100%; /* White ring */
+  --redFlag: 0 0% 40%; /* Gray red flag */
+  --greenFlag: 0 0% 60%; /* Gray green flag */
 }
 
 @layer base {

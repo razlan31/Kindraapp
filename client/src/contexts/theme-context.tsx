@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 
-type Theme = "light" | "dark" | "system";
+type Theme = "light" | "dark" | "aesthetic";
 
 interface ThemeContextType {
   theme: Theme;
@@ -13,7 +13,7 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<Theme>(() => {
     const stored = localStorage.getItem("theme") as Theme;
-    return stored || "system";
+    return stored || "light";
   });
 
   const [actualTheme, setActualTheme] = useState<"light" | "dark">("light");
@@ -22,42 +22,25 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const root = window.document.documentElement;
     
     // Remove previous theme classes
-    root.classList.remove("light", "dark");
+    root.classList.remove("light", "dark", "aesthetic");
     
     let effectiveTheme: "light" | "dark";
     
-    if (theme === "system") {
-      effectiveTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    if (theme === "aesthetic") {
+      root.classList.add("aesthetic");
+      effectiveTheme = "dark"; // aesthetic is based on dark theme
     } else {
-      effectiveTheme = theme;
+      effectiveTheme = theme as "light" | "dark";
+      root.classList.add(effectiveTheme);
     }
     
-    // Add the theme class
-    root.classList.add(effectiveTheme);
     setActualTheme(effectiveTheme);
     
     // Store theme preference
     localStorage.setItem("theme", theme);
   }, [theme]);
 
-  // Listen for system theme changes when theme is "system"
-  useEffect(() => {
-    if (theme === "system") {
-      const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-      
-      const handleChange = () => {
-        const root = window.document.documentElement;
-        root.classList.remove("light", "dark");
-        
-        const effectiveTheme = mediaQuery.matches ? "dark" : "light";
-        root.classList.add(effectiveTheme);
-        setActualTheme(effectiveTheme);
-      };
-      
-      mediaQuery.addEventListener("change", handleChange);
-      return () => mediaQuery.removeEventListener("change", handleChange);
-    }
-  }, [theme]);
+
 
   return (
     <ThemeContext.Provider value={{ theme, setTheme, actualTheme }}>
