@@ -288,7 +288,7 @@ export default function Settings() {
                   <SelectContent>
                     <SelectItem value="light">Light</SelectItem>
                     <SelectItem value="dark">Dark</SelectItem>
-                    <SelectItem value="minimal">Minimal (Black & White)</SelectItem>
+                    <SelectItem value="minimal">Minimal</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
