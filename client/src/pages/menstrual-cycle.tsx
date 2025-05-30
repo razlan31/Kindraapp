@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { format, differenceInDays, addDays, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, isSameMonth } from "date-fns";
+import { format, differenceInDays, addDays, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, isSameMonth, subMonths, addMonths, startOfWeek, getDay } from "date-fns";
 import { Calendar, Plus, Edit3, Trash2, Circle, ChevronLeft, ChevronRight, User } from "lucide-react";
 import { useLocation } from "wouter";
 
@@ -190,8 +190,22 @@ export default function MenstrualCyclePage() {
     }));
   };
 
-  const getCurrentCycle = () => cycles.find(cycle => !cycle.endDate);
-  const getPastCycles = () => cycles
+  // Filter cycles based on selected person
+  const filteredCycles = useMemo(() => {
+    if (selectedPersonId === null) return cycles;
+    return cycles.filter(cycle => {
+      if (selectedPersonId === 0) {
+        // User's cycles (connectionId is null)
+        return cycle.connectionId === null;
+      } else {
+        // Connection's cycles
+        return cycle.connectionId === selectedPersonId;
+      }
+    });
+  }, [cycles, selectedPersonId]);
+
+  const getCurrentCycle = () => filteredCycles.find(cycle => !cycle.endDate);
+  const getPastCycles = () => filteredCycles
     .filter(cycle => cycle.endDate)
     .sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime());
 
@@ -223,6 +237,45 @@ export default function MenstrualCyclePage() {
     return addDays(new Date(lastCycle.startDate), avgCycleLength);
   };
 
+  // Calendar helpers
+  const monthStart = startOfMonth(currentMonth);
+  const monthEnd = endOfMonth(currentMonth);
+  const monthDays = eachDayOfInterval({ start: monthStart, end: monthEnd });
+
+  const getCycleForDay = (day: Date) => {
+    return filteredCycles.find(cycle => {
+      const start = new Date(cycle.startDate);
+      const end = cycle.endDate ? new Date(cycle.endDate) : new Date();
+      return day >= start && day <= end;
+    });
+  };
+
+  const getCycleStage = (day: Date, cycle: MenstrualCycle) => {
+    const daysSinceStart = differenceInDays(day, new Date(cycle.startDate));
+    
+    if (daysSinceStart <= 5) return 'menstrual'; // Days 1-5
+    if (daysSinceStart <= 13) return 'follicular'; // Days 6-13
+    if (daysSinceStart <= 15) return 'ovulation'; // Days 14-15
+    return 'luteal'; // Days 16+
+  };
+
+  const getStageColor = (stage: string) => {
+    switch (stage) {
+      case 'menstrual': return 'bg-red-500';
+      case 'follicular': return 'bg-green-500';
+      case 'ovulation': return 'bg-yellow-500';
+      case 'luteal': return 'bg-purple-500';
+      default: return 'bg-gray-300';
+    }
+  };
+
+  const getSelectedPersonName = () => {
+    if (selectedPersonId === null) return 'All People';
+    if (selectedPersonId === 0) return user?.displayName || user?.username || 'Me';
+    const connection = connections.find(c => c.id === selectedPersonId);
+    return connection?.name || 'Unknown';
+  };
+
   if (isLoading) {
     return (
       <div className="max-w-md mx-auto bg-white dark:bg-neutral-900 min-h-screen flex flex-col relative">
@@ -248,7 +301,7 @@ export default function MenstrualCyclePage() {
       <main className="flex-1 overflow-y-auto pb-20">
         {/* Header */}
         <section className="px-4 pt-5 pb-3">
-          <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
               <Button
                 variant="ghost"
@@ -261,64 +314,204 @@ export default function MenstrualCyclePage() {
               <div>
                 <h1 className="text-2xl font-bold text-foreground">Cycle Tracker</h1>
                 <p className="text-sm text-muted-foreground">
-                  Track your menstrual cycle and symptoms
+                  Track menstrual cycles and symptoms
                 </p>
               </div>
             </div>
             <Circle className="h-6 w-6 text-pink-500" />
           </div>
+
+          {/* Person Picker */}
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">Tracking For:</Label>
+            <Select 
+              value={selectedPersonId?.toString() || "-1"} 
+              onValueChange={(value) => setSelectedPersonId(value === "-1" ? null : parseInt(value))}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select person to track">
+                  <div className="flex items-center gap-2">
+                    {selectedPersonId === 0 ? <User className="h-4 w-4" /> : <Circle className="h-4 w-4" />}
+                    {getSelectedPersonName()}
+                  </div>
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="-1">All People</SelectItem>
+                {trackablePersons.map((person) => (
+                  <SelectItem key={person.id} value={person.id.toString()}>
+                    <div className="flex items-center gap-2">
+                      {person.isUser ? <User className="h-4 w-4" /> : <Circle className="h-4 w-4" />}
+                      {person.name}
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* View Mode Toggle */}
+          <div className="flex items-center gap-2 mt-4">
+            <Button
+              variant={viewMode === 'calendar' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setViewMode('calendar')}
+              className="flex-1"
+            >
+              <Calendar className="h-4 w-4 mr-2" />
+              Calendar
+            </Button>
+            <Button
+              variant={viewMode === 'list' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setViewMode('list')}
+              className="flex-1"
+            >
+              List View
+            </Button>
+          </div>
         </section>
 
         {/* Current Cycle Status */}
-        <section className="px-4 py-2">
-          <Card className="p-4 bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-950 dark:to-purple-950 border-pink-200 dark:border-pink-800">
-            {currentCycle ? (
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <h3 className="font-semibold text-pink-800 dark:text-pink-200">Current Cycle</h3>
-                  <Badge variant="secondary" className="bg-pink-100 text-pink-800">
-                    Day {differenceInDays(new Date(), new Date(currentCycle.startDate)) + 1}
-                  </Badge>
-                </div>
-                <p className="text-sm text-pink-600 dark:text-pink-300">
-                  Started {format(new Date(currentCycle.startDate), 'MMMM d, yyyy')}
-                </p>
-                <Button 
-                  onClick={() => handleEdit(currentCycle)}
-                  size="sm"
-                  className="w-full bg-pink-600 hover:bg-pink-700 text-white"
-                >
-                  <Edit3 className="h-4 w-4 mr-2" />
-                  Update Current Cycle
-                </Button>
+        {selectedPersonId !== null && (
+          <section className="px-4 py-2">
+            <Card className="p-4 bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-950 dark:to-purple-950 border-pink-200 dark:border-pink-800">
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="font-medium text-pink-900 dark:text-pink-100">Current Cycle for {getSelectedPersonName()}</h3>
+                <Circle className="h-5 w-5 text-pink-600" />
               </div>
-            ) : (
-              <div className="space-y-3">
-                <h3 className="font-semibold text-pink-800 dark:text-pink-200">Ready to Track</h3>
-                {nextPredicted && (
-                  <p className="text-sm text-pink-600 dark:text-pink-300">
-                    Next cycle predicted: {format(nextPredicted, 'MMMM d')}
+              
+              {getCurrentCycle() ? (
+                <div className="space-y-2">
+                  <p className="text-sm text-pink-700 dark:text-pink-300">
+                    Day {differenceInDays(new Date(), new Date(getCurrentCycle()!.startDate)) + 1}
                   </p>
-                )}
-                <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                  <DialogTrigger asChild>
-                    <Button 
-                      size="sm"
-                      className="w-full bg-pink-600 hover:bg-pink-700 text-white"
-                      onClick={() => {
-                        setEditingCycle(null);
-                        resetForm();
-                      }}
-                    >
-                      <Plus className="h-4 w-4 mr-2" />
-                      Start New Cycle
-                    </Button>
-                  </DialogTrigger>
-                </Dialog>
+                  <p className="text-xs text-pink-600 dark:text-pink-400">
+                    Started {format(new Date(getCurrentCycle()!.startDate), 'MMM d, yyyy')}
+                  </p>
+                  <Button 
+                    onClick={() => handleEdit(getCurrentCycle()!)}
+                    size="sm"
+                    className="w-full bg-pink-600 hover:bg-pink-700 text-white mt-2"
+                  >
+                    <Edit3 className="h-4 w-4 mr-2" />
+                    Update Current Cycle
+                  </Button>
+                </div>
+              ) : (
+                <div>
+                  <p className="text-sm text-pink-700 dark:text-pink-300">No active cycle</p>
+                  {getNextPredictedDate() && (
+                    <p className="text-xs text-pink-600 dark:text-pink-400">
+                      Next predicted: {format(getNextPredictedDate()!, 'MMM d, yyyy')}
+                    </p>
+                  )}
+                  <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                    <DialogTrigger asChild>
+                      <Button 
+                        size="sm"
+                        className="w-full bg-pink-600 hover:bg-pink-700 text-white mt-2"
+                        onClick={() => {
+                          setEditingCycle(null);
+                          resetForm();
+                        }}
+                      >
+                        <Plus className="h-4 w-4 mr-2" />
+                        Start New Cycle
+                      </Button>
+                    </DialogTrigger>
+                  </Dialog>
+                </div>
+              )}
+            </Card>
+          </section>
+        )}
+
+        {/* Calendar View */}
+        {viewMode === 'calendar' && selectedPersonId !== null && (
+          <section className="px-4 py-2">
+            <Card className="p-4">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-medium text-foreground">Cycle Calendar</h3>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
+                    className="h-8 w-8"
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                  </Button>
+                  <span className="text-sm font-medium min-w-[120px] text-center">
+                    {format(currentMonth, 'MMMM yyyy')}
+                  </span>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
+                    className="h-8 w-8"
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
-            )}
-          </Card>
-        </section>
+
+              {/* Calendar Grid */}
+              <div className="grid grid-cols-7 gap-1 text-center text-xs">
+                {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map(day => (
+                  <div key={day} className="p-2 font-medium text-muted-foreground">
+                    {day}
+                  </div>
+                ))}
+                
+                {/* Empty cells for days before month start */}
+                {Array.from({ length: startOfWeek(monthStart).getTime() !== monthStart.getTime() ? getDay(monthStart) : 0 }, (_, i) => (
+                  <div key={`empty-${i}`} className="p-2" />
+                ))}
+                
+                {/* Month days */}
+                {monthDays.map(day => {
+                  const cycle = getCycleForDay(day);
+                  const stage = cycle ? getCycleStage(day, cycle) : null;
+                  const isToday = isSameDay(day, new Date());
+                  
+                  return (
+                    <div
+                      key={day.getTime()}
+                      className={`
+                        p-2 h-8 w-8 rounded-full flex items-center justify-center text-xs
+                        ${isToday ? 'ring-2 ring-blue-500' : ''}
+                        ${cycle ? getStageColor(stage!) + ' text-white' : 'hover:bg-muted'}
+                      `}
+                    >
+                      {format(day, 'd')}
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Legend */}
+              <div className="mt-4 grid grid-cols-2 gap-2 text-xs">
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                  <span>Menstrual</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                  <span>Follicular</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                  <span>Ovulation</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-purple-500"></div>
+                  <span>Luteal</span>
+                </div>
+              </div>
+            </Card>
+          </section>
+        )}
 
         {/* Stats */}
         {avgLength && (
