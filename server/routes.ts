@@ -1122,6 +1122,60 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Settings Routes
+  app.get("/api/settings", isAuthenticated, async (req, res) => {
+    try {
+      const userId = req.session.userId as number;
+      const user = await storage.getUser(userId);
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Return default settings structure (can be expanded to store in database)
+      const defaultSettings = {
+        notifications: {
+          pushEnabled: true,
+          momentReminders: true,
+          cycleReminders: true,
+          insightAlerts: true,
+          emailDigest: false,
+        },
+        privacy: {
+          profileVisible: false,
+          shareAnalytics: true,
+          dataRetention: "1year",
+        },
+        preferences: {
+          theme: "system",
+          defaultTab: "dashboard",
+          autoSave: true,
+        }
+      };
+
+      res.status(200).json(defaultSettings);
+    } catch (error) {
+      res.status(500).json({ message: "Server error fetching settings" });
+    }
+  });
+
+  app.put("/api/settings", isAuthenticated, async (req, res) => {
+    try {
+      const userId = req.session.userId as number;
+      const settingsData = req.body;
+      
+      // For now, we'll just return success. In a real app, you'd store these in the database
+      // You could extend the user table or create a separate settings table
+      
+      res.status(200).json({ 
+        message: "Settings saved successfully",
+        settings: settingsData 
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Server error saving settings" });
+    }
+  });
+
   // Menstrual Cycle Routes
   app.get("/api/menstrual-cycles", isAuthenticated, async (req, res) => {
     try {
