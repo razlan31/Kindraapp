@@ -14,6 +14,9 @@ import { Camera, X } from "lucide-react";
 
 export function ConnectionModal() {
   const { connectionModalOpen, closeConnectionModal } = useModal();
+  
+  // Add console log to verify this modal is being rendered
+  console.log("ConnectionModal render - connectionModalOpen:", connectionModalOpen);
   const { user, loading: authLoading } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
