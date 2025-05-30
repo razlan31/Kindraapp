@@ -496,35 +496,7 @@ export default function Calendar() {
           </div>
         </section>
 
-        {/* Simplified View Mode Picker */}
-        <section className="px-4 pb-3">
-          <div className="flex gap-1 justify-center">
-            <Button
-              variant={viewMode === "month" ? "default" : "outline"}
-              size="sm"
-              onClick={() => setViewMode("month")}
-              className="px-3"
-            >
-              Month
-            </Button>
-            <Button
-              variant={viewMode === "week" ? "default" : "outline"}
-              size="sm"
-              onClick={() => setViewMode("week")}
-              className="px-3"
-            >
-              Week
-            </Button>
-            <Button
-              variant={viewMode === "day" ? "default" : "outline"}
-              size="sm"
-              onClick={() => setViewMode("day")}
-              className="px-3"
-            >
-              Day
-            </Button>
-          </div>
-        </section>
+
 
         {/* Date Navigation */}
         <section className="px-4 py-2">
@@ -587,34 +559,32 @@ export default function Calendar() {
               </Button>
             </div>
 
-            {/* View Mode Selector */}
-            <div className="flex items-center justify-center">
-              <div className="flex bg-muted/50 rounded-lg p-1">
-                <Button
-                  variant={viewMode === 'daily' ? 'default' : 'ghost'}
-                  size="sm"
-                  onClick={() => setViewMode('daily')}
-                  className="text-xs px-3"
-                >
-                  Daily
-                </Button>
-                <Button
-                  variant={viewMode === 'weekly' ? 'default' : 'ghost'}
-                  size="sm"
-                  onClick={() => setViewMode('weekly')}
-                  className="text-xs px-3"
-                >
-                  Weekly
-                </Button>
-                <Button
-                  variant={viewMode === 'monthly' ? 'default' : 'ghost'}
-                  size="sm"
-                  onClick={() => setViewMode('monthly')}
-                  className="text-xs px-3"
-                >
-                  Monthly
-                </Button>
-              </div>
+            {/* Simple View Mode Selector */}
+            <div className="flex gap-1 justify-center mb-2">
+              <Button
+                variant={viewMode === "month" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setViewMode("month")}
+                className="text-xs px-2 h-7"
+              >
+                Month
+              </Button>
+              <Button
+                variant={viewMode === "week" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setViewMode("week")}
+                className="text-xs px-2 h-7"
+              >
+                Week
+              </Button>
+              <Button
+                variant={viewMode === "day" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setViewMode("day")}
+                className="text-xs px-2 h-7"
+              >
+                Day
+              </Button>
             </div>
           </Card>
         </section>
