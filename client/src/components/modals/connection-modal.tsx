@@ -25,8 +25,8 @@ export function ConnectionModal() {
   
   // Form state
   const [name, setName] = useState("");
-  const [profileImage, setProfileImage] = useState("");
-  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [relationshipStage, setRelationshipStage] = useState("");
   const [startDate, setStartDate] = useState("");
   const [zodiacSign, setZodiacSign] = useState("");
@@ -104,8 +104,8 @@ export function ConnectionModal() {
   
   const resetForm = () => {
     setName("");
-    setProfileImage("");
-    setImageFile(null);
+    setProfileImageFile(null);
+    setPreviewImage(null);
     setRelationshipStage("");
     setStartDate("");
     setZodiacSign("");
@@ -114,16 +114,18 @@ export function ConnectionModal() {
     setErrors({});
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       console.log("File selected:", file.name, file.size, file.type);
-      setImageFile(file);
+      setProfileImageFile(file);
+      
+      // Create preview
       const reader = new FileReader();
-      reader.onload = (event) => {
-        const result = event.target?.result as string;
+      reader.onload = (e) => {
+        const result = e.target?.result as string;
         console.log("Image converted to data URL, length:", result?.length);
-        setProfileImage(result);
+        setPreviewImage(result);
       };
       reader.readAsDataURL(file);
     }
@@ -149,18 +151,17 @@ export function ConnectionModal() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    console.log("Form submitted with data:", { name, relationshipStage, profileImage: !!profileImage, user: !!user, authLoading });
+    console.log("Form submitted with data:", { name, relationshipStage, previewImage: !!previewImage, user: !!user, authLoading });
     
     if (!validateForm()) {
       console.log("Form validation failed");
       return;
     }
     
-    // Skip auth check since the user can access the modal, they're authenticated
-    
-    const data = {
+    // Use preview image if available
+    let finalData = {
       name,
-      profileImage: profileImage || null,
+      profileImage: previewImage || null,
       relationshipStage,
       startDate: startDate ? new Date(startDate).toISOString() : null,
       zodiacSign: zodiacSign || null,
@@ -168,8 +169,8 @@ export function ConnectionModal() {
       isPrivate,
     };
     
-    console.log("Submitting connection data:", data);
-    createConnection(data);
+    console.log("Submitting connection data:", finalData);
+    createConnection(finalData);
   };
   
   const handleClose = () => {
@@ -217,7 +218,7 @@ export function ConnectionModal() {
               <input
                 type="file"
                 accept="image/*"
-                onChange={handleImageUpload}
+                onChange={handleImageChange}
                 className="hidden"
                 id="image-upload"
               />
@@ -228,9 +229,9 @@ export function ConnectionModal() {
                 onClick={() => document.getElementById('image-upload')?.click()}
               >
                 <div className="h-16 w-16 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-2">
-                  {profileImage ? (
+                  {previewImage ? (
                     <img 
-                      src={profileImage} 
+                      src={previewImage} 
                       alt="Profile" 
                       className="h-full w-full object-cover rounded-full"
                     />
