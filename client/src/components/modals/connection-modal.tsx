@@ -380,7 +380,15 @@ export function ConnectionModal() {
               className="w-full bg-primary text-white" 
               disabled={isPending}
               onClick={() => {
-                if (!validateForm()) return;
+                console.log("=== BUTTON CLICKED ===");
+                console.log("Current states:", { name, relationshipStage, previewImage: !!previewImage });
+                
+                if (!validateForm()) {
+                  console.log("Validation failed, stopping");
+                  return;
+                }
+                
+                console.log("Validation passed, proceeding...");
                 
                 // Capture the current preview image state immediately
                 const currentPreviewImage = previewImage;
@@ -401,9 +409,10 @@ export function ConnectionModal() {
                   finalData.profileImage = currentPreviewImage;
                   console.log("Added image to finalData, length:", currentPreviewImage.length);
                 } else {
-                  console.log("No image to add");
+                  console.log("No image to add - previewImage is null/undefined");
                 }
                 
+                console.log("About to call createConnection with data keys:", Object.keys(finalData));
                 createConnection(finalData);
               }}
             >
