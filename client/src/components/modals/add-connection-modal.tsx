@@ -29,8 +29,13 @@ export function AddConnectionModal({ onClose, onSubmit, isLoading }: AddConnecti
         <form onSubmit={handleSubmit} className="p-4 space-y-4">
           <div>
             <label className="block text-sm font-medium mb-1">Profile Image</label>
-            <Input name="profileImage" type="file" accept="image/*" className="mb-2" />
-            <p className="text-xs text-gray-500">Choose a photo from your device</p>
+            <input 
+              name="profileImage" 
+              type="file" 
+              accept="image/*" 
+              className="w-full p-2 border rounded text-sm file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary/90"
+            />
+            <p className="text-xs text-gray-500 mt-1">Choose a photo from your device</p>
           </div>
 
           <div>
