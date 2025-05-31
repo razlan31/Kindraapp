@@ -8,9 +8,12 @@ import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useToast } from "@/hooks/use-toast";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar as DatePicker } from "@/components/ui/calendar";
-import { ChevronLeft, ChevronRight, Heart, Calendar as CalendarIcon, Plus, Eye, ChevronDown, ChevronUp, Circle } from "lucide-react";
+import { ChevronLeft, ChevronRight, Heart, Calendar as CalendarIcon, Plus, Eye, ChevronDown, ChevronUp, Circle, Camera, X, UserPlus } from "lucide-react";
 import { useAuth } from "@/contexts/auth-context";
 import { useModal } from "@/contexts/modal-context";
 import { useRelationshipFocus } from "@/contexts/relationship-focus-context";
@@ -129,6 +132,11 @@ export default function Calendar() {
   const [selectedConnectionId, setSelectedConnectionId] = useState<number | null>(null);
   const [hasUserSelectedConnection, setHasUserSelectedConnection] = useState(false);
 
+  // Connection modal state
+  const [connectionModalOpen, setConnectionModalOpen] = useState(false);
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const { toast } = useToast();
+
   // Handle navigation connection filtering and focus connection
   useEffect(() => {
     // First check for navigation connection (highest priority)
@@ -172,8 +180,71 @@ export default function Calendar() {
     staleTime: 0,
   });
 
+  // Connection modal helper functions
+  const openConnectionModal = () => {
+    console.log("Opening connection modal from context");
+    setConnectionModalOpen(true);
+  };
 
-  
+  const closeConnectionModal = () => {
+    setConnectionModalOpen(false);
+    setUploadedImage(null);
+  };
+
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const result = e.target?.result as string;
+        setUploadedImage(result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Create connection mutation
+  const createConnectionMutation = useMutation({
+    mutationFn: async (formData: FormData) => {
+      // Get all selected love languages
+      const selectedLoveLanguages = formData.getAll('loveLanguages');
+      const loveLanguageString = selectedLoveLanguages.length > 0 ? selectedLoveLanguages.join(', ') : null;
+
+      const data: any = {
+        name: formData.get('name'),
+        relationshipStage: formData.get('relationshipStage') || 'Potential',
+        startDate: formData.get('startDate') || null,
+        birthday: formData.get('birthday') || null,
+        zodiacSign: formData.get('zodiacSign') || null,
+        loveLanguage: loveLanguageString,
+        isPrivate: formData.get('isPrivate') === 'on',
+      };
+
+      // Use the uploaded image from state if available
+      if (uploadedImage) {
+        data.profileImage = uploadedImage;
+      }
+
+      return apiRequest('POST', '/api/connections', data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/connections'] });
+      closeConnectionModal();
+      toast({
+        title: "Connection Added",
+        description: "New connection has been successfully added.",
+      });
+    },
+    onError: (error) => {
+      console.error('Connection creation error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to add connection. Please try again.",
+        variant: "destructive",
+      });
+    }
+  });
+
   // Debug logging for allMoments
   console.log("All moments from query:", allMoments);
 
@@ -471,6 +542,20 @@ export default function Calendar() {
                     </div>
                   </SelectItem>
                 ))}
+                <div className="border-t border-border my-1" />
+                <div 
+                  className="flex items-center gap-2 px-2 py-1.5 text-sm cursor-pointer hover:bg-accent rounded-sm"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    openConnectionModal();
+                  }}
+                >
+                  <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
+                    <UserPlus className="h-3 w-3 text-primary" />
+                  </div>
+                  <span className="text-primary">Add Connection</span>
+                </div>
               </SelectContent>
             </Select>
           </Card>
@@ -1066,6 +1151,231 @@ export default function Calendar() {
         selectedDate={null}
         showConnectionPicker={true}
       />
+
+      {/* Connection Modal */}
+      <Dialog open={connectionModalOpen} onOpenChange={setConnectionModalOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Add New Connection</DialogTitle>
+          </DialogHeader>
+          <form 
+            onSubmit={(e) => {
+              e.preventDefault();
+              const formData = new FormData(e.currentTarget);
+              createConnectionMutation.mutate(formData);
+            }}
+            className="space-y-4"
+          >
+            <div className="grid grid-cols-1 gap-4">
+              <div className="flex flex-col items-center space-y-3">
+                <div className="relative">
+                  <Avatar className="w-20 h-20">
+                    <AvatarImage src={uploadedImage || undefined} />
+                    <AvatarFallback className="text-lg">
+                      <Camera className="h-8 w-8 text-muted-foreground" />
+                    </AvatarFallback>
+                  </Avatar>
+                </div>
+                <div className="space-y-2">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="hidden"
+                    id="image-upload"
+                  />
+                  <label
+                    htmlFor="image-upload"
+                    className="inline-flex items-center justify-center px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm text-sm font-medium bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer"
+                  >
+                    <Camera className="h-4 w-4 mr-2" />
+                    Upload Photo from Device
+                  </label>
+                  {uploadedImage && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setUploadedImage(null)}
+                      className="w-full"
+                    >
+                      <X className="h-4 w-4 mr-2" />
+                      Remove Photo
+                    </Button>
+                  )}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2">Name *</label>
+                <Input
+                  name="name"
+                  required
+                  placeholder="Enter name"
+                  className="w-full"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Relationship Stage
+                </label>
+                <select
+                  name="relationshipStage"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md"
+                >
+                  <option value="Potential">Potential</option>
+                  <option value="Talking">Talking</option>
+                  <option value="Situationship">Situationship</option>
+                  <option value="It's Complicated">It's Complicated</option>
+                  <option value="Dating">Dating</option>
+                  <option value="Spouse">Spouse</option>
+                  <option value="FWB">FWB</option>
+                  <option value="Ex">Ex</option>
+                  <option value="Friend">Friend</option>
+                  <option value="Best Friend">Best Friend</option>
+                  <option value="Siblings">Siblings</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Start Date
+                </label>
+                <Input
+                  type="date"
+                  name="startDate"
+                  className="w-full"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Birthday
+                </label>
+                <Input
+                  type="date"
+                  name="birthday"
+                  className="w-full"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Zodiac Sign
+                </label>
+                <select
+                  name="zodiacSign"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md"
+                >
+                  <option value="">Select zodiac sign</option>
+                  <option value="Aries">Aries</option>
+                  <option value="Taurus">Taurus</option>
+                  <option value="Gemini">Gemini</option>
+                  <option value="Cancer">Cancer</option>
+                  <option value="Leo">Leo</option>
+                  <option value="Virgo">Virgo</option>
+                  <option value="Libra">Libra</option>
+                  <option value="Scorpio">Scorpio</option>
+                  <option value="Sagittarius">Sagittarius</option>
+                  <option value="Capricorn">Capricorn</option>
+                  <option value="Aquarius">Aquarius</option>
+                  <option value="Pisces">Pisces</option>
+                </select>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Love Languages
+                </label>
+                <div className="space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      id="wordsOfAffirmation"
+                      name="loveLanguages"
+                      value="Words of Affirmation"
+                      className="rounded"
+                    />
+                    <label htmlFor="wordsOfAffirmation" className="text-sm">
+                      Words of Affirmation
+                    </label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      id="qualityTime"
+                      name="loveLanguages"
+                      value="Quality Time"
+                      className="rounded"
+                    />
+                    <label htmlFor="qualityTime" className="text-sm">
+                      Quality Time
+                    </label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      id="physicalTouch"
+                      name="loveLanguages"
+                      value="Physical Touch"
+                      className="rounded"
+                    />
+                    <label htmlFor="physicalTouch" className="text-sm">
+                      Physical Touch
+                    </label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      id="actsOfService"
+                      name="loveLanguages"
+                      value="Acts of Service"
+                      className="rounded"
+                    />
+                    <label htmlFor="actsOfService" className="text-sm">
+                      Acts of Service
+                    </label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      id="receivingGifts"
+                      name="loveLanguages"
+                      value="Receiving Gifts"
+                      className="rounded"
+                    />
+                    <label htmlFor="receivingGifts" className="text-sm">
+                      Receiving Gifts
+                    </label>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  id="isPrivate"
+                  name="isPrivate"
+                  className="rounded"
+                />
+                <label htmlFor="isPrivate" className="text-sm">
+                  Keep this connection private
+                </label>
+              </div>
+            </div>
+
+            <div className="flex gap-2 pt-4">
+              <Button type="button" variant="outline" onClick={closeConnectionModal} className="flex-1">
+                Cancel
+              </Button>
+              <Button type="submit" disabled={createConnectionMutation.isPending} className="flex-1">
+                {createConnectionMutation.isPending ? "Adding..." : "Add Connection"}
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
