@@ -186,13 +186,17 @@ export default function MenstrualCyclePage() {
   // Create connection mutation
   const createConnectionMutation = useMutation({
     mutationFn: async (formData: FormData) => {
+      // Get all selected love languages
+      const selectedLoveLanguages = formData.getAll('loveLanguages');
+      const loveLanguageString = selectedLoveLanguages.length > 0 ? selectedLoveLanguages.join(', ') : null;
+
       const data: any = {
         name: formData.get('name'),
         relationshipStage: formData.get('relationshipStage') || 'Potential',
         startDate: formData.get('startDate') || null,
         birthday: formData.get('birthday') || null,
         zodiacSign: formData.get('zodiacSign') || null,
-        loveLanguage: formData.get('loveLanguage') || null,
+        loveLanguage: loveLanguageString,
         isPrivate: formData.get('isPrivate') === 'on',
       };
 
@@ -1088,19 +1092,70 @@ export default function MenstrualCyclePage() {
                 
                 <div>
                   <label className="block text-sm font-medium mb-2">
-                    Love Language
+                    Love Languages
                   </label>
-                  <select
-                    name="loveLanguage"
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md"
-                  >
-                    <option value="">Select love language</option>
-                    <option value="Words of Affirmation">Words of Affirmation</option>
-                    <option value="Quality Time">Quality Time</option>
-                    <option value="Physical Touch">Physical Touch</option>
-                    <option value="Acts of Service">Acts of Service</option>
-                    <option value="Receiving Gifts">Receiving Gifts</option>
-                  </select>
+                  <div className="space-y-2">
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        id="wordsOfAffirmation"
+                        name="loveLanguages"
+                        value="Words of Affirmation"
+                        className="rounded"
+                      />
+                      <label htmlFor="wordsOfAffirmation" className="text-sm">
+                        Words of Affirmation
+                      </label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        id="qualityTime"
+                        name="loveLanguages"
+                        value="Quality Time"
+                        className="rounded"
+                      />
+                      <label htmlFor="qualityTime" className="text-sm">
+                        Quality Time
+                      </label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        id="physicalTouch"
+                        name="loveLanguages"
+                        value="Physical Touch"
+                        className="rounded"
+                      />
+                      <label htmlFor="physicalTouch" className="text-sm">
+                        Physical Touch
+                      </label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        id="actsOfService"
+                        name="loveLanguages"
+                        value="Acts of Service"
+                        className="rounded"
+                      />
+                      <label htmlFor="actsOfService" className="text-sm">
+                        Acts of Service
+                      </label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        id="receivingGifts"
+                        name="loveLanguages"
+                        value="Receiving Gifts"
+                        className="rounded"
+                      />
+                      <label htmlFor="receivingGifts" className="text-sm">
+                        Receiving Gifts
+                      </label>
+                    </div>
+                  </div>
                 </div>
                 
                 <div className="flex items-center space-x-2">
