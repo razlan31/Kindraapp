@@ -1,0 +1,47 @@
+2
+Console.js:61 ConnectionModal render - connectionModalOpen: false
+Console.js:61 ConnectionModal - connectionModalOpen changed: false
+Console.js:61 Setting showModal to: false
+Console.js:61 ConnectionModal - connectionModalOpen changed: false
+Console.js:61 Setting showModal to: false
+2
+Console.js:61 ConnectionModal render - connectionModalOpen: false
+Console.js:61 ConnectionModal render - connectionModalOpen: false
+Console.js:61 Focus Context Debug: 
+{savedId: '3', connectionsLength: 2, connections: Array(2)}
+Console.js:61 Found saved connection: 
+{userId: 1, name: 'dasd', relationshipStage: 'Best Friend', startDate: null, birthday: null, …}
+Console.js:61 Showing badge 1: 
+{badgeId: 1, name: 'First Contact 👋', icon: '✨', description: 'Added your very first connection. This is your main character moment!', category: 'Getting Started'}
+2
+Console.js:61 ConnectionModal render - connectionModalOpen: false
+Console.js:61 Showing badge 2: 
+{badgeId: 2, name: 'Touch Grass', icon: '🌱', description: 'Made your first real-world connection. No more chronically online behavior!', category: 'Getting Started'}
+2
+Console.js:61 ConnectionModal render - connectionModalOpen: false
+Console.js:61 Showing badge 3: 
+{badgeId: 3, name: 'Rizz Master 🔥', icon: '🔥', description: 'Successfully moved from Potential to Talking stage. Your game is strong!', category: 'Relationship Progress'}
+2
+Console.js:61 ConnectionModal render - connectionModalOpen: false
+Console.js:61 Showing badge 4: 
+{badgeId: 7, name: 'Besties for Life', icon: '👯', description: 'Upgraded to Best Friend status. Found your person!', category: 'Relationship Progress'}
+2
+Console.js:61 ConnectionModal render - connectionModalOpen: false
+Console.js:61 Showing badge 5: 
+{badgeId: 17, name: 'Red Flag Radar 🚩', icon: '🚩', description: 'Identified your first red flag. Trust your gut bestie!', category: 'Self Protection'}
+4
+Console.js:61 ConnectionModal render - connectionModalOpen: false
+Console.js:61 Showing badge 6: 
+{badgeId: 19, name: 'First Conflict Chronicler', icon: '📝', description: 'Logged your first conflict. Growth starts with awareness!', category: 'Conflict Resolution'}
+4
+Console.js:61 ConnectionModal render - connectionModalOpen: false
+Console.js:61 Showing badge 7: 
+{badgeId: 24, name: 'Spicy Content 🌶️', icon: '🌶️', description: "Logged your first intimate moment. We're not judging!", category: 'Intimacy'}
+4
+Console.js:61 ConnectionModal render - connectionModalOpen: false
+Console.js:61 Showing badge 8: 
+{badgeId: 29, name: 'Daily Check-in Girlie', icon: '📅', description: 'Logged moments for 3 days straight. Building habits like a boss!', category: 'Consistency'}
+8
+Console.js:61 ConnectionModal render - connectionModalOpen: false
+﻿
+

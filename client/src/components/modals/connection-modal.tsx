@@ -379,9 +379,36 @@ export function ConnectionModal() {
               disabled={isPending}
               onClick={(e) => {
                 console.log("Submit button clicked!");
+                console.log("Current previewImage state at button click:", !!previewImage, previewImage?.length || 0);
                 e.preventDefault();
                 e.stopPropagation();
-                handleSubmit(e);
+                
+                // Direct submission with current state
+                if (!name.trim()) {
+                  toast({
+                    title: "Name required",
+                    description: "Please enter a name for this connection",
+                    variant: "destructive"
+                  });
+                  return;
+                }
+                
+                const submitData = {
+                  name: name.trim(),
+                  relationshipStage,
+                  startDate: startDate ? new Date(startDate).toISOString() : null,
+                  zodiacSign: zodiacSign || null,
+                  loveLanguage: loveLanguages.length > 0 ? loveLanguages.join(', ') : null,
+                  isPrivate,
+                  profileImage: previewImage || null
+                };
+                
+                console.log("Direct submit data:", {
+                  ...submitData,
+                  profileImage: submitData.profileImage ? `[${submitData.profileImage.length} chars]` : null
+                });
+                
+                createConnection(submitData);
               }}
             >
               {isPending ? "Adding..." : "Add Connection"}
