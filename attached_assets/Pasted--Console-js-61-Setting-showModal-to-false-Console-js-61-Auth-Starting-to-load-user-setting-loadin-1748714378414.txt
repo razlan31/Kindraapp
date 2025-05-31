@@ -1,0 +1,46 @@
+
+Console.js:61 Setting showModal to: false
+Console.js:61 Auth: Starting to load user, setting loading to true
+Console.js:61 Connection Data Debug: 
+{originalConnection: null, allConnections: 1, currentConnection: null, renderKey: 0}
+Console.js:61 Focus Context Debug: 
+{savedId: '3', connectionsLength: 1, connections: Array(1)}
+Console.js:61 Found saved connection: undefined
+Console.js:61 Connection Data Debug: 
+{originalConnection: null, allConnections: 1, currentConnection: null, renderKey: 0}
+Console.js:61 getCurrentUser successful: 
+{id: 1, username: 'testuser', email: 'test@example.com', displayName: 'Test User', zodiacSign: 'Gemini', …}
+Console.js:61 getCurrentUser successful: 
+{id: 1, username: 'testuser', email: 'test@example.com', displayName: 'Test User', zodiacSign: 'Gemini', …}
+Console.js:61 Auth context setting user: 
+{id: 1, username: 'testuser', email: 'test@example.com', displayName: 'Test User', zodiacSign: 'Gemini', …}
+Console.js:61 Auth: Finally block - setting loading to false
+Console.js:61 Connection Data Debug: 
+{originalConnection: null, allConnections: 1, currentConnection: null, renderKey: 0}
+Console.js:61 Connection Data Debug: 
+{originalConnection: null, allConnections: 1, currentConnection: null, renderKey: 0}
+Console.js:61 Connection Data Debug: 
+{originalConnection: null, allConnections: 1, currentConnection: null, renderKey: 0}
+Console.js:61 Connection Data Debug: 
+{originalConnection: null, allConnections: 1, currentConnection: null, renderKey: 0}
+Console.js:61 Connection Data Debug: 
+{originalConnection: null, allConnections: 1, currentConnection: null, renderKey: 0}
+Console.js:61 ConnectionModal render - connectionModalOpen: false
+Console.js:61 Connection Data Debug: 
+{originalConnection: null, allConnections: 2, currentConnection: null, renderKey: 0}
+Console.js:61 Focus Context Debug: 
+{savedId: '3', connectionsLength: 2, connections: Array(2)}
+Console.js:61 Found saved connection: 
+{userId: 1, name: 'sdsd', relationshipStage: 'Situationship', startDate: null, birthday: null, …}
+Console.js:61 Connection Data Debug: 
+{originalConnection: null, allConnections: 2, currentConnection: null, renderKey: 0}
+﻿
+
+New performance insights
+The Performance > Insights tab gets new insights: duplicated JavaScript, modern HTTP, and use efficient cache lifetimes.
+
+Click events to keep them highlighted in Performance
+Click items in Summary, Bottom-up, Call tree, and Event log tables to keep the corresponding events highlighted in the trace and dim the rest.
+
+Filter cookies in Privacy and security
+The cookies table in the 'Privacy and security' panel gets a filter, so you can quickly find the cookie you want to inspect.

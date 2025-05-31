@@ -379,6 +379,8 @@ export function ConnectionModal() {
               type="submit" 
               className="w-full bg-primary text-white" 
               disabled={isPending}
+              onSubmit={() => console.log("BUTTON onSubmit triggered")}
+              onClick={() => console.log("BUTTON onClick triggered")}
             >
               {isPending ? "Adding..." : "Add Connection"}
             </Button>
