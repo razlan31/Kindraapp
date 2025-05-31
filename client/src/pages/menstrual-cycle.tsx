@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { format, differenceInDays, addDays, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, isSameMonth, subMonths, addMonths, startOfWeek, getDay } from "date-fns";
-import { Calendar, Plus, Edit3, Trash2, Circle, ChevronLeft, ChevronRight, User, UserPlus } from "lucide-react";
+import { Calendar, Plus, Edit3, Trash2, Circle, ChevronLeft, ChevronRight, User, UserPlus, Camera, X } from "lucide-react";
 import { useLocation } from "wouter";
 
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { MenstrualCycle, Connection } from "@shared/schema";
@@ -37,6 +38,46 @@ const moodOptions = [
   "Happy", "Sad", "Anxious", "Irritable", "Energetic", "Tired", "Emotional", "Calm"
 ];
 
+// Image compression utility
+const compressImage = (file: File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const img = new Image();
+    
+    img.onload = () => {
+      const MAX_WIDTH = 400;
+      const MAX_HEIGHT = 400;
+      let { width, height } = img;
+      
+      if (width > height) {
+        if (width > MAX_WIDTH) {
+          height = height * (MAX_WIDTH / width);
+          width = MAX_WIDTH;
+        }
+      } else {
+        if (height > MAX_HEIGHT) {
+          width = width * (MAX_HEIGHT / height);
+          height = MAX_HEIGHT;
+        }
+      }
+      
+      canvas.width = width;
+      canvas.height = height;
+      
+      if (ctx) {
+        ctx.drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL('image/jpeg', 0.8));
+      } else {
+        reject(new Error('Could not get canvas context'));
+      }
+    };
+    
+    img.onerror = reject;
+    img.src = URL.createObjectURL(file);
+  });
+};
+
 export default function MenstrualCyclePage() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
@@ -48,6 +89,7 @@ export default function MenstrualCyclePage() {
   const [selectedPersonId, setSelectedPersonId] = useState<number | null>(null);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [viewMode, setViewMode] = useState<'calendar' | 'list'>('calendar');
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -185,6 +227,10 @@ export default function MenstrualCyclePage() {
   });
 
   const handleAddConnection = (formData: FormData) => {
+    // Add the uploaded image to form data if it exists
+    if (uploadedImage) {
+      formData.set('profileImage', uploadedImage);
+    }
     createConnectionMutation.mutate(formData);
   };
 
@@ -893,11 +939,159 @@ export default function MenstrualCyclePage() {
 
         {/* Connection Modal */}
         {connectionModalOpen && (
-          <AddConnectionModal 
-            onClose={closeConnectionModal}
-            onSubmit={handleAddConnection}
-            isLoading={createConnectionMutation.isPending}
-          />
+          <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+            <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
+              <div className="flex items-center justify-between p-4 border-b">
+                <h2 className="font-heading font-semibold text-lg">Add New Connection</h2>
+                <Button variant="ghost" size="icon" onClick={closeConnectionModal}>
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+              
+              <form onSubmit={(e) => {
+                e.preventDefault();
+                const formData = new FormData(e.currentTarget);
+                handleAddConnection(formData);
+              }} className="p-4 space-y-6">
+                <div>
+                  <label className="block text-sm font-medium mb-2">
+                    Profile Image
+                  </label>
+                  <div className="mb-4">
+                    <div className="flex items-center justify-center mb-3">
+                      <Avatar className="h-20 w-20 border-2 border-blue-100 dark:border-blue-900">
+                        {uploadedImage ? (
+                          <AvatarImage src={uploadedImage} alt="Profile preview" />
+                        ) : (
+                          <AvatarFallback className="bg-blue-50 dark:bg-blue-950 text-blue-500">
+                            <Camera className="h-6 w-6" />
+                          </AvatarFallback>
+                        )}
+                      </Avatar>
+                    </div>
+                    
+                    <div>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        id="fileUpload"
+                        name="profileImageFile"
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            try {
+                              const compressedImage = await compressImage(file);
+                              setUploadedImage(compressedImage);
+                            } catch (error) {
+                              console.error('Error compressing image:', error);
+                              const reader = new FileReader();
+                              reader.onload = (event) => {
+                                const result = event.target?.result as string;
+                                setUploadedImage(result);
+                              };
+                              reader.readAsDataURL(file);
+                            }
+                          }
+                        }}
+                      />
+                      <Button 
+                        type="button" 
+                        variant="outline" 
+                        onClick={() => document.getElementById('fileUpload')?.click()}
+                        className="w-full"
+                      >
+                        <Camera className="h-4 w-4 mr-2" />
+                        Upload Photo from Device
+                      </Button>
+                    </div>
+                    
+                    <p className="text-xs text-neutral-500 mt-1">
+                      Choose a photo from your device to personalize this connection
+                    </p>
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium mb-2">
+                    Name <span className="text-red-500">*</span>
+                  </label>
+                  <Input
+                    name="name"
+                    required
+                    placeholder="Enter name"
+                    className="w-full"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium mb-2">
+                    Relationship Stage <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    name="relationshipStage"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md"
+                    defaultValue="Potential"
+                  >
+                    <option value="Potential">Potential</option>
+                    <option value="Talking">Talking</option>
+                    <option value="Situationship">Situationship</option>
+                    <option value="It's Complicated">It's Complicated</option>
+                    <option value="Dating">Dating</option>
+                    <option value="Spouse">Spouse</option>
+                    <option value="FWB">FWB</option>
+                    <option value="Ex">Ex</option>
+                    <option value="Friend">Friend</option>
+                    <option value="Best Friend">Best Friend</option>
+                    <option value="Siblings">Siblings</option>
+                  </select>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium mb-2">
+                    When did you start this connection?
+                  </label>
+                  <input
+                    type="date"
+                    name="startDate"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md"
+                  />
+                  <p className="text-xs text-neutral-500 mt-1">
+                    Track when you first connected with this person
+                  </p>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium mb-2">
+                    Birthday
+                  </label>
+                  <input
+                    type="date"
+                    name="birthday"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md"
+                  />
+                </div>
+                
+                <div className="flex gap-3 pt-4">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={closeConnectionModal}
+                    className="flex-1"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    disabled={createConnectionMutation.isPending}
+                    className="flex-1"
+                  >
+                    {createConnectionMutation.isPending ? "Adding..." : "Add Connection"}
+                  </Button>
+                </div>
+              </form>
+            </div>
+          </div>
         )}
       </main>
     </div>
