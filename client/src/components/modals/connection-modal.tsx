@@ -232,7 +232,7 @@ export function ConnectionModal() {
           </Button>
         </div>
         
-        <form onSubmit={handleSubmit} className="p-4 space-y-4 overflow-y-auto flex-1" action="" method=""  onClick={() => console.log("Form clicked")}>
+        <form onSubmit={handleSubmit} className="p-4 space-y-4 overflow-y-auto flex-1" onClick={() => console.log("Form clicked")}>
           <div className="space-y-2">
             <Label htmlFor="name">Name</Label>
             <Input 
