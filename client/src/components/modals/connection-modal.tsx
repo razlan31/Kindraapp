@@ -163,44 +163,47 @@ export function ConnectionModal() {
     e.preventDefault();
     e.stopPropagation();
     
-    console.log("=== HANDLESUBMIT CALLED ===");
-    console.log("Event prevented and stopped");
+    console.log("=== FORM SUBMISSION STARTED ===");
     
-    // Debug all state values at submission time
-    console.log("=== FORM SUBMISSION DEBUG ===");
-    console.log("previewImage state:", !!previewImage);
-    console.log("previewImage length:", previewImage?.length || 0);
-    console.log("previewImage first 50 chars:", previewImage?.substring(0, 50));
-    console.log("profileImageFile state:", !!profileImageFile);
-    console.log("profileImageFile name:", profileImageFile?.name);
-    
-    if (!validateForm()) {
-      console.log("Form validation failed:", errors);
+    // Basic validation
+    if (!name.trim()) {
+      setErrors({ name: "Name is required" });
       return;
     }
     
-    // Build the final data object - exactly like EditConnectionModal
-    let finalData: any = {
-      name,
-      relationshipStage,
-      startDate: startDate ? new Date(startDate).toISOString() : null,
-      zodiacSign: zodiacSign || null,
-      loveLanguage: loveLanguages.length > 0 ? loveLanguages.join(', ') : null,
-      isPrivate,
-    };
-    
-    // If there's a preview image, use it as the profile image - same as EditConnectionModal
-    if (previewImage) {
-      finalData.profileImage = previewImage;
-      console.log("Added image to finalData, length:", finalData.profileImage.length);
-    } else {
-      console.log("No previewImage found, setting profileImage to null");
+    if (!relationshipStage) {
+      setErrors({ relationshipStage: "Relationship stage is required" });
+      return;
     }
     
-    console.log("Final data object keys:", Object.keys(finalData));
-    console.log("Final data profileImage exists:", !!finalData.profileImage);
-    console.log("About to call createConnection with:", finalData);
-    createConnection(finalData);
+    // Get the form data directly from the form
+    const formData = new FormData(e.currentTarget as HTMLFormElement);
+    
+    // Build the data object from form data
+    const finalData: any = {
+      name: formData.get('name'),
+      relationshipStage: formData.get('relationshipStage'),
+      startDate: formData.get('startDate') || null,
+      zodiacSign: formData.get('zodiacSign') || null,
+      loveLanguage: formData.get('loveLanguage') || null,
+      isPrivate: formData.get('isPrivate') === 'on',
+    };
+    
+    // Handle file upload properly
+    const imageFile = formData.get('profileImage') as File;
+    if (imageFile && imageFile.size > 0) {
+      console.log("Image file found:", imageFile.name, imageFile.size);
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        finalData.profileImage = event.target?.result as string;
+        console.log("Image converted to data URL, calling createConnection");
+        createConnection(finalData);
+      };
+      reader.readAsDataURL(imageFile);
+    } else {
+      console.log("No image file, proceeding without image");
+      createConnection(finalData);
+    }
   };
   
   const handleClose = () => {
@@ -237,6 +240,7 @@ export function ConnectionModal() {
             <Label htmlFor="name">Name</Label>
             <Input 
               id="name"
+              name="name"
               value={name} 
               onChange={(e) => setName(e.target.value)}
               placeholder="Enter name" 
@@ -249,6 +253,7 @@ export function ConnectionModal() {
             <div className="relative">
               <input
                 type="file"
+                name="profileImage"
                 accept="image/*"
                 onChange={handleImageChange}
                 className="hidden"
@@ -291,6 +296,7 @@ export function ConnectionModal() {
                 ))}
               </SelectContent>
             </Select>
+            <input type="hidden" name="relationshipStage" value={relationshipStage} />
             {errors.relationshipStage && <p className="text-sm text-red-500">{errors.relationshipStage}</p>}
           </div>
           
@@ -298,6 +304,7 @@ export function ConnectionModal() {
             <Label htmlFor="startDate">Started talking/dating</Label>
             <Input 
               id="startDate"
+              name="startDate"
               type="date" 
               value={startDate} 
               onChange={(e) => setStartDate(e.target.value)} 
@@ -322,6 +329,7 @@ export function ConnectionModal() {
                   ))}
                 </SelectContent>
               </Select>
+              <input type="hidden" name="zodiacSign" value={zodiacSign} />
             </div>
             
             <div className="space-y-2">
