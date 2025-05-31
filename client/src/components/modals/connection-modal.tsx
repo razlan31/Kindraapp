@@ -168,6 +168,7 @@ export function ConnectionModal() {
     console.log("=== FORM SUBMISSION DEBUG ===");
     console.log("previewImage state:", !!previewImage);
     console.log("previewImage length:", previewImage?.length || 0);
+    console.log("previewImage first 50 chars:", previewImage?.substring(0, 50));
     console.log("profileImageFile state:", !!profileImageFile);
     console.log("profileImageFile name:", profileImageFile?.name);
     

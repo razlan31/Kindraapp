@@ -1,0 +1,40 @@
+Validating form - name: sdfsdf relationshipStage: Best Friend
+Console.js:61 Validation errors: Object
+Console.js:61 No previewImage found, setting profileImage to null
+Console.js:61 Final data object keys: Array(6)
+Console.js:61 Final data profileImage exists: false
+Console.js:61 About to call createConnection with: Object
+Console.js:61 ConnectionModal render - connectionModalOpen: true
+Console.js:61 Sending data to server: Object
+Console.js:61 Mutation received profileImage: false Length: 0
+Console.js:61 Connection created successfully: Object
+Console.js:61 New badges earned from connection creation: Array(8)
+Console.js:61 handleClose called - modal closing
+connection-modal.tsx:205 Close call stack
+handleClose @ connection-modal.tsx:205
+onSuccess @ connection-modal.tsx:98
+execute @ @tanstack_react-query.js?v=d607aa99:1233
+2Console.js:61 ConnectionModal render - connectionModalOpen: false
+Console.js:61 ConnectionModal - connectionModalOpen changed: false
+Console.js:61 Setting showModal to: false
+Console.js:61 ConnectionModal - connectionModalOpen changed: false
+Console.js:61 Setting showModal to: false
+3Console.js:61 ConnectionModal render - connectionModalOpen: false
+Console.js:61 Focus Context Debug: Object
+Console.js:61 Found saved connection: Object
+Console.js:61 Showing badge 1: Object
+2Console.js:61 ConnectionModal render - connectionModalOpen: false
+Console.js:61 Showing badge 2: Object
+2Console.js:61 ConnectionModal render - connectionModalOpen: false
+Console.js:61 Showing badge 3: Object
+2Console.js:61 ConnectionModal render - connectionModalOpen: false
+Console.js:61 Showing badge 4: Object
+2Console.js:61 ConnectionModal render - connectionModalOpen: false
+Console.js:61 Showing badge 5: Object
+4Console.js:61 ConnectionModal render - connectionModalOpen: false
+Console.js:61 Showing badge 6: Object
+4Console.js:61 ConnectionModal render - connectionModalOpen: false
+Console.js:61 Showing badge 7: Object
+4Console.js:61 ConnectionModal render - connectionModalOpen: false
+Console.js:61 Showing badge 8: Object
+12Console.js:61 ConnectionModal render - connectionModalOpen: false
