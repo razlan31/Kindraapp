@@ -196,15 +196,9 @@ export default function MenstrualCyclePage() {
         isPrivate: formData.get('isPrivate') === 'on',
       };
 
-      // Handle image upload
-      const imageFile = formData.get('profileImage') as File;
-      if (imageFile && imageFile.size > 0) {
-        const reader = new FileReader();
-        const imageDataUrl = await new Promise<string>((resolve) => {
-          reader.onload = (event) => resolve(event.target?.result as string);
-          reader.readAsDataURL(imageFile);
-        });
-        data.profileImage = imageDataUrl;
+      // Use the uploaded image from state if available
+      if (uploadedImage) {
+        data.profileImage = uploadedImage;
       }
 
       return apiRequest('POST', '/api/connections', data);
@@ -227,10 +221,6 @@ export default function MenstrualCyclePage() {
   });
 
   const handleAddConnection = (formData: FormData) => {
-    // Add the uploaded image to form data if it exists
-    if (uploadedImage) {
-      formData.set('profileImage', uploadedImage);
-    }
     createConnectionMutation.mutate(formData);
   };
 
@@ -1070,6 +1060,59 @@ export default function MenstrualCyclePage() {
                     name="birthday"
                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md"
                   />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium mb-2">
+                    Zodiac Sign
+                  </label>
+                  <select
+                    name="zodiacSign"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md"
+                  >
+                    <option value="">Select sign</option>
+                    <option value="Aries">Aries</option>
+                    <option value="Taurus">Taurus</option>
+                    <option value="Gemini">Gemini</option>
+                    <option value="Cancer">Cancer</option>
+                    <option value="Leo">Leo</option>
+                    <option value="Virgo">Virgo</option>
+                    <option value="Libra">Libra</option>
+                    <option value="Scorpio">Scorpio</option>
+                    <option value="Sagittarius">Sagittarius</option>
+                    <option value="Capricorn">Capricorn</option>
+                    <option value="Aquarius">Aquarius</option>
+                    <option value="Pisces">Pisces</option>
+                  </select>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium mb-2">
+                    Love Language
+                  </label>
+                  <select
+                    name="loveLanguage"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md"
+                  >
+                    <option value="">Select love language</option>
+                    <option value="Words of Affirmation">Words of Affirmation</option>
+                    <option value="Quality Time">Quality Time</option>
+                    <option value="Physical Touch">Physical Touch</option>
+                    <option value="Acts of Service">Acts of Service</option>
+                    <option value="Receiving Gifts">Receiving Gifts</option>
+                  </select>
+                </div>
+                
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id="isPrivate"
+                    name="isPrivate"
+                    className="rounded"
+                  />
+                  <label htmlFor="isPrivate" className="text-sm">
+                    Keep this connection private
+                  </label>
                 </div>
                 
                 <div className="flex gap-3 pt-4">
