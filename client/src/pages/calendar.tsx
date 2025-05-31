@@ -1154,7 +1154,7 @@ export default function Calendar() {
 
       {/* Connection Modal */}
       <Dialog open={connectionModalOpen} onOpenChange={setConnectionModalOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Add New Connection</DialogTitle>
           </DialogHeader>
