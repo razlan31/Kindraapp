@@ -1,0 +1,54 @@
+ConnectionModal render - connectionModalOpen: true
+Console.js:61 Sending data to server: {name: 'dassa', relationshipStage: 'Best Friend', startDate: null, zodiacSign: null, loveLanguage: null, …}
+Console.js:61 Mutation received profileImage: false Length: 0
+Console.js:61 Connection created successfully: {userId: 1, name: 'dassa', relationshipStage: 'Best Friend', startDate: null, birthday: null, …}
+Console.js:61 New badges earned from connection creation: (8) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+Console.js:61 handleClose called - modal closing
+connection-modal.tsx:206 Close call stack
+handleClose @ connection-modal.tsx:206
+onSuccess @ connection-modal.tsx:98
+execute @ @tanstack_react-query.js?v=d607aa99:1233
+await in execute
+mutate @ @tanstack_react-query.js?v=d607aa99:2630
+(anonymous) @ @tanstack_react-query.js?v=d607aa99:3295
+onClick @ connection-modal.tsx:398
+callCallback2 @ chunk-RPCDYKBN.js?v=d607aa99:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=d607aa99:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=d607aa99:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-RPCDYKBN.js?v=d607aa99:3736
+executeDispatch @ chunk-RPCDYKBN.js?v=d607aa99:7014
+processDispatchQueueItemsInOrder @ chunk-RPCDYKBN.js?v=d607aa99:7034
+processDispatchQueue @ chunk-RPCDYKBN.js?v=d607aa99:7043
+dispatchEventsForPlugins @ chunk-RPCDYKBN.js?v=d607aa99:7051
+(anonymous) @ chunk-RPCDYKBN.js?v=d607aa99:7174
+batchedUpdates$1 @ chunk-RPCDYKBN.js?v=d607aa99:18913
+batchedUpdates @ chunk-RPCDYKBN.js?v=d607aa99:3579
+dispatchEventForPluginEventSystem @ chunk-RPCDYKBN.js?v=d607aa99:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-RPCDYKBN.js?v=d607aa99:5478
+dispatchEvent @ chunk-RPCDYKBN.js?v=d607aa99:5472
+dispatchDiscreteEvent @ chunk-RPCDYKBN.js?v=d607aa99:5449
+2Console.js:61 ConnectionModal render - connectionModalOpen: false
+Console.js:61 ConnectionModal - connectionModalOpen changed: false
+Console.js:61 Setting showModal to: false
+Console.js:61 ConnectionModal - connectionModalOpen changed: false
+Console.js:61 Setting showModal to: false
+2Console.js:61 ConnectionModal render - connectionModalOpen: false
+Console.js:61 ConnectionModal render - connectionModalOpen: false
+Console.js:61 Focus Context Debug: {savedId: '3', connectionsLength: 2, connections: Array(2)}
+Console.js:61 Found saved connection: {userId: 1, name: 'dassa', relationshipStage: 'Best Friend', startDate: null, birthday: null, …}
+Console.js:61 Showing badge 1: {badgeId: 1, name: 'First Contact 👋', icon: '✨', description: 'Added your very first connection. This is your main character moment!', category: 'Getting Started'}
+2Console.js:61 ConnectionModal render - connectionModalOpen: false
+Console.js:61 Showing badge 2: {badgeId: 2, name: 'Touch Grass', icon: '🌱', description: 'Made your first real-world connection. No more chronically online behavior!', category: 'Getting Started'}
+2Console.js:61 ConnectionModal render - connectionModalOpen: false
+Console.js:61 Showing badge 3: {badgeId: 3, name: 'Rizz Master 🔥', icon: '🔥', description: 'Successfully moved from Potential to Talking stage. Your game is strong!', category: 'Relationship Progress'}
+2Console.js:61 ConnectionModal render - connectionModalOpen: false
+Console.js:61 Showing badge 4: {badgeId: 7, name: 'Besties for Life', icon: '👯', description: 'Upgraded to Best Friend status. Found your person!', category: 'Relationship Progress'}
+2Console.js:61 ConnectionModal render - connectionModalOpen: false
+Console.js:61 Showing badge 5: {badgeId: 17, name: 'Red Flag Radar 🚩', icon: '🚩', description: 'Identified your first red flag. Trust your gut bestie!', category: 'Self Protection'}
+6Console.js:61 ConnectionModal render - connectionModalOpen: false
+Console.js:61 Showing badge 6: {badgeId: 19, name: 'First Conflict Chronicler', icon: '📝', description: 'Logged your first conflict. Growth starts with awareness!', category: 'Conflict Resolution'}
+4Console.js:61 ConnectionModal render - connectionModalOpen: false
+Console.js:61 Showing badge 7: {badgeId: 24, name: 'Spicy Content 🌶️', icon: '🌶️', description: "Logged your first intimate moment. We're not judging!", category: 'Intimacy'}
+4Console.js:61 ConnectionModal render - connectionModalOpen: false
+Console.js:61 Showing badge 8: {badgeId: 29, name: 'Daily Check-in Girlie', icon: '📅', description: 'Logged moments for 3 days straight. Building habits like a boss!', category: 'Consistency'}
+8Console.js:61 ConnectionModal render - c
