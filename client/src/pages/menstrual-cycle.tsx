@@ -20,7 +20,7 @@ import { MenstrualCycle, Connection } from "@shared/schema";
 import { Header } from "@/components/layout/header";
 import { useAuth } from "@/contexts/auth-context";
 import { useModal } from "@/contexts/modal-context";
-import { ConnectionModal } from "@/components/modals/connection-modal";
+import { AddConnectionModal } from "@/components/modals/add-connection-modal";
 
 const symptomsList = [
   "Cramps", "Bloating", "Headache", "Mood swings", "Fatigue", 
@@ -41,7 +41,7 @@ export default function MenstrualCyclePage() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const { user } = useAuth();
-  const { openConnectionModal } = useModal();
+  const { openConnectionModal, closeConnectionModal, connectionModalOpen } = useModal();
   const queryClient = useQueryClient();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingCycle, setEditingCycle] = useState<MenstrualCycle | null>(null);
@@ -140,6 +140,53 @@ export default function MenstrualCyclePage() {
       });
     }
   });
+
+  // Create connection mutation
+  const createConnectionMutation = useMutation({
+    mutationFn: async (formData: FormData) => {
+      const data: any = {
+        name: formData.get('name'),
+        relationshipStage: formData.get('relationshipStage') || 'Potential',
+        startDate: formData.get('startDate') || null,
+        birthday: formData.get('birthday') || null,
+        zodiacSign: formData.get('zodiacSign') || null,
+        loveLanguage: formData.get('loveLanguage') || null,
+        isPrivate: formData.get('isPrivate') === 'on',
+      };
+
+      // Handle image upload
+      const imageFile = formData.get('profileImage') as File;
+      if (imageFile && imageFile.size > 0) {
+        const reader = new FileReader();
+        const imageDataUrl = await new Promise<string>((resolve) => {
+          reader.onload = (event) => resolve(event.target?.result as string);
+          reader.readAsDataURL(imageFile);
+        });
+        data.profileImage = imageDataUrl;
+      }
+
+      return apiRequest('POST', '/api/connections', data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/connections'] });
+      closeConnectionModal();
+      toast({
+        title: "Connection Added",
+        description: "Your new connection has been saved successfully.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to add connection. Please try again.",
+        variant: "destructive",
+      });
+    }
+  });
+
+  const handleAddConnection = (formData: FormData) => {
+    createConnectionMutation.mutate(formData);
+  };
 
   const resetForm = () => {
     setFormData({
@@ -845,7 +892,13 @@ export default function MenstrualCyclePage() {
         </Dialog>
 
         {/* Connection Modal */}
-        <ConnectionModal />
+        {connectionModalOpen && (
+          <AddConnectionModal 
+            onClose={closeConnectionModal}
+            onSubmit={handleAddConnection}
+            isLoading={createConnectionMutation.isPending}
+          />
+        )}
       </main>
     </div>
   );
