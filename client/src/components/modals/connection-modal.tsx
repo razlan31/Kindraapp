@@ -378,6 +378,8 @@ export function ConnectionModal() {
               disabled={isPending}
               onClick={(e) => {
                 console.log("Submit button clicked!");
+                e.preventDefault();
+                e.stopPropagation();
                 handleSubmit(e);
               }}
             >
