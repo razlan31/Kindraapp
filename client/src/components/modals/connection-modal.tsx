@@ -380,11 +380,13 @@ export function ConnectionModal() {
               className="w-full bg-primary text-white" 
               disabled={isPending}
               onClick={() => {
-                console.log("Button click - previewImage state:", !!previewImage, previewImage?.length || 0);
-                
                 if (!validateForm()) return;
                 
-                // Use the exact same pattern as EditConnectionModal
+                // Capture the current preview image state immediately
+                const currentPreviewImage = previewImage;
+                console.log("Captured previewImage at button click:", !!currentPreviewImage, currentPreviewImage?.length || 0);
+                
+                // Build the data object
                 let finalData: any = {
                   name,
                   relationshipStage,
@@ -394,19 +396,13 @@ export function ConnectionModal() {
                   isPrivate,
                 };
                 
-                console.log("Before image check - previewImage:", !!previewImage);
-                // If there's a preview image, use it as the profile image - exactly like EditConnectionModal
-                if (previewImage) {
-                  finalData.profileImage = previewImage;
-                  console.log("Added previewImage to finalData");
+                // Add the captured image data
+                if (currentPreviewImage) {
+                  finalData.profileImage = currentPreviewImage;
+                  console.log("Added image to finalData, length:", currentPreviewImage.length);
                 } else {
-                  console.log("No previewImage found - setting profileImage to null");
+                  console.log("No image to add");
                 }
-                
-                console.log("Final data before mutation:", {
-                  ...finalData,
-                  profileImage: finalData.profileImage ? `[${finalData.profileImage.length} chars]` : null
-                });
                 
                 createConnection(finalData);
               }}
