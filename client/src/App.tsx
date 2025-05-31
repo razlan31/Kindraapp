@@ -32,7 +32,7 @@ import { RelationshipFocusProvider } from "./contexts/relationship-focus-context
 import { ModalProvider } from "./contexts/modal-context";
 import { ThemeProvider } from "./contexts/theme-context";
 import { MomentModal } from "./components/modals/simplified-moment-modal";
-import { ConnectionModal } from "./components/modals/connection-modal";
+
 import { MoodTrackerModal } from "./components/modals/mood-tracker-modal";
 
 import { useEffect } from "react";
@@ -104,7 +104,6 @@ function ModalsContainer() {
   return (
     <>
       <MomentModal />
-      <ConnectionModal />
       <MoodTrackerModal 
         isOpen={moodTrackerModalOpen} 
         onClose={closeMoodTrackerModal}
