@@ -40,8 +40,8 @@ export class PgStorage implements IStorage {
       loveLanguage: 'Quality Time'
     });
 
-    // Create test connection
-    const testConnection = await this.createConnection({
+    // Create test connections
+    const testConnection1 = await this.createConnection({
       userId: testUser.id,
       name: 'Alex',
       relationshipStage: 'Talking',
@@ -52,13 +52,40 @@ export class PgStorage implements IStorage {
       isPrivate: false
     });
 
-    // Create sample moments
+    const testConnection2 = await this.createConnection({
+      userId: testUser.id,
+      name: 'Jordan',
+      relationshipStage: 'Dating',
+      startDate: new Date('2025-05-15'),
+      birthday: new Date('1994-03-20'),
+      zodiacSign: 'Pisces',
+      loveLanguage: 'Physical Touch',
+      isPrivate: false
+    });
+
+    // Create sample moments for both connections
     await this.createMoment({
       userId: testUser.id,
-      connectionId: testConnection.id,
-      emoji: '⚡',
-      content: 'Had an amazing conversation about our future goals!',
-      tags: ['deep-talk', 'future-planning'],
+      connectionId: testConnection1.id,
+      emoji: '😍',
+      content: 'Amazing date night! We had such great chemistry.',
+      tags: ['Green Flag', 'Quality Time', 'Intimacy'],
+      isPrivate: false,
+      isIntimate: false,
+      intimacyRating: null,
+      relatedToMenstrualCycle: false,
+      isResolved: false,
+      resolvedAt: null,
+      resolutionNotes: null,
+      reflection: null
+    });
+
+    await this.createMoment({
+      userId: testUser.id,
+      connectionId: testConnection2.id,
+      emoji: '💕',
+      content: 'First official date as a couple! So excited.',
+      tags: ['Dating', 'Milestone', 'Green Flag'],
       isPrivate: false,
       isIntimate: false,
       intimacyRating: null,
