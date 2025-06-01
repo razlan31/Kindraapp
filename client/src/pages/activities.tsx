@@ -704,7 +704,7 @@ export default function Activities() {
 
         {/* Content Area */}
         <section className="px-4 py-3">
-          {isLoading ? (
+          {(isLoading || loading || !connections.length) ? (
             <div className="text-center py-10">
               <p>Loading moments...</p>
             </div>
