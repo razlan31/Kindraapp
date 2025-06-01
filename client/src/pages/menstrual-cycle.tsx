@@ -325,8 +325,8 @@ export default function MenstrualCyclePage() {
             addDays(lastCycleStart, avgCycleLength - 1);
           
           for (let i = 1; i <= 6; i++) {
-            // Each new cycle starts avgCycleLength days after the PREVIOUS cycle started
-            const predictedStart = addDays(lastCycleStart, avgCycleLength * i);
+            // Predicted cycles start 31 days after the previous cycle started to avoid overlap
+            const predictedStart = addDays(lastCycleStart, 31 * i);
             const periodLength = getCycleLength(lastCycle) || 5; // Period length (menstrual phase only)
             const predictedEnd = addDays(predictedStart, periodLength - 1); // -1 because we count inclusive
             
