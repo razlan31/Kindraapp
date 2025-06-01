@@ -28,32 +28,55 @@
 /* Enhanced checkbox visibility for connection pickers */
 [data-radix-dropdown-menu-content] [role="menuitemcheckbox"] {
   position: relative;
+  cursor: pointer;
+}
+
+[data-radix-dropdown-menu-content] [role="menuitemcheckbox"]:hover {
+  background-color: hsl(var(--accent) / 0.1);
 }
 
 [data-radix-dropdown-menu-content] [role="menuitemcheckbox"][data-state="checked"] {
-  background-color: hsl(var(--primary) / 0.1);
-  border-color: hsl(var(--primary));
+  background-color: hsl(var(--primary) / 0.15);
+  border-left: 3px solid hsl(var(--primary));
 }
 
-[data-radix-dropdown-menu-content] [role="menuitemcheckbox"] [data-radix-checkbox-indicator] {
-  width: 18px !important;
-  height: 18px !important;
-  border: 2px solid hsl(var(--border));
-  border-radius: 4px;
-  background-color: hsl(var(--background));
-  transition: all 0.2s ease;
+/* Make the checkbox indicator much more visible */
+[data-radix-dropdown-menu-content] [role="menuitemcheckbox"] > span:first-child {
+  width: 22px !important;
+  height: 22px !important;
+  border: 3px solid hsl(var(--border)) !important;
+  border-radius: 6px !important;
+  background-color: hsl(var(--background)) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin-right: 12px !important;
+  flex-shrink: 0 !important;
+  transition: all 0.2s ease !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
 }
 
-[data-radix-dropdown-menu-content] [role="menuitemcheckbox"][data-state="checked"] [data-radix-checkbox-indicator] {
-  background-color: hsl(var(--primary));
-  border-color: hsl(var(--primary));
-  color: hsl(var(--primary-foreground));
+[data-radix-dropdown-menu-content] [role="menuitemcheckbox"][data-state="checked"] > span:first-child {
+  background-color: hsl(var(--primary)) !important;
+  border-color: hsl(var(--primary)) !important;
+  color: hsl(var(--primary-foreground)) !important;
 }
 
-[data-radix-dropdown-menu-content] [role="menuitemcheckbox"] [data-radix-checkbox-indicator] svg {
-  width: 12px !important;
-  height: 12px !important;
-  stroke-width: 3;
+[data-radix-dropdown-menu-content] [role="menuitemcheckbox"] svg {
+  width: 14px !important;
+  height: 14px !important;
+  stroke-width: 3 !important;
+  color: white !important;
+}
+
+/* Prevent dropdown from closing on click */
+[data-radix-dropdown-menu-content] [role="menuitemcheckbox"] {
+  pointer-events: auto;
+}
+
+[data-radix-dropdown-menu-content] [role="menuitemcheckbox"]:focus {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
 }
 
 :root {
