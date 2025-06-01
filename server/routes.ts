@@ -910,6 +910,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log("🚀 ROUTES - momentData.createdAt:", momentData.createdAt);
       console.log("🚀 ROUTES - Using selected date:", momentData.createdAt);
       
+      // Convert createdAt string to Date object for database
+      const momentDataWithDate = {
+        ...momentData,
+        createdAt: momentData.createdAt ? new Date(momentData.createdAt) : new Date(),
+        resolvedAt: momentData.resolvedAt ? new Date(momentData.resolvedAt) : null
+      };
+      
       // Check if connection exists and belongs to user
       const connection = await storage.getConnection(momentData.connectionId);
       if (!connection) {
@@ -920,7 +927,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Unauthorized to add moments to this connection" });
       }
       
-      const newMoment = await storage.createMoment(momentData);
+      const newMoment = await storage.createMoment(momentDataWithDate);
       console.log("🚀 ROUTES - Created moment result:", newMoment);
       console.log("🚀 ROUTES - Final createdAt:", newMoment.createdAt);
       
