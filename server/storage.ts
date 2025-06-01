@@ -143,8 +143,8 @@ export class MemStorage implements IStorage {
     
     this.connections.set(1, systemConnection);
     
-    // Create a test connection for the actual user to test with
-    const testConnection: Connection = {
+    // Create test connections for the actual user to test with
+    const testConnection1: Connection = {
       id: 2,
       userId: 1, // Actual test user ID
       name: "Alex",
@@ -157,9 +157,24 @@ export class MemStorage implements IStorage {
       isPrivate: false,
       createdAt: new Date()
     };
+
+    const testConnection2: Connection = {
+      id: 3,
+      userId: 1, // Actual test user ID
+      name: "Jordan",
+      relationshipStage: "Dating",
+      startDate: new Date('2025-05-15'),
+      birthday: new Date('1994-03-20'),
+      zodiacSign: "Pisces",
+      loveLanguage: "Physical Touch",
+      profileImage: null,
+      isPrivate: false,
+      createdAt: new Date()
+    };
     
-    this.connections.set(2, testConnection);
-    this.connectionId = 3; // Next connection will start from ID 3
+    this.connections.set(2, testConnection1);
+    this.connections.set(3, testConnection2);
+    this.connectionId = 4; // Next connection will start from ID 4
     console.log("Created hidden system connection to prevent empty database");
     console.log("Created test connection for user testing");
     
@@ -176,7 +191,7 @@ export class MemStorage implements IStorage {
       {
         id: this.momentId++,
         userId: 1,
-        connectionId: 2,
+        connectionId: 2, // Alex
         emoji: "😍",
         content: "Amazing date night! We had such great chemistry.",
         tags: ["Green Flag", "Quality Time", "Intimacy"],
@@ -189,6 +204,23 @@ export class MemStorage implements IStorage {
         resolutionNotes: null,
         reflection: null,
         createdAt: new Date('2025-05-24T19:30:00')
+      },
+      {
+        id: this.momentId++,
+        userId: 1,
+        connectionId: 3, // Jordan
+        emoji: "💕",
+        content: "First official date as a couple! So excited.",
+        tags: ["Dating", "Milestone", "Green Flag"],
+        isPrivate: false,
+        isIntimate: false,
+        intimacyRating: null,
+        relatedToMenstrualCycle: false,
+        isResolved: false,
+        resolvedAt: null,
+        resolutionNotes: null,
+        reflection: null,
+        createdAt: new Date('2025-05-25T18:00:00')
       },
       {
         id: this.momentId++,
