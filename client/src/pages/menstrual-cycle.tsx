@@ -430,9 +430,10 @@ export default function MenstrualCyclePage() {
 
   const getCycleForDay = (day: Date) => {
     return filteredCycles.find(cycle => {
-      const start = new Date(cycle.startDate);
-      const end = cycle.endDate ? new Date(cycle.endDate) : new Date();
-      return day >= start && day <= end;
+      const start = startOfDay(new Date(cycle.startDate));
+      const end = cycle.endDate ? startOfDay(new Date(cycle.endDate)) : new Date();
+      const checkDay = startOfDay(day);
+      return checkDay >= start && checkDay <= end;
     });
   };
 
@@ -879,10 +880,13 @@ export default function MenstrualCyclePage() {
                       });
                     }
                     
-                    // Show prediction if it matches this day
-                    if (isSameDay(day, nextPeriodDate)) {
+                    // Show prediction for the full expected menstrual phase (5 days)
+                    const nextPeriodEnd = addDays(nextPeriodDate, 4); // 5-day period
+                    if (day >= nextPeriodDate && day <= nextPeriodEnd) {
                       isPredictedPeriod = true;
-                      console.log('Found predicted period date:', day.toDateString(), nextPeriodDate.toDateString());
+                      if (isSameDay(day, nextPeriodDate)) {
+                        console.log('Found predicted period start:', day.toDateString(), nextPeriodDate.toDateString());
+                      }
                     }
                     
                     // Get current cycle phase for the day (only if we have a current cycle)
