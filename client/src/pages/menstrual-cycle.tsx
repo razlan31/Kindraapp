@@ -191,7 +191,12 @@ export default function MenstrualCyclePage() {
   // Prevent auto-focus on date input when modal opens
   useEffect(() => {
     if (isDialogOpen && startDateRef.current) {
-      startDateRef.current.blur();
+      // Use setTimeout to ensure this runs after browser's automatic focus
+      setTimeout(() => {
+        if (startDateRef.current) {
+          startDateRef.current.blur();
+        }
+      }, 100);
     }
   }, [isDialogOpen]);
 
