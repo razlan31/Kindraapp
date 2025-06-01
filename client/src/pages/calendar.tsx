@@ -775,76 +775,128 @@ export default function Calendar() {
                 {/* Filter Checkboxes */}
                 <div className="mt-4 pt-3 border-t border-border/20">
                   <h4 className="text-xs font-medium mb-2 text-muted-foreground">Show on Calendar</h4>
-                  <div className="grid grid-cols-3 grid-rows-3 gap-2 text-xs" style={{ gridAutoFlow: 'column' }}>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="positive"
-                        checked={filters.positive}
-                        onCheckedChange={(checked) => 
-                          setFilters(prev => ({ ...prev, positive: !!checked }))
-                        }
-                      />
-                      <label htmlFor="positive" className="text-xs cursor-pointer">Positive</label>
+                  
+                  {/* Moment Filters */}
+                  <div className="mb-3">
+                    <h5 className="text-xs font-medium mb-2 text-muted-foreground/80">Moments</h5>
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="positive"
+                          checked={filters.positive}
+                          onCheckedChange={(checked) => 
+                            setFilters(prev => ({ ...prev, positive: !!checked }))
+                          }
+                        />
+                        <label htmlFor="positive" className="text-xs cursor-pointer">Positive</label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="neutral"
+                          checked={filters.neutral}
+                          onCheckedChange={(checked) => 
+                            setFilters(prev => ({ ...prev, neutral: !!checked }))
+                          }
+                        />
+                        <label htmlFor="neutral" className="text-xs cursor-pointer">Neutral</label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="negative"
+                          checked={filters.negative}
+                          onCheckedChange={(checked) => 
+                            setFilters(prev => ({ ...prev, negative: !!checked }))
+                          }
+                        />
+                        <label htmlFor="negative" className="text-xs cursor-pointer">Negative</label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="conflict"
+                          checked={filters.conflict}
+                          onCheckedChange={(checked) => 
+                            setFilters(prev => ({ ...prev, conflict: !!checked }))
+                          }
+                        />
+                        <label htmlFor="conflict" className="text-xs cursor-pointer">Conflicts</label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="intimacy"
+                          checked={filters.intimacy}
+                          onCheckedChange={(checked) => 
+                            setFilters(prev => ({ ...prev, intimacy: !!checked }))
+                          }
+                        />
+                        <label htmlFor="intimacy" className="text-xs cursor-pointer">Intimacy</label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="plan"
+                          checked={filters.plan}
+                          onCheckedChange={(checked) => 
+                            setFilters(prev => ({ ...prev, plan: !!checked }))
+                          }
+                        />
+                        <label htmlFor="plan" className="text-xs cursor-pointer">Plans</label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="milestone"
+                          checked={filters.milestone}
+                          onCheckedChange={(checked) => 
+                            setFilters(prev => ({ ...prev, milestone: !!checked }))
+                          }
+                        />
+                        <label htmlFor="milestone" className="text-xs cursor-pointer">Milestones</label>
+                      </div>
                     </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="neutral"
-                        checked={filters.neutral}
-                        onCheckedChange={(checked) => 
-                          setFilters(prev => ({ ...prev, neutral: !!checked }))
-                        }
-                      />
-                      <label htmlFor="neutral" className="text-xs cursor-pointer">Neutral</label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="negative"
-                        checked={filters.negative}
-                        onCheckedChange={(checked) => 
-                          setFilters(prev => ({ ...prev, negative: !!checked }))
-                        }
-                      />
-                      <label htmlFor="negative" className="text-xs cursor-pointer">Negative</label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="conflict"
-                        checked={filters.conflict}
-                        onCheckedChange={(checked) => 
-                          setFilters(prev => ({ ...prev, conflict: !!checked }))
-                        }
-                      />
-                      <label htmlFor="conflict" className="text-xs cursor-pointer">Conflicts</label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="intimacy"
-                        checked={filters.intimacy}
-                        onCheckedChange={(checked) => 
-                          setFilters(prev => ({ ...prev, intimacy: !!checked }))
-                        }
-                      />
-                      <label htmlFor="intimacy" className="text-xs cursor-pointer">Intimacy</label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="plan"
-                        checked={filters.plan}
-                        onCheckedChange={(checked) => 
-                          setFilters(prev => ({ ...prev, plan: !!checked }))
-                        }
-                      />
-                      <label htmlFor="plan" className="text-xs cursor-pointer">Plans</label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="milestone"
-                        checked={filters.milestone}
-                        onCheckedChange={(checked) => 
-                          setFilters(prev => ({ ...prev, milestone: !!checked }))
-                        }
-                      />
-                      <label htmlFor="milestone" className="text-xs cursor-pointer">Milestones</label>
+                  </div>
+
+                  {/* Cycle Filters */}
+                  <div>
+                    <h5 className="text-xs font-medium mb-2 text-muted-foreground/80">Cycle Phases</h5>
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="menstrual"
+                          checked={filters.menstrual}
+                          onCheckedChange={(checked) => 
+                            setFilters(prev => ({ ...prev, menstrual: !!checked }))
+                          }
+                        />
+                        <label htmlFor="menstrual" className="text-xs cursor-pointer">Period</label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="fertile"
+                          checked={filters.fertile}
+                          onCheckedChange={(checked) => 
+                            setFilters(prev => ({ ...prev, fertile: !!checked }))
+                          }
+                        />
+                        <label htmlFor="fertile" className="text-xs cursor-pointer">Fertile</label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="ovulation"
+                          checked={filters.ovulation}
+                          onCheckedChange={(checked) => 
+                            setFilters(prev => ({ ...prev, ovulation: !!checked }))
+                          }
+                        />
+                        <label htmlFor="ovulation" className="text-xs cursor-pointer">Ovulation</label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="luteal"
+                          checked={filters.luteal}
+                          onCheckedChange={(checked) => 
+                            setFilters(prev => ({ ...prev, luteal: !!checked }))
+                          }
+                        />
+                        <label htmlFor="luteal" className="text-xs cursor-pointer">Luteal</label>
+                      </div>
                     </div>
                   </div>
                 </div>
