@@ -266,6 +266,9 @@ export default function MenstrualCyclePage() {
 
   // Get all cycles for a specific day (for multi-person view)
   const getCyclesForDay = (day: Date) => {
+    // If no cycles exist at all, return empty array
+    if (!cycles || cycles.length === 0) return [];
+    
     if (selectedPersonIds.length === 0) return cycles;
     
     return cycles.filter(cycle => {
