@@ -1214,7 +1214,7 @@ export default function MenstrualCyclePage() {
 
         {/* Add/Edit Cycle Dialog */}
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogContent className="max-w-sm mx-auto">
+          <DialogContent className="max-w-sm mx-auto max-h-[80vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>
                 {editingCycle ? 'Update Cycle' : 'Add New Cycle'}
