@@ -354,7 +354,7 @@ export default function MenstrualCyclePage() {
             
             const predictedStartDay = startOfDay(predictedStart);
             const predictedPeriodEndDay = startOfDay(predictedPeriodEnd);
-            const checkDayStart = startOfDay(checkDay);
+            const checkDayStart = startOfDay(new Date(checkDay));
             
             console.log(`Cycle ${i} prediction:`, {
               predictedStart: predictedStart.toISOString(),
