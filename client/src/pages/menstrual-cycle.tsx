@@ -858,17 +858,23 @@ export default function MenstrualCyclePage() {
                   let isPredictedPeriod = false;
                   let predictionPhase = null;
                   
-                  if (currentCycle) {
-                    // For ongoing cycles (no end date), use average cycle length to predict next period
-                    const nextPeriodDate = addDays(new Date(currentCycle.startDate), avgCycleLength);
+                  // Try to predict next period from either current cycle or last completed cycle
+                  const cycleForPrediction = currentCycle || (filteredCycles.length > 0 ? filteredCycles[0] : null);
+                  
+                  if (cycleForPrediction) {
+                    // Use average cycle length, or default to 28 days for first cycle
+                    const predictionLength = avgCycleLength > 0 ? avgCycleLength : 28;
+                    const nextPeriodDate = addDays(new Date(cycleForPrediction.startDate), predictionLength);
                     
                     // Debug logging
                     if (day.getDate() === 1) {
                       console.log('Debug next period:', {
-                        currentCycleStart: currentCycle.startDate,
+                        cycleStart: cycleForPrediction.startDate,
                         avgCycleLength,
+                        predictionLength,
                         nextPeriodDate: nextPeriodDate.toISOString(),
-                        today: new Date().toISOString()
+                        today: new Date().toISOString(),
+                        cyclesCount: filteredCycles.length
                       });
                     }
                     
