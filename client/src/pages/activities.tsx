@@ -542,11 +542,13 @@ export default function Activities() {
                 
                 if (activeTab === 'plans') {
                   // Open plan modal
-                  if (selectedConnection && connections.length > 0) {
-                    const connection = connections.find(c => c.id === selectedConnection);
+                  if (selectedConnections.length > 0) {
+                    // Use the first selected connection when multiple are selected
+                    const firstSelectedId = selectedConnections[0];
+                    const connection = connections.find(c => c.id === firstSelectedId);
                     console.log("Opening plan modal with connection:", connection);
                     if (connection) {
-                      setModalConnection(selectedConnection, connection);
+                      setModalConnection(firstSelectedId, connection);
                       openPlanModal(connection);
                     }
                   } else {
@@ -557,11 +559,13 @@ export default function Activities() {
                   }
                 } else {
                   // Set the connection in modal context before opening
-                  if (selectedConnection && connections.length > 0) {
-                    const connection = connections.find(c => c.id === selectedConnection);
+                  if (selectedConnections.length > 0) {
+                    // Use the first selected connection when multiple are selected
+                    const firstSelectedId = selectedConnections[0];
+                    const connection = connections.find(c => c.id === firstSelectedId);
                     console.log("Opening moment modal with connection:", connection);
                     if (connection) {
-                      setModalConnection(selectedConnection, connection);
+                      setModalConnection(firstSelectedId, connection);
                     }
                   } else {
                     // If "All Connections" is selected, clear the modal connection so user can choose
