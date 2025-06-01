@@ -862,8 +862,18 @@ export default function MenstrualCyclePage() {
                     // For ongoing cycles (no end date), use average cycle length to predict next period
                     const nextPeriodDate = addDays(new Date(currentCycle.startDate), avgCycleLength);
                     
-                    // Only show prediction if it's in the future
-                    if (isSameDay(day, nextPeriodDate) && nextPeriodDate > new Date()) {
+                    // Debug logging
+                    if (day.getDate() === 1) {
+                      console.log('Debug next period:', {
+                        currentCycleStart: currentCycle.startDate,
+                        avgCycleLength,
+                        nextPeriodDate: nextPeriodDate.toISOString(),
+                        today: new Date().toISOString()
+                      });
+                    }
+                    
+                    // Show prediction if it matches this day
+                    if (isSameDay(day, nextPeriodDate)) {
                       isPredictedPeriod = true;
                     }
                     
