@@ -501,7 +501,13 @@ export default function Activities() {
               <Button 
                 variant="outline" 
                 className="w-full justify-between connection-picker-trigger"
-                onClick={() => setDropdownOpen(!dropdownOpen)}
+                onClick={(e) => {
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  document.documentElement.style.setProperty('--dropdown-top', `${rect.bottom + 4}px`);
+                  document.documentElement.style.setProperty('--dropdown-left', `${rect.left}px`);
+                  document.documentElement.style.setProperty('--dropdown-width', `${rect.width}px`);
+                  setDropdownOpen(!dropdownOpen);
+                }}
               >
                 <span>
                   {selectedConnections.length === 0 ? 'All Connections' : 
@@ -513,7 +519,12 @@ export default function Activities() {
               </Button>
               
               {dropdownOpen && (
-                <div className="absolute top-full left-0 w-full mt-1 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md shadow-2xl max-h-64 flex flex-col" style={{zIndex: 999999, position: 'fixed'}}>
+                <div className="fixed bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md shadow-2xl max-h-64 flex flex-col" style={{
+                  zIndex: 999999,
+                  top: 'var(--dropdown-top, 0px)',
+                  left: 'var(--dropdown-left, 0px)', 
+                  width: 'var(--dropdown-width, 200px)'
+                }}>
                   {/* Connection list - scrollable area */}
                   <div className="overflow-y-auto flex-1 p-1">
                     {/* All Connections Option */}
