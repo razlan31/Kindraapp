@@ -45,6 +45,11 @@ export default function Activities() {
     const savedTab = localStorage.getItem('activitiesTab');
     return (savedTab as any) || 'timeline';
   });
+
+  // Save tab selection to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('activitiesTab', activeTab);
+  }, [activeTab]);
   const [timelineFilter, setTimelineFilter] = useState<'all' | 'moments' | 'conflicts' | 'intimacy' | 'plans' | 'milestones'>('all');
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
