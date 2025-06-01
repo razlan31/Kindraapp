@@ -660,7 +660,98 @@ export default function MenstrualCyclePage() {
           </div>
         </section>
 
-        {/* Removed confusing color status cards - now using alphabetical initials in calendar */}
+        {/* User's Own Cycle Tracking */}
+        {selectedPersonIds.length > 0 && (
+          <section className="px-4 py-2 space-y-4">
+            {selectedPersonIds.map((personId) => {
+              const person = trackablePersons.find(p => p.id === personId);
+              if (!person) return null;
+              
+              const personCycles = cycles.filter(cycle => {
+                if (personId === 0) {
+                  return cycle.connectionId === null; // User's cycles
+                } else {
+                  return cycle.connectionId === personId; // Connection's cycles
+                }
+              });
+              
+              const currentCycle = personCycles.find(cycle => !cycle.endDate);
+              const avgCycleLength = calculateCycleLength(personCycles);
+              const currentDay = currentCycle ? differenceInDays(new Date(), new Date(currentCycle.startDate)) + 1 : 0;
+              const currentPhase = currentCycle ? getCyclePhase(currentDay, avgCycleLength) : null;
+              
+              return (
+                <Card key={personId} className="p-4 bg-pink-50 dark:bg-pink-950/20 border-pink-200 dark:border-pink-800">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full bg-pink-500"></div>
+                      <h3 className="font-medium text-pink-800 dark:text-pink-200">
+                        {person.name}'s Cycle
+                      </h3>
+                    </div>
+                    <Circle className="h-5 w-5 text-pink-500" />
+                  </div>
+                  
+                  {currentCycle ? (
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <p className="text-sm text-pink-700 dark:text-pink-300">
+                          Day {currentDay} of cycle
+                        </p>
+                        {currentPhase && (
+                          <Badge className={`${currentPhase.color} text-white text-xs`}>
+                            {currentPhase.phase}
+                          </Badge>
+                        )}
+                      </div>
+                      
+                      {currentPhase && (
+                        <p className="text-xs text-pink-600 dark:text-pink-400">
+                          {currentPhase.description}
+                        </p>
+                      )}
+                      
+                      <p className="text-xs text-pink-600 dark:text-pink-400">
+                        Started {format(new Date(currentCycle.startDate), 'MMM d, yyyy')}
+                      </p>
+                      
+                      <Button 
+                        onClick={() => handleEdit(currentCycle)}
+                        size="sm"
+                        className="w-full bg-pink-600 hover:bg-pink-700 text-white"
+                      >
+                        <Edit3 className="h-4 w-4 mr-2" />
+                        Update Current Cycle
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      <p className="text-sm text-pink-700 dark:text-pink-300">
+                        No active cycle
+                      </p>
+                      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                        <DialogTrigger asChild>
+                          <Button 
+                            size="sm"
+                            className="w-full bg-pink-600 hover:bg-pink-700 text-white"
+                            onClick={() => {
+                              setEditingCycle(null);
+                              setSelectedConnectionId(personId === 0 ? null : personId);
+                              resetForm();
+                            }}
+                          >
+                            <Plus className="h-4 w-4 mr-2" />
+                            Start New Cycle
+                          </Button>
+                        </DialogTrigger>
+                      </Dialog>
+                    </div>
+                  )}
+                </Card>
+              );
+            })}
+          </section>
+        )}
 
 
 
