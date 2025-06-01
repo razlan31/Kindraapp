@@ -187,21 +187,8 @@ export default function MenstrualCyclePage() {
   const [viewMode, setViewMode] = useState<'calendar' | 'list'>('calendar');
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const startDateRef = useRef<HTMLInputElement>(null);
-  const [inputType, setInputType] = useState<'text' | 'date'>('text');
 
-  // Prevent auto-focus on date input when modal opens
-  useEffect(() => {
-    if (isDialogOpen) {
-      // Start with text input to prevent date picker auto-open
-      setInputType('text');
-      // Change to date input after a short delay
-      setTimeout(() => {
-        setInputType('date');
-      }, 200);
-    } else {
-      setInputType('text');
-    }
-  }, [isDialogOpen]);
+  // Note: Date picker auto-opening is browser behavior that's difficult to prevent consistently
 
   // Form state
   const [formData, setFormData] = useState({
@@ -1244,10 +1231,9 @@ export default function MenstrualCyclePage() {
                   <Input
                     ref={startDateRef}
                     id="startDate"
-                    type={inputType}
+                    type="date"
                     value={formData.startDate}
                     onChange={(e) => setFormData(prev => ({ ...prev, startDate: e.target.value }))}
-                    placeholder="YYYY-MM-DD"
                     required
                   />
                 </div>
