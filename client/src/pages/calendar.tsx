@@ -338,8 +338,8 @@ export default function Calendar() {
 
   // Filter moments based on selected filters and connection
   const moments = allCalendarEntries.filter(moment => {
-    // Connection filter
-    if (selectedConnectionId && moment.connectionId !== selectedConnectionId) return false;
+    // Connection filter - use array-based filtering
+    if (selectedConnectionIds.length > 0 && !selectedConnectionIds.includes(moment.connectionId)) return false;
     
     // Check different moment types
     const isConflict = moment.tags?.includes('Conflict') || moment.emoji === '⚡';
