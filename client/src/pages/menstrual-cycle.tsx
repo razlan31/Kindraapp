@@ -670,60 +670,124 @@ export default function MenstrualCyclePage() {
 
             {/* Cycle Predictions */}
             {(() => {
-              const lastCompletedCycle = getPastCycles()[0];
+              const currentCycle = getCurrentCycle();
+              const completedCycles = getPastCycles();
               const avgCycleLength = calculateCycleLength(filteredCycles);
               
-              if (!lastCompletedCycle || filteredCycles.length < 2) {
+              // Show predictions even with just one cycle (current or completed)
+              const hasCycleData = currentCycle || completedCycles.length > 0;
+              
+              if (!hasCycleData) {
                 return (
                   <Card className="p-4">
                     <h3 className="font-medium text-foreground mb-2">Cycle Predictions</h3>
                     <p className="text-sm text-muted-foreground">
-                      Add more cycle data to see predictions and patterns
+                      Start tracking your first cycle to see predictions and patterns
                     </p>
                   </Card>
                 );
               }
-              
-              const predictions = predictNextCycles(lastCompletedCycle, avgCycleLength, 3);
               
               return (
                 <Card className="p-4">
                   <div className="flex items-center justify-between mb-3">
                     <h3 className="font-medium text-foreground">Cycle Predictions</h3>
                     <Badge variant="outline" className="text-xs">
-                      Avg {avgCycleLength} days
+                      {completedCycles.length > 0 ? `Avg ${avgCycleLength} days` : 'Default 28 days'}
                     </Badge>
                   </div>
                   
                   <div className="space-y-3">
-                    {predictions.map((prediction, index) => (
-                      <div key={index} className={`p-3 rounded-lg border ${prediction.isNext ? 'bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800' : 'bg-gray-50 dark:bg-gray-900'}`}>
+                    {/* Current cycle predictions */}
+                    {currentCycle && (
+                      <div className="p-3 rounded-lg border bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800">
                         <div className="flex items-center justify-between mb-2">
-                          <p className={`text-sm font-medium ${prediction.isNext ? 'text-blue-700 dark:text-blue-300' : 'text-gray-700 dark:text-gray-300'}`}>
-                            {prediction.phase}
+                          <p className="text-sm font-medium text-blue-700 dark:text-blue-300">
+                            Current Cycle Timeline
                           </p>
-                          <Badge className="bg-red-500 text-white text-xs">
-                            Period
+                          <Badge className="bg-pink-500 text-white text-xs">
+                            Active
                           </Badge>
                         </div>
                         
-                        <p className={`text-xs ${prediction.isNext ? 'text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-400'}`}>
-                          {format(prediction.startDate, 'MMM d, yyyy')}
-                        </p>
-                        
-                        <div className="mt-2 pt-2 border-t border-gray-200 dark:border-gray-700">
-                          <p className="text-xs text-green-600 dark:text-green-400">
-                            Ovulation: {format(prediction.ovulationDate, 'MMM d')} 
-                            (Day {calculateOvulationDay(avgCycleLength)})
+                        <div className="space-y-2">
+                          <p className="text-xs text-blue-600 dark:text-blue-400">
+                            Started: {format(new Date(currentCycle.startDate), 'MMM d, yyyy')}
                           </p>
+                          
+                          {/* Ovulation prediction for current cycle */}
+                          <div className="bg-green-50 dark:bg-green-950 p-2 rounded">
+                            <p className="text-xs text-green-700 dark:text-green-300 font-medium">
+                              Predicted Ovulation: {format(addDays(new Date(currentCycle.startDate), calculateOvulationDay(avgCycleLength) - 1), 'MMM d')} 
+                              (Day {calculateOvulationDay(avgCycleLength)})
+                            </p>
+                          </div>
+                          
+                          {/* Next period prediction */}
+                          <div className="bg-red-50 dark:bg-red-950 p-2 rounded">
+                            <p className="text-xs text-red-700 dark:text-red-300 font-medium">
+                              Next Period Expected: {format(addDays(new Date(currentCycle.startDate), avgCycleLength), 'MMM d')}
+                              (Day {avgCycleLength + 1})
+                            </p>
+                          </div>
                         </div>
                       </div>
-                    ))}
+                    )}
+                    
+                    {/* Future cycle predictions */}
+                    {(() => {
+                      const baseCycle = currentCycle || completedCycles[0];
+                      if (!baseCycle) return null;
+                      
+                      const startDate = currentCycle ? 
+                        addDays(new Date(currentCycle.startDate), avgCycleLength) : 
+                        addDays(new Date(baseCycle.startDate), avgCycleLength);
+                        
+                      const futurePredictions = [];
+                      for (let i = 0; i < (currentCycle ? 2 : 3); i++) {
+                        const cycleStart = addDays(startDate, avgCycleLength * i);
+                        const ovulationDate = addDays(cycleStart, calculateOvulationDay(avgCycleLength) - 1);
+                        
+                        futurePredictions.push({
+                          startDate: cycleStart,
+                          ovulationDate,
+                          phase: i === 0 ? "Next Period" : `${i + 1} cycles ahead`,
+                          isNext: i === 0
+                        });
+                      }
+                      
+                      return futurePredictions.map((prediction, index) => (
+                        <div key={index} className={`p-3 rounded-lg border ${prediction.isNext ? 'bg-orange-50 dark:bg-orange-950 border-orange-200 dark:border-orange-800' : 'bg-gray-50 dark:bg-gray-900'}`}>
+                          <div className="flex items-center justify-between mb-2">
+                            <p className={`text-sm font-medium ${prediction.isNext ? 'text-orange-700 dark:text-orange-300' : 'text-gray-700 dark:text-gray-300'}`}>
+                              {prediction.phase}
+                            </p>
+                            <Badge className="bg-red-500 text-white text-xs">
+                              Period
+                            </Badge>
+                          </div>
+                          
+                          <p className={`text-xs ${prediction.isNext ? 'text-orange-600 dark:text-orange-400' : 'text-gray-600 dark:text-gray-400'}`}>
+                            {format(prediction.startDate, 'MMM d, yyyy')}
+                          </p>
+                          
+                          <div className="mt-2 pt-2 border-t border-gray-200 dark:border-gray-700">
+                            <p className="text-xs text-green-600 dark:text-green-400">
+                              Ovulation: {format(prediction.ovulationDate, 'MMM d')} 
+                              (Day {calculateOvulationDay(avgCycleLength)})
+                            </p>
+                          </div>
+                        </div>
+                      ));
+                    })()}
                   </div>
                   
                   <div className="mt-4 p-3 bg-yellow-50 dark:bg-yellow-950 rounded-lg">
                     <p className="text-xs text-yellow-700 dark:text-yellow-300">
-                      Predictions are based on your cycle history. Individual cycles may vary.
+                      {completedCycles.length > 0 ? 
+                        "Predictions improve with more cycle data. The tracker will adjust as you add new cycles." :
+                        "Initial predictions use a standard 28-day cycle. Accuracy improves as you track more cycles."
+                      }
                     </p>
                   </div>
                 </Card>
