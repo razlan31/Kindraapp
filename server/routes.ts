@@ -1810,7 +1810,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         continue; // No completed cycles to base pattern on for this connection
       }
 
-      const lastCompletedCycle = completedCycles[0];
+      // Find the most recently ended cycle (sort by end date, not start date)
+      const lastCompletedCycle = completedCycles.sort((a: any, b: any) => 
+        new Date(b.endDate).getTime() - new Date(a.endDate).getTime()
+      )[0];
       const lastEndDate = new Date(lastCompletedCycle.endDate);
       const nextCycleStartDate = new Date(lastEndDate);
       nextCycleStartDate.setDate(nextCycleStartDate.getDate() + 1); // Next day after cycle ends
