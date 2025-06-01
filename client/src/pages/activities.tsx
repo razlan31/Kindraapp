@@ -334,7 +334,7 @@ export default function Activities() {
     const matchesSearch = (plan.title || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
                          plan.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          connection.name.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesConnection = selectedConnection ? plan.connectionId === selectedConnection : true;
+    const matchesConnection = selectedConnections.length > 0 ? selectedConnections.includes(plan.connectionId) : true;
     
     return matchesSearch && matchesConnection;
   });
@@ -393,7 +393,7 @@ export default function Activities() {
     
     const matchesSearch = moment.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
                            connection.name.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesConnection = selectedConnection ? moment.connectionId === selectedConnection : true;
+    const matchesConnection = selectedConnections.length > 0 ? selectedConnections.includes(moment.connectionId) : true;
     
     return matchesTab && matchesSearch && matchesConnection;
   });
@@ -403,7 +403,7 @@ export default function Activities() {
     totalMoments: moments.length,
     activeTab,
     timelineFilter,
-    selectedConnection,
+    selectedConnections,
     filteredMomentsCount: filteredMoments.length,
     firstFewFiltered: filteredMoments.slice(0, 3).map(m => ({
       id: m.id,
