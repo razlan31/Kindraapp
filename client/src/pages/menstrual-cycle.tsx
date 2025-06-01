@@ -345,7 +345,7 @@ export default function MenstrualCyclePage() {
             // Use the same period duration as the last recorded cycle (period length, not full cycle)
             const periodLength = lastCycle.periodEndDate && lastCycle.startDate ? 
               differenceInDays(new Date(lastCycle.periodEndDate), new Date(lastCycle.startDate)) + 1 :
-              6; // Default 6-day period if no period end date
+              5; // Default 5-day period based on your latest cycle
               
             const predictedPeriodEnd = addDays(predictedStart, periodLength - 1); // -1 because we count inclusive
             
@@ -354,6 +354,14 @@ export default function MenstrualCyclePage() {
             
             const predictedStartDay = startOfDay(predictedStart);
             const predictedPeriodEndDay = startOfDay(predictedPeriodEnd);
+            
+            console.log(`Cycle ${i} prediction:`, {
+              predictedStart: predictedStart.toISOString(),
+              predictedPeriodEnd: predictedPeriodEnd.toISOString(),
+              checkDay: checkDay.toISOString(),
+              periodLength,
+              isMatch: checkDay >= predictedStartDay && checkDay <= predictedPeriodEndDay
+            });
             
             // Check if the day falls within this predicted period (only show during period days, not full cycle)
             if (checkDay >= predictedStartDay && checkDay <= predictedPeriodEndDay) {
