@@ -679,6 +679,7 @@ export default function MenstrualCyclePage() {
         {/* User's Own Cycle Tracking */}
         {selectedPersonIds.length > 0 && (
           <section className="px-4 py-2 space-y-4">
+            {console.log('Total cycles available:', cycles.length, cycles)}
             {selectedPersonIds.map((personId) => {
               const person = trackablePersons.find(p => p.id === personId);
               if (!person) return null;
