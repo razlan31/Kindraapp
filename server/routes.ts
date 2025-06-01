@@ -1985,6 +1985,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.patch("/api/menstrual-cycles/:id", isAuthenticated, async (req: Request, res: Response) => {
     try {
+      const userId = req.session.userId!;
       const cycleId = parseInt(req.params.id);
       const updates = req.body;
       
@@ -1996,6 +1997,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       if (!cycle) {
         return res.status(404).json({ error: "Cycle not found" });
+      }
+      
+      // If the updated cycle now has an end date, check if we need to create the next active cycle
+      if (cycle.endDate && updates.endDate) {
+        try {
+          console.log("Cycle updated with end date, checking for automatic progression");
+          const allCycles = await storage.getMenstrualCycles(userId);
+          const updatedCycles = await checkAndCreateAutomaticCycles(userId, allCycles);
+          console.log("Checked for automatic cycle progression after cycle update");
+        } catch (error) {
+          console.error("Error checking for automatic cycle progression:", error);
+          // Don't fail the request if automatic progression fails
+        }
       }
       
       res.json(cycle);
