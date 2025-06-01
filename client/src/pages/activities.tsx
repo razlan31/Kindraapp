@@ -509,7 +509,7 @@ export default function Activities() {
                   <ChevronDown className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-[var(--radix-dropdown-menu-trigger-width)] max-h-80 overflow-y-auto" sideOffset={4}>
+              <DropdownMenuContent className="w-[var(--radix-dropdown-menu-trigger-width)] max-h-64 overflow-y-auto" sideOffset={4}>
                 {/* Clear and Done buttons */}
                 <div className="flex items-center justify-between px-4 py-2 border-b border-border bg-muted/30">
                   <Button
@@ -520,6 +520,7 @@ export default function Activities() {
                       e.stopPropagation();
                       setSelectedConnections([]);
                       setHasUserSelectedConnection(true);
+                      setDropdownOpen(false);
                     }}
                     className="h-7 px-2 text-xs"
                   >
