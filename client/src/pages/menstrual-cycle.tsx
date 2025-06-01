@@ -680,22 +680,51 @@ export default function MenstrualCyclePage() {
               const currentDay = currentCycle ? differenceInDays(new Date(), new Date(currentCycle.startDate)) + 1 : 0;
               const currentPhase = currentCycle ? getCyclePhase(currentDay, avgCycleLength) : null;
               
+              // Get phase-based colors
+              const phaseColors = currentPhase ? {
+                bg: currentPhase.phase === 'Menstrual' ? 'bg-red-50 dark:bg-red-950/20' :
+                    currentPhase.phase === 'Ovulation' ? 'bg-blue-50 dark:bg-blue-950/20' :
+                    currentPhase.phase === 'Fertile' ? 'bg-green-50 dark:bg-green-950/20' :
+                    currentPhase.phase === 'Luteal' ? 'bg-purple-50 dark:bg-purple-950/20' :
+                    'bg-gray-50 dark:bg-gray-950/20',
+                border: currentPhase.phase === 'Menstrual' ? 'border-red-200 dark:border-red-800' :
+                        currentPhase.phase === 'Ovulation' ? 'border-blue-200 dark:border-blue-800' :
+                        currentPhase.phase === 'Fertile' ? 'border-green-200 dark:border-green-800' :
+                        currentPhase.phase === 'Luteal' ? 'border-purple-200 dark:border-purple-800' :
+                        'border-gray-200 dark:border-gray-800',
+                accent: currentPhase.phase === 'Menstrual' ? 'bg-red-500' :
+                        currentPhase.phase === 'Ovulation' ? 'bg-blue-600' :
+                        currentPhase.phase === 'Fertile' ? 'bg-green-500' :
+                        currentPhase.phase === 'Luteal' ? 'bg-purple-500' :
+                        'bg-gray-500',
+                text: currentPhase.phase === 'Menstrual' ? 'text-red-800 dark:text-red-200' :
+                      currentPhase.phase === 'Ovulation' ? 'text-blue-800 dark:text-blue-200' :
+                      currentPhase.phase === 'Fertile' ? 'text-green-800 dark:text-green-200' :
+                      currentPhase.phase === 'Luteal' ? 'text-purple-800 dark:text-purple-200' :
+                      'text-gray-800 dark:text-gray-200'
+              } : {
+                bg: 'bg-pink-50 dark:bg-pink-950/20',
+                border: 'border-pink-200 dark:border-pink-800',
+                accent: 'bg-pink-500',
+                text: 'text-pink-800 dark:text-pink-200'
+              };
+
               return (
-                <Card key={personId} className="p-4 bg-pink-50 dark:bg-pink-950/20 border-pink-200 dark:border-pink-800">
+                <Card key={personId} className={`p-4 ${phaseColors.bg} ${phaseColors.border}`}>
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full bg-pink-500"></div>
-                      <h3 className="font-medium text-pink-800 dark:text-pink-200">
+                      <div className={`w-3 h-3 rounded-full ${phaseColors.accent}`}></div>
+                      <h3 className={`font-medium ${phaseColors.text}`}>
                         {person.name}'s Cycle
                       </h3>
                     </div>
-                    <Circle className="h-5 w-5 text-pink-500" />
+                    <Circle className={`h-5 w-5 ${phaseColors.accent.replace('bg-', 'text-')}`} />
                   </div>
                   
                   {currentCycle ? (
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
-                        <p className="text-sm text-pink-700 dark:text-pink-300">
+                        <p className={`text-sm ${phaseColors.text}`}>
                           Day {currentDay} of cycle
                         </p>
                         {currentPhase && (
@@ -706,19 +735,19 @@ export default function MenstrualCyclePage() {
                       </div>
                       
                       {currentPhase && (
-                        <p className="text-xs text-pink-600 dark:text-pink-400">
+                        <p className={`text-xs ${phaseColors.text} opacity-80`}>
                           {currentPhase.description}
                         </p>
                       )}
                       
-                      <p className="text-xs text-pink-600 dark:text-pink-400">
+                      <p className={`text-xs ${phaseColors.text} opacity-80`}>
                         Started {format(new Date(currentCycle.startDate), 'MMM d, yyyy')}
                       </p>
                       
                       <Button 
                         onClick={() => handleEdit(currentCycle)}
                         size="sm"
-                        className="w-full bg-pink-600 hover:bg-pink-700 text-white"
+                        className={`w-full ${phaseColors.accent} hover:opacity-90 text-white`}
                       >
                         <Edit3 className="h-4 w-4 mr-2" />
                         Update Current Cycle
@@ -726,17 +755,16 @@ export default function MenstrualCyclePage() {
                     </div>
                   ) : (
                     <div className="space-y-3">
-                      <p className="text-sm text-pink-700 dark:text-pink-300">
+                      <p className={`text-sm ${phaseColors.text}`}>
                         No active cycle
                       </p>
                       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                         <DialogTrigger asChild>
                           <Button 
                             size="sm"
-                            className="w-full bg-pink-600 hover:bg-pink-700 text-white"
+                            className={`w-full ${phaseColors.accent} hover:opacity-90 text-white`}
                             onClick={() => {
                               setEditingCycle(null);
-                              setSelectedConnectionId(personId === 0 ? null : personId);
                               resetForm();
                             }}
                           >
