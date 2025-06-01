@@ -75,26 +75,26 @@ const getCyclePhase = (dayInCycle: number, cycleLength: number): { phase: string
   if (dayInCycle <= 5) {
     return {
       phase: "Menstrual",
-      color: "bg-red-500",
+      color: "bg-pink-500",
       description: "Period days"
-    };
-  } else if (dayInCycle <= ovulationDay - 3) {
-    return {
-      phase: "Follicular",
-      color: "bg-blue-500",
-      description: "Pre-ovulation phase"
     };
   } else if (dayInCycle >= ovulationDay - 2 && dayInCycle <= ovulationDay + 2) {
     return {
       phase: "Ovulation",
-      color: "bg-green-500",
+      color: "bg-blue-600",
       description: "Fertile window"
+    };
+  } else if (dayInCycle > ovulationDay + 2) {
+    return {
+      phase: "Luteal",
+      color: "bg-purple-500",
+      description: "Post-ovulation phase"
     };
   } else {
     return {
-      phase: "Luteal",
-      color: "bg-yellow-500",
-      description: "Post-ovulation phase"
+      phase: "Follicular",
+      color: "bg-green-500",
+      description: "Pre-ovulation phase"
     };
   }
 };
@@ -910,10 +910,15 @@ export default function MenstrualCyclePage() {
                         </div>
                       )}
                       
-                      {cycle && (stage === 'follicular' || stage === 'luteal') && (
-                        <div className={`w-8 h-8 rounded-full ${getStageColor(stage)} flex items-center justify-center text-white font-medium`}>
+                      {cycle && stage === 'luteal' && (
+                        <div className="w-8 h-8 rounded-full bg-purple-500 flex items-center justify-center text-white font-medium">
                           {format(day, 'd')}
                         </div>
+                      )}
+                      
+                      {/* Follicular stage - tracked but not displayed */}
+                      {cycle && stage === 'follicular' && (
+                        <span className="text-gray-700 dark:text-gray-300 font-medium">{format(day, 'd')}</span>
                       )}
                       
                       {/* Predicted ovulation day - dotted circle */}
@@ -941,14 +946,10 @@ export default function MenstrualCyclePage() {
 
               {/* Legend */}
               <div className="mt-4 space-y-3">
-                <div className="grid grid-cols-2 gap-2 text-xs">
+                <div className="grid grid-cols-1 gap-2 text-xs">
                   <div className="flex items-center gap-2">
                     <div className="w-4 h-4 rounded-full bg-pink-500"></div>
                     <span>Menstrual phase</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded-full bg-green-500"></div>
-                    <span>Follicular</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="w-4 h-4 flex items-center justify-center text-blue-600 font-bold border border-blue-600 rounded">14</div>
@@ -956,7 +957,7 @@ export default function MenstrualCyclePage() {
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="w-4 h-4 rounded-full bg-purple-500"></div>
-                    <span>Luteal</span>
+                    <span>Luteal phase</span>
                   </div>
                 </div>
                 
