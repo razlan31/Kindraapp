@@ -316,7 +316,7 @@ export default function Activities() {
   // Use only real moments from the database (including real milestones)
   const allTimelineEntries = moments;
 
-  // Filter moments based on tab, search and selected connection - Add refreshTrigger to force updates
+  // Filter moments based on tab, search and selected connection
   const filteredMoments = allTimelineEntries.filter(moment => {
     const connection = connections.find(c => c.id === moment.connectionId);
     if (!connection) return false;
@@ -366,8 +366,6 @@ export default function Activities() {
     const matchesSearch = moment.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
                            connection.name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesConnection = selectedConnection ? moment.connectionId === selectedConnection : true;
-    
-
     
     return matchesTab && matchesSearch && matchesConnection;
   });
@@ -686,7 +684,7 @@ export default function Activities() {
                 {/* Timeline line */}
                 <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gradient-to-b from-blue-200 via-purple-200 to-pink-200 dark:from-blue-800 dark:via-purple-800 dark:to-pink-800"></div>
                 
-                <div className="space-y-8" key={`timeline-${moments.length}-${refreshTrigger}`}>
+                <div className="space-y-8" key={`timeline-${moments.length}-${filteredMoments.length}`}>
                   {(() => {
                     // Group timeline entries by date
                     const timelineGrouped = filteredMoments
@@ -944,7 +942,7 @@ export default function Activities() {
             )
           ) : filteredMoments.length > 0 ? (
             // Regular tabbed view
-            <div key={`entries-${moments.length}-${refreshTrigger}`}>
+            <div key={`entries-${moments.length}-${filteredMoments.length}`}>
               {sortedDates.map(date => (
                 <div key={date} className="mb-6">
                   <div className="flex items-center mb-2">
