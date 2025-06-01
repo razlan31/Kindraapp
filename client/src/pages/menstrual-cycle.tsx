@@ -90,7 +90,7 @@ const getCyclePhase = (dayInCycle: number, cycleLength: number): { phase: string
   } else if (dayInCycle >= fertileWindowStart && dayInCycle < ovulationDay) {
     return {
       phase: "Fertile",
-      color: "bg-green-500",
+      color: "bg-blue-300",
       description: "Fertile window"
     };
   } else if (dayInCycle > ovulationDay) {
@@ -872,7 +872,7 @@ export default function MenstrualCyclePage() {
                               let stageColor = colors.accent;
                               if (stage === 'menstrual') stageColor = 'bg-red-500';
                               else if (stage === 'ovulation') stageColor = 'bg-blue-600';
-                              else if (stage === 'fertile') stageColor = 'bg-green-500';
+                              else if (stage === 'fertile') stageColor = 'bg-blue-300';
                               else if (stage === 'luteal') stageColor = 'bg-purple-500';
                               
                               return (
@@ -920,7 +920,7 @@ export default function MenstrualCyclePage() {
                               );
                             } else if (stage === 'fertile') {
                               return (
-                                <div className="w-8 h-8 rounded-full bg-green-500 flex flex-col items-center justify-center text-white">
+                                <div className="w-8 h-8 rounded-full bg-blue-300 flex flex-col items-center justify-center text-white">
                                   <span className="text-xs font-bold">{initial}</span>
                                   <span className="text-xs">{format(day, 'd')}</span>
                                 </div>
@@ -957,7 +957,7 @@ export default function MenstrualCyclePage() {
                     <span>Menstrual phase (with person initial)</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded-full bg-green-500 flex items-center justify-center text-white text-xs font-bold">A</div>
+                    <div className="w-4 h-4 rounded-full bg-blue-300 flex items-center justify-center text-white text-xs font-bold">A</div>
                     <span>Fertile window (with person initial)</span>
                   </div>
                   <div className="flex items-center gap-2">
