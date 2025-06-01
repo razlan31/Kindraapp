@@ -701,7 +701,7 @@ export default function MenstrualCyclePage() {
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" className="w-full justify-between">
                   <span>
-                    {selectedPersonIds.length === 0 ? 'All People' : 
+                    {selectedPersonIds.length === 0 ? 'Choose connection' : 
                      selectedPersonIds.length === 1 ? 
                        trackablePersons.find(p => p.id === selectedPersonIds[0])?.name || 'Unknown' :
                      `${selectedPersonIds.length} people selected`}
@@ -716,7 +716,7 @@ export default function MenstrualCyclePage() {
                 >
                   <div className="flex items-center gap-2">
                     <Circle className="h-4 w-4" />
-                    All People
+                    All Connections
                   </div>
                 </DropdownMenuItem>
                 <Separator className="my-1" />
