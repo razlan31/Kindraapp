@@ -127,6 +127,10 @@ export default function Calendar() {
     conflict: true,
     plan: true,
     milestone: true,
+    menstrual: true,
+    fertile: true,
+    ovulation: true,
+    luteal: true,
   });
   
   // Connection filter state
@@ -181,6 +185,91 @@ export default function Calendar() {
     queryKey: ["/api/milestones", selectedConnectionId],
     staleTime: 0,
   });
+
+  // Fetch menstrual cycles
+  const { data: cycles = [] } = useQuery<MenstrualCycle[]>({
+    queryKey: ['/api/menstrual-cycles'],
+    staleTime: 0,
+  });
+
+  // Menstrual cycle calculation functions
+  const getCyclePhaseForDay = (day: Date, connectionId: number | null) => {
+    if (!connectionId) return null;
+    
+    const relevantCycles = cycles.filter(cycle => cycle.connectionId === connectionId);
+    
+    // Find the cycle that contains this day
+    for (const cycle of relevantCycles) {
+      const cycleStart = new Date(cycle.startDate);
+      const cycleEnd = cycle.endDate ? new Date(cycle.endDate) : new Date();
+      
+      if (day >= cycleStart && day <= cycleEnd) {
+        const dayOfCycle = Math.floor((day.getTime() - cycleStart.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+        const periodEnd = new Date(cycle.periodEndDate);
+        const periodDays = Math.floor((periodEnd.getTime() - cycleStart.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+        
+        // Calculate cycle length (use 28 as default if cycle is still active)
+        let cycleLength = 28;
+        if (cycle.endDate) {
+          cycleLength = Math.floor((new Date(cycle.endDate).getTime() - cycleStart.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+        }
+        
+        // Ovulation occurs 14 days before cycle end
+        const ovulationDay = cycleLength - 14;
+        
+        if (dayOfCycle <= periodDays) {
+          return { phase: 'menstrual', day: dayOfCycle, cycle };
+        } else if (dayOfCycle <= ovulationDay - 3) {
+          return { phase: 'follicular', day: dayOfCycle, cycle };
+        } else if (dayOfCycle >= ovulationDay - 2 && dayOfCycle <= ovulationDay + 2) {
+          return { phase: 'fertile', day: dayOfCycle, cycle, isOvulation: dayOfCycle === ovulationDay };
+        } else {
+          return { phase: 'luteal', day: dayOfCycle, cycle };
+        }
+      }
+    }
+    
+    return null;
+  };
+
+  const getCycleDisplayInfo = (phaseInfo: any) => {
+    if (!phaseInfo) return null;
+    
+    switch (phaseInfo.phase) {
+      case 'menstrual':
+        return {
+          color: 'bg-red-100 dark:bg-red-900/30 border-red-300 dark:border-red-700',
+          indicator: '🩸',
+          title: `Period Day ${phaseInfo.day}`,
+          description: 'Menstrual phase'
+        };
+      case 'follicular':
+        return {
+          color: 'bg-green-100 dark:bg-green-900/30 border-green-300 dark:border-green-700',
+          indicator: '🌱',
+          title: `Cycle Day ${phaseInfo.day}`,
+          description: 'Follicular phase'
+        };
+      case 'fertile':
+        return {
+          color: phaseInfo.isOvulation 
+            ? 'bg-pink-100 dark:bg-pink-900/30 border-pink-300 dark:border-pink-700'
+            : 'bg-yellow-100 dark:bg-yellow-900/30 border-yellow-300 dark:border-yellow-700',
+          indicator: phaseInfo.isOvulation ? '🥚' : '💛',
+          title: phaseInfo.isOvulation ? `Ovulation Day ${phaseInfo.day}` : `Fertile Day ${phaseInfo.day}`,
+          description: phaseInfo.isOvulation ? 'Ovulation' : 'Fertile window'
+        };
+      case 'luteal':
+        return {
+          color: 'bg-purple-100 dark:bg-purple-900/30 border-purple-300 dark:border-purple-700',
+          indicator: '🌙',
+          title: `Cycle Day ${phaseInfo.day}`,
+          description: 'Luteal phase'
+        };
+      default:
+        return null;
+    }
+  };
 
   // Connection modal helper functions
   const openConnectionModal = () => {
@@ -619,34 +708,67 @@ export default function Calendar() {
             </div>
             {!isLegendCollapsed && (
               <>
-                <div className="grid grid-cols-3 grid-rows-3 gap-2 text-xs" style={{ gridAutoFlow: 'column' }}>
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                    <span>Positive Moments</span>
+                <div className="space-y-3">
+                  {/* Moment Types */}
+                  <div>
+                    <h4 className="text-xs font-medium mb-2 text-muted-foreground">Moments</h4>
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                        <span>Positive</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+                        <span>Neutral</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 rounded-full bg-orange-500"></div>
+                        <span>Negative</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm">⚡</span>
+                        <span>Conflicts</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm">💕</span>
+                        <span>Intimacy</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm text-purple-500">📅</span>
+                        <span>Plans</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm">🏆</span>
+                        <span>Milestones</span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-                    <span>Neutral Moments</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-orange-500"></div>
-                    <span>Negative Moments</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm">⚡</span>
-                    <span>Conflicts</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm">💕</span>
-                    <span>Intimacy</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm text-purple-500">📅</span>
-                    <span>Plans</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm">🏆</span>
-                    <span>Milestones</span>
+
+                  {/* Menstrual Cycle Phases */}
+                  <div>
+                    <h4 className="text-xs font-medium mb-2 text-muted-foreground">Menstrual Cycle</h4>
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm">🩸</span>
+                        <span>Period</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm">🌱</span>
+                        <span>Follicular</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm">💛</span>
+                        <span>Fertile Window</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm">🥚</span>
+                        <span>Ovulation</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm">🌙</span>
+                        <span>Luteal</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
                 
@@ -863,6 +985,10 @@ export default function Calendar() {
                   
                   return isSameDayMatch || isAnniversaryMatch;
                 }) || [];
+
+                // Get menstrual cycle info for this day
+                const cyclePhase = getCyclePhaseForDay(day, selectedConnectionId || (selectedConnectionIds.length === 1 ? selectedConnectionIds[0] : null));
+                const cycleDisplay = getCycleDisplayInfo(cyclePhase);
                 
                 const isToday = isSameDay(day, new Date());
                 
@@ -872,19 +998,31 @@ export default function Calendar() {
                     onClick={() => handleDayClick(day)}
                     className={`
                       ${viewMode === 'daily' ? 'min-h-20 p-4 flex-col items-start justify-start text-left' : viewMode === 'weekly' ? 'h-24 p-2' : 'h-16 p-1'} 
-                      border border-border/20 rounded-lg transition-colors hover:bg-accent/50
-                      ${isToday ? 'bg-primary/10 border-primary/30' : 'bg-background/50'}
+                      border rounded-lg transition-colors hover:bg-accent/50
+                      ${isToday ? 'border-primary/30' : 'border-border/20'}
+                      ${cycleDisplay && cyclePhase ? `${cycleDisplay.color} border-2` : (isToday ? 'bg-primary/10' : 'bg-background/50')}
                       ${!isSameMonth(day, currentDate) ? 'opacity-30' : ''}
                       ${viewMode === 'daily' ? 'flex' : 'block'}
                     `}
+                    title={cycleDisplay ? cycleDisplay.title : undefined}
                   >
                     <div className={`${viewMode === 'daily' ? 'text-lg' : viewMode === 'weekly' ? 'text-sm' : 'text-xs'} font-medium mb-1`}>
                       {format(day, 'd')}
                     </div>
                     
-                    {/* Moment and Milestone indicators */}
+                    {/* Moment, Milestone, and Cycle indicators */}
                     <div className={`flex flex-wrap ${viewMode === 'daily' ? 'gap-2' : viewMode === 'weekly' ? 'gap-1' : 'gap-0.5'} items-center`}>
-                      {/* Show milestones first */}
+                      {/* Show cycle phase indicator first */}
+                      {cycleDisplay && (
+                        <span
+                          className={`${viewMode === 'daily' ? 'text-2xl' : viewMode === 'weekly' ? 'text-base' : 'text-xs'} opacity-70`}
+                          title={cycleDisplay.description}
+                        >
+                          {cycleDisplay.indicator}
+                        </span>
+                      )}
+                      
+                      {/* Show milestones */}
                       {dayMilestones.map((milestone) => {
                         const getIcon = () => {
                           switch (milestone.icon) {
