@@ -1230,6 +1230,7 @@ export default function MenstrualCyclePage() {
                     type="date"
                     value={formData.startDate}
                     onChange={(e) => setFormData(prev => ({ ...prev, startDate: e.target.value }))}
+                    autoFocus={false}
                     required
                   />
                 </div>
