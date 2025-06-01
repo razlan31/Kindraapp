@@ -269,10 +269,8 @@ export function MomentModal() {
       
       handleSuccess();
       
-      // Force complete page refresh as final solution
-      setTimeout(() => {
-        window.location.reload();
-      }, 500);
+      // Force immediate page refresh for reliable UI update
+      window.location.reload();
     },
     onError: (error: any) => handleError(error),
   });
