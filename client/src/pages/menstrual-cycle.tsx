@@ -182,6 +182,7 @@ export default function MenstrualCyclePage() {
   const [editingCycle, setEditingCycle] = useState<MenstrualCycle | null>(null);
   const [selectedPersonId, setSelectedPersonId] = useState<number | null>(null);
   const [selectedPersonIds, setSelectedPersonIds] = useState<number[]>([]);
+  const [cycleForPersonId, setCycleForPersonId] = useState<number | null>(null);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [viewMode, setViewMode] = useState<'calendar' | 'list'>('calendar');
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
@@ -368,6 +369,7 @@ export default function MenstrualCyclePage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/menstrual-cycles'] });
       setIsDialogOpen(false);
+      setCycleForPersonId(null);
       resetForm();
       toast({
         title: "Cycle Added",
@@ -473,9 +475,17 @@ export default function MenstrualCyclePage() {
       connections
     });
 
-    // For now, we only support creating cycles for one person at a time
-    // If multiple people are selected, we need to ask the user to specify which one
-    if (selectedPersonIds.length !== 1) {
+    // Determine which person to create the cycle for
+    let targetPersonId: number;
+    
+    if (cycleForPersonId !== null) {
+      // A specific person's "Start New Cycle" button was clicked
+      targetPersonId = cycleForPersonId;
+    } else if (selectedPersonIds.length === 1) {
+      // Only one person selected, use that person
+      targetPersonId = selectedPersonIds[0];
+    } else {
+      // Multiple people selected but no specific person button clicked
       alert("Please select exactly one person to create a cycle for.");
       return;
     }
@@ -488,7 +498,7 @@ export default function MenstrualCyclePage() {
       mood: formData.mood || null,
       symptoms: formData.symptoms.length > 0 ? formData.symptoms : null,
       notes: formData.notes || null,
-      connectionId: selectedPersonIds[0] === 0 ? null : selectedPersonIds[0] // 0 means user, null in DB
+      connectionId: targetPersonId === 0 ? null : targetPersonId // 0 means user, null in DB
     };
 
     console.log("Submit data being sent:", submitData);
@@ -867,6 +877,7 @@ export default function MenstrualCyclePage() {
                             className={`w-full ${phaseColors.accent} hover:opacity-90 text-white`}
                             onClick={() => {
                               setEditingCycle(null);
+                              setCycleForPersonId(personId);
                               resetForm();
                             }}
                           >
