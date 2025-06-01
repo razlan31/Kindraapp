@@ -66,11 +66,8 @@ export default function Activities() {
       return;
     }
 
-    // Only use focus connection if user hasn't explicitly selected a connection
-    if (!focusLoading && mainFocusConnection && !hasUserSelectedConnection) {
-      console.log("Setting activities connection from main focus:", mainFocusConnection.id);
-      setSelectedConnection(mainFocusConnection.id);
-    }
+    // Don't auto-filter to focus connection to show all activities by default
+    // Users can manually select connections if needed
   }, [mainFocusConnection, focusLoading, hasUserSelectedConnection]);
 
   // Fetch moments - use simple approach like Dashboard
