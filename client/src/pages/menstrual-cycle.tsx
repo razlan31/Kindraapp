@@ -258,9 +258,7 @@ export default function MenstrualCyclePage() {
     // If no cycles exist at all, return empty array
     if (!cycles || cycles.length === 0) return [];
     
-    if (selectedPersonIds.length === 0) return cycles;
-    
-    return cycles.filter(cycle => {
+    const actualCycles = selectedPersonIds.length === 0 ? cycles : cycles.filter(cycle => {
       // Check if this cycle belongs to a selected person
       const belongsToSelectedPerson = selectedPersonIds.some(selectedId => {
         if (selectedId === 0) {
@@ -291,6 +289,63 @@ export default function MenstrualCyclePage() {
         return checkDay >= start && checkDay <= expectedEnd;
       }
     });
+
+    // Generate predicted cycles for future dates
+    const checkDay = startOfDay(day);
+    const today = startOfDay(new Date());
+    
+    // Only generate predictions for future dates
+    if (checkDay > today) {
+      const predictedCycles = [];
+      
+      // For each selected person, generate predicted cycles
+      for (const personId of selectedPersonIds) {
+        const personCycles = cycles.filter(cycle => {
+          if (personId === 0) {
+            return cycle.connectionId === null;
+          } else {
+            return cycle.connectionId === personId;
+          }
+        });
+        
+        if (personCycles.length > 0) {
+          // Get the most recent cycle for this person
+          const sortedCycles = personCycles.sort((a, b) => 
+            new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
+          );
+          const lastCycle = sortedCycles[0];
+          const avgCycleLength = calculateCycleLength(personCycles);
+          
+          // Generate predictions for up to 6 future cycles
+          const lastCycleStart = new Date(lastCycle.startDate);
+          
+          for (let i = 1; i <= 6; i++) {
+            const predictedStart = addDays(lastCycleStart, avgCycleLength * i);
+            const predictedEnd = addDays(predictedStart, getCycleLength(lastCycle) || 5); // Default 5-day period
+            
+            const predictedStartDay = startOfDay(predictedStart);
+            const predictedEndDay = startOfDay(predictedEnd);
+            
+            // Check if the day falls within this predicted cycle
+            if (checkDay >= predictedStartDay && checkDay <= predictedEndDay) {
+              // Create a virtual cycle for prediction
+              const virtualCycle = {
+                ...lastCycle,
+                id: -i, // Use negative ID to distinguish from real cycles
+                startDate: predictedStart.toISOString(),
+                endDate: predictedEnd.toISOString(),
+                isPrediction: true
+              };
+              predictedCycles.push(virtualCycle);
+            }
+          }
+        }
+      }
+      
+      return [...actualCycles, ...predictedCycles];
+    }
+    
+    return actualCycles;
   };
 
   // Create cycle mutation
