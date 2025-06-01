@@ -1814,15 +1814,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const predictedCycleEndDate = new Date(activeStartDate);
         predictedCycleEndDate.setDate(predictedCycleEndDate.getDate() + cycleLength - 1);
 
-        // Update active cycle with predicted dates if not already set
-        if (!activeCycle.periodEndDate || !activeCycle.endDate) {
+        // Update active cycle with predicted period end date only (keep cycle active without end date)
+        if (!activeCycle.periodEndDate) {
           try {
             await storage.updateMenstrualCycle(activeCycle.id, {
-              periodEndDate: !activeCycle.periodEndDate ? predictedPeriodEndDate : undefined,
-              endDate: !activeCycle.endDate ? predictedCycleEndDate : undefined,
+              periodEndDate: predictedPeriodEndDate,
               notes: activeCycle.notes || `Following ${cycleLength}-day cycle pattern`
             });
-            console.log("Updated active cycle with predicted dates");
+            console.log("Updated active cycle with predicted period end date");
           } catch (error) {
             console.error("Error updating active cycle:", error);
           }
@@ -1836,14 +1835,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const defaultCycleEndDate = new Date(activeStartDate);
         defaultCycleEndDate.setDate(defaultCycleEndDate.getDate() + 29); // 30-day cycle
 
-        if (!activeCycle.periodEndDate || !activeCycle.endDate) {
+        if (!activeCycle.periodEndDate) {
           try {
             await storage.updateMenstrualCycle(activeCycle.id, {
-              periodEndDate: !activeCycle.periodEndDate ? defaultPeriodEndDate : undefined,
-              endDate: !activeCycle.endDate ? defaultCycleEndDate : undefined,
+              periodEndDate: defaultPeriodEndDate,
               notes: activeCycle.notes || "Default 30-day cycle pattern"
             });
-            console.log("Updated active cycle with default 30-day pattern");
+            console.log("Updated active cycle with default period end date");
           } catch (error) {
             console.error("Error updating active cycle with defaults:", error);
           }
