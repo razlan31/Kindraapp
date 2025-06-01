@@ -1023,9 +1023,37 @@ export default function Calendar() {
                   return isSameDayMatch || isAnniversaryMatch;
                 }) || [];
 
-                // Get menstrual cycle info for this day
-                const cyclePhase = getCyclePhaseForDay(day, selectedConnectionId || (selectedConnectionIds.length === 1 ? selectedConnectionIds[0] : null));
-                const cycleDisplay = getCycleDisplayInfo(cyclePhase);
+                // Get menstrual cycle info for this day - support multiple connections
+                let cyclePhase = null;
+                let cycleDisplay = null;
+                
+                if (selectedConnectionIds.length === 0) {
+                  // When no specific connections selected, show cycles from all connections
+                  // Find the first cycle that contains this day from any connection
+                  for (const cycle of cycles) {
+                    const cycleStart = new Date(cycle.startDate);
+                    const cycleEnd = cycle.endDate ? new Date(cycle.endDate) : new Date();
+                    
+                    if (day >= cycleStart && day <= cycleEnd) {
+                      cyclePhase = getCyclePhaseForDay(day, cycle.connectionId);
+                      if (cyclePhase) break;
+                    }
+                  }
+                } else if (selectedConnectionIds.length === 1) {
+                  // Single connection selected
+                  cyclePhase = getCyclePhaseForDay(day, selectedConnectionIds[0]);
+                } else {
+                  // Multiple connections selected - find cycles from any selected connection
+                  for (const connectionId of selectedConnectionIds) {
+                    const phaseForConnection = getCyclePhaseForDay(day, connectionId);
+                    if (phaseForConnection) {
+                      cyclePhase = phaseForConnection;
+                      break;
+                    }
+                  }
+                }
+                
+                cycleDisplay = getCycleDisplayInfo(cyclePhase);
                 
                 const isToday = isSameDay(day, new Date());
                 
