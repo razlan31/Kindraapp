@@ -25,7 +25,8 @@ import {
   DropdownMenu, 
   DropdownMenuContent, 
   DropdownMenuItem, 
-  DropdownMenuTrigger 
+  DropdownMenuTrigger,
+  DropdownMenuCheckboxItem
 } from "@/components/ui/dropdown-menu";
 import { format } from "date-fns";
 import { useRelationshipFocus } from "@/contexts/relationship-focus-context";
@@ -38,6 +39,7 @@ export default function Activities() {
   const [location] = useLocation();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedConnection, setSelectedConnection] = useState<number | null>(null);
+  const [selectedConnections, setSelectedConnections] = useState<number[]>([]);
   const [activeTab, setActiveTab] = useState<'moments' | 'conflicts' | 'intimacy' | 'plans' | 'timeline'>('timeline');
   const [timelineFilter, setTimelineFilter] = useState<'all' | 'moments' | 'conflicts' | 'intimacy' | 'plans' | 'milestones'>('all');
   const [refreshTrigger, setRefreshTrigger] = useState(0);

@@ -345,7 +345,7 @@ export default function MenstrualCyclePage() {
       mood: formData.mood || null,
       symptoms: formData.symptoms.length > 0 ? formData.symptoms : null,
       notes: formData.notes || null,
-      connectionId: selectedPersonId === 0 ? null : selectedPersonId // 0 means user, null in DB
+      connectionId: selectedPersonIds.length === 1 ? (selectedPersonIds[0] === 0 ? null : selectedPersonIds[0]) : null // 0 means user, null in DB
     };
 
     if (editingCycle) {
@@ -602,7 +602,7 @@ export default function MenstrualCyclePage() {
         </section>
 
         {/* Current Cycle Status and Predictions */}
-        {selectedPersonId !== null && (
+        {selectedPersonIds.length > 0 && (
           <section className="px-4 py-2 space-y-4">
             {/* Current Cycle Status */}
             <Card className="p-4 bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-950 dark:to-purple-950 border-pink-200 dark:border-pink-800">
@@ -816,7 +816,7 @@ export default function MenstrualCyclePage() {
         )}
 
         {/* Calendar View */}
-        {viewMode === 'calendar' && selectedPersonId !== null && (
+        {viewMode === 'calendar' && selectedPersonIds.length > 0 && (
           <section className="px-4 py-2">
             <Card className="p-4">
               <div className="flex items-center justify-between mb-4">
@@ -1016,10 +1016,10 @@ export default function MenstrualCyclePage() {
 
 
         {/* Stats */}
-        {selectedPersonId !== null && getAverageCycleLength() && (
+        {selectedPersonIds.length > 0 && getAverageCycleLength() && (
           <section className="px-4 py-2">
             <Card className="p-4">
-              <h3 className="font-semibold mb-3">Cycle Statistics for {getSelectedPersonName()}</h3>
+              <h3 className="font-semibold mb-3">Cycle Statistics {selectedPersonIds.length === 0 ? 'for All People' : selectedPersonIds.length === 1 ? `for ${trackablePersons.find(p => p.id === selectedPersonIds[0])?.name || 'Unknown'}` : `for ${selectedPersonIds.length} people`}</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div className="text-center">
                   <div className="text-2xl font-bold text-pink-600">{getAverageCycleLength()}</div>
