@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { format, differenceInDays, addDays, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, isSameMonth, subMonths, addMonths, startOfWeek, getDay, startOfDay } from "date-fns";
 import { Calendar, Plus, Edit3, Trash2, Circle, ChevronLeft, ChevronRight, User, UserPlus, Camera, X, ChevronDown } from "lucide-react";
@@ -186,6 +186,14 @@ export default function MenstrualCyclePage() {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [viewMode, setViewMode] = useState<'calendar' | 'list'>('calendar');
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const startDateRef = useRef<HTMLInputElement>(null);
+
+  // Prevent auto-focus on date input when modal opens
+  useEffect(() => {
+    if (isDialogOpen && startDateRef.current) {
+      startDateRef.current.blur();
+    }
+  }, [isDialogOpen]);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -1226,11 +1234,11 @@ export default function MenstrualCyclePage() {
                 <div>
                   <Label htmlFor="startDate">Period Start Date</Label>
                   <Input
+                    ref={startDateRef}
                     id="startDate"
                     type="date"
                     value={formData.startDate}
                     onChange={(e) => setFormData(prev => ({ ...prev, startDate: e.target.value }))}
-                    autoFocus={false}
                     required
                   />
                 </div>
