@@ -1770,17 +1770,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = req.session.userId!;
       const { startDate, periodEndDate, endDate, flowIntensity, symptoms, connectionId, mood, notes } = req.body;
       
-      const cycle = await storage.createMenstrualCycle({
+      console.log("Creating menstrual cycle with data:", {
+        userId,
+        connectionId: connectionId || null,
+        startDate,
+        periodEndDate,
+        endDate,
+        flowIntensity,
+        mood,
+        symptoms,
+        notes
+      });
+      
+      const cycleData = {
         userId,
         connectionId: connectionId || null,
         startDate: new Date(startDate),
-        periodEndDate: periodEndDate ? new Date(periodEndDate) : null,
-        endDate: endDate ? new Date(endDate) : null,
+        periodEndDate: periodEndDate ? new Date(periodEndDate) : undefined,
+        endDate: endDate ? new Date(endDate) : undefined,
         flowIntensity: flowIntensity || null,
         mood: mood || null,
         symptoms: symptoms || null,
         notes: notes || null,
-      });
+      };
+      
+      console.log("Processed cycle data:", cycleData);
+      
+      const cycle = await storage.createMenstrualCycle(cycleData);
+      
+      console.log("Created cycle result:", cycle);
       
       res.json(cycle);
     } catch (error: any) {
