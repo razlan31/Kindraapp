@@ -1791,14 +1791,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/menstrual-cycles", isAuthenticated, async (req: Request, res: Response) => {
     try {
       const userId = req.session.userId!;
-      const { startDate, endDate, flowIntensity, symptoms } = req.body;
+      const { startDate, periodEndDate, endDate, flowIntensity, symptoms, connectionId, mood, notes } = req.body;
       
       const cycle = await storage.createMenstrualCycle({
         userId,
+        connectionId: connectionId || null,
         startDate: new Date(startDate),
+        periodEndDate: periodEndDate ? new Date(periodEndDate) : null,
         endDate: endDate ? new Date(endDate) : null,
         flowIntensity: flowIntensity || null,
+        mood: mood || null,
         symptoms: symptoms || null,
+        notes: notes || null,
       });
       
       res.json(cycle);
@@ -1814,6 +1818,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const updates = req.body;
       
       if (updates.startDate) updates.startDate = new Date(updates.startDate);
+      if (updates.periodEndDate) updates.periodEndDate = new Date(updates.periodEndDate);
       if (updates.endDate) updates.endDate = new Date(updates.endDate);
       
       const cycle = await storage.updateMenstrualCycle(cycleId, updates);

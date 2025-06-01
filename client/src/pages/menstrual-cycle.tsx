@@ -489,6 +489,7 @@ export default function MenstrualCyclePage() {
     setEditingCycle(cycle);
     setFormData({
       startDate: format(new Date(cycle.startDate), 'yyyy-MM-dd'),
+      periodEndDate: cycle.periodEndDate ? format(new Date(cycle.periodEndDate), 'yyyy-MM-dd') : '',
       endDate: cycle.endDate ? format(new Date(cycle.endDate), 'yyyy-MM-dd') : '',
       flowIntensity: cycle.flowIntensity || '',
       mood: cycle.mood || '',
@@ -1158,9 +1159,9 @@ export default function MenstrualCyclePage() {
             </DialogHeader>
             
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-3">
                 <div>
-                  <Label htmlFor="startDate">Start Date</Label>
+                  <Label htmlFor="startDate">Period Start Date</Label>
                   <Input
                     id="startDate"
                     type="date"
@@ -1170,7 +1171,16 @@ export default function MenstrualCyclePage() {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="endDate">End Date</Label>
+                  <Label htmlFor="periodEndDate">Period End Date</Label>
+                  <Input
+                    id="periodEndDate"
+                    type="date"
+                    value={formData.periodEndDate}
+                    onChange={(e) => setFormData(prev => ({ ...prev, periodEndDate: e.target.value }))}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="endDate">Cycle End Date (Optional)</Label>
                   <Input
                     id="endDate"
                     type="date"
