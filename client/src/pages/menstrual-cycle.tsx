@@ -883,21 +883,31 @@ export default function MenstrualCyclePage() {
                   ) : (
                     <div className="space-y-3">
                       <p className={`text-sm ${phaseColors.text}`}>
-                        No active period
+                        No cycle data yet
+                      </p>
+                      <p className={`text-xs ${phaseColors.text} opacity-70`}>
+                        Set up the first cycle to start tracking patterns
                       </p>
                       <Button 
                         size="sm"
-                        className={`w-full ${phaseColors.accent} hover:opacity-90 text-white`}
-                        onClick={async () => {
-                          await createCycleMutation.mutateAsync({
-                            startDate: new Date().toISOString(),
+                        variant="outline"
+                        className="w-full"
+                        onClick={() => {
+                          setEditingCycle(null);
+                          setFormData({
+                            startDate: format(new Date(), 'yyyy-MM-dd'),
+                            endDate: '',
+                            flowIntensity: '',
+                            mood: '',
+                            symptoms: [],
+                            notes: '',
                             connectionId: personId === 0 ? null : personId
                           });
+                          setIsDialogOpen(true);
                         }}
-                        disabled={createCycleMutation.isPending}
                       >
-                        <Circle className="h-4 w-4 mr-2" />
-                        {createCycleMutation.isPending ? 'Logging...' : 'Log Period'}
+                        <Plus className="h-4 w-4 mr-2" />
+                        Start First Cycle
                       </Button>
                     </div>
                   )}
@@ -1564,6 +1574,26 @@ export default function MenstrualCyclePage() {
               </form>
             </div>
           </div>
+        )}
+
+        {/* Floating Action Button for Quick Period Logging */}
+        {connections.length > 0 && (
+          <Button
+            className="fixed bottom-20 right-4 h-14 w-14 rounded-full bg-red-500 hover:bg-red-600 text-white shadow-lg z-50"
+            onClick={async () => {
+              // Default to first connection if no focus is set
+              const targetConnectionId = connections[0]?.id;
+              if (targetConnectionId) {
+                await createCycleMutation.mutateAsync({
+                  startDate: new Date().toISOString(),
+                  connectionId: targetConnectionId
+                });
+              }
+            }}
+            disabled={createCycleMutation.isPending}
+          >
+            <Circle className="h-6 w-6" />
+          </Button>
         )}
       </main>
     </div>
