@@ -1964,6 +1964,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       console.log("Created cycle result:", cycle);
       
+      // If the created cycle has an end date, check if we need to create the next active cycle
+      if (cycle.endDate) {
+        try {
+          const allCycles = await storage.getMenstrualCycles(userId);
+          const updatedCycles = await checkAndCreateAutomaticCycles(userId, allCycles);
+          console.log("Checked for automatic cycle progression after cycle creation");
+        } catch (error) {
+          console.error("Error checking for automatic cycle progression:", error);
+          // Don't fail the request if automatic progression fails
+        }
+      }
+      
       res.json(cycle);
     } catch (error: any) {
       console.error("Error creating menstrual cycle:", error);
