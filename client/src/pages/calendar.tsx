@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuCheckboxItem } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
@@ -130,6 +131,7 @@ export default function Calendar() {
   
   // Connection filter state
   const [selectedConnectionId, setSelectedConnectionId] = useState<number | null>(null);
+  const [selectedConnectionIds, setSelectedConnectionIds] = useState<number[]>([]);
   const [hasUserSelectedConnection, setHasUserSelectedConnection] = useState(false);
 
   // Connection modal state
@@ -497,33 +499,54 @@ export default function Calendar() {
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm font-medium">View Calendar For</h3>
               <span className="text-xs text-muted-foreground">
-                {selectedConnectionId ? 
-                  connections.find(c => c.id === selectedConnectionId)?.name || 'Unknown' : 
-                  'All Connections'
-                }
+                {selectedConnectionIds.length === 0 ? 'All Connections' : 
+                 selectedConnectionIds.length === 1 ? 
+                   connections.find(c => c.id === selectedConnectionIds[0])?.name || 'Unknown' :
+                 `${selectedConnectionIds.length} connections selected`}
               </span>
             </div>
-            <Select
-              value={selectedConnectionId ? selectedConnectionId.toString() : "all"}
-              onValueChange={(value) => {
-                setSelectedConnectionId(value === "all" ? null : parseInt(value));
-                setHasUserSelectedConnection(true);
-              }}
-            >
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Show all connections" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="w-full justify-between">
+                  <span>
+                    {selectedConnectionIds.length === 0 ? 'All Connections' : 
+                     selectedConnectionIds.length === 1 ? 
+                       connections.find(c => c.id === selectedConnectionIds[0])?.name || 'Unknown' :
+                     `${selectedConnectionIds.length} connections selected`}
+                  </span>
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-[var(--radix-dropdown-menu-trigger-width)]" sideOffset={4}>
+                <DropdownMenuItem 
+                  onClick={() => {
+                    setSelectedConnectionIds([]);
+                    setHasUserSelectedConnection(true);
+                  }}
+                  className="py-3 px-4"
+                >
                   <div className="flex items-center gap-2">
                     <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center">
                       <span className="text-xs font-medium">All</span>
                     </div>
                     <span>All Connections</span>
                   </div>
-                </SelectItem>
+                </DropdownMenuItem>
+                <div className="border-t border-border my-1" />
                 {connections.map((connection) => (
-                  <SelectItem key={connection.id} value={connection.id.toString()}>
+                  <DropdownMenuCheckboxItem
+                    key={connection.id}
+                    checked={selectedConnectionIds.includes(connection.id)}
+                    onCheckedChange={(checked) => {
+                      if (checked) {
+                        setSelectedConnectionIds([...selectedConnectionIds, connection.id]);
+                      } else {
+                        setSelectedConnectionIds(selectedConnectionIds.filter(id => id !== connection.id));
+                      }
+                      setHasUserSelectedConnection(true);
+                    }}
+                    className="py-3 px-4"
+                  >
                     <div className="flex items-center gap-2">
                       {connection.profileImage ? (
                         <img 
@@ -540,24 +563,22 @@ export default function Calendar() {
                       )}
                       <span>{connection.name}</span>
                     </div>
-                  </SelectItem>
+                  </DropdownMenuCheckboxItem>
                 ))}
                 <div className="border-t border-border my-1" />
-                <div 
-                  className="flex items-center gap-2 px-2 py-1.5 text-sm cursor-pointer hover:bg-accent rounded-sm"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    openConnectionModal();
-                  }}
+                <DropdownMenuItem 
+                  onClick={() => openConnectionModal()}
+                  className="py-3 px-4"
                 >
-                  <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
-                    <UserPlus className="h-3 w-3 text-primary" />
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
+                      <UserPlus className="h-3 w-3 text-primary" />
+                    </div>
+                    <span className="text-primary">Add Connection</span>
                   </div>
-                  <span className="text-primary">Add Connection</span>
-                </div>
-              </SelectContent>
-            </Select>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </Card>
         </section>
 

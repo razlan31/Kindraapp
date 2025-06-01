@@ -449,20 +449,20 @@ export default function Activities() {
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm font-medium">Viewing activities for</h3>
               <span className="text-xs text-muted-foreground">
-                {selectedConnection ? 
-                  connections.find(c => c.id === selectedConnection)?.name || 'Unknown' : 
-                  'All Connections'
-                }
+                {selectedConnections.length === 0 ? 'All Connections' : 
+                 selectedConnections.length === 1 ? 
+                   connections.find(c => c.id === selectedConnections[0])?.name || 'Unknown' :
+                 `${selectedConnections.length} connections selected`}
               </span>
             </div>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" className="w-full justify-between">
                   <span>
-                    {selectedConnection ? 
-                      connections.find(c => c.id === selectedConnection)?.name || 'Select Connection' : 
-                      'All Connections'
-                    }
+                    {selectedConnections.length === 0 ? 'All Connections' : 
+                     selectedConnections.length === 1 ? 
+                       connections.find(c => c.id === selectedConnections[0])?.name || 'Unknown' :
+                     `${selectedConnections.length} connections selected`}
                   </span>
                   <ChevronDown className="h-4 w-4" />
                 </Button>
@@ -470,7 +470,7 @@ export default function Activities() {
               <DropdownMenuContent className="w-[var(--radix-dropdown-menu-trigger-width)]" sideOffset={4}>
                 <DropdownMenuItem 
                   onClick={() => {
-                    setSelectedConnection(null);
+                    setSelectedConnections([]);
                     setHasUserSelectedConnection(true);
                   }}
                   className="py-3 px-4 text-base"
@@ -482,11 +482,17 @@ export default function Activities() {
                     <span>All Connections</span>
                   </div>
                 </DropdownMenuItem>
+                <div className="border-t border-border my-1" />
                 {connections.map((connection) => (
-                  <DropdownMenuItem 
+                  <DropdownMenuCheckboxItem
                     key={connection.id}
-                    onClick={() => {
-                      setSelectedConnection(connection.id);
+                    checked={selectedConnections.includes(connection.id)}
+                    onCheckedChange={(checked) => {
+                      if (checked) {
+                        setSelectedConnections([...selectedConnections, connection.id]);
+                      } else {
+                        setSelectedConnections(selectedConnections.filter(id => id !== connection.id));
+                      }
                       setHasUserSelectedConnection(true);
                     }}
                     className="py-3 px-4 text-base"
@@ -507,7 +513,7 @@ export default function Activities() {
                       )}
                       <span>{connection.name}</span>
                     </div>
-                  </DropdownMenuItem>
+                  </DropdownMenuCheckboxItem>
                 ))}
                 <div className="border-t border-border my-1" />
                 <div 
