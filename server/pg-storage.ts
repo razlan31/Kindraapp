@@ -252,7 +252,10 @@ export class PgStorage implements IStorage {
   // Menstrual Cycle operations
   async getMenstrualCycles(userId: number): Promise<MenstrualCycle[]> {
     await this.initialize();
-    return await db.select().from(menstrualCycles).where(eq(menstrualCycles.userId, userId));
+    console.log("PG Storage - Getting menstrual cycles for userId:", userId);
+    const result = await db.select().from(menstrualCycles).where(eq(menstrualCycles.userId, userId));
+    console.log("PG Storage - Query result:", result);
+    return result;
   }
 
   async createMenstrualCycle(cycle: InsertMenstrualCycle): Promise<MenstrualCycle> {
