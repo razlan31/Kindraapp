@@ -329,6 +329,15 @@ export default function MenstrualCyclePage() {
           // Track the base cycle for proper spacing
           let baseDate = lastCycle.endDate ? new Date(lastCycle.endDate) : addDays(lastCycleStart, avgCycleLength - 1);
           
+          console.log('Prediction debug:', {
+            personId,
+            lastCycleStart: lastCycleStart.toISOString(),
+            lastCycleEnd: lastCycle.endDate,
+            baseDate: baseDate.toISOString(),
+            avgCycleLength,
+            checkDay: checkDay.toISOString()
+          });
+          
           for (let i = 1; i <= 6; i++) {
             // Calculate next cycle start: 1 day after the previous cycle ended
             const predictedStart = addDays(baseDate, 1);
