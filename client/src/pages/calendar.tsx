@@ -339,7 +339,10 @@ export default function Calendar() {
   // Filter moments based on selected filters and connection
   const moments = allCalendarEntries.filter(moment => {
     // Connection filter - use array-based filtering
-    if (selectedConnectionIds.length > 0 && !selectedConnectionIds.includes(moment.connectionId)) return false;
+    if (selectedConnectionIds.length > 0 && !selectedConnectionIds.includes(moment.connectionId)) {
+      console.log(`Filtered out moment ${moment.id} - connection not selected`, moment.connectionId, selectedConnectionIds);
+      return false;
+    }
     
     // Check different moment types
     const isConflict = moment.tags?.includes('Conflict') || moment.emoji === '⚡';
@@ -348,10 +351,22 @@ export default function Calendar() {
     const isMilestone = moment.isMilestone || moment.tags?.includes('Milestone') || moment.emoji === '🏆' || (moment as any).isBirthday;
     
     // Type filters
-    if (isConflict && !filters.conflict) return false;
-    if (isIntimacy && !filters.intimacy) return false;
-    if (isPlan && !filters.plan) return false;
-    if (isMilestone && !filters.milestone) return false;
+    if (isConflict && !filters.conflict) {
+      console.log(`Filtered out moment ${moment.id} - conflict filter off`);
+      return false;
+    }
+    if (isIntimacy && !filters.intimacy) {
+      console.log(`Filtered out moment ${moment.id} - intimacy filter off`);
+      return false;
+    }
+    if (isPlan && !filters.plan) {
+      console.log(`Filtered out moment ${moment.id} - plan filter off`);
+      return false;
+    }
+    if (isMilestone && !filters.milestone) {
+      console.log(`Filtered out moment ${moment.id} - milestone filter off`);
+      return false;
+    }
     
     // For regular moments, check emoji to determine type
     if (!isConflict && !isIntimacy && !isPlan && !isMilestone) {
@@ -359,12 +374,24 @@ export default function Calendar() {
       const isNegative = ['😕', '😔', '😢', '😠', '😞', '😤'].includes(moment.emoji);
       const isNeutral = ['🌱', '🗣️'].includes(moment.emoji);
       
-      if (isPositive && !filters.positive) return false;
-      if (isNegative && !filters.negative) return false;
-      if (isNeutral && !filters.neutral) return false;
+      if (isPositive && !filters.positive) {
+        console.log(`Filtered out moment ${moment.id} - positive filter off`);
+        return false;
+      }
+      if (isNegative && !filters.negative) {
+        console.log(`Filtered out moment ${moment.id} - negative filter off`);
+        return false;
+      }
+      if (isNeutral && !filters.neutral) {
+        console.log(`Filtered out moment ${moment.id} - neutral filter off`);
+        return false;
+      }
       
       // If none of the above, treat as positive (default for unknown emojis)
-      if (!isPositive && !isNegative && !isNeutral && !filters.positive) return false;
+      if (!isPositive && !isNegative && !isNeutral && !filters.positive) {
+        console.log(`Filtered out moment ${moment.id} - unknown emoji treated as positive but filter off`);
+        return false;
+      }
     }
     
     return true;
