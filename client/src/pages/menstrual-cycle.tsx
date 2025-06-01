@@ -207,9 +207,18 @@ export default function MenstrualCyclePage() {
     queryKey: ['/api/menstrual-cycles'],
   });
 
+  // Color palette for visual distinction
+  const personColors = [
+    { bg: 'bg-pink-100 dark:bg-pink-900', border: 'border-pink-300 dark:border-pink-700', text: 'text-pink-700 dark:text-pink-300', accent: 'bg-pink-500' },
+    { bg: 'bg-purple-100 dark:bg-purple-900', border: 'border-purple-300 dark:border-purple-700', text: 'text-purple-700 dark:text-purple-300', accent: 'bg-purple-500' },
+    { bg: 'bg-blue-100 dark:bg-blue-900', border: 'border-blue-300 dark:border-blue-700', text: 'text-blue-700 dark:text-blue-300', accent: 'bg-blue-500' },
+    { bg: 'bg-green-100 dark:bg-green-900', border: 'border-green-300 dark:border-green-700', text: 'text-green-700 dark:text-green-300', accent: 'bg-green-500' },
+    { bg: 'bg-orange-100 dark:bg-orange-900', border: 'border-orange-300 dark:border-orange-700', text: 'text-orange-700 dark:text-orange-300', accent: 'bg-orange-500' }
+  ];
+
   // Create list of people who can have cycles (user + female connections)
   const trackablePersons = useMemo(() => {
-    const persons: Array<{ id: number; name: string; isUser: boolean; profileImage?: string | null }> = [];
+    const persons: Array<{ id: number; name: string; isUser: boolean; profileImage?: string | null; colorIndex: number }> = [];
     
     // Add user if they exist
     if (user) {
@@ -217,22 +226,37 @@ export default function MenstrualCyclePage() {
         id: 0, // Special ID for user
         name: user.displayName || user.username || 'Me',
         isUser: true,
-        profileImage: user.profileImage
+        profileImage: user.profileImage,
+        colorIndex: 0
       });
     }
     
     // Add all connections (assuming they could have cycles)
-    connections.forEach(connection => {
+    connections.forEach((connection, index) => {
       persons.push({
         id: connection.id,
         name: connection.name,
         isUser: false,
-        profileImage: connection.profileImage
+        profileImage: connection.profileImage,
+        colorIndex: (index + 1) % personColors.length
       });
     });
     
     return persons;
   }, [user, connections]);
+
+  // Helper to get person color
+  const getPersonColor = (personId: number) => {
+    const person = trackablePersons.find(p => p.id === personId);
+    return person ? personColors[person.colorIndex] : personColors[0];
+  };
+
+  // Helper to get person name
+  const getPersonName = (connectionId: number | null) => {
+    if (connectionId === null) return user?.displayName || user?.username || 'Me';
+    const connection = connections.find(c => c.id === connectionId);
+    return connection?.name || 'Unknown';
+  };
 
   // Create cycle mutation
   const createCycleMutation = useMutation({
@@ -532,40 +556,44 @@ export default function MenstrualCyclePage() {
                   </div>
                 </DropdownMenuItem>
                 <Separator className="my-1" />
-                {trackablePersons.map((person) => (
-                  <DropdownMenuCheckboxItem
-                    key={person.id}
-                    checked={selectedPersonIds.includes(person.id)}
-                    onCheckedChange={(checked) => {
-                      if (checked) {
-                        setSelectedPersonIds([...selectedPersonIds, person.id]);
-                      } else {
-                        setSelectedPersonIds(selectedPersonIds.filter(id => id !== person.id));
-                      }
-                    }}
-                    onSelect={(e) => e.preventDefault()}
-                    className="py-3 px-4 data-[checked]:bg-primary/10 data-[checked]:text-primary-foreground"
-                  >
-                    <div className="flex items-center gap-2">
-                      {person.isUser ? (
-                        <User className="h-4 w-4" />
-                      ) : person.profileImage ? (
-                        <img 
-                          src={person.profileImage} 
-                          alt={person.name}
-                          className="w-4 h-4 rounded-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-4 h-4 rounded-full bg-primary/10 flex items-center justify-center">
-                          <span className="text-xs font-medium text-primary">
-                            {person.name.charAt(0).toUpperCase()}
-                          </span>
-                        </div>
-                      )}
-                      {person.name}
-                    </div>
-                  </DropdownMenuCheckboxItem>
-                ))}
+                {trackablePersons.map((person) => {
+                  const colors = personColors[person.colorIndex];
+                  return (
+                    <DropdownMenuCheckboxItem
+                      key={person.id}
+                      checked={selectedPersonIds.includes(person.id)}
+                      onCheckedChange={(checked) => {
+                        if (checked) {
+                          setSelectedPersonIds([...selectedPersonIds, person.id]);
+                        } else {
+                          setSelectedPersonIds(selectedPersonIds.filter(id => id !== person.id));
+                        }
+                      }}
+                      onSelect={(e) => e.preventDefault()}
+                      className="py-3 px-4 data-[checked]:bg-primary/10 data-[checked]:text-primary-foreground"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className={`w-3 h-3 rounded-full ${colors.accent}`}></div>
+                        {person.isUser ? (
+                          <User className="h-4 w-4" />
+                        ) : person.profileImage ? (
+                          <img 
+                            src={person.profileImage} 
+                            alt={person.name}
+                            className="w-4 h-4 rounded-full object-cover"
+                          />
+                        ) : (
+                          <div className={`w-4 h-4 rounded-full ${colors.bg} flex items-center justify-center`}>
+                            <span className={`text-xs font-medium ${colors.text}`}>
+                              {person.name.charAt(0).toUpperCase()}
+                            </span>
+                          </div>
+                        )}
+                        {person.name}
+                      </div>
+                    </DropdownMenuCheckboxItem>
+                  );
+                })}
                 <Separator className="my-1" />
                 <DropdownMenuItem 
                   onClick={() => openConnectionModal()}
@@ -605,88 +633,103 @@ export default function MenstrualCyclePage() {
         {/* Current Cycle Status and Predictions */}
         {selectedPersonIds.length > 0 && (
           <section className="px-4 py-2 space-y-4">
-            {/* Current Cycle Status */}
-            <Card className="p-4 bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-950 dark:to-purple-950 border-pink-200 dark:border-pink-800">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="font-medium text-pink-900 dark:text-pink-100">Current Status</h3>
-                <Circle className="h-5 w-5 text-pink-600" />
-              </div>
+            {/* Current Cycle Status - Show separate cards for each selected person */}
+            {selectedPersonIds.map((personId) => {
+              const person = trackablePersons.find(p => p.id === personId);
+              if (!person) return null;
               
-              {(() => {
-                const currentCycle = getCurrentCycle();
-                const avgCycleLength = calculateCycleLength(filteredCycles);
-                const currentDay = currentCycle ? differenceInDays(new Date(), new Date(currentCycle.startDate)) + 1 : 0;
-                const currentPhase = currentCycle ? getCyclePhase(currentDay, avgCycleLength) : null;
-                
-                return currentCycle ? (
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <p className="text-sm text-pink-700 dark:text-pink-300">
-                        Day {currentDay} of cycle
-                      </p>
-                      {currentPhase && (
-                        <Badge className={`${currentPhase.color} text-white text-xs`}>
-                          {currentPhase.phase}
-                        </Badge>
-                      )}
+              const colors = personColors[person.colorIndex];
+              const personCycles = cycles.filter(cycle => {
+                if (personId === 0) {
+                  return cycle.connectionId === null; // User's cycles
+                } else {
+                  return cycle.connectionId === personId; // Connection's cycles
+                }
+              });
+              
+              const currentCycle = personCycles.find(cycle => !cycle.endDate);
+              const avgCycleLength = calculateCycleLength(personCycles);
+              const currentDay = currentCycle ? differenceInDays(new Date(), new Date(currentCycle.startDate)) + 1 : 0;
+              const currentPhase = currentCycle ? getCyclePhase(currentDay, avgCycleLength) : null;
+              
+              return (
+                <Card key={personId} className={`p-4 ${colors.bg} ${colors.border} border-2`}>
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <div className={`w-3 h-3 rounded-full ${colors.accent}`}></div>
+                      <h3 className={`font-medium ${colors.text}`}>
+                        {person.name}'s Cycle
+                      </h3>
                     </div>
-                    
-                    {currentPhase && (
-                      <p className="text-xs text-pink-600 dark:text-pink-400">
-                        {currentPhase.description}
-                      </p>
-                    )}
-                    
-                    <p className="text-xs text-pink-600 dark:text-pink-400">
-                      Started {format(new Date(currentCycle.startDate), 'MMM d, yyyy')}
-                    </p>
-                    
-                    {/* Ovulation prediction for current cycle */}
-                    {currentDay < calculateOvulationDay(avgCycleLength) && (
-                      <div className="bg-green-50 dark:bg-green-950 p-2 rounded-md">
-                        <p className="text-xs text-green-700 dark:text-green-300 font-medium">
-                          Ovulation predicted: Day {calculateOvulationDay(avgCycleLength)} 
-                          ({format(addDays(new Date(currentCycle.startDate), calculateOvulationDay(avgCycleLength) - 1), 'MMM d')})
+                    <Circle className={`h-5 w-5 ${colors.text}`} />
+                  </div>
+                  
+                  {currentCycle ? (
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <p className={`text-sm ${colors.text}`}>
+                          Day {currentDay} of cycle
                         </p>
+                        {currentPhase && (
+                          <Badge className={`${currentPhase.color} text-white text-xs`}>
+                            {currentPhase.phase}
+                          </Badge>
+                        )}
                       </div>
-                    )}
-                    
-                    <Button 
-                      onClick={() => handleEdit(currentCycle)}
-                      size="sm"
-                      className="w-full bg-pink-600 hover:bg-pink-700 text-white"
-                    >
-                      <Edit3 className="h-4 w-4 mr-2" />
-                      Update Current Cycle
-                    </Button>
-                  </div>
-                ) : (
-                  <div className="space-y-2">
-                    <p className="text-sm text-pink-700 dark:text-pink-300">No active cycle</p>
-                    {getNextPredictedDate() && (
-                      <p className="text-xs text-pink-600 dark:text-pink-400">
-                        Next predicted: {format(getNextPredictedDate()!, 'MMM d, yyyy')}
+                      
+                      {currentPhase && (
+                        <p className={`text-xs ${colors.text} opacity-80`}>
+                          {currentPhase.description}
+                        </p>
+                      )}
+                      
+                      <p className={`text-xs ${colors.text} opacity-80`}>
+                        Started {format(new Date(currentCycle.startDate), 'MMM d, yyyy')}
                       </p>
-                    )}
-                    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                      <DialogTrigger asChild>
-                        <Button 
-                          size="sm"
-                          className="w-full bg-pink-600 hover:bg-pink-700 text-white"
-                          onClick={() => {
-                            setEditingCycle(null);
-                            resetForm();
-                          }}
-                        >
-                          <Plus className="h-4 w-4 mr-2" />
-                          Start New Cycle
-                        </Button>
-                      </DialogTrigger>
-                    </Dialog>
-                  </div>
-                );
-              })()}
-            </Card>
+                      
+                      {/* Ovulation prediction for current cycle */}
+                      {currentDay < calculateOvulationDay(avgCycleLength) && (
+                        <div className="bg-green-50 dark:bg-green-950 p-2 rounded-md">
+                          <p className="text-xs text-green-700 dark:text-green-300 font-medium">
+                            Ovulation predicted: Day {calculateOvulationDay(avgCycleLength)} 
+                            ({format(addDays(new Date(currentCycle.startDate), calculateOvulationDay(avgCycleLength) - 1), 'MMM d')})
+                          </p>
+                        </div>
+                      )}
+                      
+                      <Button 
+                        onClick={() => handleEdit(currentCycle)}
+                        size="sm"
+                        className={`w-full ${colors.accent} hover:opacity-90 text-white`}
+                      >
+                        <Edit3 className="h-4 w-4 mr-2" />
+                        Update Current Cycle
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      <p className={`text-sm ${colors.text}`}>No active cycle</p>
+                      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                        <DialogTrigger asChild>
+                          <Button 
+                            size="sm"
+                            className={`w-full ${colors.accent} hover:opacity-90 text-white`}
+                            onClick={() => {
+                              setEditingCycle(null);
+                              setSelectedPersonIds([personId]); // Set to current person
+                              resetForm();
+                            }}
+                          >
+                            <Plus className="h-4 w-4 mr-2" />
+                            Start New Cycle
+                          </Button>
+                        </DialogTrigger>
+                      </Dialog>
+                    </div>
+                  )}
+                </Card>
+              );
+            })}
 
             {/* Cycle Predictions - Only in List View */}
             {viewMode === 'list' && (() => {
