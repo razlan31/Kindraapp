@@ -1792,79 +1792,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     // Process each connection separately
     for (const [connectionId, cycles] of Object.entries(cyclesByConnection)) {
       const connectionIdNum = parseInt(connectionId);
-      const sortedCycles = cycles.sort((a, b) => 
+      const sortedCycles = cycles.sort((a: any, b: any) => 
         new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
       );
 
       // Check if there's an active cycle for this connection
-      const activeCycle = sortedCycles.find(cycle => !cycle.endDate);
+      const activeCycle = sortedCycles.find((cycle: any) => !cycle.endDate);
 
       if (activeCycle) {
-        // For active cycles without end date, calculate based on previous pattern
-        const previousCycles = sortedCycles.filter(cycle => 
-          cycle.id !== activeCycle.id && cycle.endDate
-        );
-
-        if (previousCycles.length > 0) {
-          // Use pattern from previous completed cycles
-          const lastCompletedCycle = previousCycles[0];
-          const lastStartDate = new Date(lastCompletedCycle.startDate);
-          const lastEndDate = new Date(lastCompletedCycle.endDate);
-          const lastPeriodEndDate = lastCompletedCycle.periodEndDate ? 
-            new Date(lastCompletedCycle.periodEndDate) : null;
-          
-          // Calculate cycle length and period length from previous cycle
-          const cycleLength = Math.ceil((lastEndDate.getTime() - lastStartDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-          const periodLength = lastPeriodEndDate ? 
-            Math.ceil((lastPeriodEndDate.getTime() - lastStartDate.getTime()) / (1000 * 60 * 60 * 24)) + 1 : 5;
-
-          // Calculate predicted end dates for active cycle
-          const activeStartDate = new Date(activeCycle.startDate);
-          const predictedPeriodEndDate = new Date(activeStartDate);
-          predictedPeriodEndDate.setDate(predictedPeriodEndDate.getDate() + periodLength - 1);
-          
-          const predictedCycleEndDate = new Date(activeStartDate);
-          predictedCycleEndDate.setDate(predictedCycleEndDate.getDate() + cycleLength - 1);
-
-          // Update active cycle with predicted period end date only (keep cycle active without end date)
-          if (!activeCycle.periodEndDate) {
-            try {
-              await storage.updateMenstrualCycle(activeCycle.id, {
-                periodEndDate: predictedPeriodEndDate,
-                notes: activeCycle.notes || `Following ${cycleLength}-day cycle pattern`
-              });
-              console.log("Updated active cycle with predicted period end date");
-            } catch (error) {
-              console.error("Error updating active cycle:", error);
-            }
-          }
-        } else {
-          // No previous cycles - use 30-day default pattern
-          const activeStartDate = new Date(activeCycle.startDate);
-          const defaultPeriodEndDate = new Date(activeStartDate);
-          defaultPeriodEndDate.setDate(defaultPeriodEndDate.getDate() + 4); // 5-day period
-          
-          const defaultCycleEndDate = new Date(activeStartDate);
-          defaultCycleEndDate.setDate(defaultCycleEndDate.getDate() + 29); // 30-day cycle
-
-          if (!activeCycle.periodEndDate) {
-            try {
-              await storage.updateMenstrualCycle(activeCycle.id, {
-                periodEndDate: defaultPeriodEndDate,
-                notes: activeCycle.notes || "Default 30-day cycle pattern"
-              });
-              console.log("Updated active cycle with default period end date");
-            } catch (error) {
-              console.error("Error updating active cycle with defaults:", error);
-            }
-          }
-        }
-
         continue; // Skip to next connection - already has active cycle
       }
 
       // Check for cycles that ended and need automatic progression for this connection
-      const completedCycles = sortedCycles.filter(cycle => cycle.endDate);
+      const completedCycles = sortedCycles.filter((cycle: any) => cycle.endDate);
       
       if (completedCycles.length === 0) {
         continue; // No completed cycles to base pattern on for this connection
@@ -1901,7 +1841,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         connectionId: connectionIdNum,
         startDate: newCycleStartDate,
         periodEndDate: newPeriodEndDate,
-        endDate: null, // Keep it active
+        endDate: undefined,
         notes: `Auto-generated cycle following ${cycleLength}-day pattern`,
         mood: null,
         symptoms: null,
@@ -1920,79 +1860,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
 
     return allCycles;
-          try {
-            await storage.updateMenstrualCycle(activeCycle.id, {
-              periodEndDate: defaultPeriodEndDate,
-              notes: activeCycle.notes || "Default 30-day cycle pattern"
-            });
-            console.log("Updated active cycle with default period end date");
-          } catch (error) {
-            console.error("Error updating active cycle with defaults:", error);
-          }
-        }
-      }
-
-      return existingCycles; // Already have an active cycle
-    }
-
-    // Check for cycles that ended and need automatic progression
-    const completedCycles = sortedCycles.filter(cycle => cycle.endDate);
-    
-    if (completedCycles.length === 0) {
-      return existingCycles; // No completed cycles to base pattern on
-    }
-
-    const lastCompletedCycle = completedCycles[0];
-    const lastEndDate = new Date(lastCompletedCycle.endDate);
-    const nextCycleStartDate = new Date(lastEndDate);
-    nextCycleStartDate.setDate(nextCycleStartDate.getDate() + 1); // Next day after cycle ends
-
-    // Only create new cycle if the next cycle start date is today or in the past
-    if (nextCycleStartDate > today) {
-      return existingCycles;
-    }
-
-    // Calculate cycle patterns from the last cycle
-    const lastStartDate = new Date(lastCompletedCycle.startDate);
-    const lastPeriodEndDate = lastCompletedCycle.periodEndDate ? 
-      new Date(lastCompletedCycle.periodEndDate) : null;
-    
-    // Calculate cycle length and period length
-    const cycleLength = Math.ceil((lastEndDate.getTime() - lastStartDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-    const periodLength = lastPeriodEndDate ? 
-      Math.ceil((lastPeriodEndDate.getTime() - lastStartDate.getTime()) / (1000 * 60 * 60 * 24)) + 1 : 5; // Default to 5 days
-
-    // Calculate new cycle dates
-    const newCycleStartDate = new Date(nextCycleStartDate);
-    const newPeriodEndDate = new Date(newCycleStartDate);
-    newPeriodEndDate.setDate(newPeriodEndDate.getDate() + periodLength - 1);
-    
-    const newCycleEndDate = new Date(newCycleStartDate);
-    newCycleEndDate.setDate(newCycleEndDate.getDate() + cycleLength - 1);
-
-    // Create the new automatic cycle
-    const newCycleData = {
-      userId,
-      connectionId: lastCompletedCycle.connectionId || null,
-      startDate: newCycleStartDate,
-      periodEndDate: newPeriodEndDate,
-      endDate: newCycleEndDate,
-      notes: `Auto-generated cycle following ${cycleLength}-day pattern`,
-      mood: null,
-      symptoms: null,
-      flowIntensity: null
-    };
-
-    console.log("Creating automatic cycle progression:", newCycleData);
-
-    try {
-      const newCycle = await storage.createMenstrualCycle(newCycleData);
-      console.log("Created automatic cycle:", newCycle);
-      return [...existingCycles, newCycle];
-    } catch (error) {
-      console.error("Error creating automatic cycle:", error);
-      return existingCycles;
-    }
   }
 
   // Menstrual cycle endpoints
