@@ -847,11 +847,6 @@ export default function MenstrualCyclePage() {
                 {monthDays.map(day => {
                   const cyclesOnDay = getCyclesForDay(day);
                   const isToday = isSameDay(day, new Date());
-                  
-                  // Debug logging for June 7-12
-                  if (format(day, 'd') >= '7' && format(day, 'd') <= '12' && format(day, 'M') === '6') {
-                    console.log(`Debug day ${format(day, 'MMM d')}: cycles found:`, cyclesOnDay.length, cyclesOnDay);
-                  }
 
                   
                   return (
@@ -863,7 +858,7 @@ export default function MenstrualCyclePage() {
                         hover:bg-muted
                       `}
                     >
-                      {cyclesOnDay.length > 0 ? (
+                      {cyclesOnDay.length > 0 && cycles.length > 0 ? (
                         // Multiple cycles on same day - show initials with colors
                         cyclesOnDay.length > 1 ? (
                           <div className="w-8 h-8 flex flex-wrap items-center justify-center gap-0.5">
@@ -938,18 +933,15 @@ export default function MenstrualCyclePage() {
                                 </div>
                               );
                             } else {
-                              // Fallback for any other stage
+                              // No valid stage - show regular date
                               return (
-                                <div className="w-8 h-8 rounded-full bg-gray-300 flex flex-col items-center justify-center text-gray-700">
-                                  <span className="text-xs font-bold">{initial}</span>
-                                  <span className="text-xs">{format(day, 'd')}</span>
-                                </div>
+                                <span className="text-muted-foreground">{format(day, 'd')}</span>
                               );
                             }
                           })()
                         )
                       ) : (
-                        // No cycle data - show regular date
+                        // No cycle data - show regular date only
                         <span className="text-muted-foreground">{format(day, 'd')}</span>
                       )}
                     </div>
