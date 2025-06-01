@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { format, differenceInDays, addDays, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, isSameMonth, subMonths, addMonths, startOfWeek, getDay, startOfDay } from "date-fns";
-import { Calendar, Plus, Edit3, Trash2, Circle, ChevronLeft, ChevronRight, User, UserPlus, Camera, X, ChevronDown, Square, Edit } from "lucide-react";
+import { Calendar, Plus, Edit3, Trash2, Circle, ChevronLeft, ChevronRight, User, UserPlus, Camera, X, ChevronDown } from "lucide-react";
 import { useLocation } from "wouter";
 
 import { Button } from "@/components/ui/button";
@@ -478,11 +478,9 @@ export default function MenstrualCyclePage() {
       connectionId: selectedPersonIds.length === 1 ? (selectedPersonIds[0] === 0 ? null : selectedPersonIds[0]) : null // 0 means user, null in DB
     };
 
-    if (editingCycle && editingCycle.id > 0) {
-      // Only update if it's a real cycle (positive ID), not a predicted one
+    if (editingCycle) {
       updateCycleMutation.mutate({ id: editingCycle.id, ...submitData });
     } else {
-      // Create new cycle for predicted cycles (negative ID) or new cycles
       createCycleMutation.mutate(submitData);
     }
   };
@@ -832,83 +830,35 @@ export default function MenstrualCyclePage() {
                         Started {format(new Date(currentCycle.startDate), 'MMM d, yyyy')}
                       </p>
                       
-                      <div className="flex gap-2">
-                        {!currentCycle.endDate ? (
-                          <Button 
-                            onClick={() => {
-                              setEditingCycle(currentCycle);
-                              setFormData({
-                                startDate: format(new Date(currentCycle.startDate), 'yyyy-MM-dd'),
-                                endDate: format(new Date(), 'yyyy-MM-dd'), // Default to today
-                                flowIntensity: '',
-                                mood: '',
-                                symptoms: [],
-                                notes: '',
-                                connectionId: currentCycle.connectionId
-                              });
-                              setIsDialogOpen(true);
-                            }}
-                            size="sm"
-                            variant="outline"
-                            className="flex-1"
-                          >
-                            <X className="h-4 w-4 mr-2" />
-                            End Period
-                          </Button>
-                        ) : (
-                          <Button 
-                            onClick={() => {
-                              setEditingCycle(currentCycle);
-                              setFormData({
-                                startDate: format(new Date(currentCycle.startDate), 'yyyy-MM-dd'),
-                                endDate: currentCycle.endDate ? format(new Date(currentCycle.endDate), 'yyyy-MM-dd') : '',
-                                flowIntensity: '',
-                                mood: '',
-                                symptoms: [],
-                                notes: '',
-                                connectionId: currentCycle.connectionId
-                              });
-                              setIsDialogOpen(true);
-                            }}
-                            size="sm"
-                            variant="outline"
-                            className="flex-1"
-                          >
-                            <Edit3 className="h-4 w-4 mr-2" />
-                            Edit End Date
-                          </Button>
-                        )}
-                      </div>
+                      <Button 
+                        onClick={() => handleEdit(currentCycle)}
+                        size="sm"
+                        className={`w-full ${phaseColors.accent} hover:opacity-90 text-white`}
+                      >
+                        <Edit3 className="h-4 w-4 mr-2" />
+                        Update Current Cycle
+                      </Button>
                     </div>
                   ) : (
                     <div className="space-y-3">
                       <p className={`text-sm ${phaseColors.text}`}>
-                        No cycle data yet
+                        No active cycle
                       </p>
-                      <p className={`text-xs ${phaseColors.text} opacity-70`}>
-                        Set up the first cycle to start tracking patterns
-                      </p>
-                      <Button 
-                        size="sm"
-                        variant="outline"
-                        className="w-full"
-                        onClick={() => {
-                          setEditingCycle(null);
-                          setFormData({
-                            startDate: format(new Date(), 'yyyy-MM-dd'),
-                            endDate: '',
-                            flowIntensity: '',
-                            mood: '',
-                            symptoms: [],
-                            notes: '',
-                            connectionId: personId === 0 ? null : personId
-                          });
-                          setIsDialogOpen(true);
-                        }}
-                      >
-                        <Plus className="h-4 w-4 mr-2" />
-                        Start First Cycle
-                      </Button>
+                      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                        <DialogTrigger asChild>
+                          <Button 
+                            size="sm"
+                            className={`w-full ${phaseColors.accent} hover:opacity-90 text-white`}
+                            onClick={() => {
+                              setEditingCycle(null);
+                              resetForm();
+                            }}
+                          >
+                            <Plus className="h-4 w-4 mr-2" />
+                            Start New Cycle
+                          </Button>
+                        </DialogTrigger>
+                      </Dialog>
                     </div>
                   )}
                 </Card>
@@ -1574,26 +1524,6 @@ export default function MenstrualCyclePage() {
               </form>
             </div>
           </div>
-        )}
-
-        {/* Floating Action Button for Quick Period Logging */}
-        {connections.length > 0 && (
-          <Button
-            className="fixed bottom-20 right-4 h-14 w-14 rounded-full bg-red-500 hover:bg-red-600 text-white shadow-lg z-50"
-            onClick={async () => {
-              // Default to first connection if no focus is set
-              const targetConnectionId = connections[0]?.id;
-              if (targetConnectionId) {
-                await createCycleMutation.mutateAsync({
-                  startDate: new Date().toISOString(),
-                  connectionId: targetConnectionId
-                });
-              }
-            }}
-            disabled={createCycleMutation.isPending}
-          >
-            <Circle className="h-6 w-6" />
-          </Button>
         )}
       </main>
     </div>
