@@ -12,10 +12,11 @@ import { ConflictResolutionModal } from "@/components/modals/conflict-resolution
 import { ConnectionDetailedModal } from "@/components/modals/connection-detailed-modal";
 import { Moment, Connection, Plan } from "@shared/schema";
 import { useAuth } from "@/contexts/auth-context";
+import { useRelationshipFocus } from "@/contexts/relationship-focus-context";
 import { Button } from "@/components/ui/button";
 import { useModal } from "@/contexts/modal-context";
 import { Input } from "@/components/ui/input";
-import { Search, Plus, Calendar, ChevronDown, Activity, Users, Camera, X, UserPlus } from "lucide-react";
+import { Search, Plus, Calendar, ChevronDown, Activity, Users, Camera, X, UserPlus, Heart } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -29,7 +30,6 @@ import {
   DropdownMenuCheckboxItem
 } from "@/components/ui/dropdown-menu";
 import { format } from "date-fns";
-import { useRelationshipFocus } from "@/contexts/relationship-focus-context";
 
 export default function Activities() {
   const { user, isAuthenticated, loading } = useAuth();
@@ -75,8 +75,11 @@ export default function Activities() {
       return;
     }
 
-    // Don't auto-filter to focus connection to show all activities by default
-    // Users can manually select connections if needed
+    // If no navigation connection and user hasn't manually selected, use focus connection
+    if (!hasUserSelectedConnection && mainFocusConnection && !focusLoading) {
+      console.log("Setting activities to focus connection:", mainFocusConnection.name);
+      setSelectedConnections([mainFocusConnection.id]);
+    }
   }, [mainFocusConnection, focusLoading, hasUserSelectedConnection]);
 
   // Fetch moments - use simple approach like Dashboard
