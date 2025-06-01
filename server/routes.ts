@@ -1757,7 +1757,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/menstrual-cycles", isAuthenticated, async (req: Request, res: Response) => {
     try {
       const userId = req.session.userId!;
+      console.log("Fetching menstrual cycles for userId:", userId);
       const cycles = await storage.getMenstrualCycles(userId);
+      console.log("Retrieved cycles:", cycles);
       res.json(cycles);
     } catch (error: any) {
       console.error("Error fetching menstrual cycles:", error);
