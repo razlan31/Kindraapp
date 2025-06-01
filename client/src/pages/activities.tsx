@@ -40,20 +40,6 @@ export default function Activities() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedConnection, setSelectedConnection] = useState<number | null>(null);
   const [selectedConnections, setSelectedConnections] = useState<number[]>([]);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-
-  // Handle click outside to close dropdown
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownOpen && !event.target?.closest('.connection-picker-trigger, [style*="--dropdown-"]')) {
-        setDropdownOpen(false);
-        document.body.style.overflow = '';
-      }
-    };
-
-    document.addEventListener('click', handleClickOutside);
-    return () => document.removeEventListener('click', handleClickOutside);
-  }, [dropdownOpen]);
   const [activeTab, setActiveTab] = useState<'moments' | 'conflicts' | 'intimacy' | 'plans' | 'timeline'>(() => {
     // Preserve tab selection across page reloads
     const savedTab = localStorage.getItem('activitiesTab');
@@ -82,7 +68,7 @@ export default function Activities() {
     if (navigationConnectionId) {
       const connectionId = parseInt(navigationConnectionId);
       console.log("Setting activities connection from navigation:", connectionId);
-      setSelectedConnections([connectionId]);
+      setSelectedConnection(connectionId);
       setHasUserSelectedConnection(true);
       // Clear the navigation state after using it
       localStorage.removeItem('navigationConnectionId');
@@ -347,7 +333,7 @@ export default function Activities() {
     const matchesSearch = (plan.title || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
                          plan.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          connection.name.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesConnection = selectedConnections.length > 0 ? selectedConnections.includes(plan.connectionId) : true;
+    const matchesConnection = selectedConnection ? plan.connectionId === selectedConnection : true;
     
     return matchesSearch && matchesConnection;
   });
@@ -406,7 +392,7 @@ export default function Activities() {
     
     const matchesSearch = moment.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
                            connection.name.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesConnection = selectedConnections.length > 0 ? selectedConnections.includes(moment.connectionId) : true;
+    const matchesConnection = selectedConnection ? moment.connectionId === selectedConnection : true;
     
     return matchesTab && matchesSearch && matchesConnection;
   });
@@ -416,7 +402,7 @@ export default function Activities() {
     totalMoments: moments.length,
     activeTab,
     timelineFilter,
-    selectedConnections,
+    selectedConnection,
     filteredMomentsCount: filteredMoments.length,
     firstFewFiltered: filteredMoments.slice(0, 3).map(m => ({
       id: m.id,
@@ -510,156 +496,115 @@ export default function Activities() {
                  `${selectedConnections.length} connections selected`}
               </span>
             </div>
-            <div className="relative">
-              <Button 
-                variant="outline" 
-                className="w-full justify-between connection-picker-trigger"
-                onClick={(e) => {
-                  if (!dropdownOpen) {
-                    const rect = e.currentTarget.getBoundingClientRect();
-                    document.documentElement.style.setProperty('--dropdown-top', `${rect.bottom + 4}px`);
-                    document.documentElement.style.setProperty('--dropdown-left', `${rect.left}px`);
-                    document.documentElement.style.setProperty('--dropdown-width', `${rect.width}px`);
-                    document.body.style.overflow = 'hidden';
-                  } else {
-                    document.body.style.overflow = '';
-                  }
-                  setDropdownOpen(!dropdownOpen);
-                }}
-              >
-                <span>
-                  {selectedConnections.length === 0 ? 'All Connections' : 
-                   selectedConnections.length === 1 ? 
-                     connections.find(c => c.id === selectedConnections[0])?.name || 'Unknown' :
-                   `${selectedConnections.length} connections selected`}
-                </span>
-                <ChevronDown className="h-4 w-4" />
-              </Button>
-              
-              {dropdownOpen && (
-                <div 
-                  className="fixed bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md shadow-2xl max-h-64 flex flex-col" 
-                  style={{
-                    zIndex: 999999,
-                    top: 'var(--dropdown-top, 0px)',
-                    left: 'var(--dropdown-left, 0px)', 
-                    width: 'var(--dropdown-width, 200px)'
-                  }}
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  {/* Connection list - scrollable area */}
-                  <div className="overflow-y-auto flex-1 p-1">
-                    {/* All Connections Option */}
-                    <div 
-                      className="flex items-center gap-3 py-3 px-3 text-base cursor-pointer hover:bg-accent rounded-sm"
-                      onClick={() => {
-                        setSelectedConnections([]);
-                        setHasUserSelectedConnection(true);
-                      }}
-                    >
-                      <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
-                        <span className="text-xs font-medium">All</span>
-                      </div>
-                      <span>All Connections</span>
-                    </div>
-                    
-                    <div className="border-t border-border my-1" />
-                    
-                    {/* Individual Connections */}
-                    {connections.map((connection) => (
-                      <div
-                        key={connection.id}
-                        className="flex items-center gap-3 py-3 px-3 text-base cursor-pointer hover:bg-accent rounded-sm"
-                        onClick={() => {
-                          const isSelected = selectedConnections.includes(connection.id);
-                          if (isSelected) {
-                            setSelectedConnections(selectedConnections.filter(id => id !== connection.id));
-                          } else {
-                            setSelectedConnections([...selectedConnections, connection.id]);
-                          }
-                          setHasUserSelectedConnection(true);
-                        }}
-                      >
-                        <div className="flex items-center gap-3 flex-1">
-                          {connection.profileImage ? (
-                            <img 
-                              src={connection.profileImage} 
-                              alt={connection.name}
-                              className="w-8 h-8 rounded-full object-cover"
-                            />
-                          ) : (
-                            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                              <span className="text-xs font-medium text-primary">
-                                {connection.name.charAt(0).toUpperCase()}
-                              </span>
-                            </div>
-                          )}
-                          <span>{connection.name}</span>
-                          {mainFocusConnection?.id === connection.id && (
-                            <Heart className="h-3 w-3 text-red-500 fill-current ml-1" />
-                          )}
-                        </div>
-                        {selectedConnections.includes(connection.id) && (
-                          <div className="w-4 h-4 bg-primary rounded-sm flex items-center justify-center">
-                            <span className="text-xs text-white">✓</span>
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                    
-                    <div className="border-t border-border my-1" />
-                    
-                    {/* Add Connection Option */}
-                    <div 
-                      className="flex items-center gap-3 py-3 px-3 text-base cursor-pointer hover:bg-accent rounded-sm"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        openConnectionModal();
-                        setDropdownOpen(false);
-                      }}
-                    >
-                      <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                        <UserPlus className="h-4 w-4 text-primary" />
-                      </div>
-                      <span className="text-primary">Add Connection</span>
-                    </div>
-                  </div>
-                  
-                  {/* Multi-selection controls at bottom */}
-                  <div className="flex items-center justify-between px-4 py-2 border-t border-border bg-muted/50">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        setSelectedConnections([]);
-                        setHasUserSelectedConnection(true);
-                      }}
-                      className="h-8 px-3 text-xs font-medium border-red-200 text-red-600 hover:bg-red-50"
-                    >
-                      Clear All
-                    </Button>
-                    <div className="text-xs font-medium text-foreground">
-                      {selectedConnections.length} selected
-                    </div>
-                    <Button
-                      variant="default"
-                      size="sm"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        setDropdownOpen(false);
-                      }}
-                      className="h-8 px-3 text-xs font-medium"
-                    >
-                      Done
-                    </Button>
-                  </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="w-full justify-between">
+                  <span>
+                    {selectedConnections.length === 0 ? 'All Connections' : 
+                     selectedConnections.length === 1 ? 
+                       connections.find(c => c.id === selectedConnections[0])?.name || 'Unknown' :
+                     `${selectedConnections.length} connections selected`}
+                  </span>
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-[var(--radix-dropdown-menu-trigger-width)] max-h-80 overflow-y-auto" sideOffset={4}>
+                {/* Clear and Done buttons */}
+                <div className="flex items-center justify-between px-4 py-2 border-b border-border bg-muted/30">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setSelectedConnections([]);
+                      setHasUserSelectedConnection(true);
+                    }}
+                    className="h-7 px-2 text-xs"
+                  >
+                    Clear All
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      // Just close the dropdown - the state is already managed
+                    }}
+                    className="h-7 px-2 text-xs"
+                  >
+                    Done
+                  </Button>
                 </div>
-              )}
-            </div>
+                
+                <DropdownMenuItem 
+                  onClick={() => {
+                    setSelectedConnections([]);
+                    setHasUserSelectedConnection(true);
+                  }}
+                  className="py-3 px-4 text-base"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
+                      <span className="text-xs font-medium">All</span>
+                    </div>
+                    <span>All Connections</span>
+                  </div>
+                </DropdownMenuItem>
+                <div className="border-t border-border my-1" />
+                {connections.map((connection) => (
+                  <DropdownMenuCheckboxItem
+                    key={connection.id}
+                    checked={selectedConnections.includes(connection.id)}
+                    onCheckedChange={(checked) => {
+                      if (checked) {
+                        setSelectedConnections([...selectedConnections, connection.id]);
+                      } else {
+                        setSelectedConnections(selectedConnections.filter(id => id !== connection.id));
+                      }
+                      setHasUserSelectedConnection(true);
+                    }}
+                    onSelect={(e) => e.preventDefault()}
+                    className="py-3 px-4 text-base data-[checked]:bg-primary/10 data-[checked]:text-primary-foreground"
+                  >
+                    <div className="flex items-center gap-3">
+                      {connection.profileImage ? (
+                        <img 
+                          src={connection.profileImage} 
+                          alt={connection.name}
+                          className="w-8 h-8 rounded-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                          <span className="text-xs font-medium text-primary">
+                            {connection.name.charAt(0).toUpperCase()}
+                          </span>
+                        </div>
+                      )}
+                      <span>{connection.name}</span>
+                      {mainFocusConnection?.id === connection.id && (
+                        <Heart className="h-3 w-3 text-red-500 fill-current ml-1" />
+                      )}
+                    </div>
+                  </DropdownMenuCheckboxItem>
+                ))}
+                <div className="border-t border-border my-1" />
+                <div 
+                  className="flex items-center gap-3 py-3 px-4 text-base cursor-pointer hover:bg-accent rounded-sm"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    openConnectionModal();
+                  }}
+                >
+                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                    <UserPlus className="h-4 w-4 text-primary" />
+                  </div>
+                  <span className="text-primary">Add Connection</span>
+                </div>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </Card>
 
           {/* Add Button for Active Tab - Hide for Timeline */}
