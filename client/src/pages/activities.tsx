@@ -40,6 +40,7 @@ export default function Activities() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedConnection, setSelectedConnection] = useState<number | null>(null);
   const [selectedConnections, setSelectedConnections] = useState<number[]>([]);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'moments' | 'conflicts' | 'intimacy' | 'plans' | 'timeline'>(() => {
     // Preserve tab selection across page reloads
     const savedTab = localStorage.getItem('activitiesTab');
@@ -68,7 +69,7 @@ export default function Activities() {
     if (navigationConnectionId) {
       const connectionId = parseInt(navigationConnectionId);
       console.log("Setting activities connection from navigation:", connectionId);
-      setSelectedConnection(connectionId);
+      setSelectedConnections([connectionId]);
       setHasUserSelectedConnection(true);
       // Clear the navigation state after using it
       localStorage.removeItem('navigationConnectionId');
@@ -496,7 +497,7 @@ export default function Activities() {
                  `${selectedConnections.length} connections selected`}
               </span>
             </div>
-            <DropdownMenu>
+            <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" className="w-full justify-between">
                   <span>
@@ -530,7 +531,7 @@ export default function Activities() {
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
-                      // Just close the dropdown - the state is already managed
+                      setDropdownOpen(false);
                     }}
                     className="h-7 px-2 text-xs"
                   >
