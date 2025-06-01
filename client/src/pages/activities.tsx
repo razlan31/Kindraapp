@@ -513,7 +513,7 @@ export default function Activities() {
               </Button>
               
               {dropdownOpen && (
-                <div className="absolute top-full left-0 w-full z-[100] mt-1 bg-background border rounded-md shadow-xl max-h-64 flex flex-col">
+                <div className="absolute top-full left-0 w-full z-[9999] mt-1 bg-background border rounded-md shadow-xl max-h-64 flex flex-col">
                   {/* Connection list - scrollable area */}
                   <div className="overflow-y-auto flex-1 p-1">
                     {/* All Connections Option */}
