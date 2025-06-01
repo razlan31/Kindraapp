@@ -65,12 +65,14 @@ const calculateCycleLength = (cycles: MenstrualCycle[]): number => {
 };
 
 const calculateOvulationDay = (cycleLength: number): number => {
-  // Ovulation typically occurs 14 days before the next period
-  return cycleLength - 14;
+  // Ovulation occurs 14 days before next period (luteal phase length)
+  const lutealPhaseLength = 14;
+  return cycleLength - lutealPhaseLength + 1; // +1 because we count from day 1
 };
 
 const getCyclePhase = (dayInCycle: number, cycleLength: number): { phase: string; color: string; description: string } => {
   const ovulationDay = calculateOvulationDay(cycleLength);
+  const fertileWindowStart = ovulationDay - 5; // 5 days before ovulation
   
   if (dayInCycle <= 5) {
     return {
@@ -78,23 +80,29 @@ const getCyclePhase = (dayInCycle: number, cycleLength: number): { phase: string
       color: "bg-pink-500",
       description: "Period days"
     };
-  } else if (dayInCycle >= ovulationDay - 2 && dayInCycle <= ovulationDay + 2) {
+  } else if (dayInCycle === ovulationDay) {
     return {
       phase: "Ovulation",
       color: "bg-blue-600",
+      description: "Ovulation day"
+    };
+  } else if (dayInCycle >= fertileWindowStart && dayInCycle < ovulationDay) {
+    return {
+      phase: "Fertile",
+      color: "bg-green-500",
       description: "Fertile window"
     };
-  } else if (dayInCycle > ovulationDay + 2) {
+  } else if (dayInCycle > ovulationDay) {
     return {
       phase: "Luteal",
       color: "bg-purple-500",
-      description: "Post-ovulation phase"
+      description: "Luteal phase"
     };
   } else {
     return {
       phase: "Follicular",
-      color: "bg-green-500",
-      description: "Pre-ovulation phase"
+      color: "bg-gray-300",
+      description: "Follicular phase"
     };
   }
 };
@@ -429,12 +437,11 @@ export default function MenstrualCyclePage() {
   };
 
   const getCycleStage = (day: Date, cycle: MenstrualCycle) => {
-    const daysSinceStart = differenceInDays(day, new Date(cycle.startDate));
+    const daysSinceStart = differenceInDays(day, new Date(cycle.startDate)) + 1; // +1 to match cycle day counting
+    const cycleLength = cycle.cycleLength || 28;
+    const phase = getCyclePhase(daysSinceStart, cycleLength);
     
-    if (daysSinceStart <= 5) return 'menstrual'; // Days 1-5
-    if (daysSinceStart <= 13) return 'follicular'; // Days 6-13
-    if (daysSinceStart <= 15) return 'ovulation'; // Days 14-15
-    return 'luteal'; // Days 16+
+    return phase.phase.toLowerCase();
   };
 
   const getStageColor = (stage: string) => {
@@ -905,14 +912,20 @@ export default function MenstrualCyclePage() {
                       )}
                       
                       {cycle && stage === 'ovulation' && (
-                        <div className="w-8 h-8 flex items-center justify-center text-blue-600 font-bold">
+                        <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold">
+                          {format(day, 'd')}
+                        </div>
+                      )}
+                      
+                      {cycle && stage === 'fertile' && (
+                        <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white font-medium">
                           {format(day, 'd')}
                         </div>
                       )}
                       
                       {cycle && stage === 'luteal' && (
-                        <div className="w-8 h-8 rounded-full bg-purple-500 flex items-center justify-center text-white font-medium">
-                          {format(day, 'd')}
+                        <div className="w-8 h-8 flex items-center justify-center">
+                          <span className="text-purple-600 font-medium text-sm">{format(day, 'd')}</span>
                         </div>
                       )}
                       
@@ -952,11 +965,15 @@ export default function MenstrualCyclePage() {
                     <span>Menstrual phase</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 flex items-center justify-center text-blue-600 font-bold border border-blue-600 rounded">14</div>
-                    <span>Ovulation phase</span>
+                    <div className="w-4 h-4 rounded-full bg-green-500"></div>
+                    <span>Fertile window</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded-full bg-purple-500"></div>
+                    <div className="w-4 h-4 rounded-full bg-blue-600"></div>
+                    <span>Ovulation day</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 flex items-center justify-center text-purple-600 font-medium text-xs">L</div>
                     <span>Luteal phase</span>
                   </div>
                 </div>
@@ -966,15 +983,15 @@ export default function MenstrualCyclePage() {
                   <div className="grid grid-cols-1 gap-2 text-xs">
                     <div className="flex items-center gap-2">
                       <div className="w-4 h-4 rounded-full border-2 border-dashed border-blue-500 flex items-center justify-center text-blue-600 text-xs font-medium">
-                        14
+                        O
                       </div>
                       <span>Predicted ovulation day</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <div className="w-4 h-4 rounded-full border-2 border-dashed border-pink-500 flex items-center justify-center text-pink-600 text-xs font-medium">
-                        1
+                        P
                       </div>
-                      <span>Expected next menstrual phase</span>
+                      <span>Expected next period</span>
                     </div>
                   </div>
                 </div>
