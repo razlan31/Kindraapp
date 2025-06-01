@@ -662,30 +662,7 @@ export default function MenstrualCyclePage() {
 
         {/* Removed confusing color status cards - now using alphabetical initials in calendar */}
 
-        {/* Calendar and List View */}
-        {selectedPersonIds.length > 0 && (
-          <section className="px-4 py-2">
-            <div className="flex items-center gap-2 mb-4">
-              <Button
-                variant={viewMode === 'calendar' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setViewMode('calendar')}
-                className="flex items-center gap-2"
-              >
-                <Calendar className="h-4 w-4" />
-                Calendar
-              </Button>
-              <Button
-                variant={viewMode === 'list' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setViewMode('list')}
-                className="flex items-center gap-2"
-              >
-                List View
-              </Button>
-            </div>
-          </section>
-        )}
+
 
 
 
