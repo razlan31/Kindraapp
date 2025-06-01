@@ -1024,36 +1024,69 @@ export default function Calendar() {
                 }) || [];
 
                 // Get menstrual cycle info for this day - support multiple connections
-                let cyclePhase = null;
+                let cyclePhases = [];
                 let cycleDisplay = null;
                 
                 if (selectedConnectionIds.length === 0) {
                   // When no specific connections selected, show cycles from all connections
-                  // Find the first cycle that contains this day from any connection
                   for (const cycle of cycles) {
                     const cycleStart = new Date(cycle.startDate);
                     const cycleEnd = cycle.endDate ? new Date(cycle.endDate) : new Date();
                     
                     if (day >= cycleStart && day <= cycleEnd) {
-                      cyclePhase = getCyclePhaseForDay(day, cycle.connectionId);
-                      if (cyclePhase) break;
+                      const phaseInfo = getCyclePhaseForDay(day, cycle.connectionId);
+                      if (phaseInfo) {
+                        const connection = connections.find(c => c.id === cycle.connectionId);
+                        cyclePhases.push({ ...phaseInfo, connection });
+                      }
                     }
                   }
                 } else if (selectedConnectionIds.length === 1) {
                   // Single connection selected
-                  cyclePhase = getCyclePhaseForDay(day, selectedConnectionIds[0]);
+                  const phaseInfo = getCyclePhaseForDay(day, selectedConnectionIds[0]);
+                  if (phaseInfo) {
+                    const connection = connections.find(c => c.id === selectedConnectionIds[0]);
+                    cyclePhases.push({ ...phaseInfo, connection });
+                  }
                 } else {
-                  // Multiple connections selected - find cycles from any selected connection
+                  // Multiple connections selected - find cycles from selected connections
                   for (const connectionId of selectedConnectionIds) {
-                    const phaseForConnection = getCyclePhaseForDay(day, connectionId);
-                    if (phaseForConnection) {
-                      cyclePhase = phaseForConnection;
-                      break;
+                    const phaseInfo = getCyclePhaseForDay(day, connectionId);
+                    if (phaseInfo) {
+                      const connection = connections.find(c => c.id === connectionId);
+                      cyclePhases.push({ ...phaseInfo, connection });
                     }
                   }
                 }
                 
-                cycleDisplay = getCycleDisplayInfo(cyclePhase);
+                // Use the first cycle phase for background color, or create multi-connection display
+                if (cyclePhases.length === 1) {
+                  cycleDisplay = getCycleDisplayInfo(cyclePhases[0]);
+                } else if (cyclePhases.length > 1) {
+                  // Multiple connections have cycles on this day - show combined info with colored initials
+                  const getConnectionColor = (connectionId: number) => {
+                    const colors = [
+                      'text-red-600', 'text-blue-600', 'text-green-600', 'text-purple-600',
+                      'text-orange-600', 'text-pink-600', 'text-indigo-600', 'text-teal-600'
+                    ];
+                    return colors[connectionId % colors.length];
+                  };
+                  
+                  cycleDisplay = {
+                    color: 'bg-gradient-to-br from-pink-50 to-purple-50 dark:from-pink-900/20 dark:to-purple-900/20 border-pink-200 dark:border-pink-700',
+                    indicator: '', // We'll handle this specially in the render
+                    title: `Multiple cycles: ${cyclePhases.map(p => `${p.connection?.name || 'Unknown'} (${p.phase})`).join(', ')}`,
+                    description: 'Multiple cycle phases',
+                    isMultiple: true,
+                    phases: cyclePhases,
+                    coloredInitials: cyclePhases.map(phase => ({
+                      initial: phase.connection?.name?.[0]?.toUpperCase() || '?',
+                      color: getConnectionColor(phase.connection?.id || 0),
+                      connectionName: phase.connection?.name || 'Unknown',
+                      phase: phase.phase
+                    }))
+                  };
+                }
                 
                 const isToday = isSameDay(day, new Date());
                 
@@ -1065,7 +1098,7 @@ export default function Calendar() {
                       ${viewMode === 'daily' ? 'min-h-20 p-4 flex-col items-start justify-start text-left' : viewMode === 'weekly' ? 'h-24 p-2' : 'h-16 p-1'} 
                       border rounded-lg transition-colors hover:bg-accent/50
                       ${isToday ? 'border-primary/30' : 'border-border/20'}
-                      ${cycleDisplay && cyclePhase ? `${cycleDisplay.color} border-2` : (isToday ? 'bg-primary/10' : 'bg-background/50')}
+                      ${cycleDisplay ? `${cycleDisplay.color} border-2` : (isToday ? 'bg-primary/10' : 'bg-background/50')}
                       ${!isSameMonth(day, currentDate) ? 'opacity-30' : ''}
                       ${viewMode === 'daily' ? 'flex' : 'block'}
                     `}
@@ -1079,12 +1112,28 @@ export default function Calendar() {
                     <div className={`flex flex-wrap ${viewMode === 'daily' ? 'gap-2' : viewMode === 'weekly' ? 'gap-1' : 'gap-0.5'} items-center`}>
                       {/* Show cycle phase indicator first */}
                       {cycleDisplay && filters.cycle && (
-                        <span
-                          className={`${viewMode === 'daily' ? 'text-2xl' : viewMode === 'weekly' ? 'text-base' : 'text-xs'} opacity-70`}
-                          title={cycleDisplay.description}
-                        >
-                          {cycleDisplay.indicator}
-                        </span>
+                        <div className="flex gap-0.5">
+                          {cycleDisplay.isMultiple && cycleDisplay.coloredInitials ? (
+                            // Show colored initials for multiple connections
+                            cycleDisplay.coloredInitials.map((item, index) => (
+                              <span
+                                key={index}
+                                className={`${item.color} ${viewMode === 'daily' ? 'text-lg font-bold' : viewMode === 'weekly' ? 'text-sm font-semibold' : 'text-xs font-medium'}`}
+                                title={`${item.connectionName}: ${item.phase} phase`}
+                              >
+                                {item.initial}
+                              </span>
+                            ))
+                          ) : (
+                            // Show regular cycle indicator for single connection
+                            <span
+                              className={`${viewMode === 'daily' ? 'text-2xl' : viewMode === 'weekly' ? 'text-base' : 'text-xs'} opacity-70`}
+                              title={cycleDisplay.description}
+                            >
+                              {cycleDisplay.indicator}
+                            </span>
+                          )}
+                        </div>
                       )}
                       
                       {/* Show milestones */}
