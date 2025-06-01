@@ -291,8 +291,11 @@ export default function MenstrualCyclePage() {
       } else {
         // Ongoing cycle - calculate expected cycle length and check if day is within reasonable range
         const personCycles = cycles.filter(c => c.connectionId === cycle.connectionId);
-        const avgLength = calculateCycleLength(personCycles) || 28;
-        const expectedEnd = addDays(start, avgLength - 1);
+        const avgLength = calculateCycleLength(personCycles);
+        
+        // If no historical cycles exist, use a default 28-day assumption but be more conservative
+        const cycleLength = avgLength || 28;
+        const expectedEnd = addDays(start, cycleLength - 1);
         return checkDay >= start && checkDay <= expectedEnd;
       }
     });
@@ -841,6 +844,11 @@ export default function MenstrualCyclePage() {
                 {monthDays.map(day => {
                   const cyclesOnDay = getCyclesForDay(day);
                   const isToday = isSameDay(day, new Date());
+                  
+                  // Debug logging for June 7-12
+                  if (format(day, 'd') >= '7' && format(day, 'd') <= '12' && format(day, 'M') === '6') {
+                    console.log(`Debug day ${format(day, 'MMM d')}: cycles found:`, cyclesOnDay.length, cyclesOnDay);
+                  }
 
                   
                   return (
