@@ -881,6 +881,7 @@ export default function MenstrualCyclePage() {
                     // Show prediction if it matches this day
                     if (isSameDay(day, nextPeriodDate)) {
                       isPredictedPeriod = true;
+                      console.log('Found predicted period date:', day.toDateString(), nextPeriodDate.toDateString());
                     }
                     
                     // Get current cycle phase for the day (only if we have a current cycle)
