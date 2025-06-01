@@ -660,234 +660,34 @@ export default function MenstrualCyclePage() {
           </div>
         </section>
 
-        {/* Current Cycle Status and Predictions */}
-        {selectedPersonIds.length > 0 && (
-          <section className="px-4 py-2 space-y-4">
-            {/* Current Cycle Status - Show separate cards for each selected person */}
-            {selectedPersonIds.map((personId) => {
-              const person = trackablePersons.find(p => p.id === personId);
-              if (!person) return null;
-              
-              const colors = personColors[person.colorIndex];
-              const personCycles = cycles.filter(cycle => {
-                if (personId === 0) {
-                  return cycle.connectionId === null; // User's cycles
-                } else {
-                  return cycle.connectionId === personId; // Connection's cycles
-                }
-              });
-              
-              const currentCycle = personCycles.find(cycle => !cycle.endDate);
-              const avgCycleLength = calculateCycleLength(personCycles);
-              const currentDay = currentCycle ? differenceInDays(new Date(), new Date(currentCycle.startDate)) + 1 : 0;
-              const currentPhase = currentCycle ? getCyclePhase(currentDay, avgCycleLength) : null;
-              
-              return (
-                <Card key={personId} className={`p-4 ${colors.bg} ${colors.border} border-2`}>
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-2">
-                      <div className={`w-3 h-3 rounded-full ${colors.accent}`}></div>
-                      <h3 className={`font-medium ${colors.text}`}>
-                        {person.name}'s Cycle
-                      </h3>
-                    </div>
-                    <Circle className={`h-5 w-5 ${colors.text}`} />
-                  </div>
-                  
-                  {currentCycle ? (
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <p className={`text-sm ${colors.text}`}>
-                          Day {currentDay} of cycle
-                        </p>
-                        {currentPhase && (
-                          <Badge className={`${currentPhase.color} text-white text-xs`}>
-                            {currentPhase.phase}
-                          </Badge>
-                        )}
-                      </div>
-                      
-                      {currentPhase && (
-                        <p className={`text-xs ${colors.text} opacity-80`}>
-                          {currentPhase.description}
-                        </p>
-                      )}
-                      
-                      <p className={`text-xs ${colors.text} opacity-80`}>
-                        Started {format(new Date(currentCycle.startDate), 'MMM d, yyyy')}
-                      </p>
-                      
-                      {/* Ovulation prediction for current cycle */}
-                      {currentDay < calculateOvulationDay(avgCycleLength) && (
-                        <div className="bg-green-50 dark:bg-green-950 p-2 rounded-md">
-                          <p className="text-xs text-green-700 dark:text-green-300 font-medium">
-                            Ovulation predicted: Day {calculateOvulationDay(avgCycleLength)} 
-                            ({format(addDays(new Date(currentCycle.startDate), calculateOvulationDay(avgCycleLength) - 1), 'MMM d')})
-                          </p>
-                        </div>
-                      )}
-                      
-                      <Button 
-                        onClick={() => handleEdit(currentCycle)}
-                        size="sm"
-                        className={`w-full ${colors.accent} hover:opacity-90 text-white`}
-                      >
-                        <Edit3 className="h-4 w-4 mr-2" />
-                        Update Current Cycle
-                      </Button>
-                    </div>
-                  ) : (
-                    <div className="space-y-2">
-                      <p className={`text-sm ${colors.text}`}>No active cycle</p>
-                      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                        <DialogTrigger asChild>
-                          <Button 
-                            size="sm"
-                            className={`w-full ${colors.accent} hover:opacity-90 text-white`}
-                            onClick={() => {
-                              setEditingCycle(null);
-                              setSelectedPersonIds([personId]); // Set to current person
-                              resetForm();
-                            }}
-                          >
-                            <Plus className="h-4 w-4 mr-2" />
-                            Start New Cycle
-                          </Button>
-                        </DialogTrigger>
-                      </Dialog>
-                    </div>
-                  )}
-                </Card>
-              );
-            })}
+        {/* Removed confusing color status cards - now using alphabetical initials in calendar */}
 
-            {/* Cycle Predictions - Only in List View */}
-            {viewMode === 'list' && (() => {
-              const currentCycle = getCurrentCycle();
-              const completedCycles = getPastCycles();
-              const avgCycleLength = calculateCycleLength(filteredCycles);
-              
-              // Show predictions even with just one cycle (current or completed)
-              const hasCycleData = currentCycle || completedCycles.length > 0;
-              
-              if (!hasCycleData) {
-                return (
-                  <Card className="p-4">
-                    <h3 className="font-medium text-foreground mb-2">Cycle Predictions</h3>
-                    <p className="text-sm text-muted-foreground">
-                      Start tracking your first cycle to see predictions and patterns
-                    </p>
-                  </Card>
-                );
-              }
-              
-              return (
-                <Card className="p-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="font-medium text-foreground">Cycle Predictions</h3>
-                    <Badge variant="outline" className="text-xs">
-                      {completedCycles.length > 0 ? `Avg ${avgCycleLength} days` : 'Default 28 days'}
-                    </Badge>
-                  </div>
-                  
-                  <div className="space-y-3">
-                    {/* Current cycle predictions */}
-                    {currentCycle && (
-                      <div className="p-3 rounded-lg border bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800">
-                        <div className="flex items-center justify-between mb-2">
-                          <p className="text-sm font-medium text-blue-700 dark:text-blue-300">
-                            Current Cycle Timeline
-                          </p>
-                          <Badge className="bg-pink-500 text-white text-xs">
-                            Active
-                          </Badge>
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <p className="text-xs text-blue-600 dark:text-blue-400">
-                            Started: {format(new Date(currentCycle.startDate), 'MMM d, yyyy')}
-                          </p>
-                          
-                          {/* Ovulation prediction for current cycle */}
-                          <div className="bg-green-50 dark:bg-green-950 p-2 rounded">
-                            <p className="text-xs text-green-700 dark:text-green-300 font-medium">
-                              Predicted Ovulation: {format(addDays(new Date(currentCycle.startDate), calculateOvulationDay(avgCycleLength) - 1), 'MMM d')} 
-                              (Day {calculateOvulationDay(avgCycleLength)})
-                            </p>
-                          </div>
-                          
-                          {/* Next period prediction */}
-                          <div className="bg-red-50 dark:bg-red-950 p-2 rounded">
-                            <p className="text-xs text-red-700 dark:text-red-300 font-medium">
-                              Next Period Expected: {format(addDays(new Date(currentCycle.startDate), avgCycleLength), 'MMM d')}
-                              (Day {avgCycleLength + 1})
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                    
-                    {/* Future cycle predictions */}
-                    {(() => {
-                      const baseCycle = currentCycle || completedCycles[0];
-                      if (!baseCycle) return null;
-                      
-                      const startDate = currentCycle ? 
-                        addDays(new Date(currentCycle.startDate), avgCycleLength) : 
-                        addDays(new Date(baseCycle.startDate), avgCycleLength);
-                        
-                      const futurePredictions = [];
-                      for (let i = 0; i < (currentCycle ? 2 : 3); i++) {
-                        const cycleStart = addDays(startDate, avgCycleLength * i);
-                        const ovulationDate = addDays(cycleStart, calculateOvulationDay(avgCycleLength) - 1);
-                        
-                        futurePredictions.push({
-                          startDate: cycleStart,
-                          ovulationDate,
-                          phase: i === 0 ? "Next Period" : `${i + 1} cycles ahead`,
-                          isNext: i === 0
-                        });
-                      }
-                      
-                      return futurePredictions.map((prediction, index) => (
-                        <div key={index} className={`p-3 rounded-lg border ${prediction.isNext ? 'bg-orange-50 dark:bg-orange-950 border-orange-200 dark:border-orange-800' : 'bg-gray-50 dark:bg-gray-900'}`}>
-                          <div className="flex items-center justify-between mb-2">
-                            <p className={`text-sm font-medium ${prediction.isNext ? 'text-orange-700 dark:text-orange-300' : 'text-gray-700 dark:text-gray-300'}`}>
-                              {prediction.phase}
-                            </p>
-                            <Badge className="bg-red-500 text-white text-xs">
-                              Period
-                            </Badge>
-                          </div>
-                          
-                          <p className={`text-xs ${prediction.isNext ? 'text-orange-600 dark:text-orange-400' : 'text-gray-600 dark:text-gray-400'}`}>
-                            {format(prediction.startDate, 'MMM d, yyyy')}
-                          </p>
-                          
-                          <div className="mt-2 pt-2 border-t border-gray-200 dark:border-gray-700">
-                            <p className="text-xs text-green-600 dark:text-green-400">
-                              Ovulation: {format(prediction.ovulationDate, 'MMM d')} 
-                              (Day {calculateOvulationDay(avgCycleLength)})
-                            </p>
-                          </div>
-                        </div>
-                      ));
-                    })()}
-                  </div>
-                  
-                  <div className="mt-4 p-3 bg-yellow-50 dark:bg-yellow-950 rounded-lg">
-                    <p className="text-xs text-yellow-700 dark:text-yellow-300">
-                      {completedCycles.length > 0 ? 
-                        "Predictions improve with more cycle data. The tracker will adjust as you add new cycles." :
-                        "Initial predictions use a standard 28-day cycle. Accuracy improves as you track more cycles."
-                      }
-                    </p>
-                  </div>
-                </Card>
-              );
-            })()}
+        {/* Calendar and List View */}
+        {selectedPersonIds.length > 0 && (
+          <section className="px-4 py-2">
+            <div className="flex items-center gap-2 mb-4">
+              <Button
+                variant={viewMode === 'calendar' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setViewMode('calendar')}
+                className="flex items-center gap-2"
+              >
+                <Calendar className="h-4 w-4" />
+                Calendar
+              </Button>
+              <Button
+                variant={viewMode === 'list' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setViewMode('list')}
+                className="flex items-center gap-2"
+              >
+                List View
+              </Button>
+            </div>
           </section>
         )}
+
+
 
         {/* Calendar View */}
         {viewMode === 'calendar' && selectedPersonIds.length > 0 && (
