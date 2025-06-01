@@ -268,6 +268,11 @@ export function MomentModal() {
       }, 50);
       
       handleSuccess();
+      
+      // Force complete page refresh as final solution
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
     },
     onError: (error: any) => handleError(error),
   });
