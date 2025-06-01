@@ -258,6 +258,36 @@ export default function MenstrualCyclePage() {
     return connection?.name || 'Unknown';
   };
 
+  // Helper to get person initial
+  const getPersonInitial = (connectionId: number | null) => {
+    const name = getPersonName(connectionId);
+    return name.charAt(0).toUpperCase();
+  };
+
+  // Get all cycles for a specific day (for multi-person view)
+  const getCyclesForDay = (day: Date) => {
+    if (selectedPersonIds.length === 0) return cycles;
+    
+    return cycles.filter(cycle => {
+      // Check if this cycle belongs to a selected person
+      const belongsToSelectedPerson = selectedPersonIds.some(selectedId => {
+        if (selectedId === 0) {
+          return cycle.connectionId === null; // User's cycles
+        } else {
+          return cycle.connectionId === selectedId; // Connection's cycles
+        }
+      });
+      
+      if (!belongsToSelectedPerson) return false;
+      
+      // Check if the day falls within this cycle
+      const start = startOfDay(new Date(cycle.startDate));
+      const end = cycle.endDate ? startOfDay(new Date(cycle.endDate)) : new Date();
+      const checkDay = startOfDay(day);
+      return checkDay >= start && checkDay <= end;
+    });
+  };
+
   // Create cycle mutation
   const createCycleMutation = useMutation({
     mutationFn: (data: any) => apiRequest('POST', '/api/menstrual-cycles', data),
@@ -903,67 +933,9 @@ export default function MenstrualCyclePage() {
                 
                 {/* Month days */}
                 {monthDays.map(day => {
-                  const cycle = getCycleForDay(day);
-                  const stage = cycle ? getCycleStage(day, cycle) : null;
+                  const cyclesOnDay = getCyclesForDay(day);
                   const isToday = isSameDay(day, new Date());
-                  
-                  // Check for predictions
-                  const currentCycle = getCurrentCycle();
-                  const avgCycleLength = calculateCycleLength(filteredCycles);
-                  
-                  let isPredictedPeriod = false;
-                  let predictionPhase = null;
-                  
-                  // Try to predict next period from either current cycle or last completed cycle
-                  const cycleForPrediction = currentCycle || (filteredCycles.length > 0 ? filteredCycles[0] : null);
-                  
-                  if (cycleForPrediction) {
-                    // Use actual cycle length if available, otherwise use average or default to 28
-                    const actualCycleLength = getCycleLength(cycleForPrediction);
-                    const predictionLength = actualCycleLength || (avgCycleLength > 0 ? avgCycleLength : 28);
-                    const nextPeriodDate = addDays(new Date(cycleForPrediction.startDate), predictionLength);
-                    
-                    // Debug logging
-                    if (day.getDate() === 1) {
-                      console.log('Debug next period:', {
-                        cycleStart: cycleForPrediction.startDate,
-                        avgCycleLength,
-                        predictionLength,
-                        nextPeriodDate: nextPeriodDate.toISOString(),
-                        today: new Date().toISOString(),
-                        cyclesCount: filteredCycles.length
-                      });
-                    }
-                    
-                    // Show prediction for the full expected menstrual phase (5 days)
-                    const nextPeriodEnd = addDays(nextPeriodDate, 4); // 5-day period
-                    if (day >= nextPeriodDate && day <= nextPeriodEnd) {
-                      isPredictedPeriod = true;
-                      if (isSameDay(day, nextPeriodDate)) {
-                        console.log('Found predicted period start:', day.toDateString(), nextPeriodDate.toDateString());
-                      }
-                    }
-                    
-                    // Get current cycle phase for the day (only if we have a current cycle)
-                    if (!cycle && cycleForPrediction && day >= new Date(cycleForPrediction.startDate)) {
-                      const dayInCycle = differenceInDays(day, new Date(cycleForPrediction.startDate)) + 1;
-                      if (dayInCycle <= predictionLength) {
-                        predictionPhase = getCyclePhase(dayInCycle, predictionLength);
-                      }
-                    }
-                  } else {
-                    // If no current cycle, predict from last completed cycle
-                    const lastCycle = getPastCycles()[0];
-                    if (lastCycle) {
-                      const nextPeriodDate = addDays(new Date(lastCycle.startDate), avgCycleLength);
 
-                      
-                      if (isSameDay(day, nextPeriodDate)) {
-                        isPredictedPeriod = true;
-                      }
-
-                    }
-                  }
                   
                   return (
                     <div
@@ -974,46 +946,86 @@ export default function MenstrualCyclePage() {
                         hover:bg-muted
                       `}
                     >
-                      {/* Actual cycle days */}
-                      {cycle && stage === 'menstrual' && (
-                        <div className="w-8 h-8 rounded-full bg-pink-500 flex items-center justify-center text-white font-medium">
-                          {format(day, 'd')}
-                        </div>
-                      )}
-                      
-                      {cycle && stage === 'ovulation' && (
-                        <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold">
-                          {format(day, 'd')}
-                        </div>
-                      )}
-                      
-                      {cycle && stage === 'fertile' && (
-                        <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white font-medium">
-                          {format(day, 'd')}
-                        </div>
-                      )}
-                      
-                      {cycle && stage === 'luteal' && (
-                        <div className="w-8 h-8 flex items-center justify-center">
-                          <span className="text-purple-600 font-medium text-sm">{format(day, 'd')}</span>
-                        </div>
-                      )}
-                      
-                      {/* Follicular stage - tracked but not displayed */}
-                      {cycle && stage === 'follicular' && (
-                        <span className="text-gray-700 dark:text-gray-300 font-medium">{format(day, 'd')}</span>
-                      )}
-                      
-                      {/* Predicted period - dotted circle */}
-                      {isPredictedPeriod && !cycle && (
-                        <div className="w-8 h-8 rounded-full border-2 border-dashed border-pink-500 flex items-center justify-center text-pink-600 font-medium">
-                          {format(day, 'd')}
-                        </div>
-                      )}
-                      
-                      {/* Regular days with no cycle or prediction */}
-                      {!cycle && !isPredictedPeriod && (
-                        <span className="text-gray-700 dark:text-gray-300 font-medium">{format(day, 'd')}</span>
+                      {cyclesOnDay.length > 0 ? (
+                        // Multiple cycles on same day - show initials with colors
+                        cyclesOnDay.length > 1 ? (
+                          <div className="w-8 h-8 flex flex-wrap items-center justify-center gap-0.5">
+                            {cyclesOnDay.slice(0, 4).map((cycle, index) => {
+                              const personId = cycle.connectionId === null ? 0 : cycle.connectionId;
+                              const colors = getPersonColor(personId);
+                              const initial = getPersonInitial(cycle.connectionId);
+                              const stage = getCycleStage(day, cycle);
+                              
+                              // Get stage color
+                              let stageColor = colors.accent;
+                              if (stage === 'menstrual') stageColor = 'bg-red-500';
+                              else if (stage === 'ovulation') stageColor = 'bg-blue-600';
+                              else if (stage === 'fertile') stageColor = 'bg-green-500';
+                              else if (stage === 'luteal') stageColor = 'bg-purple-500';
+                              
+                              return (
+                                <div
+                                  key={cycle.id}
+                                  className={`w-3 h-3 rounded-full ${stageColor} flex items-center justify-center text-white text-xs font-bold`}
+                                  title={`${getPersonName(cycle.connectionId)} - ${stage}`}
+                                >
+                                  {initial}
+                                </div>
+                              );
+                            })}
+                            {cyclesOnDay.length > 4 && (
+                              <div className="w-3 h-3 rounded-full bg-gray-400 flex items-center justify-center text-white text-xs">
+                                +
+                              </div>
+                            )}
+                            <div className="absolute -bottom-1 text-xs text-muted-foreground">
+                              {format(day, 'd')}
+                            </div>
+                          </div>
+                        ) : (
+                          // Single cycle - show full day with person initial and color
+                          (() => {
+                            const cycle = cyclesOnDay[0];
+                            const personId = cycle.connectionId === null ? 0 : cycle.connectionId;
+                            const colors = getPersonColor(personId);
+                            const initial = getPersonInitial(cycle.connectionId);
+                            const stage = getCycleStage(day, cycle);
+                            
+                            // Get stage color and style
+                            if (stage === 'menstrual') {
+                              return (
+                                <div className="w-8 h-8 rounded-full bg-red-500 flex flex-col items-center justify-center text-white">
+                                  <span className="text-xs font-bold">{initial}</span>
+                                  <span className="text-xs">{format(day, 'd')}</span>
+                                </div>
+                              );
+                            } else if (stage === 'ovulation') {
+                              return (
+                                <div className="w-8 h-8 rounded-full bg-blue-600 flex flex-col items-center justify-center text-white">
+                                  <span className="text-xs font-bold">{initial}</span>
+                                  <span className="text-xs">{format(day, 'd')}</span>
+                                </div>
+                              );
+                            } else if (stage === 'fertile') {
+                              return (
+                                <div className="w-8 h-8 rounded-full bg-green-500 flex flex-col items-center justify-center text-white">
+                                  <span className="text-xs font-bold">{initial}</span>
+                                  <span className="text-xs">{format(day, 'd')}</span>
+                                </div>
+                              );
+                            } else if (stage === 'luteal') {
+                              return (
+                                <div className={`w-8 h-8 rounded-full ${colors.bg} ${colors.border} border-2 flex flex-col items-center justify-center`}>
+                                  <span className={`text-xs font-bold ${colors.text}`}>{initial}</span>
+                                  <span className={`text-xs ${colors.text}`}>{format(day, 'd')}</span>
+                                </div>
+                              );
+                            }
+                          })()
+                        )
+                      ) : (
+                        // No cycle data - show regular date
+                        <span className="text-muted-foreground">{format(day, 'd')}</span>
                       )}
                     </div>
                   );
@@ -1024,34 +1036,35 @@ export default function MenstrualCyclePage() {
               <div className="mt-4 space-y-3">
                 <div className="grid grid-cols-1 gap-2 text-xs">
                   <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded-full bg-pink-500"></div>
-                    <span>Menstrual phase</span>
+                    <div className="w-4 h-4 rounded-full bg-red-500 flex items-center justify-center text-white text-xs font-bold">A</div>
+                    <span>Menstrual phase (with person initial)</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded-full bg-green-500"></div>
-                    <span>Fertile window</span>
+                    <div className="w-4 h-4 rounded-full bg-green-500 flex items-center justify-center text-white text-xs font-bold">A</div>
+                    <span>Fertile window (with person initial)</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded-full bg-blue-600"></div>
-                    <span>Ovulation day</span>
+                    <div className="w-4 h-4 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-bold">A</div>
+                    <span>Ovulation day (with person initial)</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 flex items-center justify-center text-purple-600 font-medium text-xs">L</div>
-                    <span>Luteal phase</span>
+                    <div className="w-4 h-4 rounded-full bg-purple-500 flex items-center justify-center text-white text-xs font-bold">A</div>
+                    <span>Luteal phase (with person initial)</span>
                   </div>
                 </div>
                 
-                <div className="border-t pt-2">
-                  <p className="text-xs font-medium text-muted-foreground mb-2">Predictions:</p>
-                  <div className="grid grid-cols-1 gap-2 text-xs">
-                    <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 rounded-full border-2 border-dashed border-pink-500 flex items-center justify-center text-pink-600 text-xs font-medium">
-                        P
+                {selectedPersonIds.length > 1 && (
+                  <div className="border-t pt-2">
+                    <p className="text-xs font-medium text-muted-foreground mb-2">Multiple people on same day:</p>
+                    <div className="flex items-center gap-2 text-xs">
+                      <div className="flex gap-1">
+                        <div className="w-3 h-3 rounded-full bg-red-500 flex items-center justify-center text-white text-xs font-bold">A</div>
+                        <div className="w-3 h-3 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-bold">J</div>
                       </div>
-                      <span>Expected next period</span>
+                      <span>Overlapping cycles with initials</span>
                     </div>
                   </div>
-                </div>
+                )}
               </div>
             </Card>
           </section>
