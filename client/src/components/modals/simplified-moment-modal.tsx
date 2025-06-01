@@ -269,8 +269,8 @@ export function MomentModal() {
       
       handleSuccess();
       
-      // Force immediate page refresh for reliable UI update
-      window.location.reload();
+      // Invalidate cache to trigger re-fetch without page refresh
+      queryClient.invalidateQueries({ queryKey: ['/api/moments'] });
     },
     onError: (error: any) => handleError(error),
   });
