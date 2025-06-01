@@ -438,7 +438,7 @@ export default function MenstrualCyclePage() {
 
   const getCycleStage = (day: Date, cycle: MenstrualCycle) => {
     const daysSinceStart = differenceInDays(day, new Date(cycle.startDate)) + 1; // +1 to match cycle day counting
-    const cycleLength = cycle.cycleLength || 28;
+    const cycleLength = getCycleLength(cycle) || 28; // Default to 28 if null
     const phase = getCyclePhase(daysSinceStart, cycleLength);
     
     return phase.phase.toLowerCase();
@@ -855,17 +855,10 @@ export default function MenstrualCyclePage() {
                   const currentCycle = getCurrentCycle();
                   const avgCycleLength = calculateCycleLength(filteredCycles);
                   
-                  let isPredictedOvulation = false;
                   let isPredictedPeriod = false;
                   let predictionPhase = null;
                   
                   if (currentCycle) {
-                    // Predict ovulation for current cycle
-                    const ovulationDate = addDays(new Date(currentCycle.startDate), calculateOvulationDay(avgCycleLength) - 1);
-                    if (isSameDay(day, ovulationDate)) {
-                      isPredictedOvulation = true;
-                    }
-                    
                     // Predict next period
                     const nextPeriodDate = addDays(new Date(currentCycle.startDate), avgCycleLength);
                     if (isSameDay(day, nextPeriodDate)) {
@@ -884,14 +877,12 @@ export default function MenstrualCyclePage() {
                     const lastCycle = getPastCycles()[0];
                     if (lastCycle) {
                       const nextPeriodDate = addDays(new Date(lastCycle.startDate), avgCycleLength);
-                      const ovulationDate = addDays(nextPeriodDate, calculateOvulationDay(avgCycleLength) - 1);
+
                       
                       if (isSameDay(day, nextPeriodDate)) {
                         isPredictedPeriod = true;
                       }
-                      if (isSameDay(day, ovulationDate)) {
-                        isPredictedOvulation = true;
-                      }
+
                     }
                   }
                   
@@ -934,13 +925,6 @@ export default function MenstrualCyclePage() {
                         <span className="text-gray-700 dark:text-gray-300 font-medium">{format(day, 'd')}</span>
                       )}
                       
-                      {/* Predicted ovulation day - dotted circle */}
-                      {isPredictedOvulation && !cycle && (
-                        <div className="w-8 h-8 rounded-full border-2 border-dashed border-blue-500 flex items-center justify-center text-blue-600 font-medium">
-                          {format(day, 'd')}
-                        </div>
-                      )}
-                      
                       {/* Predicted period - dotted circle */}
                       {isPredictedPeriod && !cycle && (
                         <div className="w-8 h-8 rounded-full border-2 border-dashed border-pink-500 flex items-center justify-center text-pink-600 font-medium">
@@ -949,7 +933,7 @@ export default function MenstrualCyclePage() {
                       )}
                       
                       {/* Regular days with no cycle or prediction */}
-                      {!cycle && !isPredictedOvulation && !isPredictedPeriod && (
+                      {!cycle && !isPredictedPeriod && (
                         <span className="text-gray-700 dark:text-gray-300 font-medium">{format(day, 'd')}</span>
                       )}
                     </div>
