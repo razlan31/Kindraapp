@@ -40,7 +40,11 @@ export default function Activities() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedConnection, setSelectedConnection] = useState<number | null>(null);
   const [selectedConnections, setSelectedConnections] = useState<number[]>([]);
-  const [activeTab, setActiveTab] = useState<'moments' | 'conflicts' | 'intimacy' | 'plans' | 'timeline'>('timeline');
+  const [activeTab, setActiveTab] = useState<'moments' | 'conflicts' | 'intimacy' | 'plans' | 'timeline'>(() => {
+    // Preserve tab selection across page reloads
+    const savedTab = localStorage.getItem('activitiesTab');
+    return (savedTab as any) || 'timeline';
+  });
   const [timelineFilter, setTimelineFilter] = useState<'all' | 'moments' | 'conflicts' | 'intimacy' | 'plans' | 'milestones'>('all');
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
