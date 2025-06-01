@@ -472,13 +472,17 @@ export default function MenstrualCyclePage() {
     console.log("Form submission debug:", {
       selectedPersonIds,
       trackablePersons,
-      connections
+      connections,
+      editingCycle
     });
 
-    // Determine which person to create the cycle for
+    // Determine which person to create/update the cycle for
     let targetPersonId: number;
     
-    if (cycleForPersonId !== null) {
+    if (editingCycle) {
+      // When editing, use the existing cycle's connectionId
+      targetPersonId = editingCycle.connectionId || 0; // null becomes 0 for user
+    } else if (cycleForPersonId !== null) {
       // A specific person's "Start New Cycle" button was clicked
       targetPersonId = cycleForPersonId;
     } else if (selectedPersonIds.length === 1) {
