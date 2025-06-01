@@ -1,0 +1,25 @@
+Focus Context Debug: {savedId: '3', connectionsLength: 1, connections: Array(1)}
+Console.js:61 Found saved connection: undefined
+Console.js:61 getCurrentUser successful: {id: 1, username: 'testuser', email: 'test@example.com', displayName: 'Test User', zodiacSign: 'Gemini', …}
+Console.js:61 getCurrentUser successful: {id: 1, username: 'testuser', email: 'test@example.com', displayName: 'Test User', zodiacSign: 'Gemini', …}
+Console.js:61 Auth context setting user: {id: 1, username: 'testuser', email: 'test@example.com', displayName: 'Test User', zodiacSign: 'Gemini', …}
+Console.js:61 Auth: Finally block - setting loading to false
+Console.js:61 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+Mt.forEach.n.<computed> @ Console.js:61
+(anonymous) @ @radix-ui_react-dialog.js?v=d607aa99:340
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=d607aa99:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=d607aa99:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=d607aa99:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=d607aa99:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=d607aa99:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=d607aa99:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=d607aa99:19447
+commitRootImpl @ chunk-RPCDYKBN.js?v=d607aa99:19416
+commitRoot @ chunk-RPCDYKBN.js?v=d607aa99:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=d607aa99:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=d607aa99:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=d607aa99:18627Understand this warning
+Console.js:61 Debug next period: {cycleStart: '2025-06-01T00:00:00.000Z', avgCycleLength: 28, predictionLength: 28, nextPeriodDate: '2025-06-29T00:00:00.000Z', today: '2025-06-01T06:57:35.678Z', …}
+Console.js:61 Found predicted period date: Sun Jun 29 2025 Sun Jun 29 2025
+Console.js:61 Debug next period: {cycleStart: '2025-06-01T00:00:00.000Z', avgCycleLength: 28, predictionLength: 28, nextPeriodDate: '2025-06-29T00:00:00.000Z', today: '2025-06-01T06:57:38.792Z', …}
+Console.js:61 Debug next period: {cycleStart: '2025-06-01T00:00:00.000Z', avgCycleLength: 28, predictionLength: 28, nextPeriodDate: '2025-06-29T00:00:00.000Z', today: '2025-06-01T06:58:03.663Z', …}
