@@ -777,6 +777,8 @@ export default function MenstrualCyclePage() {
                 }
               });
               
+              console.log(`Debug: ${person.name} (ID: ${personId}) - Found ${personCycles.length} cycles:`, personCycles);
+              
               // Find active cycle - either no end date, or current date is within the cycle period
               const currentCycle = personCycles.find(cycle => {
                 if (!cycle.endDate) return true; // No end date means actively ongoing
