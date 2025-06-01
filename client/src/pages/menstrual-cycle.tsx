@@ -859,9 +859,11 @@ export default function MenstrualCyclePage() {
                   let predictionPhase = null;
                   
                   if (currentCycle) {
-                    // Predict next period
+                    // For ongoing cycles (no end date), use average cycle length to predict next period
                     const nextPeriodDate = addDays(new Date(currentCycle.startDate), avgCycleLength);
-                    if (isSameDay(day, nextPeriodDate)) {
+                    
+                    // Only show prediction if it's in the future
+                    if (isSameDay(day, nextPeriodDate) && nextPeriodDate > new Date()) {
                       isPredictedPeriod = true;
                     }
                     
