@@ -320,27 +320,24 @@ export default function MenstrualCyclePage() {
           const lastCycleStart = new Date(lastCycle.startDate);
           
           for (let i = 1; i <= 6; i++) {
-            // Calculate when the next cycle should start (after current cycle ends)
-            const currentCycleEnd = lastCycle.endDate ? 
-              new Date(lastCycle.endDate) : 
-              addDays(lastCycleStart, avgCycleLength - 1);
+            // Calculate when the next menstrual phase should start
+            const nextPeriodStart = addDays(lastCycleStart, avgCycleLength * i);
+            const periodLength = getCycleLength(lastCycle) || 5; // Period length (typically 3-7 days)
+            const nextPeriodEnd = addDays(nextPeriodStart, periodLength - 1);
             
-            const predictedStart = addDays(currentCycleEnd, (avgCycleLength * (i - 1)) + 1); // +1 day after previous cycle ends
-            const periodLength = getCycleLength(lastCycle) || 5; // Period length, not full cycle length
-            const predictedEnd = addDays(predictedStart, periodLength - 1); // -1 because we count inclusive
+            const predictedStartDay = startOfDay(nextPeriodStart);
+            const predictedEndDay = startOfDay(nextPeriodEnd);
             
-            const predictedStartDay = startOfDay(predictedStart);
-            const predictedEndDay = startOfDay(predictedEnd);
-            
-            // Check if the day falls within this predicted cycle
+            // Check if the day falls within this predicted MENSTRUAL PHASE only
             if (checkDay >= predictedStartDay && checkDay <= predictedEndDay) {
-              // Create a virtual cycle for prediction
+              // Create a virtual cycle for prediction (only menstrual phase)
               const virtualCycle = {
                 ...lastCycle,
                 id: -i, // Use negative ID to distinguish from real cycles
-                startDate: predictedStart.toISOString(),
-                endDate: predictedEnd.toISOString(),
-                isPrediction: true
+                startDate: nextPeriodStart.toISOString(),
+                endDate: nextPeriodEnd.toISOString(),
+                isPrediction: true,
+                predictedPhase: 'menstrual' // Only predict menstrual phase
               } as any;
               predictedCycles.push(virtualCycle);
             }
@@ -930,10 +927,17 @@ export default function MenstrualCyclePage() {
                               
                               // Get stage color
                               let stageColor = colors.accent;
-                              if (stage === 'menstrual') stageColor = 'bg-red-500';
-                              else if (stage === 'ovulation') stageColor = 'bg-blue-600';
-                              else if (stage === 'fertile') stageColor = 'bg-blue-300';
-                              else if (stage === 'luteal') stageColor = 'bg-purple-500';
+                              
+                              // Check if this is a predicted cycle
+                              if (cycle.isPrediction) {
+                                stageColor = 'bg-red-300'; // Light red for predicted menstrual phase
+                              } else {
+                                // Actual cycle colors
+                                if (stage === 'menstrual') stageColor = 'bg-red-500';
+                                else if (stage === 'ovulation') stageColor = 'bg-blue-600';
+                                else if (stage === 'fertile') stageColor = 'bg-blue-300';
+                                else if (stage === 'luteal') stageColor = 'bg-purple-500';
+                              }
                               
                               return (
                                 <div
@@ -964,7 +968,15 @@ export default function MenstrualCyclePage() {
                             const stage = getCycleStage(day, cycle);
                             
                             // Get stage color and style
-                            if (stage === 'menstrual') {
+                            if (cycle.isPrediction) {
+                              // Predicted menstrual phase in light red
+                              return (
+                                <div className="w-8 h-8 rounded-full bg-red-300 flex flex-col items-center justify-center text-white">
+                                  <span className="text-xs font-bold">{initial}</span>
+                                  <span className="text-xs">{format(day, 'd')}</span>
+                                </div>
+                              );
+                            } else if (stage === 'menstrual') {
                               return (
                                 <div className="w-8 h-8 rounded-full bg-red-500 flex flex-col items-center justify-center text-white">
                                   <span className="text-xs font-bold">{initial}</span>
@@ -1015,6 +1027,10 @@ export default function MenstrualCyclePage() {
                   <div className="flex items-center gap-2">
                     <div className="w-4 h-4 rounded-full bg-red-500 flex items-center justify-center text-white text-xs font-bold">A</div>
                     <span>Menstrual phase (with person initial)</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 rounded-full bg-red-300 flex items-center justify-center text-white text-xs font-bold">A</div>
+                    <span>Predicted menstrual phase (with person initial)</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="w-4 h-4 rounded-full bg-blue-300 flex items-center justify-center text-white text-xs font-bold">A</div>
