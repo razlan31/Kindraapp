@@ -253,7 +253,11 @@ export function MomentModal() {
       
       // Force immediate cache invalidation and refetch
       queryClient.invalidateQueries({ queryKey: ['/api/moments'] });
-      queryClient.refetchQueries({ queryKey: ['/api/moments'] });
+      
+      // Add a small delay to ensure cache refresh happens
+      setTimeout(() => {
+        queryClient.refetchQueries({ queryKey: ['/api/moments'] });
+      }, 100);
       
       handleSuccess();
     },
