@@ -883,8 +883,8 @@ export default function MenstrualCyclePage() {
                       isPredictedPeriod = true;
                     }
                     
-                    // Get current cycle phase for the day
-                    if (!cycle && day >= new Date(currentCycle.startDate)) {
+                    // Get current cycle phase for the day (only if we have a current cycle)
+                    if (!cycle && currentCycle && day >= new Date(currentCycle.startDate)) {
                       const dayInCycle = differenceInDays(day, new Date(currentCycle.startDate)) + 1;
                       if (dayInCycle <= avgCycleLength) {
                         predictionPhase = getCyclePhase(dayInCycle, avgCycleLength);
