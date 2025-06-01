@@ -1753,13 +1753,99 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Automatic cycle progression function
+  async function checkAndCreateAutomaticCycles(userId: number, existingCycles: any[]): Promise<any[]> {
+    if (existingCycles.length === 0) {
+      return existingCycles;
+    }
+
+    // Sort cycles by start date to find the most recent completed cycle
+    const sortedCycles = existingCycles.sort((a, b) => 
+      new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
+    );
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // Check if there's an active cycle (no end date or end date is in the future)
+    const activeCycle = sortedCycles.find(cycle => 
+      !cycle.endDate || new Date(cycle.endDate) >= today
+    );
+
+    if (activeCycle) {
+      return existingCycles; // Already have an active cycle
+    }
+
+    // Find the most recent completed cycle to use as a pattern
+    const lastCompletedCycle = sortedCycles.find(cycle => cycle.endDate);
+    
+    if (!lastCompletedCycle) {
+      return existingCycles; // No completed cycles to base pattern on
+    }
+
+    const lastEndDate = new Date(lastCompletedCycle.endDate);
+    const nextCycleStartDate = new Date(lastEndDate);
+    nextCycleStartDate.setDate(nextCycleStartDate.getDate() + 1); // Next day after cycle ends
+
+    // Only create new cycle if the next cycle start date is today or in the past
+    if (nextCycleStartDate > today) {
+      return existingCycles;
+    }
+
+    // Calculate cycle patterns from the last cycle
+    const lastStartDate = new Date(lastCompletedCycle.startDate);
+    const lastPeriodEndDate = lastCompletedCycle.periodEndDate ? 
+      new Date(lastCompletedCycle.periodEndDate) : null;
+    
+    // Calculate cycle length and period length
+    const cycleLength = Math.ceil((lastEndDate.getTime() - lastStartDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+    const periodLength = lastPeriodEndDate ? 
+      Math.ceil((lastPeriodEndDate.getTime() - lastStartDate.getTime()) / (1000 * 60 * 60 * 24)) + 1 : 5; // Default to 5 days
+
+    // Calculate new cycle dates
+    const newCycleStartDate = new Date(nextCycleStartDate);
+    const newPeriodEndDate = new Date(newCycleStartDate);
+    newPeriodEndDate.setDate(newPeriodEndDate.getDate() + periodLength - 1);
+    
+    const newCycleEndDate = new Date(newCycleStartDate);
+    newCycleEndDate.setDate(newCycleEndDate.getDate() + cycleLength - 1);
+
+    // Create the new automatic cycle
+    const newCycleData = {
+      userId,
+      connectionId: lastCompletedCycle.connectionId || null,
+      startDate: newCycleStartDate,
+      periodEndDate: newPeriodEndDate,
+      endDate: newCycleEndDate,
+      notes: `Auto-generated cycle following ${cycleLength}-day pattern`,
+      mood: null,
+      symptoms: null,
+      flowIntensity: null
+    };
+
+    console.log("Creating automatic cycle progression:", newCycleData);
+
+    try {
+      const newCycle = await storage.createMenstrualCycle(newCycleData);
+      console.log("Created automatic cycle:", newCycle);
+      return [...existingCycles, newCycle];
+    } catch (error) {
+      console.error("Error creating automatic cycle:", error);
+      return existingCycles;
+    }
+  }
+
   // Menstrual cycle endpoints
   app.get("/api/menstrual-cycles", isAuthenticated, async (req: Request, res: Response) => {
     try {
       const userId = req.session.userId!;
       console.log("Fetching menstrual cycles for userId:", userId);
-      const cycles = await storage.getMenstrualCycles(userId);
+      let cycles = await storage.getMenstrualCycles(userId);
       console.log("Retrieved cycles:", cycles);
+      
+      // Check for automatic cycle progression
+      cycles = await checkAndCreateAutomaticCycles(userId, cycles);
+      
       res.json(cycles);
     } catch (error: any) {
       console.error("Error fetching menstrual cycles:", error);
