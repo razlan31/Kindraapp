@@ -320,8 +320,14 @@ export default function MenstrualCyclePage() {
           const lastCycleStart = new Date(lastCycle.startDate);
           
           for (let i = 1; i <= 6; i++) {
-            const predictedStart = addDays(lastCycleStart, avgCycleLength * i);
-            const predictedEnd = addDays(predictedStart, getCycleLength(lastCycle) || 5); // Default 5-day period
+            // Calculate when the next cycle should start (after current cycle ends)
+            const currentCycleEnd = lastCycle.endDate ? 
+              new Date(lastCycle.endDate) : 
+              addDays(lastCycleStart, avgCycleLength - 1);
+            
+            const predictedStart = addDays(currentCycleEnd, (avgCycleLength * (i - 1)) + 1); // +1 day after previous cycle ends
+            const periodLength = getCycleLength(lastCycle) || 5; // Period length, not full cycle length
+            const predictedEnd = addDays(predictedStart, periodLength - 1); // -1 because we count inclusive
             
             const predictedStartDay = startOfDay(predictedStart);
             const predictedEndDay = startOfDay(predictedEnd);
@@ -335,7 +341,7 @@ export default function MenstrualCyclePage() {
                 startDate: predictedStart.toISOString(),
                 endDate: predictedEnd.toISOString(),
                 isPrediction: true
-              };
+              } as any;
               predictedCycles.push(virtualCycle);
             }
           }
