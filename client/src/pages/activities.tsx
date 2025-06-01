@@ -509,8 +509,8 @@ export default function Activities() {
                   <ChevronDown className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-[var(--radix-dropdown-menu-trigger-width)] max-h-64 overflow-y-auto" sideOffset={4}>
-                {/* Clear and Done buttons */}
+              <DropdownMenuContent className="w-[var(--radix-dropdown-menu-trigger-width)] max-h-64 overflow-y-auto overflow-x-hidden" sideOffset={4}>
+                {/* Multi-selection controls */}
                 <div className="flex items-center justify-between px-4 py-2 border-b border-border bg-muted/30">
                   <Button
                     variant="ghost"
@@ -520,12 +520,14 @@ export default function Activities() {
                       e.stopPropagation();
                       setSelectedConnections([]);
                       setHasUserSelectedConnection(true);
-                      setDropdownOpen(false);
                     }}
                     className="h-7 px-2 text-xs"
                   >
                     Clear All
                   </Button>
+                  <div className="text-xs text-muted-foreground">
+                    {selectedConnections.length} selected
+                  </div>
                   <Button
                     variant="ghost"
                     size="sm"
