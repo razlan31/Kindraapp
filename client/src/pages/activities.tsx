@@ -513,14 +513,7 @@ export default function Activities() {
               </Button>
               
               {dropdownOpen && (
-                <>
-                  {/* Backdrop overlay */}
-                  <div 
-                    className="fixed inset-0 z-[9990] bg-black/20"
-                    onClick={() => setDropdownOpen(false)}
-                  />
-                  {/* Dropdown */}
-                  <div className="absolute top-full left-0 w-full z-[9999] mt-1 bg-background border rounded-md shadow-xl max-h-64 flex flex-col">
+                <div className="absolute top-full left-0 w-full mt-1 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md shadow-2xl max-h-64 flex flex-col" style={{zIndex: 999999}}>
                   {/* Connection list - scrollable area */}
                   <div className="overflow-y-auto flex-1 p-1">
                     {/* All Connections Option */}
@@ -631,8 +624,7 @@ export default function Activities() {
                       Done
                     </Button>
                   </div>
-                  </div>
-                </>
+                </div>
               )}
             </div>
           </Card>
