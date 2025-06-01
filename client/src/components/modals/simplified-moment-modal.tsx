@@ -250,6 +250,11 @@ export function MomentModal() {
         title: `${activityType === 'conflict' ? 'Conflict' : activityType === 'intimacy' ? 'Intimacy' : 'Moment'} logged successfully`,
         description: "Your entry has been recorded.",
       });
+      
+      // Force immediate cache invalidation and refetch
+      queryClient.invalidateQueries({ queryKey: ['/api/moments'] });
+      queryClient.refetchQueries({ queryKey: ['/api/moments'] });
+      
       handleSuccess();
     },
     onError: (error: any) => handleError(error),
