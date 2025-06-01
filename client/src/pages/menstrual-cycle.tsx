@@ -467,6 +467,12 @@ export default function MenstrualCyclePage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
+    console.log("Form submission debug:", {
+      selectedPersonIds,
+      trackablePersons,
+      connections
+    });
+
     const submitData = {
       startDate: formData.startDate,
       periodEndDate: formData.periodEndDate || null,
@@ -477,6 +483,8 @@ export default function MenstrualCyclePage() {
       notes: formData.notes || null,
       connectionId: selectedPersonIds.length === 1 ? (selectedPersonIds[0] === 0 ? null : selectedPersonIds[0]) : null // 0 means user, null in DB
     };
+
+    console.log("Submit data being sent:", submitData);
 
     if (editingCycle) {
       updateCycleMutation.mutate({ id: editingCycle.id, ...submitData });
