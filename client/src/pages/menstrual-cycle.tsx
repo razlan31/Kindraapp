@@ -220,17 +220,6 @@ export default function MenstrualCyclePage() {
   const trackablePersons = useMemo(() => {
     const persons: Array<{ id: number; name: string; isUser: boolean; profileImage?: string | null; colorIndex: number }> = [];
     
-    // Add user if they exist
-    if (user) {
-      persons.push({
-        id: 0, // Special ID for user
-        name: user.displayName || user.username || 'Me',
-        isUser: true,
-        profileImage: user.profileImage,
-        colorIndex: 0
-      });
-    }
-    
     // Add all connections (assuming they could have cycles)
     connections.forEach((connection, index) => {
       persons.push({
@@ -238,12 +227,12 @@ export default function MenstrualCyclePage() {
         name: connection.name,
         isUser: false,
         profileImage: connection.profileImage,
-        colorIndex: (index + 1) % personColors.length
+        colorIndex: index % personColors.length
       });
     });
     
     return persons;
-  }, [user, connections]);
+  }, [connections]);
 
   // Helper to get person color
   const getPersonColor = (personId: number) => {
@@ -676,145 +665,10 @@ export default function MenstrualCyclePage() {
           </div>
         </section>
 
-        {/* User's Own Cycle Tracking */}
-        {(selectedPersonIds.length > 0 || user) && (
+        {/* Connection Cycle Tracking */}
+        {selectedPersonIds.length > 0 && (
           <section className="px-4 py-2 space-y-4">
-            {/* Always show user's own cycle first */}
-            {user && (() => {
-              const personId = 0; // User ID
-              const person = trackablePersons.find(p => p.id === personId);
-              if (!person) return null;
-              
-              const personCycles = cycles.filter(cycle => cycle.connectionId === null);
-              const currentCycle = personCycles.find(cycle => !cycle.endDate);
-              const avgCycleLength = calculateCycleLength(personCycles);
-              const currentDay = currentCycle ? differenceInDays(new Date(), new Date(currentCycle.startDate)) + 1 : 0;
-              const currentPhase = currentCycle ? getCyclePhase(currentDay, avgCycleLength) : null;
-              
-              // Get phase-based colors
-              const phaseColors = currentPhase ? {
-                bg: currentPhase.phase === 'Menstrual' ? 'bg-red-50 dark:bg-red-950/20' :
-                    currentPhase.phase === 'Ovulation' ? 'bg-blue-50 dark:bg-blue-950/20' :
-                    currentPhase.phase === 'Fertile' ? 'bg-blue-50 dark:bg-blue-950/20' :
-                    currentPhase.phase === 'Luteal' ? 'bg-purple-50 dark:bg-purple-950/20' :
-                    'bg-gray-50 dark:bg-gray-950/20',
-                border: currentPhase.phase === 'Menstrual' ? 'border-red-200 dark:border-red-800' :
-                        currentPhase.phase === 'Ovulation' ? 'border-blue-200 dark:border-blue-800' :
-                        currentPhase.phase === 'Fertile' ? 'border-blue-200 dark:border-blue-800' :
-                        currentPhase.phase === 'Luteal' ? 'border-purple-200 dark:border-purple-800' :
-                        'border-gray-200 dark:border-gray-800',
-                accent: currentPhase.phase === 'Menstrual' ? 'bg-red-500' :
-                        currentPhase.phase === 'Ovulation' ? 'bg-blue-600' :
-                        currentPhase.phase === 'Fertile' ? 'bg-blue-300' :
-                        currentPhase.phase === 'Luteal' ? 'bg-purple-500' :
-                        'bg-gray-500',
-                text: currentPhase.phase === 'Menstrual' ? 'text-red-800 dark:text-red-200' :
-                      currentPhase.phase === 'Ovulation' ? 'text-blue-800 dark:text-blue-200' :
-                      currentPhase.phase === 'Fertile' ? 'text-blue-800 dark:text-blue-200' :
-                      currentPhase.phase === 'Luteal' ? 'text-purple-800 dark:text-purple-200' :
-                      'text-gray-800 dark:text-gray-200'
-              } : {
-                bg: 'bg-pink-50 dark:bg-pink-950/20',
-                border: 'border-pink-200 dark:border-pink-800',
-                accent: 'bg-pink-500',
-                text: 'text-pink-800 dark:text-pink-200'
-              };
-
-              return (
-                <Card key={personId} className={`p-4 ${phaseColors.bg} ${phaseColors.border}`}>
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-2">
-                      <div className={`w-3 h-3 rounded-full ${phaseColors.accent}`}></div>
-                      <h3 className={`font-medium ${phaseColors.text}`}>
-                        My Cycle
-                      </h3>
-                    </div>
-                    <Circle className={`h-5 w-5 ${phaseColors.accent.replace('bg-', 'text-')}`} />
-                  </div>
-                  
-                  {currentCycle ? (
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <p className={`text-sm ${phaseColors.text}`}>
-                          Day {currentDay} of cycle
-                        </p>
-                        {currentPhase && (
-                          <Badge className={`${currentPhase.color} text-white text-xs`}>
-                            {currentPhase.phase}
-                          </Badge>
-                        )}
-                      </div>
-                      
-                      {currentPhase && (
-                        <p className={`text-xs ${phaseColors.text} opacity-80`}>
-                          {currentPhase.description}
-                        </p>
-                      )}
-                      
-                      <div className="flex gap-2">
-                        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                          <DialogTrigger asChild>
-                            <Button 
-                              variant="outline" 
-                              size="sm" 
-                              className="flex-1"
-                              onClick={() => {
-                                setEditingCycle(currentCycle);
-                                resetForm(currentCycle);
-                              }}
-                            >
-                              <Edit className="h-4 w-4 mr-2" />
-                              Edit
-                            </Button>
-                          </DialogTrigger>
-                        </Dialog>
-                        
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
-                          className="flex-1"
-                          onClick={async () => {
-                            if (currentCycle) {
-                              await updateCycleMutation.mutateAsync({
-                                id: currentCycle.id,
-                                endDate: new Date().toISOString()
-                              });
-                            }
-                          }}
-                          disabled={updateCycleMutation.isPending}
-                        >
-                          End Cycle
-                        </Button>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="space-y-3">
-                      <p className={`text-sm ${phaseColors.text} opacity-80`}>
-                        No active cycle
-                      </p>
-                      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                        <DialogTrigger asChild>
-                          <Button 
-                            size="sm"
-                            className={`w-full ${phaseColors.accent} hover:opacity-90 text-white`}
-                            onClick={() => {
-                              setEditingCycle(null);
-                              resetForm();
-                            }}
-                          >
-                            <Plus className="h-4 w-4 mr-2" />
-                            Start New Cycle
-                          </Button>
-                        </DialogTrigger>
-                      </Dialog>
-                    </div>
-                  )}
-                </Card>
-              );
-            })()}
-            
-            {/* Show selected connections */}
-            {selectedPersonIds.filter(id => id !== 0).map((personId) => {
+            {selectedPersonIds.map((personId) => {
               const person = trackablePersons.find(p => p.id === personId);
               if (!person) return null;
               
