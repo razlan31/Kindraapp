@@ -508,72 +508,74 @@ export default function Activities() {
                   <ChevronDown className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-[var(--radix-dropdown-menu-trigger-width)] max-h-80 overflow-y-auto" sideOffset={4}>
-                
-                <DropdownMenuItem 
-                  onClick={() => {
-                    setSelectedConnections([]);
-                    setHasUserSelectedConnection(true);
-                  }}
-                  className="py-3 px-4 text-base"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
-                      <span className="text-xs font-medium">All</span>
-                    </div>
-                    <span>All Connections</span>
-                  </div>
-                </DropdownMenuItem>
-                <div className="border-t border-border my-1" />
-                {connections.map((connection) => (
-                  <DropdownMenuCheckboxItem
-                    key={connection.id}
-                    checked={selectedConnections.includes(connection.id)}
-                    onCheckedChange={(checked) => {
-                      if (checked) {
-                        setSelectedConnections([...selectedConnections, connection.id]);
-                      } else {
-                        setSelectedConnections(selectedConnections.filter(id => id !== connection.id));
-                      }
+              <DropdownMenuContent className="w-[var(--radix-dropdown-menu-trigger-width)] max-h-80 flex flex-col" sideOffset={4}>
+                {/* Scrollable content area */}
+                <div className="overflow-y-auto flex-1">
+                  <DropdownMenuItem 
+                    onClick={() => {
+                      setSelectedConnections([]);
                       setHasUserSelectedConnection(true);
                     }}
-                    onSelect={(e) => e.preventDefault()}
-                    className="py-3 px-4 text-base data-[checked]:bg-primary/10 data-[checked]:text-primary-foreground"
+                    className="py-3 px-4 text-base"
                   >
                     <div className="flex items-center gap-3">
-                      {connection.profileImage ? (
-                        <img 
-                          src={connection.profileImage} 
-                          alt={connection.name}
-                          className="w-8 h-8 rounded-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                          <span className="text-xs font-medium text-primary">
-                            {connection.name.charAt(0).toUpperCase()}
-                          </span>
-                        </div>
-                      )}
-                      <span>{connection.name}</span>
-                      {mainFocusConnection?.id === connection.id && (
-                        <Heart className="h-3 w-3 text-red-500 fill-current ml-1" />
-                      )}
+                      <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
+                        <span className="text-xs font-medium">All</span>
+                      </div>
+                      <span>All Connections</span>
                     </div>
-                  </DropdownMenuCheckboxItem>
-                ))}
-                <div className="border-t border-border my-1" />
-                <div 
-                  className="flex items-center gap-3 py-3 px-4 text-base cursor-pointer hover:bg-accent rounded-sm"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    openConnectionModal();
-                  }}
-                >
-                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                    <UserPlus className="h-4 w-4 text-primary" />
+                  </DropdownMenuItem>
+                  <div className="border-t border-border my-1" />
+                  {connections.map((connection) => (
+                    <DropdownMenuCheckboxItem
+                      key={connection.id}
+                      checked={selectedConnections.includes(connection.id)}
+                      onCheckedChange={(checked) => {
+                        if (checked) {
+                          setSelectedConnections([...selectedConnections, connection.id]);
+                        } else {
+                          setSelectedConnections(selectedConnections.filter(id => id !== connection.id));
+                        }
+                        setHasUserSelectedConnection(true);
+                      }}
+                      onSelect={(e) => e.preventDefault()}
+                      className="py-3 px-4 text-base data-[checked]:bg-primary/10 data-[checked]:text-primary-foreground"
+                    >
+                      <div className="flex items-center gap-3">
+                        {connection.profileImage ? (
+                          <img 
+                            src={connection.profileImage} 
+                            alt={connection.name}
+                            className="w-8 h-8 rounded-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                            <span className="text-xs font-medium text-primary">
+                              {connection.name.charAt(0).toUpperCase()}
+                            </span>
+                          </div>
+                        )}
+                        <span>{connection.name}</span>
+                        {mainFocusConnection?.id === connection.id && (
+                          <Heart className="h-3 w-3 text-red-500 fill-current ml-1" />
+                        )}
+                      </div>
+                    </DropdownMenuCheckboxItem>
+                  ))}
+                  <div className="border-t border-border my-1" />
+                  <div 
+                    className="flex items-center gap-3 py-3 px-4 text-base cursor-pointer hover:bg-accent rounded-sm"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      openConnectionModal();
+                    }}
+                  >
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                      <UserPlus className="h-4 w-4 text-primary" />
+                    </div>
+                    <span className="text-primary">Add Connection</span>
                   </div>
-                  <span className="text-primary">Add Connection</span>
                 </div>
                 
                 {/* Clear and Done buttons at bottom */}
