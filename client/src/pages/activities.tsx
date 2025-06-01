@@ -500,7 +500,7 @@ export default function Activities() {
             <div className="relative">
               <Button 
                 variant="outline" 
-                className="w-full justify-between"
+                className="w-full justify-between connection-picker-trigger"
                 onClick={() => setDropdownOpen(!dropdownOpen)}
               >
                 <span>
@@ -513,7 +513,7 @@ export default function Activities() {
               </Button>
               
               {dropdownOpen && (
-                <div className="absolute top-full left-0 w-full mt-1 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md shadow-2xl max-h-64 flex flex-col" style={{zIndex: 999999}}>
+                <div className="absolute top-full left-0 w-full mt-1 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md shadow-2xl max-h-64 flex flex-col" style={{zIndex: 999999, position: 'fixed'}}>
                   {/* Connection list - scrollable area */}
                   <div className="overflow-y-auto flex-1 p-1">
                     {/* All Connections Option */}
