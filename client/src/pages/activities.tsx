@@ -508,7 +508,36 @@ export default function Activities() {
                   <ChevronDown className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-[var(--radix-dropdown-menu-trigger-width)]" sideOffset={4}>
+              <DropdownMenuContent className="w-[var(--radix-dropdown-menu-trigger-width)] max-h-80 overflow-y-auto" sideOffset={4}>
+                {/* Clear and Done buttons */}
+                <div className="flex items-center justify-between px-4 py-2 border-b border-border bg-muted/30">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setSelectedConnections([]);
+                      setHasUserSelectedConnection(true);
+                    }}
+                    className="h-7 px-2 text-xs"
+                  >
+                    Clear All
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      // Just close the dropdown - the state is already managed
+                    }}
+                    className="h-7 px-2 text-xs"
+                  >
+                    Done
+                  </Button>
+                </div>
+                
                 <DropdownMenuItem 
                   onClick={() => {
                     setSelectedConnections([]);
@@ -554,6 +583,9 @@ export default function Activities() {
                         </div>
                       )}
                       <span>{connection.name}</span>
+                      {mainFocusConnection?.id === connection.id && (
+                        <Heart className="h-3 w-3 text-red-500 fill-current ml-1" />
+                      )}
                     </div>
                   </DropdownMenuCheckboxItem>
                 ))}
