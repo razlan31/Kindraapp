@@ -10,7 +10,8 @@ import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth, isWithinInter
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from "recharts";
 import { Moment, Connection, Badge, UserBadge } from "@shared/schema";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Brain, Calendar, Download, Flag, Heart, Star } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuCheckboxItem } from "@/components/ui/dropdown-menu";
+import { Brain, Calendar, Download, Flag, Heart, Star, ChevronDown } from "lucide-react";
 import { FlagExplanation } from "@/components/ui/flag-explanation";
 
 type ReportPeriod = "week" | "month" | "all";
@@ -19,6 +20,7 @@ export default function SummaryReport() {
   const { user } = useAuth();
   const [period, setPeriod] = useState<ReportPeriod>("week");
   const [selectedConnection, setSelectedConnection] = useState<number | null>(null);
+  const [selectedConnections, setSelectedConnections] = useState<number[]>([]);
   
   // Fetch user data
   const { data: moments = [], isLoading: momentsLoading } = useQuery<Moment[]>({
