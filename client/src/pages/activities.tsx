@@ -77,6 +77,7 @@ export default function Activities() {
   const { data: moments = [], isLoading, refetch: refetchMoments } = useQuery<Moment[]>({
     queryKey: ["/api/moments"],
     staleTime: 0,
+    refetchOnWindowFocus: true,
   });
 
 
@@ -101,6 +102,12 @@ export default function Activities() {
 
   // Debug plans data
   console.log("Plans Debug:", { plans, plansLoading, plansError, activeTab, user: !!user, isAuthenticated, loading });
+
+  // Force UI refresh when moments data changes
+  const [forceRefreshKey, setForceRefreshKey] = useState(0);
+  useEffect(() => {
+    setForceRefreshKey(prev => prev + 1);
+  }, [moments.length]);
 
   // Connection modal helper functions
   const openConnectionModal = () => {
@@ -684,7 +691,7 @@ export default function Activities() {
                 {/* Timeline line */}
                 <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gradient-to-b from-blue-200 via-purple-200 to-pink-200 dark:from-blue-800 dark:via-purple-800 dark:to-pink-800"></div>
                 
-                <div className="space-y-8" key={`timeline-${moments.length}-${filteredMoments.length}`}>
+                <div className="space-y-8" key={`timeline-${forceRefreshKey}-${filteredMoments.length}`}>
                   {(() => {
                     // Group timeline entries by date
                     const timelineGrouped = filteredMoments
@@ -942,7 +949,7 @@ export default function Activities() {
             )
           ) : filteredMoments.length > 0 ? (
             // Regular tabbed view
-            <div key={`entries-${moments.length}-${filteredMoments.length}`}>
+            <div key={`entries-${forceRefreshKey}-${filteredMoments.length}`}>
               {sortedDates.map(date => (
                 <div key={date} className="mb-6">
                   <div className="flex items-center mb-2">
