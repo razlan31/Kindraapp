@@ -182,8 +182,9 @@ export const menstrualCycles = pgTable("menstrual_cycles", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").notNull(),
   connectionId: integer("connection_id"), // null means tracking for user themselves
-  startDate: timestamp("start_date").notNull(),
-  endDate: timestamp("end_date"),
+  startDate: timestamp("start_date").notNull(), // Period start date
+  periodEndDate: timestamp("period_end_date"), // Period end date (menstruation ends)
+  endDate: timestamp("end_date"), // Full cycle end date (optional, for completed cycles)
   notes: text("notes"),
   mood: text("mood"),
   symptoms: json("symptoms").$type<string[]>(),
@@ -192,6 +193,12 @@ export const menstrualCycles = pgTable("menstrual_cycles", {
 
 export const menstrualCycleSchema = createInsertSchema(menstrualCycles).omit({ id: true }).extend({
   startDate: z.string().or(z.date()).transform((val) => {
+    if (typeof val === 'string') {
+      return new Date(val);
+    }
+    return val;
+  }),
+  periodEndDate: z.string().or(z.date()).optional().transform((val) => {
     if (typeof val === 'string') {
       return new Date(val);
     }

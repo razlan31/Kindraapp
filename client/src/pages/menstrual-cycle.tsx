@@ -189,6 +189,7 @@ export default function MenstrualCyclePage() {
   // Form state
   const [formData, setFormData] = useState({
     startDate: format(new Date(), 'yyyy-MM-dd'),
+    periodEndDate: '',
     endDate: '',
     flowIntensity: '',
     mood: '',
@@ -453,6 +454,7 @@ export default function MenstrualCyclePage() {
   const resetForm = () => {
     setFormData({
       startDate: format(new Date(), 'yyyy-MM-dd'),
+      periodEndDate: '',
       endDate: '',
       flowIntensity: '',
       mood: '',
@@ -467,6 +469,7 @@ export default function MenstrualCyclePage() {
     
     const submitData = {
       startDate: formData.startDate,
+      periodEndDate: formData.periodEndDate || null,
       endDate: formData.endDate || null,
       flowIntensity: formData.flowIntensity || null,
       mood: formData.mood || null,
