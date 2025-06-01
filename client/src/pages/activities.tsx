@@ -516,6 +516,8 @@ export default function Activities() {
                 onCloseAutoFocus={(e) => e.preventDefault()}
                 side="bottom"
                 align="start"
+                sticky="always"
+                avoidCollisions={false}
               >
                 {/* Connection list - scrollable area */}
                 <div className="overflow-y-auto flex-1">
