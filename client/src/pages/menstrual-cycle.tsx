@@ -326,33 +326,42 @@ export default function MenstrualCyclePage() {
             new Date(lastCycle.endDate) : 
             addDays(lastCycleStart, avgCycleLength - 1);
           
+          // Track the base cycle for proper spacing
+          let baseDate = lastCycle.endDate ? new Date(lastCycle.endDate) : addDays(lastCycleStart, avgCycleLength - 1);
+          
           for (let i = 1; i <= 6; i++) {
-            // Calculate next cycle start: avgCycleLength days after the last cycle STARTED
-            // This ensures proper cycle intervals (e.g., 28 days from start to start)
-            const predictedStart = addDays(lastCycleStart, avgCycleLength * i);
+            // Calculate next cycle start: 1 day after the previous cycle ended
+            const predictedStart = addDays(baseDate, 1);
             
-            // Use the same period duration as the last recorded cycle
-            const periodLength = lastCycle.endDate ? 
-              differenceInDays(new Date(lastCycle.endDate), new Date(lastCycle.startDate)) + 1 :
-              5; // Default 5-day period if no end date
+            // Use the same period duration as the last recorded cycle (period length, not full cycle)
+            const periodLength = lastCycle.periodEndDate && lastCycle.startDate ? 
+              differenceInDays(new Date(lastCycle.periodEndDate), new Date(lastCycle.startDate)) + 1 :
+              6; // Default 6-day period if no period end date
               
-            const predictedEnd = addDays(predictedStart, periodLength - 1); // -1 because we count inclusive
+            const predictedPeriodEnd = addDays(predictedStart, periodLength - 1); // -1 because we count inclusive
+            
+            // Calculate when this predicted cycle would end (for spacing the next one)
+            const predictedCycleEnd = addDays(predictedStart, avgCycleLength - 1);
             
             const predictedStartDay = startOfDay(predictedStart);
-            const predictedEndDay = startOfDay(predictedEnd);
+            const predictedPeriodEndDay = startOfDay(predictedPeriodEnd);
             
-            // Check if the day falls within this predicted cycle
-            if (checkDay >= predictedStartDay && checkDay <= predictedEndDay) {
+            // Check if the day falls within this predicted period (only show during period days, not full cycle)
+            if (checkDay >= predictedStartDay && checkDay <= predictedPeriodEndDay) {
               // Create a virtual cycle for prediction
               const virtualCycle = {
                 ...lastCycle,
                 id: -i, // Use negative ID to distinguish from real cycles
                 startDate: predictedStart.toISOString(),
-                endDate: predictedEnd.toISOString(),
+                periodEndDate: predictedPeriodEnd.toISOString(),
+                endDate: predictedCycleEnd.toISOString(),
                 isPrediction: true
               } as any;
               predictedCycles.push(virtualCycle);
             }
+            
+            // Update baseDate for next iteration
+            baseDate = predictedCycleEnd;
           }
         }
       }
