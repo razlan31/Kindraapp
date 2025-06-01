@@ -777,7 +777,7 @@ export default function MenstrualCyclePage() {
                 }
               });
               
-              console.log(`Debug: ${person.name} (ID: ${personId}) - Found ${personCycles.length} cycles:`, personCycles);
+
               
               // Find active cycle - either no end date, or current date is within the cycle period
               const currentCycle = personCycles.find(cycle => {
@@ -1135,6 +1135,9 @@ export default function MenstrualCyclePage() {
                   <div key={cycle.id} className="flex items-center justify-between p-3 border rounded-lg">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
+                        <span className={`text-xs font-medium ${cycle.connectionId === null ? 'text-blue-600' : cycle.connectionId === 2 ? 'text-pink-600' : 'text-purple-600'}`}>
+                          {cycle.connectionId === null ? "You" : connections.find(c => c.id === cycle.connectionId)?.name || "Unknown"}
+                        </span>
                         <span className="font-medium">
                           {format(new Date(cycle.startDate), 'MMM d')} - {cycle.endDate ? format(new Date(cycle.endDate), 'MMM d') : 'Ongoing'}
                         </span>
