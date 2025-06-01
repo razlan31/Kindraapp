@@ -319,14 +319,15 @@ export default function MenstrualCyclePage() {
           // Generate predictions for up to 6 future cycles
           const lastCycleStart = new Date(lastCycle.startDate);
           
+          // Calculate when the current cycle ends
+          const currentCycleEnd = lastCycle.endDate ? 
+            new Date(lastCycle.endDate) : 
+            addDays(lastCycleStart, avgCycleLength - 1);
+          
           for (let i = 1; i <= 6; i++) {
-            // Calculate when the next cycle should start (after current cycle ends)
-            const currentCycleEnd = lastCycle.endDate ? 
-              new Date(lastCycle.endDate) : 
-              addDays(lastCycleStart, avgCycleLength - 1);
-            
-            const predictedStart = addDays(currentCycleEnd, (avgCycleLength * (i - 1)) + 1); // +1 day after previous cycle ends
-            const periodLength = getCycleLength(lastCycle) || 5; // Period length, not full cycle length
+            // Each new cycle starts avgCycleLength days after the PREVIOUS cycle started
+            const predictedStart = addDays(lastCycleStart, avgCycleLength * i);
+            const periodLength = getCycleLength(lastCycle) || 5; // Period length (menstrual phase only)
             const predictedEnd = addDays(predictedStart, periodLength - 1); // -1 because we count inclusive
             
             const predictedStartDay = startOfDay(predictedStart);
