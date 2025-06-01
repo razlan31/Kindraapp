@@ -966,12 +966,6 @@ export default function MenstrualCyclePage() {
                   <p className="text-xs font-medium text-muted-foreground mb-2">Predictions:</p>
                   <div className="grid grid-cols-1 gap-2 text-xs">
                     <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 rounded-full border-2 border-dashed border-blue-500 flex items-center justify-center text-blue-600 text-xs font-medium">
-                        O
-                      </div>
-                      <span>Predicted ovulation day</span>
-                    </div>
-                    <div className="flex items-center gap-2">
                       <div className="w-4 h-4 rounded-full border-2 border-dashed border-pink-500 flex items-center justify-center text-pink-600 text-xs font-medium">
                         P
                       </div>
