@@ -478,9 +478,11 @@ export default function MenstrualCyclePage() {
       connectionId: selectedPersonIds.length === 1 ? (selectedPersonIds[0] === 0 ? null : selectedPersonIds[0]) : null // 0 means user, null in DB
     };
 
-    if (editingCycle) {
+    if (editingCycle && editingCycle.id > 0) {
+      // Only update if it's a real cycle (positive ID), not a predicted one
       updateCycleMutation.mutate({ id: editingCycle.id, ...submitData });
     } else {
+      // Create new cycle for predicted cycles (negative ID) or new cycles
       createCycleMutation.mutate(submitData);
     }
   };
