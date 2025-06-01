@@ -680,7 +680,9 @@ export default function MenstrualCyclePage() {
         {selectedPersonIds.length > 0 && (
           <section className="px-4 py-2 space-y-4">
             {selectedPersonIds.map((personId) => {
+              console.log(`Cycle card for personId: ${personId}`);
               const person = trackablePersons.find(p => p.id === personId);
+              console.log(`Found person:`, person);
               if (!person) return null;
               
               const personCycles = cycles.filter(cycle => {
