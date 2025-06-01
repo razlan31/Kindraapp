@@ -38,6 +38,91 @@ const moodOptions = [
   "Happy", "Sad", "Anxious", "Irritable", "Energetic", "Tired", "Emotional", "Calm"
 ];
 
+// Cycle prediction utilities
+const calculateCycleLength = (cycles: MenstrualCycle[]): number => {
+  if (cycles.length < 2) return 28; // Default cycle length
+  
+  const sortedCycles = cycles
+    .filter(cycle => cycle.startDate)
+    .sort((a, b) => new Date(a.startDate!).getTime() - new Date(b.startDate!).getTime());
+  
+  if (sortedCycles.length < 2) return 28;
+  
+  const cycleLengths = [];
+  for (let i = 1; i < sortedCycles.length; i++) {
+    const previousStart = new Date(sortedCycles[i - 1].startDate!);
+    const currentStart = new Date(sortedCycles[i].startDate!);
+    const length = differenceInDays(currentStart, previousStart);
+    if (length > 0 && length <= 45) { // Valid cycle length range
+      cycleLengths.push(length);
+    }
+  }
+  
+  if (cycleLengths.length === 0) return 28;
+  
+  // Return average cycle length
+  return Math.round(cycleLengths.reduce((sum, length) => sum + length, 0) / cycleLengths.length);
+};
+
+const calculateOvulationDay = (cycleLength: number): number => {
+  // Ovulation typically occurs 14 days before the next period
+  return cycleLength - 14;
+};
+
+const getCyclePhase = (dayInCycle: number, cycleLength: number): { phase: string; color: string; description: string } => {
+  const ovulationDay = calculateOvulationDay(cycleLength);
+  
+  if (dayInCycle <= 5) {
+    return {
+      phase: "Menstrual",
+      color: "bg-red-500",
+      description: "Period days"
+    };
+  } else if (dayInCycle <= ovulationDay - 3) {
+    return {
+      phase: "Follicular",
+      color: "bg-blue-500",
+      description: "Pre-ovulation phase"
+    };
+  } else if (dayInCycle >= ovulationDay - 2 && dayInCycle <= ovulationDay + 2) {
+    return {
+      phase: "Ovulation",
+      color: "bg-green-500",
+      description: "Fertile window"
+    };
+  } else {
+    return {
+      phase: "Luteal",
+      color: "bg-yellow-500",
+      description: "Post-ovulation phase"
+    };
+  }
+};
+
+const predictNextCycles = (lastCycle: MenstrualCycle, avgCycleLength: number, numberOfCycles: number = 3): Array<{
+  startDate: Date;
+  ovulationDate: Date;
+  phase: string;
+  isNext: boolean;
+}> => {
+  const predictions = [];
+  const lastStartDate = new Date(lastCycle.startDate!);
+  
+  for (let i = 1; i <= numberOfCycles; i++) {
+    const nextStartDate = addDays(lastStartDate, avgCycleLength * i);
+    const ovulationDate = addDays(nextStartDate, calculateOvulationDay(avgCycleLength) - 1);
+    
+    predictions.push({
+      startDate: nextStartDate,
+      ovulationDate,
+      phase: i === 1 ? "Next Period" : `Period in ${i} cycles`,
+      isNext: i === 1
+    });
+  }
+  
+  return predictions;
+};
+
 // Image compression utility
 const compressImage = (file: File): Promise<string> => {
   return new Promise((resolve, reject) => {
@@ -497,58 +582,153 @@ export default function MenstrualCyclePage() {
           </div>
         </section>
 
-        {/* Current Cycle Status */}
+        {/* Current Cycle Status and Predictions */}
         {selectedPersonId !== null && (
-          <section className="px-4 py-2">
+          <section className="px-4 py-2 space-y-4">
+            {/* Current Cycle Status */}
             <Card className="p-4 bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-950 dark:to-purple-950 border-pink-200 dark:border-pink-800">
-              <div className="flex items-center justify-between mb-2">
-                <h3 className="font-medium text-pink-900 dark:text-pink-100">Current Cycle for {getSelectedPersonName()}</h3>
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-medium text-pink-900 dark:text-pink-100">Current Status</h3>
                 <Circle className="h-5 w-5 text-pink-600" />
               </div>
               
-              {getCurrentCycle() ? (
-                <div className="space-y-2">
-                  <p className="text-sm text-pink-700 dark:text-pink-300">
-                    Day {differenceInDays(new Date(), new Date(getCurrentCycle()!.startDate)) + 1}
-                  </p>
-                  <p className="text-xs text-pink-600 dark:text-pink-400">
-                    Started {format(new Date(getCurrentCycle()!.startDate), 'MMM d, yyyy')}
-                  </p>
-                  <Button 
-                    onClick={() => handleEdit(getCurrentCycle()!)}
-                    size="sm"
-                    className="w-full bg-pink-600 hover:bg-pink-700 text-white mt-2"
-                  >
-                    <Edit3 className="h-4 w-4 mr-2" />
-                    Update Current Cycle
-                  </Button>
-                </div>
-              ) : (
-                <div>
-                  <p className="text-sm text-pink-700 dark:text-pink-300">No active cycle</p>
-                  {getNextPredictedDate() && (
+              {(() => {
+                const currentCycle = getCurrentCycle();
+                const avgCycleLength = calculateCycleLength(filteredCycles);
+                const currentDay = currentCycle ? differenceInDays(new Date(), new Date(currentCycle.startDate)) + 1 : 0;
+                const currentPhase = currentCycle ? getCyclePhase(currentDay, avgCycleLength) : null;
+                
+                return currentCycle ? (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm text-pink-700 dark:text-pink-300">
+                        Day {currentDay} of cycle
+                      </p>
+                      {currentPhase && (
+                        <Badge className={`${currentPhase.color} text-white text-xs`}>
+                          {currentPhase.phase}
+                        </Badge>
+                      )}
+                    </div>
+                    
+                    {currentPhase && (
+                      <p className="text-xs text-pink-600 dark:text-pink-400">
+                        {currentPhase.description}
+                      </p>
+                    )}
+                    
                     <p className="text-xs text-pink-600 dark:text-pink-400">
-                      Next predicted: {format(getNextPredictedDate()!, 'MMM d, yyyy')}
+                      Started {format(new Date(currentCycle.startDate), 'MMM d, yyyy')}
                     </p>
-                  )}
-                  <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                    <DialogTrigger asChild>
-                      <Button 
-                        size="sm"
-                        className="w-full bg-pink-600 hover:bg-pink-700 text-white mt-2"
-                        onClick={() => {
-                          setEditingCycle(null);
-                          resetForm();
-                        }}
-                      >
-                        <Plus className="h-4 w-4 mr-2" />
-                        Start New Cycle
-                      </Button>
-                    </DialogTrigger>
-                  </Dialog>
-                </div>
-              )}
+                    
+                    {/* Ovulation prediction for current cycle */}
+                    {currentDay < calculateOvulationDay(avgCycleLength) && (
+                      <div className="bg-green-50 dark:bg-green-950 p-2 rounded-md">
+                        <p className="text-xs text-green-700 dark:text-green-300 font-medium">
+                          Ovulation predicted: Day {calculateOvulationDay(avgCycleLength)} 
+                          ({format(addDays(new Date(currentCycle.startDate), calculateOvulationDay(avgCycleLength) - 1), 'MMM d')})
+                        </p>
+                      </div>
+                    )}
+                    
+                    <Button 
+                      onClick={() => handleEdit(currentCycle)}
+                      size="sm"
+                      className="w-full bg-pink-600 hover:bg-pink-700 text-white"
+                    >
+                      <Edit3 className="h-4 w-4 mr-2" />
+                      Update Current Cycle
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    <p className="text-sm text-pink-700 dark:text-pink-300">No active cycle</p>
+                    {getNextPredictedDate() && (
+                      <p className="text-xs text-pink-600 dark:text-pink-400">
+                        Next predicted: {format(getNextPredictedDate()!, 'MMM d, yyyy')}
+                      </p>
+                    )}
+                    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                      <DialogTrigger asChild>
+                        <Button 
+                          size="sm"
+                          className="w-full bg-pink-600 hover:bg-pink-700 text-white"
+                          onClick={() => {
+                            setEditingCycle(null);
+                            resetForm();
+                          }}
+                        >
+                          <Plus className="h-4 w-4 mr-2" />
+                          Start New Cycle
+                        </Button>
+                      </DialogTrigger>
+                    </Dialog>
+                  </div>
+                );
+              })()}
             </Card>
+
+            {/* Cycle Predictions */}
+            {(() => {
+              const lastCompletedCycle = getPastCycles()[0];
+              const avgCycleLength = calculateCycleLength(filteredCycles);
+              
+              if (!lastCompletedCycle || filteredCycles.length < 2) {
+                return (
+                  <Card className="p-4">
+                    <h3 className="font-medium text-foreground mb-2">Cycle Predictions</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Add more cycle data to see predictions and patterns
+                    </p>
+                  </Card>
+                );
+              }
+              
+              const predictions = predictNextCycles(lastCompletedCycle, avgCycleLength, 3);
+              
+              return (
+                <Card className="p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="font-medium text-foreground">Cycle Predictions</h3>
+                    <Badge variant="outline" className="text-xs">
+                      Avg {avgCycleLength} days
+                    </Badge>
+                  </div>
+                  
+                  <div className="space-y-3">
+                    {predictions.map((prediction, index) => (
+                      <div key={index} className={`p-3 rounded-lg border ${prediction.isNext ? 'bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800' : 'bg-gray-50 dark:bg-gray-900'}`}>
+                        <div className="flex items-center justify-between mb-2">
+                          <p className={`text-sm font-medium ${prediction.isNext ? 'text-blue-700 dark:text-blue-300' : 'text-gray-700 dark:text-gray-300'}`}>
+                            {prediction.phase}
+                          </p>
+                          <Badge className="bg-red-500 text-white text-xs">
+                            Period
+                          </Badge>
+                        </div>
+                        
+                        <p className={`text-xs ${prediction.isNext ? 'text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-400'}`}>
+                          {format(prediction.startDate, 'MMM d, yyyy')}
+                        </p>
+                        
+                        <div className="mt-2 pt-2 border-t border-gray-200 dark:border-gray-700">
+                          <p className="text-xs text-green-600 dark:text-green-400">
+                            Ovulation: {format(prediction.ovulationDate, 'MMM d')} 
+                            (Day {calculateOvulationDay(avgCycleLength)})
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <div className="mt-4 p-3 bg-yellow-50 dark:bg-yellow-950 rounded-lg">
+                    <p className="text-xs text-yellow-700 dark:text-yellow-300">
+                      Predictions are based on your cycle history. Individual cycles may vary.
+                    </p>
+                  </div>
+                </Card>
+              );
+            })()}
           </section>
         )}
 
