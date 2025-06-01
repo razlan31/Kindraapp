@@ -159,6 +159,7 @@ export default function Calendar() {
     if (!hasUserSelectedConnection && mainFocusConnection && !focusLoading) {
       console.log("Setting calendar to focus connection:", mainFocusConnection.name);
       setSelectedConnectionId(mainFocusConnection.id);
+      setSelectedConnectionIds([mainFocusConnection.id]);
     }
   }, [mainFocusConnection, focusLoading, hasUserSelectedConnection]);
   
@@ -692,6 +693,9 @@ export default function Calendar() {
                         </div>
                       )}
                       <span>{connection.name}</span>
+                      {mainFocusConnection?.id === connection.id && (
+                        <Heart className="h-3 w-3 text-red-500 fill-current ml-1" />
+                      )}
                     </div>
                   </DropdownMenuCheckboxItem>
                 ))}
