@@ -862,8 +862,9 @@ export default function MenstrualCyclePage() {
                   const cycleForPrediction = currentCycle || (filteredCycles.length > 0 ? filteredCycles[0] : null);
                   
                   if (cycleForPrediction) {
-                    // Use average cycle length, or default to 28 days for first cycle
-                    const predictionLength = avgCycleLength > 0 ? avgCycleLength : 28;
+                    // Use actual cycle length if available, otherwise use average or default to 28
+                    const actualCycleLength = getCycleLength(cycleForPrediction);
+                    const predictionLength = actualCycleLength || (avgCycleLength > 0 ? avgCycleLength : 28);
                     const nextPeriodDate = addDays(new Date(cycleForPrediction.startDate), predictionLength);
                     
                     // Debug logging
