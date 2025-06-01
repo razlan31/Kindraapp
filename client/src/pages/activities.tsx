@@ -388,6 +388,22 @@ export default function Activities() {
     return matchesTab && matchesSearch && matchesConnection;
   });
 
+  // Debug logging for filtering
+  console.log("Activities Debug - Filtering:", {
+    totalMoments: moments.length,
+    activeTab,
+    timelineFilter,
+    selectedConnection,
+    filteredMomentsCount: filteredMoments.length,
+    firstFewFiltered: filteredMoments.slice(0, 3).map(m => ({
+      id: m.id,
+      emoji: m.emoji,
+      isIntimate: m.isIntimate,
+      tags: m.tags,
+      connectionId: m.connectionId
+    }))
+  });
+
   const groupedMoments = groupMomentsByDate(filteredMoments);
   const sortedDates = Object.keys(groupedMoments).sort((a, b) => 
     new Date(b).getTime() - new Date(a).getTime()
