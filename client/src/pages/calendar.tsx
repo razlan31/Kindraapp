@@ -452,14 +452,30 @@ export default function Calendar() {
     setDayDetailOpen(true);
   };
 
+  // Helper function to set connection before opening modal
+  const setConnectionForModal = () => {
+    if (selectedConnectionIds.length > 0) {
+      // Use the first selected connection when multiple are selected
+      const firstSelectedId = selectedConnectionIds[0];
+      const connection = connections.find(c => c.id === firstSelectedId);
+      if (connection) {
+        setSelectedConnection(firstSelectedId, connection);
+      }
+    } else {
+      // If "All Connections" is selected, use the main focus connection as default
+      if (mainFocusConnection) {
+        setSelectedConnection(mainFocusConnection.id, mainFocusConnection);
+      } else if (connections.length > 0) {
+        setSelectedConnection(connections[0].id, connections[0]);
+      }
+    }
+  };
+
   // Handle adding new moment from day detail
   const handleAddMomentFromDay = () => {
     console.log("Calendar button clicked - selectedDay:", selectedDay);
     setDayDetailOpen(false);
-    if (connections.length > 0) {
-      setSelectedConnection(connections[0].id, connections[0]);
-    }
-    // Pass the selected day as a Date object, not undefined
+    setConnectionForModal();
     openMomentModal('moment', undefined, selectedDay || new Date());
   };
 
@@ -1042,8 +1058,9 @@ export default function Calendar() {
               size="sm" 
               onClick={() => {
                 console.log("Conflict button clicked - selectedDay:", selectedDay);
-                openMomentModal('conflict', undefined, selectedDay || new Date());
                 setDayDetailOpen(false);
+                setConnectionForModal();
+                openMomentModal('conflict', undefined, selectedDay || new Date());
               }}
               className="flex flex-col h-16 text-xs"
               variant="outline"
@@ -1055,8 +1072,9 @@ export default function Calendar() {
               size="sm" 
               onClick={() => {
                 console.log("Intimacy button clicked - selectedDay:", selectedDay);
-                openMomentModal('intimacy', undefined, selectedDay || new Date());
                 setDayDetailOpen(false);
+                setConnectionForModal();
+                openMomentModal('intimacy', undefined, selectedDay || new Date());
               }}
               className="flex flex-col h-16 text-xs"
               variant="outline"
@@ -1068,8 +1086,9 @@ export default function Calendar() {
               size="sm" 
               onClick={() => {
                 console.log("Plan button clicked - selectedDay:", selectedDay);
-                openMomentModal('plan', undefined, selectedDay || new Date());
                 setDayDetailOpen(false);
+                setConnectionForModal();
+                openMomentModal('plan', undefined, selectedDay || new Date());
               }}
               className="flex flex-col h-16 text-xs"
               variant="outline"
