@@ -127,6 +127,7 @@ export default function Calendar() {
     conflict: true,
     plan: true,
     milestone: true,
+    cycle: true,
   });
   
   // Connection filter state
@@ -846,9 +847,18 @@ export default function Calendar() {
                         />
                         <label htmlFor="milestone" className="text-xs cursor-pointer">Milestones</label>
                       </div>
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="cycle"
+                          checked={filters.cycle}
+                          onCheckedChange={(checked) => 
+                            setFilters(prev => ({ ...prev, cycle: !!checked }))
+                          }
+                        />
+                        <label htmlFor="cycle" className="text-xs cursor-pointer">Cycle</label>
+                      </div>
                     </div>
                   </div>
-
 
                 </div>
               </>
@@ -1016,7 +1026,7 @@ export default function Calendar() {
                     {/* Moment, Milestone, and Cycle indicators */}
                     <div className={`flex flex-wrap ${viewMode === 'daily' ? 'gap-2' : viewMode === 'weekly' ? 'gap-1' : 'gap-0.5'} items-center`}>
                       {/* Show cycle phase indicator first */}
-                      {cycleDisplay && (
+                      {cycleDisplay && filters.cycle && (
                         <span
                           className={`${viewMode === 'daily' ? 'text-2xl' : viewMode === 'weekly' ? 'text-base' : 'text-xs'} opacity-70`}
                           title={cycleDisplay.description}
