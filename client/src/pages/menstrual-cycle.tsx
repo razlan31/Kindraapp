@@ -668,8 +668,8 @@ export default function MenstrualCyclePage() {
               })()}
             </Card>
 
-            {/* Cycle Predictions */}
-            {(() => {
+            {/* Cycle Predictions - Only in List View */}
+            {viewMode === 'list' && (() => {
               const currentCycle = getCurrentCycle();
               const completedCycles = getPastCycles();
               const avgCycleLength = calculateCycleLength(filteredCycles);
@@ -844,38 +844,125 @@ export default function MenstrualCyclePage() {
                   const stage = cycle ? getCycleStage(day, cycle) : null;
                   const isToday = isSameDay(day, new Date());
                   
+                  // Check for predictions
+                  const currentCycle = getCurrentCycle();
+                  const avgCycleLength = calculateCycleLength(filteredCycles);
+                  
+                  let isPredictedOvulation = false;
+                  let isPredictedPeriod = false;
+                  let predictionPhase = null;
+                  
+                  if (currentCycle) {
+                    // Predict ovulation for current cycle
+                    const ovulationDate = addDays(new Date(currentCycle.startDate), calculateOvulationDay(avgCycleLength) - 1);
+                    if (isSameDay(day, ovulationDate)) {
+                      isPredictedOvulation = true;
+                    }
+                    
+                    // Predict next period
+                    const nextPeriodDate = addDays(new Date(currentCycle.startDate), avgCycleLength);
+                    if (isSameDay(day, nextPeriodDate)) {
+                      isPredictedPeriod = true;
+                    }
+                    
+                    // Get current cycle phase for the day
+                    if (!cycle && day >= new Date(currentCycle.startDate)) {
+                      const dayInCycle = differenceInDays(day, new Date(currentCycle.startDate)) + 1;
+                      if (dayInCycle <= avgCycleLength) {
+                        predictionPhase = getCyclePhase(dayInCycle, avgCycleLength);
+                      }
+                    }
+                  } else {
+                    // If no current cycle, predict from last completed cycle
+                    const lastCycle = getPastCycles()[0];
+                    if (lastCycle) {
+                      const nextPeriodDate = addDays(new Date(lastCycle.startDate), avgCycleLength);
+                      const ovulationDate = addDays(nextPeriodDate, calculateOvulationDay(avgCycleLength) - 1);
+                      
+                      if (isSameDay(day, nextPeriodDate)) {
+                        isPredictedPeriod = true;
+                      }
+                      if (isSameDay(day, ovulationDate)) {
+                        isPredictedOvulation = true;
+                      }
+                    }
+                  }
+                  
                   return (
                     <div
                       key={day.getTime()}
                       className={`
-                        p-2 h-8 w-8 rounded-full flex items-center justify-center text-xs
+                        relative p-1 h-10 w-10 rounded-lg flex flex-col items-center justify-center text-xs
                         ${isToday ? 'ring-2 ring-blue-500' : ''}
-                        ${cycle ? getStageColor(stage!) + ' text-white' : 'hover:bg-muted'}
+                        ${cycle ? getStageColor(stage!) + ' text-white' : 
+                          predictionPhase ? predictionPhase.color.replace('bg-', 'bg-opacity-30 bg-') + ' border border-opacity-50 border-current' :
+                          'hover:bg-muted'}
                       `}
                     >
-                      {format(day, 'd')}
+                      <span className="text-xs font-medium">{format(day, 'd')}</span>
+                      
+                      {/* Prediction indicators */}
+                      {isPredictedOvulation && !cycle && (
+                        <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white" 
+                             title="Predicted Ovulation" />
+                      )}
+                      
+                      {isPredictedPeriod && !cycle && (
+                        <div className="absolute -bottom-1 -left-1 w-3 h-3 bg-red-500 rounded-full border-2 border-white"
+                             title="Predicted Period" />
+                      )}
+                      
+                      {/* Phase indicator for predictions */}
+                      {predictionPhase && !cycle && !isPredictedOvulation && !isPredictedPeriod && (
+                        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-2 h-1 rounded-full opacity-60"
+                             style={{ backgroundColor: predictionPhase.color.replace('bg-', '').replace('-500', '') === 'red' ? '#ef4444' : 
+                                                         predictionPhase.color.replace('bg-', '').replace('-500', '') === 'blue' ? '#3b82f6' :
+                                                         predictionPhase.color.replace('bg-', '').replace('-500', '') === 'green' ? '#10b981' : '#f59e0b' }} />
+                      )}
                     </div>
                   );
                 })}
               </div>
 
               {/* Legend */}
-              <div className="mt-4 grid grid-cols-2 gap-2 text-xs">
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                  <span>Menstrual</span>
+              <div className="mt-4 space-y-3">
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                    <span>Menstrual</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                    <span>Follicular</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                    <span>Ovulation</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-purple-500"></div>
+                    <span>Luteal</span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                  <span>Follicular</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                  <span>Ovulation</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-purple-500"></div>
-                  <span>Luteal</span>
+                
+                <div className="border-t pt-2">
+                  <p className="text-xs font-medium text-muted-foreground mb-2">Predictions:</p>
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div className="flex items-center gap-2">
+                      <div className="relative">
+                        <div className="w-3 h-3 rounded border border-gray-300"></div>
+                        <div className="absolute -top-1 -right-1 w-2 h-2 bg-green-500 rounded-full"></div>
+                      </div>
+                      <span>Predicted Ovulation</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="relative">
+                        <div className="w-3 h-3 rounded border border-gray-300"></div>
+                        <div className="absolute -bottom-1 -left-1 w-2 h-2 bg-red-500 rounded-full"></div>
+                      </div>
+                      <span>Predicted Period</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </Card>
