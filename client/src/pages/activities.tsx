@@ -510,42 +510,15 @@ export default function Activities() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent 
-                className="w-[var(--radix-dropdown-menu-trigger-width)] max-h-64 overflow-y-auto overflow-x-hidden" 
+                className="w-[var(--radix-dropdown-menu-trigger-width)] max-h-64 overflow-hidden flex flex-col" 
                 sideOffset={4}
                 onOpenAutoFocus={(e) => e.preventDefault()}
                 onCloseAutoFocus={(e) => e.preventDefault()}
+                side="bottom"
+                align="start"
               >
-                {/* Multi-selection controls */}
-                <div className="flex items-center justify-between px-4 py-2 border-b border-border bg-muted/50 sticky top-0 z-10">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      setSelectedConnections([]);
-                      setHasUserSelectedConnection(true);
-                    }}
-                    className="h-8 px-3 text-xs font-medium border-red-200 text-red-600 hover:bg-red-50"
-                  >
-                    Clear All
-                  </Button>
-                  <div className="text-xs font-medium text-foreground">
-                    {selectedConnections.length} selected
-                  </div>
-                  <Button
-                    variant="default"
-                    size="sm"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      setDropdownOpen(false);
-                    }}
-                    className="h-8 px-3 text-xs font-medium"
-                  >
-                    Done
-                  </Button>
-                </div>
+                {/* Connection list - scrollable area */}
+                <div className="overflow-y-auto flex-1">
                 
                 <DropdownMenuItem 
                   onClick={() => {
@@ -611,6 +584,39 @@ export default function Activities() {
                     <UserPlus className="h-4 w-4 text-primary" />
                   </div>
                   <span className="text-primary">Add Connection</span>
+                </div>
+                </div>
+                
+                {/* Multi-selection controls at bottom */}
+                <div className="flex items-center justify-between px-4 py-2 border-t border-border bg-muted/50">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setSelectedConnections([]);
+                      setHasUserSelectedConnection(true);
+                    }}
+                    className="h-8 px-3 text-xs font-medium border-red-200 text-red-600 hover:bg-red-50"
+                  >
+                    Clear All
+                  </Button>
+                  <div className="text-xs font-medium text-foreground">
+                    {selectedConnections.length} selected
+                  </div>
+                  <Button
+                    variant="default"
+                    size="sm"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setDropdownOpen(false);
+                    }}
+                    className="h-8 px-3 text-xs font-medium"
+                  >
+                    Done
+                  </Button>
                 </div>
               </DropdownMenuContent>
             </DropdownMenu>
