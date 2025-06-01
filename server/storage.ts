@@ -45,6 +45,7 @@ export interface IStorage {
   getMenstrualCycles(userId: number): Promise<MenstrualCycle[]>;
   createMenstrualCycle(cycle: InsertMenstrualCycle): Promise<MenstrualCycle>;
   updateMenstrualCycle(id: number, data: Partial<MenstrualCycle>): Promise<MenstrualCycle | undefined>;
+  deleteMenstrualCycle(id: number): Promise<boolean>;
   
   // Milestone operations
   getMilestones(userId: number): Promise<Milestone[]>;
@@ -1004,6 +1005,10 @@ export class MemStorage implements IStorage {
     const updatedCycle = { ...cycle, ...data };
     this.menstrualCycles.set(id, updatedCycle);
     return updatedCycle;
+  }
+
+  async deleteMenstrualCycle(id: number): Promise<boolean> {
+    return this.menstrualCycles.delete(id);
   }
   
   // Milestone operations

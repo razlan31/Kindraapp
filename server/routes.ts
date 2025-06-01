@@ -1953,15 +1953,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ error: "Cycle not found" });
       }
       
-      // If the updated cycle now has an end date, check if we need to create the next active cycle
+      // If the updated cycle now has an end date, handle automatic progression
       if (cycle.endDate && updates.endDate) {
         try {
-          console.log("Cycle updated with end date, checking for automatic progression");
+          console.log("Cycle updated with end date, handling automatic progression");
+          
+          // Get all cycles for this user
           const allCycles = await storage.getMenstrualCycles(userId);
+          
+          // Find any existing active cycles for this connection that need to be removed
+          const connectionId = cycle.connectionId;
+          const existingActiveCycles = allCycles.filter((c: any) => 
+            c.connectionId === connectionId && 
+            !c.endDate && 
+            c.id !== cycle.id
+          );
+          
+          // Remove existing active cycles for this connection
+          for (const activeCycle of existingActiveCycles) {
+            console.log(`Removing existing active cycle ${activeCycle.id} for connection ${connectionId}`);
+            // Delete the cycle
+            const cycleIndex = allCycles.findIndex((c: any) => c.id === activeCycle.id);
+            if (cycleIndex !== -1) {
+              allCycles.splice(cycleIndex, 1);
+            }
+            // Remove from storage
+            await storage.deleteMenstrualCycle(activeCycle.id);
+          }
+          
+          // Now trigger automatic progression
           const updatedCycles = await checkAndCreateAutomaticCycles(userId, allCycles);
-          console.log("Checked for automatic cycle progression after cycle update");
+          console.log("Completed automatic cycle progression after cycle update");
         } catch (error) {
-          console.error("Error checking for automatic cycle progression:", error);
+          console.error("Error handling automatic cycle progression:", error);
           // Don't fail the request if automatic progression fails
         }
       }

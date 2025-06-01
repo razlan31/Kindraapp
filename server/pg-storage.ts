@@ -279,6 +279,12 @@ export class PgStorage implements IStorage {
     return result[0];
   }
 
+  async deleteMenstrualCycle(id: number): Promise<boolean> {
+    await this.initialize();
+    const result = await db.delete(menstrualCycles).where(eq(menstrualCycles.id, id));
+    return result.rowCount > 0;
+  }
+
   // Milestone operations
   async getMilestones(userId: number): Promise<Milestone[]> {
     await this.initialize();
