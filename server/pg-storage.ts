@@ -257,8 +257,17 @@ export class PgStorage implements IStorage {
 
   async createMenstrualCycle(cycle: InsertMenstrualCycle): Promise<MenstrualCycle> {
     await this.initialize();
-    const result = await db.insert(menstrualCycles).values(cycle).returning();
-    return result[0];
+    console.log("PG Storage - Creating menstrual cycle with data:", cycle);
+    try {
+      const result = await db.insert(menstrualCycles).values(cycle).returning();
+      console.log("PG Storage - Insert result:", result);
+      const createdCycle = result[0];
+      console.log("PG Storage - Created cycle:", createdCycle);
+      return createdCycle;
+    } catch (error) {
+      console.error("PG Storage - Error inserting menstrual cycle:", error);
+      throw error;
+    }
   }
 
   async updateMenstrualCycle(id: number, data: Partial<MenstrualCycle>): Promise<MenstrualCycle | undefined> {
