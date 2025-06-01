@@ -921,9 +921,17 @@ export default function MenstrualCyclePage() {
                               );
                             } else if (stage === 'luteal') {
                               return (
-                                <div className={`w-8 h-8 rounded-full ${colors.bg} ${colors.border} border-2 flex flex-col items-center justify-center`}>
-                                  <span className={`text-xs font-bold ${colors.text}`}>{initial}</span>
-                                  <span className={`text-xs ${colors.text}`}>{format(day, 'd')}</span>
+                                <div className="w-8 h-8 rounded-full bg-purple-500 flex flex-col items-center justify-center text-white">
+                                  <span className="text-xs font-bold">{initial}</span>
+                                  <span className="text-xs">{format(day, 'd')}</span>
+                                </div>
+                              );
+                            } else {
+                              // Fallback for any other stage
+                              return (
+                                <div className="w-8 h-8 rounded-full bg-gray-300 flex flex-col items-center justify-center text-gray-700">
+                                  <span className="text-xs font-bold">{initial}</span>
+                                  <span className="text-xs">{format(day, 'd')}</span>
                                 </div>
                               );
                             }
