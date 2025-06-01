@@ -892,32 +892,47 @@ export default function MenstrualCyclePage() {
                     <div
                       key={day.getTime()}
                       className={`
-                        relative p-1 h-10 w-10 rounded-lg flex flex-col items-center justify-center text-xs
+                        relative p-1 h-10 w-10 flex flex-col items-center justify-center text-xs
                         ${isToday ? 'ring-2 ring-blue-500' : ''}
-                        ${cycle ? getStageColor(stage!) + ' text-white' : 
-                          predictionPhase ? predictionPhase.color.replace('bg-', 'bg-opacity-30 bg-') + ' border border-opacity-50 border-current' :
-                          'hover:bg-muted'}
+                        hover:bg-muted
                       `}
                     >
-                      <span className="text-xs font-medium">{format(day, 'd')}</span>
+                      {/* Actual cycle days */}
+                      {cycle && stage === 'menstrual' && (
+                        <div className="w-8 h-8 rounded-full bg-pink-500 flex items-center justify-center text-white font-medium">
+                          {format(day, 'd')}
+                        </div>
+                      )}
                       
-                      {/* Prediction indicators */}
+                      {cycle && stage === 'ovulation' && (
+                        <div className="w-8 h-8 flex items-center justify-center text-blue-600 font-bold">
+                          {format(day, 'd')}
+                        </div>
+                      )}
+                      
+                      {cycle && (stage === 'follicular' || stage === 'luteal') && (
+                        <div className={`w-8 h-8 rounded-full ${getStageColor(stage)} flex items-center justify-center text-white font-medium`}>
+                          {format(day, 'd')}
+                        </div>
+                      )}
+                      
+                      {/* Predicted ovulation day - dotted circle */}
                       {isPredictedOvulation && !cycle && (
-                        <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white" 
-                             title="Predicted Ovulation" />
+                        <div className="w-8 h-8 rounded-full border-2 border-dashed border-blue-500 flex items-center justify-center text-blue-600 font-medium">
+                          {format(day, 'd')}
+                        </div>
                       )}
                       
+                      {/* Predicted period - dotted circle */}
                       {isPredictedPeriod && !cycle && (
-                        <div className="absolute -bottom-1 -left-1 w-3 h-3 bg-red-500 rounded-full border-2 border-white"
-                             title="Predicted Period" />
+                        <div className="w-8 h-8 rounded-full border-2 border-dashed border-pink-500 flex items-center justify-center text-pink-600 font-medium">
+                          {format(day, 'd')}
+                        </div>
                       )}
                       
-                      {/* Phase indicator for predictions */}
-                      {predictionPhase && !cycle && !isPredictedOvulation && !isPredictedPeriod && (
-                        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-2 h-1 rounded-full opacity-60"
-                             style={{ backgroundColor: predictionPhase.color.replace('bg-', '').replace('-500', '') === 'red' ? '#ef4444' : 
-                                                         predictionPhase.color.replace('bg-', '').replace('-500', '') === 'blue' ? '#3b82f6' :
-                                                         predictionPhase.color.replace('bg-', '').replace('-500', '') === 'green' ? '#10b981' : '#f59e0b' }} />
+                      {/* Regular days with no cycle or prediction */}
+                      {!cycle && !isPredictedOvulation && !isPredictedPeriod && (
+                        <span className="text-gray-700 dark:text-gray-300 font-medium">{format(day, 'd')}</span>
                       )}
                     </div>
                   );
@@ -928,39 +943,37 @@ export default function MenstrualCyclePage() {
               <div className="mt-4 space-y-3">
                 <div className="grid grid-cols-2 gap-2 text-xs">
                   <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                    <span>Menstrual</span>
+                    <div className="w-4 h-4 rounded-full bg-pink-500"></div>
+                    <span>Menstrual phase</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                    <div className="w-4 h-4 rounded-full bg-green-500"></div>
                     <span>Follicular</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                    <span>Ovulation</span>
+                    <div className="w-4 h-4 flex items-center justify-center text-blue-600 font-bold border border-blue-600 rounded">14</div>
+                    <span>Ovulation phase</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-purple-500"></div>
+                    <div className="w-4 h-4 rounded-full bg-purple-500"></div>
                     <span>Luteal</span>
                   </div>
                 </div>
                 
                 <div className="border-t pt-2">
                   <p className="text-xs font-medium text-muted-foreground mb-2">Predictions:</p>
-                  <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div className="grid grid-cols-1 gap-2 text-xs">
                     <div className="flex items-center gap-2">
-                      <div className="relative">
-                        <div className="w-3 h-3 rounded border border-gray-300"></div>
-                        <div className="absolute -top-1 -right-1 w-2 h-2 bg-green-500 rounded-full"></div>
+                      <div className="w-4 h-4 rounded-full border-2 border-dashed border-blue-500 flex items-center justify-center text-blue-600 text-xs font-medium">
+                        14
                       </div>
-                      <span>Predicted Ovulation</span>
+                      <span>Predicted ovulation day</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <div className="relative">
-                        <div className="w-3 h-3 rounded border border-gray-300"></div>
-                        <div className="absolute -bottom-1 -left-1 w-2 h-2 bg-red-500 rounded-full"></div>
+                      <div className="w-4 h-4 rounded-full border-2 border-dashed border-pink-500 flex items-center justify-center text-pink-600 text-xs font-medium">
+                        1
                       </div>
-                      <span>Predicted Period</span>
+                      <span>Expected next menstrual phase</span>
                     </div>
                   </div>
                 </div>
