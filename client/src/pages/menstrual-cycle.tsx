@@ -325,8 +325,17 @@ export default function MenstrualCyclePage() {
             addDays(lastCycleStart, avgCycleLength - 1);
           
           for (let i = 1; i <= 6; i++) {
-            // Predicted cycles start 31 days after the previous cycle started to avoid overlap
-            const predictedStart = addDays(lastCycleStart, 31 * i);
+            // Calculate next cycle start based on actual cycle length from user's real data
+            let baseStart;
+            if (i === 1) {
+              // First prediction starts right after current cycle ends
+              baseStart = addDays(currentCycleEnd, 1);
+            } else {
+              // Subsequent cycles start avgCycleLength days after the previous predicted cycle started
+              baseStart = addDays(currentCycleEnd, 1 + (avgCycleLength * (i - 1)));
+            }
+            
+            const predictedStart = baseStart;
             const periodLength = getCycleLength(lastCycle) || 5; // Period length (menstrual phase only)
             const predictedEnd = addDays(predictedStart, periodLength - 1); // -1 because we count inclusive
             
