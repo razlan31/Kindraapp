@@ -155,11 +155,8 @@ export default function Calendar() {
       return;
     }
 
-    // Only use focus connection if user hasn't explicitly selected a connection
-    if (!focusLoading && mainFocusConnection && !hasUserSelectedConnection) {
-      console.log("Setting calendar connection from main focus:", mainFocusConnection.id);
-      setSelectedConnectionId(mainFocusConnection.id);
-    }
+    // Don't auto-filter to focus connection - show all connections by default
+    // The calendar should show all activities unless the user explicitly selects a specific connection
   }, [mainFocusConnection, focusLoading, hasUserSelectedConnection]);
   
   // Legend collapse state - start collapsed by default
