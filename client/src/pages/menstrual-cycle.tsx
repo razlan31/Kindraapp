@@ -473,6 +473,13 @@ export default function MenstrualCyclePage() {
       connections
     });
 
+    // For now, we only support creating cycles for one person at a time
+    // If multiple people are selected, we need to ask the user to specify which one
+    if (selectedPersonIds.length !== 1) {
+      alert("Please select exactly one person to create a cycle for.");
+      return;
+    }
+
     const submitData = {
       startDate: formData.startDate,
       periodEndDate: formData.periodEndDate || null,
@@ -481,7 +488,7 @@ export default function MenstrualCyclePage() {
       mood: formData.mood || null,
       symptoms: formData.symptoms.length > 0 ? formData.symptoms : null,
       notes: formData.notes || null,
-      connectionId: selectedPersonIds.length === 1 ? (selectedPersonIds[0] === 0 ? null : selectedPersonIds[0]) : null // 0 means user, null in DB
+      connectionId: selectedPersonIds[0] === 0 ? null : selectedPersonIds[0] // 0 means user, null in DB
     };
 
     console.log("Submit data being sent:", submitData);
