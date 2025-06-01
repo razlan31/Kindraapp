@@ -127,10 +127,6 @@ export default function Calendar() {
     conflict: true,
     plan: true,
     milestone: true,
-    menstrual: true,
-    fertile: true,
-    ovulation: true,
-    luteal: true,
   });
   
   // Connection filter state
@@ -853,52 +849,7 @@ export default function Calendar() {
                     </div>
                   </div>
 
-                  {/* Cycle Filters */}
-                  <div>
-                    <h5 className="text-xs font-medium mb-2 text-muted-foreground/80">Cycle Phases</h5>
-                    <div className="grid grid-cols-2 gap-2 text-xs">
-                      <div className="flex items-center space-x-2">
-                        <Checkbox
-                          id="menstrual"
-                          checked={filters.menstrual}
-                          onCheckedChange={(checked) => 
-                            setFilters(prev => ({ ...prev, menstrual: !!checked }))
-                          }
-                        />
-                        <label htmlFor="menstrual" className="text-xs cursor-pointer">Period</label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Checkbox
-                          id="fertile"
-                          checked={filters.fertile}
-                          onCheckedChange={(checked) => 
-                            setFilters(prev => ({ ...prev, fertile: !!checked }))
-                          }
-                        />
-                        <label htmlFor="fertile" className="text-xs cursor-pointer">Fertile</label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Checkbox
-                          id="ovulation"
-                          checked={filters.ovulation}
-                          onCheckedChange={(checked) => 
-                            setFilters(prev => ({ ...prev, ovulation: !!checked }))
-                          }
-                        />
-                        <label htmlFor="ovulation" className="text-xs cursor-pointer">Ovulation</label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Checkbox
-                          id="luteal"
-                          checked={filters.luteal}
-                          onCheckedChange={(checked) => 
-                            setFilters(prev => ({ ...prev, luteal: !!checked }))
-                          }
-                        />
-                        <label htmlFor="luteal" className="text-xs cursor-pointer">Luteal</label>
-                      </div>
-                    </div>
-                  </div>
+
                 </div>
               </>
             )}
