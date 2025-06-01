@@ -2,7 +2,7 @@ import { useAuth } from "@/contexts/auth-context";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Bell, LogOut, Settings, User, Trophy } from "lucide-react";
+import { Bell, LogOut, Settings, User, Trophy, Calendar } from "lucide-react";
 import { Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 
@@ -58,6 +58,12 @@ export function Header() {
               <Link href="/badges">
                 <Trophy className="mr-2 h-4 w-4" />
                 <span>Badges</span>
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href="/menstrual-cycle">
+                <Calendar className="mr-2 h-4 w-4" />
+                <span>Cycle Tracker</span>
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
