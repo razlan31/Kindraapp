@@ -568,9 +568,8 @@ export default function MenstrualCyclePage() {
 
   // Filter cycles based on selected persons
   const filteredCycles = useMemo(() => {
-    console.log('Filter Debug:', { selectedPersonIds, cyclesLength: cycles.length, cycles });
     if (selectedPersonIds.length === 0) return cycles;
-    const filtered = cycles.filter(cycle => {
+    return cycles.filter(cycle => {
       return selectedPersonIds.some(selectedId => {
         if (selectedId === 0) {
           // User's cycles (connectionId is null)
@@ -581,8 +580,6 @@ export default function MenstrualCyclePage() {
         }
       });
     });
-    console.log('Filtered cycles:', filtered);
-    return filtered;
   }, [cycles, selectedPersonIds]);
 
   const getCurrentCycle = () => filteredCycles.find(cycle => !cycle.endDate);
