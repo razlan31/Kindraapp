@@ -552,10 +552,16 @@ export default function Activities() {
                       openPlanModal(connection);
                     }
                   } else {
-                    // If "All Connections" is selected, open plan modal without specific connection
-                    console.log("Opening plan modal without specific connection");
-                    setModalConnection(null, null);
-                    openPlanModal();
+                    // If "All Connections" is selected, use the main focus connection as default
+                    if (mainFocusConnection) {
+                      console.log("Opening plan modal with main focus connection:", mainFocusConnection);
+                      setModalConnection(mainFocusConnection.id, mainFocusConnection);
+                      openPlanModal(mainFocusConnection);
+                    } else {
+                      console.log("Opening plan modal without specific connection");
+                      setModalConnection(null, null);
+                      openPlanModal();
+                    }
                   }
                 } else {
                   // Set the connection in modal context before opening
@@ -568,9 +574,14 @@ export default function Activities() {
                       setModalConnection(firstSelectedId, connection);
                     }
                   } else {
-                    // If "All Connections" is selected, clear the modal connection so user can choose
-                    console.log("Opening moment modal without specific connection");
-                    setModalConnection(null, null);
+                    // If "All Connections" is selected, use the main focus connection as default
+                    if (mainFocusConnection) {
+                      console.log("Opening moment modal with main focus connection:", mainFocusConnection);
+                      setModalConnection(mainFocusConnection.id, mainFocusConnection);
+                    } else {
+                      console.log("Opening moment modal without specific connection");
+                      setModalConnection(null, null);
+                    }
                   }
                   const activityType = activeTab === 'moments' ? 'moment' : activeTab === 'conflicts' ? 'conflict' : 'intimacy';
                   console.log("Opening moment modal with activity type:", activityType);
