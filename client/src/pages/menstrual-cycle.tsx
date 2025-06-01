@@ -325,18 +325,15 @@ export default function MenstrualCyclePage() {
             addDays(lastCycleStart, avgCycleLength - 1);
           
           for (let i = 1; i <= 6; i++) {
-            // Calculate next cycle start based on actual cycle length from user's real data
-            let baseStart;
-            if (i === 1) {
-              // First prediction starts right after current cycle ends
-              baseStart = addDays(currentCycleEnd, 1);
-            } else {
-              // Subsequent cycles start avgCycleLength days after the previous predicted cycle started
-              baseStart = addDays(currentCycleEnd, 1 + (avgCycleLength * (i - 1)));
-            }
+            // Calculate next cycle start: avgCycleLength days after the last cycle STARTED
+            // This ensures proper cycle intervals (e.g., 28 days from start to start)
+            const predictedStart = addDays(lastCycleStart, avgCycleLength * i);
             
-            const predictedStart = baseStart;
-            const periodLength = getCycleLength(lastCycle) || 5; // Period length (menstrual phase only)
+            // Use the same period duration as the last recorded cycle
+            const periodLength = lastCycle.endDate ? 
+              differenceInDays(new Date(lastCycle.endDate), new Date(lastCycle.startDate)) + 1 :
+              5; // Default 5-day period if no end date
+              
             const predictedEnd = addDays(predictedStart, periodLength - 1); // -1 because we count inclusive
             
             const predictedStartDay = startOfDay(predictedStart);
