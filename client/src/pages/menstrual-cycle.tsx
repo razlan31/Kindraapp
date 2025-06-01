@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { format, differenceInDays, addDays, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, isSameMonth, subMonths, addMonths, startOfWeek, getDay, startOfDay } from "date-fns";
-import { Calendar, Plus, Edit3, Trash2, Circle, ChevronLeft, ChevronRight, User, UserPlus, Camera, X } from "lucide-react";
+import { Calendar, Plus, Edit3, Trash2, Circle, ChevronLeft, ChevronRight, User, UserPlus, Camera, X, ChevronDown } from "lucide-react";
 import { useLocation } from "wouter";
 
 import { Button } from "@/components/ui/button";
@@ -331,7 +331,7 @@ export default function MenstrualCyclePage() {
       mood: '',
       symptoms: [],
       notes: '',
-      connectionId: selectedPersonId
+      connectionId: selectedPersonIds.length === 1 ? selectedPersonIds[0] : null
     });
   };
 
@@ -378,19 +378,21 @@ export default function MenstrualCyclePage() {
     }));
   };
 
-  // Filter cycles based on selected person
+  // Filter cycles based on selected persons
   const filteredCycles = useMemo(() => {
-    if (selectedPersonId === null) return cycles;
+    if (selectedPersonIds.length === 0) return cycles;
     return cycles.filter(cycle => {
-      if (selectedPersonId === 0) {
-        // User's cycles (connectionId is null)
-        return cycle.connectionId === null;
-      } else {
-        // Connection's cycles
-        return cycle.connectionId === selectedPersonId;
-      }
+      return selectedPersonIds.some(selectedId => {
+        if (selectedId === 0) {
+          // User's cycles (connectionId is null)
+          return cycle.connectionId === null;
+        } else {
+          // Connection's cycles
+          return cycle.connectionId === selectedId;
+        }
+      });
     });
-  }, [cycles, selectedPersonId]);
+  }, [cycles, selectedPersonIds]);
 
   const getCurrentCycle = () => filteredCycles.find(cycle => !cycle.endDate);
   const getPastCycles = () => filteredCycles
@@ -457,12 +459,7 @@ export default function MenstrualCyclePage() {
     }
   };
 
-  const getSelectedPersonName = () => {
-    if (selectedPersonId === null) return 'All People';
-    if (selectedPersonId === 0) return user?.displayName || user?.username || 'Me';
-    const connection = connections.find(c => c.id === selectedPersonId);
-    return connection?.name || 'Unknown';
-  };
+
 
   if (isLoading) {
     return (
@@ -512,33 +509,42 @@ export default function MenstrualCyclePage() {
           {/* Person Picker */}
           <div className="space-y-2">
             <Label className="text-sm font-medium">Tracking For:</Label>
-            <Select 
-              value={selectedPersonId?.toString() || "-1"} 
-              onValueChange={(value) => {
-                if (value === "add_connection") {
-                  openConnectionModal();
-                } else {
-                  setSelectedPersonId(value === "-1" ? null : parseInt(value));
-                }
-              }}
-            >
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select person to track">
-                  <div className="flex items-center gap-2">
-                    {selectedPersonId === 0 ? <User className="h-4 w-4" /> : <Circle className="h-4 w-4" />}
-                    {getSelectedPersonName()}
-                  </div>
-                </SelectValue>
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="-1">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="w-full justify-between">
+                  <span>
+                    {selectedPersonIds.length === 0 ? 'All People' : 
+                     selectedPersonIds.length === 1 ? 
+                       trackablePersons.find(p => p.id === selectedPersonIds[0])?.name || 'Unknown' :
+                     `${selectedPersonIds.length} people selected`}
+                  </span>
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-[var(--radix-dropdown-menu-trigger-width)]" sideOffset={4}>
+                <DropdownMenuItem 
+                  onClick={() => setSelectedPersonIds([])}
+                  className="py-3 px-4"
+                >
                   <div className="flex items-center gap-2">
                     <Circle className="h-4 w-4" />
                     All People
                   </div>
-                </SelectItem>
+                </DropdownMenuItem>
+                <Separator className="my-1" />
                 {trackablePersons.map((person) => (
-                  <SelectItem key={person.id} value={person.id.toString()}>
+                  <DropdownMenuCheckboxItem
+                    key={person.id}
+                    checked={selectedPersonIds.includes(person.id)}
+                    onCheckedChange={(checked) => {
+                      if (checked) {
+                        setSelectedPersonIds([...selectedPersonIds, person.id]);
+                      } else {
+                        setSelectedPersonIds(selectedPersonIds.filter(id => id !== person.id));
+                      }
+                    }}
+                    className="py-3 px-4"
+                  >
                     <div className="flex items-center gap-2">
                       {person.isUser ? (
                         <User className="h-4 w-4" />
@@ -557,17 +563,20 @@ export default function MenstrualCyclePage() {
                       )}
                       {person.name}
                     </div>
-                  </SelectItem>
+                  </DropdownMenuCheckboxItem>
                 ))}
                 <Separator className="my-1" />
-                <SelectItem value="add_connection">
+                <DropdownMenuItem 
+                  onClick={() => openConnectionModal()}
+                  className="py-3 px-4"
+                >
                   <div className="flex items-center gap-2 text-blue-600">
                     <UserPlus className="h-4 w-4" />
                     Add New Connection
                   </div>
-                </SelectItem>
-              </SelectContent>
-            </Select>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
           {/* View Mode Toggle */}
