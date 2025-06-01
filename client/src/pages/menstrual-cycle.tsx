@@ -672,6 +672,12 @@ export default function MenstrualCyclePage() {
               const person = trackablePersons.find(p => p.id === personId);
               if (!person) return null;
               
+              console.log(`Debug for ${person.name} (ID: ${personId}):`, {
+                totalCycles: cycles.length,
+                cycles: cycles,
+                personId: personId
+              });
+              
               const personCycles = cycles.filter(cycle => {
                 if (personId === 0) {
                   return cycle.connectionId === null; // User's cycles
