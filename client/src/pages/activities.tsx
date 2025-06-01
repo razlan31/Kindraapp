@@ -497,7 +497,7 @@ export default function Activities() {
                  `${selectedConnections.length} connections selected`}
               </span>
             </div>
-            <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
+            <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen} modal={false}>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" className="w-full justify-between">
                   <span>
@@ -509,11 +509,16 @@ export default function Activities() {
                   <ChevronDown className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-[var(--radix-dropdown-menu-trigger-width)] max-h-64 overflow-y-auto overflow-x-hidden" sideOffset={4}>
+              <DropdownMenuContent 
+                className="w-[var(--radix-dropdown-menu-trigger-width)] max-h-64 overflow-y-auto overflow-x-hidden" 
+                sideOffset={4}
+                onOpenAutoFocus={(e) => e.preventDefault()}
+                onCloseAutoFocus={(e) => e.preventDefault()}
+              >
                 {/* Multi-selection controls */}
-                <div className="flex items-center justify-between px-4 py-2 border-b border-border bg-muted/30">
+                <div className="flex items-center justify-between px-4 py-2 border-b border-border bg-muted/50 sticky top-0 z-10">
                   <Button
-                    variant="ghost"
+                    variant="outline"
                     size="sm"
                     onClick={(e) => {
                       e.preventDefault();
@@ -521,22 +526,22 @@ export default function Activities() {
                       setSelectedConnections([]);
                       setHasUserSelectedConnection(true);
                     }}
-                    className="h-7 px-2 text-xs"
+                    className="h-8 px-3 text-xs font-medium border-red-200 text-red-600 hover:bg-red-50"
                   >
                     Clear All
                   </Button>
-                  <div className="text-xs text-muted-foreground">
+                  <div className="text-xs font-medium text-foreground">
                     {selectedConnections.length} selected
                   </div>
                   <Button
-                    variant="ghost"
+                    variant="default"
                     size="sm"
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
                       setDropdownOpen(false);
                     }}
-                    className="h-7 px-2 text-xs"
+                    className="h-8 px-3 text-xs font-medium"
                   >
                     Done
                   </Button>
