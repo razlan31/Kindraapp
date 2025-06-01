@@ -41,6 +41,19 @@ export default function Activities() {
   const [selectedConnection, setSelectedConnection] = useState<number | null>(null);
   const [selectedConnections, setSelectedConnections] = useState<number[]>([]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  // Handle click outside to close dropdown
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownOpen && !event.target?.closest('.connection-picker-trigger, [style*="--dropdown-"]')) {
+        setDropdownOpen(false);
+        document.body.style.overflow = '';
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [dropdownOpen]);
   const [activeTab, setActiveTab] = useState<'moments' | 'conflicts' | 'intimacy' | 'plans' | 'timeline'>(() => {
     // Preserve tab selection across page reloads
     const savedTab = localStorage.getItem('activitiesTab');
@@ -502,10 +515,15 @@ export default function Activities() {
                 variant="outline" 
                 className="w-full justify-between connection-picker-trigger"
                 onClick={(e) => {
-                  const rect = e.currentTarget.getBoundingClientRect();
-                  document.documentElement.style.setProperty('--dropdown-top', `${rect.bottom + 4}px`);
-                  document.documentElement.style.setProperty('--dropdown-left', `${rect.left}px`);
-                  document.documentElement.style.setProperty('--dropdown-width', `${rect.width}px`);
+                  if (!dropdownOpen) {
+                    const rect = e.currentTarget.getBoundingClientRect();
+                    document.documentElement.style.setProperty('--dropdown-top', `${rect.bottom + 4}px`);
+                    document.documentElement.style.setProperty('--dropdown-left', `${rect.left}px`);
+                    document.documentElement.style.setProperty('--dropdown-width', `${rect.width}px`);
+                    document.body.style.overflow = 'hidden';
+                  } else {
+                    document.body.style.overflow = '';
+                  }
                   setDropdownOpen(!dropdownOpen);
                 }}
               >
@@ -519,12 +537,16 @@ export default function Activities() {
               </Button>
               
               {dropdownOpen && (
-                <div className="fixed bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md shadow-2xl max-h-64 flex flex-col" style={{
-                  zIndex: 999999,
-                  top: 'var(--dropdown-top, 0px)',
-                  left: 'var(--dropdown-left, 0px)', 
-                  width: 'var(--dropdown-width, 200px)'
-                }}>
+                <div 
+                  className="fixed bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md shadow-2xl max-h-64 flex flex-col" 
+                  style={{
+                    zIndex: 999999,
+                    top: 'var(--dropdown-top, 0px)',
+                    left: 'var(--dropdown-left, 0px)', 
+                    width: 'var(--dropdown-width, 200px)'
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+                >
                   {/* Connection list - scrollable area */}
                   <div className="overflow-y-auto flex-1 p-1">
                     {/* All Connections Option */}
