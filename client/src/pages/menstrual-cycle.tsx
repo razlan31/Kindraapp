@@ -835,16 +835,22 @@ export default function MenstrualCyclePage() {
                       <div className="flex gap-2">
                         {!currentCycle.endDate ? (
                           <Button 
-                            onClick={async () => {
-                              await updateCycleMutation.mutateAsync({
-                                id: currentCycle.id,
-                                endDate: new Date().toISOString()
+                            onClick={() => {
+                              setEditingCycle(currentCycle);
+                              setFormData({
+                                startDate: format(new Date(currentCycle.startDate), 'yyyy-MM-dd'),
+                                endDate: format(new Date(), 'yyyy-MM-dd'), // Default to today
+                                flowIntensity: '',
+                                mood: '',
+                                symptoms: [],
+                                notes: '',
+                                connectionId: currentCycle.connectionId
                               });
+                              setIsDialogOpen(true);
                             }}
                             size="sm"
                             variant="outline"
                             className="flex-1"
-                            disabled={updateCycleMutation.isPending}
                           >
                             <X className="h-4 w-4 mr-2" />
                             End Period
