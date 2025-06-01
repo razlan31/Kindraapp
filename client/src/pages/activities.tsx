@@ -495,7 +495,7 @@ export default function Activities() {
                       }
                       setHasUserSelectedConnection(true);
                     }}
-                    className="py-3 px-4 text-base"
+                    className="py-3 px-4 text-base data-[checked]:bg-primary/10 data-[checked]:text-primary-foreground"
                   >
                     <div className="flex items-center gap-3">
                       {connection.profileImage ? (

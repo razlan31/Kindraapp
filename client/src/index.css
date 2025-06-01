@@ -25,6 +25,37 @@
   animation: pulseGlow 1.5s infinite;
 }
 
+/* Enhanced checkbox visibility for connection pickers */
+[data-radix-dropdown-menu-content] [role="menuitemcheckbox"] {
+  position: relative;
+}
+
+[data-radix-dropdown-menu-content] [role="menuitemcheckbox"][data-state="checked"] {
+  background-color: hsl(var(--primary) / 0.1);
+  border-color: hsl(var(--primary));
+}
+
+[data-radix-dropdown-menu-content] [role="menuitemcheckbox"] [data-radix-checkbox-indicator] {
+  width: 18px !important;
+  height: 18px !important;
+  border: 2px solid hsl(var(--border));
+  border-radius: 4px;
+  background-color: hsl(var(--background));
+  transition: all 0.2s ease;
+}
+
+[data-radix-dropdown-menu-content] [role="menuitemcheckbox"][data-state="checked"] [data-radix-checkbox-indicator] {
+  background-color: hsl(var(--primary));
+  border-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+}
+
+[data-radix-dropdown-menu-content] [role="menuitemcheckbox"] [data-radix-checkbox-indicator] svg {
+  width: 12px !important;
+  height: 12px !important;
+  stroke-width: 3;
+}
+
 :root {
   --background: 0 0% 100%;
   --foreground: 20 14.3% 4.1%;

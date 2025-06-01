@@ -545,7 +545,7 @@ export default function Calendar() {
                       }
                       setHasUserSelectedConnection(true);
                     }}
-                    className="py-3 px-4"
+                    className="py-3 px-4 data-[checked]:bg-primary/10 data-[checked]:text-primary-foreground"
                   >
                     <div className="flex items-center gap-2">
                       {connection.profileImage ? (

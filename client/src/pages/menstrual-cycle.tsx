@@ -543,7 +543,7 @@ export default function MenstrualCyclePage() {
                         setSelectedPersonIds(selectedPersonIds.filter(id => id !== person.id));
                       }
                     }}
-                    className="py-3 px-4"
+                    className="py-3 px-4 data-[checked]:bg-primary/10 data-[checked]:text-primary-foreground"
                   >
                     <div className="flex items-center gap-2">
                       {person.isUser ? (
