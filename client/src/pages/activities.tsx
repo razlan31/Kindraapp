@@ -509,34 +509,6 @@ export default function Activities() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-[var(--radix-dropdown-menu-trigger-width)] max-h-80 overflow-y-auto" sideOffset={4}>
-                {/* Clear and Done buttons */}
-                <div className="flex items-center justify-between px-4 py-2 border-b border-border bg-muted/30">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      setSelectedConnections([]);
-                      setHasUserSelectedConnection(true);
-                    }}
-                    className="h-7 px-2 text-xs"
-                  >
-                    Clear All
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      // Just close the dropdown - the state is already managed
-                    }}
-                    className="h-7 px-2 text-xs"
-                  >
-                    Done
-                  </Button>
-                </div>
                 
                 <DropdownMenuItem 
                   onClick={() => {
@@ -602,6 +574,36 @@ export default function Activities() {
                     <UserPlus className="h-4 w-4 text-primary" />
                   </div>
                   <span className="text-primary">Add Connection</span>
+                </div>
+                
+                {/* Clear and Done buttons at bottom */}
+                <div className="border-t border-border my-1" />
+                <div className="flex items-center justify-between px-4 py-2 bg-muted/30">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setSelectedConnections([]);
+                      setHasUserSelectedConnection(true);
+                    }}
+                    className="h-7 px-2 text-xs"
+                  >
+                    Clear All
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      // Just close the dropdown - the state is already managed
+                    }}
+                    className="h-7 px-2 text-xs"
+                  >
+                    Done
+                  </Button>
                 </div>
               </DropdownMenuContent>
             </DropdownMenu>
