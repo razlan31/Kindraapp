@@ -109,6 +109,17 @@ export default function Activities() {
     setForceRefreshKey(prev => prev + 1);
   }, [moments.length]);
 
+  // Listen for moment creation events and force immediate refresh
+  useEffect(() => {
+    const handleMomentCreated = () => {
+      refetchMoments();
+      setForceRefreshKey(prev => prev + 1);
+    };
+    
+    window.addEventListener('momentCreated', handleMomentCreated);
+    return () => window.removeEventListener('momentCreated', handleMomentCreated);
+  }, [refetchMoments]);
+
   // Connection modal helper functions
   const openConnectionModal = () => {
     console.log("Opening connection modal from context");
