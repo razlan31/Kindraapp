@@ -672,12 +672,6 @@ export default function MenstrualCyclePage() {
               const person = trackablePersons.find(p => p.id === personId);
               if (!person) return null;
               
-              console.log(`Debug for ${person.name} (ID: ${personId}):`, {
-                totalCycles: cycles.length,
-                cycles: cycles,
-                personId: personId
-              });
-              
               const personCycles = cycles.filter(cycle => {
                 if (personId === 0) {
                   return cycle.connectionId === null; // User's cycles
@@ -686,7 +680,17 @@ export default function MenstrualCyclePage() {
                 }
               });
               
-              const currentCycle = personCycles.find(cycle => !cycle.endDate);
+              // Find active cycle - either no end date, or current date is within the cycle period
+              const currentCycle = personCycles.find(cycle => {
+                if (!cycle.endDate) return true; // No end date means actively ongoing
+                
+                const today = new Date();
+                const startDate = new Date(cycle.startDate);
+                const endDate = new Date(cycle.endDate);
+                
+                // Check if today is within the cycle period
+                return today >= startDate && today <= endDate;
+              });
               const avgCycleLength = calculateCycleLength(personCycles);
               const currentDay = currentCycle ? differenceInDays(new Date(), new Date(currentCycle.startDate)) + 1 : 0;
               const currentPhase = currentCycle ? getCyclePhase(currentDay, avgCycleLength) : null;
