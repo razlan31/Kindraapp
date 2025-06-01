@@ -1,0 +1,21 @@
+Cycle 5 prediction: {predictedStart: '2025-09-20T00:00:00.000Z', predictedPeriodEnd: '2025-09-24T00:00:00.000Z', checkDay: '2025-06-23T16:00:00.000Z', periodLength: 5, isMatch: false}
+Console.js:61 Cycle 6 prediction: {predictedStart: '2025-10-18T00:00:00.000Z', predictedPeriodEnd: '2025-10-22T00:00:00.000Z', checkDay: '2025-06-23T16:00:00.000Z', periodLength: 5, isMatch: false}
+Console.js:61 Prediction debug: {personId: 2, lastCycleStart: '2025-05-01T00:00:00.000Z', lastCycleEnd: '2025-05-30T00:00:00.000Z', baseDate: '2025-05-30T00:00:00.000Z', avgCycleLength: 28, …}
+Console.js:61 Cycle 1 prediction: {predictedStart: '2025-05-31T00:00:00.000Z', predictedPeriodEnd: '2025-06-04T00:00:00.000Z', checkDay: '2025-06-24T16:00:00.000Z', periodLength: 5, isMatch: false}
+Console.js:61 Cycle 2 prediction: {predictedStart: '2025-06-28T00:00:00.000Z', predictedPeriodEnd: '2025-07-02T00:00:00.000Z', checkDay: '2025-06-24T16:00:00.000Z', periodLength: 5, isMatch: false}
+Console.js:61 Cycle 3 prediction: {predictedStart: '2025-07-26T00:00:00.000Z', predictedPeriodEnd: '2025-07-30T00:00:00.000Z', checkDay: '2025-06-24T16:00:00.000Z', periodLength: 5, isMatch: false}
+Console.js:61 Cycle 4 prediction: {predictedStart: '2025-08-23T00:00:00.000Z', predictedPeriodEnd: '2025-08-27T00:00:00.000Z', checkDay: '2025-06-24T16:00:00.000Z', periodLength: 5, isMatch: false}
+Console.js:61 Cycle 5 prediction: {predictedStart: '2025-09-20T00:00:00.000Z', predictedPeriodEnd: '2025-09-24T00:00:00.000Z', checkDay: '2025-06-24T16:00:00.000Z', periodLength: 5, isMatch: false}
+Console.js:61 Cycle 6 prediction: {predictedStart: '2025-10-18T00:00:00.000Z', predictedPeriodEnd: '2025-10-22T00:00:00.000Z', checkDay: '2025-06-24T16:00:00.000Z', periodLength: 5, isMatch: false}
+Console.js:61 Prediction debug: {personId: 2, lastCycleStart: '2025-05-01T00:00:00.000Z', lastCycleEnd: '2025-05-30T00:00:00.000Z', baseDate: '2025-05-30T00:00:00.000Z', avgCycleLength: 28, …}
+Console.js:61 Cycle 1 prediction: {predictedStart: '2025-05-31T00:00:00.000Z', predictedPeriodEnd: '2025-06-04T00:00:00.000Z', checkDay: '2025-06-25T16:00:00.000Z', periodLength: 5, isMatch: false}
+Console.js:61 Cycle 2 prediction: {predictedStart: '2025-06-28T00:00:00.000Z', predictedPeriodEnd: '2025-07-02T00:00:00.000Z', checkDay: '2025-06-25T16:00:00.000Z', periodLength: 5, isMatch: false}
+Console.js:61 Cycle 3 prediction: {predictedStart: '2025-07-26T00:00:00.000Z', predictedPeriodEnd: '2025-07-30T00:00:00.000Z', checkDay: '2025-06-25T16:00:00.000Z', periodLength: 5, isMatch: false}
+Console.js:61 Cycle 4 prediction: {predictedStart: '2025-08-23T00:00:00.000Z', predictedPeriodEnd: '2025-08-27T00:00:00.000Z', checkDay: '2025-06-25T16:00:00.000Z', periodLength: 5, isMatch: false}
+Console.js:61 Cycle 5 prediction: {predictedStart: '2025-09-20T00:00:00.000Z', predictedPeriodEnd: '2025-09-24T00:00:00.000Z', checkDay: '2025-06-25T16:00:00.000Z', periodLength: 5, isMatch: false}
+Console.js:61 Cycle 6 prediction: {predictedStart: '2025-10-18T00:00:00.000Z', predictedPeriodEnd: '2025-10-22T00:00:00.000Z', checkDay: '2025-06-25T16:00:00.000Z', periodLength: 5, isMatch: false}
+Console.js:61 Prediction debug: {personId: 2, lastCycleStart: '2025-05-01T00:00:00.000Z', lastCycleEnd: '2025-05-30T00:00:00.000Z', baseDate: '2025-05-30T00:00:00.000Z', avgCycleLength: 28, …}
+Console.js:61 Cycle 1 prediction: {predictedStart: '2025-05-31T00:00:00.000Z', predictedPeriodEnd: '2025-06-04T00:00:00.000Z', checkDay: '2025-06-26T16:00:00.000Z', periodLength: 5, isMatch: false}
+Console.js:61 Cycle 2 prediction: {predictedStart: '2025-06-28T00:00:00.000Z', predictedPeriodEnd: '2025-07-02T00:00:00.000Z', checkDay: '2025-06-26T16:00:00.000Z', periodLength: 5, isMatch: false}
+Console.js:61 Cycle 3 prediction: {predictedStart: '2025-07-26T00:00:00.000Z', predictedPeriodEnd: '2025-07-30T00:00:00.000Z', checkDay: '2025-06-26T16:00:00.000Z', periodLength: 5, isMatch: false}
+Console.js:61 Cycle 4 prediction: 

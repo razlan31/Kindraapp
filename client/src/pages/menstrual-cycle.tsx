@@ -354,17 +354,19 @@ export default function MenstrualCyclePage() {
             
             const predictedStartDay = startOfDay(predictedStart);
             const predictedPeriodEndDay = startOfDay(predictedPeriodEnd);
+            const checkDayStart = startOfDay(checkDay);
             
             console.log(`Cycle ${i} prediction:`, {
               predictedStart: predictedStart.toISOString(),
               predictedPeriodEnd: predictedPeriodEnd.toISOString(),
               checkDay: checkDay.toISOString(),
+              checkDayStart: checkDayStart.toISOString(),
               periodLength,
-              isMatch: checkDay >= predictedStartDay && checkDay <= predictedPeriodEndDay
+              isMatch: checkDayStart >= predictedStartDay && checkDayStart <= predictedPeriodEndDay
             });
             
             // Check if the day falls within this predicted period (only show during period days, not full cycle)
-            if (checkDay >= predictedStartDay && checkDay <= predictedPeriodEndDay) {
+            if (checkDayStart >= predictedStartDay && checkDayStart <= predictedPeriodEndDay) {
               // Create a virtual cycle for prediction
               const virtualCycle = {
                 ...lastCycle,
