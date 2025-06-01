@@ -282,9 +282,19 @@ export default function MenstrualCyclePage() {
       
       // Check if the day falls within this cycle
       const start = startOfDay(new Date(cycle.startDate));
-      const end = cycle.endDate ? startOfDay(new Date(cycle.endDate)) : new Date();
       const checkDay = startOfDay(day);
-      return checkDay >= start && checkDay <= end;
+      
+      if (cycle.endDate) {
+        // Completed cycle - check if day is between start and end
+        const end = startOfDay(new Date(cycle.endDate));
+        return checkDay >= start && checkDay <= end;
+      } else {
+        // Ongoing cycle - calculate expected cycle length and check if day is within reasonable range
+        const personCycles = cycles.filter(c => c.connectionId === cycle.connectionId);
+        const avgLength = calculateCycleLength(personCycles) || 28;
+        const expectedEnd = addDays(start, avgLength - 1);
+        return checkDay >= start && checkDay <= expectedEnd;
+      }
     });
   };
 
