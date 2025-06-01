@@ -1184,32 +1184,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Menstrual Cycle Routes
-  app.get("/api/menstrual-cycles", isAuthenticated, async (req, res) => {
-    try {
-      const userId = req.session.userId as number;
-      const cycles = await storage.getMenstrualCycles(userId);
-      res.status(200).json(cycles);
-    } catch (error) {
-      res.status(500).json({ message: "Server error fetching menstrual cycles" });
-    }
-  });
 
-  app.post("/api/menstrual-cycles", isAuthenticated, async (req, res) => {
-    try {
-      const userId = req.session.userId as number;
-      const cycleData = menstrualCycleSchema.parse({ ...req.body, userId });
-      
-      const newCycle = await storage.createMenstrualCycle(cycleData);
-      res.status(201).json(newCycle);
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        res.status(400).json({ message: "Invalid input", errors: error.errors });
-      } else {
-        res.status(500).json({ message: "Server error creating menstrual cycle" });
-      }
-    }
-  });
+
+
 
   app.put("/api/menstrual-cycles/:id", isAuthenticated, async (req, res) => {
     try {
