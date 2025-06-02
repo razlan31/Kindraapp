@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Connection, Moment } from "@shared/schema";
-import { MessageCircle, Send, Lightbulb, ArrowRight, Heart, Star } from "lucide-react";
+import { MessageCircle, Send, Lightbulb, ArrowRight, Heart, Star, RefreshCw } from "lucide-react";
 import { useState } from "react";
 
 interface AIAdviceProps {
@@ -19,8 +19,14 @@ export function AIAdvice({ connections, moments, userData }: AIAdviceProps) {
   const [question, setQuestion] = useState("");
   const [currentResponse, setCurrentResponse] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
+  const [suggestionIndex, setSuggestionIndex] = useState(0);
 
   const contextualAdvice = generateContextualAdvice(connections, moments, userData);
+  const allSuggestions = getSuggestedQuestions(connections, moments);
+  
+  const refreshSuggestions = () => {
+    setSuggestionIndex((prev) => (prev + 2) % allSuggestions.length);
+  };
 
   const handleAskQuestion = async () => {
     if (!question.trim()) return;
@@ -65,16 +71,27 @@ export function AIAdvice({ connections, moments, userData }: AIAdviceProps) {
 
       {/* Suggested questions */}
       {!currentResponse && (
-        <div className="space-y-2">
-          {getSuggestedQuestions(connections, moments).slice(0, 3).map((suggestedQ, index) => (
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <span className="text-xs text-muted-foreground">Suggestions</span>
             <button
-              key={index}
-              onClick={() => setQuestion(suggestedQ)}
-              className="text-left text-sm text-muted-foreground hover:text-foreground transition-colors block w-full p-3 rounded-lg bg-neutral-50 dark:bg-neutral-800 hover:bg-neutral-100 dark:hover:bg-neutral-700"
+              onClick={refreshSuggestions}
+              className="text-muted-foreground hover:text-foreground transition-colors p-1"
             >
-              {suggestedQ}
+              <RefreshCw className="h-3 w-3" />
             </button>
-          ))}
+          </div>
+          <div className="space-y-2">
+            {allSuggestions.slice(suggestionIndex, suggestionIndex + 2).map((suggestedQ, index) => (
+              <button
+                key={suggestionIndex + index}
+                onClick={() => setQuestion(suggestedQ)}
+                className="text-left text-sm text-muted-foreground hover:text-foreground transition-colors block w-full p-3 rounded-lg bg-neutral-50 dark:bg-neutral-800 hover:bg-neutral-100 dark:hover:bg-neutral-700"
+              >
+                {suggestedQ}
+              </button>
+            ))}
+          </div>
         </div>
       )}
     </div>
