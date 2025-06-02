@@ -420,7 +420,7 @@ export default function Activities() {
   );
 
   return (
-    <div className="max-w-md mx-auto bg-gradient-to-br from-blue-50 via-indigo-50 to-white dark:from-neutral-900 dark:via-blue-900/20 dark:to-neutral-800 min-h-screen flex flex-col relative">
+    <div className="max-w-md mx-auto bg-gradient-to-br from-orange-50 via-red-50 to-white dark:from-neutral-900 dark:via-orange-900/20 dark:to-neutral-800 min-h-screen flex flex-col relative">
       <Header />
 
       <main className="flex-1 overflow-y-auto pb-20">
