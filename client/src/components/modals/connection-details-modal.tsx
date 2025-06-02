@@ -9,6 +9,7 @@ import { format } from 'date-fns';
 import { useQuery } from '@tanstack/react-query';
 import { ConnectionDetailedModal } from './connection-detailed-modal';
 import { EditConnectionModal } from './edit-connection-modal';
+import { MiniInsight } from '@/components/insights/mini-insight';
 
 import type { Connection, Moment } from '@shared/schema';
 
