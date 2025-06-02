@@ -266,7 +266,7 @@ export function MomentModal() {
                           </div>
                           <div className="flex items-center gap-2">
                             <span className="h-4 w-4 rounded-full bg-pink-500 flex-shrink-0"></span>
-                            <span className="text-xs">Intimacy: Physical/emotional intimate moments</span>
+                            <span className="text-xs">Sex: Physical/emotional intimate moments</span>
                           </div>
                           <div className="flex items-center gap-2">
                             <span className="h-4 w-4 rounded-full bg-blue-500 flex-shrink-0"></span>
