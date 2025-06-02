@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Header } from "@/components/layout/header";
 import { BottomNavigation } from "@/components/layout/bottom-navigation";
@@ -38,14 +38,15 @@ export default function Dashboard() {
   const [momentsError, setMomentsError] = useState<string | null>(null);
 
   // Function to fetch moments
-  const refetchMoments = () => {
-    if (user) {
+  const refetchMoments = useCallback(() => {
+    if (user?.id) {
+      console.log("Starting to fetch moments for user:", user.id);
       setMomentsLoading(true);
       setMomentsError(null);
       fetch("/api/moments")
         .then(res => res.json())
         .then(data => {
-          console.log("Moments loaded:", data.length);
+          console.log("Moments loaded successfully:", data.length);
           setMoments(data);
         })
         .catch(err => {
@@ -54,16 +55,16 @@ export default function Dashboard() {
         })
         .finally(() => setMomentsLoading(false));
     }
-  };
+  }, [user?.id]);
 
   // Fetch moments when user loads
   useEffect(() => {
-    console.log("useEffect triggered - user:", user?.id);
-    if (user?.id) {
-      console.log("Calling refetchMoments...");
+    console.log("Dashboard useEffect - user:", user?.id, "loading:", loading);
+    if (!loading && user?.id) {
+      console.log("Calling refetchMoments for user:", user.id);
       refetchMoments();
     }
-  }, [user?.id]);
+  }, [user?.id, loading, refetchMoments]);
 
   // Listen for moment creation and update events to refetch data immediately
   useEffect(() => {
