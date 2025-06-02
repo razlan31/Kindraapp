@@ -90,7 +90,8 @@ export function AIAdvice({ connections, moments, userData }: AIAdviceProps) {
               placeholder="Ask about your relationships... e.g., 'How can I improve communication with Jordan?' or 'What should I do when I'm feeling distant?'"
               value={question}
               onChange={(e) => setQuestion(e.target.value)}
-              className="min-h-[80px]"
+              className="min-h-[120px] resize-none"
+              rows={5}
             />
             <Button 
               onClick={handleAskQuestion}
