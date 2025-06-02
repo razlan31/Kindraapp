@@ -144,52 +144,50 @@ export function AIChat() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-4 space-y-6">
-      {/* Header */}
-      <Card className="bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-950/20 dark:to-purple-950/20 border-pink-200 dark:border-pink-800">
-        <CardHeader className="text-center">
-          <CardTitle className="flex items-center justify-center gap-2 text-2xl font-bold text-pink-800 dark:text-pink-200">
-            <Heart className="h-6 w-6" />
-            Your AI Relationship Coach
-            <Sparkles className="h-5 w-5" />
-          </CardTitle>
-          <p className="text-pink-600 dark:text-pink-300 text-sm">
-            Get personalized advice based on your relationship tracking data
-          </p>
-        </CardHeader>
-      </Card>
-
-      {/* Chat Container */}
-      <Card className="h-[500px] flex flex-col">
-        <CardHeader className="flex-shrink-0 border-b">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <MessageCircle className="h-5 w-5 text-purple-600" />
-              <span className="font-semibold">Chat Session</span>
-            </div>
-            {conversation.length > 0 && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => clearMutation.mutate()}
-                disabled={clearMutation.isPending}
-                className="text-gray-500 hover:text-red-500"
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
-            )}
+    <div className="w-full max-w-2xl mx-auto">
+      {/* Minimalist Header */}
+      <div className="mb-6">
+        <div className="flex items-center gap-3 mb-2">
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-rose-400 to-pink-500 flex items-center justify-center">
+            <Heart className="h-4 w-4 text-white" />
           </div>
-        </CardHeader>
+          <h1 className="text-lg font-medium text-gray-900 dark:text-gray-100">Relationship Coach</h1>
+        </div>
+        <p className="text-sm text-gray-500 dark:text-gray-400 ml-11">
+          Your personal guide to healthier relationships
+        </p>
+      </div>
+
+      {/* Clean Chat Container */}
+      <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden shadow-sm">
+        {/* Minimal Header */}
+        <div className="flex items-center justify-between p-4 border-b border-gray-50 dark:border-gray-800">
+          <div className="flex items-center gap-2">
+            <MessageCircle className="h-4 w-4 text-gray-400" />
+            <span className="text-sm font-medium text-gray-600 dark:text-gray-300">Chat</span>
+          </div>
+          {conversation.length > 0 && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => clearMutation.mutate()}
+              disabled={clearMutation.isPending}
+              className="h-8 w-8 p-0 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+            >
+              <Trash2 className="h-3 w-3" />
+            </Button>
+          )}
+        </div>
 
         {/* Messages */}
-        <CardContent className="flex-1 overflow-y-auto p-4 space-y-4">
+        <div className="h-80 overflow-y-auto p-6 space-y-6">
           {conversation.length === 0 ? (
-            <div className="text-center text-gray-500 mt-8">
-              <MessageCircle className="h-12 w-12 mx-auto mb-4 opacity-50" />
-              <p className="text-lg font-medium">Welcome to your AI relationship coach!</p>
-              <p className="text-sm mt-2">
-                Ask me anything about your relationships and I'll provide personalized advice
-                based on your tracking data.
+            <div className="text-center py-12">
+              <div className="w-12 h-12 rounded-full bg-gray-50 dark:bg-gray-800 flex items-center justify-center mx-auto mb-4">
+                <MessageCircle className="h-6 w-6 text-gray-400" />
+              </div>
+              <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed max-w-xs mx-auto">
+                Hi! I'm here to help you understand your relationship patterns and build stronger connections. What's on your mind?
               </p>
             </div>
           ) : (
@@ -199,18 +197,16 @@ export function AIChat() {
                 className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 <div
-                  className={`max-w-[80%] rounded-lg p-3 ${
+                  className={`max-w-[85%] rounded-2xl px-4 py-3 ${
                     msg.role === 'user'
-                      ? 'bg-purple-600 text-white ml-12'
-                      : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 mr-12'
+                      ? 'bg-gradient-to-r from-rose-500 to-pink-500 text-white'
+                      : 'bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100'
                   }`}
                 >
-                  <p className="whitespace-pre-wrap text-sm leading-relaxed">
+                  <p className="text-sm leading-relaxed whitespace-pre-wrap">
                     {msg.content}
                   </p>
-                  <p className={`text-xs mt-2 opacity-70 ${
-                    msg.role === 'user' ? 'text-purple-100' : 'text-gray-500'
-                  }`}>
+                  <p className="text-xs opacity-60 mt-2">
                     {formatTimestamp(msg.timestamp)}
                   </p>
                 </div>
@@ -220,50 +216,41 @@ export function AIChat() {
           
           {chatMutation.isPending && (
             <div className="flex justify-start">
-              <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-3 mr-12">
-                <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  <span className="text-sm">Thinking...</span>
+              <div className="bg-gray-50 dark:bg-gray-800 rounded-2xl px-4 py-3 max-w-[85%]">
+                <div className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                  <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                  <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"></div>
                 </div>
               </div>
             </div>
           )}
           
           <div ref={messagesEndRef} />
-        </CardContent>
+        </div>
 
         {/* Input Area */}
-        <div className="border-t p-4">
-          {/* Message Input */}
-          <div className="flex gap-2">
+        <div className="border-t border-gray-50 dark:border-gray-800 p-4">
+          <div className="flex gap-3">
             <Textarea
               ref={textareaRef}
               value={message}
-              onChange={(e) => {
-                setMessage(e.target.value);
-                // Auto-resize
-                e.target.style.height = 'auto';
-                e.target.style.height = e.target.scrollHeight + 'px';
-              }}
+              onChange={(e) => setMessage(e.target.value)}
               onKeyDown={handleKeyPress}
-              placeholder="Ask me about your relationships... (Press Enter to send, Shift+Enter for new line)"
-              className="flex-1 min-h-[40px] max-h-[120px] resize-none"
-              disabled={chatMutation.isPending}
+              placeholder="Share what's on your mind..."
+              className="flex-1 min-h-[40px] max-h-28 resize-none border-0 bg-gray-50 dark:bg-gray-800 focus:ring-1 focus:ring-rose-200 dark:focus:ring-rose-800 rounded-xl text-sm"
+              rows={1}
             />
             <Button
               onClick={handleSendMessage}
               disabled={!message.trim() || chatMutation.isPending}
-              className="px-4 py-2 bg-purple-600 hover:bg-purple-700"
+              className="px-4 py-2 bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white border-0 rounded-xl shadow-sm"
             >
-              {chatMutation.isPending ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <Send className="h-4 w-4" />
-              )}
+              <Send className="h-4 w-4" />
             </Button>
           </div>
         </div>
-      </Card>
+      </div>
     </div>
   );
 }
