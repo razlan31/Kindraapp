@@ -315,7 +315,7 @@ export function MomentModal() {
                 name="intimacyRating"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Intimacy Quality</FormLabel>
+                    <FormLabel>Experience Quality</FormLabel>
                     <Select
                       value={field.value}
                       onValueChange={field.onChange}
@@ -333,7 +333,7 @@ export function MomentModal() {
                       </SelectContent>
                     </Select>
                     <FormDescription>
-                      This helps identify patterns in your intimate connection
+                      This helps identify patterns in your sexual connection
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
