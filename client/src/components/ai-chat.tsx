@@ -152,10 +152,10 @@ export function AIChat() {
         </div>
         <div>
           <h3 className="font-semibold text-lg bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-            AI Relationship Coach
+            Luna - Your Relationship Coach
           </h3>
           <p className="text-sm text-muted-foreground">
-            Personal guide to healthier relationships
+            Warm, wise guidance for meaningful connections
           </p>
         </div>
         {conversation.length > 0 && (
@@ -186,7 +186,7 @@ export function AIChat() {
                 </div>
               </div>
               <p className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed max-w-sm mx-auto">
-                Hi! I'm your AI relationship coach. I can help you understand your patterns, navigate challenges, and build stronger connections. What would you like to explore today?
+                Hi! I'm Luna, your personal relationship coach. I analyze your relationship patterns to help you build deeper connections and navigate challenges with wisdom and care. What would you like to explore together?
               </p>
             </div>
           ) : (
