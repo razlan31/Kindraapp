@@ -23,23 +23,9 @@ interface ChatResponse {
   timestamp: string;
 }
 
-const suggestedQuestions = [
-  "How is my relationship with Alex going?",
-  "What patterns do you see in my relationship behavior?",
-  "Should I be concerned about any red flags?",
-  "How can I improve communication with Jordan?",
-  "What are my strengths in relationships?",
-  "Help me understand my recent emotional patterns",
-  "What should I focus on in my relationship this week?",
-  "How do my love languages affect my connections?"
-];
-
 export function AIChat() {
   const [message, setMessage] = useState("");
   const [conversation, setConversation] = useState<ChatMessage[]>([]);
-  const [currentSuggestions, setCurrentSuggestions] = useState(
-    suggestedQuestions.slice(0, 4)
-  );
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { toast } = useToast();
@@ -147,15 +133,7 @@ export function AIChat() {
     }
   };
 
-  const refreshSuggestions = () => {
-    const shuffled = [...suggestedQuestions].sort(() => Math.random() - 0.5);
-    setCurrentSuggestions(shuffled.slice(0, 4));
-  };
 
-  const handleSuggestionClick = (suggestion: string) => {
-    setMessage(suggestion);
-    textareaRef.current?.focus();
-  };
 
   const formatTimestamp = (timestamp: Date) => {
     return new Intl.DateTimeFormat('en-US', {
@@ -255,39 +233,7 @@ export function AIChat() {
         </CardContent>
 
         {/* Input Area */}
-        <div className="border-t p-4 space-y-3">
-          {/* Suggested Questions */}
-          {conversation.length === 0 && (
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                  Suggested questions:
-                </span>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={refreshSuggestions}
-                  className="text-xs text-purple-600 hover:text-purple-700"
-                >
-                  <Sparkles className="h-3 w-3 mr-1" />
-                  Refresh
-                </Button>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {currentSuggestions.map((suggestion, index) => (
-                  <Badge
-                    key={index}
-                    variant="secondary"
-                    className="cursor-pointer hover:bg-purple-100 dark:hover:bg-purple-900 text-xs py-1 px-2"
-                    onClick={() => handleSuggestionClick(suggestion)}
-                  >
-                    {suggestion}
-                  </Badge>
-                ))}
-              </div>
-            </div>
-          )}
-
+        <div className="border-t p-4">
           {/* Message Input */}
           <div className="flex gap-2">
             <Textarea

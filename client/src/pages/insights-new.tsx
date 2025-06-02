@@ -8,6 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Connection, Moment } from "@shared/schema";
 import { AIInsights } from "@/components/insights/ai-insights";
 import { AIAdvice } from "@/components/insights/ai-advice";
+import { AIChat } from "@/components/ai-chat";
 import { 
   BarChart, 
   Bar, 
@@ -96,16 +97,9 @@ export default function InsightsNew() {
       <Header />
 
       <main className="flex-1 overflow-y-auto pb-20 px-4 pt-6">
-        {/* AI Coach Section */}
+        {/* AI Relationship Coach - Main Feature */}
         <div className="mb-8">
-          <AIAdvice 
-            connections={connections} 
-            moments={moments} 
-            userData={{
-              zodiacSign: user?.zodiacSign || undefined,
-              loveLanguage: user?.loveLanguage || undefined
-            }}
-          />
+          <AIChat />
         </div>
 
         {/* AI Insights Section */}
