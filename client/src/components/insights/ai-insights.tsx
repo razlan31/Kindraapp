@@ -23,6 +23,8 @@ export function AIInsights({ connections, moments, userData }: AIInsightsProps) 
 
   // Generate data-driven insights
   const insights = generateDataInsights(connections, moments, userData);
+  
+  console.log("Generated insights:", insights);
 
   if (insights.length === 0) {
     return (
