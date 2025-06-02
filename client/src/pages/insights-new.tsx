@@ -30,27 +30,28 @@ import {
 } from "lucide-react";
 
 export default function InsightsNew() {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
 
-  console.log("InsightsNew - user:", !!user, "user ID:", user?.id);
+  console.log("InsightsNew - user:", !!user, "user ID:", user?.id, "loading:", loading);
 
   // Fetch connections
   const { data: connections = [] } = useQuery<Connection[]>({
     queryKey: ["/api/connections"],
-    enabled: !!user,
+    enabled: !loading && !!user,
   });
 
   // Fetch moments
   const { data: moments = [], isLoading: momentsLoading, error: momentsError } = useQuery<Moment[]>({
     queryKey: ["/api/moments"],
-    enabled: !!user,
+    enabled: !loading && !!user,
   });
 
   console.log("InsightsNew - moments query:", {
     momentsLength: moments.length,
     momentsLoading,
     momentsError,
-    userEnabled: !!user
+    userEnabled: !loading && !!user,
+    loading
   });
 
   // Prepare emotion data for charts
