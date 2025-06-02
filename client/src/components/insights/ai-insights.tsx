@@ -396,13 +396,17 @@ function generateDataInsights(connections: Connection[], moments: Moment[], user
       conn.intimateCount > max.intimateCount ? conn : max, totalIntimateByConnection[0]);
     
     if (intimacyRatio > 0.3) {
+      // Find the actual connection object to get the name safely
+      const connectionData = connections.find(c => c.id === mostIntimateConnection.id);
+      const connectionName = connectionData?.name || "a connection";
+      
       insights.push({
         title: "High Intimacy Awareness",
-        description: `${Math.round(intimacyRatio * 100)}% of moments include intimacy. Your strongest emotional bond appears to be with ${mostIntimateConnection.name}. Continue nurturing deep connections while maintaining healthy boundaries.`,
+        description: `${Math.round(intimacyRatio * 100)}% of moments include intimacy. Your strongest emotional bond appears to be with ${connectionName}. Continue nurturing deep connections while maintaining healthy boundaries.`,
         type: 'positive',
         confidence: 80,
         icon: <Heart className="h-4 w-4 text-pink-600" />,
-        dataPoints: [`${intimateMoments.length} intimate moments`, `${mostIntimateConnection.name} leads with ${mostIntimateConnection.intimateCount}`]
+        dataPoints: [`${intimateMoments.length} intimate moments`, `${connectionName} leads with ${mostIntimateConnection.intimateCount}`]
       });
     }
   }
