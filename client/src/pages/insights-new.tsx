@@ -107,6 +107,11 @@ export default function InsightsNew() {
       <Header />
 
       <main className="flex-1 overflow-y-auto pb-20 px-4 pt-6">
+        {/* AI Relationship Coach - Main Feature */}
+        <div className="mb-8">
+          <AIChat />
+        </div>
+
         {/* AI Insights Section */}
         <div className="mb-8">
           <AIInsights 
@@ -117,11 +122,6 @@ export default function InsightsNew() {
               loveLanguage: user?.loveLanguage || undefined
             }}
           />
-        </div>
-
-        {/* AI Relationship Coach - Main Feature */}
-        <div className="mb-8">
-          <AIChat />
         </div>
 
         {/* Analytics Section */}
