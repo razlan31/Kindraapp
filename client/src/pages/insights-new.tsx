@@ -467,7 +467,7 @@ export default function InsightsNew() {
               </div>
             </div>
 
-            {/* Intimacy Timeline & Trends */}
+            {/* Sex Timeline & Trends */}
             <div className="bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-900/20 dark:to-orange-900/20 rounded-xl p-4 border border-red-100 dark:border-red-800">
               <div className="flex items-center gap-2 mb-3">
                 <div className="p-1.5 bg-gradient-to-r from-red-500 to-orange-500 rounded-lg">
@@ -475,17 +475,17 @@ export default function InsightsNew() {
                 </div>
                 <div>
                   <h3 className="font-semibold text-sm bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
-                    Intimacy Intelligence
+                    Sexual Activity Intelligence
                   </h3>
                   <p className="text-xs text-muted-foreground">
-                    Emotional and physical connection tracking
+                    Sexual activity and satisfaction tracking
                   </p>
                 </div>
               </div>
               
               <div className="grid grid-cols-2 gap-3">
                 <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-lg p-3">
-                  <div className="text-xs text-muted-foreground mb-2">Intimacy Progression</div>
+                  <div className="text-xs text-muted-foreground mb-2">Sexual Activity Frequency</div>
                   <div className="space-y-1">
                     {['Physical', 'Emotional', 'Mental', 'Spiritual'].map((type, index) => {
                       const level = Math.floor(Math.random() * 40) + 60;
@@ -514,10 +514,10 @@ export default function InsightsNew() {
                       {Math.floor(Math.random() * 30) + 70}%
                     </div>
                     <div className="text-xs text-muted-foreground">
-                      Intimacy-cycle sync rate
+                      Sexual activity-cycle sync rate
                     </div>
                     <div className="mt-2 text-xs bg-red-50 dark:bg-red-900/20 rounded p-1">
-                      Peak intimacy during follicular phase
+                      Peak activity during follicular phase
                     </div>
                   </div>
                 </div>

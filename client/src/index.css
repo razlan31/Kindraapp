@@ -90,12 +90,12 @@
   --card-foreground: 20 14.3% 4.1%;
   --border: 20 5.9% 90%;
   --input: 20 5.9% 90%;
-  --primary: 16 100% 66%; /* #FF5722 - Beautiful coral */
+  --primary: 354 100% 70%; /* #FF6B6B */
   --primary-foreground: 0 0% 100%;
-  --secondary: 24 100% 97%; /* #FFF3E0 - Light coral */
-  --secondary-foreground: 16 50% 40%;
-  --accent: 45 100% 70%; /* #FFAB40 - Warm orange accent */
-  --accent-foreground: 45 70% 30%;
+  --secondary: 174 65% 59%; /* #4ECDC4 */
+  --secondary-foreground: 0 0% 100%;
+  --accent: 42 100% 70%; /* #FFD166 */
+  --accent-foreground: 24 9.8% 10%;
   --success: 160 64% 45.5%; /* #20C997 */
   --warning: 26 100% 53.5%; /* #FD7E14 */
   --destructive: 354 70% 54%;
@@ -130,12 +130,12 @@
   --card-foreground: 213 31% 91%; /* #e1e7ef - Card text */
   --border: 215 16% 27%; /* #4a5568 - Subtle border */
   --input: 215 25% 27%; /* #4a5568 - Input background */
-  --primary: 16 100% 75%; /* Lighter coral for dark mode */
+  --primary: 354 100% 70%;
   --primary-foreground: 0 0% 100%;
-  --secondary: 24 50% 20%; /* Dark coral secondary */
-  --secondary-foreground: 24 80% 90%;
-  --accent: 45 60% 25%; /* Dark orange accent */
-  --accent-foreground: 45 80% 85%;
+  --secondary: 174 65% 59%;
+  --secondary-foreground: 0 0% 100%;
+  --accent: 42 100% 70%;
+  --accent-foreground: 0 0% 100%;
   --success: 160 64% 45.5%;
   --warning: 26 100% 53.5%;
   --destructive: 0 62.8% 30.6%;

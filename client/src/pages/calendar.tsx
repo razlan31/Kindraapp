@@ -121,7 +121,7 @@ export default function Calendar() {
   // Filter states for different entry types
   const [filters, setFilters] = useState({
     positive: true,
-    intimacy: true,
+    sex: true,
     neutral: true,
     negative: true,
     conflict: true,
@@ -350,7 +350,7 @@ export default function Calendar() {
     
     // Check different moment types
     const isConflict = moment.tags?.includes('Conflict') || moment.emoji === '⚡';
-    const isIntimacy = moment.tags?.includes('Intimacy') || moment.isIntimate || moment.emoji === '💕';
+    const isIntimacy = moment.tags?.includes('Sex') || moment.isIntimate || moment.emoji === '💕';
     const isPlan = moment.tags?.includes('Plan') || moment.emoji === '📅';
     const isMilestone = moment.isMilestone || moment.tags?.includes('Milestone') || moment.emoji === '🏆' || (moment as any).isBirthday;
     
@@ -359,8 +359,8 @@ export default function Calendar() {
       console.log(`Filtered out moment ${moment.id} - conflict filter off`);
       return false;
     }
-    if (isIntimacy && !filters.intimacy) {
-      console.log(`Filtered out moment ${moment.id} - intimacy filter off`);
+    if (isIntimacy && !filters.sex) {
+      console.log(`Filtered out moment ${moment.id} - sex filter off`);
       return false;
     }
     if (isPlan && !filters.plan) {
@@ -759,7 +759,7 @@ export default function Calendar() {
                       </div>
                       <div className="flex items-center gap-2">
                         <span className="text-sm">💕</span>
-                        <span>Intimacy</span>
+                        <span>Sex</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <span className="text-sm text-purple-500">📅</span>
@@ -850,13 +850,13 @@ export default function Calendar() {
                       </div>
                       <div className="flex items-center space-x-2">
                         <Checkbox
-                          id="intimacy"
-                          checked={filters.intimacy}
+                          id="sex"
+                          checked={filters.sex}
                           onCheckedChange={(checked) => 
-                            setFilters(prev => ({ ...prev, intimacy: !!checked }))
+                            setFilters(prev => ({ ...prev, sex: !!checked }))
                           }
                         />
-                        <label htmlFor="intimacy" className="text-xs cursor-pointer">Intimacy</label>
+                        <label htmlFor="sex" className="text-xs cursor-pointer">Sex</label>
                       </div>
                       <div className="flex items-center space-x-2">
                         <Checkbox
@@ -1339,7 +1339,7 @@ export default function Calendar() {
               variant="outline"
             >
               <div className="text-lg mb-1">💕</div>
-              <span>Intimacy</span>
+              <span>Sex</span>
             </Button>
             <Button 
               size="sm" 

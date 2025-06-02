@@ -415,8 +415,8 @@ function generateDataInsights(connections: Connection[], moments: Moment[], user
       const connectionName = connectionData?.name || "a connection";
       
       insights.push({
-        title: "High Intimacy Awareness",
-        description: `${Math.round(intimacyRatio * 100)}% of moments include intimacy. Your strongest emotional bond appears to be with ${connectionName}. Continue nurturing deep connections while maintaining healthy boundaries.`,
+        title: "High Sexual Connection Awareness",
+        description: `${Math.round(intimacyRatio * 100)}% of moments include sexual connection. Your strongest emotional bond appears to be with ${connectionName}. Continue nurturing deep connections while maintaining healthy boundaries.`,
         type: 'positive',
         confidence: 80,
         icon: <Heart className="h-4 w-4 text-pink-600" />,

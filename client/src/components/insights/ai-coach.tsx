@@ -415,7 +415,7 @@ function generatePersonalizedResponse(
   // Default response for other questions
   return `Based on your relationship data, I notice you value ${
     connections.length > 3 
-      ? 'having multiple connections at different levels of intimacy' 
+      ? 'having multiple connections at different levels of closeness' 
       : 'a smaller, potentially closer circle of relationships'
   }. When facing challenges, try reflecting on your patterns: What attracts you initially? What causes distance over time? What emotions arise most frequently? Building self-awareness through consistent tracking will help you create healthier relationship dynamics that align with your authentic needs.`;
 }

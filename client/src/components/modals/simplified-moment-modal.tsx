@@ -356,7 +356,7 @@ export function MomentModal() {
       if (activityType === 'conflict') {
         tags = ['Conflict'];
       } else if (activityType === 'intimacy') {
-        tags = ['Intimacy'];
+        tags = ['Sex'];
         isIntimate = true;
       }
       // For regular moments (activityType === 'moment'), don't add any default tags

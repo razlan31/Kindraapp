@@ -11,7 +11,7 @@ interface TagSelectorProps {
 const tagCategories = [
   {
     name: "Type",
-    tags: ["Positive", "Negative", "Neutral", "Conflict", "Intimacy"]
+    tags: ["Positive", "Negative", "Neutral", "Conflict", "Sex"]
   },
   {
     name: "Connection",

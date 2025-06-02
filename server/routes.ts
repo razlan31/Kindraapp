@@ -1521,7 +1521,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           thisWeek.setHours(0, 0, 0, 0);
           
           const intimateThisWeek = moments.filter(m => 
-            (m.isIntimate || m.tags?.includes('Intimacy')) &&
+            (m.isIntimate || m.tags?.includes('Sex')) &&
             m.createdAt && new Date(m.createdAt) >= thisWeek
           ).length;
           if (intimateThisWeek >= criteria.intimateMomentsThisWeek) isEarned = true;
@@ -1533,7 +1533,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           thisMonth.setHours(0, 0, 0, 0);
           
           const intimateThisMonth = moments.filter(m => 
-            (m.isIntimate || m.tags?.includes('Intimacy')) &&
+            (m.isIntimate || m.tags?.includes('Sex')) &&
             m.createdAt && new Date(m.createdAt) >= thisMonth
           ).length;
           if (intimateThisMonth >= criteria.intimateMomentsThisMonth) isEarned = true;
@@ -2195,7 +2195,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           emoji: "💕",
           content: "Shared vulnerable stories about our families - felt so emotionally connected",
           title: "Emotional Intimacy",
-          tags: ["Intimacy", "Vulnerability", "Connection"],
+          tags: ["Sex", "Vulnerability", "Connection"],
           isPrivate: true,
           isIntimate: true,
           intimacyRating: "medium",
@@ -2214,7 +2214,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           emoji: "🔥",
           content: "First time being physically intimate - beautiful and meaningful",
           title: "Physical Intimacy Milestone",
-          tags: ["Intimacy", "Physical", "Milestone"],
+          tags: ["Sex", "Physical", "Milestone"],
           isPrivate: true,
           isIntimate: true,
           intimacyRating: "high",
