@@ -16,7 +16,7 @@ import SimpleConnectionCreate from "./pages/simple-connection-create";
 import SimpleForm from "./pages/simple-form";
 import Activities from "@/pages/activities";
 import Calendar from "@/pages/calendar";
-import Insights from "@/pages/insights";
+import InsightsNew from "@/pages/insights-new";
 import Profile from "@/pages/profile";
 import Settings from "@/pages/settings";
 import CycleTracking from "@/pages/cycle-tracking";
@@ -52,7 +52,7 @@ function Router() {
     <Switch>
       <Route path="/auth/login" component={Login} />
       <Route path="/auth/register" component={Register} />
-      <Route path="/" component={Insights} />
+      <Route path="/" component={InsightsNew} />
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/connections" component={Connections} />
       <Route path="/connections/add" component={ConnectionsFormNew} />
@@ -65,7 +65,7 @@ function Router() {
       <Route path="/activities" component={Activities} />
       <Route path="/calendar" component={Calendar} />
       <Route path="/badges" component={Badges} />
-      <Route path="/insights" component={Insights} />
+      <Route path="/insights" component={InsightsNew} />
       <Route path="/profile" component={Profile} />
       <Route path="/settings" component={Settings} />
       <Route path="/cycle-tracking" component={CycleTracking} />

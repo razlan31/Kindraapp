@@ -218,31 +218,23 @@ export default function Insights() {
           </div>
         </section>
 
-        {moments.length > 0 ? (
-          <Tabs defaultValue="coach" className="w-full">
-            <div className="px-4">
-              <TabsList className="grid w-full grid-cols-5">
-                <TabsTrigger value="coach">
-                  <Sparkles className="h-4 w-4 mr-1" /> Coach
-                </TabsTrigger>
-                <TabsTrigger value="emotions">
-                  <Heart className="h-4 w-4 mr-1" /> Emotions
-                </TabsTrigger>
-                <TabsTrigger value="health">
-                  <Zap className="h-4 w-4 mr-1" /> Health
-                </TabsTrigger>
-                <TabsTrigger value="zodiac">
-                  <Star className="h-4 w-4 mr-1" /> Zodiac
-                </TabsTrigger>
-                <TabsTrigger value="patterns">
-                  <Brain className="h-4 w-4 mr-1" /> Patterns
-                </TabsTrigger>
-              </TabsList>
-            </div>
+        {/* AI Insights and Advice */}
+        <section className="px-4 mb-6">
+          <Tabs defaultValue="insights" className="w-full">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="insights">
+                <TrendingUp className="h-4 w-4 mr-1" /> Insights
+              </TabsTrigger>
+              <TabsTrigger value="advice">
+                <MessageCircle className="h-4 w-4 mr-1" /> Coach
+              </TabsTrigger>
+              <TabsTrigger value="analytics">
+                <BarChart3 className="h-4 w-4 mr-1" /> Analytics
+              </TabsTrigger>
+            </TabsList>
 
-            {/* AI Coach Tab */}
-            <TabsContent value="coach" className="px-4 py-4">
-              <AICoach 
+            <TabsContent value="insights" className="py-4">
+              <AIInsights 
                 connections={connections} 
                 moments={moments} 
                 userData={{
@@ -252,145 +244,86 @@ export default function Insights() {
               />
             </TabsContent>
 
-            {/* Emotions Tab */}
-            <TabsContent value="emotions" className="px-4 py-4">
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-lg">Emotional Analysis</CardTitle>
-                  <CardDescription>
-                    Your most common emotional responses
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {emotionData.length > 0 ? (
-                    <div className="h-64">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <BarChart
-                          data={emotionData}
-                          margin={{ top: 20, right: 10, left: 10, bottom: 20 }}
-                        >
-                          <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                          <XAxis dataKey="emoji" />
-                          <YAxis />
-                          <Tooltip 
-                            formatter={(value) => [`${value} moments`, 'Frequency']}
-                            labelFormatter={(label) => `Emoji: ${label}`}
-                          />
-                          <Bar dataKey="count" fill="hsl(var(--primary))" />
-                        </BarChart>
-                      </ResponsiveContainer>
-                    </div>
-                  ) : (
-                    <p className="text-center py-10 text-neutral-500">Not enough data yet</p>
-                  )}
-                </CardContent>
-              </Card>
-
-              <Card className="mt-4">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-lg">Relationship Stages</CardTitle>
-                  <CardDescription>
-                    Distribution of your connections by stage
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {relationshipStageData.length > 0 ? (
-                    <div className="h-64">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <PieChart>
-                          <Pie
-                            data={relationshipStageData}
-                            cx="50%"
-                            cy="50%"
-                            labelLine={false}
-                            outerRadius={80}
-                            fill="#8884d8"
-                            dataKey="value"
-                            label={({ stage, percent }) => `${stage} ${(percent * 100).toFixed(0)}%`}
-                          >
-                            {relationshipStageData.map((entry, index) => (
-                              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                            ))}
-                          </Pie>
-                          <Tooltip />
-                          <Legend />
-                        </PieChart>
-                      </ResponsiveContainer>
-                    </div>
-                  ) : (
-                    <p className="text-center py-10 text-neutral-500">Not enough data yet</p>
-                  )}
-                </CardContent>
-              </Card>
+            <TabsContent value="advice" className="py-4">
+              <AIAdvice 
+                connections={connections} 
+                moments={moments} 
+                userData={{
+                  zodiacSign: user?.zodiacSign || undefined,
+                  loveLanguage: user?.loveLanguage || undefined
+                }}
+              />
             </TabsContent>
 
-            {/* Relationship Health Tab */}
-            <TabsContent value="health" className="px-4 py-4">
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-lg">Relationship Health</CardTitle>
-                  <CardDescription>
-                    Connection strength and growth patterns
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {connectionStrengths.slice(0, 3).map((connection) => (
-                      <div key={connection.id} className="p-3 bg-neutral-50 dark:bg-neutral-800 rounded-lg">
-                        <div className="flex justify-between items-center mb-2">
-                          <span className="font-medium">{connection.name}</span>
-                          <span className="text-sm font-semibold text-primary">
-                            {connection.healthScore}% Health Score
-                          </span>
+            <TabsContent value="analytics" className="py-4">
+              {moments.length > 0 ? (
+                <div className="space-y-6">
+                  {/* Emotional Analysis */}
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-lg">Emotional Analysis</CardTitle>
+                      <CardDescription>
+                        Your most common emotional responses
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      {emotionData.length > 0 ? (
+                        <div className="h-64">
+                          <ResponsiveContainer width="100%" height="100%">
+                            <BarChart
+                              data={emotionData}
+                              margin={{ top: 20, right: 10, left: 10, bottom: 20 }}
+                            >
+                              <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                              <XAxis dataKey="emoji" />
+                              <YAxis />
+                              <Tooltip 
+                                formatter={(value) => [`${value} moments`, 'Frequency']}
+                                labelFormatter={(label) => `Emoji: ${label}`}
+                              />
+                              <Bar dataKey="count" fill="hsl(var(--primary))" />
+                            </BarChart>
+                          </ResponsiveContainer>
                         </div>
-                        <div className="text-xs text-neutral-600 dark:text-neutral-400">
-                          {connection.positivePatterns} positive patterns out of {connection.totalMoments} moments
-                        </div>
-                        <div className="w-full bg-neutral-200 dark:bg-neutral-700 rounded-full h-2 mt-2">
-                          <div 
-                            className="bg-primary h-2 rounded-full transition-all duration-300" 
-                            style={{ width: `${connection.healthScore}%` }}
-                          />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
+                      ) : (
+                        <p className="text-center py-10 text-neutral-500">Not enough data yet</p>
+                      )}
+                    </CardContent>
+                  </Card>
 
-              <Card className="mt-4">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-lg">Moment Tags</CardTitle>
-                  <CardDescription>
-                    Most common tags in your logged moments
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {tagData.length > 0 ? (
-                    <div className="h-64">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <BarChart
-                          data={tagData.slice(0, 5)}
-                          layout="vertical"
-                          margin={{ top: 5, right: 5, left: 5, bottom: 5 }}
-                        >
-                          <CartesianGrid strokeDasharray="3 3" horizontal={false} />
-                          <XAxis type="number" />
-                          <YAxis 
-                            type="category" 
-                            dataKey="tag"
-                            width={100}
-                          />
-                          <Tooltip 
-                            formatter={(value) => [`${value} moments`, 'Count']}
-                          />
-                          <Bar 
-                            dataKey="count" 
-                            fill="hsl(var(--primary))" 
-                          />
-                        </BarChart>
-                      </ResponsiveContainer>
-                    </div>
+                  {/* Relationship Health */}
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-lg">Relationship Health</CardTitle>
+                      <CardDescription>
+                        Connection strength and growth patterns
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        {connectionStrengths.slice(0, 3).map((connection) => (
+                          <div key={connection.id} className="p-3 bg-neutral-50 dark:bg-neutral-800 rounded-lg">
+                            <div className="flex justify-between items-center mb-2">
+                              <span className="font-medium">{connection.name}</span>
+                              <span className="text-sm font-semibold text-primary">
+                                {connection.healthScore}% Health Score
+                              </span>
+                            </div>
+                            <div className="text-xs text-neutral-600 dark:text-neutral-400">
+                              {connection.positivePatterns} positive patterns out of {connection.totalMoments} moments
+                            </div>
+                            <div className="w-full bg-neutral-200 dark:bg-neutral-700 rounded-full h-2 mt-2">
+                              <div 
+                                className="bg-primary h-2 rounded-full transition-all duration-300" 
+                                style={{ width: `${connection.healthScore}%` }}
+                              />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
                   ) : (
                     <p className="text-center py-10 text-neutral-500">No tags yet</p>
                   )}
