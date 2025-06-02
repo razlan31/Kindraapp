@@ -10,6 +10,7 @@ import bcrypt from "bcryptjs";
 import session from "express-session";
 import MemoryStore from "memorystore";
 import Stripe from "stripe";
+import { aiCoach, type RelationshipContext } from "./ai-relationship-coach";
 
 // Initialize Stripe
 if (!process.env.STRIPE_SECRET_KEY) {
@@ -2001,6 +2002,89 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error: any) {
       console.error("Error updating menstrual cycle:", error);
       res.status(500).json({ error: error.message });
+    }
+  });
+
+  // AI Chat endpoints
+  app.post("/api/ai/chat", isAuthenticated, async (req: Request, res: Response) => {
+    try {
+      const userId = req.session.userId as number;
+      const { message } = req.body;
+
+      if (!message || typeof message !== 'string') {
+        return res.status(400).json({ message: "Message is required" });
+      }
+
+      // Gather user context for AI
+      const user = await storage.getUser(userId);
+      const connections = await storage.getConnectionsByUserId(userId);
+      const recentMoments = await storage.getMomentsByUserId(userId, 30);
+
+      // Calculate connection health scores
+      const connectionHealthScores = connections.map(connection => {
+        const connectionMoments = recentMoments.filter(m => m.connectionId === connection.id);
+        const positiveEmojis = ['😍', '❤️', '😊', '🥰', '💖', '✨', '🔥', '💕'];
+        const positiveMoments = connectionMoments.filter(m => 
+          positiveEmojis.includes(m.emoji) || m.tags?.includes('Green Flag')
+        );
+        
+        const healthScore = connectionMoments.length > 0 
+          ? Math.round((positiveMoments.length / connectionMoments.length) * 100)
+          : 50;
+
+        return {
+          name: connection.name,
+          healthScore,
+          totalMoments: connectionMoments.length,
+          positivePatterns: positiveMoments.length
+        };
+      });
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const context: RelationshipContext = {
+        user,
+        connections,
+        recentMoments,
+        connectionHealthScores
+      };
+
+      // Generate AI response
+      const aiResponse = await aiCoach.generateResponse(userId, message, context);
+
+      res.json({ 
+        message: aiResponse,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error("Error in AI chat:", error);
+      res.status(500).json({ message: "Failed to generate AI response" });
+    }
+  });
+
+  app.get("/api/ai/conversation", isAuthenticated, async (req: Request, res: Response) => {
+    try {
+      const userId = req.session.userId as number;
+      const conversation = aiCoach.getConversationHistory(userId);
+      
+      res.json({ conversation });
+    } catch (error) {
+      console.error("Error fetching conversation:", error);
+      res.status(500).json({ message: "Failed to fetch conversation" });
+    }
+  });
+
+  app.delete("/api/ai/conversation", isAuthenticated, async (req: Request, res: Response) => {
+    try {
+      const userId = req.session.userId as number;
+      aiCoach.clearConversation(userId);
+      
+      res.json({ message: "Conversation cleared" });
+    } catch (error) {
+      console.error("Error clearing conversation:", error);
+      res.status(500).json({ message: "Failed to clear conversation" });
     }
   });
 
