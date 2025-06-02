@@ -18,6 +18,7 @@ interface AIAdviceProps {
 export function AIAdvice({ connections, moments, userData }: AIAdviceProps) {
   const [question, setQuestion] = useState("");
   const [currentResponse, setCurrentResponse] = useState<string>("");
+  const [currentQuestion, setCurrentQuestion] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [suggestionIndex, setSuggestionIndex] = useState(0);
 
@@ -36,6 +37,7 @@ export function AIAdvice({ connections, moments, userData }: AIAdviceProps) {
     // Generate contextual response based on user's data and question
     const response = generateAdviceResponse(question, connections, moments, userData);
     
+    setCurrentQuestion(question);
     setCurrentResponse(response);
     setQuestion("");
     setIsLoading(false);
@@ -43,10 +45,16 @@ export function AIAdvice({ connections, moments, userData }: AIAdviceProps) {
 
   return (
     <div className="space-y-4">
-      {/* Current Response */}
+      {/* Current Question & Response */}
       {currentResponse && (
-        <div className="bg-neutral-50 dark:bg-neutral-800 p-4 rounded-lg">
-          <p className="text-sm leading-relaxed">{currentResponse}</p>
+        <div className="space-y-3">
+          <div className="bg-primary/5 p-3 rounded-lg border-l-2 border-primary/20">
+            <p className="text-sm font-medium text-muted-foreground mb-1">You asked:</p>
+            <p className="text-sm">{currentQuestion}</p>
+          </div>
+          <div className="bg-neutral-50 dark:bg-neutral-800 p-4 rounded-lg">
+            <p className="text-sm leading-relaxed">{currentResponse}</p>
+          </div>
         </div>
       )}
 
