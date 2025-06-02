@@ -96,204 +96,94 @@ export default function InsightsNew() {
       <Header />
 
       <main className="flex-1 overflow-y-auto pb-20">
-        {/* Welcome Section */}
-        <section className="px-4 pt-5 pb-4">
-          <div className="flex items-center justify-between mb-2">
-            <div>
-              <h1 className="text-2xl font-heading font-bold">Welcome back{user?.displayName ? `, ${user.displayName}` : ''}</h1>
-              <p className="text-neutral-600 dark:text-neutral-400 text-sm">
-                Your relationship insights and patterns
-              </p>
-            </div>
-            <Button
-              onClick={() => window.location.href = "/dashboard"}
-              size="sm"
-              className="gap-2"
-            >
-              <Plus className="h-4 w-4" />
-              Track Moment
-            </Button>
-          </div>
+        {/* AI Coach Section */}
+        <section className="px-4 pt-5 pb-6">
+          <AIAdvice 
+            connections={connections} 
+            moments={moments} 
+            userData={{
+              zodiacSign: user?.zodiacSign || undefined,
+              loveLanguage: user?.loveLanguage || undefined
+            }}
+          />
         </section>
 
-        {/* Quick Stats */}
+        {/* AI Insights Section */}
         <section className="px-4 mb-6">
-          <div className="grid grid-cols-3 gap-3">
-            <Card className="p-3">
-              <div className="text-center">
-                <div className="flex items-center justify-center mb-1">
-                  <Users className="h-5 w-5 text-primary" />
-                </div>
-                <div className="text-lg font-semibold">{connections.length}</div>
-                <div className="text-xs text-muted-foreground">Connections</div>
-              </div>
-            </Card>
-            <Card className="p-3">
-              <div className="text-center">
-                <div className="flex items-center justify-center mb-1">
-                  <Activity className="h-5 w-5 text-green-600" />
-                </div>
-                <div className="text-lg font-semibold">{moments.length}</div>
-                <div className="text-xs text-muted-foreground">Moments</div>
-              </div>
-            </Card>
-            <Card className="p-3">
-              <div className="text-center">
-                <div className="flex items-center justify-center mb-1">
-                  <TrendingUp className="h-5 w-5 text-blue-600" />
-                </div>
-                <div className="text-lg font-semibold">{trackingDays}</div>
-                <div className="text-xs text-muted-foreground">Days Tracking</div>
-              </div>
-            </Card>
-          </div>
+          <AIInsights 
+            connections={connections} 
+            moments={moments} 
+            userData={{
+              zodiacSign: user?.zodiacSign || undefined,
+              loveLanguage: user?.loveLanguage || undefined
+            }}
+          />
         </section>
 
-        {/* Quick Actions */}
+        {/* Analytics Section */}
         <section className="px-4 mb-6">
-          <div className="grid grid-cols-2 gap-3">
-            <Button
-              variant="outline"
-              onClick={() => window.location.href = "/connections"}
-              className="flex items-center gap-2 h-12"
-            >
-              <Users className="h-4 w-4" />
-              Connections
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => window.location.href = "/calendar"}
-              className="flex items-center gap-2 h-12"
-            >
-              <Calendar className="h-4 w-4" />
-              Calendar
-            </Button>
-          </div>
-        </section>
-
-        {/* AI Insights and Advice */}
-        <section className="px-4 mb-6">
-          <Tabs defaultValue="insights" className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="insights">
-                <TrendingUp className="h-4 w-4 mr-1" /> Insights
-              </TabsTrigger>
-              <TabsTrigger value="advice">
-                <MessageCircle className="h-4 w-4 mr-1" /> Coach
-              </TabsTrigger>
-              <TabsTrigger value="analytics">
-                <BarChart3 className="h-4 w-4 mr-1" /> Analytics
-              </TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="insights" className="py-4">
-              <AIInsights 
-                connections={connections} 
-                moments={moments} 
-                userData={{
-                  zodiacSign: user?.zodiacSign || undefined,
-                  loveLanguage: user?.loveLanguage || undefined
-                }}
-              />
-            </TabsContent>
-
-            <TabsContent value="advice" className="py-4">
-              <AIAdvice 
-                connections={connections} 
-                moments={moments} 
-                userData={{
-                  zodiacSign: user?.zodiacSign || undefined,
-                  loveLanguage: user?.loveLanguage || undefined
-                }}
-              />
-            </TabsContent>
-
-            <TabsContent value="analytics" className="py-4">
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="flex items-center gap-2">
+                <BarChart3 className="h-5 w-5" />
+                Analytics Overview
+              </CardTitle>
+              <CardDescription>
+                Charts and patterns from your relationship data
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
               {moments.length > 0 ? (
-                <div className="space-y-6">
+                <div className="space-y-4">
                   {/* Emotional Analysis */}
-                  <Card>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-lg">Emotional Analysis</CardTitle>
-                      <CardDescription>
-                        Your most common emotional responses
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      {emotionData.length > 0 ? (
-                        <div className="h-64">
-                          <ResponsiveContainer width="100%" height="100%">
-                            <BarChart
-                              data={emotionData}
-                              margin={{ top: 20, right: 10, left: 10, bottom: 20 }}
-                            >
-                              <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                              <XAxis dataKey="emoji" />
-                              <YAxis />
-                              <Tooltip 
-                                formatter={(value) => [`${value} moments`, 'Frequency']}
-                                labelFormatter={(label) => `Emoji: ${label}`}
-                              />
-                              <Bar dataKey="count" fill="hsl(var(--primary))" />
-                            </BarChart>
-                          </ResponsiveContainer>
-                        </div>
-                      ) : (
-                        <p className="text-center py-10 text-neutral-500">Not enough data yet</p>
-                      )}
-                    </CardContent>
-                  </Card>
+                  <div className="h-64">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart
+                        data={emotionData}
+                        margin={{ top: 20, right: 10, left: 10, bottom: 20 }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                        <XAxis dataKey="emoji" />
+                        <YAxis />
+                        <Tooltip 
+                          formatter={(value) => [`${value} moments`, 'Frequency']}
+                          labelFormatter={(label) => `Emoji: ${label}`}
+                        />
+                        <Bar dataKey="count" fill="hsl(var(--primary))" />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
 
-                  {/* Relationship Health */}
-                  <Card>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-lg">Relationship Health</CardTitle>
-                      <CardDescription>
-                        Connection strength and growth patterns
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-4">
-                        {connectionStrengths.slice(0, 3).map((connection) => (
-                          <div key={connection.id} className="p-3 bg-neutral-50 dark:bg-neutral-800 rounded-lg">
-                            <div className="flex justify-between items-center mb-2">
-                              <span className="font-medium">{connection.name}</span>
-                              <span className="text-sm font-semibold text-primary">
-                                {connection.healthScore}% Health Score
-                              </span>
-                            </div>
-                            <div className="text-xs text-neutral-600 dark:text-neutral-400">
-                              {connection.positivePatterns} positive patterns out of {connection.totalMoments} moments
-                            </div>
-                            <div className="w-full bg-neutral-200 dark:bg-neutral-700 rounded-full h-2 mt-2">
-                              <div 
-                                className="bg-primary h-2 rounded-full transition-all duration-300" 
-                                style={{ width: `${connection.healthScore}%` }}
-                              />
-                            </div>
-                          </div>
-                        ))}
+                  {/* Connection Health Summary */}
+                  <div className="grid grid-cols-1 gap-2">
+                    {connectionStrengths.slice(0, 3).map((connection) => (
+                      <div key={connection.id} className="p-3 bg-neutral-50 dark:bg-neutral-800 rounded-lg">
+                        <div className="flex justify-between items-center mb-1">
+                          <span className="font-medium text-sm">{connection.name}</span>
+                          <span className="text-xs font-semibold text-primary">
+                            {connection.healthScore}%
+                          </span>
+                        </div>
+                        <div className="w-full bg-neutral-200 dark:bg-neutral-700 rounded-full h-1">
+                          <div 
+                            className="bg-primary h-1 rounded-full transition-all duration-300" 
+                            style={{ width: `${connection.healthScore}%` }}
+                          />
+                        </div>
                       </div>
-                    </CardContent>
-                  </Card>
+                    ))}
+                  </div>
                 </div>
               ) : (
-                <div className="text-center py-10">
-                  <Heart className="h-12 w-12 mx-auto text-muted-foreground mb-2" />
-                  <h3 className="text-lg font-medium mb-1">Start Tracking</h3>
-                  <p className="text-sm text-muted-foreground mb-3">
-                    Track your first moment to see analytics and patterns
+                <div className="text-center py-6">
+                  <Heart className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
+                  <p className="text-sm text-muted-foreground">
+                    Track moments to see analytics
                   </p>
-                  <Button 
-                    onClick={() => window.location.href = "/dashboard"}
-                    size="sm"
-                  >
-                    Track Your First Moment
-                  </Button>
                 </div>
               )}
-            </TabsContent>
-          </Tabs>
+            </CardContent>
+          </Card>
         </section>
       </main>
 
