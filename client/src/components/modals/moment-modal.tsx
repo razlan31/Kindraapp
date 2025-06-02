@@ -300,9 +300,9 @@ export function MomentModal() {
                     />
                   </FormControl>
                   <div className="space-y-1 leading-none">
-                    <FormLabel>This is an intimate moment</FormLabel>
+                    <FormLabel>This is a sexual moment</FormLabel>
                     <FormDescription>
-                      Track intimate moments to identify patterns in your relationship
+                      Track sexual moments to identify patterns in your relationship
                     </FormDescription>
                   </div>
                 </FormItem>

@@ -759,7 +759,7 @@ export default function Calendar() {
                       </div>
                       <div className="flex items-center gap-2">
                         <span className="text-sm">💕</span>
-                        <span>Intimacy</span>
+                        <span>Sex</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <span className="text-sm text-purple-500">📅</span>
@@ -1339,7 +1339,7 @@ export default function Calendar() {
               variant="outline"
             >
               <div className="text-lg mb-1">💕</div>
-              <span>Intimacy</span>
+              <span>Sex</span>
             </Button>
             <Button 
               size="sm" 
