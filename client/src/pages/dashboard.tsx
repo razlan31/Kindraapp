@@ -76,6 +76,14 @@ export default function Dashboard() {
     connections
   });
 
+  // Force refetch moments if they're empty but user is loaded
+  useEffect(() => {
+    if (!loading && user && moments.length === 0 && !momentsLoading && !momentsError) {
+      console.log("Force refetching moments...");
+      refetchMoments();
+    }
+  }, [loading, user, moments.length, momentsLoading, momentsError, refetchMoments]);
+
   // Determine which connection to focus on - prioritize dashboard selection, then main focus
   const focusConnection = dashboardConnection || mainFocusConnection || null;
   
@@ -390,14 +398,27 @@ function MenstrualCycleTracker() {
               </p>
             </div>
             <div className="p-4">
-              <AIInsights 
-                connections={connections} 
-                moments={moments} 
-                userData={{
-                  zodiacSign: user?.zodiacSign || undefined,
-                  loveLanguage: user?.loveLanguage || undefined
-                }}
-              />
+              {momentsLoading ? (
+                <div className="text-center py-4">
+                  <div className="animate-pulse">
+                    <div className="h-4 bg-neutral-200 dark:bg-neutral-700 rounded w-3/4 mb-2"></div>
+                    <div className="h-3 bg-neutral-200 dark:bg-neutral-700 rounded w-1/2"></div>
+                  </div>
+                </div>
+              ) : momentsError ? (
+                <div className="text-center py-4 text-red-500">
+                  <p>Error loading insights: {String(momentsError)}</p>
+                </div>
+              ) : (
+                <AIInsights 
+                  connections={connections} 
+                  moments={moments} 
+                  userData={{
+                    zodiacSign: user?.zodiacSign || undefined,
+                    loveLanguage: user?.loveLanguage || undefined
+                  }}
+                />
+              )}
             </div>
           </div>
         </section>

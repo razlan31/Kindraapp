@@ -13,6 +13,14 @@ interface AIInsightsProps {
 }
 
 export function AIInsights({ connections, moments, userData }: AIInsightsProps) {
+  // Debug logging
+  console.log("AI Insights Debug:", {
+    connectionsLength: connections.length,
+    momentsLength: moments.length,
+    userData,
+    moments: moments.slice(0, 3) // Show first 3 moments for debugging
+  });
+
   // Generate data-driven insights
   const insights = generateDataInsights(connections, moments, userData);
 
