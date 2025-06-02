@@ -35,7 +35,7 @@ export default function Dashboard() {
   // Fetch recent moments
   const { data: moments = [], isLoading: momentsLoading, error: momentsError, refetch: refetchMoments } = useQuery<Moment[]>({
     queryKey: ["/api/moments"],
-    enabled: true,
+    enabled: !loading && !!user,
   });
 
   // Listen for moment creation and update events to refetch data immediately
@@ -71,7 +71,9 @@ export default function Dashboard() {
     momentsLength: moments.length, 
     momentsLoading,
     momentsError,
-    moments 
+    moments,
+    connectionsLength: connections.length,
+    connections
   });
 
   // Determine which connection to focus on - prioritize dashboard selection, then main focus
