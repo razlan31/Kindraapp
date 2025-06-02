@@ -95,9 +95,9 @@ export default function InsightsNew() {
     <div className="max-w-md mx-auto bg-white dark:bg-neutral-900 min-h-screen flex flex-col relative">
       <Header />
 
-      <main className="flex-1 overflow-y-auto pb-20">
+      <main className="flex-1 overflow-y-auto pb-20 px-4 pt-6">
         {/* AI Coach Section */}
-        <section className="px-4 pt-5 pb-6">
+        <div className="mb-8">
           <AIAdvice 
             connections={connections} 
             moments={moments} 
@@ -106,10 +106,10 @@ export default function InsightsNew() {
               loveLanguage: user?.loveLanguage || undefined
             }}
           />
-        </section>
+        </div>
 
         {/* AI Insights Section */}
-        <section className="px-4 mb-6">
+        <div className="mb-8">
           <AIInsights 
             connections={connections} 
             moments={moments} 
@@ -118,73 +118,58 @@ export default function InsightsNew() {
               loveLanguage: user?.loveLanguage || undefined
             }}
           />
-        </section>
+        </div>
 
         {/* Analytics Section */}
-        <section className="px-4 mb-6">
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="flex items-center gap-2">
-                <BarChart3 className="h-5 w-5" />
-                Analytics Overview
-              </CardTitle>
-              <CardDescription>
-                Charts and patterns from your relationship data
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {moments.length > 0 ? (
-                <div className="space-y-4">
-                  {/* Emotional Analysis */}
-                  <div className="h-64">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart
-                        data={emotionData}
-                        margin={{ top: 20, right: 10, left: 10, bottom: 20 }}
-                      >
-                        <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                        <XAxis dataKey="emoji" />
-                        <YAxis />
-                        <Tooltip 
-                          formatter={(value) => [`${value} moments`, 'Frequency']}
-                          labelFormatter={(label) => `Emoji: ${label}`}
-                        />
-                        <Bar dataKey="count" fill="hsl(var(--primary))" />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </div>
+        {moments.length > 0 && (
+          <div className="space-y-4">
+            {/* Emotional Analysis */}
+            <div className="bg-neutral-50 dark:bg-neutral-800 p-4 rounded-lg">
+              <h3 className="font-medium text-sm mb-3">Emotional Patterns</h3>
+              <div className="h-48">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={emotionData}
+                    margin={{ top: 10, right: 10, left: 10, bottom: 10 }}
+                  >
+                    <XAxis dataKey="emoji" />
+                    <YAxis hide />
+                    <Tooltip 
+                      formatter={(value) => [`${value} moments`, 'Frequency']}
+                      labelFormatter={(label) => `Emoji: ${label}`}
+                    />
+                    <Bar dataKey="count" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
 
-                  {/* Connection Health Summary */}
-                  <div className="grid grid-cols-1 gap-2">
-                    {connectionStrengths.slice(0, 3).map((connection) => (
-                      <div key={connection.id} className="p-3 bg-neutral-50 dark:bg-neutral-800 rounded-lg">
-                        <div className="flex justify-between items-center mb-1">
-                          <span className="font-medium text-sm">{connection.name}</span>
-                          <span className="text-xs font-semibold text-primary">
-                            {connection.healthScore}%
-                          </span>
-                        </div>
-                        <div className="w-full bg-neutral-200 dark:bg-neutral-700 rounded-full h-1">
+            {/* Connection Health Summary */}
+            {connectionStrengths.length > 0 && (
+              <div className="bg-neutral-50 dark:bg-neutral-800 p-4 rounded-lg">
+                <h3 className="font-medium text-sm mb-3">Connection Health</h3>
+                <div className="space-y-2">
+                  {connectionStrengths.slice(0, 3).map((connection) => (
+                    <div key={connection.id} className="flex items-center justify-between">
+                      <span className="text-sm">{connection.name}</span>
+                      <div className="flex items-center gap-2">
+                        <div className="w-16 bg-neutral-200 dark:bg-neutral-700 rounded-full h-1">
                           <div 
                             className="bg-primary h-1 rounded-full transition-all duration-300" 
                             style={{ width: `${connection.healthScore}%` }}
                           />
                         </div>
+                        <span className="text-xs text-muted-foreground w-8 text-right">
+                          {connection.healthScore}%
+                        </span>
                       </div>
-                    ))}
-                  </div>
+                    </div>
+                  ))}
                 </div>
-              ) : (
-                <div className="text-center py-6">
-                  <Heart className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
-                  <p className="text-sm text-muted-foreground">
-                    Track moments to see analytics
-                  </p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </section>
+              </div>
+            )}
+          </div>
+        )}
       </main>
 
       <BottomNavigation />

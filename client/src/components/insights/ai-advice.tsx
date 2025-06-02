@@ -36,85 +36,48 @@ export function AIAdvice({ connections, moments, userData }: AIAdviceProps) {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <MessageCircle className="h-5 w-5" />
-          AI Relationship Coach
-        </CardTitle>
-        <CardDescription>
-          Ask questions about your relationships and get personalized advice
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
-          {/* Quick contextual insights */}
-          {contextualAdvice.length > 0 && (
-            <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg">
-              <h4 className="font-medium text-sm mb-2 flex items-center gap-2">
-                <Lightbulb className="h-4 w-4" />
-                Based on your recent activity:
-              </h4>
-              <div className="space-y-2">
-                {contextualAdvice.map((advice, index) => (
-                  <p key={index} className="text-sm text-muted-foreground">
-                    {advice}
-                  </p>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Current Response */}
-          {currentResponse && (
-            <div className="bg-neutral-50 dark:bg-neutral-800 p-4 rounded-lg">
-              <p className="text-sm font-medium mb-2 flex items-center gap-2">
-                <MessageCircle className="h-4 w-4" />
-                AI Coach:
-              </p>
-              <p className="text-sm leading-relaxed">{currentResponse}</p>
-            </div>
-          )}
-
-          {/* Question input */}
-          <div className="space-y-2">
-            <Textarea
-              placeholder="Ask about your relationships... e.g., 'How can I improve communication with Jordan?' or 'What should I do when I'm feeling distant?'"
-              value={question}
-              onChange={(e) => setQuestion(e.target.value)}
-              className="min-h-[120px] resize-none"
-              rows={5}
-            />
-            <Button 
-              onClick={handleAskQuestion}
-              disabled={!question.trim() || isLoading}
-              className="w-full"
-            >
-              {isLoading ? "Thinking..." : "Ask AI Coach"}
-              <Send className="h-4 w-4 ml-2" />
-            </Button>
-          </div>
-
-          {/* Suggested questions */}
-          {!currentResponse && (
-            <div className="border-t pt-4">
-              <p className="text-sm font-medium mb-2">Try asking:</p>
-              <div className="space-y-1">
-                {getSuggestedQuestions(connections, moments).map((suggestedQ, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setQuestion(suggestedQ)}
-                    className="text-left text-sm text-muted-foreground hover:text-foreground transition-colors block w-full p-2 rounded hover:bg-neutral-100 dark:hover:bg-neutral-800"
-                  >
-                    {suggestedQ}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
+    <div className="space-y-4">
+      {/* Current Response */}
+      {currentResponse && (
+        <div className="bg-neutral-50 dark:bg-neutral-800 p-4 rounded-lg">
+          <p className="text-sm leading-relaxed">{currentResponse}</p>
         </div>
-      </CardContent>
-    </Card>
+      )}
+
+      {/* Question input */}
+      <div className="space-y-3">
+        <Textarea
+          placeholder="Ask about your relationships..."
+          value={question}
+          onChange={(e) => setQuestion(e.target.value)}
+          className="min-h-[120px] resize-none border-0 bg-neutral-50 dark:bg-neutral-800 focus:ring-1 focus:ring-primary"
+          rows={5}
+        />
+        <Button 
+          onClick={handleAskQuestion}
+          disabled={!question.trim() || isLoading}
+          className="w-full"
+          size="lg"
+        >
+          {isLoading ? "Thinking..." : "Ask"}
+        </Button>
+      </div>
+
+      {/* Suggested questions */}
+      {!currentResponse && (
+        <div className="space-y-2">
+          {getSuggestedQuestions(connections, moments).slice(0, 3).map((suggestedQ, index) => (
+            <button
+              key={index}
+              onClick={() => setQuestion(suggestedQ)}
+              className="text-left text-sm text-muted-foreground hover:text-foreground transition-colors block w-full p-3 rounded-lg bg-neutral-50 dark:bg-neutral-800 hover:bg-neutral-100 dark:hover:bg-neutral-700"
+            >
+              {suggestedQ}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
 

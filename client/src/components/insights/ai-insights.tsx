@@ -40,54 +40,36 @@ export function AIInsights({ connections, moments, userData }: AIInsightsProps) 
     );
   }
 
+  if (insights.length === 0) {
+    return null;
+  }
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <TrendingUp className="h-5 w-5" />
-          AI Insights
-        </CardTitle>
-        <CardDescription>
-          Data-driven patterns from your relationship tracking
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
-          {insights.map((insight, index) => (
-            <div 
-              key={index} 
-              className="bg-neutral-50 dark:bg-neutral-800 p-3 rounded-lg"
-            >
-              <div className="flex gap-3 items-start">
-                <div className={`p-2 rounded-full ${insight.type === 'positive' ? 'bg-green-100 dark:bg-green-900' : 
-                  insight.type === 'warning' ? 'bg-yellow-100 dark:bg-yellow-900' : 
-                  'bg-blue-100 dark:bg-blue-900'}`}>
-                  {insight.icon}
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1">
-                    <h4 className="font-medium text-sm">{insight.title}</h4>
-                    <Badge variant={insight.type === 'positive' ? 'default' : 'secondary'} className="text-xs">
-                      {insight.confidence}% confidence
-                    </Badge>
-                  </div>
-                  <p className="text-sm text-muted-foreground">{insight.description}</p>
-                  {insight.dataPoints && (
-                    <div className="mt-2 flex gap-2 text-xs text-muted-foreground">
-                      {insight.dataPoints.map((point, i) => (
-                        <span key={i} className="bg-white dark:bg-neutral-700 px-2 py-1 rounded">
-                          {point}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
+    <div className="space-y-3">
+      {insights.map((insight, index) => (
+        <div 
+          key={index} 
+          className="bg-neutral-50 dark:bg-neutral-800 p-4 rounded-lg"
+        >
+          <div className="flex items-center gap-2 mb-2">
+            <h4 className="font-medium text-sm">{insight.title}</h4>
+            <span className="text-xs text-muted-foreground">
+              {insight.confidence}%
+            </span>
+          </div>
+          <p className="text-sm text-muted-foreground leading-relaxed">{insight.description}</p>
+          {insight.dataPoints && (
+            <div className="mt-2 flex gap-2 text-xs text-muted-foreground">
+              {insight.dataPoints.map((point, i) => (
+                <span key={i} className="bg-white dark:bg-neutral-700 px-2 py-1 rounded text-xs">
+                  {point}
+                </span>
+              ))}
             </div>
-          ))}
+          )}
         </div>
-      </CardContent>
-    </Card>
+      ))}
+    </div>
   );
 }
 
