@@ -35,9 +35,10 @@ export default function Dashboard() {
   // Fetch recent moments
   const { data: moments = [], isLoading: momentsLoading, error: momentsError, refetch: refetchMoments } = useQuery<Moment[]>({
     queryKey: ["/api/moments"],
-    enabled: !!user,
+    enabled: true,
     staleTime: 0,
     refetchOnMount: true,
+    refetchOnWindowFocus: false,
   });
 
   // Listen for moment creation and update events to refetch data immediately
