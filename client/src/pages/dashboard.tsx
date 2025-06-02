@@ -433,10 +433,24 @@ function MenstrualCycleTracker() {
                 <Button 
                   variant="outline" 
                   size="sm" 
-                  onClick={() => refetchMoments()}
+                  onClick={() => {
+                    console.log("Manual refresh clicked, user:", user?.id);
+                    if (user?.id) {
+                      console.log("Manually fetching moments...");
+                      setMomentsLoading(true);
+                      fetch("/api/moments")
+                        .then(res => res.json())
+                        .then(data => {
+                          console.log("Manual fetch success:", data.length, "moments");
+                          setMoments(data);
+                        })
+                        .catch(err => console.error("Manual fetch error:", err))
+                        .finally(() => setMomentsLoading(false));
+                    }
+                  }}
                   disabled={momentsLoading}
                 >
-                  {momentsLoading ? "Loading..." : "Refresh Data"}
+                  {momentsLoading ? "Loading..." : "Load Moments"}
                 </Button>
               </div>
               <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
