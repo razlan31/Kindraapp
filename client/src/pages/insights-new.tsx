@@ -26,7 +26,8 @@ import {
   TrendingUp,
   Users,
   MessageCircle,
-  Activity
+  Activity,
+  Sparkles
 } from "lucide-react";
 
 export default function InsightsNew() {
@@ -111,18 +112,46 @@ export default function InsightsNew() {
         <AIChat />
 
         {/* AI Insights Section */}
-        <AIInsights 
-          connections={connections} 
-          moments={moments} 
-          userData={{
-            zodiacSign: user?.zodiacSign || undefined,
-            loveLanguage: user?.loveLanguage || undefined
-          }}
-        />
+        <div className="space-y-4">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl">
+              <Sparkles className="h-5 w-5 text-white" />
+            </div>
+            <div>
+              <h2 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                Luna's Relationship Insights
+              </h2>
+              <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                AI-powered analysis of your relationship patterns
+              </p>
+            </div>
+          </div>
+          <AIInsights 
+            connections={connections} 
+            moments={moments} 
+            userData={{
+              zodiacSign: user?.zodiacSign || undefined,
+              loveLanguage: user?.loveLanguage || undefined
+            }}
+          />
+        </div>
 
         {/* Advanced Analytics Dashboard */}
         {moments.length > 0 && (
           <div className="space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl">
+                <BarChart3 className="h-5 w-5 text-white" />
+              </div>
+              <div>
+                <h2 className="text-xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+                  Visual Analytics Dashboard
+                </h2>
+                <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                  Data-driven patterns from your relationship tracking
+                </p>
+              </div>
+            </div>
             {/* Emotional Patterns - Enhanced Visual */}
             <div className="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 rounded-xl p-4 border border-emerald-100 dark:border-emerald-800">
               <div className="flex items-center justify-between mb-3">
