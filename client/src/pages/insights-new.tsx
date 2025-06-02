@@ -32,6 +32,8 @@ import {
 export default function InsightsNew() {
   const { user } = useAuth();
 
+  console.log("InsightsNew - user:", !!user, "user ID:", user?.id);
+
   // Fetch connections
   const { data: connections = [] } = useQuery<Connection[]>({
     queryKey: ["/api/connections"],
@@ -39,9 +41,16 @@ export default function InsightsNew() {
   });
 
   // Fetch moments
-  const { data: moments = [] } = useQuery<Moment[]>({
+  const { data: moments = [], isLoading: momentsLoading, error: momentsError } = useQuery<Moment[]>({
     queryKey: ["/api/moments"],
     enabled: !!user,
+  });
+
+  console.log("InsightsNew - moments query:", {
+    momentsLength: moments.length,
+    momentsLoading,
+    momentsError,
+    userEnabled: !!user
   });
 
   // Prepare emotion data for charts

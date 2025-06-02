@@ -20,6 +20,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
 export default function Dashboard() {
+  console.log("Dashboard component rendered");
   const { user, loading } = useAuth();
   const { openMomentModal, openConnectionModal, setSelectedConnection } = useModal();
   const [insight, setInsight] = useState<string>("");
@@ -66,7 +67,7 @@ export default function Dashboard() {
     } else {
       console.log("Dashboard useEffect - conditions not met:", { loading, userId: user?.id });
     }
-  }, [user?.id, loading, refetchMoments]);
+  }, [user?.id, loading]);
 
   // Listen for moment creation and update events to refetch data immediately
   useEffect(() => {
