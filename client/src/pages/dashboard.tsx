@@ -346,7 +346,7 @@ function MenstrualCycleTracker() {
 }
 
   return (
-    <div className="max-w-md mx-auto bg-white dark:bg-neutral-900 min-h-screen flex flex-col relative">
+    <div className="max-w-md mx-auto bg-gradient-to-br from-purple-50 via-pink-50 to-white dark:from-neutral-900 dark:via-purple-900/20 dark:to-neutral-800 min-h-screen flex flex-col relative">
       <Header />
 
       <main className="flex-1 overflow-y-auto pb-20">
