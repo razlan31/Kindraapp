@@ -191,6 +191,29 @@ export function ConnectionDetailsModal({ isOpen, onClose, connection }: Connecti
             </div>
           </Card>
 
+          {/* AI Relationship Insight */}
+          <MiniInsight 
+            context="connection-profile"
+            data={{
+              relationshipStage: connection.relationshipStage,
+              loveLanguage: connection.loveLanguage,
+              zodiacSign: connection.zodiacSign,
+              recentMoments: recentMoments.map(m => ({
+                emoji: m.emoji,
+                content: m.content,
+                title: m.title,
+                isIntimate: m.isIntimate,
+                tags: m.tags
+              })),
+              totalMoments,
+              positiveMoments,
+              conflictMoments,
+              intimateMoments,
+              connectionName: connection.name
+            }}
+            className="mx-4"
+          />
+
           {/* Recent Activity */}
           {recentMoments.length > 0 && (
             <Card className="p-4">
