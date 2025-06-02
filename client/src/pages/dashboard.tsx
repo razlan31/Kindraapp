@@ -63,6 +63,8 @@ export default function Dashboard() {
     if (!loading && user?.id) {
       console.log("Calling refetchMoments for user:", user.id);
       refetchMoments();
+    } else {
+      console.log("Dashboard useEffect - conditions not met:", { loading, userId: user?.id });
     }
   }, [user?.id, loading, refetchMoments]);
 
