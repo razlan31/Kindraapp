@@ -27,8 +27,15 @@ export function AIAdvice({ connections, moments, userData }: AIAdviceProps) {
     
     setIsLoading(true);
     
+    // Check if this is a similar question to previous ones
+    const previousQuestions = responses.map(r => r.question.toLowerCase());
+    const isRepeatQuestion = previousQuestions.some(prev => 
+      question.toLowerCase().includes(prev.slice(0, 20)) || 
+      prev.includes(question.toLowerCase().slice(0, 20))
+    );
+    
     // Generate contextual response based on user's data and question
-    const response = generateAdviceResponse(question, connections, moments, userData);
+    const response = generateAdviceResponse(question, connections, moments, userData, responses.length, isRepeatQuestion);
     
     setResponses(prev => [...prev, { question, advice: response }]);
     setQuestion("");
@@ -155,14 +162,41 @@ function generateContextualAdvice(connections: Connection[], moments: Moment[], 
   return advice;
 }
 
-function generateAdviceResponse(question: string, connections: Connection[], moments: Moment[], userData: any): string {
+function generateAdviceResponse(question: string, connections: Connection[], moments: Moment[], userData: any, conversationCount: number = 0, isRepeat: boolean = false): string {
   const lowerQuestion = question.toLowerCase();
+  
+  // Handle repeat questions
+  if (isRepeat) {
+    return "I notice you're asking about something similar to before. Let me offer a different perspective - sometimes the key is in the small, consistent actions rather than big changes. What specific aspect would you like to explore deeper?";
+  }
   
   // Analyze the user's question context
   const connectionNames = connections.map(c => c.name.toLowerCase());
   const mentionedConnection = connections.find(c => 
     lowerQuestion.includes(c.name.toLowerCase())
   );
+
+  // Add conversation-aware responses
+  const responseVariations = {
+    communication: [
+      "Communication is the foundation of any strong relationship. Focus on being present and truly listening.",
+      "Try the 'mirror and validate' approach - repeat back what you heard and acknowledge their feelings before sharing your perspective.",
+      "Sometimes the best conversations happen during activities together - walking, cooking, or shared interests can create natural openings.",
+      "Consider timing - the best conversations often happen when both people feel relaxed and open, not during stressful moments."
+    ],
+    distance: [
+      "Feeling distant is natural in relationships. It often signals a need for reconnection rather than a problem with the relationship itself.",
+      "Distance can be emotional or physical. Try to identify which type you're experiencing and address it specifically.",
+      "Sometimes distance happens when we're growing as individuals. Make sure you're maintaining your own interests and growth.",
+      "Consider reaching out with low-pressure connection - a simple message about something that reminded you of them can bridge distance."
+    ],
+    conflict: [
+      "Conflict isn't always negative - it can signal that both people care enough to work through differences.",
+      "Focus on the specific behavior or situation, not personality traits. Use 'I feel' statements rather than 'you always' statements.",
+      "Take breaks during heated discussions. Sometimes the best resolutions come after both people have had time to process.",
+      "Look for the underlying need beneath the disagreement. Often conflicts are about unmet needs rather than the surface issue."
+    ]
+  };
 
   // Communication-related questions
   if (lowerQuestion.includes('communication') || lowerQuestion.includes('talk') || lowerQuestion.includes('conversation')) {
@@ -173,7 +207,9 @@ function generateAdviceResponse(question: string, connections: Connection[], mom
       );
       
       if (conversationMoments.length > 0) {
-        return `Based on your tracking with ${mentionedConnection.name}, you've had ${conversationMoments.length} meaningful conversation moments. Try building on what's worked before - perhaps setting aside dedicated time for deeper talks when you're both relaxed and present.`;
+        const baseResponse = `Based on your tracking with ${mentionedConnection.name}, you've had ${conversationMoments.length} meaningful conversation moments.`;
+        const variation = responseVariations.communication[conversationCount % responseVariations.communication.length];
+        return `${baseResponse} ${variation}`;
       } else {
         return `For improving communication with ${mentionedConnection.name}, start small. Try asking open-ended questions about their day or feelings. Since you're both at the ${mentionedConnection.relationshipStage} stage, focus on creating safe spaces for honest sharing.`;
       }
@@ -181,7 +217,8 @@ function generateAdviceResponse(question: string, connections: Connection[], mom
       if (userData.loveLanguage === 'Words of Affirmation') {
         return "Since Words of Affirmation is your love language, clear communication is especially important to you. Express your needs openly and encourage others to share their feelings with you.";
       }
-      return "Good communication starts with active listening. Try to understand before being understood, and be curious rather than defensive when conflicts arise.";
+      const variation = responseVariations.communication[conversationCount % responseVariations.communication.length];
+      return variation;
     }
   }
 
@@ -196,12 +233,15 @@ function generateAdviceResponse(question: string, connections: Connection[], mom
       });
 
       if (recentMoments.length === 0) {
-        return `It looks like you haven't tracked moments with ${mentionedConnection.name} recently. This might reflect the distance you're feeling. Consider reaching out with a simple, no-pressure message to reconnect.`;
+        const variation = responseVariations.distance[conversationCount % responseVariations.distance.length];
+        return `It looks like you haven't tracked moments with ${mentionedConnection.name} recently. ${variation}`;
       } else {
-        return `Even though you've been tracking moments with ${mentionedConnection.name}, feeling distant can happen. Sometimes this is natural in relationships. Consider whether you need more quality time together or if there are unspoken needs.`;
+        const variation = responseVariations.distance[conversationCount % responseVariations.distance.length];
+        return `Even though you've been tracking moments with ${mentionedConnection.name}, feeling distant can happen. ${variation}`;
       }
     } else {
-      return "Feeling distant often signals unmet needs or life stress. Reflect on what you specifically miss, and consider whether it's about connection quality, frequency, or something deeper like personal growth phases.";
+      const variation = responseVariations.distance[conversationCount % responseVariations.distance.length];
+      return variation;
     }
   }
 
