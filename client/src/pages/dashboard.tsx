@@ -35,7 +35,9 @@ export default function Dashboard() {
   // Fetch recent moments
   const { data: moments = [], isLoading: momentsLoading, error: momentsError, refetch: refetchMoments } = useQuery<Moment[]>({
     queryKey: ["/api/moments"],
-    enabled: !loading && !!user,
+    enabled: !!user,
+    staleTime: 0,
+    refetchOnMount: true,
   });
 
   // Listen for moment creation and update events to refetch data immediately
@@ -78,11 +80,19 @@ export default function Dashboard() {
 
   // Force refetch moments if they're empty but user is loaded
   useEffect(() => {
-    if (!loading && user && moments.length === 0 && !momentsLoading && !momentsError) {
+    if (!loading && user && moments.length === 0 && !momentsLoading) {
       console.log("Force refetching moments...");
       refetchMoments();
     }
-  }, [loading, user, moments.length, momentsLoading, momentsError, refetchMoments]);
+  }, [loading, user, moments.length, momentsLoading, refetchMoments]);
+
+  // Additional trigger when user changes
+  useEffect(() => {
+    if (user && moments.length === 0) {
+      console.log("User loaded, triggering moments refetch...");
+      refetchMoments();
+    }
+  }, [user?.id, refetchMoments]);
 
   // Determine which connection to focus on - prioritize dashboard selection, then main focus
   const focusConnection = dashboardConnection || mainFocusConnection || null;
@@ -389,9 +399,21 @@ function MenstrualCycleTracker() {
         <section className="px-3 py-2">
           <div className="bg-white dark:bg-neutral-900 rounded-xl border border-neutral-200 dark:border-neutral-800">
             <div className="p-4 border-b border-neutral-200 dark:border-neutral-800">
-              <div className="flex items-center gap-2">
-                <TrendingUp className="h-5 w-5 text-primary" />
-                <h3 className="font-heading font-semibold text-primary">AI Insights</h3>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <TrendingUp className="h-5 w-5 text-primary" />
+                  <h3 className="font-heading font-semibold text-primary">AI Insights</h3>
+                </div>
+                {moments.length === 0 && (
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={() => refetchMoments()}
+                    disabled={momentsLoading}
+                  >
+                    {momentsLoading ? "Loading..." : "Load Data"}
+                  </Button>
+                )}
               </div>
               <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
                 Data-driven patterns from your relationship tracking
