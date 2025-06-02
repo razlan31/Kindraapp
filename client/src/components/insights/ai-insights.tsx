@@ -28,57 +28,106 @@ export function AIInsights({ connections, moments, userData }: AIInsightsProps) 
 
   if (insights.length === 0) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <TrendingUp className="h-5 w-5" />
-            AI Insights
-          </CardTitle>
-          <CardDescription>
-            Data-driven patterns from your relationship tracking
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="text-center py-6">
-            <Calendar className="h-12 w-12 mx-auto text-muted-foreground mb-2" />
+      <div className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-2xl p-6 border border-purple-100 dark:border-purple-800">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="p-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl">
+            <TrendingUp className="h-5 w-5 text-white" />
+          </div>
+          <div>
+            <h3 className="font-semibold text-lg bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+              AI Insights
+            </h3>
             <p className="text-sm text-muted-foreground">
-              Track more moments to discover insights about your relationship patterns
+              Smart patterns from your relationship data
             </p>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+        <div className="text-center py-8">
+          <div className="relative mb-4">
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-200 to-pink-200 dark:from-purple-700 dark:to-pink-700 rounded-full opacity-20 animate-pulse"></div>
+            <Calendar className="h-16 w-16 mx-auto text-purple-500 relative z-10" />
+          </div>
+          <p className="text-sm text-muted-foreground max-w-xs mx-auto">
+            Keep tracking moments to unlock personalized relationship insights and patterns
+          </p>
+        </div>
+      </div>
     );
   }
 
-  if (insights.length === 0) {
-    return null;
-  }
+
 
   return (
-    <div className="space-y-3">
-      {insights.map((insight, index) => (
-        <div 
-          key={index} 
-          className="bg-neutral-50 dark:bg-neutral-800 p-4 rounded-lg"
-        >
-          <div className="flex items-center gap-2 mb-2">
-            <h4 className="font-medium text-sm">{insight.title}</h4>
-            <span className="text-xs text-muted-foreground">
-              {insight.confidence}%
-            </span>
-          </div>
-          <p className="text-sm text-muted-foreground leading-relaxed">{insight.description}</p>
-          {insight.dataPoints && (
-            <div className="mt-2 flex gap-2 text-xs text-muted-foreground">
-              {insight.dataPoints.map((point, i) => (
-                <span key={i} className="bg-white dark:bg-neutral-700 px-2 py-1 rounded text-xs">
-                  {point}
-                </span>
-              ))}
-            </div>
-          )}
+    <div className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-2xl p-6 border border-purple-100 dark:border-purple-800">
+      <div className="flex items-center gap-3 mb-6">
+        <div className="p-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl">
+          <TrendingUp className="h-5 w-5 text-white" />
         </div>
-      ))}
+        <div>
+          <h3 className="font-semibold text-lg bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+            AI Insights
+          </h3>
+          <p className="text-sm text-muted-foreground">
+            Smart patterns from your relationship data
+          </p>
+        </div>
+      </div>
+      
+      <div className="space-y-4">
+        {insights.map((insight, index) => {
+          const getTypeStyles = (type: string) => {
+            switch (type) {
+              case 'positive':
+                return 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800';
+              case 'warning': 
+                return 'bg-orange-50 dark:bg-orange-900/20 border-orange-200 dark:border-orange-800';
+              default:
+                return 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800';
+            }
+          };
+
+          return (
+            <div 
+              key={index} 
+              className={`${getTypeStyles(insight.type)} p-4 rounded-xl border transition-all duration-200 hover:shadow-md hover:scale-[1.02]`}
+            >
+              <div className="flex items-start gap-3">
+                <div className="flex-shrink-0 mt-0.5">
+                  {insight.icon}
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="font-semibold text-sm text-gray-900 dark:text-gray-100">
+                      {insight.title}
+                    </h4>
+                    <div className="flex items-center gap-1">
+                      <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                      <span className="text-xs font-medium text-muted-foreground">
+                        {insight.confidence}%
+                      </span>
+                    </div>
+                  </div>
+                  <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed mb-3">
+                    {insight.description}
+                  </p>
+                  {insight.dataPoints && (
+                    <div className="flex flex-wrap gap-2">
+                      {insight.dataPoints.map((point, i) => (
+                        <span 
+                          key={i} 
+                          className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700"
+                        >
+                          {point}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

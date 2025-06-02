@@ -106,31 +106,39 @@ export default function InsightsNew() {
     <div className="max-w-md mx-auto bg-white dark:bg-neutral-900 min-h-screen flex flex-col relative">
       <Header />
 
-      <main className="flex-1 overflow-y-auto pb-20 px-4 pt-6">
+      <main className="flex-1 overflow-y-auto pb-20 px-4 pt-6 space-y-8">
         {/* AI Relationship Coach - Main Feature */}
-        <div className="mb-8">
-          <AIChat />
-        </div>
+        <AIChat />
 
         {/* AI Insights Section */}
-        <div className="mb-8">
-          <AIInsights 
-            connections={connections} 
-            moments={moments} 
-            userData={{
-              zodiacSign: user?.zodiacSign || undefined,
-              loveLanguage: user?.loveLanguage || undefined
-            }}
-          />
-        </div>
+        <AIInsights 
+          connections={connections} 
+          moments={moments} 
+          userData={{
+            zodiacSign: user?.zodiacSign || undefined,
+            loveLanguage: user?.loveLanguage || undefined
+          }}
+        />
 
-        {/* Analytics Section */}
+        {/* Enhanced Analytics Section */}
         {moments.length > 0 && (
-          <div className="space-y-4">
-            {/* Emotional Analysis */}
-            <div className="bg-neutral-50 dark:bg-neutral-800 p-4 rounded-lg">
-              <h3 className="font-medium text-sm mb-3">Emotional Patterns</h3>
-              <div className="h-48">
+          <div className="space-y-6">
+            {/* Emotional Patterns Card */}
+            <div className="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 rounded-2xl p-6 border border-emerald-100 dark:border-emerald-800">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="p-2 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl">
+                  <TrendingUp className="h-5 w-5 text-white" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-lg bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+                    Emotional Patterns
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Your emotional journey over time
+                  </p>
+                </div>
+              </div>
+              <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-xl p-4 h-56">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart
                     data={emotionData}
@@ -141,31 +149,61 @@ export default function InsightsNew() {
                     <Tooltip 
                       formatter={(value) => [`${value} moments`, 'Frequency']}
                       labelFormatter={(label) => `Emoji: ${label}`}
+                      contentStyle={{
+                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                        border: 'none',
+                        borderRadius: '12px',
+                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
+                      }}
                     />
-                    <Bar dataKey="count" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                    <Bar 
+                      dataKey="count" 
+                      fill="url(#emotionGradient)" 
+                      radius={[6, 6, 0, 0]} 
+                    />
+                    <defs>
+                      <linearGradient id="emotionGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#10b981" />
+                        <stop offset="100%" stopColor="#14b8a6" />
+                      </linearGradient>
+                    </defs>
                   </BarChart>
                 </ResponsiveContainer>
               </div>
             </div>
 
-            {/* Connection Health Summary */}
+            {/* Connection Health Card */}
             {connectionStrengths.length > 0 && (
-              <div className="bg-neutral-50 dark:bg-neutral-800 p-4 rounded-lg">
-                <h3 className="font-medium text-sm mb-3">Connection Health</h3>
-                <div className="space-y-2">
+              <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-2xl p-6 border border-amber-100 dark:border-amber-800">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-2 bg-gradient-to-r from-amber-500 to-orange-500 rounded-xl">
+                    <Users className="h-5 w-5 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
+                      Connection Health
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      Strength of your relationships
+                    </p>
+                  </div>
+                </div>
+                <div className="space-y-4">
                   {connectionStrengths.slice(0, 3).map((connection) => (
-                    <div key={connection.id} className="flex items-center justify-between">
-                      <span className="text-sm">{connection.name}</span>
-                      <div className="flex items-center gap-2">
-                        <div className="w-16 bg-neutral-200 dark:bg-neutral-700 rounded-full h-1">
-                          <div 
-                            className="bg-primary h-1 rounded-full transition-all duration-300" 
-                            style={{ width: `${connection.healthScore}%` }}
-                          />
-                        </div>
-                        <span className="text-xs text-muted-foreground w-8 text-right">
+                    <div key={connection.id} className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-xl p-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-medium text-sm text-gray-900 dark:text-gray-100">
+                          {connection.name}
+                        </span>
+                        <span className="text-sm font-semibold text-amber-600 dark:text-amber-400">
                           {connection.healthScore}%
                         </span>
+                      </div>
+                      <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                        <div 
+                          className="bg-gradient-to-r from-amber-500 to-orange-500 h-2 rounded-full transition-all duration-500 ease-out" 
+                          style={{ width: `${connection.healthScore}%` }}
+                        />
                       </div>
                     </div>
                   ))}

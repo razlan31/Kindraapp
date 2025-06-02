@@ -144,60 +144,59 @@ export function AIChat() {
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto">
-      {/* Minimalist Header */}
-      <div className="mb-6">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-rose-400 to-pink-500 flex items-center justify-center">
-            <Heart className="h-4 w-4 text-white" />
-          </div>
-          <h1 className="text-lg font-medium text-gray-900 dark:text-gray-100">Relationship Coach</h1>
+    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-2xl p-6 border border-blue-100 dark:border-blue-800">
+      {/* Modern Header */}
+      <div className="flex items-center gap-3 mb-6">
+        <div className="p-2 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-xl">
+          <MessageCircle className="h-5 w-5 text-white" />
         </div>
-        <p className="text-sm text-gray-500 dark:text-gray-400 ml-11">
-          Your personal guide to healthier relationships
-        </p>
-      </div>
-
-      {/* Clean Chat Container */}
-      <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden shadow-sm">
-        {/* Minimal Header */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-50 dark:border-gray-800">
-          <div className="flex items-center gap-2">
-            <MessageCircle className="h-4 w-4 text-gray-400" />
-            <span className="text-sm font-medium text-gray-600 dark:text-gray-300">Chat</span>
-          </div>
-          {conversation.length > 0 && (
+        <div>
+          <h3 className="font-semibold text-lg bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+            AI Relationship Coach
+          </h3>
+          <p className="text-sm text-muted-foreground">
+            Personal guide to healthier relationships
+          </p>
+        </div>
+        {conversation.length > 0 && (
+          <div className="ml-auto">
             <Button
               variant="ghost"
               size="sm"
               onClick={() => clearMutation.mutate()}
               disabled={clearMutation.isPending}
-              className="h-8 w-8 p-0 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+              className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive transition-colors"
             >
-              <Trash2 className="h-3 w-3" />
+              <Trash2 className="h-4 w-4" />
             </Button>
-          )}
-        </div>
+          </div>
+        )}
+      </div>
 
+      {/* Enhanced Chat Container */}
+      <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-xl border border-white/50 dark:border-gray-800/50 overflow-hidden shadow-lg">
         {/* Messages */}
-        <div className="h-80 overflow-y-auto p-6 space-y-6">
+        <div className="h-80 overflow-y-auto p-4 space-y-4">
           {conversation.length === 0 ? (
             <div className="text-center py-12">
-              <div className="w-12 h-12 rounded-full bg-gray-50 dark:bg-gray-800 flex items-center justify-center mx-auto mb-4">
-                <MessageCircle className="h-6 w-6 text-gray-400" />
+              <div className="relative mb-4">
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-200 to-indigo-200 dark:from-blue-700 dark:to-indigo-700 rounded-full opacity-20 animate-pulse"></div>
+                <div className="relative w-16 h-16 rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 flex items-center justify-center mx-auto">
+                  <Sparkles className="h-8 w-8 text-white" />
+                </div>
               </div>
-              <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed max-w-xs mx-auto">
-                Hi! I'm here to help you understand your relationship patterns and build stronger connections. What's on your mind?
+              <p className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed max-w-sm mx-auto">
+                Hi! I'm your AI relationship coach. I can help you understand your patterns, navigate challenges, and build stronger connections. What would you like to explore today?
               </p>
             </div>
           ) : (
             conversation.map((msg, index) => (
               <div
                 key={index}
-                className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-in slide-in-from-bottom-2 duration-300`}
               >
                 <div
-                  className={`max-w-[85%] rounded-2xl px-4 py-3 ${
+                  className={`max-w-[85%] rounded-2xl px-4 py-3 shadow-sm ${
                     msg.role === 'user'
                       ? 'bg-gradient-to-r from-rose-500 to-pink-500 text-white'
                       : 'bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100'
