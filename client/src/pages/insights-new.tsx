@@ -27,11 +27,40 @@ import {
   Users,
   MessageCircle,
   Activity,
-  Sparkles
+  Sparkles,
+  ChevronDown,
+  ChevronUp
 } from "lucide-react";
+import { useState, useEffect } from "react";
 
 export default function InsightsNew() {
   const { user, loading } = useAuth();
+  
+  // Collapsible state management with localStorage persistence
+  const [isInsightsExpanded, setIsInsightsExpanded] = useState(true);
+  const [isAnalyticsExpanded, setIsAnalyticsExpanded] = useState(true);
+
+  // Load saved states from localStorage on mount
+  useEffect(() => {
+    const savedInsightsState = localStorage.getItem('insights-section-expanded');
+    const savedAnalyticsState = localStorage.getItem('analytics-section-expanded');
+    
+    if (savedInsightsState !== null) {
+      setIsInsightsExpanded(savedInsightsState === 'true');
+    }
+    if (savedAnalyticsState !== null) {
+      setIsAnalyticsExpanded(savedAnalyticsState === 'true');
+    }
+  }, []);
+
+  // Save states to localStorage when they change
+  useEffect(() => {
+    localStorage.setItem('insights-section-expanded', isInsightsExpanded.toString());
+  }, [isInsightsExpanded]);
+
+  useEffect(() => {
+    localStorage.setItem('analytics-section-expanded', isAnalyticsExpanded.toString());
+  }, [isAnalyticsExpanded]);
 
   console.log("InsightsNew - user:", !!user, "user ID:", user?.id, "loading:", loading);
 
@@ -113,45 +142,77 @@ export default function InsightsNew() {
 
         {/* AI Insights Section */}
         <div className="space-y-4">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl">
-              <Sparkles className="h-5 w-5 text-white" />
+          <div 
+            className="flex items-center justify-between cursor-pointer hover:bg-neutral-50 dark:hover:bg-neutral-800/50 rounded-lg p-2 -m-2 transition-colors"
+            onClick={() => setIsInsightsExpanded(!isInsightsExpanded)}
+          >
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl">
+                <Sparkles className="h-5 w-5 text-white" />
+              </div>
+              <div>
+                <h2 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                  Relationship Insights
+                </h2>
+                <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                  AI-powered analysis of your relationship patterns
+                </p>
+              </div>
             </div>
-            <div>
-              <h2 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                Relationship Insights
-              </h2>
-              <p className="text-sm text-neutral-600 dark:text-neutral-400">
-                AI-powered analysis of your relationship patterns
-              </p>
+            <div className="ml-auto">
+              {isInsightsExpanded ? (
+                <ChevronUp className="h-5 w-5 text-neutral-500" />
+              ) : (
+                <ChevronDown className="h-5 w-5 text-neutral-500" />
+              )}
             </div>
           </div>
-          <AIInsights 
-            connections={connections} 
-            moments={moments} 
-            userData={{
-              zodiacSign: user?.zodiacSign || undefined,
-              loveLanguage: user?.loveLanguage || undefined
-            }}
-          />
+          
+          {isInsightsExpanded && (
+            <div className="transition-all duration-200 ease-in-out">
+              <AIInsights 
+                connections={connections} 
+                moments={moments} 
+                userData={{
+                  zodiacSign: user?.zodiacSign || undefined,
+                  loveLanguage: user?.loveLanguage || undefined
+                }}
+              />
+            </div>
+          )}
         </div>
 
         {/* Advanced Analytics Dashboard */}
         {moments.length > 0 && (
           <div className="space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl">
-                <BarChart3 className="h-5 w-5 text-white" />
+            <div 
+              className="flex items-center justify-between cursor-pointer hover:bg-neutral-50 dark:hover:bg-neutral-800/50 rounded-lg p-2 -m-2 transition-colors"
+              onClick={() => setIsAnalyticsExpanded(!isAnalyticsExpanded)}
+            >
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl">
+                  <BarChart3 className="h-5 w-5 text-white" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+                    Visual Analytics Dashboard
+                  </h2>
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                    Data-driven patterns from your relationship tracking
+                  </p>
+                </div>
               </div>
-              <div>
-                <h2 className="text-xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
-                  Visual Analytics Dashboard
-                </h2>
-                <p className="text-sm text-neutral-600 dark:text-neutral-400">
-                  Data-driven patterns from your relationship tracking
-                </p>
+              <div className="ml-auto">
+                {isAnalyticsExpanded ? (
+                  <ChevronUp className="h-5 w-5 text-neutral-500" />
+                ) : (
+                  <ChevronDown className="h-5 w-5 text-neutral-500" />
+                )}
               </div>
             </div>
+            
+            {isAnalyticsExpanded && (
+              <div className="transition-all duration-200 ease-in-out">
             {/* Emotional Patterns - Enhanced Visual */}
             <div className="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 rounded-xl p-4 border border-emerald-100 dark:border-emerald-800">
               <div className="flex items-center justify-between mb-3">
@@ -591,6 +652,8 @@ export default function InsightsNew() {
                 })}
               </div>
             </div>
+              </div>
+            )}
           </div>
         )}
       </main>
