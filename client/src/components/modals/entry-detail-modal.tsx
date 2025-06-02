@@ -484,7 +484,32 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection, onUpdate
             </div>
           )}
 
-
+          {/* Manual AI Insight Generation */}
+          {!isEditing && (
+            <div className="space-y-2">
+              <label className="text-sm font-medium">AI Insight</label>
+              <ManualInsight 
+                context={
+                  getActivityType(freshMoment) === 'conflict' ? 'conflict-entry' :
+                  getActivityType(freshMoment) === 'intimacy' ? 'moment-entry' :
+                  'activity-card'
+                }
+                data={{
+                  content: freshMoment.content,
+                  title: freshMoment.title,
+                  emoji: freshMoment.emoji,
+                  isPrivate: freshMoment.isPrivate,
+                  isIntimate: freshMoment.isIntimate,
+                  tags: freshMoment.tags,
+                  connectionName: connection.name,
+                  description: freshMoment.content,
+                  resolution: freshMoment.resolutionNotes,
+                  notes: freshMoment.reflection
+                }}
+                className="w-full"
+              />
+            </div>
+          )}
 
           {/* Action Buttons */}
           <div className="flex justify-between items-center pt-4">

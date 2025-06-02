@@ -144,27 +144,7 @@ export function MomentCard({ moment, connection, onAddReflection, onViewDetail, 
               </div>
             )}
 
-            {/* Manual AI Insight Generation */}
-            <ManualInsight 
-              context={
-                getMomentType(moment) === 'Conflict' ? 'conflict-entry' :
-                getMomentType(moment) === 'Intimacy' ? 'moment-entry' :
-                'activity-card'
-              }
-              data={{
-                content: moment.content,
-                title: moment.title,
-                emoji: moment.emoji,
-                isPrivate: moment.isPrivate,
-                isIntimate: moment.isIntimate,
-                tags: moment.tags,
-                connectionName: connection.name,
-                description: moment.content,
-                resolution: moment.resolutionNotes,
-                notes: moment.reflection
-              }}
-              className="mb-3"
-            />
+
             
             {/* Action buttons based on moment type */}
             {getMomentType(moment) === 'Conflict' ? (
