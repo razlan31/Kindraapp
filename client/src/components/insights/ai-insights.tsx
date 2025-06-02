@@ -244,7 +244,7 @@ function generateDataInsights(connections: Connection[], moments: Moment[], user
     : null;
 
   // Primary focus analysis with stage-specific advice
-  if (mostTrackedConnection && mostTrackedConnection.count > totalMoments * 0.5) {
+  if (mostTrackedConnection && mostTrackedConnection.count > totalMoments * 0.5 && mostTrackedConnection.name) {
     const positiveRatio = mostTrackedConnection.positiveCount / mostTrackedConnection.count;
     let stageAdvice = "";
     

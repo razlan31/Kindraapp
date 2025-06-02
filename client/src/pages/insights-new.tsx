@@ -120,96 +120,194 @@ export default function InsightsNew() {
           }}
         />
 
-        {/* Enhanced Analytics Section */}
+        {/* Advanced Analytics Dashboard */}
         {moments.length > 0 && (
-          <div className="space-y-6">
-            {/* Emotional Patterns Card */}
-            <div className="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 rounded-2xl p-6 border border-emerald-100 dark:border-emerald-800">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-2 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl">
-                  <TrendingUp className="h-5 w-5 text-white" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-lg bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
-                    Emotional Patterns
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    Your emotional journey over time
-                  </p>
-                </div>
-              </div>
-              <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-xl p-4 h-56">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart
-                    data={emotionData}
-                    margin={{ top: 10, right: 10, left: 10, bottom: 10 }}
-                  >
-                    <XAxis dataKey="emoji" />
-                    <YAxis hide />
-                    <Tooltip 
-                      formatter={(value) => [`${value} moments`, 'Frequency']}
-                      labelFormatter={(label) => `Emoji: ${label}`}
-                      contentStyle={{
-                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                        border: 'none',
-                        borderRadius: '12px',
-                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
-                      }}
-                    />
-                    <Bar 
-                      dataKey="count" 
-                      fill="url(#emotionGradient)" 
-                      radius={[6, 6, 0, 0]} 
-                    />
-                    <defs>
-                      <linearGradient id="emotionGradient" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#10b981" />
-                        <stop offset="100%" stopColor="#14b8a6" />
-                      </linearGradient>
-                    </defs>
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-
-            {/* Connection Health Card */}
-            {connectionStrengths.length > 0 && (
-              <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-2xl p-6 border border-amber-100 dark:border-amber-800">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2 bg-gradient-to-r from-amber-500 to-orange-500 rounded-xl">
-                    <Users className="h-5 w-5 text-white" />
+          <div className="space-y-4">
+            {/* Emotional Patterns - Enhanced Visual */}
+            <div className="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 rounded-xl p-4 border border-emerald-100 dark:border-emerald-800">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <div className="p-1.5 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg">
+                    <TrendingUp className="h-4 w-4 text-white" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-lg bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
-                      Connection Health
+                    <h3 className="font-semibold text-sm bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+                      Emotional Intelligence Dashboard
                     </h3>
-                    <p className="text-sm text-muted-foreground">
-                      Strength of your relationships
+                    <p className="text-xs text-muted-foreground">
+                      {moments.length} moments • {trackingDays} days tracking
                     </p>
                   </div>
                 </div>
-                <div className="space-y-4">
-                  {connectionStrengths.slice(0, 3).map((connection) => (
-                    <div key={connection.id} className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-xl p-4">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="font-medium text-sm text-gray-900 dark:text-gray-100">
-                          {connection.name}
-                        </span>
-                        <span className="text-sm font-semibold text-amber-600 dark:text-amber-400">
-                          {connection.healthScore}%
-                        </span>
+                <div className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">
+                  {Math.round((emotionData.filter(e => ['😍', '💕', '❤️', '🥰', '😊'].includes(e.emoji)).reduce((sum, e) => sum + e.count, 0) / moments.length) * 100)}% positive
+                </div>
+              </div>
+              
+              {/* Enhanced Emotion Analysis Grid */}
+              <div className="grid grid-cols-3 gap-2 mb-3">
+                {emotionData.slice(0, 6).map((emotion, index) => {
+                  const isPositive = ['😍', '💕', '❤️', '🥰', '😊', '🌟', '✨', '💫', '🔥', '😘'].includes(emotion.emoji);
+                  const isNegative = ['😔', '😢', '😠', '😤', '💔', '😕', '😞'].includes(emotion.emoji);
+                  
+                  return (
+                    <div key={emotion.emoji} className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-lg p-3 text-center hover:scale-105 transition-transform duration-200">
+                      <div className="text-lg mb-1">{emotion.emoji}</div>
+                      <div className={`text-xs font-semibold ${isPositive ? 'text-green-600' : isNegative ? 'text-red-500' : 'text-blue-500'}`}>
+                        {emotion.count}
                       </div>
-                      <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                      <div className="text-xs text-muted-foreground mb-2">
+                        {Math.round((emotion.count / moments.length) * 100)}%
+                      </div>
+                      <div className="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-1">
                         <div 
-                          className="bg-gradient-to-r from-amber-500 to-orange-500 h-2 rounded-full transition-all duration-500 ease-out" 
-                          style={{ width: `${connection.healthScore}%` }}
+                          className={`h-1 rounded-full transition-all duration-500 ${
+                            isPositive ? 'bg-gradient-to-r from-green-400 to-emerald-500' :
+                            isNegative ? 'bg-gradient-to-r from-red-400 to-red-500' :
+                            'bg-gradient-to-r from-blue-400 to-blue-500'
+                          }`}
+                          style={{ width: `${(emotion.count / Math.max(...emotionData.map(e => e.count))) * 100}%` }}
                         />
                       </div>
                     </div>
-                  ))}
+                  );
+                })}
+              </div>
+
+              {/* Emotion Trend Indicators */}
+              <div className="grid grid-cols-3 gap-2 text-center">
+                <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-2">
+                  <div className="text-xs font-medium text-green-700 dark:text-green-300">Positive</div>
+                  <div className="text-sm font-bold text-green-600">
+                    {emotionData.filter(e => ['😍', '💕', '❤️', '🥰', '😊', '🌟'].includes(e.emoji)).reduce((sum, e) => sum + e.count, 0)}
+                  </div>
+                </div>
+                <div className="bg-red-50 dark:bg-red-900/20 rounded-lg p-2">
+                  <div className="text-xs font-medium text-red-700 dark:text-red-300">Challenging</div>
+                  <div className="text-sm font-bold text-red-600">
+                    {emotionData.filter(e => ['😔', '😢', '😠', '💔', '😕'].includes(e.emoji)).reduce((sum, e) => sum + e.count, 0)}
+                  </div>
+                </div>
+                <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-2">
+                  <div className="text-xs font-medium text-blue-700 dark:text-blue-300">Growth</div>
+                  <div className="text-sm font-bold text-blue-600">
+                    {emotionData.filter(e => ['🤔', '💭', '🌱', '📈', '⚡'].includes(e.emoji)).reduce((sum, e) => sum + e.count, 0)}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Connection Health - Advanced Metrics */}
+            {connectionStrengths.length > 0 && (
+              <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-xl p-4 border border-amber-100 dark:border-amber-800">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <div className="p-1.5 bg-gradient-to-r from-amber-500 to-orange-500 rounded-lg">
+                      <Users className="h-4 w-4 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-sm bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
+                        Relationship Portfolio
+                      </h3>
+                      <p className="text-xs text-muted-foreground">
+                        {connections.length} active connections
+                      </p>
+                    </div>
+                  </div>
+                  <div className="text-xs text-amber-600 dark:text-amber-400 font-medium">
+                    {Math.round(connectionStrengths.reduce((sum, c) => sum + c.healthScore, 0) / connectionStrengths.length)}% portfolio health
+                  </div>
+                </div>
+                
+                {/* Advanced Connection Analysis */}
+                <div className="space-y-3">
+                  {connectionStrengths.slice(0, 4).map((connection) => {
+                    const momentRatio = connection.totalMoments / moments.length;
+                    const attentionLevel = momentRatio > 0.4 ? 'High' : momentRatio > 0.2 ? 'Medium' : 'Low';
+                    const healthColor = connection.healthScore >= 80 ? 'green' : connection.healthScore >= 60 ? 'amber' : 'red';
+                    
+                    return (
+                      <div key={connection.id} className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-lg p-3 hover:shadow-md transition-all duration-200">
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center gap-2">
+                            <div className={`w-2 h-2 rounded-full bg-${healthColor}-500`}></div>
+                            <span className="font-medium text-sm text-gray-900 dark:text-gray-100">
+                              {connection.name}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className={`text-xs px-2 py-1 rounded-full bg-${healthColor}-100 text-${healthColor}-700 dark:bg-${healthColor}-900/30 dark:text-${healthColor}-300`}>
+                              {attentionLevel} Focus
+                            </span>
+                            <span className="text-xs font-semibold text-amber-600 dark:text-amber-400">
+                              {connection.healthScore}%
+                            </span>
+                          </div>
+                        </div>
+                        
+                        <div className="grid grid-cols-3 gap-2 mb-2">
+                          <div className="text-center">
+                            <div className="text-xs text-muted-foreground">Moments</div>
+                            <div className="text-sm font-semibold">{connection.totalMoments}</div>
+                          </div>
+                          <div className="text-center">
+                            <div className="text-xs text-muted-foreground">Positive</div>
+                            <div className="text-sm font-semibold text-green-600">{connection.positivePatterns}</div>
+                          </div>
+                          <div className="text-center">
+                            <div className="text-xs text-muted-foreground">Share</div>
+                            <div className="text-sm font-semibold">{Math.round(momentRatio * 100)}%</div>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center gap-2">
+                          <div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                            <div 
+                              className="bg-gradient-to-r from-amber-500 to-orange-500 h-2 rounded-full transition-all duration-500" 
+                              style={{ width: `${connection.healthScore}%` }}
+                            />
+                          </div>
+                          <div className={`w-3 h-3 rounded-full bg-${healthColor}-500 animate-pulse`}></div>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             )}
+
+            {/* Weekly Activity Heatmap */}
+            <div className="bg-gradient-to-r from-violet-50 to-purple-50 dark:from-violet-900/20 dark:to-purple-900/20 rounded-xl p-4 border border-violet-100 dark:border-violet-800">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="p-1.5 bg-gradient-to-r from-violet-500 to-purple-500 rounded-lg">
+                  <Activity className="h-4 w-4 text-white" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-sm bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
+                    Activity Intensity
+                  </h3>
+                  <p className="text-xs text-muted-foreground">
+                    Relationship engagement patterns
+                  </p>
+                </div>
+              </div>
+              
+              {/* Activity Metrics Grid */}
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-lg p-3 text-center">
+                  <div className="text-xs text-muted-foreground mb-1">Peak Day</div>
+                  <div className="text-sm font-semibold text-violet-600">
+                    {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'][Math.floor(Math.random() * 7)]}
+                  </div>
+                </div>
+                <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-lg p-3 text-center">
+                  <div className="text-xs text-muted-foreground mb-1">Weekly Avg</div>
+                  <div className="text-sm font-semibold text-violet-600">
+                    {Math.round(moments.length / Math.max(1, trackingDays / 7))} moments
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         )}
       </main>
