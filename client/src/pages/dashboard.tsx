@@ -58,7 +58,11 @@ export default function Dashboard() {
 
   // Fetch moments when user loads
   useEffect(() => {
-    refetchMoments();
+    console.log("useEffect triggered - user:", user?.id);
+    if (user?.id) {
+      console.log("Calling refetchMoments...");
+      refetchMoments();
+    }
   }, [user?.id]);
 
   // Listen for moment creation and update events to refetch data immediately
