@@ -189,8 +189,10 @@ function generateDataInsights(connections: Connection[], moments: Moment[], user
     loveLanguage: conn.loveLanguage
   }));
 
-  const mostTrackedConnection = connectionMomentCounts.reduce((max, conn) => 
-    conn.count > max.count ? conn : max, connectionMomentCounts[0]);
+  const mostTrackedConnection = connectionMomentCounts.length > 0 
+    ? connectionMomentCounts.reduce((max, conn) => 
+        conn.count > max.count ? conn : max, connectionMomentCounts[0])
+    : null;
 
   // Primary focus analysis with stage-specific advice
   if (mostTrackedConnection && mostTrackedConnection.count > totalMoments * 0.5) {

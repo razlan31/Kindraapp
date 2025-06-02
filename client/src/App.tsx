@@ -26,7 +26,7 @@ import SummaryReport from "@/pages/summary-report";
 import ConnectionDetail from "@/pages/connection-detail";
 import ConnectionEdit from "@/pages/connection-edit";
 import Badges from "@/pages/badges";
-import { useAuth } from "./contexts/auth-context";
+import { AuthProvider, useAuth } from "./contexts/auth-context";
 import { useModal } from "./contexts/modal-context";
 import { RelationshipFocusProvider } from "./contexts/relationship-focus-context";
 import { ModalProvider } from "./contexts/modal-context";
@@ -80,17 +80,19 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
-        <RelationshipFocusProvider>
-          <ModalProvider>
-            <TooltipProvider>
-              <Toaster />
-              <Router />
-              <ModalsContainer />
-            </TooltipProvider>
-          </ModalProvider>
-        </RelationshipFocusProvider>
-      </ThemeProvider>
+      <AuthProvider>
+        <ThemeProvider>
+          <RelationshipFocusProvider>
+            <ModalProvider>
+              <TooltipProvider>
+                <Toaster />
+                <Router />
+                <ModalsContainer />
+              </TooltipProvider>
+            </ModalProvider>
+          </RelationshipFocusProvider>
+        </ThemeProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }
