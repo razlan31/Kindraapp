@@ -2444,6 +2444,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Mini insights API endpoint
+  app.post("/api/ai/mini-insight", isAuthenticated, async (req: Request, res: Response) => {
+    try {
+      const { context, data } = req.body;
+
+      if (!context || !data) {
+        return res.status(400).json({ error: "Context and data are required" });
+      }
+
+      const { generateMiniInsight } = await import('./mini-insights');
+      const insight = await generateMiniInsight({ context, data });
+
+      res.json({ insight });
+    } catch (error: any) {
+      console.error("Error generating mini insight:", error);
+      res.status(500).json({ error: error.message || "Failed to generate insight" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
