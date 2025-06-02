@@ -472,7 +472,7 @@ export default function Activities() {
                   : 'text-muted-foreground hover:text-foreground'
               }`}
             >
-              Intimacy
+              Sex
             </button>
             <button 
               onClick={() => setActiveTab('plans')}

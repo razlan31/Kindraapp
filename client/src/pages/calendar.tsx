@@ -856,7 +856,7 @@ export default function Calendar() {
                             setFilters(prev => ({ ...prev, intimacy: !!checked }))
                           }
                         />
-                        <label htmlFor="intimacy" className="text-xs cursor-pointer">Intimacy</label>
+                        <label htmlFor="intimacy" className="text-xs cursor-pointer">Sex</label>
                       </div>
                       <div className="flex items-center space-x-2">
                         <Checkbox
