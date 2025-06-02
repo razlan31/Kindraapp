@@ -278,14 +278,21 @@ function generateDataInsights(connections: Connection[], moments: Moment[], user
     const neglectedConnections = connectionMomentCounts.filter(conn => conn.count < 2);
     
     if (connectionImbalance && neglectedConnections.length > 0) {
-      insights.push({
-        title: "Connection Balance Alert",
-        description: `You're heavily focused on one relationship while ${neglectedConnections.length} other connection(s) need attention. Schedule dedicated time with ${neglectedConnections.map(c => c.name).join(', ')} to maintain relationship health.`,
-        type: 'warning',
-        confidence: 82,
-        icon: <AlertCircle className="h-4 w-4 text-orange-600" />,
-        dataPoints: [`${neglectedConnections.length} connections need attention`]
-      });
+      const neglectedNames = neglectedConnections
+        .filter(c => c.name) // Safety check for name property
+        .map(c => c.name)
+        .join(', ');
+      
+      if (neglectedNames) {
+        insights.push({
+          title: "Connection Balance Alert",
+          description: `You're heavily focused on one relationship while ${neglectedConnections.length} other connection(s) need attention. Schedule dedicated time with ${neglectedNames} to maintain relationship health.`,
+          type: 'warning',
+          confidence: 82,
+          icon: <AlertCircle className="h-4 w-4 text-orange-600" />,
+          dataPoints: [`${neglectedConnections.length} connections need attention`]
+        });
+      }
     }
   }
 
