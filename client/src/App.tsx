@@ -52,7 +52,8 @@ function Router() {
     <Switch>
       <Route path="/auth/login" component={Login} />
       <Route path="/auth/register" component={Register} />
-      <Route path="/" component={Dashboard} />
+      <Route path="/" component={Insights} />
+      <Route path="/dashboard" component={Dashboard} />
       <Route path="/connections" component={Connections} />
       <Route path="/connections/add" component={ConnectionsFormNew} />
       <Route path="/connections/simple" component={SimpleConnectionForm} />

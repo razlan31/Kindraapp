@@ -4,9 +4,11 @@ import { useAuth } from "@/contexts/auth-context";
 import { Link } from "wouter";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { Connection, Moment } from "@shared/schema";
-import { AICoach } from "@/components/insights/ai-coach";
+import { AIInsights } from "@/components/insights/ai-insights";
+import { AIAdvice } from "@/components/insights/ai-advice";
 import { 
   BarChart, 
   Bar, 
@@ -30,7 +32,12 @@ import {
   Star,
   BarChart3,
   ChevronRight,
-  Zap 
+  Zap,
+  Plus,
+  TrendingUp,
+  Users,
+  MessageCircle,
+  Activity
 } from "lucide-react";
 
 export default function Insights() {
@@ -136,118 +143,80 @@ export default function Insights() {
       <Header />
 
       <main className="flex-1 overflow-y-auto pb-20">
-        {/* Title Section */}
-        <section className="px-4 pt-5 pb-3">
-          <h2 className="text-xl font-heading font-semibold">Relationship Insights</h2>
-          <p className="text-neutral-600 dark:text-neutral-400 text-sm">
-            Discover patterns and trends in your relationships
-          </p>
-        </section>
-        
-        {/* Reports Quick Link - New Feature */}
-        <div className="px-4 mb-4">
-          <a href="/summary-report" className="w-full flex items-center justify-between py-3 px-4 bg-primary/10 hover:bg-primary/20 text-primary rounded-lg transition-colors">
-            <div className="flex items-center gap-2">
-              <BarChart3 className="h-5 w-5" />
-              <span className="font-medium">View Relationship Report</span>
-            </div>
+        {/* Welcome Section */}
+        <section className="px-4 pt-5 pb-4">
+          <div className="flex items-center justify-between mb-2">
             <div>
-              <ChevronRight className="h-5 w-5" />
+              <h1 className="text-2xl font-heading font-bold">Welcome back{user?.displayName ? `, ${user.displayName}` : ''}</h1>
+              <p className="text-neutral-600 dark:text-neutral-400 text-sm">
+                Your relationship insights and patterns
+              </p>
             </div>
-          </a>
-        </div>
-        
-        {/* AI Coach Card - Always shown regardless of moments */}
-        <div className="px-4 mb-6">
-          <Card>
-            <CardHeader className="pb-2">
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle className="flex items-center gap-2">
-                    <Sparkles className="h-5 w-5 text-primary" />
-                    AI Relationship Coach
-                  </CardTitle>
-                  <CardDescription>
-                    Personalized insights based on your profile
-                  </CardDescription>
+            <Button
+              onClick={() => window.location.href = "/dashboard"}
+              size="sm"
+              className="gap-2"
+            >
+              <Plus className="h-4 w-4" />
+              Track Moment
+            </Button>
+          </div>
+        </section>
+
+        {/* Quick Stats */}
+        <section className="px-4 mb-6">
+          <div className="grid grid-cols-3 gap-3">
+            <Card className="p-3">
+              <div className="text-center">
+                <div className="flex items-center justify-center mb-1">
+                  <Users className="h-5 w-5 text-primary" />
                 </div>
+                <div className="text-lg font-semibold">{connections.length}</div>
+                <div className="text-xs text-muted-foreground">Connections</div>
               </div>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="bg-neutral-50 dark:bg-neutral-800 p-3 rounded-lg">
-                  <div className="flex gap-3 items-start">
-                    <div className="bg-primary/10 p-2 rounded-full">
-                      <Brain className="h-5 w-5 text-primary" />
-                    </div>
-                    <div>
-                      <p className="text-sm">
-                        {user?.zodiacSign ? 
-                          `As a ${user.zodiacSign}, you likely value ${
-                            ['Aries', 'Leo', 'Sagittarius'].includes(user.zodiacSign) ? 
-                              'passion and excitement in your relationships. Consider partners who can match your energy and enthusiasm.'
-                            : ['Taurus', 'Virgo', 'Capricorn'].includes(user.zodiacSign) ?
-                              'stability and reliability in your connections. Look for consistency in your relationships.'
-                            : ['Gemini', 'Libra', 'Aquarius'].includes(user.zodiacSign) ?
-                              'mental stimulation and variety. Connect with people who engage you intellectually.'
-                            : 'emotional depth and intuitive understanding. Seek partners who honor your sensitivity.'
-                          }`
-                        : "Add your zodiac sign in your profile to receive personalized astrological insights about your relationship patterns."}
-                      </p>
-                    </div>
-                  </div>
+            </Card>
+            <Card className="p-3">
+              <div className="text-center">
+                <div className="flex items-center justify-center mb-1">
+                  <Activity className="h-5 w-5 text-green-600" />
                 </div>
-                
-                <div className="bg-neutral-50 dark:bg-neutral-800 p-3 rounded-lg">
-                  <div className="flex gap-3 items-start">
-                    <div className="bg-primary/10 p-2 rounded-full">
-                      <Heart className="h-5 w-5 text-primary" />
-                    </div>
-                    <div>
-                      <p className="text-sm">
-                        {user?.loveLanguage ? 
-                          `Your love language is ${user.loveLanguage}. This means you feel most loved through ${
-                            user.loveLanguage === 'Words of Affirmation' ? 
-                              'verbal expressions of appreciation and care. Make sure to communicate this need to your partners.'
-                            : user.loveLanguage === 'Quality Time' ?
-                              'dedicated, undivided attention. Prioritize meaningful time together in your relationships.'
-                            : user.loveLanguage === 'Physical Touch' ?
-                              'physical closeness and affection. Express the importance of this connection to your partners.'
-                            : user.loveLanguage === 'Acts of Service' ?
-                              'actions that show care and support. Look for partners who demonstrate their love through helpful gestures.'
-                            : 'thoughtful and meaningful gifts that show you are seen and understood.'
-                          }`
-                        : "Add your love language to your profile to receive more personalized relationship coaching."}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="bg-neutral-50 dark:bg-neutral-800 p-3 rounded-lg">
-                  <div className="flex gap-3 items-start">
-                    <div className="bg-primary/10 p-2 rounded-full">
-                      <Calendar className="h-5 w-5 text-primary" />
-                    </div>
-                    <div>
-                      <p className="text-sm">
-                        {moments.length > 0 ? 
-                          `You've tracked ${moments.length} emotional moments. Keep logging to discover deeper patterns in your relationship dynamics.`
-                        : "Start tracking emotional moments to receive AI-powered insights about your relationship patterns."}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                
-                <button 
-                  onClick={() => window.location.href = "/ai-coach"} 
-                  className="w-full bg-primary/10 hover:bg-primary/20 text-primary font-medium py-2 px-4 rounded-md transition-colors"
-                >
-                  Get More AI Coaching
-                </button>
+                <div className="text-lg font-semibold">{moments.length}</div>
+                <div className="text-xs text-muted-foreground">Moments</div>
               </div>
-            </CardContent>
-          </Card>
-        </div>
+            </Card>
+            <Card className="p-3">
+              <div className="text-center">
+                <div className="flex items-center justify-center mb-1">
+                  <TrendingUp className="h-5 w-5 text-blue-600" />
+                </div>
+                <div className="text-lg font-semibold">{trackingDays}</div>
+                <div className="text-xs text-muted-foreground">Days Tracking</div>
+              </div>
+            </Card>
+          </div>
+        </section>
+
+        {/* Quick Actions */}
+        <section className="px-4 mb-6">
+          <div className="grid grid-cols-2 gap-3">
+            <Button
+              variant="outline"
+              onClick={() => window.location.href = "/connections"}
+              className="flex items-center gap-2 h-12"
+            >
+              <Users className="h-4 w-4" />
+              Connections
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => window.location.href = "/calendar"}
+              className="flex items-center gap-2 h-12"
+            >
+              <Calendar className="h-4 w-4" />
+              Calendar
+            </Button>
+          </div>
+        </section>
 
         {moments.length > 0 ? (
           <Tabs defaultValue="coach" className="w-full">
