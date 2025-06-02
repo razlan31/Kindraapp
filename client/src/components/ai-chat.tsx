@@ -46,14 +46,14 @@ export function AIChat() {
   const queryClient = useQueryClient();
 
   // Load conversation history
-  const { data: conversationData } = useQuery<ConversationResponse>({
+  const { data: conversationData } = useQuery({
     queryKey: ['/api/ai/conversation'],
     staleTime: 1000 * 60 * 5, // 5 minutes
   });
 
   useEffect(() => {
-    if (conversationData?.conversation) {
-      setConversation(conversationData.conversation.map(msg => ({
+    if (conversationData && (conversationData as any).conversation) {
+      setConversation((conversationData as any).conversation.map((msg: any) => ({
         ...msg,
         timestamp: new Date(msg.timestamp)
       })));
@@ -63,13 +63,18 @@ export function AIChat() {
   // Chat mutation
   const chatMutation = useMutation({
     mutationFn: async (userMessage: string) => {
-      const response = await apiRequest<ChatResponse>('/api/ai/chat', {
+      const response = await fetch('/api/ai/chat', {
         method: 'POST',
-        body: { message: userMessage }
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({ message: userMessage })
       });
-      return response;
+      if (!response.ok) throw new Error('Failed to send message');
+      return response.json();
     },
-    onSuccess: (data, userMessage) => {
+    onSuccess: (data: any, userMessage) => {
       const newUserMessage: ChatMessage = {
         role: 'user',
         content: userMessage,
@@ -96,9 +101,12 @@ export function AIChat() {
   // Clear conversation mutation
   const clearMutation = useMutation({
     mutationFn: async () => {
-      await apiRequest('/api/ai/conversation', {
-        method: 'DELETE'
+      const response = await fetch('/api/ai/conversation', {
+        method: 'DELETE',
+        credentials: 'include'
       });
+      if (!response.ok) throw new Error('Failed to clear conversation');
+      return response.json();
     },
     onSuccess: () => {
       setConversation([]);
