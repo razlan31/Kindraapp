@@ -6,11 +6,13 @@ import { StatCard } from "@/components/dashboard/stat-card";
 import { ConnectionCard } from "@/components/dashboard/connection-card";
 import { MomentCard } from "@/components/dashboard/moment-card";
 import { BadgeShowcase } from "@/components/dashboard/badge-showcase";
+import { AIInsights } from "@/components/insights/ai-insights";
+import { AIChat } from "@/components/ai-chat";
 import { Connection, Moment, Badge, MenstrualCycle } from "@shared/schema";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
 import { useModal } from "@/contexts/modal-context";
-import { Sparkles, Calendar, ChevronDown, Heart, Plus, Circle } from "lucide-react";
+import { Sparkles, Calendar, ChevronDown, Heart, Plus, Circle, TrendingUp } from "lucide-react";
 import { Link } from "wouter";
 import { FocusSelector } from "@/components/relationships/focus-selector";
 import { useRelationshipFocus } from "@/contexts/relationship-focus-context";
@@ -372,6 +374,36 @@ function MenstrualCycleTracker() {
             </div>
           </section>
         )}
+
+        {/* AI Insights Section */}
+        <section className="px-3 py-2">
+          <div className="bg-white dark:bg-neutral-900 rounded-xl border border-neutral-200 dark:border-neutral-800">
+            <div className="p-4 border-b border-neutral-200 dark:border-neutral-800">
+              <div className="flex items-center gap-2">
+                <TrendingUp className="h-5 w-5 text-primary" />
+                <h3 className="font-heading font-semibold text-primary">AI Insights</h3>
+              </div>
+              <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
+                Data-driven patterns from your relationship tracking
+              </p>
+            </div>
+            <div className="p-4">
+              <AIInsights 
+                connections={connections} 
+                moments={moments} 
+                userData={{
+                  zodiacSign: user?.zodiacSign || undefined,
+                  loveLanguage: user?.loveLanguage || undefined
+                }}
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* AI Chat Section */}
+        <section className="px-3 py-2">
+          <AIChat />
+        </section>
 
         {/* Connection Focus Section */}
         {focusConnection && (
