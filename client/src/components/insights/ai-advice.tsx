@@ -17,7 +17,7 @@ interface AIAdviceProps {
 
 export function AIAdvice({ connections, moments, userData }: AIAdviceProps) {
   const [question, setQuestion] = useState("");
-  const [responses, setResponses] = useState<Array<{question: string, advice: string}>>([]);
+  const [currentResponse, setCurrentResponse] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
 
   const contextualAdvice = generateContextualAdvice(connections, moments, userData);
@@ -27,17 +27,10 @@ export function AIAdvice({ connections, moments, userData }: AIAdviceProps) {
     
     setIsLoading(true);
     
-    // Check if this is a similar question to previous ones
-    const previousQuestions = responses.map(r => r.question.toLowerCase());
-    const isRepeatQuestion = previousQuestions.some(prev => 
-      question.toLowerCase().includes(prev.slice(0, 20)) || 
-      prev.includes(question.toLowerCase().slice(0, 20))
-    );
-    
     // Generate contextual response based on user's data and question
-    const response = generateAdviceResponse(question, connections, moments, userData, responses.length, isRepeatQuestion);
+    const response = generateAdviceResponse(question, connections, moments, userData);
     
-    setResponses(prev => [...prev, { question, advice: response }]);
+    setCurrentResponse(response);
     setQuestion("");
     setIsLoading(false);
   };
@@ -72,24 +65,16 @@ export function AIAdvice({ connections, moments, userData }: AIAdviceProps) {
             </div>
           )}
 
-          {/* Chat interface */}
-          <div className="space-y-3">
-            {responses.map((response, index) => (
-              <div key={index} className="space-y-2">
-                <div className="bg-primary/10 p-3 rounded-lg">
-                  <p className="text-sm font-medium">You asked:</p>
-                  <p className="text-sm">{response.question}</p>
-                </div>
-                <div className="bg-neutral-50 dark:bg-neutral-800 p-3 rounded-lg">
-                  <p className="text-sm font-medium mb-1 flex items-center gap-2">
-                    <MessageCircle className="h-4 w-4" />
-                    AI Coach:
-                  </p>
-                  <p className="text-sm">{response.advice}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+          {/* Current Response */}
+          {currentResponse && (
+            <div className="bg-neutral-50 dark:bg-neutral-800 p-4 rounded-lg">
+              <p className="text-sm font-medium mb-2 flex items-center gap-2">
+                <MessageCircle className="h-4 w-4" />
+                AI Coach:
+              </p>
+              <p className="text-sm leading-relaxed">{currentResponse}</p>
+            </div>
+          )}
 
           {/* Question input */}
           <div className="space-y-2">
@@ -111,7 +96,7 @@ export function AIAdvice({ connections, moments, userData }: AIAdviceProps) {
           </div>
 
           {/* Suggested questions */}
-          {responses.length === 0 && (
+          {!currentResponse && (
             <div className="border-t pt-4">
               <p className="text-sm font-medium mb-2">Try asking:</p>
               <div className="space-y-1">
@@ -162,13 +147,10 @@ function generateContextualAdvice(connections: Connection[], moments: Moment[], 
   return advice;
 }
 
-function generateAdviceResponse(question: string, connections: Connection[], moments: Moment[], userData: any, conversationCount: number = 0, isRepeat: boolean = false): string {
+function generateAdviceResponse(question: string, connections: Connection[], moments: Moment[], userData: any): string {
   const lowerQuestion = question.toLowerCase();
   
-  // Handle repeat questions
-  if (isRepeat) {
-    return "I notice you're asking about something similar to before. Let me offer a different perspective - sometimes the key is in the small, consistent actions rather than big changes. What specific aspect would you like to explore deeper?";
-  }
+
   
   // Analyze the user's question context
   const connectionNames = connections.map(c => c.name.toLowerCase());
@@ -207,9 +189,7 @@ function generateAdviceResponse(question: string, connections: Connection[], mom
       );
       
       if (conversationMoments.length > 0) {
-        const baseResponse = `Based on your tracking with ${mentionedConnection.name}, you've had ${conversationMoments.length} meaningful conversation moments.`;
-        const variation = responseVariations.communication[conversationCount % responseVariations.communication.length];
-        return `${baseResponse} ${variation}`;
+        return `Based on your tracking with ${mentionedConnection.name}, you've had ${conversationMoments.length} meaningful conversation moments. Try building on what's worked before - perhaps setting aside dedicated time for deeper talks when you're both relaxed and present.`;
       } else {
         return `For improving communication with ${mentionedConnection.name}, start small. Try asking open-ended questions about their day or feelings. Since you're both at the ${mentionedConnection.relationshipStage} stage, focus on creating safe spaces for honest sharing.`;
       }
@@ -217,8 +197,7 @@ function generateAdviceResponse(question: string, connections: Connection[], mom
       if (userData.loveLanguage === 'Words of Affirmation') {
         return "Since Words of Affirmation is your love language, clear communication is especially important to you. Express your needs openly and encourage others to share their feelings with you.";
       }
-      const variation = responseVariations.communication[conversationCount % responseVariations.communication.length];
-      return variation;
+      return "Communication is the foundation of any strong relationship. Focus on being present and truly listening.";
     }
   }
 
@@ -233,15 +212,12 @@ function generateAdviceResponse(question: string, connections: Connection[], mom
       });
 
       if (recentMoments.length === 0) {
-        const variation = responseVariations.distance[conversationCount % responseVariations.distance.length];
-        return `It looks like you haven't tracked moments with ${mentionedConnection.name} recently. ${variation}`;
+        return `It looks like you haven't tracked moments with ${mentionedConnection.name} recently. This might reflect the distance you're feeling. Consider reaching out with a simple, no-pressure message to reconnect.`;
       } else {
-        const variation = responseVariations.distance[conversationCount % responseVariations.distance.length];
-        return `Even though you've been tracking moments with ${mentionedConnection.name}, feeling distant can happen. ${variation}`;
+        return `Even though you've been tracking moments with ${mentionedConnection.name}, feeling distant can happen. Sometimes this is natural in relationships. Consider whether you need more quality time together or if there are unspoken needs.`;
       }
     } else {
-      const variation = responseVariations.distance[conversationCount % responseVariations.distance.length];
-      return variation;
+      return "Feeling distant often signals unmet needs or life stress. Reflect on what you specifically miss, and consider whether it's about connection quality, frequency, or something deeper like personal growth phases.";
     }
   }
 
