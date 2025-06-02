@@ -41,13 +41,9 @@ export default function Activities() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedConnection, setSelectedConnection] = useState<number | null>(null);
   const [selectedConnections, setSelectedConnections] = useState<number[]>([]);
-  const [activeTab, setActiveTab] = useState<'moments' | 'conflicts' | 'sex' | 'plans' | 'timeline'>(() => {
+  const [activeTab, setActiveTab] = useState<'moments' | 'conflicts' | 'intimacy' | 'plans' | 'timeline'>(() => {
     // Preserve tab selection across page reloads
     const savedTab = localStorage.getItem('activitiesTab');
-    // Convert old 'intimacy' to 'sex'
-    if (savedTab === 'intimacy') {
-      return 'sex';
-    }
     return (savedTab as any) || 'timeline';
   });
 
@@ -55,7 +51,7 @@ export default function Activities() {
   useEffect(() => {
     localStorage.setItem('activitiesTab', activeTab);
   }, [activeTab]);
-  const [timelineFilter, setTimelineFilter] = useState<'all' | 'moments' | 'conflicts' | 'sex' | 'plans' | 'milestones'>('all');
+  const [timelineFilter, setTimelineFilter] = useState<'all' | 'moments' | 'conflicts' | 'intimacy' | 'plans' | 'milestones'>('all');
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   // Connection modal state
@@ -364,16 +360,16 @@ export default function Activities() {
       } else if (timelineFilter === 'moments') {
         // Show regular moments (exclude conflicts, intimacy, plans, and milestones)
         const isConflict = tags.includes('Conflict') || moment.emoji === '⚡';
-        const isIntimacy = moment.isIntimate === true || tags.includes('Sex') || moment.emoji === '💕';
+        const isIntimacy = moment.isIntimate === true || tags.includes('Intimacy') || moment.emoji === '💕';
         const isPlan = tags.includes('Plan');
         const isMilestone = tags.includes('Milestone') || (moment as any).isConnectionMilestone;
         matchesTab = !isConflict && !isIntimacy && !isPlan && !isMilestone;
       } else if (timelineFilter === 'conflicts') {
         // Show conflicts
         matchesTab = tags.includes('Conflict') || moment.emoji === '⚡';
-      } else if (timelineFilter === 'sex') {
-        // Show sex entries
-        matchesTab = moment.isIntimate === true || tags.includes('Sex') || moment.emoji === '💕';
+      } else if (timelineFilter === 'intimacy') {
+        // Show intimacy entries
+        matchesTab = moment.isIntimate === true || tags.includes('Intimacy') || moment.emoji === '💕';
       } else if (timelineFilter === 'plans') {
         // Show plan entries
         matchesTab = tags.includes('Plan');
@@ -390,9 +386,9 @@ export default function Activities() {
     } else if (activeTab === 'conflicts') {
       // Show conflicts - only show entries that are actually conflicts
       matchesTab = tags.includes('Conflict') || moment.emoji === '⚡';
-    } else if (activeTab === 'sex') {
-      // Show sex entries
-      matchesTab = moment.isIntimate === true || tags.includes('Sex') || moment.emoji === '💕';
+    } else if (activeTab === 'intimacy') {
+      // Show intimacy entries
+      matchesTab = moment.isIntimate === true || tags.includes('Intimacy') || moment.emoji === '💕';
     }
     
     const matchesSearch = moment.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -469,14 +465,14 @@ export default function Activities() {
               Conflicts
             </button>
             <button 
-              onClick={() => setActiveTab('sex')}
+              onClick={() => setActiveTab('intimacy')}
               className={`py-2 px-2 rounded-md text-xs font-medium transition-colors ${
-                activeTab === 'sex' 
+                activeTab === 'intimacy' 
                   ? 'bg-background text-foreground shadow-sm' 
                   : 'text-muted-foreground hover:text-foreground'
               }`}
             >
-              Sex
+              Intimacy
             </button>
             <button 
               onClick={() => setActiveTab('plans')}
@@ -807,8 +803,8 @@ export default function Activities() {
                             if (!connection) return null;
 
                             const getActivityType = (moment: Moment) => {
-                              // Priority 1: Check if it's intimacy (isIntimate flag or sex tags)
-                              if (moment.isIntimate === true || moment.tags?.includes('Sex')) return 'intimacy';
+                              // Priority 1: Check if it's intimacy (isIntimate flag or intimacy tags)
+                              if (moment.isIntimate === true || moment.tags?.includes('Intimacy')) return 'intimacy';
                               
                               // Priority 2: Check if it's a conflict (has conflict indicators)
                               if (moment.tags?.includes('Conflict') || 
