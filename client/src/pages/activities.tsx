@@ -803,8 +803,8 @@ export default function Activities() {
                             if (!connection) return null;
 
                             const getActivityType = (moment: Moment) => {
-                              // Priority 1: Check if it's intimacy (isIntimate flag or intimacy tags)
-                              if (moment.isIntimate === true || moment.tags?.includes('Intimacy')) return 'intimacy';
+                              // Priority 1: Check if it's intimacy (isIntimate flag or sex tags)
+                              if (moment.isIntimate === true || moment.tags?.includes('Sex')) return 'intimacy';
                               
                               // Priority 2: Check if it's a conflict (has conflict indicators)
                               if (moment.tags?.includes('Conflict') || 
