@@ -2088,6 +2088,362 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Create a comprehensive connection template with all types of entries
+  app.post("/api/create-template-connection", isAuthenticated, async (req: Request, res: Response) => {
+    try {
+      const userId = req.session.userId!;
+      
+      // Create the template connection
+      const templateConnection = await storage.createConnection({
+        userId,
+        name: "Taylor",
+        profileImage: null,
+        relationshipStage: "Dating",
+        startDate: "2024-12-01T00:00:00.000Z",
+        birthday: "1996-08-22T00:00:00.000Z",
+        zodiacSign: "Virgo",
+        loveLanguage: "Acts of Service",
+        isPrivate: false
+      });
+
+      console.log("Created template connection:", templateConnection);
+
+      // Create comprehensive moments covering all entry types
+      const templateMoments = [
+        // 1. Connection Start Milestone
+        {
+          userId,
+          connectionId: templateConnection.id,
+          emoji: "💫",
+          content: "Met at the coffee shop downtown - instant connection!",
+          title: "First Meeting",
+          tags: ["Milestone", "First Meeting"],
+          isPrivate: false,
+          isIntimate: false,
+          intimacyRating: null,
+          relatedToMenstrualCycle: false,
+          isResolved: false,
+          resolvedAt: null,
+          resolutionNotes: null,
+          reflection: "There was something special about the way we talked for hours without noticing time pass.",
+          isMilestone: true,
+          milestoneTitle: "First Meeting",
+          createdAt: "2024-12-01T14:30:00.000Z"
+        },
+
+        // 2. Positive Dating Moment
+        {
+          userId,
+          connectionId: templateConnection.id,
+          emoji: "😍",
+          content: "Amazing first official date at the art museum - we both love contemporary art!",
+          title: "First Date Success",
+          tags: ["Date", "Art", "Green Flag"],
+          isPrivate: false,
+          isIntimate: false,
+          intimacyRating: null,
+          relatedToMenstrualCycle: false,
+          isResolved: false,
+          resolvedAt: null,
+          resolutionNotes: null,
+          reflection: "I love how we can discuss art for hours. Taylor has such insightful perspectives.",
+          createdAt: "2024-12-05T19:45:00.000Z"
+        },
+
+        // 3. Communication Moment
+        {
+          userId,
+          connectionId: templateConnection.id,
+          emoji: "🗣️",
+          content: "Had a deep conversation about our future goals and values - we're very aligned!",
+          title: "Values Alignment Talk",
+          tags: ["Communication", "Deep Talk", "Green Flag"],
+          isPrivate: false,
+          isIntimate: false,
+          intimacyRating: null,
+          relatedToMenstrualCycle: false,
+          isResolved: false,
+          resolvedAt: null,
+          resolutionNotes: null,
+          reflection: "It's rare to find someone who shares similar life goals and values. This felt really meaningful.",
+          createdAt: "2024-12-10T20:15:00.000Z"
+        },
+
+        // 4. Conflict Resolution
+        {
+          userId,
+          connectionId: templateConnection.id,
+          emoji: "😔",
+          content: "Had our first disagreement about planning styles - I'm spontaneous, Taylor likes structure",
+          title: "Planning Style Conflict",
+          tags: ["Conflict", "Communication"],
+          isPrivate: false,
+          isIntimate: false,
+          intimacyRating: null,
+          relatedToMenstrualCycle: true,
+          isResolved: true,
+          resolvedAt: "2024-12-12T16:30:00.000Z",
+          resolutionNotes: "We talked it through and found a compromise - we'll alternate between planned and spontaneous activities",
+          reflection: "Actually handled this really well. Taylor was patient and we found a solution together.",
+          createdAt: "2024-12-12T14:20:00.000Z"
+        },
+
+        // 5. Intimacy Moment (Emotional)
+        {
+          userId,
+          connectionId: templateConnection.id,
+          emoji: "💕",
+          content: "Shared vulnerable stories about our families - felt so emotionally connected",
+          title: "Emotional Intimacy",
+          tags: ["Intimacy", "Vulnerability", "Connection"],
+          isPrivate: true,
+          isIntimate: true,
+          intimacyRating: "medium",
+          relatedToMenstrualCycle: false,
+          isResolved: false,
+          resolvedAt: null,
+          resolutionNotes: null,
+          reflection: "Opening up about family stuff was scary but Taylor was so understanding and supportive.",
+          createdAt: "2024-12-15T21:30:00.000Z"
+        },
+
+        // 6. Physical Intimacy
+        {
+          userId,
+          connectionId: templateConnection.id,
+          emoji: "🔥",
+          content: "First time being physically intimate - beautiful and meaningful",
+          title: "Physical Intimacy Milestone",
+          tags: ["Intimacy", "Physical", "Milestone"],
+          isPrivate: true,
+          isIntimate: true,
+          intimacyRating: "high",
+          relatedToMenstrualCycle: false,
+          isResolved: false,
+          resolvedAt: null,
+          resolutionNotes: null,
+          reflection: "Felt natural and right. Taylor was gentle and considerate. This brought us closer.",
+          createdAt: "2024-12-18T23:45:00.000Z"
+        },
+
+        // 7. Cycle-Related Moment
+        {
+          userId,
+          connectionId: templateConnection.id,
+          emoji: "🤗",
+          content: "Taylor brought me comfort food and gave me space when I was feeling emotional during my cycle",
+          title: "Cycle Support",
+          tags: ["Support", "Cycle", "Green Flag", "Acts of Service"],
+          isPrivate: false,
+          isIntimate: false,
+          intimacyRating: null,
+          relatedToMenstrualCycle: true,
+          isResolved: false,
+          resolvedAt: null,
+          resolutionNotes: null,
+          reflection: "Taylor is so thoughtful about understanding my cycle. Acts of service love language showing through.",
+          createdAt: "2024-12-22T16:00:00.000Z"
+        },
+
+        // 8. Love Language Moment
+        {
+          userId,
+          connectionId: templateConnection.id,
+          emoji: "🏠",
+          content: "Taylor surprised me by organizing my cluttered workspace while I was at work",
+          title: "Acts of Service Love",
+          tags: ["Acts of Service", "Love Language", "Surprise", "Green Flag"],
+          isPrivate: false,
+          isIntimate: false,
+          intimacyRating: null,
+          relatedToMenstrualCycle: false,
+          isResolved: false,
+          resolvedAt: null,
+          resolutionNotes: null,
+          reflection: "This is exactly how Taylor shows love - through helpful actions. Feels so seen and cared for.",
+          createdAt: "2024-12-25T18:30:00.000Z"
+        },
+
+        // 9. Quality Time Moment
+        {
+          userId,
+          connectionId: templateConnection.id,
+          emoji: "🌅",
+          content: "Watched the sunrise together after staying up all night talking about everything",
+          title: "Quality Time Magic",
+          tags: ["Quality Time", "Deep Talk", "Connection", "Special Moment"],
+          isPrivate: false,
+          isIntimate: false,
+          intimacyRating: null,
+          relatedToMenstrualCycle: false,
+          isResolved: false,
+          resolvedAt: null,
+          resolutionNotes: null,
+          reflection: "These unplanned moments of just being together are my favorite. Time stops when we're talking.",
+          createdAt: "2024-12-28T06:15:00.000Z"
+        },
+
+        // 10. Growth Moment
+        {
+          userId,
+          connectionId: templateConnection.id,
+          emoji: "🌱",
+          content: "Taylor encouraged me to apply for that promotion I was nervous about",
+          title: "Personal Growth Support",
+          tags: ["Growth", "Support", "Encouragement", "Green Flag"],
+          isPrivate: false,
+          isIntimate: false,
+          intimacyRating: null,
+          relatedToMenstrualCycle: false,
+          isResolved: false,
+          resolvedAt: null,
+          resolutionNotes: null,
+          reflection: "Taylor believes in me even when I don't believe in myself. This kind of support means everything.",
+          createdAt: "2025-01-02T12:00:00.000Z"
+        },
+
+        // 11. Special Occasion
+        {
+          userId,
+          connectionId: templateConnection.id,
+          emoji: "🎉",
+          content: "Celebrated New Year together - perfect kiss at midnight!",
+          title: "New Year Together",
+          tags: ["Celebration", "Holiday", "Milestone", "Romance"],
+          isPrivate: false,
+          isIntimate: false,
+          intimacyRating: null,
+          relatedToMenstrualCycle: false,
+          isResolved: false,
+          resolvedAt: null,
+          resolutionNotes: null,
+          reflection: "Starting the new year with Taylor feels like a good omen. Excited for what's ahead.",
+          createdAt: "2025-01-01T00:00:00.000Z"
+        },
+
+        // 12. Friendship Integration
+        {
+          userId,
+          connectionId: templateConnection.id,
+          emoji: "👥",
+          content: "Introduced Taylor to my closest friends - everyone loved them!",
+          title: "Friend Group Integration",
+          tags: ["Friends", "Social", "Integration", "Milestone"],
+          isPrivate: false,
+          isIntimate: false,
+          intimacyRating: null,
+          relatedToMenstrualCycle: false,
+          isResolved: false,
+          resolvedAt: null,
+          resolutionNotes: null,
+          reflection: "My friends' approval means a lot to me. Taylor fit right in and everyone had such a good time.",
+          createdAt: "2025-01-05T19:00:00.000Z"
+        },
+
+        // 13. Future Planning
+        {
+          userId,
+          connectionId: templateConnection.id,
+          emoji: "✈️",
+          content: "Planned our first weekend trip together for Valentine's Day",
+          title: "Future Plans Together",
+          tags: ["Planning", "Travel", "Future", "Romance"],
+          isPrivate: false,
+          isIntimate: false,
+          intimacyRating: null,
+          relatedToMenstrualCycle: false,
+          isResolved: false,
+          resolvedAt: null,
+          resolutionNotes: null,
+          reflection: "Making future plans together feels natural and exciting. We both want to explore new places.",
+          createdAt: "2025-01-08T14:45:00.000Z"
+        },
+
+        // 14. Thoughtful Gesture
+        {
+          userId,
+          connectionId: templateConnection.id,
+          emoji: "📚",
+          content: "Taylor remembered I mentioned wanting to read more poetry and gifted me a beautiful collection",
+          title: "Thoughtful Gift",
+          tags: ["Gift", "Thoughtful", "Memory", "Literature", "Green Flag"],
+          isPrivate: false,
+          isIntimate: false,
+          intimacyRating: null,
+          relatedToMenstrualCycle: false,
+          isResolved: false,
+          resolvedAt: null,
+          resolutionNotes: null,
+          reflection: "The fact that Taylor remembered this small detail from weeks ago shows how much they listen and care.",
+          createdAt: "2025-01-12T17:20:00.000Z"
+        },
+
+        // 15. Relationship Milestone
+        {
+          userId,
+          connectionId: templateConnection.id,
+          emoji: "💝",
+          content: "Officially decided to be exclusive - we're a couple!",
+          title: "Becoming Official",
+          tags: ["Milestone", "Exclusive", "Commitment", "Relationship Stage"],
+          isPrivate: false,
+          isIntimate: false,
+          intimacyRating: null,
+          relatedToMenstrualCycle: false,
+          isResolved: false,
+          resolvedAt: null,
+          resolutionNotes: null,
+          reflection: "This feels right and natural. We both want to focus on building something special together.",
+          isMilestone: true,
+          milestoneTitle: "Becoming Official",
+          createdAt: "2025-01-15T20:30:00.000Z"
+        }
+      ];
+
+      // Create all moments
+      const createdMoments = [];
+      for (const momentData of templateMoments) {
+        try {
+          const moment = await storage.createMoment(momentData);
+          createdMoments.push(moment);
+          console.log(`Created moment: ${moment.title}`);
+        } catch (error) {
+          console.error(`Error creating moment ${momentData.title}:`, error);
+        }
+      }
+
+      // Create menstrual cycle data for this connection
+      try {
+        const cycleData = {
+          userId,
+          connectionId: templateConnection.id,
+          startDate: "2024-12-20T00:00:00.000Z",
+          periodEndDate: "2024-12-25T00:00:00.000Z",
+          endDate: "2025-01-18T00:00:00.000Z",
+          notes: "Regular 29-day cycle - Taylor has been very supportive",
+          mood: "positive",
+          symptoms: "mild cramping, supported well",
+          flowIntensity: "medium"
+        };
+        
+        const cycle = await storage.createMenstrualCycle(cycleData);
+        console.log("Created menstrual cycle:", cycle);
+      } catch (error) {
+        console.error("Error creating cycle:", error);
+      }
+
+      res.json({
+        connection: templateConnection,
+        moments: createdMoments,
+        message: "Comprehensive connection template created successfully!"
+      });
+
+    } catch (error) {
+      console.error("Error creating template connection:", error);
+      res.status(500).json({ error: "Failed to create template connection" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

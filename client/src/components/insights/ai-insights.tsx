@@ -18,7 +18,11 @@ export function AIInsights({ connections, moments, userData }: AIInsightsProps) 
     connectionsLength: connections.length,
     momentsLength: moments.length,
     userData,
-    moments: moments.slice(0, 3) // Show first 3 moments for debugging
+    momentsPreview: moments.slice(0, 3).map(m => ({
+      id: m.id,
+      emoji: m.emoji,
+      content: m.content?.substring(0, 50)
+    }))
   });
 
   // Generate data-driven insights
