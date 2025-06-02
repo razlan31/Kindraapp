@@ -385,17 +385,20 @@ function generateDataInsights(connections: Connection[], moments: Moment[], user
 
   // Intimacy and vulnerability analysis
   const intimateMoments = moments.filter(m => m.isIntimate);
-  const totalIntimateByConnection = connectionMomentCounts.map(conn => ({
-    ...conn,
-    intimateCount: moments.filter(m => m.connectionId === conn.id && m.isIntimate).length
-  }));
-
+  
   if (intimateMoments.length > 0) {
     const intimacyRatio = intimateMoments.length / totalMoments;
-    const mostIntimateConnection = totalIntimateByConnection.reduce((max, conn) => 
-      conn.intimateCount > max.intimateCount ? conn : max, totalIntimateByConnection[0]);
     
-    if (intimacyRatio > 0.3) {
+    // Calculate intimate moments per connection safely
+    const intimateByConnection = connectionMomentCounts.map(conn => ({
+      ...conn,
+      intimateCount: moments.filter(m => m.connectionId === conn.id && m.isIntimate).length
+    })).filter(conn => conn.intimateCount > 0);
+
+    if (intimacyRatio > 0.3 && intimateByConnection.length > 0) {
+      const mostIntimateConnection = intimateByConnection.reduce((max, conn) => 
+        conn.intimateCount > max.intimateCount ? conn : max);
+      
       // Find the actual connection object to get the name safely
       const connectionData = connections.find(c => c.id === mostIntimateConnection.id);
       const connectionName = connectionData?.name || "a connection";
