@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { useModal } from "@/contexts/modal-context";
+import { ManualInsight } from "@/components/insights/manual-insight";
 import type { Moment, Connection } from "@shared/schema";
 
 interface EntryDetailModalProps {
@@ -480,6 +481,33 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection, onUpdate
               ) : (
                 <p className="text-sm text-gray-500 italic">No reflection added</p>
               )}
+            </div>
+          )}
+
+          {/* Manual AI Insight Generation */}
+          {!isEditing && (
+            <div className="space-y-2">
+              <label className="text-sm font-medium">AI Insight</label>
+              <ManualInsight 
+                context={
+                  getActivityType(freshMoment) === 'conflict' ? 'conflict-entry' :
+                  getActivityType(freshMoment) === 'intimacy' ? 'moment-entry' :
+                  'activity-card'
+                }
+                data={{
+                  content: freshMoment.content,
+                  title: freshMoment.title,
+                  emoji: freshMoment.emoji,
+                  isPrivate: freshMoment.isPrivate,
+                  isIntimate: freshMoment.isIntimate,
+                  tags: freshMoment.tags,
+                  connectionName: connection.name,
+                  description: freshMoment.content,
+                  resolution: freshMoment.resolutionNotes,
+                  notes: freshMoment.reflection
+                }}
+                className="w-full"
+              />
             </div>
           )}
 

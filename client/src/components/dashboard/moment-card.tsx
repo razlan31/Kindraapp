@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { MessageSquare, Sparkles } from "lucide-react";
 import { Moment } from "@shared/schema";
 import { formatDistanceToNow } from "date-fns";
-import { MiniInsight } from "@/components/insights/mini-insight";
+
 
 interface MomentCardProps {
   moment: Moment;
@@ -125,28 +125,6 @@ export function MomentCard({ moment, connection, onAddReflection, onViewDetail, 
                 {moment.content}
               </p>
             )}
-            
-            {/* Mini AI Insight for this moment */}
-            <MiniInsight 
-              context={
-                getMomentType(moment) === 'Conflict' ? 'conflict-entry' :
-                getMomentType(moment) === 'Intimacy' ? 'moment-entry' :
-                'activity-card'
-              }
-              data={{
-                content: moment.content,
-                title: moment.title,
-                emoji: moment.emoji,
-                isPrivate: moment.isPrivate,
-                isIntimate: moment.isIntimate,
-                tags: moment.tags,
-                connectionName: connection.name,
-                description: moment.content,
-                resolution: moment.resolutionNotes,
-                notes: moment.reflection
-              }}
-              className="mb-3"
-            />
             
             {/* Only show tags for regular moments, not conflicts or intimacy */}
             {getMomentType(moment) === null && moment.tags && moment.tags.length > 0 && (
