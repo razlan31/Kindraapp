@@ -32,13 +32,34 @@ export default function Dashboard() {
     enabled: !loading && !!user,
   });
 
-  // Fetch recent moments
-  const { data: moments = [], isLoading: momentsLoading, error: momentsError, refetch: refetchMoments } = useQuery<Moment[]>({
-    queryKey: ["moments"],
-    queryFn: () => fetch("/api/moments").then(res => res.json()),
-    enabled: true,
-    staleTime: 0,
-  });
+  // State for moments data
+  const [moments, setMoments] = useState<Moment[]>([]);
+  const [momentsLoading, setMomentsLoading] = useState(false);
+  const [momentsError, setMomentsError] = useState<string | null>(null);
+
+  // Function to fetch moments
+  const refetchMoments = () => {
+    if (user) {
+      setMomentsLoading(true);
+      setMomentsError(null);
+      fetch("/api/moments")
+        .then(res => res.json())
+        .then(data => {
+          console.log("Moments loaded:", data.length);
+          setMoments(data);
+        })
+        .catch(err => {
+          console.error("Error loading moments:", err);
+          setMomentsError("Failed to load moments");
+        })
+        .finally(() => setMomentsLoading(false));
+    }
+  };
+
+  // Fetch moments when user loads
+  useEffect(() => {
+    refetchMoments();
+  }, [user?.id]);
 
   // Listen for moment creation and update events to refetch data immediately
   useEffect(() => {
@@ -404,16 +425,14 @@ function MenstrualCycleTracker() {
                   <TrendingUp className="h-5 w-5 text-primary" />
                   <h3 className="font-heading font-semibold text-primary">AI Insights</h3>
                 </div>
-                {moments.length === 0 && (
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    onClick={() => refetchMoments()}
-                    disabled={momentsLoading}
-                  >
-                    {momentsLoading ? "Loading..." : "Load Data"}
-                  </Button>
-                )}
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => refetchMoments()}
+                  disabled={momentsLoading}
+                >
+                  {momentsLoading ? "Loading..." : "Refresh Data"}
+                </Button>
               </div>
               <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
                 Data-driven patterns from your relationship tracking
