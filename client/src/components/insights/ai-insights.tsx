@@ -13,22 +13,33 @@ interface AIInsightsProps {
 }
 
 export function AIInsights({ connections, moments, userData }: AIInsightsProps) {
-  // Debug logging
+  // Safe debug logging without circular references
   console.log("AI Insights Debug:", {
     connectionsLength: connections.length,
     momentsLength: moments.length,
-    userData,
+    userData: userData || {},
     momentsPreview: moments.slice(0, 3).map(m => ({
       id: m.id,
       emoji: m.emoji,
-      content: m.content?.substring(0, 50)
+      content: m.content?.substring(0, 50) || ""
     }))
   });
 
-  // Generate data-driven insights
-  const insights = generateDataInsights(connections, moments, userData);
-  
-  console.log("Generated insights:", insights);
+  // Generate data-driven insights with error handling
+  let insights: InsightData[] = [];
+  try {
+    insights = generateDataInsights(connections, moments, userData);
+  } catch (error) {
+    console.error("Error generating insights:", error);
+    insights = [{
+      title: "Loading Insights",
+      description: "Analyzing your relationship data...",
+      type: 'neutral',
+      confidence: 50,
+      icon: <TrendingUp className="h-4 w-4 text-blue-600" />,
+      dataPoints: ["Processing data"]
+    }];
+  }
 
   if (insights.length === 0) {
     return (

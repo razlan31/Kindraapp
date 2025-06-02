@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { Connection, Moment } from "@shared/schema";
-import { AIInsights } from "@/components/insights/ai-insights";
+import { AIInsights } from "@/components/insights/ai-insights-simple";
 import { AIAdvice } from "@/components/insights/ai-advice";
 import { AIChat } from "@/components/ai-chat";
 import { 
