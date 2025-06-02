@@ -119,7 +119,7 @@ export default function InsightsNew() {
             </div>
             <div>
               <h2 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                Luna's Relationship Insights
+                Relationship Insights
               </h2>
               <p className="text-sm text-neutral-600 dark:text-neutral-400">
                 AI-powered analysis of your relationship patterns
