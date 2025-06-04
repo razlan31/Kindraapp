@@ -60,6 +60,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const loggedInUser = await loginUser(username, password);
       setUser(loggedInUser);
+      console.log("Auth context: Login successful, user set:", loggedInUser);
     } catch (error) {
       console.error("Login failed:", error);
       throw error;
