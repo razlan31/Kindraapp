@@ -63,7 +63,7 @@ export default function Register() {
         title: "Welcome to Kindra!",
         description: "Your account has been created successfully"
       });
-      setLocation("/");
+      setLocation("/onboarding/welcome");
     } catch (error) {
       toast({
         title: "Registration failed",
