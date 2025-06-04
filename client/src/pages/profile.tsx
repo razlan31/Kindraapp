@@ -37,9 +37,9 @@ export default function ProfilePage() {
         email: user.email || "",
         zodiacSign: user.zodiacSign || "",
         loveLanguages: user.loveLanguage ? user.loveLanguage.split(", ").filter((lang, index, arr) => arr.indexOf(lang) === index) : [],
-        relationshipGoals: "Finding meaningful connections",
-        relationshipStyle: "Exploring",
-        bio: "Building deeper emotional connections and understanding relationship patterns.",
+        relationshipGoals: user.relationshipGoals || "",
+        relationshipStyle: user.relationshipStyle || "",
+        bio: user.personalNotes || "",
         notifications: true,
         privateMode: false,
         analyticsSharing: true,
@@ -54,33 +54,14 @@ export default function ProfilePage() {
     email: "",
     zodiacSign: "",
     loveLanguages: [] as string[],
-    relationshipGoals: "Finding meaningful connections",
-    relationshipStyle: "Exploring",
-    bio: "Building deeper emotional connections and understanding relationship patterns.",
+    relationshipGoals: "",
+    relationshipStyle: "",
+    bio: "",
     notifications: true,
     privateMode: false,
     analyticsSharing: true,
     profileImage: ""
   });
-
-  // Update form when user data loads
-  useEffect(() => {
-    if (user) {
-      setFormData({
-        displayName: user.displayName || "",
-        email: user.email || "",
-        zodiacSign: user.zodiacSign || "",
-        loveLanguages: user.loveLanguage ? [user.loveLanguage] : [],
-        relationshipGoals: "Finding meaningful connections",
-        relationshipStyle: "Exploring",
-        bio: "Building deeper emotional connections and understanding relationship patterns.",
-        notifications: true,
-        privateMode: false,
-        analyticsSharing: true,
-        profileImage: ""
-      });
-    }
-  }, [user]);
 
   const saveMutation = useMutation({
     mutationFn: async (data: any) => {
@@ -141,9 +122,9 @@ export default function ProfilePage() {
         email: user.email || "",
         zodiacSign: user.zodiacSign || "",
         loveLanguages: user.loveLanguage ? user.loveLanguage.split(", ").filter((lang, index, arr) => arr.indexOf(lang) === index) : [],
-        relationshipGoals: "Finding meaningful connections",
-        relationshipStyle: "Exploring",
-        bio: "Building deeper emotional connections and understanding relationship patterns.",
+        relationshipGoals: user.relationshipGoals || "",
+        relationshipStyle: user.relationshipStyle || "",
+        bio: user.personalNotes || "",
         notifications: true,
         privateMode: false,
         analyticsSharing: true,
@@ -248,10 +229,11 @@ export default function ProfilePage() {
                     email: user.email || "",
                     zodiacSign: user.zodiacSign || "",
                     loveLanguages: currentLoveLanguages,
-                    relationshipGoals: "Finding meaningful connections",
-                    relationshipStyle: "Exploring",
-                    bio: "Building deeper emotional connections and understanding relationship patterns.",
+                    relationshipGoals: user.relationshipGoals || "",
+                    relationshipStyle: user.relationshipStyle || "",
+                    bio: user.personalNotes || "",
                     notifications: true,
+                    privateMode: false,
                     analyticsSharing: true,
                     profileImage: user.profileImage || ""
                   });
