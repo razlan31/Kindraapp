@@ -65,7 +65,16 @@ export default function CompleteOnboarding() {
         return;
       }
 
-      await updateProfileMutation.mutateAsync(onboardingData);
+      // Convert love languages array to single string for backend compatibility
+      const processedData = {
+        ...onboardingData,
+        loveLanguage: onboardingData.loveLanguages && onboardingData.loveLanguages.length > 0 
+          ? onboardingData.loveLanguages.join(", ") 
+          : null
+      };
+      delete processedData.loveLanguages;
+
+      await updateProfileMutation.mutateAsync(processedData);
     } catch (error) {
       console.error("Onboarding completion failed:", error);
     } finally {

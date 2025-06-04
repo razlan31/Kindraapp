@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
@@ -27,17 +28,17 @@ export default function ProfileOnboarding() {
   const { toast } = useToast();
   
   const [formData, setFormData] = useState({
-    displayName: "",
+    email: "",
     zodiacSign: "",
-    loveLanguage: "",
+    loveLanguages: [] as string[],
     personalNotes: ""
   });
 
   const handleContinue = () => {
-    if (!formData.displayName.trim()) {
+    if (!formData.email.trim()) {
       toast({
-        title: "Display name required",
-        description: "Please enter how you'd like to be called",
+        title: "Email required",
+        description: "Please enter your email address",
         variant: "destructive"
       });
       return;
@@ -46,6 +47,15 @@ export default function ProfileOnboarding() {
     // Store data in localStorage for now, will be saved in final step
     localStorage.setItem("onboarding_profile", JSON.stringify(formData));
     setLocation("/onboarding/goals");
+  };
+
+  const handleLoveLanguageChange = (language: string, checked: boolean) => {
+    setFormData(prev => ({
+      ...prev,
+      loveLanguages: checked 
+        ? [...prev.loveLanguages, language]
+        : prev.loveLanguages.filter(l => l !== language)
+    }));
   };
 
   return (
@@ -68,12 +78,13 @@ export default function ProfileOnboarding() {
 
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="displayName">Display Name *</Label>
+              <Label htmlFor="email">Email Address *</Label>
               <Input
-                id="displayName"
-                placeholder="How should we call you?"
-                value={formData.displayName}
-                onChange={(e) => setFormData(prev => ({ ...prev, displayName: e.target.value }))}
+                id="email"
+                type="email"
+                placeholder="Enter your email address"
+                value={formData.email}
+                onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
                 autoFocus
               />
             </div>
@@ -93,17 +104,21 @@ export default function ProfileOnboarding() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="loveLanguage">Love Language</Label>
-              <Select value={formData.loveLanguage} onValueChange={(value) => setFormData(prev => ({ ...prev, loveLanguage: value }))}>
-                <SelectTrigger>
-                  <SelectValue placeholder="How do you prefer to give/receive love?" />
-                </SelectTrigger>
-                <SelectContent>
-                  {loveLanguages.map((language) => (
-                    <SelectItem key={language} value={language}>{language}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <Label>Love Languages (select all that apply)</Label>
+              <div className="grid grid-cols-1 gap-3">
+                {loveLanguages.map((language) => (
+                  <div key={language} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={language}
+                      checked={formData.loveLanguages.includes(language)}
+                      onCheckedChange={(checked) => handleLoveLanguageChange(language, checked as boolean)}
+                    />
+                    <Label htmlFor={language} className="text-sm font-normal cursor-pointer">
+                      {language}
+                    </Label>
+                  </div>
+                ))}
+              </div>
             </div>
 
             <div className="space-y-2">

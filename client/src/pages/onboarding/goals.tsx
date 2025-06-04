@@ -50,12 +50,22 @@ export default function GoalsOnboarding() {
   const { toast } = useToast();
   
   const [formData, setFormData] = useState({
+    displayName: "",
     relationshipGoals: "",
     relationshipStyle: "",
     currentFocus: ""
   });
 
   const handleContinue = () => {
+    if (!formData.displayName.trim()) {
+      toast({
+        title: "Display name required",
+        description: "Please enter how you'd like to be called",
+        variant: "destructive"
+      });
+      return;
+    }
+
     if (!formData.relationshipGoals) {
       toast({
         title: "Please select your relationship goals",
@@ -91,6 +101,17 @@ export default function GoalsOnboarding() {
           </div>
 
           <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="displayName">Display Name *</Label>
+              <Input
+                id="displayName"
+                placeholder="How should we call you?"
+                value={formData.displayName}
+                onChange={(e) => setFormData(prev => ({ ...prev, displayName: e.target.value }))}
+                autoFocus
+              />
+            </div>
+
             <div className="space-y-2">
               <Label htmlFor="relationshipGoals">What are your main relationship goals? *</Label>
               <Select value={formData.relationshipGoals} onValueChange={(value) => setFormData(prev => ({ ...prev, relationshipGoals: value }))}>
