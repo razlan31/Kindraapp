@@ -109,6 +109,7 @@ export function MomentModal() {
       setSelectedTags([]);
       setCustomTag("");
       setReflection("");
+      setMediaFiles([]);
       setIsResolved(false);
       setResolutionNotes("");
       setResolvedDate(new Date());
@@ -452,6 +453,8 @@ export function MomentModal() {
       intimacyRating: isIntimate ? "high" : null,
       relatedToMenstrualCycle: false,
       createdAt: localSelectedDate.toISOString(),
+      // Media files
+      mediaFiles: mediaFiles.length > 0 ? mediaFiles : null,
       // Conflict resolution fields
       isResolved: activityType === 'conflict' ? isResolved : false,
       resolvedAt: (activityType === 'conflict' && isResolved) ? resolvedDate.toISOString() : null,
@@ -549,6 +552,17 @@ export function MomentModal() {
               value={content}
               onChange={(e) => setContent(e.target.value)}
               className="min-h-[100px]"
+            />
+          </div>
+
+          {/* Media Upload */}
+          <div className="space-y-2">
+            <MediaUpload
+              value={mediaFiles}
+              onChange={setMediaFiles}
+              maxFiles={5}
+              acceptedTypes={['image/*', 'video/*']}
+              maxSize={50}
             />
           </div>
 
