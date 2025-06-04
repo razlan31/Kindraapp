@@ -17,14 +17,15 @@ export default function ProfilePage() {
   const { logout, refreshUser } = useAuth();
   
   // Use React Query to fetch user data directly with forced refresh
-  const { data: user, isLoading: loading } = useQuery({
+  const { data: user, isLoading: loading, refetch } = useQuery({
     queryKey: ['/api/me'],
     queryFn: () => fetch('/api/me', { 
       cache: 'no-cache',
       headers: { 'Cache-Control': 'no-cache' }
     }).then(res => res.json()),
     staleTime: 0,
-    cacheTime: 0
+    refetchOnMount: true,
+    refetchOnWindowFocus: true
   });
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -33,15 +34,15 @@ export default function ProfilePage() {
   // Edit mode state - always start in view mode
   const [isEditing, setIsEditing] = useState(false);
   
-  // Initialize form data when user loads
+  // Force refresh form data when user data changes
   useEffect(() => {
     if (user) {
-      console.log("Initializing form data with user:", user);
-      setFormData({
+      console.log("Force refreshing form data with user:", user);
+      const newFormData = {
         displayName: user.displayName || "",
         email: user.email || "",
         zodiacSign: user.zodiacSign || "",
-        loveLanguages: user.loveLanguage ? user.loveLanguage.split(", ").filter((lang, index, arr) => arr.indexOf(lang) === index) : [],
+        loveLanguages: user.loveLanguage ? user.loveLanguage.split(", ").filter((lang: string, index: number, arr: string[]) => arr.indexOf(lang) === index) : [],
         relationshipGoals: user.relationshipGoals || "",
         relationshipStyle: user.relationshipStyle || "",
         bio: user.personalNotes || "",
@@ -49,9 +50,10 @@ export default function ProfilePage() {
         privateMode: false,
         analyticsSharing: true,
         profileImage: user.profileImage || ""
-      });
+      };
+      setFormData(newFormData);
     }
-  }, [user]);
+  }, [user?.id, user?.email, user?.relationshipGoals, user?.relationshipStyle, user?.personalNotes]);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -187,6 +189,7 @@ export default function ProfilePage() {
   };
 
   console.log("Profile page - loading:", loading, "user:", user, "isEditing:", isEditing);
+  console.log("Profile debug - user.email:", user?.email, "user.relationshipGoals:", user?.relationshipGoals, "user.relationshipStyle:", user?.relationshipStyle);
 
   // Show loading while auth is loading or user is not available
   if (loading || !user) {
@@ -201,7 +204,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900">
+    <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900" key={`profile-${user.id}-${user.email}-${user.relationshipGoals}`}>
       <div className="max-w-2xl mx-auto p-3 space-y-4">
         {/* Header */}
         <div className="flex items-center gap-4 pt-4">
@@ -219,32 +222,45 @@ export default function ProfilePage() {
             </p>
           </div>
           {!isEditing && (
-            <Button
-              onClick={() => {
-                // Initialize form data when entering edit mode
-                if (user) {
-                  const currentLoveLanguages = user.loveLanguage ? user.loveLanguage.split(", ").filter((lang: string, index: number, arr: string[]) => arr.indexOf(lang) === index) : [];
-                  setFormData({
-                    displayName: user.displayName || "",
-                    email: user.email || "",
-                    zodiacSign: user.zodiacSign || "",
-                    loveLanguages: currentLoveLanguages,
-                    relationshipGoals: user.relationshipGoals || "",
-                    relationshipStyle: user.relationshipStyle || "",
-                    bio: user.personalNotes || "",
-                    notifications: true,
-                    privateMode: false,
-                    analyticsSharing: true,
-                    profileImage: user.profileImage || ""
-                  });
-                }
-                setIsEditing(true);
-              }}
-              className="flex items-center gap-2"
-            >
-              <Edit className="h-4 w-4" />
-              Edit
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  refetch();
+                  window.location.reload();
+                }}
+                className="flex items-center gap-2"
+              >
+                Refresh Data
+              </Button>
+              <Button
+                onClick={() => {
+                  // Initialize form data when entering edit mode
+                  if (user) {
+                    const currentLoveLanguages = user.loveLanguage ? user.loveLanguage.split(", ").filter((lang: string, index: number, arr: string[]) => arr.indexOf(lang) === index) : [];
+                    setFormData({
+                      displayName: user.displayName || "",
+                      email: user.email || "",
+                      zodiacSign: user.zodiacSign || "",
+                      loveLanguages: currentLoveLanguages,
+                      relationshipGoals: user.relationshipGoals || "",
+                      relationshipStyle: user.relationshipStyle || "",
+                      bio: user.personalNotes || "",
+                      notifications: true,
+                      privateMode: false,
+                      analyticsSharing: true,
+                      profileImage: user.profileImage || ""
+                    });
+                  }
+                  setIsEditing(true);
+                }}
+                className="flex items-center gap-2"
+              >
+                <Edit className="h-4 w-4" />
+                Edit
+              </Button>
+            </div>
           )}
         </div>
 
