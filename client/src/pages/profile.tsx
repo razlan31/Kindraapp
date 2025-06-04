@@ -225,45 +225,32 @@ export default function ProfilePage() {
             </p>
           </div>
           {!isEditing && (
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  refetch();
-                  window.location.reload();
-                }}
-                className="flex items-center gap-2"
-              >
-                Refresh Data
-              </Button>
-              <Button
-                onClick={() => {
-                  // Initialize form data when entering edit mode
-                  if (user) {
-                    const currentLoveLanguages = user.loveLanguage ? user.loveLanguage.split(", ").filter((lang: string, index: number, arr: string[]) => arr.indexOf(lang) === index) : [];
-                    setFormData({
-                      displayName: user.displayName || "",
-                      email: user.email || "",
-                      zodiacSign: user.zodiacSign || "",
-                      loveLanguages: currentLoveLanguages,
-                      relationshipGoals: user.relationshipGoals || "",
-                      relationshipStyle: user.relationshipStyle || "",
-                      bio: user.personalNotes || "",
-                      notifications: true,
-                      privateMode: false,
-                      analyticsSharing: true,
-                      profileImage: user.profileImage || ""
-                    });
-                  }
-                  setIsEditing(true);
-                }}
-                className="flex items-center gap-2"
-              >
-                <Edit className="h-4 w-4" />
-                Edit
-              </Button>
-            </div>
+            <Button
+              onClick={() => {
+                // Initialize form data when entering edit mode
+                if (user) {
+                  const currentLoveLanguages = user.loveLanguage ? user.loveLanguage.split(", ").filter((lang: string, index: number, arr: string[]) => arr.indexOf(lang) === index) : [];
+                  setFormData({
+                    displayName: user.displayName || "",
+                    email: user.email || "",
+                    zodiacSign: user.zodiacSign || "",
+                    loveLanguages: currentLoveLanguages,
+                    relationshipGoals: user.relationshipGoals || "",
+                    relationshipStyle: user.relationshipStyle || "",
+                    bio: user.personalNotes || "",
+                    notifications: true,
+                    privateMode: false,
+                    analyticsSharing: true,
+                    profileImage: user.profileImage || ""
+                  });
+                }
+                setIsEditing(true);
+              }}
+              className="flex items-center gap-2"
+            >
+              <Edit className="h-4 w-4" />
+              Edit
+            </Button>
           )}
         </div>
 

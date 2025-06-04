@@ -313,9 +313,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = req.session.userId as number;
       const updateData = req.body;
       
-      // Validate the update data - includes onboarding fields
+      console.log("Backend /api/me PATCH - received data:", updateData);
+      
+      // Validate the update data - includes onboarding fields AND email
       const allowedFields = [
-        'displayName', 'zodiacSign', 'loveLanguage', 'profileImage',
+        'displayName', 'email', 'zodiacSign', 'loveLanguage', 'profileImage',
         'relationshipGoals', 'currentFocus', 'relationshipStyle', 'personalNotes'
       ];
       const filteredData = Object.keys(updateData)
@@ -324,6 +326,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           obj[key] = updateData[key];
           return obj;
         }, {} as any);
+      
+      console.log("Backend /api/me PATCH - filtered data being saved:", filteredData);
       
       const updatedUser = await storage.updateUser(userId, filteredData);
       

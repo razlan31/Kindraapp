@@ -54,6 +54,7 @@ export default function CompleteOnboarding() {
     
     try {
       const onboardingData = JSON.parse(localStorage.getItem("onboarding_data") || "{}");
+      console.log("Onboarding completion - raw data from localStorage:", onboardingData);
       
       if (!onboardingData.displayName) {
         toast({
@@ -74,6 +75,7 @@ export default function CompleteOnboarding() {
       };
       delete processedData.loveLanguages;
 
+      console.log("Onboarding completion - processed data being sent to server:", processedData);
       await updateProfileMutation.mutateAsync(processedData);
     } catch (error) {
       console.error("Onboarding completion failed:", error);
