@@ -66,42 +66,13 @@ declare module "express-session" {
 
 // Auth middleware
 const isAuthenticated = (req: Request, res: Response, next: Function) => {
-  // For development purposes, we'll automatically log in with user ID 1
-  // But first check if the user actually exists
-  storage.getUser(1).then(user => {
-    if (user) {
-      req.session.userId = 1;
-      console.log("Auth middleware: Setting userId to 1 - user exists");
-      next();
-    } else {
-      console.log("Auth middleware: User 1 not found - creating test user");
-      // Create test user if it doesn't exist
-      storage.createUser({
-        username: 'testuser',
-        email: 'test@example.com',
-        password: 'password123',
-        displayName: 'Test User',
-        zodiacSign: 'Gemini',
-        loveLanguage: 'Quality Time',
-        relationshipGoals: null,
-        currentFocus: null,
-        relationshipStyle: null,
-        personalNotes: null,
-        stripeCustomerId: null,
-        stripeSubscriptionId: null
-      }).then(user => {
-        req.session.userId = user.id;
-        console.log("Auth middleware: Created and logged in user", user.id);
-        next();
-      }).catch(error => {
-        console.error("Auth middleware: Error creating user:", error);
-        res.status(500).json({ message: "Authentication setup failed" });
-      });
-    }
-  }).catch(error => {
-    console.error("Auth middleware error:", error);
-    res.status(500).json({ message: "Authentication error" });
-  });
+  if (req.session.userId) {
+    console.log("Auth middleware: User authenticated with ID", req.session.userId);
+    next();
+  } else {
+    console.log("Auth middleware: No user session found");
+    res.status(401).json({ message: "Authentication required" });
+  }
 };
 
 export async function registerRoutes(app: Express): Promise<Server> {
