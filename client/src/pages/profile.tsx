@@ -16,10 +16,15 @@ import { Checkbox } from "@/components/ui/checkbox";
 export default function ProfilePage() {
   const { logout, refreshUser } = useAuth();
   
-  // Use React Query to fetch user data directly
+  // Use React Query to fetch user data directly with forced refresh
   const { data: user, isLoading: loading } = useQuery({
     queryKey: ['/api/me'],
-    queryFn: () => fetch('/api/me').then(res => res.json())
+    queryFn: () => fetch('/api/me', { 
+      cache: 'no-cache',
+      headers: { 'Cache-Control': 'no-cache' }
+    }).then(res => res.json()),
+    staleTime: 0,
+    cacheTime: 0
   });
   const { toast } = useToast();
   const queryClient = useQueryClient();
