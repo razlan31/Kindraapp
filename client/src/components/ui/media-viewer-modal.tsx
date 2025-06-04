@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { X, ChevronLeft, ChevronRight, Download } from "lucide-react";
+import { X, ChevronLeft, ChevronRight, Download, ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
 
 interface MediaFile {
   id: string;
@@ -19,11 +19,21 @@ interface MediaViewerModalProps {
 
 export function MediaViewerModal({ isOpen, onClose, mediaFiles, initialIndex = 0 }: MediaViewerModalProps) {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
+  const [zoomLevel, setZoomLevel] = useState(1);
+  const [panPosition, setPanPosition] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
 
   // Update current index when initialIndex changes
   useEffect(() => {
     setCurrentIndex(initialIndex);
   }, [initialIndex]);
+
+  // Reset zoom and pan when switching media
+  useEffect(() => {
+    setZoomLevel(1);
+    setPanPosition({ x: 0, y: 0 });
+  }, [currentIndex]);
 
   // Keyboard navigation
   useEffect(() => {
@@ -56,6 +66,39 @@ export function MediaViewerModal({ isOpen, onClose, mediaFiles, initialIndex = 0
     setCurrentIndex((prev) => (prev === mediaFiles.length - 1 ? 0 : prev + 1));
   };
 
+  const handleZoomIn = () => {
+    setZoomLevel((prev) => Math.min(prev * 1.5, 5));
+  };
+
+  const handleZoomOut = () => {
+    setZoomLevel((prev) => Math.max(prev / 1.5, 0.5));
+  };
+
+  const handleResetZoom = () => {
+    setZoomLevel(1);
+    setPanPosition({ x: 0, y: 0 });
+  };
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (zoomLevel > 1) {
+      setIsDragging(true);
+      setDragStart({ x: e.clientX - panPosition.x, y: e.clientY - panPosition.y });
+    }
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (isDragging && zoomLevel > 1) {
+      setPanPosition({
+        x: e.clientX - dragStart.x,
+        y: e.clientY - dragStart.y,
+      });
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
   const handleDownload = () => {
     const link = document.createElement('a');
     link.href = currentMedia.url;
@@ -78,6 +121,37 @@ export function MediaViewerModal({ isOpen, onClose, mediaFiles, initialIndex = 0
           >
             <X className="h-6 w-6" />
           </Button>
+
+          {/* Zoom controls */}
+          <div className="absolute top-4 left-4 z-50 flex flex-col gap-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-white hover:bg-white/20"
+              onClick={handleZoomIn}
+              disabled={zoomLevel >= 5}
+            >
+              <ZoomIn className="h-6 w-6" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-white hover:bg-white/20"
+              onClick={handleZoomOut}
+              disabled={zoomLevel <= 0.5}
+            >
+              <ZoomOut className="h-6 w-6" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-white hover:bg-white/20"
+              onClick={handleResetZoom}
+              disabled={zoomLevel === 1 && panPosition.x === 0 && panPosition.y === 0}
+            >
+              <RotateCcw className="h-6 w-6" />
+            </Button>
+          </div>
 
           {/* Download button */}
           <Button
@@ -112,18 +186,34 @@ export function MediaViewerModal({ isOpen, onClose, mediaFiles, initialIndex = 0
           )}
 
           {/* Media content */}
-          <div className="w-full h-full flex items-center justify-center p-8">
+          <div 
+            className="w-full h-full flex items-center justify-center p-8 overflow-hidden"
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+            style={{ cursor: zoomLevel > 1 ? (isDragging ? 'grabbing' : 'grab') : 'default' }}
+          >
             {currentMedia.type === 'photo' ? (
               <img
                 src={currentMedia.url}
                 alt={currentMedia.filename}
-                className="max-w-full max-h-full object-contain"
+                className="max-w-full max-h-full object-contain transition-transform duration-200"
+                style={{
+                  transform: `scale(${zoomLevel}) translate(${panPosition.x / zoomLevel}px, ${panPosition.y / zoomLevel}px)`,
+                  transformOrigin: 'center center'
+                }}
+                draggable={false}
               />
             ) : (
               <video
                 src={currentMedia.url}
                 controls
-                className="max-w-full max-h-full"
+                className="max-w-full max-h-full transition-transform duration-200"
+                style={{
+                  transform: `scale(${zoomLevel}) translate(${panPosition.x / zoomLevel}px, ${panPosition.y / zoomLevel}px)`,
+                  transformOrigin: 'center center'
+                }}
                 autoPlay
               >
                 Your browser does not support the video tag.
