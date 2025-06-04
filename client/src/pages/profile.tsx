@@ -66,7 +66,7 @@ export default function ProfilePage() {
   const saveMutation = useMutation({
     mutationFn: async (data: any) => {
       const response = await fetch('/api/me', {
-        method: 'PUT',
+        method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -80,18 +80,13 @@ export default function ProfilePage() {
       
       return response.json();
     },
-    onSuccess: async () => {
+    onSuccess: async (updatedUser) => {
       toast({
         title: "Profile updated",
         description: "Your profile has been updated successfully.",
       });
-      // Optimistic update - update cache immediately
-      queryClient.setQueryData(['/api/me'], (oldData: any) => ({
-        ...oldData,
-        ...Object.fromEntries(
-          Object.entries(formData).filter(([_, value]) => value !== undefined && value !== null)
-        )
-      }));
+      // Invalidate and refetch user data to ensure fresh data from server
+      await queryClient.invalidateQueries({ queryKey: ['/api/me'] });
       await refreshUser(); // Refresh the auth context user data
       setIsEditing(false);
     },
