@@ -136,6 +136,15 @@ export const moments = pgTable("moments", {
   isIntimate: boolean("is_intimate").default(false),
   intimacyRating: text("intimacy_rating"),
   relatedToMenstrualCycle: boolean("related_to_menstrual_cycle").default(false),
+  // Media attachments
+  mediaFiles: json("media_files").$type<{
+    id: string;
+    type: 'photo' | 'video';
+    url: string;
+    filename: string;
+    size: number;
+    uploadedAt: string;
+  }[]>(),
   // Conflict resolution fields
   isResolved: boolean("is_resolved").default(false),
   resolvedAt: timestamp("resolved_at"),

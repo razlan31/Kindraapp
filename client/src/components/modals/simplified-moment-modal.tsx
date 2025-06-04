@@ -10,6 +10,7 @@ import { Connection } from "@shared/schema";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { EmojiPicker } from "@/components/ui/emoji-picker";
+import { MediaUpload, type MediaFile } from "@/components/ui/media-upload";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -42,6 +43,7 @@ export function MomentModal() {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [customTag, setCustomTag] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [mediaFiles, setMediaFiles] = useState<MediaFile[]>([]);
   
   // Milestone-specific state
   const [isMilestone, setIsMilestone] = useState<boolean>(false);
@@ -75,6 +77,7 @@ export function MomentModal() {
       setLocalSelectedDate(new Date(editingMoment.createdAt || new Date()));
       setSelectedTags(editingMoment.tags || []);
       setReflection(editingMoment.reflection || "");
+      setMediaFiles(editingMoment.mediaFiles || []);
       
       // Initialize conflict-specific fields
       setIsResolved(editingMoment.isResolved || false);
