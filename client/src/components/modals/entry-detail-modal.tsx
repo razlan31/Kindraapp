@@ -341,6 +341,38 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection, onUpdate
             )}
           </div>
 
+          {/* Media Files */}
+          {freshMoment.mediaFiles && freshMoment.mediaFiles.length > 0 && (
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Photos & Videos ({freshMoment.mediaFiles.length})</label>
+              <div className="grid grid-cols-2 gap-3 max-h-64 overflow-y-auto">
+                {freshMoment.mediaFiles.map((file) => (
+                  <div key={file.id} className="relative bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden">
+                    {file.type === 'photo' ? (
+                      <img
+                        src={file.url}
+                        alt={file.filename}
+                        className="w-full h-32 object-cover cursor-pointer hover:opacity-90 transition-opacity"
+                        onClick={() => window.open(file.url, '_blank')}
+                      />
+                    ) : (
+                      <div className="w-full h-32 flex items-center justify-center bg-gray-200 dark:bg-gray-700">
+                        <div className="text-center">
+                          <div className="text-2xl mb-1">🎥</div>
+                          <div className="text-xs text-gray-600 dark:text-gray-400">Video</div>
+                          <div className="text-xs text-gray-500 truncate px-2">{file.filename}</div>
+                        </div>
+                      </div>
+                    )}
+                    <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-xs p-1 truncate">
+                      {file.filename}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Conflict Resolution Info */}
           {activityType === 'conflict' && (
             <div className="space-y-2">
