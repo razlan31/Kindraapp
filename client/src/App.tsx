@@ -47,8 +47,12 @@ function Router() {
   const [location, setLocation] = useLocation();
 
   useEffect(() => {
-    if (!loading && !isAuthenticated && !location.startsWith("/auth") && !location.startsWith("/onboarding")) {
-      setLocation("/auth/login");
+    if (!loading) {
+      if (!isAuthenticated && !location.startsWith("/auth") && !location.startsWith("/onboarding")) {
+        setLocation("/auth/login");
+      } else if (isAuthenticated && (location.startsWith("/auth") || location === "/onboarding/welcome")) {
+        setLocation("/");
+      }
     }
   }, [isAuthenticated, loading, location, setLocation]);
 
