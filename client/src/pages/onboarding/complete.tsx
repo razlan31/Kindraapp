@@ -126,9 +126,9 @@ export default function CompleteOnboarding() {
                   <span className="font-medium">Zodiac:</span> {onboardingData.zodiacSign}
                 </div>
               )}
-              {onboardingData.loveLanguage && (
+              {onboardingData.loveLanguages && onboardingData.loveLanguages.length > 0 && (
                 <div>
-                  <span className="font-medium">Love Language:</span> {onboardingData.loveLanguage}
+                  <span className="font-medium">Love Languages:</span> {onboardingData.loveLanguages.join(", ")}
                 </div>
               )}
               {onboardingData.relationshipGoals && (

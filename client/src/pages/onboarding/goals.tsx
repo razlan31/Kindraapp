@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -107,7 +108,7 @@ export default function GoalsOnboarding() {
                 id="displayName"
                 placeholder="How should we call you?"
                 value={formData.displayName}
-                onChange={(e) => setFormData(prev => ({ ...prev, displayName: e.target.value }))}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData(prev => ({ ...prev, displayName: e.target.value }))}
                 autoFocus
               />
             </div>
