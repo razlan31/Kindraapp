@@ -400,7 +400,7 @@ export default function ProfilePage() {
                 </Select>
               ) : (
                 <p className="mt-1 text-sm text-neutral-900 dark:text-neutral-100">
-                  {formData.relationshipGoals}
+                  {user.relationshipGoals || "Not set"}
                 </p>
               )}
             </div>
@@ -421,7 +421,7 @@ export default function ProfilePage() {
                 </Select>
               ) : (
                 <p className="mt-1 text-sm text-neutral-900 dark:text-neutral-100">
-                  {formData.relationshipStyle}
+                  {user.relationshipStyle || "Not set"}
                 </p>
               )}
             </div>
@@ -438,7 +438,7 @@ export default function ProfilePage() {
                 />
               ) : (
                 <p className="mt-1 text-sm text-neutral-900 dark:text-neutral-100">
-                  {formData.bio}
+                  {user.personalNotes || "Not set"}
                 </p>
               )}
             </div>
