@@ -28,22 +28,12 @@ export default function ProfileOnboarding() {
   const { toast } = useToast();
   
   const [formData, setFormData] = useState({
-    email: "",
     zodiacSign: "",
     loveLanguages: [] as string[],
     personalNotes: ""
   });
 
   const handleContinue = () => {
-    if (!formData.email.trim()) {
-      toast({
-        title: "Email required",
-        description: "Please enter your email address",
-        variant: "destructive"
-      });
-      return;
-    }
-
     // Store data in localStorage for now, will be saved in final step
     localStorage.setItem("onboarding_profile", JSON.stringify(formData));
     setLocation("/onboarding/goals");
@@ -77,18 +67,6 @@ export default function ProfileOnboarding() {
           </div>
 
           <div className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email Address *</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="Enter your email address"
-                value={formData.email}
-                onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                autoFocus
-              />
-            </div>
-
             <div className="space-y-2">
               <Label htmlFor="zodiacSign">Zodiac Sign</Label>
               <Select value={formData.zodiacSign} onValueChange={(value) => setFormData(prev => ({ ...prev, zodiacSign: value }))}>
