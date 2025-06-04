@@ -6,6 +6,10 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 import Login from "@/pages/auth/login";
 import Register from "@/pages/auth/register";
+import OnboardingWelcome from "@/pages/onboarding/welcome";
+import OnboardingProfile from "@/pages/onboarding/profile";
+import OnboardingGoals from "@/pages/onboarding/goals";
+import OnboardingComplete from "@/pages/onboarding/complete";
 import Dashboard from "@/pages/dashboard";
 import Connections from "@/pages/connections-simple";
 import ConnectionsNew from "@/pages/connections-new";
@@ -43,7 +47,7 @@ function Router() {
   const [location, setLocation] = useLocation();
 
   useEffect(() => {
-    if (!loading && !isAuthenticated && !location.startsWith("/auth")) {
+    if (!loading && !isAuthenticated && !location.startsWith("/auth") && !location.startsWith("/onboarding")) {
       setLocation("/auth/login");
     }
   }, [isAuthenticated, loading, location, setLocation]);
@@ -52,6 +56,10 @@ function Router() {
     <Switch>
       <Route path="/auth/login" component={Login} />
       <Route path="/auth/register" component={Register} />
+      <Route path="/onboarding/welcome" component={OnboardingWelcome} />
+      <Route path="/onboarding/profile" component={OnboardingProfile} />
+      <Route path="/onboarding/goals" component={OnboardingGoals} />
+      <Route path="/onboarding/complete" component={OnboardingComplete} />
       <Route path="/" component={InsightsNew} />
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/connections" component={Connections} />

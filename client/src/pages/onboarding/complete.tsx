@@ -17,10 +17,17 @@ export default function CompleteOnboarding() {
 
   const updateProfileMutation = useMutation({
     mutationFn: async (profileData: any) => {
-      return apiRequest('/api/me', {
+      const response = await fetch('/api/me', {
         method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify(profileData)
       });
+      if (!response.ok) {
+        throw new Error('Failed to update profile');
+      }
+      return response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/me'] });

@@ -281,7 +281,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Validate the update data
       const allowedFields = [
-        'displayName', 'email', 'zodiacSign', 'loveLanguage', 'profileImage'
+        'displayName', 'email', 'zodiacSign', 'loveLanguage', 'profileImage',
+        'relationshipGoals', 'currentFocus', 'relationshipStyle', 'personalNotes'
+      ];
+      const filteredData = Object.keys(updateData)
+        .filter(key => allowedFields.includes(key))
+        .reduce((obj, key) => {
+          obj[key] = updateData[key];
+          return obj;
+        }, {} as any);
+      
+      const updatedUser = await storage.updateUser(userId, filteredData);
+      
+      if (!updatedUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Remove password from response
+      const { password, ...userWithoutPassword } = updatedUser;
+      
+      res.status(200).json(userWithoutPassword);
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
+  // PATCH endpoint for profile updates (used by onboarding)
+  app.patch("/api/me", isAuthenticated, async (req, res) => {
+    try {
+      const userId = req.session.userId as number;
+      const updateData = req.body;
+      
+      // Validate the update data - includes onboarding fields
+      const allowedFields = [
+        'displayName', 'email', 'zodiacSign', 'loveLanguage', 'profileImage',
+        'relationshipGoals', 'currentFocus', 'relationshipStyle', 'personalNotes'
       ];
       const filteredData = Object.keys(updateData)
         .filter(key => allowedFields.includes(key))
