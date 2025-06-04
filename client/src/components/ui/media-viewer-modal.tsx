@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { X, ChevronLeft, ChevronRight, Download } from "lucide-react";
@@ -19,6 +19,29 @@ interface MediaViewerModalProps {
 
 export function MediaViewerModal({ isOpen, onClose, mediaFiles, initialIndex = 0 }: MediaViewerModalProps) {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
+
+  // Update current index when initialIndex changes
+  useEffect(() => {
+    setCurrentIndex(initialIndex);
+  }, [initialIndex]);
+
+  // Keyboard navigation
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      } else if (e.key === 'ArrowLeft' && mediaFiles.length > 1) {
+        setCurrentIndex((prev) => (prev === 0 ? mediaFiles.length - 1 : prev - 1));
+      } else if (e.key === 'ArrowRight' && mediaFiles.length > 1) {
+        setCurrentIndex((prev) => (prev === mediaFiles.length - 1 ? 0 : prev + 1));
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyPress);
+    return () => document.removeEventListener('keydown', handleKeyPress);
+  }, [isOpen, mediaFiles.length, onClose]);
 
   if (!mediaFiles || mediaFiles.length === 0) return null;
 
@@ -44,8 +67,8 @@ export function MediaViewerModal({ isOpen, onClose, mediaFiles, initialIndex = 0
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] w-full h-full p-0 bg-black/90 border-0">
-        <div className="relative w-full h-full flex items-center justify-center">
+      <DialogContent className="max-w-[95vw] max-h-[95vh] w-full h-full p-0 bg-black/90 border-0 overflow-hidden">
+        <div className="relative w-full h-full flex items-center justify-center overflow-auto">
           {/* Close button */}
           <Button
             variant="ghost"
