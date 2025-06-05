@@ -197,6 +197,30 @@ export default function Insights() {
           </div>
         </section>
 
+        {/* AI Personalized Insights - Main Feature */}
+        {connections.length > 0 && (
+          <section className="px-4 mb-6">
+            <Card className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 border-purple-200 dark:border-purple-700">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Sparkles className="h-5 w-5 text-purple-600" />
+                  AI Relationship Insights
+                </CardTitle>
+                <CardDescription>
+                  Get personalized insights about your relationship with {connections[0]?.name}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <PersonalizedReflection
+                  connectionId={connections[0].id}
+                  connectionName={connections[0].name}
+                  connectionHealthScore={connectionStrengths.find(c => c.id === connections[0].id)?.healthScore}
+                />
+              </CardContent>
+            </Card>
+          </section>
+        )}
+
         {/* Quick Actions */}
         <section className="px-4 mb-6">
           <div className="grid grid-cols-2 gap-3">
@@ -219,29 +243,7 @@ export default function Insights() {
           </div>
         </section>
 
-        {/* AI Personalized Insights Test */}
-        {connections.length > 0 && (
-          <section className="px-4 mb-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Sparkles className="h-5 w-5 text-purple-600" />
-                  Test AI Personalized Insights
-                </CardTitle>
-                <CardDescription>
-                  Generate ChatGPT-style relationship insights for your connections
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <PersonalizedReflection
-                  connectionId={connections[0].id}
-                  connectionName={connections[0].name}
-                  connectionHealthScore={connectionStrengths.find(c => c.id === connections[0].id)?.healthScore}
-                />
-              </CardContent>
-            </Card>
-          </section>
-        )}
+
 
         {/* AI Insights and Advice */}
         <section className="px-4 mb-6">
