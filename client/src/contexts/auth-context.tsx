@@ -45,8 +45,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUser(currentUser);
         console.log("Auth context setting user:", currentUser);
       } catch (error) {
-        console.error("Failed to load user:", error);
-        setUser(null);
+        console.log("getCurrentUser failed - response not ok");
+        // Try auto-login if no session exists
+        try {
+          const response = await fetch('/api/auto-login', {
+            method: 'POST',
+            credentials: 'include'
+          });
+          
+          if (response.ok) {
+            const data = await response.json();
+            console.log("Auto-login successful:", data.user);
+            setUser(data.user);
+          } else {
+            console.log("Auto-login failed");
+            setUser(null);
+          }
+        } catch (autoLoginError) {
+          console.log("Auto-login error:", autoLoginError);
+          setUser(null);
+        }
       } finally {
         console.log("Auth: Finally block - setting loading to false");
         setLoading(false);

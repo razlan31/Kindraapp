@@ -228,6 +228,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
+  // Auto-login for persistent session
+  app.post("/api/auto-login", async (req, res) => {
+    try {
+      const testUser = await storage.getUserByUsername('testuser');
+      if (testUser) {
+        req.session.userId = testUser.id;
+        const { password, ...userWithoutPassword } = testUser;
+        res.json({ message: "Auto-login successful", user: userWithoutPassword });
+      } else {
+        res.status(404).json({ message: "Test user not found" });
+      }
+    } catch (error) {
+      console.error("Auto-login error:", error);
+      res.status(500).json({ message: "Auto-login failed" });
+    }
+  });
+
   app.get("/api/me", isAuthenticated, async (req, res) => {
     try {
       const userId = req.session.userId as number;
