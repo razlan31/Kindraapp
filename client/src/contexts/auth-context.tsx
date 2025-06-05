@@ -41,30 +41,36 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         console.log("Auth: Starting to load user, setting loading to true");
         setLoading(true);
         const currentUser = await getCurrentUser();
-        console.log("getCurrentUser successful:", currentUser);
-        setUser(currentUser);
-        console.log("Auth context setting user:", currentUser);
-      } catch (error) {
-        console.log("getCurrentUser failed - response not ok");
-        // Try auto-login if no session exists
-        try {
-          const response = await fetch('/api/auto-login', {
-            method: 'POST',
-            credentials: 'include'
-          });
-          
-          if (response.ok) {
-            const data = await response.json();
-            console.log("Auto-login successful:", data.user);
-            setUser(data.user);
-          } else {
-            console.log("Auto-login failed");
+        
+        if (currentUser) {
+          console.log("getCurrentUser successful:", currentUser);
+          setUser(currentUser);
+          console.log("Auth context setting user:", currentUser);
+        } else {
+          console.log("getCurrentUser failed - no session found, attempting auto-login");
+          // Try auto-login if no session exists
+          try {
+            const response = await fetch('/api/auto-login', {
+              method: 'POST',
+              credentials: 'include'
+            });
+            
+            if (response.ok) {
+              const data = await response.json();
+              console.log("Auto-login successful:", data.user);
+              setUser(data.user);
+            } else {
+              console.log("Auto-login failed");
+              setUser(null);
+            }
+          } catch (autoLoginError) {
+            console.log("Auto-login error:", autoLoginError);
             setUser(null);
           }
-        } catch (autoLoginError) {
-          console.log("Auto-login error:", autoLoginError);
-          setUser(null);
         }
+      } catch (error) {
+        console.log("Auth context error:", error);
+        setUser(null);
       } finally {
         console.log("Auth: Finally block - setting loading to false");
         setLoading(false);
