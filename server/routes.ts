@@ -11,6 +11,7 @@ import session from "express-session";
 import MemoryStore from "memorystore";
 import Stripe from "stripe";
 import { aiCoach, type RelationshipContext } from "./ai-relationship-coach";
+import { aiReflectionEngine } from "./ai-reflection-engine";
 
 // Initialize Stripe
 if (!process.env.STRIPE_SECRET_KEY) {
@@ -2472,6 +2473,105 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ error: error.message || "Failed to generate insight" });
     }
   });
+
+  // Generate personalized relationship reflection
+  app.post("/api/connections/:id/reflection", isAuthenticated, async (req: Request, res: Response) => {
+    try {
+      const userId = req.session.userId as number;
+      const connectionId = parseInt(req.params.id);
+      
+      if (isNaN(connectionId)) {
+        return res.status(400).json({ message: "Invalid connection ID" });
+      }
+
+      // Get user and connection data
+      const user = await storage.getUser(userId);
+      const connection = await storage.getConnection(connectionId);
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      if (!connection || connection.userId !== userId) {
+        return res.status(404).json({ message: "Connection not found" });
+      }
+
+      // Get recent moments (last 30 days)
+      const allMoments = await storage.getMomentsByConnectionId(connectionId);
+      const recentMoments = allMoments.filter(moment => {
+        const momentDate = new Date(moment.createdAt || new Date());
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+        return momentDate >= thirtyDaysAgo;
+      });
+
+      // Calculate connection health scores
+      const currentHealthScore = calculateConnectionHealth(recentMoments);
+      const previousMoments = allMoments.filter(moment => {
+        const momentDate = new Date(moment.createdAt || new Date());
+        const fourteenDaysAgo = new Date();
+        fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 14);
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+        return momentDate >= thirtyDaysAgo && momentDate < fourteenDaysAgo;
+      });
+      const previousHealthScore = calculateConnectionHealth(previousMoments);
+
+      // Generate personalized reflection
+      const reflection = await aiReflectionEngine.generatePersonalizedReflection(
+        user,
+        connection,
+        recentMoments,
+        currentHealthScore,
+        previousHealthScore
+      );
+
+      res.json(reflection);
+    } catch (error: any) {
+      console.error("Error generating personalized reflection:", error);
+      res.status(500).json({ error: error.message || "Failed to generate reflection" });
+    }
+  });
+
+  // Helper function to calculate connection health score
+  function calculateConnectionHealth(moments: any[]): number {
+    if (moments.length === 0) return 50; // Default neutral score
+
+    let score = 50;
+    const weightedMoments = moments.slice(-20); // Focus on recent moments
+
+    weightedMoments.forEach((moment, index) => {
+      const recencyWeight = (index + 1) / weightedMoments.length; // More recent = higher weight
+      
+      // Emoji-based scoring
+      if (['😊', '❤️', '😍', '🥰', '💖', '✨', '🔥'].includes(moment.emoji)) {
+        score += 10 * recencyWeight;
+      } else if (['😢', '😠', '😞', '😤', '😕'].includes(moment.emoji)) {
+        score -= 15 * recencyWeight;
+      }
+
+      // Tag-based scoring
+      if (moment.tags) {
+        const positiveTags = ['Green Flag', 'Intimacy', 'Affection', 'Support', 'Growth', 'Trust', 'Celebration'];
+        const negativeTags = ['Red Flag', 'Conflict', 'Jealousy', 'Stress', 'Disconnection'];
+        
+        moment.tags.forEach((tag: string) => {
+          if (positiveTags.includes(tag)) {
+            score += 8 * recencyWeight;
+          } else if (negativeTags.includes(tag)) {
+            score -= 12 * recencyWeight;
+          }
+        });
+      }
+
+      // Conflict resolution bonus
+      if (moment.tags?.includes('Conflict') && moment.isResolved) {
+        score += 5 * recencyWeight;
+      }
+    });
+
+    return Math.max(0, Math.min(100, Math.round(score)));
+  }
 
   const httpServer = createServer(app);
   return httpServer;

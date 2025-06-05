@@ -9,6 +9,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Connection, Moment } from "@shared/schema";
 import { AIInsights } from "@/components/insights/ai-insights";
 import { AIAdvice } from "@/components/insights/ai-advice";
+import { PersonalizedReflection } from "@/components/insights/personalized-reflection";
 import { 
   BarChart, 
   Bar, 
