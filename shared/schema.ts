@@ -153,9 +153,7 @@ export const moments = pgTable("moments", {
   reflection: text("reflection"),
 });
 
-export const momentSchema = createInsertSchema(moments).omit({ id: true }).extend({
-  createdAt: z.string().optional(), // Allow createdAt as optional ISO string
-});
+export const momentSchema = createInsertSchema(moments).omit({ id: true, createdAt: true });
 export type InsertMoment = z.infer<typeof momentSchema>;
 export type Moment = typeof moments.$inferSelect;
 

@@ -234,6 +234,119 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const testUser = await storage.getUserByUsername('testuser');
       if (testUser) {
         req.session.userId = testUser.id;
+        
+        // Create test connections if they don't exist
+        const existingConnections = await storage.getConnectionsByUserId(testUser.id);
+        
+        if (existingConnections.length < 2) {
+          // Create Alex - Dating stage
+          const alexConnection = await storage.createConnection({
+            userId: testUser.id,
+            name: "Alex",
+            relationshipStage: "Dating",
+            profileImage: null,
+            startDate: new Date('2025-05-01'),
+            personalNotes: "Met through mutual friends, really enjoys hiking and coffee dates. Great sense of humor and very thoughtful."
+          });
+          
+          // Create Jordan - Situationship stage  
+          const jordanConnection = await storage.createConnection({
+            userId: testUser.id,
+            name: "Jordan",
+            relationshipStage: "Situationship", 
+            profileImage: null,
+            startDate: new Date('2025-03-10'),
+            personalNotes: "Connected on dating app, great chemistry but unclear about commitment. Loves art and music."
+          });
+          
+          // Create moments for Alex
+          await storage.createMoment({
+            userId: testUser.id,
+            connectionId: alexConnection.id,
+            emoji: "😍",
+            content: "Amazing first date! We went mini golfing and got ice cream after. So much fun and easy conversation.",
+            title: "Perfect First Date",
+            tags: ["Quality Time", "First Time", "Green Flag"],
+            isPrivate: false,
+            isIntimate: false,
+            intimacyRating: null,
+            relatedToMenstrualCycle: false,
+            isResolved: false,
+            resolvedAt: null,
+            resolutionNotes: null,
+            reflection: null
+          });
+          
+          await storage.createMoment({
+            userId: testUser.id, 
+            connectionId: alexConnection.id,
+            emoji: "💕",
+            content: "Alex surprised me with my favorite coffee this morning before work. Such a thoughtful gesture!",
+            title: "Thoughtful Surprise",
+            tags: ["Acts of Service", "Surprise", "Green Flag"],
+            isPrivate: false,
+            isIntimate: false,
+            intimacyRating: null,
+            relatedToMenstrualCycle: false,
+            isResolved: false,
+            resolvedAt: null,
+            resolutionNotes: null,
+            reflection: null
+          });
+          
+          // Create moments for Jordan
+          await storage.createMoment({
+            userId: testUser.id,
+            connectionId: jordanConnection.id,
+            emoji: "🤔", 
+            content: "Jordan left me on read again after making plans. Starting to feel like I'm not a priority.",
+            title: "Mixed Signals",
+            tags: ["Communication", "Uncertainty", "Red Flag"],
+            isPrivate: false,
+            isIntimate: false,
+            intimacyRating: null,
+            relatedToMenstrualCycle: false,
+            isResolved: false,
+            resolvedAt: null,
+            resolutionNotes: null,
+            reflection: null
+          });
+          
+          await storage.createMoment({
+            userId: testUser.id,
+            connectionId: jordanConnection.id,
+            emoji: "🎨",
+            content: "Spent the afternoon at the art gallery with Jordan. Really enjoyed discussing the exhibits and seeing their passion for art.",
+            title: "Art Gallery Date", 
+            tags: ["Quality Time", "Intellectual Connection", "Green Flag"],
+            isPrivate: false,
+            isIntimate: false,
+            intimacyRating: null,
+            relatedToMenstrualCycle: false,
+            isResolved: false,
+            resolvedAt: null,
+            resolutionNotes: null,
+            reflection: null
+          });
+          
+          // Create milestones
+          await storage.createMilestone({
+            userId: testUser.id,
+            connectionId: alexConnection.id,
+            title: "First Match",
+            description: "Connected through mutual friends at Sarah's party",
+            date: new Date('2025-05-01')
+          });
+          
+          await storage.createMilestone({
+            userId: testUser.id,
+            connectionId: jordanConnection.id,
+            title: "Dating App Match",
+            description: "Matched on Hinge, first conversation about favorite books", 
+            date: new Date('2025-03-10')
+          });
+        }
+        
         const { password, ...userWithoutPassword } = testUser;
         res.json({ message: "Auto-login successful", user: userWithoutPassword });
       } else {

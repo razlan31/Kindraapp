@@ -145,8 +145,7 @@ export class PgStorage implements IStorage {
         isResolved: moment.tags.includes('Resolution'),
         resolvedAt: moment.tags.includes('Resolution') ? moment.createdAt : null,
         resolutionNotes: moment.tags.includes('Resolution') ? 'Worked through together' : null,
-        reflection: null,
-        createdAt: moment.createdAt
+        reflection: null
       });
     }
 
@@ -165,8 +164,7 @@ export class PgStorage implements IStorage {
         isResolved: moment.tags.includes('Resolution'),
         resolvedAt: moment.tags.includes('Resolution') ? moment.createdAt : null,
         resolutionNotes: moment.tags.includes('Resolution') ? 'Communicated effectively' : null,
-        reflection: null,
-        createdAt: moment.createdAt
+        reflection: null
       });
     }
 
