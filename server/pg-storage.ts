@@ -146,7 +146,7 @@ export class PgStorage implements IStorage {
         resolvedAt: moment.tags.includes('Resolution') ? moment.createdAt : null,
         resolutionNotes: moment.tags.includes('Resolution') ? 'Worked through together' : null,
         reflection: null,
-        createdAt: moment.createdAt.toISOString()
+        createdAt: moment.createdAt
       });
     }
 
@@ -160,13 +160,13 @@ export class PgStorage implements IStorage {
         tags: moment.tags,
         isPrivate: false,
         isIntimate: moment.tags.includes('Intimacy'),
-        intimacyRating: moment.tags.includes('Intimacy') ? 4 : null,
+        intimacyRating: moment.tags.includes('Intimacy') ? "4" : null,
         relatedToMenstrualCycle: false,
         isResolved: moment.tags.includes('Resolution'),
         resolvedAt: moment.tags.includes('Resolution') ? moment.createdAt : null,
         resolutionNotes: moment.tags.includes('Resolution') ? 'Communicated effectively' : null,
         reflection: null,
-        createdAt: moment.createdAt.toISOString()
+        createdAt: moment.createdAt
       });
     }
 
@@ -176,8 +176,7 @@ export class PgStorage implements IStorage {
       connectionId: testConnection1.id,
       title: 'First Match',
       description: 'Connected on dating app',
-      date: new Date('2025-05-01'),
-      milestoneType: 'First Contact'
+      date: new Date('2025-05-01')
     });
 
     await this.createMilestone({
@@ -185,8 +184,7 @@ export class PgStorage implements IStorage {
       connectionId: testConnection1.id,
       title: 'First Date',
       description: 'Mini golf and ice cream',
-      date: new Date('2025-05-07'),
-      milestoneType: 'First Date'
+      date: new Date('2025-05-07')
     });
 
     await this.createMilestone({
@@ -194,8 +192,7 @@ export class PgStorage implements IStorage {
       connectionId: testConnection2.id,
       title: 'Made It Official',
       description: 'Became exclusive',
-      date: new Date('2025-03-15'),
-      milestoneType: 'Relationship Status'
+      date: new Date('2025-03-15')
     });
 
     await this.createMilestone({
@@ -203,8 +200,7 @@ export class PgStorage implements IStorage {
       connectionId: testConnection2.id,
       title: 'Met the Family',
       description: 'First time meeting their parents',
-      date: new Date('2025-03-28'),
-      milestoneType: 'Family Introduction'
+      date: new Date('2025-03-28')
     });
 
     console.log('✅ Test user with comprehensive relationship data created');
