@@ -219,6 +219,30 @@ export default function Insights() {
           </div>
         </section>
 
+        {/* AI Personalized Insights Test */}
+        {connections.length > 0 && (
+          <section className="px-4 mb-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Sparkles className="h-5 w-5 text-purple-600" />
+                  Test AI Personalized Insights
+                </CardTitle>
+                <CardDescription>
+                  Generate ChatGPT-style relationship insights for your connections
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <PersonalizedReflection
+                  connectionId={connections[0].id}
+                  connectionName={connections[0].name}
+                  connectionHealthScore={connectionStrengths.find(c => c.id === connections[0].id)?.healthScore}
+                />
+              </CardContent>
+            </Card>
+          </section>
+        )}
+
         {/* AI Insights and Advice */}
         <section className="px-4 mb-6">
           <Tabs defaultValue="insights" className="w-full">
