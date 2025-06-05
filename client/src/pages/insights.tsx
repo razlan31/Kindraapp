@@ -198,6 +198,7 @@ export default function Insights() {
         </section>
 
         {/* AI Personalized Insights - Main Feature */}
+        {console.log("AI Insights Debug:", { connectionsLength: connections.length, connections, shouldShow: connections.length > 0 })}
         {connections.length > 0 && (
           <section className="px-4 mb-6">
             <Card className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 border-purple-200 dark:border-purple-700">
