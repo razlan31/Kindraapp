@@ -41,15 +41,19 @@ export const getQueryFn: <T>(options: {
     
     // Check if response has content before parsing JSON
     const text = await res.text();
-    if (!text || text.trim() === '') {
+    if (!text || text.trim() === '' || text === 'undefined') {
       return null;
     }
     
     try {
       return JSON.parse(text);
     } catch (error) {
-      console.error('Failed to parse JSON response:', text);
-      throw new Error('Invalid JSON response from server');
+      console.error('Failed to parse JSON response:', { text, error });
+      // Return null for empty responses instead of throwing
+      if (text.trim() === '' || text === 'undefined') {
+        return null;
+      }
+      throw new Error(`Invalid JSON response from server: ${text.slice(0, 100)}`);
     }
   };
 
