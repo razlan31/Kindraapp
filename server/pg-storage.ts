@@ -32,7 +32,7 @@ export class PgStorage implements IStorage {
       loveLanguage: 'Quality Time'
     });
 
-    // Create comprehensive test connection 1: Alex (Early Relationship)
+    // Create test connections
     const testConnection1 = await this.createConnection({
       userId: testUser.id,
       name: 'Alex',
@@ -41,167 +41,54 @@ export class PgStorage implements IStorage {
       birthday: new Date('1995-06-15'),
       zodiacSign: 'Gemini',
       loveLanguage: 'Quality Time',
-      isPrivate: false,
-      profileImage: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face'
+      isPrivate: false
     });
 
-    // Create comprehensive test connection 2: Jordan (Established Relationship)
     const testConnection2 = await this.createConnection({
       userId: testUser.id,
       name: 'Jordan',
       relationshipStage: 'Dating',
-      startDate: new Date('2025-03-15'),
+      startDate: new Date('2025-05-15'),
       birthday: new Date('1994-03-20'),
       zodiacSign: 'Pisces',
       loveLanguage: 'Physical Touch',
+      isPrivate: false
+    });
+
+    // Create sample moments for both connections
+    await this.createMoment({
+      userId: testUser.id,
+      connectionId: testConnection1.id,
+      emoji: '😍',
+      content: 'Amazing date night! We had such great chemistry.',
+      tags: ['Green Flag', 'Quality Time', 'Intimacy'],
       isPrivate: false,
-      profileImage: 'https://images.unsplash.com/photo-1494790108755-2616b612b630?w=400&h=400&fit=crop&crop=face'
+      isIntimate: false,
+      intimacyRating: null,
+      relatedToMenstrualCycle: false,
+      isResolved: false,
+      resolvedAt: null,
+      resolutionNotes: null,
+      reflection: null
     });
 
-    // Create comprehensive moments for Alex (Early Relationship - Talking Stage)
-    const alexMoments = [
-      {
-        emoji: '💫', content: 'First time we matched on the app! Excited to get to know them.',
-        tags: ['First Contact', 'Green Flag'], createdAt: new Date('2025-05-01')
-      },
-      {
-        emoji: '😊', content: 'Had our first video call - such great conversation flow!',
-        tags: ['Quality Time', 'Green Flag', 'Communication'], createdAt: new Date('2025-05-03')
-      },
-      {
-        emoji: '🎭', content: 'They suggested a really creative first date idea - mini golf and ice cream.',
-        tags: ['Planning', 'Creativity', 'Green Flag'], createdAt: new Date('2025-05-05')
-      },
-      {
-        emoji: '✨', content: 'First in-person date! Chemistry was even better than expected.',
-        tags: ['First Date', 'Chemistry', 'Green Flag'], createdAt: new Date('2025-05-07')
-      },
-      {
-        emoji: '📱', content: 'They texted to make sure I got home safely. Such thoughtfulness!',
-        tags: ['Thoughtful', 'Safety', 'Green Flag'], createdAt: new Date('2025-05-07')
-      },
-      {
-        emoji: '🤔', content: 'Still figuring out where this is going, but I really enjoy their company.',
-        tags: ['Uncertainty', 'Reflection'], createdAt: new Date('2025-05-12')
-      }
-    ];
-
-    // Create comprehensive moments for Jordan (Established Relationship - Dating)
-    const jordanMoments = [
-      {
-        emoji: '💕', content: 'Made it official! We\'re now exclusively dating.',
-        tags: ['Milestone', 'Commitment', 'Green Flag'], createdAt: new Date('2025-03-15')
-      },
-      {
-        emoji: '🏠', content: 'First time staying over at their place. Felt so natural and comfortable.',
-        tags: ['Intimacy', 'Comfort', 'Physical Touch'], createdAt: new Date('2025-03-20')
-      },
-      {
-        emoji: '👨‍👩‍👧‍👦', content: 'Met their family today! They were so welcoming and kind.',
-        tags: ['Family', 'Milestone', 'Green Flag'], createdAt: new Date('2025-03-28')
-      },
-      {
-        emoji: '💔', content: 'Had our first real argument about future plans. Felt tense.',
-        tags: ['Conflict', 'Communication', 'Red Flag'], createdAt: new Date('2025-04-05')
-      },
-      {
-        emoji: '🤝', content: 'We talked through our disagreement and found compromise. Growth moment!',
-        tags: ['Resolution', 'Growth', 'Communication'], createdAt: new Date('2025-04-06')
-      },
-      {
-        emoji: '🎂', content: 'They planned such a thoughtful surprise for my birthday.',
-        tags: ['Thoughtful', 'Birthday', 'Love Language'], createdAt: new Date('2025-04-15')
-      },
-      {
-        emoji: '🌅', content: 'Weekend getaway together. Deepened our connection so much.',
-        tags: ['Travel', 'Quality Time', 'Intimacy'], createdAt: new Date('2025-04-22')
-      },
-      {
-        emoji: '💍', content: 'Casually talked about the future - we both want similar things!',
-        tags: ['Future Planning', 'Alignment', 'Green Flag'], createdAt: new Date('2025-05-10')
-      },
-      {
-        emoji: '😰', content: 'Feeling a bit overwhelmed by how fast things are moving.',
-        tags: ['Anxiety', 'Pace', 'Reflection'], createdAt: new Date('2025-05-18')
-      },
-      {
-        emoji: '🤗', content: 'They noticed I was stressed and gave me space without me asking.',
-        tags: ['Understanding', 'Emotional Intelligence', 'Green Flag'], createdAt: new Date('2025-05-20')
-      }
-    ];
-
-    // Create all Alex moments
-    for (const moment of alexMoments) {
-      await this.createMoment({
-        userId: testUser.id,
-        connectionId: testConnection1.id,
-        emoji: moment.emoji,
-        content: moment.content,
-        tags: moment.tags,
-        isPrivate: false,
-        isIntimate: moment.tags.includes('Intimacy'),
-        intimacyRating: moment.tags.includes('Intimacy') ? "3" : null,
-        relatedToMenstrualCycle: false,
-        isResolved: moment.tags.includes('Resolution'),
-        resolvedAt: moment.tags.includes('Resolution') ? moment.createdAt : null,
-        resolutionNotes: moment.tags.includes('Resolution') ? 'Worked through together' : null,
-        reflection: null
-      });
-    }
-
-    // Create all Jordan moments
-    for (const moment of jordanMoments) {
-      await this.createMoment({
-        userId: testUser.id,
-        connectionId: testConnection2.id,
-        emoji: moment.emoji,
-        content: moment.content,
-        tags: moment.tags,
-        isPrivate: false,
-        isIntimate: moment.tags.includes('Intimacy'),
-        intimacyRating: moment.tags.includes('Intimacy') ? "4" : null,
-        relatedToMenstrualCycle: false,
-        isResolved: moment.tags.includes('Resolution'),
-        resolvedAt: moment.tags.includes('Resolution') ? moment.createdAt : null,
-        resolutionNotes: moment.tags.includes('Resolution') ? 'Communicated effectively' : null,
-        reflection: null
-      });
-    }
-
-    // Create milestones for both relationships
-    await this.createMilestone({
-      userId: testUser.id,
-      connectionId: testConnection1.id,
-      title: 'First Match',
-      description: 'Connected on dating app',
-      date: new Date('2025-05-01')
-    });
-
-    await this.createMilestone({
-      userId: testUser.id,
-      connectionId: testConnection1.id,
-      title: 'First Date',
-      description: 'Mini golf and ice cream',
-      date: new Date('2025-05-07')
-    });
-
-    await this.createMilestone({
+    await this.createMoment({
       userId: testUser.id,
       connectionId: testConnection2.id,
-      title: 'Made It Official',
-      description: 'Became exclusive',
-      date: new Date('2025-03-15')
+      emoji: '💕',
+      content: 'First official date as a couple! So excited.',
+      tags: ['Dating', 'Milestone', 'Green Flag'],
+      isPrivate: false,
+      isIntimate: false,
+      intimacyRating: null,
+      relatedToMenstrualCycle: false,
+      isResolved: false,
+      resolvedAt: null,
+      resolutionNotes: null,
+      reflection: null
     });
 
-    await this.createMilestone({
-      userId: testUser.id,
-      connectionId: testConnection2.id,
-      title: 'Met the Family',
-      description: 'First time meeting their parents',
-      date: new Date('2025-03-28')
-    });
-
-    console.log('✅ Test user with comprehensive relationship data created');
+    console.log('✅ Test user and sample data created');
   }
 
   // User operations
