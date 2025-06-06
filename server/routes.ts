@@ -1391,6 +1391,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // For non-repeatable badges, skip if user already has it
         if (!badge.isRepeatable && earnedBadgeIds.includes(badge.id)) continue;
         
+        const criteria = badge.unlockCriteria as Record<string, any>;
+        
         // For repeatable badges, check if they've earned it recently to prevent spam
         // Skip cooldown for connection-based badges (First Contact should be immediate)
         if (badge.isRepeatable && earnedBadgeIds.includes(badge.id)) {
@@ -1400,7 +1402,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           } else {
             const lastEarned = userBadges
               .filter(ub => ub.badgeId === badge.id)
-              .sort((a, b) => new Date(b.unlockedAt).getTime() - new Date(a.unlockedAt).getTime())[0];
+              .sort((a, b) => (b.unlockedAt ? new Date(b.unlockedAt).getTime() : 0) - (a.unlockedAt ? new Date(a.unlockedAt).getTime() : 0))[0];
             
             if (lastEarned) {
               const cooldownPeriod = badge.name.includes('Weekly') ? 6 * 24 * 60 * 60 * 1000 : // 6 days for weekly badges
@@ -1414,7 +1416,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
           }
         }
 
-        const criteria = badge.unlockCriteria as Record<string, any>;
         let isEarned = false;
 
         // Connection-based badges
