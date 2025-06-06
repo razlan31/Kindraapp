@@ -27,6 +27,13 @@ function formatDateForDB(date: Date | string | null): string {
   return date.toISOString();
 }
 
+// Helper function to safely handle error types
+function getErrorMessage(error: unknown): string {
+  if (error instanceof Error) return error.message;
+  if (typeof error === 'string') return error;
+  return 'Unknown error occurred';
+}
+
 // Helper functions for relationship stage milestones
 function getMilestoneTitle(oldStage: string, newStage: string): string {
   const milestones: Record<string, string> = {
@@ -465,7 +472,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             reflection: null,
             isMilestone: true,
             milestoneTitle: stageTitle,
-            createdAt: new Date(baseTime.getTime() + 1000).toISOString()
+            createdAt: formatDateForDB(new Date(baseTime.getTime() + 1000))
           };
           
           const stageMilestone = await storage.createMoment(stageMilestoneData);
@@ -495,7 +502,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             reflection: null,
             isMilestone: true,
             milestoneTitle: 'Birthday',
-            createdAt: birthdayDate.toISOString()
+            createdAt: formatDateForDB(birthdayDate)
           };
           
           const birthdayMilestone = await storage.createMoment(birthdayMilestoneData);
@@ -520,7 +527,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error) {
       console.error("Connection creation error:", error);
-      res.status(500).json({ message: "Server error creating connection", details: error.message });
+      res.status(500).json({ message: "Server error creating connection", details: getErrorMessage(error) });
     }
   });
 
@@ -630,7 +637,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               reflection: null,
               isMilestone: true,
               milestoneTitle: "Connection Started",
-              createdAt: updatedConnection.startDate
+              createdAt: formatDateForDB(updatedConnection.startDate)
             };
             
             const connectionMilestone = await storage.createMoment(connectionStartData);
@@ -660,7 +667,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
                 reflection: null,
                 isMilestone: true,
                 milestoneTitle: initialStageTitle,
-                createdAt: new Date(baseTime.getTime() + 1000)
+                createdAt: formatDateForDB(new Date(baseTime.getTime() + 1000))
               };
               
               const initialStageMilestone = await storage.createMoment(initialStageMilestoneData);
@@ -693,7 +700,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             reflection: null,
             isMilestone: true,
             milestoneTitle: milestoneTitle,
-            createdAt: new Date() // Explicitly set current date for progression milestone
+            createdAt: formatDateForDB(new Date()) // Explicitly set current date for progression milestone
           };
           
           const milestone = await storage.createMoment(milestoneData);
