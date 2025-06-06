@@ -655,7 +655,6 @@ export default function MenstrualCyclePage() {
   if (isLoading) {
     return (
       <div className="max-w-md mx-auto bg-white dark:bg-neutral-900 min-h-screen flex flex-col relative">
-        <Header />
         <main className="flex-1 overflow-y-auto pb-20">
           <div className="flex items-center justify-center h-64">
             <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full" />
@@ -672,7 +671,6 @@ export default function MenstrualCyclePage() {
 
   return (
     <div className="max-w-md mx-auto bg-white dark:bg-neutral-900 min-h-screen flex flex-col relative">
-      <Header />
       
       <main className="flex-1 overflow-y-auto pb-20">
         {/* Header */}
