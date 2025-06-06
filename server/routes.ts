@@ -71,13 +71,9 @@ function getMilestoneEmoji(stage: string): string {
   return emojis[stage] || '✨';
 }
 
-// Extend session types
-declare module "express-session" {
-  declare module "express-session" {
-    interface SessionData {
-      userId?: number;
-    }
-  }
+// Session type extension
+interface SessionData {
+  userId?: number;
 }
 
 // Auth middleware
@@ -474,7 +470,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             reflection: null,
             isMilestone: true,
             milestoneTitle: stageTitle,
-            createdAt: formatDateForDB(new Date(baseTime.getTime() + 1000))
+            createdAt: new Date(baseTime.getTime() + 1000)
           };
           
           const stageMilestone = await storage.createMoment(stageMilestoneData);

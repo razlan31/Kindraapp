@@ -28,7 +28,7 @@ export interface IStorage {
   getMoment(id: number): Promise<Moment | undefined>;
   getMomentsByUserId(userId: number, limit?: number): Promise<Moment[]>;
   getMomentsByConnectionId(connectionId: number): Promise<Moment[]>;
-  createMoment(moment: InsertMoment): Promise<Moment>;
+  createMoment(moment: Omit<InsertMoment, 'createdAt' | 'resolvedAt'> & { createdAt?: Date | string; resolvedAt?: Date | string | null }): Promise<Moment>;
   updateMoment(id: number, data: Partial<Moment>): Promise<Moment | undefined>;
   deleteMoment(id: number): Promise<boolean>;
 
