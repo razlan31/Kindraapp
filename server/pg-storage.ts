@@ -15,13 +15,6 @@ export class PgStorage implements IStorage {
     if (this.initialized) return;
     
     console.log('🗄️ Initializing PostgreSQL storage...');
-    
-    // Check if test user exists, if not create it
-    const existingUser = await db.select().from(users).where(eq(users.username, 'testuser')).limit(1);
-    if (existingUser.length === 0) {
-      await this.createTestUser();
-    }
-    
     this.initialized = true;
     console.log('✅ PostgreSQL storage initialized');
   }
