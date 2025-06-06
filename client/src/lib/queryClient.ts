@@ -49,10 +49,14 @@ export const getQueryFn: <T>(options: {
       throw new Error(`Expected JSON response but got: ${contentType}`);
     }
     
+    const text = await res.text();
+    if (!text.trim()) {
+      return null;
+    }
+    
     try {
-      return await res.json();
+      return JSON.parse(text);
     } catch (error) {
-      const text = await res.text();
       console.error('JSON parsing failed for response:', text);
       throw new Error(`Invalid JSON response: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }

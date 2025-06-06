@@ -20,6 +20,13 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
   apiVersion: "2023-10-16",
 });
 
+// Helper function to safely format dates for database insertion
+function formatDateForDB(date: Date | string | null): string {
+  if (!date) return new Date().toISOString();
+  if (typeof date === 'string') return new Date(date).toISOString();
+  return date.toISOString();
+}
+
 // Helper functions for relationship stage milestones
 function getMilestoneTitle(oldStage: string, newStage: string): string {
   const milestones: Record<string, string> = {
@@ -458,7 +465,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             reflection: null,
             isMilestone: true,
             milestoneTitle: stageTitle,
-            createdAt: new Date(baseTime.getTime() + 1000)
+            createdAt: new Date(baseTime.getTime() + 1000).toISOString()
           };
           
           const stageMilestone = await storage.createMoment(stageMilestoneData);
@@ -488,7 +495,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             reflection: null,
             isMilestone: true,
             milestoneTitle: 'Birthday',
-            createdAt: birthdayDate
+            createdAt: birthdayDate.toISOString()
           };
           
           const birthdayMilestone = await storage.createMoment(birthdayMilestoneData);
