@@ -64,7 +64,7 @@ function Router() {
       <Route path="/onboarding/profile" component={OnboardingProfile} />
       <Route path="/onboarding/goals" component={OnboardingGoals} />
       <Route path="/onboarding/complete" component={OnboardingComplete} />
-      <Route path="/" component={InsightsNew} />
+      <Route path="/" component={Dashboard} />
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/connections" component={Connections} />
       <Route path="/connections/add" component={ConnectionsFormNew} />
@@ -77,7 +77,7 @@ function Router() {
       <Route path="/activities" component={Activities} />
       <Route path="/calendar" component={Calendar} />
       <Route path="/badges" component={Badges} />
-      <Route path="/insights" component={InsightsNew} />
+
       <Route path="/profile" component={Profile} />
       <Route path="/settings" component={Settings} />
       <Route path="/cycle-tracking" component={CycleTracking} />
