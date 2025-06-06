@@ -8,7 +8,7 @@ import {
 } from "@shared/schema";
 import bcrypt from "bcryptjs";
 import session from "express-session";
-import MemoryStore from "memorystore";
+import connectPgSimple from "connect-pg-simple";
 import Stripe from "stripe";
 import { aiCoach, type RelationshipContext } from "./ai-relationship-coach";
 
@@ -76,8 +76,9 @@ const isAuthenticated = (req: Request, res: Response, next: Function) => {
 };
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Set up session
-  const SessionStore = MemoryStore(session);
+  // Set up PostgreSQL session store for persistence across restarts
+  const PgSession = connectPgSimple(session);
+  
   app.use(
     session({
       secret: process.env.SESSION_SECRET || "kindra-app-secret",
@@ -88,7 +89,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
         httpOnly: true
       },
-      store: new SessionStore({ checkPeriod: 86400000 }),
+      store: new PgSession({
+        conString: process.env.DATABASE_URL,
+        tableName: 'user_sessions',
+        createTableIfMissing: true,
+      }),
     })
   );
 
