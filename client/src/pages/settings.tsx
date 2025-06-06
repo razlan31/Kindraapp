@@ -1,6 +1,6 @@
 import { useState } from "react";
 import * as React from "react";
-import { Header } from "@/components/layout/header";
+
 import { BottomNavigation } from "@/components/layout/bottom-navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
