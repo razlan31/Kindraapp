@@ -23,14 +23,14 @@ export async function generateMiniInsight(request: MiniInsightRequest): Promise<
       messages: [
         {
           role: "system",
-          content: "You are a relationship assistant. Provide short, simple insights in 1-2 sentences. Be direct and helpful without complex analysis. Focus on clear, actionable observations."
+          content: "You are a relationship insight AI. Provide brief, actionable insights in 1-2 sentences. Be empathetic, practical, and focus on relationship growth. Avoid being overly positive or prescriptive."
         },
         {
           role: "user",
           content: prompt
         }
       ],
-      max_tokens: 50,
+      max_tokens: 100,
       temperature: 0.7
     });
 
@@ -49,26 +49,45 @@ export async function generateMiniInsight(request: MiniInsightRequest): Promise<
 function createContextualPrompt(context: string, data: any): string {
   switch (context) {
     case "conflict-entry":
-      return `Brief insight about this conflict: ${data.content || ""} Tags: ${data.tags?.join(", ") || ""}`;
+      return `Analyze this relationship conflict entry and provide a brief insight about conflict resolution or communication:
+      Description: ${data.description || data.content || ""}
+      Resolution: ${data.resolution || data.resolutionNotes || ""}
+      Tags: ${data.tags?.join(", ") || ""}`;
 
     case "moment-entry":
-      return `Quick insight about this moment: ${data.content || ""} ${data.emoji || ""} Tags: ${data.tags?.join(", ") || ""}`;
+      return `Analyze this relationship moment and provide a brief insight about relationship patterns:
+      Content: ${data.content || ""}
+      Emoji: ${data.emoji || ""}
+      Type: ${data.isIntimate ? "Intimate" : "General"}
+      Tags: ${data.tags?.join(", ") || ""}`;
 
     case "connection-profile":
-      return `Brief relationship insight for ${data.relationshipStage || ""} stage with ${data.loveLanguage || ""} love language`;
+      return `Analyze this connection profile and provide a brief insight about compatibility or relationship dynamics:
+      Relationship Stage: ${data.relationshipStage || ""}
+      Love Language: ${data.loveLanguage || ""}
+      Zodiac Sign: ${data.zodiacSign || ""}
+      Recent Activity: ${data.recentMoments || ""}`;
 
     case "activities-overview":
-      const connections = data.connections || [];
-      const moments = data.recentMoments || [];
-      return `Quick insight about ${connections.length} connections and ${moments.length} recent moments`;
+      return `Analyze these recent relationship activities and provide a brief insight about relationship health:
+      Recent Moments: ${JSON.stringify(data.recentMoments || []).slice(0, 200)}
+      Total Activities: ${data.totalCount || 0}
+      Connection: ${data.connectionName || ""}`;
 
     case "calendar-day":
-      return `Brief insight about relationship activity on ${data.date}`;
+      return `Analyze this day's relationship activities and provide a brief insight:
+      Date: ${data.date || ""}
+      Moments: ${JSON.stringify(data.moments || []).slice(0, 200)}
+      Connection Context: ${data.connectionContext || ""}`;
 
     case "activity-card":
-      return `Quick insight: ${data.content || ""} ${data.emoji || ""} Tags: ${data.tags?.join(", ") || ""}`;
+      return `Analyze this specific relationship activity and provide a brief insight:
+      Activity: ${data.content || data.title || ""}
+      Emotion: ${data.emoji || ""}
+      Context: ${data.isPrivate ? "Private moment" : "Shared moment"}
+      Notes: ${data.notes || data.reflection || ""}`;
 
     default:
-      return `Brief relationship insight based on recent activity`;
+      return `Provide a brief relationship insight based on this data: ${JSON.stringify(data).slice(0, 200)}`;
   }
 }

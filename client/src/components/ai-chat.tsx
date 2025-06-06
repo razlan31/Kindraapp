@@ -39,15 +39,10 @@ export function AIChat() {
 
   useEffect(() => {
     if (conversationData && (conversationData as any).conversation) {
-      try {
-        setConversation((conversationData as any).conversation.map((msg: any) => ({
-          ...msg,
-          timestamp: new Date(msg.timestamp)
-        })));
-      } catch (error) {
-        console.error('Error processing conversation data:', error);
-        setConversation([]);
-      }
+      setConversation((conversationData as any).conversation.map((msg: any) => ({
+        ...msg,
+        timestamp: new Date(msg.timestamp)
+      })));
     }
   }, [conversationData]);
 
