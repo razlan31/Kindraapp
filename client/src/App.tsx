@@ -20,7 +20,7 @@ import SimpleConnectionCreate from "./pages/simple-connection-create";
 import SimpleForm from "./pages/simple-form";
 import Activities from "@/pages/activities";
 import Calendar from "@/pages/calendar";
-import InsightsNew from "@/pages/insights-new";
+
 import Profile from "@/pages/profile";
 import Settings from "@/pages/settings";
 import CycleTracking from "@/pages/cycle-tracking";
