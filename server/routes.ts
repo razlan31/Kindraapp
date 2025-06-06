@@ -79,9 +79,9 @@ declare module "express-session" {
 }
 
 // Auth middleware
-const isAuthenticated = (req: Request, res: Response, next: Function) => {
-  if (req.session.userId) {
-    console.log("Auth middleware: User authenticated with ID", req.session.userId);
+const isAuthenticated = (req: Request & { session: any }, res: Response, next: Function) => {
+  if (req.session?.userId) {
+    console.log("Auth middleware: User authenticated with ID", (req.session as any).userId);
     next();
   } else {
     console.log("Auth middleware: No user session found");
@@ -106,7 +106,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Stats endpoint
   app.get("/api/stats", isAuthenticated, async (req: Request, res: Response) => {
     try {
-      const session = req.session as SessionData;
+      const session = req.session as any;
       const userId = session.userId!;
 
       const connections = await storage.getConnectionsByUserId(userId);
@@ -127,7 +127,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/plans-data", isAuthenticated, async (req: Request, res: Response) => {
     console.log('🚀 PLANS DATA ROUTE HIT - This should show if route is working');
     try {
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       console.log('📋 GET /plans-data - Fetching for user', userId);
       const plans = await storage.getPlans(userId);
       console.log('📋 Plans found:', plans.length);
@@ -145,7 +145,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/plans-data", isAuthenticated, async (req: Request, res: Response) => {
     try {
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       const planData = { ...req.body, userId };
       console.log('📋 Creating plan for user', userId, 'data:', planData);
       
@@ -187,7 +187,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { password, ...userWithoutPassword } = newUser;
       
       // Set session
-      req.session.userId = newUser.id;
+      (req.session as any).userId = newUser.id;
       
       res.status(201).json(userWithoutPassword);
     } catch (error) {
@@ -221,7 +221,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Set session
-      req.session.userId = user.id;
+      (req.session as any).userId = user.id;
       
       // Remove password from response
       const { password: _, ...userWithoutPassword } = user;
@@ -243,7 +243,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/me", isAuthenticated, async (req, res) => {
     try {
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       const user = await storage.getUser(userId);
       
       if (!user) {
@@ -261,7 +261,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/me", isAuthenticated, async (req, res) => {
     try {
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       const updateData = req.body;
       
       // Validate the update data
@@ -295,7 +295,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // PATCH endpoint for profile updates (used by onboarding)
   app.patch("/api/me", isAuthenticated, async (req, res) => {
     try {
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       const updateData = req.body;
       
       console.log("Backend /api/me PATCH - received data:", updateData);
@@ -333,7 +333,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Update profile endpoint
   app.patch("/api/profile", isAuthenticated, async (req, res) => {
     try {
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       const updateData = req.body;
       
       // Validate the update data - now includes relationship-focused fields
@@ -367,7 +367,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Connections Routes
   app.get("/api/connections", isAuthenticated, async (req, res) => {
     try {
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       const connections = await storage.getConnectionsByUserId(userId);
       res.status(200).json(connections);
     } catch (error) {
@@ -387,7 +387,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Verify ownership
-      if (connection.userId !== req.session.userId) {
+      if (connection.userId !== (req.session as any).userId) {
         return res.status(403).json({ message: "Access denied" });
       }
       
@@ -401,7 +401,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/connections", isAuthenticated, async (req, res) => {
     try {
       console.log("Received connection creation request:", req.body);
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       console.log("User ID from session:", userId);
       
       // Create connection object with all form data
@@ -533,7 +533,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/connections/:id", isAuthenticated, async (req, res) => {
     try {
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       const connectionId = parseInt(req.params.id);
       
       if (isNaN(connectionId)) {
@@ -793,7 +793,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get user badges
   app.get("/api/badges", isAuthenticated, async (req, res) => {
     try {
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       
       // Check for any new badges before returning the list
       await checkAndAwardBadges(userId);
@@ -822,7 +822,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Manual badge check route for debugging
   app.post("/api/badges/check", isAuthenticated, async (req, res) => {
     try {
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       console.log(`🔍 Manual badge check triggered for user ${userId}`);
       
       const newBadges = await checkAndAwardBadges(userId);
@@ -882,7 +882,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/connections/:id", isAuthenticated, async (req, res) => {
     try {
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       const connectionId = parseInt(req.params.id);
       
       if (isNaN(connectionId)) {
@@ -909,7 +909,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Moments Routes
   app.get("/api/moments", isAuthenticated, async (req, res) => {
     try {
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       const limit = req.query.limit ? parseInt(req.query.limit as string) : undefined;
       
       console.log(`📋 GET /api/moments - Fetching for user ${userId}`);
@@ -924,7 +924,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/moments", isAuthenticated, async (req, res) => {
     try {
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       
       console.log("🚀 ROUTES - POST /api/moments called");
       console.log("🚀 ROUTES - Raw request body:", req.body);
@@ -976,7 +976,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Add reflection to a moment
   app.post("/api/moments/:id/reflection", isAuthenticated, async (req: Request, res: Response) => {
     try {
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       const momentId = parseInt(req.params.id);
       const { reflection } = req.body;
       
@@ -1016,7 +1016,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Update a moment
   app.patch("/api/moments/:id", isAuthenticated, async (req: Request, res: Response) => {
     try {
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       const momentId = parseInt(req.params.id);
       
       console.log(`🚀 PATCH START - Moment ${momentId}, Request body:`, req.body);
@@ -1065,7 +1065,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/connections/:id/moments", isAuthenticated, async (req, res) => {
     try {
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       const connectionId = parseInt(req.params.id);
       
       if (isNaN(connectionId)) {
@@ -1091,7 +1091,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/moments/:id", isAuthenticated, async (req, res) => {
     try {
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       const momentId = parseInt(req.params.id);
       
       if (isNaN(momentId)) {
@@ -1116,7 +1116,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/moments/:id", isAuthenticated, async (req, res) => {
     try {
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       const momentId = parseInt(req.params.id);
       
       if (isNaN(momentId)) {
@@ -1142,7 +1142,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/moments/:id", isAuthenticated, async (req, res) => {
     try {
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       const momentId = parseInt(req.params.id);
       
       if (isNaN(momentId)) {
@@ -1178,7 +1178,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/user-badges", isAuthenticated, async (req, res) => {
     try {
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       const userBadges = await storage.getUserBadges(userId);
       res.status(200).json(userBadges);
     } catch (error) {
@@ -1189,7 +1189,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Settings Routes
   app.get("/api/settings", isAuthenticated, async (req, res) => {
     try {
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       const user = await storage.getUser(userId);
       
       if (!user) {
@@ -1222,7 +1222,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/settings", isAuthenticated, async (req, res) => {
     try {
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       const settingsData = req.body;
       
       // For now, we'll just return success. In a real app, you'd store these in the database
@@ -1243,14 +1243,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/menstrual-cycles/:id", isAuthenticated, async (req, res) => {
     try {
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       const cycleId = parseInt(req.params.id);
       
       if (isNaN(cycleId)) {
         return res.status(400).json({ message: "Invalid cycle ID" });
       }
       
-      const cycle = await storage.getMenstrualCycle(cycleId);
+      const cycles = await storage.getMenstrualCycles(userId);
+      const cycle = cycles.find(c => c.id === cycleId);
       
       if (!cycle) {
         return res.status(404).json({ message: "Menstrual cycle not found" });
@@ -1270,7 +1271,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Milestone routes
   app.get("/api/milestones", isAuthenticated, async (req, res) => {
     try {
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       const connectionId = req.query.connectionId ? parseInt(req.query.connectionId as string) : null;
       
       let milestones;
@@ -1289,7 +1290,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/milestones", isAuthenticated, async (req, res) => {
     console.log("🚨 MILESTONE ROUTE HIT - Starting request");
     try {
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       const milestoneData = req.body;
       
       console.log("🚨 MILESTONE ROUTE - Original data:", JSON.stringify(milestoneData, null, 2));
@@ -1322,7 +1323,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   app.put("/api/milestones/:id", isAuthenticated, async (req, res) => {
     try {
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       const milestoneId = parseInt(req.params.id);
       
       if (isNaN(milestoneId)) {
@@ -1346,7 +1347,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   app.delete("/api/milestones/:id", isAuthenticated, async (req, res) => {
     try {
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       const milestoneId = parseInt(req.params.id);
       
       if (isNaN(milestoneId)) {
@@ -1709,7 +1710,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Stripe billing endpoints
   app.get("/api/billing/subscription", isAuthenticated, async (req: Request, res: Response) => {
     try {
-      const userId = req.session.userId;
+      const userId = (req.session as any).userId;
       const user = await storage.getUser(userId);
       
       if (!user || !user.stripeSubscriptionId) {
@@ -1729,7 +1730,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/billing/customer", isAuthenticated, async (req: Request, res: Response) => {
     try {
-      const userId = req.session.userId;
+      const userId = (req.session as any).userId;
       const user = await storage.getUser(userId);
       
       if (!user || !user.stripeCustomerId) {
@@ -1746,7 +1747,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/billing/create-customer-portal", isAuthenticated, async (req: Request, res: Response) => {
     try {
-      const userId = req.session.userId;
+      const userId = (req.session as any).userId;
       const user = await storage.getUser(userId);
       
       if (!user || !user.stripeCustomerId) {
@@ -1767,7 +1768,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/billing/cancel-subscription", isAuthenticated, async (req: Request, res: Response) => {
     try {
-      const userId = req.session.userId;
+      const userId = (req.session as any).userId;
       const user = await storage.getUser(userId);
       
       if (!user || !user.stripeSubscriptionId) {
@@ -1787,7 +1788,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/billing/invoices", isAuthenticated, async (req: Request, res: Response) => {
     try {
-      const userId = req.session.userId;
+      const userId = (req.session as any).userId;
       const user = await storage.getUser(userId);
       
       if (!user || !user.stripeCustomerId) {
@@ -1900,7 +1901,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Menstrual cycle endpoints
   app.get("/api/menstrual-cycles", isAuthenticated, async (req: Request, res: Response) => {
     try {
-      const userId = req.session.userId!;
+      const userId = (req.session as any).userId!;
       console.log("Fetching menstrual cycles for userId:", userId);
       let cycles = await storage.getMenstrualCycles(userId);
       console.log("Retrieved cycles:", cycles);
@@ -1917,7 +1918,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/menstrual-cycles", isAuthenticated, async (req: Request, res: Response) => {
     try {
-      const userId = req.session.userId!;
+      const userId = (req.session as any).userId!;
       const { startDate, periodEndDate, endDate, flowIntensity, symptoms, connectionId, mood, notes } = req.body;
       
       console.log("Creating menstrual cycle with data:", {
@@ -1971,7 +1972,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.patch("/api/menstrual-cycles/:id", isAuthenticated, async (req: Request, res: Response) => {
     try {
-      const userId = req.session.userId!;
+      const userId = (req.session as any).userId!;
       const cycleId = parseInt(req.params.id);
       const updates = req.body;
       
@@ -2032,7 +2033,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // AI Chat endpoints
   app.post("/api/ai/chat", isAuthenticated, async (req: Request, res: Response) => {
     try {
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       const { message } = req.body;
 
       if (!message || typeof message !== 'string') {
@@ -2090,7 +2091,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/ai/conversation", isAuthenticated, async (req: Request, res: Response) => {
     try {
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       const conversation = aiCoach.getConversationHistory(userId);
       
       res.json({ conversation });
@@ -2102,7 +2103,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/ai/conversation", isAuthenticated, async (req: Request, res: Response) => {
     try {
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       aiCoach.clearConversation(userId);
       
       res.json({ message: "Conversation cleared" });
@@ -2115,7 +2116,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Create a comprehensive connection template with all types of entries
   app.post("/api/create-template-connection", isAuthenticated, async (req: Request, res: Response) => {
     try {
-      const userId = req.session.userId!;
+      const userId = (req.session as any).userId!;
       
       // Create the template connection
       const templateConnection = await storage.createConnection({
