@@ -2,13 +2,12 @@ import { useAuth } from "@/contexts/auth-context";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Bell, LogOut, Settings, User, Trophy, Calendar, Home, Brain } from "lucide-react";
-import { Link, useLocation } from "wouter";
+import { Bell, LogOut, Settings, User, Trophy, Calendar } from "lucide-react";
+import { Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 
 export function Header() {
   const { logout, isAuthenticated } = useAuth();
-  const [location] = useLocation();
   
   // Use React Query to get the latest user data including profile picture
   const { data: user } = useQuery({
@@ -33,31 +32,6 @@ export function Header() {
       <div className="flex items-center">
         <h1 className="text-2xl font-heading font-bold text-primary">Kindra</h1>
       </div>
-      
-      {/* Navigation Links */}
-      <div className="flex items-center space-x-1">
-        <Link href="/">
-          <Button 
-            variant={location === "/" ? "default" : "ghost"} 
-            size="sm"
-            className="flex items-center space-x-2"
-          >
-            <Home className="h-4 w-4" />
-            <span>Home</span>
-          </Button>
-        </Link>
-        <Link href="/insights">
-          <Button 
-            variant={location === "/insights" ? "default" : "ghost"} 
-            size="sm"
-            className="flex items-center space-x-2"
-          >
-            <Brain className="h-4 w-4" />
-            <span>Insights</span>
-          </Button>
-        </Link>
-      </div>
-      
       <div className="flex items-center space-x-3">
         <Button variant="ghost" size="icon" className="text-neutral-600 dark:text-neutral-400 rounded-full">
           <Bell className="h-5 w-5" />

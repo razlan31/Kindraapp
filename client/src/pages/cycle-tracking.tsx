@@ -1,4 +1,4 @@
-
+import { Header } from "@/components/layout/header";
 import { BottomNavigation } from "@/components/layout/bottom-navigation";
 import { useAuth } from "@/contexts/auth-context";
 import { useQuery } from "@tanstack/react-query";
@@ -149,6 +149,7 @@ export default function CycleTracking() {
 
   return (
     <div className="max-w-md mx-auto bg-white dark:bg-neutral-900 min-h-screen flex flex-col relative">
+      <Header />
 
       <main className="flex-1 overflow-y-auto pb-20 px-4 pt-5">
         <div className="flex justify-between items-start mb-4">

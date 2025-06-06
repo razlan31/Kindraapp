@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { useLocation } from "wouter";
-
+import { Header } from "@/components/layout/header";
 import { BottomNavigation } from "@/components/layout/bottom-navigation";
 import { MomentCard } from "@/components/dashboard/moment-card";
 import { ReflectionModal } from "@/components/modals/reflection-modal";
@@ -425,6 +425,7 @@ export default function Activities() {
 
   return (
     <div className="max-w-md mx-auto bg-white dark:bg-neutral-900 min-h-screen flex flex-col relative">
+      <Header />
 
       <main className="flex-1 overflow-y-auto pb-20">
         {/* Page Title */}

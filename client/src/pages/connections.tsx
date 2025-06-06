@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { format } from "date-fns";
-
+import { Header } from "@/components/layout/header";
 import { BottomNavigation } from "@/components/layout/bottom-navigation";
 import { Connection, relationshipStages } from "@shared/schema";
 import { Button } from "@/components/ui/button";
@@ -173,6 +173,7 @@ export default function Connections() {
 
   return (
     <div className="max-w-md mx-auto bg-white dark:bg-neutral-900 min-h-screen flex flex-col relative">
+      <Header />
 
       <main className="flex-1 overflow-y-auto pb-20">
         {/* Header */}

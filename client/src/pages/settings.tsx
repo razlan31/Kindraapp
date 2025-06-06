@@ -1,6 +1,6 @@
 import { useState } from "react";
 import * as React from "react";
-
+import { Header } from "@/components/layout/header";
 import { BottomNavigation } from "@/components/layout/bottom-navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -349,6 +349,7 @@ export default function Settings() {
 
   return (
     <div className="max-w-md mx-auto bg-white dark:bg-neutral-900 min-h-screen flex flex-col relative">
+      <Header />
       
       <main className="flex-1 overflow-y-auto pb-20 px-3 pt-4">
         <div className="flex justify-between items-center mb-4">
