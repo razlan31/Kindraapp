@@ -69,25 +69,49 @@ function createContextualPrompt(context: string, data: any): string {
       Recent Activity: ${data.recentMoments || ""}`;
 
     case "activities-overview":
-      return `Analyze these recent relationship activities and provide a brief insight about relationship health:
-      Recent Moments: ${JSON.stringify(data.recentMoments || []).slice(0, 200)}
-      Total Activities: ${data.totalCount || 0}
-      Connection: ${data.connectionName || ""}`;
+      const connections = data.connections || [];
+      const moments = data.recentMoments || [];
+      const redFlags = moments.filter((m: any) => m.tags?.includes('Red Flag')).length;
+      const greenFlags = moments.filter((m: any) => m.tags?.includes('Green Flag')).length;
+      const intimateMoments = moments.filter((m: any) => m.isIntimate).length;
+      
+      return `Analyze comprehensive relationship patterns across ${connections.length} connections with ${moments.length} tracked moments:
+
+BEHAVIORAL ANALYSIS:
+- Red flag incidents: ${redFlags}
+- Green flag moments: ${greenFlags}  
+- Intimate interactions: ${intimateMoments}
+- Connection stages: ${connections.map((c: any) => `${c.name} (${c.relationshipStage})`).join(', ')}
+
+RECENT PATTERNS:
+${moments.slice(0, 8).map((m: any) => `- ${m.emoji} ${m.content?.slice(0, 50)}... [${m.tags?.join(',') || 'untagged'}]`).join('\n')}
+
+Identify hidden psychological patterns, attachment styles, communication dynamics, and predict relationship trajectories. Focus on unconscious behavioral trends and strategic relationship advice.`;
 
     case "calendar-day":
-      return `Analyze this day's relationship activities and provide a brief insight:
-      Date: ${data.date || ""}
-      Moments: ${JSON.stringify(data.moments || []).slice(0, 200)}
-      Connection Context: ${data.connectionContext || ""}`;
+      return `Deep analysis of relationship dynamics on ${data.date}:
+      
+Day's emotional patterns: ${JSON.stringify(data.moments || []).slice(0, 300)}
+Connection context: ${data.connectionContext || ""}
+
+Analyze the emotional progression, identify triggers, assess relationship health indicators, and provide psychological insights about attachment patterns or communication styles demonstrated on this specific day.`;
 
     case "activity-card":
-      return `Analyze this specific relationship activity and provide a brief insight:
-      Activity: ${data.content || data.title || ""}
-      Emotion: ${data.emoji || ""}
-      Context: ${data.isPrivate ? "Private moment" : "Shared moment"}
-      Notes: ${data.notes || data.reflection || ""}`;
+      return `Psychological analysis of this relationship moment:
+      
+Moment: ${data.content || data.title || ""}
+Emotional indicator: ${data.emoji || ""}
+Intimacy level: ${data.isPrivate ? "Private/intimate" : "General interaction"}
+Behavioral tags: ${data.tags?.join(", ") || "untagged"}
+Personal reflection: ${data.notes || data.reflection || "none"}
+
+Analyze the underlying attachment dynamics, communication patterns, emotional regulation, and predict how this moment fits into broader relationship trajectory patterns.`;
 
     default:
-      return `Provide a brief relationship insight based on this data: ${JSON.stringify(data).slice(0, 200)}`;
+      return `Conduct deep psychological analysis of relationship patterns:
+      
+Data: ${JSON.stringify(data).slice(0, 500)}
+
+Identify attachment styles, communication effectiveness, emotional cycles, compatibility indicators, red flag progressions, and provide strategic relationship guidance based on behavioral psychology principles.`;
   }
 }
