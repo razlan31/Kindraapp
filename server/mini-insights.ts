@@ -23,15 +23,15 @@ export async function generateMiniInsight(request: MiniInsightRequest): Promise<
       messages: [
         {
           role: "system",
-          content: "You are a relationship insight AI. Provide brief, actionable insights in 1-2 sentences. Be empathetic, practical, and focus on relationship growth. Avoid being overly positive or prescriptive."
+          content: "You are an advanced relationship pattern analyst. Generate sophisticated, psychologically-informed insights that reveal hidden behavioral patterns, attachment dynamics, and relationship trajectories. Focus on actionable observations that go beyond surface-level analysis. Provide specific, data-driven insights in 2-3 sentences that demonstrate deep understanding of complex relationship dynamics."
         },
         {
           role: "user",
           content: prompt
         }
       ],
-      max_tokens: 100,
-      temperature: 0.7
+      max_tokens: 200,
+      temperature: 0.8
     });
 
     const generatedInsight = response.choices[0]?.message?.content?.trim();
