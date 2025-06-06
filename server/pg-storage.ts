@@ -88,7 +88,325 @@ export class PgStorage implements IStorage {
       reflection: null
     });
 
-    console.log('✅ Test user and sample data created');
+    // Create 3 additional test connections with rich activity data
+    const testConnection3 = await this.createConnection({
+      userId: testUser.id,
+      name: 'Maya',
+      relationshipStage: 'Best Friend',
+      startDate: new Date('2024-08-10'),
+      birthday: new Date('1996-11-08'),
+      zodiacSign: 'Scorpio',
+      loveLanguage: 'Acts of Service',
+      isPrivate: false
+    });
+
+    const testConnection4 = await this.createConnection({
+      userId: testUser.id,
+      name: 'Sam',
+      relationshipStage: 'Situationship',
+      startDate: new Date('2025-04-20'),
+      birthday: new Date('1993-01-25'),
+      zodiacSign: 'Aquarius',
+      loveLanguage: 'Words of Affirmation',
+      isPrivate: false
+    });
+
+    const testConnection5 = await this.createConnection({
+      userId: testUser.id,
+      name: 'Riley',
+      relationshipStage: 'It\'s Complicated',
+      startDate: new Date('2025-03-05'),
+      birthday: new Date('1997-07-12'),
+      zodiacSign: 'Cancer',
+      loveLanguage: 'Physical Touch',
+      isPrivate: false
+    });
+
+    // Create comprehensive moments for Maya (Best Friend)
+    const mayaMoments = [
+      {
+        emoji: '🎉',
+        content: 'Maya surprised me with tickets to my favorite band! She remembered I mentioned them months ago.',
+        tags: ['Green Flag', 'Acts of Service', 'Thoughtful'],
+        createdAt: new Date('2025-06-01T14:30:00Z')
+      },
+      {
+        emoji: '🍕',
+        content: 'Late night pizza and deep conversation about life goals. Maya always knows what to say.',
+        tags: ['Quality Time', 'Deep Connection', 'Support'],
+        createdAt: new Date('2025-05-28T22:15:00Z')
+      },
+      {
+        emoji: '💪',
+        content: 'Maya helped me move apartments all day without complaining. True friendship.',
+        tags: ['Acts of Service', 'Green Flag', 'Reliable'],
+        createdAt: new Date('2025-05-15T16:00:00Z')
+      },
+      {
+        emoji: '😢',
+        content: 'Had a breakdown about work stress. Maya listened for hours and brought me comfort food.',
+        tags: ['Emotional Support', 'Green Flag', 'Caring'],
+        createdAt: new Date('2025-05-10T19:45:00Z')
+      },
+      {
+        emoji: '🎬',
+        content: 'Movie marathon weekend! We watched 6 films and laughed until our stomachs hurt.',
+        tags: ['Quality Time', 'Fun', 'Bonding'],
+        createdAt: new Date('2025-04-30T20:30:00Z')
+      }
+    ];
+
+    for (const moment of mayaMoments) {
+      await this.createMoment({
+        userId: testUser.id,
+        connectionId: testConnection3.id,
+        emoji: moment.emoji,
+        content: moment.content,
+        tags: moment.tags,
+        isPrivate: false,
+        isIntimate: false,
+        intimacyRating: null,
+        relatedToMenstrualCycle: false,
+        createdAt: moment.createdAt,
+        isResolved: false,
+        resolvedAt: null,
+        resolutionNotes: null,
+        reflection: null
+      });
+    }
+
+    // Create moments for Sam (Situationship with mixed signals)
+    const samMoments = [
+      {
+        emoji: '🤔',
+        content: 'Sam left me on read again after making plans. Starting to feel like I\'m not a priority.',
+        tags: ['Red Flag', 'Communication Issues', 'Confusion'],
+        createdAt: new Date('2025-06-03T11:20:00Z')
+      },
+      {
+        emoji: '🔥',
+        content: 'Amazing chemistry when we\'re together, but then radio silence for days.',
+        tags: ['Physical Connection', 'Mixed Signals', 'Inconsistent'],
+        createdAt: new Date('2025-05-25T23:45:00Z')
+      },
+      {
+        emoji: '📱',
+        content: 'Sam only texts me late at night. Makes me feel like a backup option.',
+        tags: ['Red Flag', 'Booty Call', 'Disrespect'],
+        createdAt: new Date('2025-05-20T02:30:00Z')
+      },
+      {
+        emoji: '😕',
+        content: 'Saw Sam on a dating app. We never talked about exclusivity but it still stings.',
+        tags: ['Jealousy', 'Unclear Boundaries', 'Hurt'],
+        createdAt: new Date('2025-05-18T16:10:00Z')
+      },
+      {
+        emoji: '💬',
+        content: 'Great conversation about our dreams and ambitions. Sam can be really thoughtful.',
+        tags: ['Intellectual Connection', 'Green Flag', 'Deep Talk'],
+        createdAt: new Date('2025-05-12T14:20:00Z')
+      },
+      {
+        emoji: '🍷',
+        content: 'Wine night turned into an intense makeout session. The attraction is undeniable.',
+        tags: ['Physical Intimacy', 'Chemistry', 'Passion'],
+        isIntimate: true,
+        intimacyRating: 7,
+        createdAt: new Date('2025-05-08T21:15:00Z')
+      }
+    ];
+
+    for (const moment of samMoments) {
+      await this.createMoment({
+        userId: testUser.id,
+        connectionId: testConnection4.id,
+        emoji: moment.emoji,
+        content: moment.content,
+        tags: moment.tags,
+        isPrivate: false,
+        isIntimate: moment.isIntimate || false,
+        intimacyRating: moment.intimacyRating || null,
+        relatedToMenstrualCycle: false,
+        createdAt: moment.createdAt,
+        isResolved: false,
+        resolvedAt: null,
+        resolutionNotes: null,
+        reflection: null
+      });
+    }
+
+    // Create moments for Riley (It's Complicated - on/off relationship)
+    const rileyMoments = [
+      {
+        emoji: '💔',
+        content: 'Another fight about commitment. Riley wants all the benefits but none of the responsibility.',
+        tags: ['Red Flag', 'Commitment Issues', 'Frustration'],
+        createdAt: new Date('2025-06-02T18:30:00Z')
+      },
+      {
+        emoji: '🌹',
+        content: 'Riley showed up with flowers after our fight. The gesture was sweet but actions matter more.',
+        tags: ['Apology', 'Romantic Gesture', 'Pattern'],
+        createdAt: new Date('2025-05-30T12:45:00Z')
+      },
+      {
+        emoji: '😍',
+        content: 'Perfect weekend getaway. When it\'s good with Riley, it\'s incredible.',
+        tags: ['Quality Time', 'Romance', 'Connection'],
+        createdAt: new Date('2025-05-22T19:20:00Z')
+      },
+      {
+        emoji: '🤷',
+        content: 'Riley cancelled our plans last minute again. Third time this month.',
+        tags: ['Red Flag', 'Unreliable', 'Disrespect'],
+        createdAt: new Date('2025-05-19T15:00:00Z')
+      },
+      {
+        emoji: '🔒',
+        content: 'Caught Riley being secretive with their phone. Trust issues are growing.',
+        tags: ['Red Flag', 'Trust Issues', 'Suspicious'],
+        createdAt: new Date('2025-05-14T20:10:00Z')
+      },
+      {
+        emoji: '💋',
+        content: 'Passionate night together. The physical connection is still strong.',
+        tags: ['Physical Intimacy', 'Passion', 'Chemistry'],
+        isIntimate: true,
+        intimacyRating: 8,
+        relatedToMenstrualCycle: true,
+        createdAt: new Date('2025-05-11T23:30:00Z')
+      },
+      {
+        emoji: '🎭',
+        content: 'Riley was charming at the party but flirted with others in front of me.',
+        tags: ['Red Flag', 'Disrespect', 'Jealousy'],
+        createdAt: new Date('2025-05-05T22:15:00Z')
+      }
+    ];
+
+    for (const moment of rileyMoments) {
+      await this.createMoment({
+        userId: testUser.id,
+        connectionId: testConnection5.id,
+        emoji: moment.emoji,
+        content: moment.content,
+        tags: moment.tags,
+        isPrivate: false,
+        isIntimate: moment.isIntimate || false,
+        intimacyRating: moment.intimacyRating || null,
+        relatedToMenstrualCycle: moment.relatedToMenstrualCycle || false,
+        createdAt: moment.createdAt,
+        isResolved: false,
+        resolvedAt: null,
+        resolutionNotes: null,
+        reflection: null
+      });
+    }
+
+    // Create menstrual cycles with varied data
+    const cycles = [
+      {
+        startDate: new Date('2025-05-01'),
+        endDate: new Date('2025-05-06'),
+        cycleLength: 28,
+        flow: 'Medium' as const,
+        symptoms: ['Cramps', 'Mood Swings'],
+        notes: 'Normal cycle, felt emotional around Riley situation'
+      },
+      {
+        startDate: new Date('2025-04-03'),
+        endDate: new Date('2025-04-08'),
+        cycleLength: 28,
+        flow: 'Heavy' as const,
+        symptoms: ['Severe Cramps', 'Fatigue', 'Headache'],
+        notes: 'Stressful period, work deadline coincided'
+      },
+      {
+        startDate: new Date('2025-03-06'),
+        endDate: new Date('2025-03-10'),
+        cycleLength: 27,
+        flow: 'Light' as const,
+        symptoms: ['Mild Cramps'],
+        notes: 'Light cycle, felt great overall'
+      }
+    ];
+
+    for (const cycle of cycles) {
+      await this.createMenstrualCycle({
+        userId: testUser.id,
+        startDate: cycle.startDate,
+        endDate: cycle.endDate,
+        cycleLength: cycle.cycleLength,
+        flow: cycle.flow,
+        symptoms: cycle.symptoms,
+        notes: cycle.notes
+      });
+    }
+
+    // Create milestones for relationship progress
+    await this.createMilestone({
+      userId: testUser.id,
+      connectionId: testConnection3.id,
+      title: 'Became Best Friends',
+      description: 'Maya and I officially became best friends after years of close friendship',
+      emoji: '💖',
+      date: new Date('2024-12-25'),
+      category: 'Relationship'
+    });
+
+    await this.createMilestone({
+      userId: testUser.id,
+      connectionId: testConnection4.id,
+      title: 'Started Situationship',
+      description: 'Things with Sam became physical but undefined',
+      emoji: '🤷',
+      date: new Date('2025-04-20'),
+      category: 'Relationship'
+    });
+
+    await this.createMilestone({
+      userId: testUser.id,
+      connectionId: testConnection5.id,
+      title: 'First Breakup',
+      description: 'Riley and I broke up after commitment issues',
+      emoji: '💔',
+      date: new Date('2025-04-15'),
+      category: 'Relationship'
+    });
+
+    await this.createMilestone({
+      userId: testUser.id,
+      connectionId: testConnection5.id,
+      title: 'Got Back Together',
+      description: 'Riley and I decided to try again',
+      emoji: '💕',
+      date: new Date('2025-05-01'),
+      category: 'Relationship'
+    });
+
+    // Create future plans
+    await this.createPlan({
+      userId: testUser.id,
+      connectionId: testConnection3.id,
+      title: 'Weekend Hiking Trip',
+      description: 'Planning a hiking trip with Maya to the mountains',
+      date: new Date('2025-06-15'),
+      category: 'Adventure',
+      status: 'Planned'
+    });
+
+    await this.createPlan({
+      userId: testUser.id,
+      connectionId: testConnection4.id,
+      title: 'Define The Relationship Talk',
+      description: 'Need to have a serious conversation with Sam about what we are',
+      date: new Date('2025-06-10'),
+      category: 'Communication',
+      status: 'Planned'
+    });
+
+    console.log('✅ Test user and comprehensive sample data created with 3 additional connections');
   }
 
   // User operations
