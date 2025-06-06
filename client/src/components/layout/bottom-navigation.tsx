@@ -18,7 +18,8 @@ import {
   UserPlus,
   Smile,
   X,
-  Zap
+  Zap,
+  Brain
 } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
@@ -123,9 +124,9 @@ export function BottomNavigation() {
               <Heart className="h-5 w-5" />
               <span className="text-xs mt-1">Activities</span>
             </Link>
-            <Link href="/calendar" className={`bottom-tab flex flex-col items-center justify-center h-full ${location === '/calendar' ? 'active' : ''}`}>
-              <Calendar className="h-5 w-5" />
-              <span className="text-xs mt-1">Calendar</span>
+            <Link href="/insights" className={`bottom-tab flex flex-col items-center justify-center h-full ${location === '/insights' ? 'active' : ''}`}>
+              <Brain className="h-5 w-5" />
+              <span className="text-xs mt-1">Insights</span>
             </Link>
           </div>
         </div>
