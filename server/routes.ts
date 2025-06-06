@@ -73,8 +73,10 @@ function getMilestoneEmoji(stage: string): string {
 
 // Extend session types
 declare module "express-session" {
-  interface SessionData {
-    userId?: number;
+  declare module "express-session" {
+    interface SessionData {
+      userId?: number;
+    }
   }
 }
 
@@ -755,7 +757,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
                 reflection: null,
                 isMilestone: true,
                 milestoneTitle: `${anniversaryType} Anniversary`,
-                createdAt: nextYear
+                createdAt: formatDateForDB(nextYear)
               };
               
               const anniversaryMilestone = await storage.createMoment(anniversaryData);
@@ -872,7 +874,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(200).json(updatedConnection);
     } catch (error) {
       console.error("Direct update error:", error);
-      res.status(500).json({ message: "Server error", error: error.message });
+      res.status(500).json({ message: "Server error", error: getErrorMessage(error) });
     }
   });
 
