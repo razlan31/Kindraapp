@@ -38,7 +38,24 @@ export const getQueryFn: <T>(options: {
     }
 
     await throwIfResNotOk(res);
-    return await res.json();
+    
+    // Handle empty responses or non-JSON content
+    const contentType = res.headers.get('content-type');
+    if (!contentType || !contentType.includes('application/json')) {
+      const text = await res.text();
+      if (!text.trim()) {
+        return null;
+      }
+      throw new Error(`Expected JSON response but got: ${contentType}`);
+    }
+    
+    try {
+      return await res.json();
+    } catch (error) {
+      const text = await res.text();
+      console.error('JSON parsing failed for response:', text);
+      throw new Error(`Invalid JSON response: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
   };
 
 export const queryClient = new QueryClient({
