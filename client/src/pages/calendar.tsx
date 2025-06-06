@@ -605,7 +605,6 @@ export default function Calendar() {
 
   return (
     <div className="max-w-md mx-auto bg-white dark:bg-neutral-900 min-h-screen flex flex-col relative">
-      <Header />
       
       <main className="flex-1 overflow-y-auto pb-20">
         {/* Header */}

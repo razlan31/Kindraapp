@@ -19,7 +19,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { MenstrualCycle, Connection } from "@shared/schema";
-import { Header } from "@/components/layout/header";
+
 import { useAuth } from "@/contexts/auth-context";
 import { useModal } from "@/contexts/modal-context";
 import { AddConnectionModal } from "@/components/modals/add-connection-modal";

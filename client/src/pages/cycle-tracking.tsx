@@ -1,4 +1,4 @@
-import { Header } from "@/components/layout/header";
+
 import { BottomNavigation } from "@/components/layout/bottom-navigation";
 import { useAuth } from "@/contexts/auth-context";
 import { useQuery } from "@tanstack/react-query";

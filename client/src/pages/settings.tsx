@@ -349,7 +349,6 @@ export default function Settings() {
 
   return (
     <div className="max-w-md mx-auto bg-white dark:bg-neutral-900 min-h-screen flex flex-col relative">
-      <Header />
       
       <main className="flex-1 overflow-y-auto pb-20 px-3 pt-4">
         <div className="flex justify-between items-center mb-4">
