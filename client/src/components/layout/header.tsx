@@ -34,6 +34,30 @@ export function Header() {
         <h1 className="text-2xl font-heading font-bold text-primary">Kindra</h1>
       </div>
       
+      {/* Navigation Links */}
+      <div className="flex items-center space-x-1">
+        <Link href="/">
+          <Button 
+            variant={location === "/" ? "default" : "ghost"} 
+            size="sm"
+            className="flex items-center space-x-2"
+          >
+            <Home className="h-4 w-4" />
+            <span>Home</span>
+          </Button>
+        </Link>
+        <Link href="/insights">
+          <Button 
+            variant={location === "/insights" ? "default" : "ghost"} 
+            size="sm"
+            className="flex items-center space-x-2"
+          >
+            <Brain className="h-4 w-4" />
+            <span>Insights</span>
+          </Button>
+        </Link>
+      </div>
+      
       <div className="flex items-center space-x-3">
         <Button variant="ghost" size="icon" className="text-neutral-600 dark:text-neutral-400 rounded-full">
           <Bell className="h-5 w-5" />
