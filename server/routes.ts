@@ -17,7 +17,7 @@ if (!process.env.STRIPE_SECRET_KEY) {
   throw new Error('Missing required Stripe secret: STRIPE_SECRET_KEY');
 }
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: "2023-10-16",
+  apiVersion: "2024-11-20.acacia",
 });
 
 // Helper function to safely format dates for database insertion
@@ -1409,7 +1409,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
                                      badge.name.includes('Monthly') ? 25 * 24 * 60 * 60 * 1000 : // 25 days for monthly badges
                                      24 * 60 * 60 * 1000; // 1 day default
               
-              if (new Date(lastEarned.unlockedAt).getTime() > Date.now() - cooldownPeriod) {
+              if (lastEarned.unlockedAt && new Date(lastEarned.unlockedAt).getTime() > Date.now() - cooldownPeriod) {
                 continue; // Still in cooldown period
               }
             }
@@ -1824,8 +1824,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     let allCycles = [...existingCycles];
 
     // Process each connection separately
-    for (const [connectionId, cycles] of Object.entries(cyclesByConnection)) {
+    for (const [connectionId, cyclesData] of Object.entries(cyclesByConnection)) {
       const connectionIdNum = parseInt(connectionId);
+      const cycles = cyclesData as any[];
       const sortedCycles = cycles.sort((a: any, b: any) => 
         new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
       );
@@ -2125,8 +2126,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         name: "Taylor",
         profileImage: null,
         relationshipStage: "Dating",
-        startDate: "2024-12-01T00:00:00.000Z",
-        birthday: "1996-08-22T00:00:00.000Z",
+        startDate: new Date("2024-12-01T00:00:00.000Z"),
+        birthday: new Date("1996-08-22T00:00:00.000Z"),
         zodiacSign: "Virgo",
         loveLanguage: "Acts of Service",
         isPrivate: false
@@ -2443,12 +2444,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const cycleData = {
           userId,
           connectionId: templateConnection.id,
-          startDate: "2024-12-20T00:00:00.000Z",
-          periodEndDate: "2024-12-25T00:00:00.000Z",
-          endDate: "2025-01-18T00:00:00.000Z",
+          startDate: new Date("2024-12-20T00:00:00.000Z"),
+          periodEndDate: new Date("2024-12-25T00:00:00.000Z"),
+          endDate: new Date("2025-01-18T00:00:00.000Z"),
           notes: "Regular 29-day cycle - Taylor has been very supportive",
           mood: "positive",
-          symptoms: "mild cramping, supported well",
+          symptoms: ["mild cramping", "supported well"],
           flowIntensity: "medium"
         };
         
