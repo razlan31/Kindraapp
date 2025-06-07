@@ -22,10 +22,10 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
 });
 
 // Helper function to safely format dates for database insertion
-function formatDateForDB(date: Date | string | null): string {
-  if (!date) return new Date().toISOString();
-  if (typeof date === 'string') return new Date(date).toISOString();
-  return date.toISOString();
+function formatDateForDB(date: Date | string | null): Date {
+  if (!date) return new Date();
+  if (typeof date === 'string') return new Date(date);
+  return date;
 }
 
 // Helper function to safely handle error types

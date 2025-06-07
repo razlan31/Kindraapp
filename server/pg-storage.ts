@@ -181,9 +181,16 @@ export class PgStorage implements IStorage {
   async createMoment(moment: InsertMoment): Promise<Moment> {
     await this.initialize();
     
-    console.log("🗓️ PG Storage - Creating moment with date:", (moment as any).createdAt);
+    // Ensure dates are properly converted to Date objects
+    const momentData = {
+      ...moment,
+      createdAt: moment.createdAt ? new Date(moment.createdAt) : new Date(),
+      resolvedAt: moment.resolvedAt ? new Date(moment.resolvedAt) : null
+    };
     
-    const result = await db.insert(moments).values([moment]).returning();
+    console.log("🗓️ PG Storage - Creating moment with date:", momentData.createdAt);
+    
+    const result = await db.insert(moments).values([momentData]).returning();
     console.log(`📝 PG Storage - Created moment with date:`, result[0].createdAt);
     return result[0];
   }
