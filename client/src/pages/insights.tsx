@@ -719,7 +719,9 @@ export default function Insights() {
               </Card>
             </TabsContent>
           </Tabs>
-        ) : (
+        </section>
+
+        {moments.length === 0 && (
           <div className="px-4 py-10 text-center">
             <div className="max-w-md mx-auto bg-white dark:bg-neutral-800 rounded-lg p-6 shadow-sm">
               <Heart className="h-12 w-12 mx-auto text-primary mb-4" />
