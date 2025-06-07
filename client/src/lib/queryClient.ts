@@ -2,8 +2,20 @@ import { QueryClient, QueryFunction } from "@tanstack/react-query";
 
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
-    const text = (await res.text()) || res.statusText;
-    throw new Error(`${res.status}: ${text}`);
+    let errorText = "";
+    try {
+      errorText = await res.text();
+    } catch (e) {
+      errorText = res.statusText;
+    }
+    console.error('HTTP Error:', {
+      url: res.url,
+      status: res.status,
+      statusText: res.statusText,
+      responseText: errorText,
+      headers: Object.fromEntries(res.headers.entries())
+    });
+    throw new Error(`${res.status}: ${errorText || res.statusText}`);
   }
 }
 
@@ -54,17 +66,20 @@ export const getQueryFn: <T>(options: {
       return null;
     }
     
+    // Check for the specific "undefined" string that causes JSON parsing errors
+    if (text === 'undefined' || text.trim() === 'undefined') {
+      console.error('Response is literal "undefined" string from:', res.url);
+      throw new Error(`Response is undefined string from ${res.url}`);
+    }
+    
     try {
       return JSON.parse(text);
     } catch (error) {
       console.error('JSON parsing failed for response:', {
         url: res.url,
         status: res.status,
-        statusText: res.statusText,
         contentType: res.headers.get('content-type'),
-        responseText: text,
-        textLength: text.length,
-        firstChars: text.substring(0, 100),
+        responseText: text.substring(0, 100),
         error: error instanceof Error ? error.message : 'Unknown error'
       });
       throw new Error(`Invalid JSON response from ${res.url}: ${error instanceof Error ? error.message : 'Unknown error'}`);
