@@ -5,29 +5,59 @@ import { ThemeProvider } from "./components/theme-provider";
 import { AuthProvider } from "./contexts/auth-context";
 import { ModalProvider } from "./contexts/modal-context";
 
-// Global error handlers to catch JSON parsing issues
-window.addEventListener('unhandledrejection', (event) => {
-  console.error('Unhandled Promise Rejection:', {
-    reason: event.reason,
-    stack: event.reason?.stack,
-    message: event.reason?.message,
-    type: typeof event.reason
-  });
-  
-  // Check if it's a JSON parsing error
-  if (event.reason?.message?.includes('JSON') || event.reason?.message?.includes('undefined')) {
-    console.error('JSON Parsing Error Details:', event.reason);
+// Override JSON.parse globally to prevent extension errors
+const originalJSONParse = JSON.parse;
+JSON.parse = function(text: string, reviver?: any) {
+  try {
+    return originalJSONParse.call(this, text, reviver);
+  } catch (error) {
+    // Check if the error is from a browser extension
+    const stack = new Error().stack;
+    if (stack && stack.includes('chrome-extension://')) {
+      console.warn('Prevented JSON parse error from browser extension');
+      return null; // Return null instead of throwing
+    }
+    throw error; // Re-throw for application errors
   }
+};
+
+// Comprehensive error suppression for extensions
+window.addEventListener('unhandledrejection', (event) => {
+  const errorMessage = event.reason?.message || '';
+  const errorStack = event.reason?.stack || '';
+  
+  // Detect browser extensions
+  const isBrowserExtension = errorStack.includes('chrome-extension://') || 
+                            errorStack.includes('moz-extension://') ||
+                            errorStack.includes('safari-extension://') ||
+                            errorStack.includes('frame_ant');
+  
+  // Detect JSON parsing errors
+  const isJSONError = errorMessage.includes('JSON') || 
+                     errorMessage.includes('undefined') ||
+                     errorMessage.includes('not valid JSON') ||
+                     errorMessage.includes('Unexpected token');
+  
+  if (isBrowserExtension || (isJSONError && errorStack.includes('extension'))) {
+    event.preventDefault(); // Completely suppress the error
+    return;
+  }
+  
+  // Allow application errors to proceed normally
+  console.error('Application Error:', {
+    message: errorMessage,
+    stack: errorStack
+  });
 });
 
 window.addEventListener('error', (event) => {
-  console.error('Global Error:', {
-    message: event.message,
-    filename: event.filename,
-    lineno: event.lineno,
-    colno: event.colno,
-    error: event.error
-  });
+  const isBrowserExtension = event.filename?.includes('extension://') ||
+                            event.filename?.includes('frame_ant');
+  
+  if (isBrowserExtension) {
+    event.preventDefault(); // Suppress extension errors
+    return;
+  }
 });
 createRoot(document.getElementById("root")!).render(
   <ThemeProvider defaultTheme="light" storageKey="kindra-theme">

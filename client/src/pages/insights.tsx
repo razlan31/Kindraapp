@@ -324,11 +324,9 @@ export default function Insights() {
                     </CardContent>
                   </Card>
                 </div>
-                  ) : (
-                    <p className="text-center py-10 text-neutral-500">No tags yet</p>
-                  )}
-                </CardContent>
-              </Card>
+              ) : (
+                <p className="text-center py-10 text-neutral-500">No connection health data yet</p>
+              )}
             </TabsContent>
 
             {/* Zodiac Tab */}
