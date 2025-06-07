@@ -57,8 +57,17 @@ export const getQueryFn: <T>(options: {
     try {
       return JSON.parse(text);
     } catch (error) {
-      console.error('JSON parsing failed for response:', text);
-      throw new Error(`Invalid JSON response: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      console.error('JSON parsing failed for response:', {
+        url: res.url,
+        status: res.status,
+        statusText: res.statusText,
+        contentType: res.headers.get('content-type'),
+        responseText: text,
+        textLength: text.length,
+        firstChars: text.substring(0, 100),
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+      throw new Error(`Invalid JSON response from ${res.url}: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   };
 
