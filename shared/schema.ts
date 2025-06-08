@@ -52,6 +52,7 @@ export const connections = pgTable("connections", {
   zodiacSign: text("zodiac_sign"),
   loveLanguage: text("love_language"),
   isPrivate: boolean("is_private").default(false),
+  isArchived: boolean("is_archived").default(false),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
