@@ -377,6 +377,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get archived connections
+  app.get("/api/connections/archived", isAuthenticated, async (req, res) => {
+    try {
+      const userId = (req.session as any).userId as number;
+      const allConnections = await storage.getConnectionsByUserId(userId);
+      const archivedConnections = allConnections.filter(connection => connection.isArchived === true);
+      res.status(200).json(archivedConnections);
+    } catch (error) {
+      console.error("Error in get archived connections:", error);
+      res.status(500).json({ message: "Server error fetching archived connections" });
+    }
+  });
+
   // Get individual connection
   app.get("/api/connections/:id", isAuthenticated, async (req, res) => {
     try {

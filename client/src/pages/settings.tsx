@@ -23,7 +23,9 @@ import {
   LogOut,
   Lock,
   Save,
-  CreditCard
+  CreditCard,
+  RotateCcw,
+  Archive
 } from "lucide-react";
 
 // Billing component that connects to real Stripe data
@@ -267,6 +269,36 @@ export default function Settings() {
       }));
     }
   }, [theme, settings.preferences.theme]);
+
+  // Fetch archived connections
+  const { data: archivedConnections = [] } = useQuery<any[]>({
+    queryKey: ["/api/connections/archived"],
+    enabled: !!user,
+  });
+
+  // Restore connection mutation
+  const restoreConnectionMutation = useMutation({
+    mutationFn: async (connectionId: number) => {
+      return await apiRequest(`/api/connections/${connectionId}`, "PATCH", {
+        isArchived: false
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/connections"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/connections/archived"] });
+      toast({
+        title: "Connection Restored",
+        description: "Connection has been restored to your active connections.",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to restore connection",
+        variant: "destructive",
+      });
+    },
+  });
 
   // Save settings mutation
   const saveSettingsMutation = useMutation({
@@ -683,6 +715,67 @@ export default function Settings() {
                   Delete
                 </Button>
               </div>
+            </CardContent>
+          </Card>
+
+          {/* Archived Connections */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Archive className="h-5 w-5" />
+                Archived Connections
+              </CardTitle>
+              <CardDescription>
+                Restore archived connections back to your active list
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {archivedConnections.length === 0 ? (
+                <div className="text-center py-6">
+                  <Archive className="h-12 w-12 mx-auto text-neutral-400 mb-3" />
+                  <p className="text-neutral-600 dark:text-neutral-400">No archived connections</p>
+                  <p className="text-sm text-neutral-500 dark:text-neutral-500">
+                    Connections you archive will appear here
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {archivedConnections.map((connection: any) => (
+                    <div key={connection.id} className="flex items-center justify-between p-3 border rounded-lg dark:border-neutral-700">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-neutral-200 dark:bg-neutral-700 rounded-full flex items-center justify-center">
+                          {connection.profileImage ? (
+                            <img 
+                              src={connection.profileImage} 
+                              alt={connection.name}
+                              className="w-10 h-10 rounded-full object-cover"
+                            />
+                          ) : (
+                            <span className="text-sm font-medium text-neutral-600 dark:text-neutral-300">
+                              {connection.name.charAt(0).toUpperCase()}
+                            </span>
+                          )}
+                        </div>
+                        <div>
+                          <p className="font-medium">{connection.name}</p>
+                          <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                            {connection.relationshipStage}
+                          </p>
+                        </div>
+                      </div>
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => restoreConnectionMutation.mutate(connection.id)}
+                        disabled={restoreConnectionMutation.isPending}
+                      >
+                        <RotateCcw className="h-4 w-4 mr-2" />
+                        {restoreConnectionMutation.isPending ? "Restoring..." : "Restore"}
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
 
