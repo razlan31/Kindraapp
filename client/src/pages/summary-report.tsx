@@ -372,7 +372,7 @@ export default function SummaryReport() {
                           </span>
                         </div>
                       )}
-                      <span>{connection.name}</span>
+                      <span>{connection.relationshipStage === 'Self' ? `${connection.name} (ME)` : connection.name}</span>
                     </div>
                   </SelectItem>
                 ))}

@@ -552,7 +552,7 @@ export default function Activities() {
                             </span>
                           </div>
                         )}
-                        <span>{connection.name}</span>
+                        <span>{connection.relationshipStage === 'Self' ? `${connection.name} (ME)` : connection.name}</span>
                         {mainFocusConnection?.id === connection.id && (
                           <Heart className="h-3 w-3 text-red-500 fill-current ml-1" />
                         )}
