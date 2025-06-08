@@ -1145,20 +1145,25 @@ export default function Activities() {
       {/* Connection Modal */}
       {connectionModalOpen && (
         <div 
-          className="fixed inset-0 z-[60] bg-black/50"
+          className="fixed inset-0 z-[60] bg-black/50 flex items-start justify-center py-4"
           onClick={() => setConnectionModalOpen(false)}
         >
           <div 
-            className="fixed top-8 left-4 right-4 bottom-20 bg-white dark:bg-neutral-800 rounded-lg shadow-lg max-w-md mx-auto overflow-hidden flex flex-col"
+            className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg w-full max-w-md mx-4"
             onClick={(e) => e.stopPropagation()}
+            style={{ 
+              maxHeight: 'calc(100vh - 120px)',
+              marginBottom: '20px'
+            }}
           >
-            <div className="flex items-center justify-between p-4 border-b flex-shrink-0">
+            <div className="flex items-center justify-between p-4 border-b">
               <h2 className="font-heading font-semibold text-lg">Add New Connection</h2>
               <Button variant="ghost" size="icon" onClick={() => setConnectionModalOpen(false)}>
                 <X className="h-4 w-4" />
               </Button>
             </div>
-            <div className="flex-1 overflow-y-auto p-4">
+            <div className="overflow-y-auto" style={{ maxHeight: 'calc(100vh - 180px)' }}>
+              <div className="p-4">
               <form 
                 onSubmit={(e) => {
                   e.preventDefault();
@@ -1375,6 +1380,7 @@ export default function Activities() {
                   </Button>
                 </div>
               </form>
+              </div>
             </div>
           </div>
         </div>
