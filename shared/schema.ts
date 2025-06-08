@@ -154,11 +154,13 @@ export const moments = pgTable("moments", {
 });
 
 export const momentSchema = createInsertSchema(moments).omit({ id: true }).extend({
-  tags: z.array(z.string()).optional(), // Explicitly define tags as optional array of strings
+  tags: z.array(z.string()).optional(),
   isPrivate: z.boolean().optional().default(false),
   isIntimate: z.boolean().optional().default(false),
   relatedToMenstrualCycle: z.boolean().optional().default(false),
   isResolved: z.boolean().optional().default(false),
+  createdAt: z.string().optional(),
+  resolvedAt: z.string().optional().nullable(),
 });
 export type InsertMoment = z.infer<typeof momentSchema>;
 export type Moment = typeof moments.$inferSelect;
