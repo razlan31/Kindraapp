@@ -131,12 +131,19 @@ export class PgStorage implements IStorage {
 
   async getConnectionsByUserId(userId: number): Promise<Connection[]> {
     await this.initialize();
-    return await db.select().from(connections).where(
+    const result = await db.select().from(connections).where(
       and(
         eq(connections.userId, userId),
         eq(connections.isArchived, false)
       )
     );
+    
+    // Sort to ensure user's own profile (Self) appears first
+    return result.sort((a, b) => {
+      if (a.relationshipStage === 'Self') return -1;
+      if (b.relationshipStage === 'Self') return 1;
+      return 0;
+    });
   }
 
   async getAllConnectionsByUserId(userId: number): Promise<Connection[]> {

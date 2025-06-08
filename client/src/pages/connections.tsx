@@ -25,6 +25,8 @@ export default function Connections() {
   // Fetch connections and moments
   const { data: connections = [], isLoading } = useQuery<Connection[]>({
     queryKey: ['/api/connections'],
+    staleTime: 0, // Force fresh data
+    refetchOnMount: true,
   });
 
   const { data: moments = [] } = useQuery<any[]>({
@@ -37,6 +39,16 @@ export default function Connections() {
     isLoading,
     connections: connections.map(c => ({ id: c.id, name: c.name, stage: c.relationshipStage }))
   });
+  
+  // Additional debug for sorting
+  if (connections.length > 0) {
+    console.log('Connections before sorting:', connections.map(c => ({ 
+      id: c.id, 
+      name: c.name, 
+      stage: c.relationshipStage,
+      isSelf: c.relationshipStage === 'Self'
+    })));
+  }
 
   // Smart prioritization algorithm
   const prioritizeConnections = (connections: Connection[]) => {
@@ -59,7 +71,13 @@ export default function Connections() {
         
         return { ...connection, priority, daysSinceActivity, activityCount };
       })
-      .sort((a, b) => b.priority - a.priority);
+      .sort((a, b) => {
+        // Force Self connections to always be first
+        if (a.relationshipStage === 'Self') return -1;
+        if (b.relationshipStage === 'Self') return 1;
+        // Then sort by priority
+        return b.priority - a.priority;
+      });
   };
 
   const prioritizedConnections = prioritizeConnections(connections);
