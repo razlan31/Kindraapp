@@ -87,11 +87,12 @@ export default function Activities() {
     }
   }, [mainFocusConnection, focusLoading, hasUserSelectedConnection]);
 
-  // Fetch moments - use simple approach like Dashboard
+  // Fetch moments - optimized caching
   const { data: moments = [], isLoading, refetch: refetchMoments } = useQuery<Moment[]>({
     queryKey: ["/api/moments"],
-    staleTime: 0,
-    refetchOnWindowFocus: true,
+    staleTime: 30000, // Cache for 30 seconds
+    refetchOnWindowFocus: false, // Reduce unnecessary refetches
+    enabled: !!user,
   });
 
 
@@ -117,22 +118,8 @@ export default function Activities() {
   // Debug plans data
   console.log("Plans Debug:", { plans, plansLoading, plansError, activeTab, user: !!user, isAuthenticated, loading });
 
-  // Force UI refresh when moments data changes
+  // Simplified refresh logic - let React Query handle caching efficiently
   const [forceRefreshKey, setForceRefreshKey] = useState(0);
-  useEffect(() => {
-    setForceRefreshKey(prev => prev + 1);
-  }, [moments.length]);
-
-  // Listen for moment creation events and force immediate refresh
-  useEffect(() => {
-    const handleMomentCreated = () => {
-      refetchMoments();
-      setForceRefreshKey(prev => prev + 1);
-    };
-    
-    window.addEventListener('momentCreated', handleMomentCreated);
-    return () => window.removeEventListener('momentCreated', handleMomentCreated);
-  }, [refetchMoments]);
 
   // Connection modal helper functions
   const openConnectionModal = () => {

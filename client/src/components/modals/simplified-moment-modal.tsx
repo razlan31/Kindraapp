@@ -268,26 +268,10 @@ export function MomentModal() {
         description: "Your entry has been recorded.",
       });
       
-      // Force immediate cache invalidation and refetch - comprehensive approach
+      // Optimized cache invalidation - single invalidation
       queryClient.invalidateQueries({ queryKey: ['/api/moments'] });
-      queryClient.refetchQueries({ queryKey: ['/api/moments'] });
-      
-      // Also invalidate connections in case they were affected
-      queryClient.invalidateQueries({ queryKey: ['/api/connections'] });
-      
-      // Trigger custom event to notify other components
-      window.dispatchEvent(new CustomEvent('momentCreated'));
-      
-      // Force a hard refresh with a slight delay
-      setTimeout(() => {
-        queryClient.invalidateQueries({ queryKey: ['/api/moments'] });
-        queryClient.refetchQueries({ queryKey: ['/api/moments'] });
-      }, 50);
       
       handleSuccess();
-      
-      // Invalidate cache to trigger re-fetch without page refresh
-      queryClient.invalidateQueries({ queryKey: ['/api/moments'] });
     },
     onError: (error: any) => handleError(error),
   });
