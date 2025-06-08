@@ -2133,6 +2133,135 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Quote of the Day API endpoint
+  app.get("/api/quote-of-the-day", isAuthenticated, async (req: Request, res: Response) => {
+    try {
+      const userId = (req.session as any).userId as number;
+      
+      // Get user's data for personalization
+      const [user, connections, moments] = await Promise.all([
+        storage.getUser(userId),
+        storage.getConnectionsByUserId(userId),
+        storage.getMomentsByUserId(userId, 50) // Get recent moments for context
+      ]);
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Generate personalized quote using OpenAI
+      try {
+        const OpenAI = (await import("openai")).default;
+        const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+        // Create context for personalization
+        const hasConnections = connections.length > 0;
+        const hasMoments = moments.length > 0;
+        const recentMoments = moments.slice(0, 10);
+        
+        // Analyze recent patterns for personalization
+        const recentPositive = recentMoments.filter(m => 
+          ['😍', '❤️', '😊', '🥰', '💖', '✨', '🔥', '💕', '🌸', '🎉'].includes(m.emoji)
+        ).length;
+        
+        const recentChallenges = recentMoments.filter(m => 
+          ['😤', '😞', '⚡', '😔', '💔', '😒'].includes(m.emoji)
+        ).length;
+
+        // Determine quote type and create prompt
+        const shouldPersonalize = hasConnections && hasMoments && Math.random() > 0.3;
+        
+        let prompt = "";
+        let quoteType: 'personalized' | 'general' = 'general';
+        
+        if (shouldPersonalize) {
+          quoteType = 'personalized';
+          let context = "";
+          
+          if (recentPositive > recentChallenges) {
+            context = "The user is experiencing mostly positive relationship moments recently";
+          } else if (recentChallenges > recentPositive) {
+            context = "The user has faced some relationship challenges recently";
+          } else {
+            context = "The user has a balanced mix of relationship experiences";
+          }
+          
+          if (user.loveLanguage) {
+            context += ` and their love language is ${user.loveLanguage}`;
+          }
+          
+          if (user.zodiacSign) {
+            context += ` and they are a ${user.zodiacSign}`;
+          }
+          
+          prompt = `Generate a thoughtful, encouraging relationship quote or advice (1-2 sentences) that's subtly tailored for someone who ${context}. The quote should be inspirational, practical, and feel personal without being too specific. Focus on growth, understanding, or positive relationship dynamics. Don't mention specific details about their data.`;
+        } else {
+          prompt = `Generate an inspirational, thoughtful relationship quote or piece of advice (1-2 sentences). Focus on universal relationship wisdom about love, communication, growth, understanding, or building strong connections. Make it encouraging and practical.`;
+        }
+
+        const response = await openai.chat.completions.create({
+          model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
+          messages: [
+            {
+              role: "system",
+              content: "You are a wise relationship counselor who provides thoughtful, encouraging quotes and advice. Keep responses concise but meaningful."
+            },
+            {
+              role: "user",
+              content: prompt
+            }
+          ],
+          max_tokens: 150,
+          temperature: 0.8,
+        });
+
+        const quote = response.choices[0]?.message?.content?.replace(/^["']|["']$/g, '') || "";
+        
+        const result = {
+          quote,
+          type: quoteType,
+          context: quoteType === 'personalized' ? "Based on your recent relationship journey" : undefined
+        };
+
+        res.json(result);
+      } catch (aiError) {
+        console.log("AI quote generation failed, using fallback");
+        
+        // Fallback quotes based on user's love language or general wisdom
+        const fallbackQuotes = [
+          {
+            quote: "The greatest relationships are built on understanding, patience, and genuine care for each other's growth.",
+            type: 'general' as const
+          },
+          {
+            quote: "Love is not about finding someone perfect, but about seeing someone perfectly despite their imperfections.",
+            type: 'general' as const
+          },
+          {
+            quote: "Strong relationships require daily effort, open communication, and the courage to be vulnerable with each other.",
+            type: 'general' as const
+          },
+          {
+            quote: "Quality time isn't measured in hours spent together, but in the depth of connection shared in those moments.",
+            type: 'general' as const
+          }
+        ];
+
+        let selectedQuote;
+        if (user.loveLanguage === "Quality Time") {
+          selectedQuote = fallbackQuotes[3];
+        } else {
+          selectedQuote = fallbackQuotes[Math.floor(Math.random() * fallbackQuotes.length)];
+        }
+
+        res.json(selectedQuote);
+      }
+    } catch (error) {
+      console.error("Error generating quote of the day:", error);
+      res.status(500).json({ message: "Failed to generate quote" });
+    }
+  });
+
   // Create a comprehensive connection template with all types of entries
   app.post("/api/create-template-connection", isAuthenticated, async (req: Request, res: Response) => {
     try {
