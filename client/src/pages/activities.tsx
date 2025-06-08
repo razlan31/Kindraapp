@@ -1148,9 +1148,10 @@ export default function Activities() {
           className="fixed inset-0 z-[60] bg-black/50 overflow-y-auto"
           onClick={() => setConnectionModalOpen(false)}
         >
-          <div className="flex min-h-full items-center justify-center p-4 pb-24">
+          <div className="min-h-screen flex items-start justify-center pt-4 px-4 pb-20">
             <div 
-              className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg w-full max-w-md max-h-[80vh] overflow-y-auto"
+              className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg w-full max-w-md my-8"
+              style={{ marginBottom: '120px' }}
               onClick={(e) => e.stopPropagation()}
             >
             <div className="flex items-center justify-between p-4 border-b">
