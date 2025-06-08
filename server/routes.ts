@@ -330,6 +330,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "User not found" });
       }
       
+      // If displayName was updated, also update the user's own connection name
+      if (filteredData.displayName) {
+        const userConnections = await storage.getConnectionsByUserId(userId);
+        const userConnection = userConnections.find(c => c.relationshipStage === 'Self');
+        
+        if (userConnection) {
+          await storage.updateConnection(userConnection.id, {
+            name: filteredData.displayName
+          });
+          console.log(`Updated user connection name to: ${filteredData.displayName}`);
+        } else {
+          console.log("No user connection found to update");
+        }
+      }
+      
       // Remove password from response
       const { password, ...userWithoutPassword } = updatedUser;
       
