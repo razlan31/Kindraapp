@@ -11,6 +11,7 @@ import session from "express-session";
 import MemoryStore from "memorystore";
 import Stripe from "stripe";
 import { aiCoach, type RelationshipContext } from "./ai-relationship-coach";
+import { ensureUserConnection } from "./user-connection-utils";
 
 // Initialize Stripe
 if (!process.env.STRIPE_SECRET_KEY) {
@@ -228,6 +229,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Set session
       (req.session as any).userId = user.id;
+      
+      // Ensure user has their own connection for cycle tracking
+      await ensureUserConnection(user);
       
       // Remove password from response
       const { password: _, ...userWithoutPassword } = user;

@@ -29,7 +29,37 @@ export default function CompleteOnboarding() {
       }
       return response.json();
     },
-    onSuccess: () => {
+    onSuccess: async (updatedUser) => {
+      // After successful profile update, create user as a connection
+      try {
+        const userConnectionData = {
+          name: `${updatedUser.displayName} (ME)`,
+          relationshipStage: "Self",
+          zodiacSign: updatedUser.zodiacSign,
+          loveLanguage: updatedUser.loveLanguage,
+          isPrivate: false,
+          profileImage: updatedUser.profileImage
+        };
+
+        const connectionResponse = await fetch('/api/connections', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(userConnectionData)
+        });
+
+        if (connectionResponse.ok) {
+          console.log("User connection created successfully");
+          queryClient.invalidateQueries({ queryKey: ['/api/connections'] });
+        } else {
+          console.warn("Failed to create user connection, but continuing with onboarding");
+        }
+      } catch (error) {
+        console.error("Error creating user connection:", error);
+        // Don't block onboarding completion if user connection creation fails
+      }
+
       queryClient.invalidateQueries({ queryKey: ['/api/me'] });
       localStorage.removeItem("onboarding_profile");
       localStorage.removeItem("onboarding_data");
