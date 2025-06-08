@@ -126,7 +126,7 @@ export function MomentModal() {
       setIsResolved(false);
       setResolutionNotes("");
       setResolvedDate(new Date());
-      setIntimacyRating(5);
+      setIntimacyRating("5");
     }
   }, [editingMoment, selectedConnectionId, activityType, selectedDate]);
 
@@ -213,7 +213,7 @@ export function MomentModal() {
       setLocalSelectedDate(new Date());
       setMomentType("positive");
       setEmoji("😊");
-      setIntimacyRating(5);
+      setIntimacyRating("5");
     }
     
     closeMomentModal();
