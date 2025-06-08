@@ -225,8 +225,15 @@ export default function MenstrualCyclePage() {
   const trackablePersons = useMemo(() => {
     const persons: Array<{ id: number; name: string; isUser: boolean; profileImage?: string | null; colorIndex: number }> = [];
     
+    // Sort connections to put user connection (Self) at the bottom
+    const sortedConnections = [...connections].sort((a, b) => {
+      if (a.relationshipStage === 'Self') return 1;
+      if (b.relationshipStage === 'Self') return -1;
+      return 0;
+    });
+    
     // Add all connections (assuming they could have cycles)
-    connections.forEach((connection, index) => {
+    sortedConnections.forEach((connection, index) => {
       const displayName = connection.relationshipStage === 'Self' 
         ? `${connection.name} (ME)` 
         : connection.name;
