@@ -43,7 +43,10 @@ export function AIInsights({ connections, moments, userData }: AIInsightsProps) 
     }];
   }
 
+  console.log("Final insights check:", { insightsLength: insights.length, insights });
+  
   if (insights.length === 0) {
+    console.log("Rendering no insights fallback");
     return (
       <div className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-2xl p-6 border border-purple-100 dark:border-purple-800">
         <div className="flex items-center gap-3 mb-4">
@@ -472,6 +475,13 @@ function generateDataInsights(connections: Connection[], moments: Moment[], user
     const recentPositive = recentMoments.filter(m => positiveEmojis.includes(m.emoji)).length;
     const positivePercent = Math.round((recentPositive / recentMoments.length) * 100);
     
+    console.log("Adding Recent Activity Pattern insight:", {
+      totalMoments,
+      recentMomentsCount: recentMoments.length,
+      recentPositive,
+      positivePercent
+    });
+    
     insights.push({
       title: "Recent Activity Pattern",
       description: `${positivePercent}% of your last ${recentMoments.length} moments were positive. You've logged ${totalMoments} total relationship moments, showing consistent tracking habits.`,
@@ -480,6 +490,8 @@ function generateDataInsights(connections: Connection[], moments: Moment[], user
       icon: <TrendingUp className="h-4 w-4 text-blue-600" />,
       dataPoints: [`${recentPositive}/${recentMoments.length} recent positive`, `${totalMoments} total moments`]
     });
+    
+    console.log("Insights array after adding first insight:", insights.length);
   }
 
   // Connection diversity analysis

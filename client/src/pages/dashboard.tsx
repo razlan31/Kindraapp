@@ -102,9 +102,10 @@ export default function Dashboard() {
     momentsLength: moments.length, 
     momentsLoading,
     momentsError,
-    moments,
+    momentsState: moments.length > 0 ? "HAS_DATA" : "NO_DATA",
     connectionsLength: connections.length,
-    connections
+    connectionsState: connections.length > 0 ? "HAS_DATA" : "NO_DATA",
+    aiInsightsCondition: !momentsLoading && !momentsError ? "SHOULD_RENDER" : "BLOCKED"
   });
 
   // Force refetch moments if they're empty but user is loaded
