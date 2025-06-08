@@ -134,6 +134,17 @@ export default function Connections() {
     switch (viewMode) {
       case 'activity':
         return baseConnections.sort((a, b) => {
+          // User profile always first
+          if (a.relationshipStage === 'Self') return -1;
+          if (b.relationshipStage === 'Self') return 1;
+          
+          // Focus connection second
+          if (mainFocusConnection) {
+            if (a.id === mainFocusConnection.id) return -1;
+            if (b.id === mainFocusConnection.id) return 1;
+          }
+          
+          // Then by activity
           const aActivity = getConnectionActivity(a.id);
           const bActivity = getConnectionActivity(b.id);
           return bActivity.thisWeek - aActivity.thisWeek || bActivity.total - aActivity.total;
@@ -143,20 +154,54 @@ export default function Connections() {
         return relationshipStages.reduce((acc, stage) => {
           const stageConnections = baseConnections.filter(c => c.relationshipStage === stage);
           if (stageConnections.length > 0) {
-            acc[stage] = stageConnections;
+            // Sort within each stage to put user profile first and focus connection second
+            const sorted = stageConnections.sort((a, b) => {
+              if (a.relationshipStage === 'Self') return -1;
+              if (b.relationshipStage === 'Self') return 1;
+              if (mainFocusConnection) {
+                if (a.id === mainFocusConnection.id) return -1;
+                if (b.id === mainFocusConnection.id) return 1;
+              }
+              return 0;
+            });
+            acc[stage] = sorted;
           }
           return acc;
         }, {} as Record<string, typeof baseConnections>);
       
       case 'timeline':
         return baseConnections.sort((a, b) => {
+          // User profile always first
+          if (a.relationshipStage === 'Self') return -1;
+          if (b.relationshipStage === 'Self') return 1;
+          
+          // Focus connection second
+          if (mainFocusConnection) {
+            if (a.id === mainFocusConnection.id) return -1;
+            if (b.id === mainFocusConnection.id) return 1;
+          }
+          
+          // Then by timeline
           const aActivity = getConnectionActivity(a.id);
           const bActivity = getConnectionActivity(b.id);
           return bActivity.lastActivity - aActivity.lastActivity;
         });
       
       default:
-        return baseConnections;
+        return baseConnections.sort((a, b) => {
+          // User profile always first
+          if (a.relationshipStage === 'Self') return -1;
+          if (b.relationshipStage === 'Self') return 1;
+          
+          // Focus connection second
+          if (mainFocusConnection) {
+            if (a.id === mainFocusConnection.id) return -1;
+            if (b.id === mainFocusConnection.id) return 1;
+          }
+          
+          // Then alphabetically by name
+          return a.name.localeCompare(b.name);
+        });
     }
   };
 
