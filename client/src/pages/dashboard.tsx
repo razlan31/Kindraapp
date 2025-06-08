@@ -426,6 +426,7 @@ function MenstrualCycleTracker() {
         )}
 
         {/* AI Insights Section */}
+        {console.log("Dashboard: Rendering AI Insights section, momentsLoading:", momentsLoading, "momentsLength:", moments.length)}
         <section className="px-3 py-2">
           <div className="bg-white dark:bg-neutral-900 rounded-xl border border-neutral-200 dark:border-neutral-800">
             <div className="p-4 border-b border-neutral-200 dark:border-neutral-800">
