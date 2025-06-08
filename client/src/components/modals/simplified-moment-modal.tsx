@@ -235,7 +235,7 @@ export function MomentModal() {
     setIsSubmitting(false);
   };
 
-  // Create moment mutation
+  // Create moment mutation with optimistic updates
   const { mutate: createMoment } = useMutation({
     mutationFn: async (data: any) => {
       console.log("🔥 FORM SUBMISSION - Data being sent to API:", data);
@@ -252,6 +252,28 @@ export function MomentModal() {
       console.log("🔥 FORM SUBMISSION - API response:", result);
       console.log("🔥 FORM SUBMISSION - result.createdAt:", result.createdAt);
       return result;
+    },
+    onMutate: async (newMoment) => {
+      // Cancel outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ['/api/moments'] });
+
+      // Snapshot previous value
+      const previousMoments = queryClient.getQueryData(['/api/moments']);
+
+      // Optimistically update with temporary data
+      const optimisticMoment = {
+        ...newMoment,
+        id: Date.now(),
+        userId: user?.id,
+        createdAt: newMoment.createdAt,
+      };
+
+      queryClient.setQueryData(['/api/moments'], (old: any) => {
+        if (!old) return [optimisticMoment];
+        return [optimisticMoment, ...old];
+      });
+
+      return { previousMoments };
     },
     onSuccess: (data) => {
       // Check if any new badges were earned
@@ -276,7 +298,13 @@ export function MomentModal() {
       
       handleSuccess();
     },
-    onError: (error: any) => handleError(error),
+    onError: (error: any, newMoment, context) => {
+      // Rollback optimistic update if mutation fails
+      if (context?.previousMoments) {
+        queryClient.setQueryData(['/api/moments'], context.previousMoments);
+      }
+      handleError(error);
+    },
   });
 
   // Update moment mutation
