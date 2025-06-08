@@ -1143,11 +1143,22 @@ export default function Activities() {
       />
 
       {/* Connection Modal */}
-      <Dialog open={connectionModalOpen} onOpenChange={setConnectionModalOpen}>
-        <DialogContent className="sm:max-w-md max-h-[70vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>Add New Connection</DialogTitle>
-          </DialogHeader>
+      {connectionModalOpen && (
+        <div 
+          className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4"
+          style={{ paddingBottom: '100px' }}
+          onClick={() => setConnectionModalOpen(false)}
+        >
+          <div 
+            className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg w-full max-w-md max-h-[70vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between p-4 border-b">
+              <h2 className="font-heading font-semibold text-lg">Add New Connection</h2>
+              <Button variant="ghost" size="icon" onClick={() => setConnectionModalOpen(false)}>
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
           <form 
             onSubmit={(e) => {
               e.preventDefault();
@@ -1364,8 +1375,9 @@ export default function Activities() {
               </Button>
             </div>
           </form>
-        </DialogContent>
-      </Dialog>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
