@@ -44,6 +44,7 @@ export function MomentModal() {
   const [customTag, setCustomTag] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [mediaFiles, setMediaFiles] = useState<MediaFile[]>([]);
+  const [isIntimate, setIsIntimate] = useState<boolean>(false);
   
   // Milestone-specific state
   const [isMilestone, setIsMilestone] = useState<boolean>(false);
@@ -106,7 +107,19 @@ export function MomentModal() {
       setContent("");
       setLocalSelectedDate(selectedDate || new Date());
       setMomentType('positive');
-      setSelectedTags([]);
+      
+      // Automatically set Sex tag and intimate flag for intimacy tab
+      if (activityType === 'intimacy') {
+        setSelectedTags(['Sex']);
+        setIsIntimate(true);
+      } else if (activityType === 'conflict') {
+        setSelectedTags(['Conflict']);
+        setIsIntimate(false);
+      } else {
+        setSelectedTags([]);
+        setIsIntimate(false);
+      }
+      
       setCustomTag("");
       setReflection("");
       setMediaFiles([]);
@@ -161,7 +174,7 @@ export function MomentModal() {
   const [resolvedDate, setResolvedDate] = useState<Date>(new Date());
   
   // Intimacy fields
-  const [intimacyRating, setIntimacyRating] = useState<number>(5);
+  const [intimacyRating, setIntimacyRating] = useState<string>("5");
   
   // Reflection field
   const [reflection, setReflection] = useState('');
