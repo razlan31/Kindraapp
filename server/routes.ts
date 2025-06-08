@@ -381,7 +381,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/connections/archived", isAuthenticated, async (req, res) => {
     try {
       const userId = (req.session as any).userId as number;
-      const allConnections = await storage.getConnectionsByUserId(userId);
+      const allConnections = await storage.getAllConnectionsByUserId(userId);
       const archivedConnections = allConnections.filter(connection => connection.isArchived === true);
       res.status(200).json(archivedConnections);
     } catch (error) {

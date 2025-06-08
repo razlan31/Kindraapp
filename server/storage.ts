@@ -20,6 +20,7 @@ export interface IStorage {
   // Connection operations
   getConnection(id: number): Promise<Connection | undefined>;
   getConnectionsByUserId(userId: number): Promise<Connection[]>;
+  getAllConnectionsByUserId(userId: number): Promise<Connection[]>;
   createConnection(connection: InsertConnection): Promise<Connection>;
   updateConnection(id: number, data: Partial<Connection>): Promise<Connection | undefined>;
   deleteConnection(id: number): Promise<boolean>;
@@ -809,6 +810,12 @@ export class MemStorage implements IStorage {
   }
 
   async getConnectionsByUserId(userId: number): Promise<Connection[]> {
+    return Array.from(this.connections.values()).filter(
+      (connection) => connection.userId === userId && !connection.isArchived
+    );
+  }
+
+  async getAllConnectionsByUserId(userId: number): Promise<Connection[]> {
     return Array.from(this.connections.values()).filter(
       (connection) => connection.userId === userId
     );

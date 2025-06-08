@@ -139,6 +139,11 @@ export class PgStorage implements IStorage {
     );
   }
 
+  async getAllConnectionsByUserId(userId: number): Promise<Connection[]> {
+    await this.initialize();
+    return await db.select().from(connections).where(eq(connections.userId, userId));
+  }
+
   async createConnection(connection: InsertConnection): Promise<Connection> {
     await this.initialize();
     const result = await db.insert(connections).values(connection).returning();
