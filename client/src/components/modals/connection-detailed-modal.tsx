@@ -88,6 +88,7 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/connections"] });
       queryClient.invalidateQueries({ queryKey: ["/api/moments"] });
+      setShowDeleteConfirm(false);
       toast({
         title: "Connection Deleted",
         description: "Connection and all associated entries have been permanently deleted.",
@@ -112,6 +113,7 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/connections"] });
+      setShowArchiveConfirm(false);
       toast({
         title: "Connection Archived",
         description: "Connection has been archived. You can restore it from settings.",
