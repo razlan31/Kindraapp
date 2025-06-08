@@ -1145,11 +1145,12 @@ export default function Activities() {
 
       {/* Connection Modal */}
       {connectionModalOpen && (
-        <div className="fixed inset-0 z-[60] bg-black/50 flex items-center justify-center p-4" onClick={() => setConnectionModalOpen(false)}>
-          <div 
-            className="bg-white dark:bg-gray-800 rounded-lg shadow-lg w-full max-w-md max-h-[calc(100vh-120px)] overflow-y-auto"
-            onClick={(e) => e.stopPropagation()}
-          >
+        <div className="fixed inset-0 z-[60] bg-black/50" onClick={() => setConnectionModalOpen(false)}>
+          <div className="absolute inset-x-0 top-0 bottom-16 flex items-center justify-center p-4">
+            <div 
+              className="bg-white dark:bg-gray-800 rounded-lg shadow-lg w-full max-w-md max-h-full overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
             <div className="flex items-center justify-between p-4 border-b">
               <h2 className="font-heading font-semibold text-lg">Add New Connection</h2>
               <Button variant="ghost" size="icon" onClick={() => setConnectionModalOpen(false)}>
@@ -1373,6 +1374,7 @@ export default function Activities() {
                 </Button>
               </div>
             </form>
+            </div>
             </div>
           </div>
         </div>
