@@ -147,7 +147,7 @@ export function AIInsights({ connections, moments, userData }: AIInsightsProps) 
   );
 }
 
-interface Insight {
+interface InsightData {
   title: string;
   description: string;
   type: 'positive' | 'warning' | 'neutral';
@@ -156,21 +156,21 @@ interface Insight {
   dataPoints?: string[];
 }
 
-function generateDataInsights(connections: Connection[], moments: Moment[], userData: any): Insight[] {
-  const insights: Insight[] = [];
+function generateDataInsights(connections: Connection[], moments: Moment[], userData: any): InsightData[] {
+  const insights: InsightData[] = [];
 
   if (moments.length < 2) return insights;
 
-  // Advanced emotional pattern analysis
+  // Enhanced emotional pattern analysis with more emojis
   const emotionCounts = moments.reduce((acc: Record<string, number>, moment) => {
     acc[moment.emoji] = (acc[moment.emoji] || 0) + 1;
     return acc;
   }, {});
 
   const totalMoments = moments.length;
-  const positiveEmojis = ['😍', '💕', '❤️', '🥰', '😊', '🤗', '💖', '🌟', '✨', '💫', '🔥', '😘', '🥳', '🎉'];
-  const negativeEmojis = ['😔', '😢', '😠', '😤', '💔', '😕', '😞', '😰', '😟', '😭', '🤔', '😬', '😩', '🙄'];
-  const neutralEmojis = ['😐', '🤷', '😑', '😶', '🤨', '😏'];
+  const positiveEmojis = ['😍', '💕', '❤️', '🥰', '😊', '🤗', '💖', '🌟', '✨', '💫', '🔥', '😘', '🥳', '🎉', '🌸', '🎬', '🍰', '🏃‍♀️', '💝', '🌅', '🎭', '🎯', '🍜', '☕', '🎁', '🏖️', '💃', '💋'];
+  const negativeEmojis = ['😔', '😢', '😠', '😤', '💔', '😕', '😞', '😰', '😟', '😭', '🤔', '😬', '😩', '🙄', '📱', '😒'];
+  const neutralEmojis = ['😐', '🤷', '😑', '😶', '🤨', '😏', '🤷‍♀️', '🎮', '📚', '🚗', '🛠️', '🏥', '🍕'];
 
   const positiveCount = Object.entries(emotionCounts)
     .filter(([emoji]) => positiveEmojis.includes(emoji))
@@ -450,6 +450,103 @@ function generateDataInsights(connections: Connection[], moments: Moment[], user
       confidence: 68,
       icon: <TrendingUp className="h-4 w-4 text-purple-600" />,
       dataPoints: ['Personalized advice', 'Based on astrological traits']
+    });
+  }
+
+  // Additional insights for comprehensive analysis
+  
+  // Connection type diversity analysis
+  if (connections.length > 1) {
+    const stages = connections.map(c => c.relationshipStage);
+    const uniqueStages = Array.from(new Set(stages));
+    
+    if (uniqueStages.length >= 3) {
+      insights.push({
+        title: "Diverse Relationship Portfolio",
+        description: `You maintain ${uniqueStages.length} different relationship types: ${uniqueStages.join(', ')}. This diversity provides valuable learning opportunities and emotional growth across various connection styles.`,
+        type: 'positive',
+        confidence: 82,
+        icon: <Users className="h-4 w-4 text-purple-600" />,
+        dataPoints: [`${uniqueStages.length} relationship types`, `${connections.length} total connections`]
+      });
+    }
+  }
+
+  // Activity pattern analysis
+  const activityMoments = moments.filter(m => m.content && m.content.includes('date') || m.content && m.content.includes('night') || m.content && m.content.includes('together'));
+  if (activityMoments.length > 0) {
+    const activityRatio = activityMoments.length / totalMoments;
+    insights.push({
+      title: "Quality Time Investment",
+      description: `${Math.round(activityRatio * 100)}% of your moments involve shared activities. This shows strong commitment to building experiences together. Consider varying activity types to deepen different aspects of your connections.`,
+      type: 'positive',
+      confidence: 77,
+      icon: <Calendar className="h-4 w-4 text-blue-600" />,
+      dataPoints: [`${activityMoments.length} activity moments`, 'Quality time focused']
+    });
+  }
+
+  // Communication pattern insights
+  const communicationMoments = moments.filter(m => 
+    m.content && (
+      m.content.includes('text') || 
+      m.content.includes('call') || 
+      m.content.includes('conversation') ||
+      m.content.includes('talk')
+    )
+  );
+  
+  if (communicationMoments.length > 0) {
+    const commRatio = communicationMoments.length / totalMoments;
+    insights.push({
+      title: "Communication Focus",
+      description: `${Math.round(commRatio * 100)}% of tracked moments involve communication. Strong verbal connection is evident. Balance this with physical presence and shared experiences for well-rounded relationships.`,
+      type: 'neutral',
+      confidence: 75,
+      icon: <TrendingUp className="h-4 w-4 text-indigo-600" />,
+      dataPoints: [`${communicationMoments.length} communication moments`, 'Strong verbal connection']
+    });
+  }
+
+  // Conflict resolution analysis
+  const conflictMoments = moments.filter(m => 
+    m.tags?.includes('Yellow Flag') || 
+    m.tags?.includes('Red Flag') || 
+    m.tags?.includes('Conflict') ||
+    negativeEmojis.includes(m.emoji)
+  );
+  
+  const resolutionMoments = moments.filter(m => 
+    m.content && (
+      m.content.includes('made up') || 
+      m.content.includes('apolog') || 
+      m.content.includes('resolved') ||
+      m.content.includes('better')
+    )
+  );
+
+  if (conflictMoments.length > 0 && resolutionMoments.length > 0) {
+    const resolutionRatio = resolutionMoments.length / conflictMoments.length;
+    insights.push({
+      title: "Conflict Resolution Skills",
+      description: `You actively resolve ${Math.round(resolutionRatio * 100)}% of relationship challenges. This demonstrates emotional maturity and commitment to growth. Continue practicing open communication during difficult moments.`,
+      type: 'positive',
+      confidence: 85,
+      icon: <Heart className="h-4 w-4 text-green-600" />,
+      dataPoints: [`${resolutionMoments.length}/${conflictMoments.length} conflicts resolved`, 'Healthy problem-solving']
+    });
+  }
+
+  // Emotional growth tracking
+  const recentPositiveGrowth = moments.slice(-10).filter(m => positiveEmojis.includes(m.emoji)).length;
+  if (recentPositiveGrowth >= 7) {
+    insights.push({
+      title: "Recent Positive Momentum",
+      description: `${recentPositiveGrowth}/10 of your most recent moments are positive. You're experiencing an upward trend in relationship satisfaction. Maintain this momentum by continuing current successful strategies.`,
+      type: 'positive',
+      confidence: 88,
+      icon: <TrendingUp className="h-4 w-4 text-green-600" />,
+      dataPoints: [`${recentPositiveGrowth}/10 recent positive`, 'Upward trend']
     });
   }
 
