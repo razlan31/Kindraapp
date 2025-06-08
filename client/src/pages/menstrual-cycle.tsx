@@ -1344,8 +1344,8 @@ export default function MenstrualCyclePage() {
 
         {/* Connection Modal */}
         {connectionModalOpen && (
-          <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
-            <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
+          <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4 pb-24">
+            <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg w-full max-w-md max-h-[85vh] overflow-y-auto">
               <div className="flex items-center justify-between p-4 border-b">
                 <h2 className="font-heading font-semibold text-lg">Add New Connection</h2>
                 <Button variant="ghost" size="icon" onClick={closeConnectionModal}>
