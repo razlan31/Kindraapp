@@ -83,6 +83,7 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       setActivityType(activityType);
       setEditingMoment(moment || null);
       setSelectedDate(date || null);
+      console.log("Setting momentModalOpen to true");
       setMomentModalOpen(true);
     }
     
