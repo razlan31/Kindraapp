@@ -1145,8 +1145,8 @@ export default function Activities() {
       {/* Connection Modal */}
       {connectionModalOpen && (
         <div 
-          className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4"
-          style={{ paddingBottom: '100px' }}
+          className="fixed inset-0 z-50 bg-black/50 flex justify-center"
+          style={{ alignItems: 'center', paddingTop: '60px', paddingBottom: '140px', paddingLeft: '16px', paddingRight: '16px' }}
           onClick={() => setConnectionModalOpen(false)}
         >
           <div 
