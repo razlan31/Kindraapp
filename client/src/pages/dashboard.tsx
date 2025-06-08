@@ -22,6 +22,7 @@ import { useToast } from "@/hooks/use-toast";
 export default function Dashboard() {
   console.log("Dashboard component rendered");
   const { user, loading } = useAuth();
+  console.log("Dashboard: user loaded", !!user, "loading:", loading);
   const { openMomentModal, openConnectionModal, setSelectedConnection } = useModal();
   const [insight, setInsight] = useState<string>("");
   const [dashboardConnection, setDashboardConnection] = useState<Connection | null>(null);
@@ -463,6 +464,13 @@ function MenstrualCycleTracker() {
               </p>
             </div>
             <div className="p-4">
+              {console.log("Dashboard: AI Insights rendering condition check:", {
+                momentsLoading,
+                momentsError,
+                momentsLength: moments.length,
+                connectionsLength: connections.length,
+                willRender: !momentsLoading && !momentsError
+              })}
               {momentsLoading ? (
                 <div className="text-center py-4">
                   <div className="animate-pulse">

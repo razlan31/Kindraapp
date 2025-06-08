@@ -1,0 +1,1766 @@
+eruda.js:2 InsightsNew - user: false user ID: undefined loading: false
+eruda.js:2 InsightsNew - moments query: Object
+eruda.js:2 MomentModal render - momentModalOpen: false activityType: moment
+ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev/api/connections:1 
+            
+            
+           Failed to load resource: the server responded with a status of 401 (Unauthorized)Understand this error
+eruda.js:2 HTTP Error: Object
+Mt.forEach.n.<computed> @ Console.js:61Understand this error
+eruda.js:2 Focus Context Debug: Object
+eruda.js:2 Focus Context Debug: Object
+RelationshipRadar:1 Banner not shown: beforeinstallpromptevent.preventDefault() called. The page must call beforeinstallpromptevent.prompt() to show the banner.
+ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev/api/me:1 
+            
+            
+           Failed to load resource: the server responded with a status of 401 (Unauthorized)Understand this error
+eruda.js:2 getCurrentUser failed - response not ok
+eruda.js:2 getCurrentUser successful: null
+eruda.js:2 Auth context setting user: null
+eruda.js:2 Auth: Finally block - setting loading to false
+eruda.js:2 Auth context: Login successful, user set: Object
+eruda.js:2 InsightsNew - user: false user ID: undefined loading: false
+eruda.js:2 InsightsNew - moments query: Object
+eruda.js:2 MomentModal render - momentModalOpen: false activityType: moment
+eruda.js:2 InsightsNew - user: true user ID: 8 loading: false
+eruda.js:2 InsightsNew - moments query: Object
+eruda.js:2 Prevented JSON parse error from browser extension
+Mt.forEach.n.<computed> @ Console.js:61Understand this warning
+eruda.js:2 InsightsNew - user: true user ID: 8 loading: false
+eruda.js:2 InsightsNew - moments query: Object
+eruda.js:2 MomentModal render - momentModalOpen: false activityType: moment
+eruda.js:2 Focus Context Debug: Object
+eruda.js:2 Found saved connection: Object
+eruda.js:2 InsightsNew - user: true user ID: 8 loading: false
+eruda.js:2 InsightsNew - moments query: Object
+eruda.js:2 InsightsNew - user: true user ID: 8 loading: false
+eruda.js:2 InsightsNew - moments query: Object
+eruda.js:2 MomentModal render - momentModalOpen: false activityType: moment
+stallwart.build.js:1 stallwart: failed ping 1
+eruda.js:2 InsightsNew - user: false user ID: undefined loading: true
+eruda.js:2 InsightsNew - moments query: {momentsLength: 56, momentsLoading: false, momentsError: null, userEnabled: false, loading: true}
+eruda.js:2 MomentModal render - momentModalOpen: false activityType: moment
+eruda.js:2 Modal useEffect - selectedDate from context: null
+eruda.js:2 Modal useEffect - editingMoment: null
+eruda.js:2 Modal useEffect - momentModalOpen: false
+eruda.js:2 Focus Context Debug: {savedId: '6', connectionsLength: 4, connections: Array(4)}
+eruda.js:2 Found saved connection: {id: 6, userId: 8, name: 'Amalina', profileImage: 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD…NBFVYa55AsNvqfMiHlz7DuXzATnACjbxt4OfvzgRwvR3Kj//Z', relationshipStage: 'Dating', …}
+eruda.js:2 Auth: Starting to load user, setting loading to true
+eruda.js:2 MomentModal render - momentModalOpen: false activityType: moment
+eruda.js:2 Prevented JSON parse error from browser extension
+Mt.forEach.n.<computed> @ Console.js:61
+JSON.parse @ main.tsx:17
+(anonymous) @ frame_ant.js:2
+p @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+u @ frame_ant.js:2
+window.fetch @ frame_ant.js:2
+window.fetch @ Network.js:219
+getCurrentUser @ auth.ts:28
+loadUser @ auth-context.tsx:43
+(anonymous) @ auth-context.tsx:56
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=dd918c83:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=dd918c83:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=dd918c83:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=dd918c83:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=dd918c83:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=dd918c83:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=dd918c83:19447
+commitRootImpl @ chunk-RPCDYKBN.js?v=dd918c83:19416
+commitRoot @ chunk-RPCDYKBN.js?v=dd918c83:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=dd918c83:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=dd918c83:9119
+flushSync @ chunk-RPCDYKBN.js?v=dd918c83:18959
+scheduleRefresh @ chunk-RPCDYKBN.js?v=dd918c83:20004
+(anonymous) @ @react-refresh:267
+performReactRefresh @ @react-refresh:256
+(anonymous) @ @react-refresh:677
+setTimeout
+(anonymous) @ @react-refresh:666
+validateRefreshBoundaryAndEnqueueUpdate @ @react-refresh:728
+(anonymous) @ dashboard.tsx:1119
+(anonymous) @ client:34
+(anonymous) @ client:218
+(anonymous) @ client:193
+queueUpdate @ client:193
+await in queueUpdate
+(anonymous) @ client:642
+handleMessage @ client:640
+(anonymous) @ client:550Understand this warning
+eruda.js:2 getCurrentUser successful: {id: 8, username: 'testuser', email: 'test@example.com', displayName: 'Test User', profileImage: null, …}
+eruda.js:2 getCurrentUser successful: {id: 8, username: 'testuser', email: 'test@example.com', displayName: 'Test User', profileImage: null, …}
+eruda.js:2 Auth context setting user: {id: 8, username: 'testuser', email: 'test@example.com', displayName: 'Test User', profileImage: null, …}
+eruda.js:2 Auth: Finally block - setting loading to false
+eruda.js:2 [vite] server connection lost. Polling for restart...
+frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.
+t @ frame_ant.js:2
+s @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+u @ frame_ant.js:2
+window.fetch @ frame_ant.js:2
+(anonymous) @ _app-8098e65f4ebc38dd.js:37
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+e @ _app-8098e65f4ebc38dd.js:9
+t.subscribe @ _app-8098e65f4ebc38dd.js:9
+e.consumeQueue @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+r @ _app-8098e65f4ebc38dd.js:37
+setTimeout
+(anonymous) @ _app-8098e65f4ebc38dd.js:37
+e.scheduleQueueConsumption @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+e @ _app-8098e65f4ebc38dd.js:9
+t.subscribe @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+e @ _app-8098e65f4ebc38dd.js:9
+t.subscribe @ _app-8098e65f4ebc38dd.js:9
+e.try @ _app-8098e65f4ebc38dd.js:9
+e.start @ _app-8098e65f4ebc38dd.js:9
+t.request @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+e.execute @ _app-8098e65f4ebc38dd.js:9
+e.getObservableFromLink @ _app-8098e65f4ebc38dd.js:6
+(anonymous) @ _app-8098e65f4ebc38dd.js:6
+(anonymous) @ _app-8098e65f4ebc38dd.js:6
+(anonymous) @ _app-8098e65f4ebc38dd.js:6
+(anonymous) @ _app-8098e65f4ebc38dd.js:6
+s @ _app-8098e65f4ebc38dd.js:6
+e.mutate @ _app-8098e65f4ebc38dd.js:6
+e.mutate @ _app-8098e65f4ebc38dd.js:6
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ 9425-d757701afa7ebfe8.js:1
+(anonymous) @ main-e228babc2c289128.js:1
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+(anonymous) @ main-e228babc2c289128.js:1
+(anonymous) @ main-e228babc2c289128.js:1
+(anonymous) @ 9425-d757701afa7ebfe8.js:1
+oO @ framework-d532e49f8654cb1b.js:1
+uB @ framework-d532e49f8654cb1b.js:1
+u_ @ framework-d532e49f8654cb1b.js:1
+r6 @ framework-d532e49f8654cb1b.js:1
+(anonymous) @ framework-d532e49f8654cb1b.js:1
+uO @ framework-d532e49f8654cb1b.js:1
+uS @ framework-d532e49f8654cb1b.js:1
+C @ framework-d532e49f8654cb1b.js:1
+z @ framework-d532e49f8654cb1b.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-d532e49f8654cb1b.js:1
+I @ framework-d532e49f8654cb1b.js:1
+t.unstable_scheduleCallback @ framework-d532e49f8654cb1b.js:1
+uw @ framework-d532e49f8654cb1b.js:1
+uk @ framework-d532e49f8654cb1b.js:1
+lH @ framework-d532e49f8654cb1b.js:1
+(anonymous) @ 6390-eae5315068c9d4d0.js:1
+r @ _app-8098e65f4ebc38dd.js:1
+update @ _app-8098e65f4ebc38dd.js:1
+m @ 9425-d757701afa7ebfe8.js:1
+(anonymous) @ 9425-d757701afa7ebfe8.js:1
+c.emit @ 4899-1d12bbf90fd8e31b.js:1
+(anonymous) @ 3629-0da09cd50d638900.js:1
+(anonymous) @ 4899-1d12bbf90fd8e31b.js:1
+handleCommand @ 4899-1d12bbf90fd8e31b.js:1
+onSocketMessage @ 4899-1d12bbf90fd8e31b.js:1Understand this error
+frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.
+t @ frame_ant.js:2
+s @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+u @ frame_ant.js:2
+window.fetch @ frame_ant.js:2
+(anonymous) @ _app-8098e65f4ebc38dd.js:37
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+e @ _app-8098e65f4ebc38dd.js:9
+t.subscribe @ _app-8098e65f4ebc38dd.js:9
+e.consumeQueue @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+r @ _app-8098e65f4ebc38dd.js:37
+setTimeout
+(anonymous) @ _app-8098e65f4ebc38dd.js:37
+e.scheduleQueueConsumption @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+e @ _app-8098e65f4ebc38dd.js:9
+t.subscribe @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+e @ _app-8098e65f4ebc38dd.js:9
+t.subscribe @ _app-8098e65f4ebc38dd.js:9
+e.try @ _app-8098e65f4ebc38dd.js:9
+e.start @ _app-8098e65f4ebc38dd.js:9
+t.request @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+e.execute @ _app-8098e65f4ebc38dd.js:9
+e.getObservableFromLink @ _app-8098e65f4ebc38dd.js:6
+(anonymous) @ _app-8098e65f4ebc38dd.js:6
+(anonymous) @ _app-8098e65f4ebc38dd.js:6
+(anonymous) @ _app-8098e65f4ebc38dd.js:6
+(anonymous) @ _app-8098e65f4ebc38dd.js:6
+s @ _app-8098e65f4ebc38dd.js:6
+e.mutate @ _app-8098e65f4ebc38dd.js:6
+e.mutate @ _app-8098e65f4ebc38dd.js:6
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ 9425-d757701afa7ebfe8.js:1
+(anonymous) @ main-e228babc2c289128.js:1
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+(anonymous) @ main-e228babc2c289128.js:1
+(anonymous) @ main-e228babc2c289128.js:1
+(anonymous) @ 9425-d757701afa7ebfe8.js:1
+oO @ framework-d532e49f8654cb1b.js:1
+uB @ framework-d532e49f8654cb1b.js:1
+(anonymous) @ framework-d532e49f8654cb1b.js:1
+uO @ framework-d532e49f8654cb1b.js:1
+u_ @ framework-d532e49f8654cb1b.js:1
+r6 @ framework-d532e49f8654cb1b.js:1
+(anonymous) @ framework-d532e49f8654cb1b.js:1Understand this error
+frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.
+t @ frame_ant.js:2
+s @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+u @ frame_ant.js:2
+window.fetch @ frame_ant.js:2
+(anonymous) @ _app-8098e65f4ebc38dd.js:37
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+e @ _app-8098e65f4ebc38dd.js:9
+t.subscribe @ _app-8098e65f4ebc38dd.js:9
+e.consumeQueue @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+r @ _app-8098e65f4ebc38dd.js:37
+setTimeout
+(anonymous) @ _app-8098e65f4ebc38dd.js:37
+e.scheduleQueueConsumption @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+e @ _app-8098e65f4ebc38dd.js:9
+t.subscribe @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+e @ _app-8098e65f4ebc38dd.js:9
+t.subscribe @ _app-8098e65f4ebc38dd.js:9
+e.try @ _app-8098e65f4ebc38dd.js:9
+e.start @ _app-8098e65f4ebc38dd.js:9
+t.request @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+e.execute @ _app-8098e65f4ebc38dd.js:9
+e.getObservableFromLink @ _app-8098e65f4ebc38dd.js:6
+(anonymous) @ _app-8098e65f4ebc38dd.js:6
+(anonymous) @ _app-8098e65f4ebc38dd.js:6
+(anonymous) @ _app-8098e65f4ebc38dd.js:6
+(anonymous) @ _app-8098e65f4ebc38dd.js:6
+s @ _app-8098e65f4ebc38dd.js:6
+e.mutate @ _app-8098e65f4ebc38dd.js:6
+e.mutate @ _app-8098e65f4ebc38dd.js:6
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:39
+(anonymous) @ main-e228babc2c289128.js:1
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+(anonymous) @ main-e228babc2c289128.js:1
+(anonymous) @ main-e228babc2c289128.js:1
+r @ _app-8098e65f4ebc38dd.js:37Understand this error
+eruda.js:2 InsightsNew - user: false user ID: undefined loading: true
+eruda.js:2 InsightsNew - moments query: {momentsLength: 0, momentsLoading: false, momentsError: null, userEnabled: false, loading: true}
+eruda.js:2 MomentModal render - momentModalOpen: false activityType: moment
+eruda.js:2 Modal useEffect - selectedDate from context: null
+eruda.js:2 Modal useEffect - editingMoment: null
+eruda.js:2 Modal useEffect - momentModalOpen: false
+eruda.js:2 Auth: Starting to load user, setting loading to true
+eruda.js:2 Auth: Starting to load user, setting loading to true
+eruda.js:2 MomentModal render - momentModalOpen: false activityType: moment
+frame_ant.js:2 
+            
+            
+           GET https://ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev/api/ai/conversation 401 (Unauthorized)
+window.fetch @ frame_ant.js:2
+window.fetch @ eruda.js:2
+(anonymous) @ queryClient.ts:31
+fetchFn @ @tanstack_react-query.js:840
+run @ @tanstack_react-query.js:494
+start @ @tanstack_react-query.js:536
+fetch @ @tanstack_react-query.js:926
+executeFetch_fn @ @tanstack_react-query.js:2211
+onSubscribe @ @tanstack_react-query.js:1898
+subscribe @ @tanstack_react-query.js:24
+(anonymous) @ @tanstack_react-query.js:3022
+subscribeToStore @ chunk-RPCDYKBN.js:11984
+commitHookEffectListMount @ chunk-RPCDYKBN.js:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js:19447
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18868
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+commitRootImpl @ chunk-RPCDYKBN.js:19432
+commitRoot @ chunk-RPCDYKBN.js:19277
+finishConcurrentRender @ chunk-RPCDYKBN.js:18805
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js:18718
+workLoop @ chunk-RPCDYKBN.js:197
+flushWork @ chunk-RPCDYKBN.js:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js:384Understand this error
+eruda.js:2 HTTP Error: {url: 'https://ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev/api/ai/conversation', status: 401, statusText: 'Unauthorized', responseText: '{"message":"Authentication required"}', headers: {…}}
+Mt.forEach.n.<computed> @ eruda.js:2
+throwIfResNotOk @ queryClient.ts:10
+await in throwIfResNotOk
+(anonymous) @ queryClient.ts:37
+await in (anonymous)
+fetchFn @ @tanstack_react-query.js:840
+run @ @tanstack_react-query.js:494
+start @ @tanstack_react-query.js:536
+fetch @ @tanstack_react-query.js:926
+executeFetch_fn @ @tanstack_react-query.js:2211
+onSubscribe @ @tanstack_react-query.js:1898
+subscribe @ @tanstack_react-query.js:24
+(anonymous) @ @tanstack_react-query.js:3022
+subscribeToStore @ chunk-RPCDYKBN.js:11984
+commitHookEffectListMount @ chunk-RPCDYKBN.js:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js:19447
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18868
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+commitRootImpl @ chunk-RPCDYKBN.js:19432
+commitRoot @ chunk-RPCDYKBN.js:19277
+finishConcurrentRender @ chunk-RPCDYKBN.js:18805
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js:18718
+workLoop @ chunk-RPCDYKBN.js:197
+flushWork @ chunk-RPCDYKBN.js:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js:384Understand this error
+frame_ant.js:2 
+            
+            
+           GET https://ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev/api/me 401 (Unauthorized)
+window.fetch @ frame_ant.js:2
+window.fetch @ eruda.js:2
+getCurrentUser @ ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev/src/lib/auth.ts:15
+loadUser @ auth-context.tsx:47
+(anonymous) @ auth-context.tsx:59
+commitHookEffectListMount @ chunk-RPCDYKBN.js:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js:19447
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18868
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+commitRootImpl @ chunk-RPCDYKBN.js:19432
+commitRoot @ chunk-RPCDYKBN.js:19277
+finishConcurrentRender @ chunk-RPCDYKBN.js:18805
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js:18718
+workLoop @ chunk-RPCDYKBN.js:197
+flushWork @ chunk-RPCDYKBN.js:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js:384Understand this error
+eruda.js:2 getCurrentUser failed - response not ok
+eruda.js:2 getCurrentUser successful: null
+eruda.js:2 Auth context setting user: null
+eruda.js:2 Auth: Finally block - setting loading to false
+eruda.js:2 InsightsNew - user: false user ID: undefined loading: false
+eruda.js:2 InsightsNew - moments query: {momentsLength: 0, momentsLoading: false, momentsError: null, userEnabled: false, loading: false}
+eruda.js:2 MomentModal render - momentModalOpen: false activityType: moment
+frame_ant.js:2 
+            
+            
+           GET https://ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev/api/connections 401 (Unauthorized)
+window.fetch @ frame_ant.js:2
+window.fetch @ eruda.js:2
+(anonymous) @ queryClient.ts:31
+fetchFn @ @tanstack_react-query.js:840
+run @ @tanstack_react-query.js:494
+start @ @tanstack_react-query.js:536
+fetch @ @tanstack_react-query.js:926
+executeFetch_fn @ @tanstack_react-query.js:2211
+onSubscribe @ @tanstack_react-query.js:1898
+subscribe @ @tanstack_react-query.js:24
+(anonymous) @ @tanstack_react-query.js:3022
+subscribeToStore @ chunk-RPCDYKBN.js:11984
+commitHookEffectListMount @ chunk-RPCDYKBN.js:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js:19447
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18868
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+commitRootImpl @ chunk-RPCDYKBN.js:19432
+commitRoot @ chunk-RPCDYKBN.js:19277
+finishConcurrentRender @ chunk-RPCDYKBN.js:18805
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js:18718
+workLoop @ chunk-RPCDYKBN.js:197
+flushWork @ chunk-RPCDYKBN.js:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js:384Understand this error
+eruda.js:2 HTTP Error: {url: 'https://ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev/api/connections', status: 401, statusText: 'Unauthorized', responseText: '{"message":"Authentication required"}', headers: {…}}
+Mt.forEach.n.<computed> @ eruda.js:2
+throwIfResNotOk @ queryClient.ts:10
+await in throwIfResNotOk
+(anonymous) @ queryClient.ts:37
+await in (anonymous)
+fetchFn @ @tanstack_react-query.js:840
+run @ @tanstack_react-query.js:494
+start @ @tanstack_react-query.js:536
+fetch @ @tanstack_react-query.js:926
+executeFetch_fn @ @tanstack_react-query.js:2211
+onSubscribe @ @tanstack_react-query.js:1898
+subscribe @ @tanstack_react-query.js:24
+(anonymous) @ @tanstack_react-query.js:3022
+subscribeToStore @ chunk-RPCDYKBN.js:11984
+commitHookEffectListMount @ chunk-RPCDYKBN.js:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js:19447
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18868
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+commitRootImpl @ chunk-RPCDYKBN.js:19432
+commitRoot @ chunk-RPCDYKBN.js:19277
+finishConcurrentRender @ chunk-RPCDYKBN.js:18805
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js:18718
+workLoop @ chunk-RPCDYKBN.js:197
+flushWork @ chunk-RPCDYKBN.js:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js:384Understand this error
+eruda.js:2 Focus Context Debug: {savedId: '6', connectionsLength: 0, connections: Array(0)}
+eruda.js:2 Focus Context Debug: {savedId: '6', connectionsLength: 0, connections: Array(0)}
+frame_ant.js:2 
+            
+            
+           GET https://ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev/api/me 401 (Unauthorized)
+window.fetch @ frame_ant.js:2
+window.fetch @ eruda.js:2
+getCurrentUser @ ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev/src/lib/auth.ts:15
+loadUser @ ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev/src/contexts/auth-context.tsx?v=LUZgQPl8kmJO_Ul45_KQT:47
+(anonymous) @ ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev/src/contexts/auth-context.tsx?v=LUZgQPl8kmJO_Ul45_KQT:59
+commitHookEffectListMount @ chunk-RPCDYKBN.js:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js:19447
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js:18868
+flushSyncCallbacks @ chunk-RPCDYKBN.js:9119
+commitRootImpl @ chunk-RPCDYKBN.js:19432
+commitRoot @ chunk-RPCDYKBN.js:19277
+finishConcurrentRender @ chunk-RPCDYKBN.js:18805
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js:18718
+workLoop @ chunk-RPCDYKBN.js:197
+flushWork @ chunk-RPCDYKBN.js:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js:384Understand this error
+eruda.js:2 getCurrentUser failed - response not ok
+eruda.js:2 getCurrentUser successful: null
+eruda.js:2 Auth context setting user: null
+eruda.js:2 Auth: Finally block - setting loading to false
+frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.
+t @ frame_ant.js:2
+s @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+u @ frame_ant.js:2
+window.fetch @ frame_ant.js:2
+(anonymous) @ _app-8098e65f4ebc38dd.js:37
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+e @ _app-8098e65f4ebc38dd.js:9
+t.subscribe @ _app-8098e65f4ebc38dd.js:9
+e.consumeQueue @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+r @ _app-8098e65f4ebc38dd.js:37
+setTimeout
+(anonymous) @ _app-8098e65f4ebc38dd.js:37
+e.scheduleQueueConsumption @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+e @ _app-8098e65f4ebc38dd.js:9
+t.subscribe @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+e @ _app-8098e65f4ebc38dd.js:9
+t.subscribe @ _app-8098e65f4ebc38dd.js:9
+e.try @ _app-8098e65f4ebc38dd.js:9
+e.start @ _app-8098e65f4ebc38dd.js:9
+t.request @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+e.execute @ _app-8098e65f4ebc38dd.js:9
+e.getObservableFromLink @ _app-8098e65f4ebc38dd.js:6
+(anonymous) @ _app-8098e65f4ebc38dd.js:6
+(anonymous) @ _app-8098e65f4ebc38dd.js:6
+(anonymous) @ _app-8098e65f4ebc38dd.js:6
+(anonymous) @ _app-8098e65f4ebc38dd.js:6
+s @ _app-8098e65f4ebc38dd.js:6
+e.mutate @ _app-8098e65f4ebc38dd.js:6
+e.mutate @ _app-8098e65f4ebc38dd.js:6
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+e.wait @ 9425-d757701afa7ebfe8.js:1
+u @ 3629-0da09cd50d638900.js:1
+(anonymous) @ 3629-0da09cd50d638900.js:1
+r @ _app-8098e65f4ebc38dd.js:37Understand this error
+eruda.js:2 [vite] server connection lost. Polling for restart...
+frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.
+t @ frame_ant.js:2
+s @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+u @ frame_ant.js:2
+window.fetch @ frame_ant.js:2
+(anonymous) @ _app-8098e65f4ebc38dd.js:37
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+e @ _app-8098e65f4ebc38dd.js:9
+t.subscribe @ _app-8098e65f4ebc38dd.js:9
+e.consumeQueue @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+r @ _app-8098e65f4ebc38dd.js:37
+setTimeout
+(anonymous) @ _app-8098e65f4ebc38dd.js:37
+e.scheduleQueueConsumption @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+e @ _app-8098e65f4ebc38dd.js:9
+t.subscribe @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+e @ _app-8098e65f4ebc38dd.js:9
+t.subscribe @ _app-8098e65f4ebc38dd.js:9
+e.try @ _app-8098e65f4ebc38dd.js:9
+e.start @ _app-8098e65f4ebc38dd.js:9
+t.request @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+e.execute @ _app-8098e65f4ebc38dd.js:9
+e.getObservableFromLink @ _app-8098e65f4ebc38dd.js:6
+(anonymous) @ _app-8098e65f4ebc38dd.js:6
+(anonymous) @ _app-8098e65f4ebc38dd.js:6
+(anonymous) @ _app-8098e65f4ebc38dd.js:6
+(anonymous) @ _app-8098e65f4ebc38dd.js:6
+s @ _app-8098e65f4ebc38dd.js:6
+e.mutate @ _app-8098e65f4ebc38dd.js:6
+e.mutate @ _app-8098e65f4ebc38dd.js:6
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ 9425-d757701afa7ebfe8.js:1
+(anonymous) @ main-e228babc2c289128.js:1
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+(anonymous) @ main-e228babc2c289128.js:1
+(anonymous) @ main-e228babc2c289128.js:1
+(anonymous) @ 9425-d757701afa7ebfe8.js:1
+oO @ framework-d532e49f8654cb1b.js:1
+uB @ framework-d532e49f8654cb1b.js:1
+u_ @ framework-d532e49f8654cb1b.js:1
+r6 @ framework-d532e49f8654cb1b.js:1
+(anonymous) @ framework-d532e49f8654cb1b.js:1
+uO @ framework-d532e49f8654cb1b.js:1
+uS @ framework-d532e49f8654cb1b.js:1
+C @ framework-d532e49f8654cb1b.js:1
+z @ framework-d532e49f8654cb1b.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-d532e49f8654cb1b.js:1
+I @ framework-d532e49f8654cb1b.js:1
+t.unstable_scheduleCallback @ framework-d532e49f8654cb1b.js:1
+uw @ framework-d532e49f8654cb1b.js:1
+uk @ framework-d532e49f8654cb1b.js:1
+lH @ framework-d532e49f8654cb1b.js:1
+(anonymous) @ 6390-eae5315068c9d4d0.js:1
+r @ _app-8098e65f4ebc38dd.js:1
+update @ _app-8098e65f4ebc38dd.js:1
+m @ 9425-d757701afa7ebfe8.js:1
+(anonymous) @ 9425-d757701afa7ebfe8.js:1
+c.emit @ 4899-1d12bbf90fd8e31b.js:1
+(anonymous) @ 3629-0da09cd50d638900.js:1
+(anonymous) @ 4899-1d12bbf90fd8e31b.js:1
+handleCommand @ 4899-1d12bbf90fd8e31b.js:1
+onSocketMessage @ 4899-1d12bbf90fd8e31b.js:1Understand this error
+eruda.js:2 InsightsNew - user: false user ID: undefined loading: true
+eruda.js:2 InsightsNew - moments query: {momentsLength: 0, momentsLoading: false, momentsError: null, userEnabled: false, loading: true}
+eruda.js:2 MomentModal render - momentModalOpen: false activityType: moment
+eruda.js:2 Modal useEffect - selectedDate from context: null
+eruda.js:2 Modal useEffect - editingMoment: null
+eruda.js:2 Modal useEffect - momentModalOpen: false
+eruda.js:2 Auth: Starting to load user, setting loading to true
+eruda.js:2 Auth: Starting to load user, setting loading to true
+eruda.js:2 MomentModal render - momentModalOpen: false activityType: moment
+frame_ant.js:2 
+            
+            
+           GET https://ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev/api/ai/conversation 401 (Unauthorized)
+window.fetch @ frame_ant.js:2
+window.fetch @ Network.js:219
+(anonymous) @ queryClient.ts:44
+fetchFn @ @tanstack_react-query.js?v=dd918c83:840
+run @ @tanstack_react-query.js?v=dd918c83:494
+start @ @tanstack_react-query.js?v=dd918c83:536
+fetch @ @tanstack_react-query.js?v=dd918c83:926
+executeFetch_fn @ @tanstack_react-query.js?v=dd918c83:2211
+onSubscribe @ @tanstack_react-query.js?v=dd918c83:1898
+subscribe @ @tanstack_react-query.js?v=dd918c83:24
+(anonymous) @ @tanstack_react-query.js?v=dd918c83:3022
+subscribeToStore @ chunk-RPCDYKBN.js?v=dd918c83:11984
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=dd918c83:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=dd918c83:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=dd918c83:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=dd918c83:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=dd918c83:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=dd918c83:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=dd918c83:19447
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=dd918c83:18868
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=dd918c83:9119
+commitRootImpl @ chunk-RPCDYKBN.js?v=dd918c83:19432
+commitRoot @ chunk-RPCDYKBN.js?v=dd918c83:19277
+finishConcurrentRender @ chunk-RPCDYKBN.js?v=dd918c83:18805
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=dd918c83:18718
+workLoop @ chunk-RPCDYKBN.js?v=dd918c83:197
+flushWork @ chunk-RPCDYKBN.js?v=dd918c83:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=dd918c83:384Understand this error
+frame_ant.js:2 
+            
+            
+           GET https://ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev/api/connections 401 (Unauthorized)
+window.fetch @ frame_ant.js:2
+window.fetch @ Network.js:219
+(anonymous) @ queryClient.ts:44
+fetchFn @ @tanstack_react-query.js?v=dd918c83:840
+run @ @tanstack_react-query.js?v=dd918c83:494
+start @ @tanstack_react-query.js?v=dd918c83:536
+fetch @ @tanstack_react-query.js?v=dd918c83:926
+executeFetch_fn @ @tanstack_react-query.js?v=dd918c83:2211
+onSubscribe @ @tanstack_react-query.js?v=dd918c83:1898
+subscribe @ @tanstack_react-query.js?v=dd918c83:24
+(anonymous) @ @tanstack_react-query.js?v=dd918c83:3022
+subscribeToStore @ chunk-RPCDYKBN.js?v=dd918c83:11984
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=dd918c83:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=dd918c83:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=dd918c83:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=dd918c83:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=dd918c83:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=dd918c83:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=dd918c83:19447
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=dd918c83:18868
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=dd918c83:9119
+commitRootImpl @ chunk-RPCDYKBN.js?v=dd918c83:19432
+commitRoot @ chunk-RPCDYKBN.js?v=dd918c83:19277
+finishConcurrentRender @ chunk-RPCDYKBN.js?v=dd918c83:18805
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=dd918c83:18718
+workLoop @ chunk-RPCDYKBN.js?v=dd918c83:197
+flushWork @ chunk-RPCDYKBN.js?v=dd918c83:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=dd918c83:384Understand this error
+eruda.js:2 HTTP Error: {url: 'https://ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev/api/ai/conversation', status: 401, statusText: 'Unauthorized', responseText: '{"message":"Authentication required"}', headers: {…}}
+Mt.forEach.n.<computed> @ Console.js:61
+throwIfResNotOk @ queryClient.ts:11
+await in throwIfResNotOk
+(anonymous) @ queryClient.ts:52
+await in (anonymous)
+fetchFn @ @tanstack_react-query.js?v=dd918c83:840
+run @ @tanstack_react-query.js?v=dd918c83:494
+start @ @tanstack_react-query.js?v=dd918c83:536
+fetch @ @tanstack_react-query.js?v=dd918c83:926
+executeFetch_fn @ @tanstack_react-query.js?v=dd918c83:2211
+onSubscribe @ @tanstack_react-query.js?v=dd918c83:1898
+subscribe @ @tanstack_react-query.js?v=dd918c83:24
+(anonymous) @ @tanstack_react-query.js?v=dd918c83:3022
+subscribeToStore @ chunk-RPCDYKBN.js?v=dd918c83:11984
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=dd918c83:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=dd918c83:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=dd918c83:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=dd918c83:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=dd918c83:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=dd918c83:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=dd918c83:19447
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=dd918c83:18868
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=dd918c83:9119
+commitRootImpl @ chunk-RPCDYKBN.js?v=dd918c83:19432
+commitRoot @ chunk-RPCDYKBN.js?v=dd918c83:19277
+finishConcurrentRender @ chunk-RPCDYKBN.js?v=dd918c83:18805
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=dd918c83:18718
+workLoop @ chunk-RPCDYKBN.js?v=dd918c83:197
+flushWork @ chunk-RPCDYKBN.js?v=dd918c83:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=dd918c83:384Understand this error
+frame_ant.js:2 
+            
+            
+           GET https://ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev/api/me 401 (Unauthorized)
+window.fetch @ frame_ant.js:2
+window.fetch @ Network.js:219
+getCurrentUser @ auth.ts:28
+loadUser @ auth-context.tsx:43
+(anonymous) @ auth-context.tsx:56
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=dd918c83:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=dd918c83:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=dd918c83:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=dd918c83:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=dd918c83:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=dd918c83:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=dd918c83:19447
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=dd918c83:18868
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=dd918c83:9119
+commitRootImpl @ chunk-RPCDYKBN.js?v=dd918c83:19432
+commitRoot @ chunk-RPCDYKBN.js?v=dd918c83:19277
+finishConcurrentRender @ chunk-RPCDYKBN.js?v=dd918c83:18805
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=dd918c83:18718
+workLoop @ chunk-RPCDYKBN.js?v=dd918c83:197
+flushWork @ chunk-RPCDYKBN.js?v=dd918c83:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=dd918c83:384Understand this error
+eruda.js:2 getCurrentUser failed - response not ok
+eruda.js:2 getCurrentUser successful: null
+eruda.js:2 Auth context setting user: null
+eruda.js:2 Auth: Finally block - setting loading to false
+eruda.js:2 InsightsNew - user: false user ID: undefined loading: false
+eruda.js:2 InsightsNew - moments query: {momentsLength: 0, momentsLoading: false, momentsError: null, userEnabled: false, loading: false}
+eruda.js:2 MomentModal render - momentModalOpen: false activityType: moment
+eruda.js:2 HTTP Error: {url: 'https://ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev/api/connections', status: 401, statusText: 'Unauthorized', responseText: '{"message":"Authentication required"}', headers: {…}}
+Mt.forEach.n.<computed> @ Console.js:61
+throwIfResNotOk @ queryClient.ts:11
+await in throwIfResNotOk
+(anonymous) @ queryClient.ts:52
+await in (anonymous)
+fetchFn @ @tanstack_react-query.js?v=dd918c83:840
+run @ @tanstack_react-query.js?v=dd918c83:494
+start @ @tanstack_react-query.js?v=dd918c83:536
+fetch @ @tanstack_react-query.js?v=dd918c83:926
+executeFetch_fn @ @tanstack_react-query.js?v=dd918c83:2211
+onSubscribe @ @tanstack_react-query.js?v=dd918c83:1898
+subscribe @ @tanstack_react-query.js?v=dd918c83:24
+(anonymous) @ @tanstack_react-query.js?v=dd918c83:3022
+subscribeToStore @ chunk-RPCDYKBN.js?v=dd918c83:11984
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=dd918c83:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=dd918c83:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=dd918c83:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=dd918c83:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=dd918c83:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=dd918c83:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=dd918c83:19447
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=dd918c83:18868
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=dd918c83:9119
+commitRootImpl @ chunk-RPCDYKBN.js?v=dd918c83:19432
+commitRoot @ chunk-RPCDYKBN.js?v=dd918c83:19277
+finishConcurrentRender @ chunk-RPCDYKBN.js?v=dd918c83:18805
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=dd918c83:18718
+workLoop @ chunk-RPCDYKBN.js?v=dd918c83:197
+flushWork @ chunk-RPCDYKBN.js?v=dd918c83:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=dd918c83:384Understand this error
+eruda.js:2 Focus Context Debug: {savedId: '6', connectionsLength: 0, connections: Array(0)}
+eruda.js:2 Focus Context Debug: {savedId: '6', connectionsLength: 0, connections: Array(0)}
+frame_ant.js:2 
+            
+            
+           GET https://ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev/api/me 401 (Unauthorized)
+window.fetch @ frame_ant.js:2
+window.fetch @ Network.js:219
+getCurrentUser @ auth.ts:28
+loadUser @ auth-context.tsx:43
+(anonymous) @ auth-context.tsx:56
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=dd918c83:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=dd918c83:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=dd918c83:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=dd918c83:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=dd918c83:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=dd918c83:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=dd918c83:19447
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=dd918c83:18868
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=dd918c83:9119
+commitRootImpl @ chunk-RPCDYKBN.js?v=dd918c83:19432
+commitRoot @ chunk-RPCDYKBN.js?v=dd918c83:19277
+finishConcurrentRender @ chunk-RPCDYKBN.js?v=dd918c83:18805
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=dd918c83:18718
+workLoop @ chunk-RPCDYKBN.js?v=dd918c83:197
+flushWork @ chunk-RPCDYKBN.js?v=dd918c83:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=dd918c83:384Understand this error
+eruda.js:2 getCurrentUser failed - response not ok
+eruda.js:2 getCurrentUser successful: null
+eruda.js:2 Auth context setting user: null
+eruda.js:2 Auth: Finally block - setting loading to false
+frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.
+t @ frame_ant.js:2
+s @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+u @ frame_ant.js:2
+window.fetch @ frame_ant.js:2
+(anonymous) @ _app-8098e65f4ebc38dd.js:37
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+e @ _app-8098e65f4ebc38dd.js:9
+t.subscribe @ _app-8098e65f4ebc38dd.js:9
+e.consumeQueue @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+r @ _app-8098e65f4ebc38dd.js:37
+setTimeout
+(anonymous) @ _app-8098e65f4ebc38dd.js:37
+e.scheduleQueueConsumption @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+e @ _app-8098e65f4ebc38dd.js:9
+t.subscribe @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+e @ _app-8098e65f4ebc38dd.js:9
+t.subscribe @ _app-8098e65f4ebc38dd.js:9
+e.try @ _app-8098e65f4ebc38dd.js:9
+e.start @ _app-8098e65f4ebc38dd.js:9
+t.request @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+e.execute @ _app-8098e65f4ebc38dd.js:9
+e.getObservableFromLink @ _app-8098e65f4ebc38dd.js:6
+e.getResultsFromLink @ _app-8098e65f4ebc38dd.js:6
+b @ _app-8098e65f4ebc38dd.js:6
+e.fetchQueryByPolicy @ _app-8098e65f4ebc38dd.js:6
+b @ _app-8098e65f4ebc38dd.js:6
+e.fetchConcastWithInfo @ _app-8098e65f4ebc38dd.js:6
+t.fetch @ _app-8098e65f4ebc38dd.js:9
+t.reobserveAsConcast @ _app-8098e65f4ebc38dd.js:9
+e.executeQuery @ _app-8098e65f4ebc38dd.js:40
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ 9425-d757701afa7ebfe8.js:1
+(anonymous) @ _app-8098e65f4ebc38dd.js:40
+t.trigger @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ main-e228babc2c289128.js:1
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+Promise.then
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+Promise.then
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+Promise.then
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+Promise.then
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+Promise.then
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+Promise.then
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+Promise.then
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+Promise.then
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+Promise.then
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+Promise.then
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+Promise.then
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+Promise.then
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+Promise.then
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+Promise.then
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+Promise.then
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+Promise.then
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+Promise.then
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+Promise.then
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+Promise.then
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+Promise.then
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+Promise.then
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+Promise.then
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+Promise.then
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+Promise.then
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+Promise.then
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+Promise.then
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+Promise.then
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+Promise.then
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+Promise.then
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1Understand this error
+eruda.js:2 Auth context: Login successful, user set: {id: 8, username: 'testuser', email: 'test@example.com', displayName: 'Test User', profileImage: null, …}
+eruda.js:2 InsightsNew - user: false user ID: undefined loading: false
+eruda.js:2 InsightsNew - moments query: {momentsLength: 0, momentsLoading: false, momentsError: null, userEnabled: false, loading: false}
+eruda.js:2 MomentModal render - momentModalOpen: false activityType: moment
+eruda.js:2 InsightsNew - user: true user ID: 8 loading: false
+eruda.js:2 InsightsNew - moments query: {momentsLength: 0, momentsLoading: true, momentsError: null, userEnabled: true, loading: false}
+eruda.js:2 Prevented JSON parse error from browser extension
+Mt.forEach.n.<computed> @ Console.js:61
+JSON.parse @ main.tsx:17
+(anonymous) @ frame_ant.js:2
+p @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+u @ frame_ant.js:2
+window.fetch @ frame_ant.js:2
+window.fetch @ Network.js:219
+queryFn @ header.tsx:15
+fetchFn @ @tanstack_react-query.js?v=dd918c83:840
+run @ @tanstack_react-query.js?v=dd918c83:494
+start @ @tanstack_react-query.js?v=dd918c83:536
+fetch @ @tanstack_react-query.js?v=dd918c83:926
+executeFetch_fn @ @tanstack_react-query.js?v=dd918c83:2211
+onSubscribe @ @tanstack_react-query.js?v=dd918c83:1898
+subscribe @ @tanstack_react-query.js?v=dd918c83:24
+(anonymous) @ @tanstack_react-query.js?v=dd918c83:3022
+subscribeToStore @ chunk-RPCDYKBN.js?v=dd918c83:11984
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=dd918c83:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=dd918c83:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=dd918c83:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=dd918c83:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=dd918c83:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=dd918c83:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=dd918c83:19447
+commitRootImpl @ chunk-RPCDYKBN.js?v=dd918c83:19416
+commitRoot @ chunk-RPCDYKBN.js?v=dd918c83:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=dd918c83:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=dd918c83:9119
+commitRootImpl @ chunk-RPCDYKBN.js?v=dd918c83:19432
+commitRoot @ chunk-RPCDYKBN.js?v=dd918c83:19277
+finishConcurrentRender @ chunk-RPCDYKBN.js?v=dd918c83:18805
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=dd918c83:18718
+workLoop @ chunk-RPCDYKBN.js?v=dd918c83:197
+flushWork @ chunk-RPCDYKBN.js?v=dd918c83:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=dd918c83:384Understand this warning
+eruda.js:2 InsightsNew - user: true user ID: 8 loading: false
+eruda.js:2 InsightsNew - moments query: {momentsLength: 0, momentsLoading: true, momentsError: null, userEnabled: true, loading: false}
+eruda.js:2 MomentModal render - momentModalOpen: false activityType: moment
+eruda.js:2 Focus Context Debug: {savedId: '6', connectionsLength: 4, connections: Array(4)}
+eruda.js:2 Found saved connection: {id: 6, userId: 8, name: 'Amalina', profileImage: 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD…NBFVYa55AsNvqfMiHlz7DuXzATnACjbxt4OfvzgRwvR3Kj//Z', relationshipStage: 'Dating', …}
+eruda.js:2 InsightsNew - user: true user ID: 8 loading: false
+eruda.js:2 InsightsNew - moments query: {momentsLength: 0, momentsLoading: true, momentsError: null, userEnabled: true, loading: false}
+eruda.js:2 InsightsNew - user: true user ID: 8 loading: false
+eruda.js:2 InsightsNew - moments query: {momentsLength: 56, momentsLoading: false, momentsError: null, userEnabled: true, loading: false}
+eruda.js:2 MomentModal render - momentModalOpen: false activityType: moment
+frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.
+t @ frame_ant.js:2
+s @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+u @ frame_ant.js:2
+window.fetch @ frame_ant.js:2
+(anonymous) @ _app-8098e65f4ebc38dd.js:37
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+e @ _app-8098e65f4ebc38dd.js:9
+t.subscribe @ _app-8098e65f4ebc38dd.js:9
+e.consumeQueue @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+r @ _app-8098e65f4ebc38dd.js:37
+setTimeout
+(anonymous) @ _app-8098e65f4ebc38dd.js:37
+e.scheduleQueueConsumption @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+e @ _app-8098e65f4ebc38dd.js:9
+t.subscribe @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+e @ _app-8098e65f4ebc38dd.js:9
+t.subscribe @ _app-8098e65f4ebc38dd.js:9
+e.try @ _app-8098e65f4ebc38dd.js:9
+e.start @ _app-8098e65f4ebc38dd.js:9
+t.request @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+e.execute @ _app-8098e65f4ebc38dd.js:9
+e.getObservableFromLink @ _app-8098e65f4ebc38dd.js:6
+(anonymous) @ _app-8098e65f4ebc38dd.js:6
+(anonymous) @ _app-8098e65f4ebc38dd.js:6
+(anonymous) @ _app-8098e65f4ebc38dd.js:6
+(anonymous) @ _app-8098e65f4ebc38dd.js:6
+s @ _app-8098e65f4ebc38dd.js:6
+e.mutate @ _app-8098e65f4ebc38dd.js:6
+e.mutate @ _app-8098e65f4ebc38dd.js:6
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:39
+(anonymous) @ main-e228babc2c289128.js:1
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+(anonymous) @ main-e228babc2c289128.js:1
+(anonymous) @ main-e228babc2c289128.js:1
+r @ _app-8098e65f4ebc38dd.js:37Understand this error
+eruda.js:2 InsightsNew - user: false user ID: undefined loading: true
+eruda.js:2 InsightsNew - moments query: {momentsLength: 56, momentsLoading: false, momentsError: null, userEnabled: false, loading: true}
+eruda.js:2 MomentModal render - momentModalOpen: false activityType: moment
+eruda.js:2 Modal useEffect - selectedDate from context: null
+eruda.js:2 Modal useEffect - editingMoment: null
+eruda.js:2 Modal useEffect - momentModalOpen: false
+eruda.js:2 Focus Context Debug: {savedId: '6', connectionsLength: 4, connections: Array(4)}
+eruda.js:2 Found saved connection: {id: 6, userId: 8, name: 'Amalina', profileImage: 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD…NBFVYa55AsNvqfMiHlz7DuXzATnACjbxt4OfvzgRwvR3Kj//Z', relationshipStage: 'Dating', …}
+eruda.js:2 Auth: Starting to load user, setting loading to true
+eruda.js:2 MomentModal render - momentModalOpen: false activityType: moment
+eruda.js:2 Prevented JSON parse error from browser extension
+Mt.forEach.n.<computed> @ Console.js:61
+JSON.parse @ main.tsx:17
+(anonymous) @ frame_ant.js:2
+p @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+u @ frame_ant.js:2
+window.fetch @ frame_ant.js:2
+window.fetch @ Network.js:219
+getCurrentUser @ auth.ts:28
+loadUser @ auth-context.tsx:43
+(anonymous) @ auth-context.tsx:56
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=dd918c83:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=dd918c83:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=dd918c83:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=dd918c83:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=dd918c83:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=dd918c83:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=dd918c83:19447
+commitRootImpl @ chunk-RPCDYKBN.js?v=dd918c83:19416
+commitRoot @ chunk-RPCDYKBN.js?v=dd918c83:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=dd918c83:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=dd918c83:9119
+flushSync @ chunk-RPCDYKBN.js?v=dd918c83:18959
+scheduleRefresh @ chunk-RPCDYKBN.js?v=dd918c83:20004
+(anonymous) @ @react-refresh:267
+performReactRefresh @ @react-refresh:256
+(anonymous) @ @react-refresh:677
+setTimeout
+(anonymous) @ @react-refresh:666
+validateRefreshBoundaryAndEnqueueUpdate @ @react-refresh:728
+(anonymous) @ dashboard.tsx:1131
+(anonymous) @ client:34
+(anonymous) @ client:218
+(anonymous) @ client:193
+queueUpdate @ client:193
+await in queueUpdate
+(anonymous) @ client:642
+handleMessage @ client:640
+(anonymous) @ client:550Understand this warning
+eruda.js:2 getCurrentUser successful: {id: 8, username: 'testuser', email: 'test@example.com', displayName: 'Test User', profileImage: null, …}
+eruda.js:2 getCurrentUser successful: {id: 8, username: 'testuser', email: 'test@example.com', displayName: 'Test User', profileImage: null, …}
+eruda.js:2 Auth context setting user: {id: 8, username: 'testuser', email: 'test@example.com', displayName: 'Test User', profileImage: null, …}
+eruda.js:2 Auth: Finally block - setting loading to false
+eruda.js:2 [vite] server connection lost. Polling for restart...
+frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.
+t @ frame_ant.js:2
+s @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+u @ frame_ant.js:2
+window.fetch @ frame_ant.js:2
+(anonymous) @ _app-8098e65f4ebc38dd.js:37
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+e @ _app-8098e65f4ebc38dd.js:9
+t.subscribe @ _app-8098e65f4ebc38dd.js:9
+e.consumeQueue @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+r @ _app-8098e65f4ebc38dd.js:37
+setTimeout
+(anonymous) @ _app-8098e65f4ebc38dd.js:37
+e.scheduleQueueConsumption @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+e @ _app-8098e65f4ebc38dd.js:9
+t.subscribe @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+e @ _app-8098e65f4ebc38dd.js:9
+t.subscribe @ _app-8098e65f4ebc38dd.js:9
+e.try @ _app-8098e65f4ebc38dd.js:9
+e.start @ _app-8098e65f4ebc38dd.js:9
+t.request @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+e.execute @ _app-8098e65f4ebc38dd.js:9
+e.getObservableFromLink @ _app-8098e65f4ebc38dd.js:6
+(anonymous) @ _app-8098e65f4ebc38dd.js:6
+(anonymous) @ _app-8098e65f4ebc38dd.js:6
+(anonymous) @ _app-8098e65f4ebc38dd.js:6
+(anonymous) @ _app-8098e65f4ebc38dd.js:6
+s @ _app-8098e65f4ebc38dd.js:6
+e.mutate @ _app-8098e65f4ebc38dd.js:6
+e.mutate @ _app-8098e65f4ebc38dd.js:6
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ 9425-d757701afa7ebfe8.js:1
+(anonymous) @ main-e228babc2c289128.js:1
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+(anonymous) @ main-e228babc2c289128.js:1
+(anonymous) @ main-e228babc2c289128.js:1
+(anonymous) @ 9425-d757701afa7ebfe8.js:1
+oO @ framework-d532e49f8654cb1b.js:1
+uB @ framework-d532e49f8654cb1b.js:1
+u_ @ framework-d532e49f8654cb1b.js:1
+r6 @ framework-d532e49f8654cb1b.js:1
+(anonymous) @ framework-d532e49f8654cb1b.js:1
+uO @ framework-d532e49f8654cb1b.js:1
+uS @ framework-d532e49f8654cb1b.js:1
+C @ framework-d532e49f8654cb1b.js:1
+z @ framework-d532e49f8654cb1b.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-d532e49f8654cb1b.js:1
+I @ framework-d532e49f8654cb1b.js:1
+t.unstable_scheduleCallback @ framework-d532e49f8654cb1b.js:1
+uw @ framework-d532e49f8654cb1b.js:1
+uk @ framework-d532e49f8654cb1b.js:1
+lH @ framework-d532e49f8654cb1b.js:1
+(anonymous) @ 6390-eae5315068c9d4d0.js:1
+r @ _app-8098e65f4ebc38dd.js:1
+update @ _app-8098e65f4ebc38dd.js:1
+m @ 9425-d757701afa7ebfe8.js:1
+(anonymous) @ 9425-d757701afa7ebfe8.js:1
+c.emit @ 4899-1d12bbf90fd8e31b.js:1
+(anonymous) @ 3629-0da09cd50d638900.js:1
+(anonymous) @ 4899-1d12bbf90fd8e31b.js:1
+handleCommand @ 4899-1d12bbf90fd8e31b.js:1
+onSocketMessage @ 4899-1d12bbf90fd8e31b.js:1Understand this error
+frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.
+t @ frame_ant.js:2
+s @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+u @ frame_ant.js:2
+window.fetch @ frame_ant.js:2
+(anonymous) @ _app-8098e65f4ebc38dd.js:37
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+e @ _app-8098e65f4ebc38dd.js:9
+t.subscribe @ _app-8098e65f4ebc38dd.js:9
+e.consumeQueue @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+r @ _app-8098e65f4ebc38dd.js:37
+setTimeout
+(anonymous) @ _app-8098e65f4ebc38dd.js:37
+e.scheduleQueueConsumption @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+e @ _app-8098e65f4ebc38dd.js:9
+t.subscribe @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+e @ _app-8098e65f4ebc38dd.js:9
+t.subscribe @ _app-8098e65f4ebc38dd.js:9
+e.try @ _app-8098e65f4ebc38dd.js:9
+e.start @ _app-8098e65f4ebc38dd.js:9
+t.request @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+e.execute @ _app-8098e65f4ebc38dd.js:9
+e.getObservableFromLink @ _app-8098e65f4ebc38dd.js:6
+(anonymous) @ _app-8098e65f4ebc38dd.js:6
+(anonymous) @ _app-8098e65f4ebc38dd.js:6
+(anonymous) @ _app-8098e65f4ebc38dd.js:6
+(anonymous) @ _app-8098e65f4ebc38dd.js:6
+s @ _app-8098e65f4ebc38dd.js:6
+e.mutate @ _app-8098e65f4ebc38dd.js:6
+e.mutate @ _app-8098e65f4ebc38dd.js:6
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ 9425-d757701afa7ebfe8.js:1
+(anonymous) @ main-e228babc2c289128.js:1
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+(anonymous) @ main-e228babc2c289128.js:1
+(anonymous) @ main-e228babc2c289128.js:1
+(anonymous) @ 9425-d757701afa7ebfe8.js:1
+oO @ framework-d532e49f8654cb1b.js:1
+uB @ framework-d532e49f8654cb1b.js:1
+u_ @ framework-d532e49f8654cb1b.js:1
+r6 @ framework-d532e49f8654cb1b.js:1
+(anonymous) @ framework-d532e49f8654cb1b.js:1
+uO @ framework-d532e49f8654cb1b.js:1
+uS @ framework-d532e49f8654cb1b.js:1
+C @ framework-d532e49f8654cb1b.js:1
+z @ framework-d532e49f8654cb1b.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-d532e49f8654cb1b.js:1
+z @ framework-d532e49f8654cb1b.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-d532e49f8654cb1b.js:1
+z @ framework-d532e49f8654cb1b.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-d532e49f8654cb1b.js:1
+I @ framework-d532e49f8654cb1b.js:1
+t.unstable_scheduleCallback @ framework-d532e49f8654cb1b.js:1
+uw @ framework-d532e49f8654cb1b.js:1
+uk @ framework-d532e49f8654cb1b.js:1
+lH @ framework-d532e49f8654cb1b.js:1
+(anonymous) @ 6390-eae5315068c9d4d0.js:1
+r @ _app-8098e65f4ebc38dd.js:1
+update @ _app-8098e65f4ebc38dd.js:1
+m @ 9425-d757701afa7ebfe8.js:1
+(anonymous) @ 9425-d757701afa7ebfe8.js:1
+c.emit @ 4899-1d12bbf90fd8e31b.js:1
+(anonymous) @ 3629-0da09cd50d638900.js:1
+(anonymous) @ 4899-1d12bbf90fd8e31b.js:1
+handleCommand @ 4899-1d12bbf90fd8e31b.js:1
+onSocketMessage @ 4899-1d12bbf90fd8e31b.js:1Understand this error
+Console.js:61 InsightsNew - user: false user ID: undefined loading: true
+Console.js:61 InsightsNew - moments query: {momentsLength: 0, momentsLoading: false, momentsError: null, userEnabled: false, loading: true}
+Console.js:61 MomentModal render - momentModalOpen: false activityType: moment
+Console.js:61 Modal useEffect - selectedDate from context: null
+Console.js:61 Modal useEffect - editingMoment: null
+Console.js:61 Modal useEffect - momentModalOpen: false
+Console.js:61 Auth: Starting to load user, setting loading to true
+Console.js:61 Auth: Starting to load user, setting loading to true
+Console.js:61 MomentModal render - momentModalOpen: false activityType: moment
+frame_ant.js:2 
+            
+            
+           GET https://ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev/api/ai/conversation 401 (Unauthorized)
+window.fetch @ frame_ant.js:2
+window.fetch @ Network.js:219
+(anonymous) @ queryClient.ts:44
+fetchFn @ @tanstack_react-query.js?v=dd918c83:840
+run @ @tanstack_react-query.js?v=dd918c83:494
+start @ @tanstack_react-query.js?v=dd918c83:536
+fetch @ @tanstack_react-query.js?v=dd918c83:926
+executeFetch_fn @ @tanstack_react-query.js?v=dd918c83:2211
+onSubscribe @ @tanstack_react-query.js?v=dd918c83:1898
+subscribe @ @tanstack_react-query.js?v=dd918c83:24
+(anonymous) @ @tanstack_react-query.js?v=dd918c83:3022
+subscribeToStore @ chunk-RPCDYKBN.js?v=dd918c83:11984
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=dd918c83:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=dd918c83:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=dd918c83:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=dd918c83:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=dd918c83:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=dd918c83:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=dd918c83:19447
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=dd918c83:18868
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=dd918c83:9119
+commitRootImpl @ chunk-RPCDYKBN.js?v=dd918c83:19432
+commitRoot @ chunk-RPCDYKBN.js?v=dd918c83:19277
+finishConcurrentRender @ chunk-RPCDYKBN.js?v=dd918c83:18805
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=dd918c83:18718
+workLoop @ chunk-RPCDYKBN.js?v=dd918c83:197
+flushWork @ chunk-RPCDYKBN.js?v=dd918c83:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=dd918c83:384Understand this error
+Console.js:61 HTTP Error: {url: 'https://ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev/api/ai/conversation', status: 401, statusText: 'Unauthorized', responseText: '{"message":"Authentication required"}', headers: {…}}
+Mt.forEach.n.<computed> @ Console.js:61
+throwIfResNotOk @ queryClient.ts:11
+await in throwIfResNotOk
+(anonymous) @ queryClient.ts:52
+await in (anonymous)
+fetchFn @ @tanstack_react-query.js?v=dd918c83:840
+run @ @tanstack_react-query.js?v=dd918c83:494
+start @ @tanstack_react-query.js?v=dd918c83:536
+fetch @ @tanstack_react-query.js?v=dd918c83:926
+executeFetch_fn @ @tanstack_react-query.js?v=dd918c83:2211
+onSubscribe @ @tanstack_react-query.js?v=dd918c83:1898
+subscribe @ @tanstack_react-query.js?v=dd918c83:24
+(anonymous) @ @tanstack_react-query.js?v=dd918c83:3022
+subscribeToStore @ chunk-RPCDYKBN.js?v=dd918c83:11984
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=dd918c83:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=dd918c83:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=dd918c83:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=dd918c83:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=dd918c83:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=dd918c83:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=dd918c83:19447
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=dd918c83:18868
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=dd918c83:9119
+commitRootImpl @ chunk-RPCDYKBN.js?v=dd918c83:19432
+commitRoot @ chunk-RPCDYKBN.js?v=dd918c83:19277
+finishConcurrentRender @ chunk-RPCDYKBN.js?v=dd918c83:18805
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=dd918c83:18718
+workLoop @ chunk-RPCDYKBN.js?v=dd918c83:197
+flushWork @ chunk-RPCDYKBN.js?v=dd918c83:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=dd918c83:384Understand this error
+frame_ant.js:2 
+            
+            
+           GET https://ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev/api/me 401 (Unauthorized)
+window.fetch @ frame_ant.js:2
+window.fetch @ Network.js:219
+getCurrentUser @ auth.ts:28
+loadUser @ auth-context.tsx:43
+(anonymous) @ auth-context.tsx:56
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=dd918c83:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=dd918c83:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=dd918c83:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=dd918c83:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=dd918c83:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=dd918c83:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=dd918c83:19447
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=dd918c83:18868
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=dd918c83:9119
+commitRootImpl @ chunk-RPCDYKBN.js?v=dd918c83:19432
+commitRoot @ chunk-RPCDYKBN.js?v=dd918c83:19277
+finishConcurrentRender @ chunk-RPCDYKBN.js?v=dd918c83:18805
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=dd918c83:18718
+workLoop @ chunk-RPCDYKBN.js?v=dd918c83:197
+flushWork @ chunk-RPCDYKBN.js?v=dd918c83:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=dd918c83:384Understand this error
+Console.js:61 getCurrentUser failed - response not ok
+Console.js:61 getCurrentUser successful: null
+Console.js:61 Auth context setting user: null
+Console.js:61 Auth: Finally block - setting loading to false
+Console.js:61 InsightsNew - user: false user ID: undefined loading: false
+Console.js:61 InsightsNew - moments query: {momentsLength: 0, momentsLoading: false, momentsError: null, userEnabled: false, loading: false}
+Console.js:61 MomentModal render - momentModalOpen: false activityType: moment
+frame_ant.js:2 
+            
+            
+           GET https://ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev/api/connections 401 (Unauthorized)
+window.fetch @ frame_ant.js:2
+window.fetch @ Network.js:219
+(anonymous) @ queryClient.ts:44
+fetchFn @ @tanstack_react-query.js?v=dd918c83:840
+run @ @tanstack_react-query.js?v=dd918c83:494
+start @ @tanstack_react-query.js?v=dd918c83:536
+fetch @ @tanstack_react-query.js?v=dd918c83:926
+executeFetch_fn @ @tanstack_react-query.js?v=dd918c83:2211
+onSubscribe @ @tanstack_react-query.js?v=dd918c83:1898
+subscribe @ @tanstack_react-query.js?v=dd918c83:24
+(anonymous) @ @tanstack_react-query.js?v=dd918c83:3022
+subscribeToStore @ chunk-RPCDYKBN.js?v=dd918c83:11984
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=dd918c83:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=dd918c83:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=dd918c83:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=dd918c83:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=dd918c83:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=dd918c83:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=dd918c83:19447
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=dd918c83:18868
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=dd918c83:9119
+commitRootImpl @ chunk-RPCDYKBN.js?v=dd918c83:19432
+commitRoot @ chunk-RPCDYKBN.js?v=dd918c83:19277
+finishConcurrentRender @ chunk-RPCDYKBN.js?v=dd918c83:18805
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=dd918c83:18718
+workLoop @ chunk-RPCDYKBN.js?v=dd918c83:197
+flushWork @ chunk-RPCDYKBN.js?v=dd918c83:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=dd918c83:384Understand this error
+Console.js:61 HTTP Error: {url: 'https://ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev/api/connections', status: 401, statusText: 'Unauthorized', responseText: '{"message":"Authentication required"}', headers: {…}}
+Mt.forEach.n.<computed> @ Console.js:61
+throwIfResNotOk @ queryClient.ts:11
+await in throwIfResNotOk
+(anonymous) @ queryClient.ts:52
+await in (anonymous)
+fetchFn @ @tanstack_react-query.js?v=dd918c83:840
+run @ @tanstack_react-query.js?v=dd918c83:494
+start @ @tanstack_react-query.js?v=dd918c83:536
+fetch @ @tanstack_react-query.js?v=dd918c83:926
+executeFetch_fn @ @tanstack_react-query.js?v=dd918c83:2211
+onSubscribe @ @tanstack_react-query.js?v=dd918c83:1898
+subscribe @ @tanstack_react-query.js?v=dd918c83:24
+(anonymous) @ @tanstack_react-query.js?v=dd918c83:3022
+subscribeToStore @ chunk-RPCDYKBN.js?v=dd918c83:11984
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=dd918c83:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=dd918c83:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=dd918c83:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=dd918c83:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=dd918c83:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=dd918c83:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=dd918c83:19447
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=dd918c83:18868
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=dd918c83:9119
+commitRootImpl @ chunk-RPCDYKBN.js?v=dd918c83:19432
+commitRoot @ chunk-RPCDYKBN.js?v=dd918c83:19277
+finishConcurrentRender @ chunk-RPCDYKBN.js?v=dd918c83:18805
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=dd918c83:18718
+workLoop @ chunk-RPCDYKBN.js?v=dd918c83:197
+flushWork @ chunk-RPCDYKBN.js?v=dd918c83:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=dd918c83:384Understand this error
+Console.js:61 Focus Context Debug: {savedId: '6', connectionsLength: 0, connections: Array(0)}
+Console.js:61 Focus Context Debug: {savedId: '6', connectionsLength: 0, connections: Array(0)}
+frame_ant.js:2 
+            
+            
+           GET https://ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev/api/me 401 (Unauthorized)
+window.fetch @ frame_ant.js:2
+window.fetch @ Network.js:219
+getCurrentUser @ auth.ts:28
+loadUser @ auth-context.tsx:43
+(anonymous) @ auth-context.tsx:56
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=dd918c83:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=dd918c83:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=dd918c83:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=dd918c83:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=dd918c83:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=dd918c83:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=dd918c83:19447
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=dd918c83:18868
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=dd918c83:9119
+commitRootImpl @ chunk-RPCDYKBN.js?v=dd918c83:19432
+commitRoot @ chunk-RPCDYKBN.js?v=dd918c83:19277
+finishConcurrentRender @ chunk-RPCDYKBN.js?v=dd918c83:18805
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=dd918c83:18718
+workLoop @ chunk-RPCDYKBN.js?v=dd918c83:197
+flushWork @ chunk-RPCDYKBN.js?v=dd918c83:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=dd918c83:384Understand this error
+Console.js:61 getCurrentUser failed - response not ok
+Console.js:61 getCurrentUser successful: null
+Console.js:61 Auth context setting user: null
+Console.js:61 Auth: Finally block - setting loading to false
+frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.
+t @ frame_ant.js:2
+s @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+u @ frame_ant.js:2
+window.fetch @ frame_ant.js:2
+(anonymous) @ _app-8098e65f4ebc38dd.js:37
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+e @ _app-8098e65f4ebc38dd.js:9
+t.subscribe @ _app-8098e65f4ebc38dd.js:9
+e.consumeQueue @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+r @ _app-8098e65f4ebc38dd.js:37
+setTimeout
+(anonymous) @ _app-8098e65f4ebc38dd.js:37
+e.scheduleQueueConsumption @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+e @ _app-8098e65f4ebc38dd.js:9
+t.subscribe @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+e @ _app-8098e65f4ebc38dd.js:9
+t.subscribe @ _app-8098e65f4ebc38dd.js:9
+e.try @ _app-8098e65f4ebc38dd.js:9
+e.start @ _app-8098e65f4ebc38dd.js:9
+t.request @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+e.execute @ _app-8098e65f4ebc38dd.js:9
+e.getObservableFromLink @ _app-8098e65f4ebc38dd.js:6
+e.getResultsFromLink @ _app-8098e65f4ebc38dd.js:6
+b @ _app-8098e65f4ebc38dd.js:6
+e.fetchQueryByPolicy @ _app-8098e65f4ebc38dd.js:6
+b @ _app-8098e65f4ebc38dd.js:6
+e.fetchConcastWithInfo @ _app-8098e65f4ebc38dd.js:6
+t.fetch @ _app-8098e65f4ebc38dd.js:9
+t.reobserveAsConcast @ _app-8098e65f4ebc38dd.js:9
+e.executeQuery @ _app-8098e65f4ebc38dd.js:40
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ 9425-d757701afa7ebfe8.js:1
+(anonymous) @ _app-8098e65f4ebc38dd.js:40
+t.trigger @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ main-e228babc2c289128.js:1
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+Promise.then
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+Promise.then
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+Promise.then
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+Promise.then
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+Promise.then
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+Promise.then
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+Promise.then
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+Promise.then
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+Promise.then
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+Promise.then
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+Promise.then
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+Promise.then
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+Promise.then
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+Promise.then
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+Promise.then
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+Promise.then
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+Promise.then
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+Promise.then
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+Promise.then
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+Promise.then
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1Understand this error
+frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.
+t @ frame_ant.js:2
+s @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+u @ frame_ant.js:2
+window.fetch @ frame_ant.js:2
+(anonymous) @ _app-8098e65f4ebc38dd.js:37
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+e @ _app-8098e65f4ebc38dd.js:9
+t.subscribe @ _app-8098e65f4ebc38dd.js:9
+e.consumeQueue @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+r @ _app-8098e65f4ebc38dd.js:37
+setTimeout
+(anonymous) @ _app-8098e65f4ebc38dd.js:37
+e.scheduleQueueConsumption @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+e @ _app-8098e65f4ebc38dd.js:9
+t.subscribe @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+e @ _app-8098e65f4ebc38dd.js:9
+t.subscribe @ _app-8098e65f4ebc38dd.js:9
+e.try @ _app-8098e65f4ebc38dd.js:9
+e.start @ _app-8098e65f4ebc38dd.js:9
+t.request @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+e.execute @ _app-8098e65f4ebc38dd.js:9
+e.getObservableFromLink @ _app-8098e65f4ebc38dd.js:6
+e.getResultsFromLink @ _app-8098e65f4ebc38dd.js:6
+b @ _app-8098e65f4ebc38dd.js:6
+e.fetchQueryByPolicy @ _app-8098e65f4ebc38dd.js:6
+b @ _app-8098e65f4ebc38dd.js:6
+e.fetchConcastWithInfo @ _app-8098e65f4ebc38dd.js:6
+t.fetch @ _app-8098e65f4ebc38dd.js:9
+t.reobserveAsConcast @ _app-8098e65f4ebc38dd.js:9
+e.executeQuery @ _app-8098e65f4ebc38dd.js:40
+(anonymous) @ _app-8098e65f4ebc38dd.js:9
+(anonymous) @ _app-8098e65f4ebc38dd.js:39
+(anonymous) @ main-e228babc2c289128.js:1
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+(anonymous) @ main-e228babc2c289128.js:1
+(anonymous) @ main-e228babc2c289128.js:1
+(anonymous) @ _app-8098e65f4ebc38dd.js:39
+(anonymous) @ _app-8098e65f4ebc38dd.js:39
+(anonymous) @ main-e228babc2c289128.js:1
+n @ main-e228babc2c289128.js:1
+u @ main-e228babc2c289128.js:1
+(anonymous) @ main-e228babc2c289128.js:1
+(anonymous) @ main-e228babc2c289128.js:1
+r @ _app-8098e65f4ebc38dd.js:37Understand this error
+Console.js:61 Auth context: Login successful, user set: {id: 8, username: 'testuser', email: 'test@example.com', displayName: 'Test User', profileImage: null, …}
+Console.js:61 InsightsNew - user: false user ID: undefined loading: false
+Console.js:61 InsightsNew - moments query: {momentsLength: 0, momentsLoading: false, momentsError: null, userEnabled: false, loading: false}
+Console.js:61 MomentModal render - momentModalOpen: false activityType: moment
+Console.js:61 InsightsNew - user: true user ID: 8 loading: false
+Console.js:61 InsightsNew - moments query: {momentsLength: 0, momentsLoading: true, momentsError: null, userEnabled: true, loading: false}
+Console.js:61 Prevented JSON parse error from browser extension
+Mt.forEach.n.<computed> @ Console.js:61
+JSON.parse @ main.tsx:17
+(anonymous) @ frame_ant.js:2
+p @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+u @ frame_ant.js:2
+window.fetch @ frame_ant.js:2
+window.fetch @ Network.js:219
+queryFn @ header.tsx:15
+fetchFn @ @tanstack_react-query.js?v=dd918c83:840
+run @ @tanstack_react-query.js?v=dd918c83:494
+start @ @tanstack_react-query.js?v=dd918c83:536
+fetch @ @tanstack_react-query.js?v=dd918c83:926
+executeFetch_fn @ @tanstack_react-query.js?v=dd918c83:2211
+onSubscribe @ @tanstack_react-query.js?v=dd918c83:1898
+subscribe @ @tanstack_react-query.js?v=dd918c83:24
+(anonymous) @ @tanstack_react-query.js?v=dd918c83:3022
+subscribeToStore @ chunk-RPCDYKBN.js?v=dd918c83:11984
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=dd918c83:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=dd918c83:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=dd918c83:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=dd918c83:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=dd918c83:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=dd918c83:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=dd918c83:19447
+commitRootImpl @ chunk-RPCDYKBN.js?v=dd918c83:19416
+commitRoot @ chunk-RPCDYKBN.js?v=dd918c83:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=dd918c83:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=dd918c83:9119
+commitRootImpl @ chunk-RPCDYKBN.js?v=dd918c83:19432
+commitRoot @ chunk-RPCDYKBN.js?v=dd918c83:19277
+finishConcurrentRender @ chunk-RPCDYKBN.js?v=dd918c83:18805
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=dd918c83:18718
+workLoop @ chunk-RPCDYKBN.js?v=dd918c83:197
+flushWork @ chunk-RPCDYKBN.js?v=dd918c83:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=dd918c83:384Understand this warning
+Console.js:61 InsightsNew - user: true user ID: 8 loading: false
+Console.js:61 InsightsNew - moments query: {momentsLength: 0, momentsLoading: true, momentsError: null, userEnabled: true, loading: false}
+Console.js:61 MomentModal render - momentModalOpen: false activityType: moment
+Console.js:61 Focus Context Debug: {savedId: '6', connectionsLength: 4, connections: Array(4)}
+Console.js:61 Found saved connection: {id: 6, userId: 8, name: 'Amalina', profileImage: 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD…NBFVYa55AsNvqfMiHlz7DuXzATnACjbxt4OfvzgRwvR3Kj//Z', relationshipStage: 'Dating', …}
+Console.js:61 InsightsNew - user: true user ID: 8 loading: false
+Console.js:61 InsightsNew - moments query: {momentsLength: 0, momentsLoading: true, momentsError: null, userEnabled: true, loading: false}
+Console.js:61 InsightsNew - user: true user ID: 8 loading: false
+Console.js:61 InsightsNew - moments query: {momentsLength: 56, momentsLoading: false, momentsError: null, userEnabled: true, loading: false}
+Console.js:61 MomentModal render - momentModalOpen: false activityType: moment
