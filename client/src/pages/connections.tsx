@@ -56,6 +56,18 @@ export default function Connections() {
   };
 
   const prioritizedConnections = prioritizeConnections(connections);
+  
+  // Debug logging
+  console.log('Connections sorting debug:', {
+    originalCount: connections.length,
+    prioritizedCount: prioritizedConnections.length,
+    prioritizedConnections: prioritizedConnections.map(c => ({ 
+      id: c.id, 
+      name: c.name, 
+      stage: c.relationshipStage, 
+      priority: (c as any).priority 
+    }))
+  });
 
   // Filter connections based on search and stage filter
   const filteredConnections = prioritizedConnections
