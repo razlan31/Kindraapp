@@ -1,4 +1,4 @@
-import { eq, desc } from 'drizzle-orm';
+import { eq, desc, and } from 'drizzle-orm';
 import { db } from './db';
 import {
   users, connections, moments, badges, userBadges, menstrualCycles, milestones, plans,
@@ -131,7 +131,12 @@ export class PgStorage implements IStorage {
 
   async getConnectionsByUserId(userId: number): Promise<Connection[]> {
     await this.initialize();
-    return await db.select().from(connections).where(eq(connections.userId, userId));
+    return await db.select().from(connections).where(
+      and(
+        eq(connections.userId, userId),
+        eq(connections.isArchived, false)
+      )
+    );
   }
 
   async createConnection(connection: InsertConnection): Promise<Connection> {
@@ -148,6 +153,13 @@ export class PgStorage implements IStorage {
 
   async deleteConnection(id: number): Promise<boolean> {
     await this.initialize();
+    
+    // Delete all associated data in order (foreign key constraints)
+    await db.delete(moments).where(eq(moments.connectionId, id));
+    await db.delete(milestones).where(eq(milestones.connectionId, id));
+    await db.delete(plans).where(eq(plans.connectionId, id));
+    
+    // Finally delete the connection
     const result = await db.delete(connections).where(eq(connections.id, id));
     return result.rowCount !== null && result.rowCount > 0;
   }
