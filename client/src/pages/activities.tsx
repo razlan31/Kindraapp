@@ -1145,12 +1145,12 @@ export default function Activities() {
       {/* Connection Modal */}
       {connectionModalOpen && (
         <div 
-          className="fixed inset-0 z-50 bg-black/50 flex justify-center"
-          style={{ alignItems: 'center', paddingTop: '60px', paddingBottom: '140px', paddingLeft: '16px', paddingRight: '16px' }}
+          className="fixed inset-0 z-[60] bg-black/50"
           onClick={() => setConnectionModalOpen(false)}
         >
           <div 
-            className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg w-full max-w-md max-h-[70vh] overflow-y-auto"
+            className="fixed left-1/2 top-1/2 z-[61] -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-neutral-800 rounded-lg shadow-lg w-full max-w-md max-h-[60vh] overflow-y-auto mx-4"
+            style={{ marginTop: '-40px' }}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between p-4 border-b">
