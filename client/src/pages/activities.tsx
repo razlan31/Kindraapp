@@ -1145,28 +1145,28 @@ export default function Activities() {
       {/* Connection Modal */}
       {connectionModalOpen && (
         <div 
-          className="fixed inset-0 z-[60] bg-black/50 flex items-start justify-center pt-8"
+          className="fixed inset-0 z-[60] bg-black/50"
           onClick={() => setConnectionModalOpen(false)}
         >
           <div 
-            className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg w-full max-w-md mx-4 max-h-[calc(100vh-128px)] overflow-y-auto"
+            className="fixed top-8 left-4 right-4 bottom-20 bg-white dark:bg-neutral-800 rounded-lg shadow-lg max-w-md mx-auto overflow-hidden flex flex-col"
             onClick={(e) => e.stopPropagation()}
-            style={{ marginBottom: '80px' }}
           >
-            <div className="flex items-center justify-between p-4 border-b sticky top-0 bg-white dark:bg-neutral-800 z-10">
+            <div className="flex items-center justify-between p-4 border-b flex-shrink-0">
               <h2 className="font-heading font-semibold text-lg">Add New Connection</h2>
               <Button variant="ghost" size="icon" onClick={() => setConnectionModalOpen(false)}>
                 <X className="h-4 w-4" />
               </Button>
             </div>
-          <form 
-            onSubmit={(e) => {
-              e.preventDefault();
-              const formData = new FormData(e.currentTarget);
-              createConnectionMutation.mutate(formData);
-            }}
-            className="space-y-4"
-          >
+            <div className="flex-1 overflow-y-auto p-4">
+              <form 
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  const formData = new FormData(e.currentTarget);
+                  createConnectionMutation.mutate(formData);
+                }}
+                className="space-y-4 h-full"
+              >
             <div className="grid grid-cols-1 gap-4">
               <div className="flex flex-col items-center space-y-3">
                 <div className="relative">
@@ -1366,15 +1366,16 @@ export default function Activities() {
               </div>
             </div>
 
-            <div className="flex gap-2 pt-4">
-              <Button type="button" variant="outline" onClick={closeConnectionModal} className="flex-1">
-                Cancel
-              </Button>
-              <Button type="submit" disabled={createConnectionMutation.isPending} className="flex-1">
-                {createConnectionMutation.isPending ? "Adding..." : "Add Connection"}
-              </Button>
+                <div className="flex justify-between gap-2 pt-4 border-t mt-4">
+                  <Button type="button" variant="outline" onClick={() => setConnectionModalOpen(false)} className="flex-1">
+                    Cancel
+                  </Button>
+                  <Button type="submit" disabled={createConnectionMutation.isPending} className="flex-1">
+                    {createConnectionMutation.isPending ? "Adding..." : "Add Connection"}
+                  </Button>
+                </div>
+              </form>
             </div>
-          </form>
           </div>
         </div>
       )}
