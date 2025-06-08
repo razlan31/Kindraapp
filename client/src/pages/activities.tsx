@@ -364,7 +364,7 @@ export default function Activities() {
       } else if (timelineFilter === 'moments') {
         // Show regular moments (exclude conflicts, intimacy, plans, and milestones)
         const isConflict = tags.includes('Conflict') || moment.emoji === '⚡';
-        const isIntimacy = moment.isIntimate === true || tags.includes('Sex') || moment.emoji === '💕';
+        const isIntimacy = moment.isIntimate === true || tags.includes('Sex');
         const isPlan = tags.includes('Plan');
         const isMilestone = tags.includes('Milestone') || (moment as any).isConnectionMilestone;
         matchesTab = !isConflict && !isIntimacy && !isPlan && !isMilestone;
@@ -373,7 +373,7 @@ export default function Activities() {
         matchesTab = tags.includes('Conflict') || moment.emoji === '⚡';
       } else if (timelineFilter === 'sex') {
         // Show sex entries
-        matchesTab = moment.isIntimate === true || tags.includes('Sex') || moment.emoji === '💕';
+        matchesTab = moment.isIntimate === true || tags.includes('Sex');
       } else if (timelineFilter === 'plans') {
         // Show plan entries
         matchesTab = tags.includes('Plan');
@@ -384,7 +384,7 @@ export default function Activities() {
     } else if (activeTab === 'moments') {
       // Show regular moments (positive, negative, neutral) - exclude conflicts, intimacy, and plans
       const isConflict = tags.includes('Conflict') || moment.emoji === '⚡';
-      const isIntimacy = moment.isIntimate === true || tags.includes('Intimacy') || moment.emoji === '💕';
+      const isIntimacy = moment.isIntimate === true || tags.includes('Intimacy');
       const isPlan = tags.includes('Plan');
       matchesTab = !isConflict && !isIntimacy && !isPlan;
     } else if (activeTab === 'conflicts') {
@@ -392,7 +392,7 @@ export default function Activities() {
       matchesTab = tags.includes('Conflict') || moment.emoji === '⚡';
     } else if (activeTab === 'sex') {
       // Show sex entries
-      matchesTab = moment.isIntimate === true || tags.includes('Sex') || moment.emoji === '💕';
+      matchesTab = moment.isIntimate === true || tags.includes('Sex');
     }
     
     const matchesSearch = moment.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
