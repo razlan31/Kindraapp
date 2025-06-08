@@ -81,7 +81,7 @@ export function MomentModal() {
   const { mutate: createMoment, isPending } = useMutation({
     mutationFn: async (data: z.infer<typeof formSchema>) => {
       console.log("Creating moment with data:", data);
-      const response = await apiRequest("POST", "/api/moments", data);
+      const response = await apiRequest("/api/moments", "POST", data);
       return response.json();
     },
     onSuccess: () => {
@@ -118,7 +118,7 @@ export function MomentModal() {
   // Milestone creation mutation
   const { mutate: createMilestone } = useMutation({
     mutationFn: async (milestoneData: any) => {
-      return await apiRequest("POST", "/api/milestones", milestoneData);
+      return await apiRequest("/api/milestones", "POST", milestoneData);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/milestones"] });
