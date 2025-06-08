@@ -18,7 +18,7 @@ import { useModal } from "@/contexts/modal-context";
 import { Input } from "@/components/ui/input";
 import { Search, Plus, Calendar, ChevronDown, Activity, Users, Camera, X, UserPlus, Heart } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
@@ -1143,11 +1143,22 @@ export default function Activities() {
       />
 
       {/* Connection Modal */}
-      <Dialog open={connectionModalOpen} onOpenChange={setConnectionModalOpen}>
-        <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>Add New Connection</DialogTitle>
-          </DialogHeader>
+      {connectionModalOpen && (
+        <div 
+          className="fixed inset-0 z-[60] bg-black/50 flex items-start justify-center pt-8"
+          onClick={() => setConnectionModalOpen(false)}
+        >
+          <div 
+            className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg w-full max-w-md mx-4 max-h-[calc(100vh-128px)] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+            style={{ marginBottom: '80px' }}
+          >
+            <div className="flex items-center justify-between p-4 border-b sticky top-0 bg-white dark:bg-neutral-800 z-10">
+              <h2 className="font-heading font-semibold text-lg">Add New Connection</h2>
+              <Button variant="ghost" size="icon" onClick={() => setConnectionModalOpen(false)}>
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
           <form 
             onSubmit={(e) => {
               e.preventDefault();
@@ -1364,7 +1375,6 @@ export default function Activities() {
               </Button>
             </div>
           </form>
-            </div>
           </div>
         </div>
       )}
