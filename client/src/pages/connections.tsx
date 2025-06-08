@@ -31,6 +31,13 @@ export default function Connections() {
     queryKey: ['/api/moments'],
   });
 
+  // Debug connections data
+  console.log('Raw connections data:', {
+    connectionsCount: connections.length,
+    isLoading,
+    connections: connections.map(c => ({ id: c.id, name: c.name, stage: c.relationshipStage }))
+  });
+
   // Smart prioritization algorithm
   const prioritizeConnections = (connections: Connection[]) => {
     return connections
