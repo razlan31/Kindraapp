@@ -45,7 +45,7 @@ export default function Connections() {
         const activityCount = connectionMoments.length;
         
         // Priority score: recent activity + relationship importance + total activity
-        const stageWeights = { 'Married': 5, 'Dating': 4, 'Best Friend': 4, 'Talking': 3, 'Ex': 1 };
+        const stageWeights = { 'Self': 10, 'Married': 5, 'Dating': 4, 'Best Friend': 4, 'Talking': 3, 'Ex': 1 };
         const stageWeight = stageWeights[connection.relationshipStage as keyof typeof stageWeights] || 2;
         
         const priority = (stageWeight * 10) + (activityCount * 2) - Math.min(daysSinceActivity, 30);
