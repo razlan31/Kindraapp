@@ -29,6 +29,8 @@ export function AIInsights({ connections, moments, userData }: AIInsightsProps) 
   let insights: InsightData[] = [];
   try {
     insights = generateDataInsights(connections, moments, userData);
+    console.log("Generated insights count:", insights.length);
+    console.log("Generated insights preview:", insights.map(i => ({ title: i.title, type: i.type })));
   } catch (error) {
     console.error("Error generating insights:", error);
     insights = [{
@@ -158,8 +160,17 @@ interface InsightData {
 
 function generateDataInsights(connections: Connection[], moments: Moment[], userData: any): InsightData[] {
   const insights: InsightData[] = [];
+  
+  console.log("Starting insights generation:", { 
+    momentsCount: moments.length, 
+    connectionsCount: connections.length,
+    userData: userData
+  });
 
-  if (moments.length < 2) return insights;
+  if (moments.length < 2) {
+    console.log("Not enough moments for insights");
+    return insights;
+  }
 
   // Enhanced emotional pattern analysis with more emojis
   const emotionCounts = moments.reduce((acc: Record<string, number>, moment) => {
@@ -453,23 +464,52 @@ function generateDataInsights(connections: Connection[], moments: Moment[], user
     });
   }
 
-  // Additional insights for comprehensive analysis
+  // Baseline insights that should always generate with sufficient data
   
-  // Connection type diversity analysis
+  // Basic relationship activity insight
+  if (totalMoments >= 5) {
+    const recentMoments = moments.slice(-7); // Last 7 moments
+    const recentPositive = recentMoments.filter(m => positiveEmojis.includes(m.emoji)).length;
+    const positivePercent = Math.round((recentPositive / recentMoments.length) * 100);
+    
+    insights.push({
+      title: "Recent Activity Pattern",
+      description: `${positivePercent}% of your last ${recentMoments.length} moments were positive. You've logged ${totalMoments} total relationship moments, showing consistent tracking habits.`,
+      type: positivePercent >= 60 ? 'positive' : 'neutral',
+      confidence: 85,
+      icon: <TrendingUp className="h-4 w-4 text-blue-600" />,
+      dataPoints: [`${recentPositive}/${recentMoments.length} recent positive`, `${totalMoments} total moments`]
+    });
+  }
+
+  // Connection diversity analysis
   if (connections.length > 1) {
     const stages = connections.map(c => c.relationshipStage);
     const uniqueStages = Array.from(new Set(stages));
     
-    if (uniqueStages.length >= 3) {
-      insights.push({
-        title: "Diverse Relationship Portfolio",
-        description: `You maintain ${uniqueStages.length} different relationship types: ${uniqueStages.join(', ')}. This diversity provides valuable learning opportunities and emotional growth across various connection styles.`,
-        type: 'positive',
-        confidence: 82,
-        icon: <Users className="h-4 w-4 text-purple-600" />,
-        dataPoints: [`${uniqueStages.length} relationship types`, `${connections.length} total connections`]
-      });
-    }
+    insights.push({
+      title: "Multiple Connections",
+      description: `You're actively tracking ${connections.length} relationships across ${uniqueStages.length} different stages: ${uniqueStages.join(', ')}. This provides valuable perspective on different relationship dynamics.`,
+      type: 'positive',
+      confidence: 82,
+      icon: <Users className="h-4 w-4 text-purple-600" />,
+      dataPoints: [`${connections.length} active connections`, `${uniqueStages.length} relationship types`]
+    });
+  }
+
+  // Emotional balance insight
+  if (totalMoments >= 10) {
+    const balanceScore = Math.round((positiveRatio - (negativeCount / totalMoments)) * 100);
+    const balanceType = balanceScore > 30 ? 'positive' : balanceScore > 0 ? 'neutral' : 'warning';
+    
+    insights.push({
+      title: "Emotional Balance",
+      description: `Your emotional balance score is ${balanceScore}%. With ${positiveCount} positive moments vs ${negativeCount} challenging ones, you're ${balanceScore > 0 ? 'maintaining healthy' : 'working through some'} relationship dynamics.`,
+      type: balanceType,
+      confidence: 78,
+      icon: <Heart className="h-4 w-4 text-pink-600" />,
+      dataPoints: [`${positiveCount} positive moments`, `${negativeCount} challenges`]
+    });
   }
 
   // Activity pattern analysis
