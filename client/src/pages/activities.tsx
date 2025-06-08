@@ -41,12 +41,12 @@ export default function Activities() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedConnection, setSelectedConnection] = useState<number | null>(null);
   const [selectedConnections, setSelectedConnections] = useState<number[]>([]);
-  const [activeTab, setActiveTab] = useState<'moments' | 'conflicts' | 'sex' | 'plans' | 'timeline'>(() => {
+  const [activeTab, setActiveTab] = useState<'moments' | 'conflicts' | 'intimacy' | 'plans' | 'timeline'>(() => {
     // Preserve tab selection across page reloads
     const savedTab = localStorage.getItem('activitiesTab');
-    // Convert old 'intimacy' to 'sex'
-    if (savedTab === 'intimacy') {
-      return 'sex';
+    // Convert old 'sex' to 'intimacy'
+    if (savedTab === 'sex') {
+      return 'intimacy';
     }
     return (savedTab as any) || 'timeline';
   });
@@ -55,7 +55,7 @@ export default function Activities() {
   useEffect(() => {
     localStorage.setItem('activitiesTab', activeTab);
   }, [activeTab]);
-  const [timelineFilter, setTimelineFilter] = useState<'all' | 'moments' | 'conflicts' | 'sex' | 'plans' | 'milestones'>('all');
+  const [timelineFilter, setTimelineFilter] = useState<'all' | 'moments' | 'conflicts' | 'intimacy' | 'plans' | 'milestones'>('all');
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   // Connection modal state
@@ -371,8 +371,8 @@ export default function Activities() {
       } else if (timelineFilter === 'conflicts') {
         // Show conflicts
         matchesTab = tags.includes('Conflict') || moment.emoji === '⚡';
-      } else if (timelineFilter === 'sex') {
-        // Show sex entries
+      } else if (timelineFilter === 'intimacy') {
+        // Show intimacy entries
         matchesTab = moment.isIntimate === true || tags.includes('Sex');
       } else if (timelineFilter === 'plans') {
         // Show plan entries
@@ -390,8 +390,8 @@ export default function Activities() {
     } else if (activeTab === 'conflicts') {
       // Show conflicts - only show entries that are actually conflicts
       matchesTab = tags.includes('Conflict') || moment.emoji === '⚡';
-    } else if (activeTab === 'sex') {
-      // Show sex entries
+    } else if (activeTab === 'intimacy') {
+      // Show intimacy entries
       matchesTab = moment.isIntimate === true || tags.includes('Sex');
     }
     
@@ -469,14 +469,14 @@ export default function Activities() {
               Conflicts
             </button>
             <button 
-              onClick={() => setActiveTab('sex')}
+              onClick={() => setActiveTab('intimacy')}
               className={`py-2 px-2 rounded-md text-xs font-medium transition-colors ${
-                activeTab === 'sex' 
+                activeTab === 'intimacy' 
                   ? 'bg-background text-foreground shadow-sm' 
                   : 'text-muted-foreground hover:text-foreground'
               }`}
             >
-              Sex
+              Intimacy
             </button>
             <button 
               onClick={() => setActiveTab('plans')}
