@@ -1144,7 +1144,7 @@ export default function Activities() {
 
       {/* Connection Modal */}
       <Dialog open={connectionModalOpen} onOpenChange={setConnectionModalOpen}>
-        <DialogContent className="sm:max-w-md max-h-[75vh] overflow-y-auto" style={{ marginBottom: '80px' }}>
+        <DialogContent className="sm:max-w-md max-h-[70vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Add New Connection</DialogTitle>
           </DialogHeader>
