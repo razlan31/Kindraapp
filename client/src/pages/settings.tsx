@@ -228,11 +228,9 @@ export default function Settings() {
       pushEnabled: true,
       globalFrequency: "daily" as "daily" | "twice-daily" | "3-times-daily" | "weekly" | "every-2-weeks" | "monthly",
       momentReminders: true,
-      momentReminderTime: "9",
       insightAlerts: true,
       quoteOfTheDay: true,
       cycleReminders: true,
-      cycleReminderTime: "8",
       soundEnabled: true,
     },
     privacy: {
@@ -427,7 +425,7 @@ export default function Settings() {
                   <div className="space-y-3">
                     <div>
                       <Label className="text-sm font-medium">Notification Frequency</Label>
-                      <p className="text-sm text-neutral-600 dark:text-neutral-400">How often you want to receive notifications (applies to insights and quotes)</p>
+                      <p className="text-sm text-neutral-600 dark:text-neutral-400">How often you want to receive notifications (randomly distributed throughout the day)</p>
                     </div>
                     <Select 
                       value={settings.notifications.globalFrequency} 
@@ -451,36 +449,25 @@ export default function Settings() {
 
                   {/* Notification types - toggles only */}
                   <div className="space-y-4">
-                    <Label className="text-sm font-medium">Notification Types</Label>
+                    <div>
+                      <Label className="text-sm font-medium">Notification Types</Label>
+                      <p className="text-xs text-neutral-500 dark:text-neutral-500 mt-1">
+                        Notifications will be randomly distributed throughout the day based on your frequency setting. 
+                        Only scheduled plans and events will notify at specific times.
+                      </p>
+                    </div>
                     
                     {/* Moment Reminders */}
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <Label htmlFor="momentReminders">Moment Reminders</Label>
-                          <p className="text-sm text-neutral-600 dark:text-neutral-400">Daily prompts to log moments</p>
-                        </div>
-                        <Switch
-                          id="momentReminders"
-                          checked={settings.notifications.momentReminders}
-                          onCheckedChange={(checked) => updateNotificationSetting('momentReminders', checked)}
-                        />
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <Label htmlFor="momentReminders">Moment Reminders</Label>
+                        <p className="text-sm text-neutral-600 dark:text-neutral-400">Prompts to log relationship moments</p>
                       </div>
-                      
-                      {settings.notifications.momentReminders && (
-                        <div className="ml-4 space-y-1">
-                          <Label className="text-xs text-neutral-600 dark:text-neutral-400">Reminder Time (Hour 0-23)</Label>
-                          <Input
-                            type="number"
-                            min="0"
-                            max="23"
-                            value={settings.notifications.momentReminderTime}
-                            onChange={(e) => updateNotificationSetting('momentReminderTime', e.target.value)}
-                            className="w-24"
-                            placeholder="9"
-                          />
-                        </div>
-                      )}
+                      <Switch
+                        id="momentReminders"
+                        checked={settings.notifications.momentReminders}
+                        onCheckedChange={(checked) => updateNotificationSetting('momentReminders', checked)}
+                      />
                     </div>
 
                     {/* Insight Alerts */}
@@ -510,33 +497,16 @@ export default function Settings() {
                     </div>
 
                     {/* Cycle Reminders */}
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <Label htmlFor="cycleReminders">Cycle Reminders</Label>
-                          <p className="text-sm text-neutral-600 dark:text-neutral-400">Menstrual cycle tracking reminders</p>
-                        </div>
-                        <Switch
-                          id="cycleReminders"
-                          checked={settings.notifications.cycleReminders}
-                          onCheckedChange={(checked) => updateNotificationSetting('cycleReminders', checked)}
-                        />
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <Label htmlFor="cycleReminders">Cycle Reminders</Label>
+                        <p className="text-sm text-neutral-600 dark:text-neutral-400">Menstrual cycle tracking reminders</p>
                       </div>
-                      
-                      {settings.notifications.cycleReminders && (
-                        <div className="ml-4 space-y-1">
-                          <Label className="text-xs text-neutral-600 dark:text-neutral-400">Reminder Time (Hour 0-23)</Label>
-                          <Input
-                            type="number"
-                            min="0"
-                            max="23"
-                            value={settings.notifications.cycleReminderTime}
-                            onChange={(e) => updateNotificationSetting('cycleReminderTime', e.target.value)}
-                            className="w-24"
-                            placeholder="8"
-                          />
-                        </div>
-                      )}
+                      <Switch
+                        id="cycleReminders"
+                        checked={settings.notifications.cycleReminders}
+                        onCheckedChange={(checked) => updateNotificationSetting('cycleReminders', checked)}
+                      />
                     </div>
                   </div>
 
