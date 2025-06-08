@@ -227,10 +227,14 @@ export default function MenstrualCyclePage() {
     
     // Add all connections (assuming they could have cycles)
     connections.forEach((connection, index) => {
+      const displayName = connection.relationshipStage === 'Self' 
+        ? `${connection.name} (ME)` 
+        : connection.name;
+      
       persons.push({
         id: connection.id,
-        name: connection.name,
-        isUser: false,
+        name: displayName,
+        isUser: connection.relationshipStage === 'Self',
         profileImage: connection.profileImage,
         colorIndex: index % personColors.length
       });
@@ -249,6 +253,10 @@ export default function MenstrualCyclePage() {
   const getPersonName = (connectionId: number | null) => {
     if (connectionId === null) return user?.displayName || user?.username || 'Me';
     const connection = connections.find(c => c.id === connectionId);
+    // Check if this is the user's own connection (Self type)
+    if (connection?.relationshipStage === 'Self') {
+      return `${connection.name} (ME)`;
+    }
     return connection?.name || 'Unknown';
   };
 

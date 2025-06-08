@@ -374,6 +374,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Create user connection for existing users
+  app.post("/api/me/connection", isAuthenticated, async (req, res) => {
+    try {
+      const userId = (req.session as any).userId as number;
+      const user = await storage.getUser(userId);
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      await ensureUserConnection(user);
+      res.status(200).json({ message: "User connection created successfully" });
+    } catch (error) {
+      console.error("Error creating user connection:", error);
+      res.status(500).json({ message: "Failed to create user connection" });
+    }
+  });
+
   // Connections Routes
   app.get("/api/connections", isAuthenticated, async (req, res) => {
     try {
