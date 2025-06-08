@@ -16,6 +16,8 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 export default function Connections() {
   const [searchTerm, setSearchTerm] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
+  const [filterStage, setFilterStage] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<'default' | 'activity' | 'stages' | 'timeline'>('default');
   const { openMomentModal, openConnectionModal } = useModal();
   const { mainFocusConnection, setMainFocusConnection } = useRelationshipFocus();
   const { toast } = useToast();
@@ -54,6 +56,28 @@ export default function Connections() {
   };
 
   const prioritizedConnections = prioritizeConnections(connections);
+
+  // Filter connections based on search and stage filter
+  const filteredConnections = prioritizedConnections
+    .filter(connection => {
+      const matchesSearch = connection.name.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesStage = filterStage === null || connection.relationshipStage === filterStage;
+      return matchesSearch && matchesStage;
+    })
+    .sort((a, b) => {
+      // User profile (Self) always at top
+      if (a.relationshipStage === 'Self') return -1;
+      if (b.relationshipStage === 'Self') return 1;
+      
+      // Focus connection second
+      if (mainFocusConnection) {
+        if (a.id === mainFocusConnection.id) return -1;
+        if (b.id === mainFocusConnection.id) return 1;
+      }
+      
+      // Keep existing priority order for others
+      return 0;
+    });
 
   // Handle connection selection for navigation
   const handleSelectConnection = (connection: Connection) => {
