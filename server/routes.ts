@@ -98,7 +98,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       secret: process.env.SESSION_SECRET || "kindra-app-secret",
       resave: false,
       saveUninitialized: false,
-      cookie: { secure: process.env.NODE_ENV === "production", maxAge: 24 * 60 * 60 * 1000 },
+      cookie: { 
+        secure: false, // Allow cookies over HTTP in development
+        httpOnly: true,
+        maxAge: 24 * 60 * 60 * 1000,
+        sameSite: 'lax' // Better cross-origin handling
+      },
       store: new SessionStore({ checkPeriod: 86400000 }),
     })
   );

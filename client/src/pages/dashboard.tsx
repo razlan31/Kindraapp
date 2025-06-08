@@ -474,14 +474,22 @@ function MenstrualCycleTracker() {
                   <p>Error loading insights: {String(momentsError)}</p>
                 </div>
               ) : (
-                <AIInsights 
-                  connections={connections} 
-                  moments={moments} 
-                  userData={{
-                    zodiacSign: user?.zodiacSign || undefined,
-                    loveLanguage: user?.loveLanguage || undefined
-                  }}
-                />
+                <>
+                  {console.log("Dashboard: About to render AIInsights with:", {
+                    connectionsLength: connections.length,
+                    momentsLength: moments.length,
+                    momentsLoading,
+                    momentsError
+                  })}
+                  <AIInsights 
+                    connections={connections} 
+                    moments={moments} 
+                    userData={{
+                      zodiacSign: user?.zodiacSign || undefined,
+                      loveLanguage: user?.loveLanguage || undefined
+                    }}
+                  />
+                </>
               )}
             </div>
           </div>
