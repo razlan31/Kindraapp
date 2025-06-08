@@ -663,7 +663,11 @@ export default function Calendar() {
                   </div>
                 </DropdownMenuItem>
                 <div className="border-t border-border my-1" />
-                {connections.map((connection) => (
+                {[...connections].sort((a, b) => {
+                  if (a.relationshipStage === 'Self') return 1;
+                  if (b.relationshipStage === 'Self') return -1;
+                  return 0;
+                }).map((connection) => (
                   <DropdownMenuCheckboxItem
                     key={connection.id}
                     checked={selectedConnectionIds.includes(connection.id)}
