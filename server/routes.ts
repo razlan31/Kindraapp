@@ -957,12 +957,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log("🚀 ROUTES - Created moment result:", newMoment);
       console.log("🚀 ROUTES - Final createdAt:", newMoment.createdAt);
       
-      // Check if any badges should be unlocked
-      const newBadges = await checkAndAwardBadges(userId);
-      
+      // Return response immediately for better performance
       res.status(201).json({ 
         ...newMoment, 
-        newBadges 
+        newBadges: [] // Badge checking now happens asynchronously
+      });
+      
+      // Check badges asynchronously without blocking the response
+      setImmediate(async () => {
+        try {
+          await checkAndAwardBadges(userId);
+        } catch (error) {
+          console.error("Background badge checking error:", error);
+        }
       });
     } catch (error) {
       console.error("🚀 ROUTES - Error creating moment:", error);
