@@ -67,6 +67,9 @@ export function MomentCard({ moment, connection, onAddReflection, onViewDetail, 
   };
 
   const getTagColor = (tag: string) => {
+    if (tag === "Sex") {
+      return "bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-300";
+    }
     if (tag === "Green Flag" || ["Intimacy", "Affection", "Support", "Growth", "Trust", "Celebration"].includes(tag)) {
       return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300";
     }
@@ -235,8 +238,8 @@ export function MomentCard({ moment, connection, onAddReflection, onViewDetail, 
               </div>
             )}
             
-            {/* Only show tags for regular moments, not conflicts or intimacy */}
-            {getMomentType(moment) === null && moment.tags && moment.tags.length > 0 && (
+            {/* Show tags for regular moments and intimacy moments, but not conflicts */}
+            {getMomentType(moment) !== 'Conflict' && moment.tags && moment.tags.length > 0 && (
               <div className="flex flex-wrap gap-1 mb-3">
                 {moment.tags
                   .filter(tag => !['Positive', 'Negative', 'Neutral'].includes(tag))

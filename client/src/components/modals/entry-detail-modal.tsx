@@ -231,6 +231,9 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection, onUpdate
   };
 
   const getTagColor = (tag: string) => {
+    if (tag === "Sex") {
+      return "bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-300";
+    }
     if (tag === "Green Flag" || ["Intimacy", "Affection", "Support", "Growth", "Trust", "Celebration"].includes(tag)) {
       return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300";
     }
