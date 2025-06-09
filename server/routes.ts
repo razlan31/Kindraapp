@@ -318,7 +318,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const filteredData = Object.keys(updateData)
         .filter(key => allowedFields.includes(key))
         .reduce((obj, key) => {
-          obj[key] = updateData[key];
+          if (key === 'birthday' && updateData[key]) {
+            // Ensure birthday is properly formatted as Date object
+            const birthdayValue = updateData[key];
+            if (typeof birthdayValue === 'string' && birthdayValue.trim() !== '') {
+              obj[key] = new Date(birthdayValue);
+            } else if (birthdayValue instanceof Date) {
+              obj[key] = birthdayValue;
+            }
+          } else {
+            obj[key] = updateData[key];
+          }
           return obj;
         }, {} as any);
       
@@ -343,6 +353,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         // Map user fields to connection fields
         if (filteredData.displayName) connectionUpdateData.name = filteredData.displayName;
+        if (filteredData.birthday) connectionUpdateData.birthday = new Date(filteredData.birthday);
         if (filteredData.zodiacSign) connectionUpdateData.zodiacSign = filteredData.zodiacSign;
         if (filteredData.loveLanguage) connectionUpdateData.loveLanguage = filteredData.loveLanguage;
         if (filteredData.profileImage) connectionUpdateData.profileImage = filteredData.profileImage;

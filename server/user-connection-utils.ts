@@ -25,7 +25,7 @@ export async function ensureUserConnection(user: User): Promise<void> {
       isPrivate: false,
       profileImage: user.profileImage,
       startDate: null,
-      birthday: null,
+      birthday: user.birthday,
       isArchived: false
     };
 
