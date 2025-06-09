@@ -324,6 +324,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       console.log("Backend /api/me PATCH - filtered data being saved:", filteredData);
       
+      // Check for email conflicts if email is being updated
+      if (filteredData.email) {
+        const currentUser = await storage.getUser(userId);
+        if (currentUser && filteredData.email !== currentUser.email) {
+          const existingUser = await storage.getUserByEmail(filteredData.email);
+          if (existingUser && existingUser.id !== userId) {
+            return res.status(400).json({ message: "Email address is already in use" });
+          }
+        }
+      }
+      
       const updatedUser = await storage.updateUser(userId, filteredData);
       
       if (!updatedUser) {

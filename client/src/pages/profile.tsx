@@ -36,7 +36,7 @@ export default function ProfilePage() {
   
   // Force refresh form data when user data changes
   useEffect(() => {
-    if (user) {
+    if (user && typeof user === 'object' && user.id) {
       console.log("Force refreshing form data with user:", user);
       const newFormData = {
         displayName: user.displayName || "",
@@ -81,8 +81,12 @@ export default function ProfilePage() {
       });
       
       if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(errorText || 'Failed to update profile');
+        try {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Failed to update profile');
+        } catch {
+          throw new Error('Failed to update profile');
+        }
       }
       
       return response.json();
@@ -194,8 +198,8 @@ export default function ProfilePage() {
   console.log("Profile page - loading:", loading, "user:", user, "isEditing:", isEditing);
   console.log("Profile debug - user.email:", user?.email, "user.relationshipGoals:", user?.relationshipGoals, "user.relationshipStyle:", user?.relationshipStyle);
 
-  // Show loading while auth is loading or user is not available
-  if (loading || !user) {
+  // Show loading while auth is loading
+  if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
@@ -204,6 +208,12 @@ export default function ProfilePage() {
         </div>
       </div>
     );
+  }
+
+  // Redirect to login if no user
+  if (!user || typeof user !== 'object' || !user.id) {
+    window.location.href = '/login';
+    return null;
   }
 
   return (
