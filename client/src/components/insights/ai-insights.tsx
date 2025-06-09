@@ -175,6 +175,18 @@ function generateDataInsights(connections: Connection[], moments: Moment[], user
     return insights;
   }
 
+  // Identify self-connection for personal growth tracking
+  const selfConnection = connections.find(c => 
+    c.relationshipStage === 'Self' || c.name.includes('(ME)')
+  );
+  
+  const selfMoments = selfConnection ? 
+    moments.filter(m => m.connectionId === selfConnection.id) : [];
+  
+  const relationshipMoments = moments.filter(m => 
+    !selfConnection || m.connectionId !== selfConnection.id
+  );
+
   // Enhanced emotional pattern analysis with more emojis
   const emotionCounts = moments.reduce((acc: Record<string, number>, moment) => {
     acc[moment.emoji] = (acc[moment.emoji] || 0) + 1;
@@ -253,6 +265,89 @@ function generateDataInsights(connections: Connection[], moments: Moment[], user
       confidence: 75,
       icon: <TrendingUp className="h-4 w-4 text-blue-600" />,
       dataPoints: [`${uniqueEmotions} emotion types`, `Expand emotional vocabulary`]
+    });
+  }
+
+  // Self-connection analysis for personal growth tracking
+  if (selfConnection && selfMoments.length > 0) {
+    const selfPositiveCount = selfMoments.filter(m => 
+      positiveEmojis.includes(m.emoji)
+    ).length;
+    
+    const selfNegativeCount = selfMoments.filter(m => 
+      negativeEmojis.includes(m.emoji)
+    ).length;
+    
+    const selfPositiveRatio = selfPositiveCount / selfMoments.length;
+    
+    // Analyze personal growth patterns
+    const achievementTags = ['Achievement', 'Success', 'Growth', 'Milestone', 'Goal'];
+    const selfReflectionTags = ['Reflection', 'Learning', 'Insight', 'Realization'];
+    const selfCareTags = ['Self Care', 'Health', 'Wellness', 'Exercise', 'Rest'];
+    
+    const achievementMoments = selfMoments.filter(m => 
+      m.tags?.some(tag => achievementTags.includes(tag)) ||
+      ['🏆', '🎯', '✅', '💪', '🌟', '🎉', '🥳'].includes(m.emoji)
+    ).length;
+    
+    const reflectionMoments = selfMoments.filter(m => 
+      m.tags?.some(tag => selfReflectionTags.includes(tag)) ||
+      ['🤔', '💭', '📝', '🧠', '💡'].includes(m.emoji)
+    ).length;
+    
+    const selfCareMoments = selfMoments.filter(m => 
+      m.tags?.some(tag => selfCareTags.includes(tag)) ||
+      ['🧘', '🏃‍♀️', '🛀', '💆', '🌿', '🍃', '☕'].includes(m.emoji)
+    ).length;
+
+    if (selfPositiveRatio > 0.7) {
+      insights.push({
+        title: "Strong Self-Awareness",
+        description: `${Math.round(selfPositiveRatio * 100)}% of your self-reflection moments are positive. You're maintaining healthy self-awareness and celebrating personal growth. Continue documenting achievements and insights.`,
+        type: 'positive',
+        confidence: Math.round(selfPositiveRatio * 90),
+        icon: <TrendingUp className="h-4 w-4 text-green-600" />,
+        dataPoints: [`${selfMoments.length} self-moments`, `${achievementMoments} achievements logged`]
+      });
+    } else if (selfMoments.length >= 5) {
+      insights.push({
+        title: "Personal Growth Opportunity",
+        description: `You're tracking your personal journey with ${selfMoments.length} self-moments. Consider focusing more on celebrating wins and achievements to build a positive self-relationship.`,
+        type: 'neutral',
+        confidence: 75,
+        icon: <Clock className="h-4 w-4 text-blue-600" />,
+        dataPoints: [`${selfMoments.length} self-reflections`, `${selfCareMoments} self-care moments`]
+      });
+    }
+
+    // Personal development insights based on moment types
+    if (achievementMoments > reflectionMoments * 2) {
+      insights.push({
+        title: "Achievement-Focused Mindset",
+        description: `You're great at celebrating wins (${achievementMoments} achievement moments)! Consider adding more reflection moments to process learnings and plan future growth.`,
+        type: 'positive',
+        confidence: 80,
+        icon: <TrendingUp className="h-4 w-4 text-purple-600" />,
+        dataPoints: [`${achievementMoments} achievements`, `${reflectionMoments} reflections`]
+      });
+    } else if (reflectionMoments > achievementMoments && achievementMoments < 2) {
+      insights.push({
+        title: "Reflection-Heavy Pattern",
+        description: `You're thoughtful about self-analysis (${reflectionMoments} reflection moments). Balance this with celebrating more achievements and small wins to boost confidence.`,
+        type: 'neutral',
+        confidence: 75,
+        icon: <Clock className="h-4 w-4 text-blue-600" />,
+        dataPoints: [`${reflectionMoments} reflections`, `Consider tracking achievements`]
+      });
+    }
+  } else if (selfConnection && selfMoments.length === 0) {
+    insights.push({
+      title: "Start Your Self-Journey",
+      description: `Your self-connection is ready for moments! Track personal achievements, reflections, and self-care activities to build powerful insights about your growth patterns.`,
+      type: 'neutral',
+      confidence: 90,
+      icon: <Users className="h-4 w-4 text-purple-600" />,
+      dataPoints: [`Self-connection available`, `Ready for personal moments`]
     });
   }
 
