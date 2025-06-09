@@ -332,19 +332,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "User not found" });
       }
       
-      // If displayName was updated, also update the user's own connection name
-      if (filteredData.displayName) {
-        const userConnections = await storage.getConnectionsByUserId(userId);
-        const userConnection = userConnections.find(c => c.relationshipStage === 'Self');
+      // Sync the self-connection with updated profile data
+      console.log("Starting self-connection sync...");
+      const userConnections = await storage.getConnectionsByUserId(userId);
+      const selfConnection = userConnections.find(c => c.relationshipStage === 'Self');
+      console.log("Found self-connection:", selfConnection?.id);
+      
+      if (selfConnection) {
+        const connectionUpdateData: any = {};
         
-        if (userConnection) {
-          await storage.updateConnection(userConnection.id, {
-            name: filteredData.displayName
-          });
-          console.log(`Updated user connection name to: ${filteredData.displayName}`);
+        // Map user fields to connection fields
+        if (filteredData.displayName) connectionUpdateData.name = filteredData.displayName;
+        if (filteredData.zodiacSign) connectionUpdateData.zodiacSign = filteredData.zodiacSign;
+        if (filteredData.loveLanguage) connectionUpdateData.loveLanguage = filteredData.loveLanguage;
+        if (filteredData.profileImage) connectionUpdateData.profileImage = filteredData.profileImage;
+        
+        console.log("Connection update data:", connectionUpdateData);
+        
+        if (Object.keys(connectionUpdateData).length > 0) {
+          await storage.updateConnection(selfConnection.id, connectionUpdateData);
+          console.log(`Updated self-connection with:`, connectionUpdateData);
         } else {
-          console.log("No user connection found to update");
+          console.log("No fields to update in connection");
         }
+      } else {
+        console.log("No self-connection found to update");
       }
       
       // Remove password from response
