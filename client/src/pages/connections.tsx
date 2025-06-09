@@ -48,72 +48,73 @@ export default function Connections() {
       stage: c.relationshipStage,
       isSelf: c.relationshipStage === 'Self'
     })));
-    
-    console.log('Self connection check:', {
-      selfExists: connections.some(c => c.relationshipStage === 'Self'),
-      selfConnection: connections.find(c => c.relationshipStage === 'Self')
-    });
   }
 
-  // Enhanced prioritization with Self connection guarantee
+  // Smart prioritization algorithm
   const prioritizeConnections = (connections: Connection[]) => {
-    // First, add activity metrics to all connections
-    const connectionsWithActivity = connections.map(connection => {
-      const connectionMoments = moments.filter((m: any) => m.connectionId === connection.id);
-      const lastActivity = connectionMoments.length > 0 
-        ? new Date(Math.max(...connectionMoments.map((m: any) => new Date(m.createdAt).getTime())))
-        : new Date(connection.createdAt);
-      
-      const daysSinceActivity = Math.floor((Date.now() - lastActivity.getTime()) / (1000 * 60 * 60 * 24));
-      const activityCount = connectionMoments.length;
-      
-      // Priority score: relationship importance + activity + recency
-      const stageWeights = { 'Self': 1000, 'Married': 5, 'Dating': 4, 'Best Friend': 4, 'Talking': 3, 'Ex': 1 };
-      const stageWeight = stageWeights[connection.relationshipStage as keyof typeof stageWeights] || 2;
-      
-      const priority = (stageWeight * 10) + (activityCount * 2) - Math.min(daysSinceActivity, 30);
-      
-      return { ...connection, priority, daysSinceActivity, activityCount };
-    });
-
-    // Apply filters
-    const filtered = connectionsWithActivity.filter(connection => {
-      const matchesSearch = connection.name.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesStage = filterStage === null || connection.relationshipStage === filterStage;
-      return matchesSearch && matchesStage;
-    });
-
-    // Final sorting with absolute Self priority
-    return filtered.sort((a, b) => {
-      // ABSOLUTE PRIORITY: Self connection always first
-      if (a.relationshipStage === 'Self' && b.relationshipStage !== 'Self') return -1;
-      if (b.relationshipStage === 'Self' && a.relationshipStage !== 'Self') return 1;
-      
-      // If both are Self (shouldn't happen) or neither is Self, continue with other logic
-      if (mainFocusConnection) {
-        if (a.id === mainFocusConnection.id && b.id !== mainFocusConnection.id) return -1;
-        if (b.id === mainFocusConnection.id && a.id !== mainFocusConnection.id) return 1;
-      }
-      
-      // Sort by priority for all others
-      return b.priority - a.priority;
-    });
+    return connections
+      .filter(connection => connection.name.toLowerCase().includes(searchTerm.toLowerCase()))
+      .map(connection => {
+        const connectionMoments = moments.filter((m: any) => m.connectionId === connection.id);
+        const lastActivity = connectionMoments.length > 0 
+          ? new Date(Math.max(...connectionMoments.map((m: any) => new Date(m.createdAt).getTime())))
+          : new Date(connection.createdAt);
+        
+        const daysSinceActivity = Math.floor((Date.now() - lastActivity.getTime()) / (1000 * 60 * 60 * 24));
+        const activityCount = connectionMoments.length;
+        
+        // Priority score: recent activity + relationship importance + total activity
+        const stageWeights = { 'Self': 10, 'Married': 5, 'Dating': 4, 'Best Friend': 4, 'Talking': 3, 'Ex': 1 };
+        const stageWeight = stageWeights[connection.relationshipStage as keyof typeof stageWeights] || 2;
+        
+        const priority = (stageWeight * 10) + (activityCount * 2) - Math.min(daysSinceActivity, 30);
+        
+        return { ...connection, priority, daysSinceActivity, activityCount };
+      })
+      .sort((a, b) => {
+        // Force Self connections to always be first
+        if (a.relationshipStage === 'Self') return -1;
+        if (b.relationshipStage === 'Self') return 1;
+        // Then sort by priority
+        return b.priority - a.priority;
+      });
   };
 
-  const filteredConnections = prioritizeConnections(connections);
+  const prioritizedConnections = prioritizeConnections(connections);
   
-  // Debug logging to verify Self connection position
-  console.log('Final connections order:', {
-    totalConnections: filteredConnections.length,
-    connections: filteredConnections.map((c, index) => ({ 
-      position: index + 1,
+  // Debug logging
+  console.log('Connections sorting debug:', {
+    originalCount: connections.length,
+    prioritizedCount: prioritizedConnections.length,
+    prioritizedConnections: prioritizedConnections.map(c => ({ 
       id: c.id, 
       name: c.name, 
-      stage: c.relationshipStage,
-      isSelf: c.relationshipStage === 'Self',
+      stage: c.relationshipStage, 
       priority: (c as any).priority 
     }))
   });
+
+  // Filter connections based on search and stage filter
+  const filteredConnections = prioritizedConnections
+    .filter(connection => {
+      const matchesSearch = connection.name.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesStage = filterStage === null || connection.relationshipStage === filterStage;
+      return matchesSearch && matchesStage;
+    })
+    .sort((a, b) => {
+      // User profile (Self) always at top
+      if (a.relationshipStage === 'Self') return -1;
+      if (b.relationshipStage === 'Self') return 1;
+      
+      // Focus connection second
+      if (mainFocusConnection) {
+        if (a.id === mainFocusConnection.id) return -1;
+        if (b.id === mainFocusConnection.id) return 1;
+      }
+      
+      // Keep existing priority order for others
+      return 0;
+    });
 
   // Handle connection selection for navigation
   const handleSelectConnection = (connection: Connection) => {
@@ -163,22 +164,21 @@ export default function Connections() {
     };
   };
 
-  // Organize connections by different perspectives (using pre-sorted filteredConnections)
+  // Organize connections by different perspectives
   const getConnectionsByPerspective = () => {
-    // filteredConnections is already sorted with Self first, just apply view-specific logic
-    const baseConnections = [...filteredConnections]; // Create copy to avoid mutation
+    const baseConnections = filteredConnections;
     
     switch (viewMode) {
       case 'activity':
-        // Keep Self first, sort others by activity
-        const selfConnection = baseConnections.find(c => c.relationshipStage === 'Self');
-        const nonSelfConnections = baseConnections.filter(c => c.relationshipStage !== 'Self');
-        
-        const sortedBySelf = nonSelfConnections.sort((a, b) => {
-          // Focus connection first among non-Self
+        return baseConnections.sort((a, b) => {
+          // User profile always first
+          if (a.relationshipStage === 'Self') return -1;
+          if (b.relationshipStage === 'Self') return 1;
+          
+          // Focus connection second
           if (mainFocusConnection) {
-            if (a.id === mainFocusConnection.id && b.id !== mainFocusConnection.id) return -1;
-            if (b.id === mainFocusConnection.id && a.id !== mainFocusConnection.id) return 1;
+            if (a.id === mainFocusConnection.id) return -1;
+            if (b.id === mainFocusConnection.id) return 1;
           }
           
           // Then by activity
@@ -186,30 +186,36 @@ export default function Connections() {
           const bActivity = getConnectionActivity(b.id);
           return bActivity.thisWeek - aActivity.thisWeek || bActivity.total - aActivity.total;
         });
-        
-        return selfConnection ? [selfConnection, ...sortedBySelf] : sortedBySelf;
       
       case 'stages':
-        // Group by stages but preserve Self-first ordering within each stage
         return relationshipStages.reduce((acc, stage) => {
           const stageConnections = baseConnections.filter(c => c.relationshipStage === stage);
           if (stageConnections.length > 0) {
-            // Don't re-sort - use the already optimized order from filteredConnections
-            acc[stage] = stageConnections;
+            // Sort within each stage to put user profile first and focus connection second
+            const sorted = stageConnections.sort((a, b) => {
+              if (a.relationshipStage === 'Self') return -1;
+              if (b.relationshipStage === 'Self') return 1;
+              if (mainFocusConnection) {
+                if (a.id === mainFocusConnection.id) return -1;
+                if (b.id === mainFocusConnection.id) return 1;
+              }
+              return 0;
+            });
+            acc[stage] = sorted;
           }
           return acc;
         }, {} as Record<string, typeof baseConnections>);
       
       case 'timeline':
-        // Keep Self first, sort others by timeline
-        const selfConn = baseConnections.find(c => c.relationshipStage === 'Self');
-        const otherConns = baseConnections.filter(c => c.relationshipStage !== 'Self');
-        
-        const sortedByTimeline = otherConns.sort((a, b) => {
-          // Focus connection first among non-Self
+        return baseConnections.sort((a, b) => {
+          // User profile always first
+          if (a.relationshipStage === 'Self') return -1;
+          if (b.relationshipStage === 'Self') return 1;
+          
+          // Focus connection second
           if (mainFocusConnection) {
-            if (a.id === mainFocusConnection.id && b.id !== mainFocusConnection.id) return -1;
-            if (b.id === mainFocusConnection.id && a.id !== mainFocusConnection.id) return 1;
+            if (a.id === mainFocusConnection.id) return -1;
+            if (b.id === mainFocusConnection.id) return 1;
           }
           
           // Then by timeline
@@ -217,12 +223,22 @@ export default function Connections() {
           const bActivity = getConnectionActivity(b.id);
           return bActivity.lastActivity - aActivity.lastActivity;
         });
-        
-        return selfConn ? [selfConn, ...sortedByTimeline] : sortedByTimeline;
       
       default:
-        // Use the already optimized sort order from filteredConnections
-        return baseConnections;
+        return baseConnections.sort((a, b) => {
+          // User profile always first
+          if (a.relationshipStage === 'Self') return -1;
+          if (b.relationshipStage === 'Self') return 1;
+          
+          // Focus connection second
+          if (mainFocusConnection) {
+            if (a.id === mainFocusConnection.id) return -1;
+            if (b.id === mainFocusConnection.id) return 1;
+          }
+          
+          // Then alphabetically by name
+          return a.name.localeCompare(b.name);
+        });
     }
   };
 

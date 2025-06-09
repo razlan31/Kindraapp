@@ -59,4 +59,12 @@ window.addEventListener('error', (event) => {
     return;
   }
 });
-createRoot(document.getElementById("root")!).render(<App />);
+createRoot(document.getElementById("root")!).render(
+  <ThemeProvider defaultTheme="light" storageKey="kindra-theme">
+    <AuthProvider>
+      <ModalProvider>
+        <App />
+      </ModalProvider>
+    </AuthProvider>
+  </ThemeProvider>
+);

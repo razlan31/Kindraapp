@@ -20,7 +20,6 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { MenstrualCycle, Connection } from "@shared/schema";
 import { Header } from "@/components/layout/header";
-import { BottomNavigation } from "@/components/layout/bottom-navigation";
 import { useAuth } from "@/contexts/auth-context";
 import { useModal } from "@/contexts/modal-context";
 import { AddConnectionModal } from "@/components/modals/add-connection-modal";
@@ -1619,8 +1618,6 @@ export default function MenstrualCyclePage() {
           </div>
         )}
       </main>
-      
-      <BottomNavigation />
     </div>
   );
 }
