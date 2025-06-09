@@ -46,15 +46,32 @@ function Router() {
   const { isAuthenticated, loading } = useAuth();
   const [location, setLocation] = useLocation();
 
+  console.log("Router render:", { isAuthenticated, loading, location });
+
   useEffect(() => {
+    console.log("Router useEffect:", { isAuthenticated, loading, location });
     if (!loading) {
       if (!isAuthenticated && !location.startsWith("/auth") && !location.startsWith("/onboarding")) {
+        console.log("Redirecting to login");
         setLocation("/auth/login");
       } else if (isAuthenticated && (location.startsWith("/auth") || location === "/onboarding/welcome")) {
+        console.log("Redirecting to home");
         setLocation("/");
       }
     }
   }, [isAuthenticated, loading, location, setLocation]);
+
+  // Show loading while authentication is being checked
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-neutral-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <Switch>
