@@ -98,6 +98,8 @@ export default function ProfilePage() {
       });
       // Invalidate and refetch user data to ensure fresh data from server
       await queryClient.invalidateQueries({ queryKey: ['/api/me'] });
+      // Also invalidate connections cache since self-connection data is updated
+      await queryClient.invalidateQueries({ queryKey: ['/api/connections'] });
       await refreshUser(); // Refresh the auth context user data
       setIsEditing(false);
     },
