@@ -312,7 +312,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Validate the update data - includes onboarding fields AND email
       const allowedFields = [
-        'displayName', 'email', 'zodiacSign', 'loveLanguage', 'profileImage',
+        'displayName', 'email', 'birthday', 'zodiacSign', 'loveLanguage', 'profileImage',
         'relationshipGoals', 'currentFocus', 'relationshipStyle', 'personalNotes'
       ];
       const filteredData = Object.keys(updateData)

@@ -41,6 +41,7 @@ export default function ProfilePage() {
       const newFormData = {
         displayName: user.displayName || "",
         email: user.email || "",
+        birthday: user.birthday ? new Date(user.birthday).toISOString().split('T')[0] : "",
         zodiacSign: user.zodiacSign || "",
         loveLanguages: user.loveLanguage ? user.loveLanguage.split(", ").filter((lang: string, index: number, arr: string[]) => arr.indexOf(lang) === index) : [],
         relationshipGoals: user.relationshipGoals || "",
@@ -59,6 +60,7 @@ export default function ProfilePage() {
   const [formData, setFormData] = useState({
     displayName: "",
     email: "",
+    birthday: "",
     zodiacSign: "",
     loveLanguages: [] as string[],
     relationshipGoals: "",
@@ -116,6 +118,7 @@ export default function ProfilePage() {
     saveMutation.mutate({
       displayName: formData.displayName,
       email: formData.email,
+      birthday: formData.birthday ? new Date(formData.birthday).toISOString() : null,
       zodiacSign: formData.zodiacSign,
       loveLanguage: formData.loveLanguages.join(", "),
       relationshipGoals: formData.relationshipGoals,
@@ -131,6 +134,7 @@ export default function ProfilePage() {
       setFormData({
         displayName: user.displayName || "",
         email: user.email || "",
+        birthday: user.birthday ? new Date(user.birthday).toISOString().split('T')[0] : "",
         zodiacSign: user.zodiacSign || "",
         loveLanguages: user.loveLanguage ? user.loveLanguage.split(", ").filter((lang, index, arr) => arr.indexOf(lang) === index) : [],
         relationshipGoals: user.relationshipGoals || "",
@@ -245,6 +249,7 @@ export default function ProfilePage() {
                   setFormData({
                     displayName: user.displayName || "",
                     email: user.email || "",
+                    birthday: user.birthday ? new Date(user.birthday).toISOString().split('T')[0] : "",
                     zodiacSign: user.zodiacSign || "",
                     loveLanguages: currentLoveLanguages,
                     relationshipGoals: user.relationshipGoals || "",
@@ -346,6 +351,23 @@ export default function ProfilePage() {
                 ) : (
                   <p className="mt-1 text-sm text-neutral-900 dark:text-neutral-100">
                     {user.email}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <Label htmlFor="birthday">Birthday</Label>
+                {isEditing ? (
+                  <Input
+                    id="birthday"
+                    type="date"
+                    value={formData.birthday}
+                    onChange={(e) => setFormData(prev => ({ ...prev, birthday: e.target.value }))}
+                    className="mt-1"
+                  />
+                ) : (
+                  <p className="mt-1 text-sm text-neutral-900 dark:text-neutral-100">
+                    {user.birthday ? new Date(user.birthday).toLocaleDateString() : "Not set"}
                   </p>
                 )}
               </div>
