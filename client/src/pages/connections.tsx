@@ -50,71 +50,65 @@ export default function Connections() {
     })));
   }
 
-  // Smart prioritization algorithm
+  // Enhanced prioritization with Self connection guarantee
   const prioritizeConnections = (connections: Connection[]) => {
-    return connections
-      .filter(connection => connection.name.toLowerCase().includes(searchTerm.toLowerCase()))
-      .map(connection => {
-        const connectionMoments = moments.filter((m: any) => m.connectionId === connection.id);
-        const lastActivity = connectionMoments.length > 0 
-          ? new Date(Math.max(...connectionMoments.map((m: any) => new Date(m.createdAt).getTime())))
-          : new Date(connection.createdAt);
-        
-        const daysSinceActivity = Math.floor((Date.now() - lastActivity.getTime()) / (1000 * 60 * 60 * 24));
-        const activityCount = connectionMoments.length;
-        
-        // Priority score: recent activity + relationship importance + total activity
-        const stageWeights = { 'Self': 10, 'Married': 5, 'Dating': 4, 'Best Friend': 4, 'Talking': 3, 'Ex': 1 };
-        const stageWeight = stageWeights[connection.relationshipStage as keyof typeof stageWeights] || 2;
-        
-        const priority = (stageWeight * 10) + (activityCount * 2) - Math.min(daysSinceActivity, 30);
-        
-        return { ...connection, priority, daysSinceActivity, activityCount };
-      })
-      .sort((a, b) => {
-        // Force Self connections to always be first
-        if (a.relationshipStage === 'Self') return -1;
-        if (b.relationshipStage === 'Self') return 1;
-        // Then sort by priority
-        return b.priority - a.priority;
-      });
-  };
+    // First, add activity metrics to all connections
+    const connectionsWithActivity = connections.map(connection => {
+      const connectionMoments = moments.filter((m: any) => m.connectionId === connection.id);
+      const lastActivity = connectionMoments.length > 0 
+        ? new Date(Math.max(...connectionMoments.map((m: any) => new Date(m.createdAt).getTime())))
+        : new Date(connection.createdAt);
+      
+      const daysSinceActivity = Math.floor((Date.now() - lastActivity.getTime()) / (1000 * 60 * 60 * 24));
+      const activityCount = connectionMoments.length;
+      
+      // Priority score: relationship importance + activity + recency
+      const stageWeights = { 'Self': 1000, 'Married': 5, 'Dating': 4, 'Best Friend': 4, 'Talking': 3, 'Ex': 1 };
+      const stageWeight = stageWeights[connection.relationshipStage as keyof typeof stageWeights] || 2;
+      
+      const priority = (stageWeight * 10) + (activityCount * 2) - Math.min(daysSinceActivity, 30);
+      
+      return { ...connection, priority, daysSinceActivity, activityCount };
+    });
 
-  const prioritizedConnections = prioritizeConnections(connections);
-  
-  // Debug logging
-  console.log('Connections sorting debug:', {
-    originalCount: connections.length,
-    prioritizedCount: prioritizedConnections.length,
-    prioritizedConnections: prioritizedConnections.map(c => ({ 
-      id: c.id, 
-      name: c.name, 
-      stage: c.relationshipStage, 
-      priority: (c as any).priority 
-    }))
-  });
-
-  // Filter connections based on search and stage filter
-  const filteredConnections = prioritizedConnections
-    .filter(connection => {
+    // Apply filters
+    const filtered = connectionsWithActivity.filter(connection => {
       const matchesSearch = connection.name.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesStage = filterStage === null || connection.relationshipStage === filterStage;
       return matchesSearch && matchesStage;
-    })
-    .sort((a, b) => {
-      // User profile (Self) always at top
-      if (a.relationshipStage === 'Self') return -1;
-      if (b.relationshipStage === 'Self') return 1;
+    });
+
+    // Final sorting with absolute Self priority
+    return filtered.sort((a, b) => {
+      // ABSOLUTE PRIORITY: Self connection always first
+      if (a.relationshipStage === 'Self' && b.relationshipStage !== 'Self') return -1;
+      if (b.relationshipStage === 'Self' && a.relationshipStage !== 'Self') return 1;
       
-      // Focus connection second
+      // If both are Self (shouldn't happen) or neither is Self, continue with other logic
       if (mainFocusConnection) {
-        if (a.id === mainFocusConnection.id) return -1;
-        if (b.id === mainFocusConnection.id) return 1;
+        if (a.id === mainFocusConnection.id && b.id !== mainFocusConnection.id) return -1;
+        if (b.id === mainFocusConnection.id && a.id !== mainFocusConnection.id) return 1;
       }
       
-      // Keep existing priority order for others
-      return 0;
+      // Sort by priority for all others
+      return b.priority - a.priority;
     });
+  };
+
+  const filteredConnections = prioritizeConnections(connections);
+  
+  // Debug logging to verify Self connection position
+  console.log('Final connections order:', {
+    totalConnections: filteredConnections.length,
+    connections: filteredConnections.map((c, index) => ({ 
+      position: index + 1,
+      id: c.id, 
+      name: c.name, 
+      stage: c.relationshipStage,
+      isSelf: c.relationshipStage === 'Self',
+      priority: (c as any).priority 
+    }))
+  });
 
   // Handle connection selection for navigation
   const handleSelectConnection = (connection: Connection) => {
