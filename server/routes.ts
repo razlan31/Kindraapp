@@ -379,6 +379,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "User not found" });
       }
       
+      // Sync the self-connection with updated profile data
+      const userConnections = await storage.getConnectionsByUserId(userId);
+      const selfConnection = userConnections.find(conn => conn.relationshipStage === 'Self');
+      
+      if (selfConnection) {
+        const connectionUpdateData: any = {};
+        
+        // Map user fields to connection fields
+        if (filteredData.displayName) connectionUpdateData.name = filteredData.displayName;
+        if (filteredData.zodiacSign) connectionUpdateData.zodiacSign = filteredData.zodiacSign;
+        if (filteredData.loveLanguage) connectionUpdateData.loveLanguage = filteredData.loveLanguage;
+        if (filteredData.profileImage) connectionUpdateData.profileImage = filteredData.profileImage;
+        
+        if (Object.keys(connectionUpdateData).length > 0) {
+          await storage.updateConnection(selfConnection.id, connectionUpdateData);
+        }
+      }
+      
       // Remove password from response
       const { password, ...userWithoutPassword } = updatedUser;
       
