@@ -10,6 +10,7 @@ export const users = pgTable("users", {
   email: text("email").notNull().unique(),
   displayName: text("display_name"),
   profileImage: text("profile_image"),
+  birthday: timestamp("birthday"),
   zodiacSign: text("zodiac_sign"),
   loveLanguage: text("love_language"),
   relationshipGoals: text("relationship_goals"),
