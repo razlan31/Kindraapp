@@ -48,6 +48,11 @@ export default function Connections() {
       stage: c.relationshipStage,
       isSelf: c.relationshipStage === 'Self'
     })));
+    
+    console.log('Self connection check:', {
+      selfExists: connections.some(c => c.relationshipStage === 'Self'),
+      selfConnection: connections.find(c => c.relationshipStage === 'Self')
+    });
   }
 
   // Enhanced prioritization with Self connection guarantee
@@ -158,21 +163,22 @@ export default function Connections() {
     };
   };
 
-  // Organize connections by different perspectives
+  // Organize connections by different perspectives (using pre-sorted filteredConnections)
   const getConnectionsByPerspective = () => {
-    const baseConnections = filteredConnections;
+    // filteredConnections is already sorted with Self first, just apply view-specific logic
+    const baseConnections = [...filteredConnections]; // Create copy to avoid mutation
     
     switch (viewMode) {
       case 'activity':
-        return baseConnections.sort((a, b) => {
-          // User profile always first
-          if (a.relationshipStage === 'Self') return -1;
-          if (b.relationshipStage === 'Self') return 1;
-          
-          // Focus connection second
+        // Keep Self first, sort others by activity
+        const selfConnection = baseConnections.find(c => c.relationshipStage === 'Self');
+        const nonSelfConnections = baseConnections.filter(c => c.relationshipStage !== 'Self');
+        
+        const sortedBySelf = nonSelfConnections.sort((a, b) => {
+          // Focus connection first among non-Self
           if (mainFocusConnection) {
-            if (a.id === mainFocusConnection.id) return -1;
-            if (b.id === mainFocusConnection.id) return 1;
+            if (a.id === mainFocusConnection.id && b.id !== mainFocusConnection.id) return -1;
+            if (b.id === mainFocusConnection.id && a.id !== mainFocusConnection.id) return 1;
           }
           
           // Then by activity
@@ -180,36 +186,30 @@ export default function Connections() {
           const bActivity = getConnectionActivity(b.id);
           return bActivity.thisWeek - aActivity.thisWeek || bActivity.total - aActivity.total;
         });
+        
+        return selfConnection ? [selfConnection, ...sortedBySelf] : sortedBySelf;
       
       case 'stages':
+        // Group by stages but preserve Self-first ordering within each stage
         return relationshipStages.reduce((acc, stage) => {
           const stageConnections = baseConnections.filter(c => c.relationshipStage === stage);
           if (stageConnections.length > 0) {
-            // Sort within each stage to put user profile first and focus connection second
-            const sorted = stageConnections.sort((a, b) => {
-              if (a.relationshipStage === 'Self') return -1;
-              if (b.relationshipStage === 'Self') return 1;
-              if (mainFocusConnection) {
-                if (a.id === mainFocusConnection.id) return -1;
-                if (b.id === mainFocusConnection.id) return 1;
-              }
-              return 0;
-            });
-            acc[stage] = sorted;
+            // Don't re-sort - use the already optimized order from filteredConnections
+            acc[stage] = stageConnections;
           }
           return acc;
         }, {} as Record<string, typeof baseConnections>);
       
       case 'timeline':
-        return baseConnections.sort((a, b) => {
-          // User profile always first
-          if (a.relationshipStage === 'Self') return -1;
-          if (b.relationshipStage === 'Self') return 1;
-          
-          // Focus connection second
+        // Keep Self first, sort others by timeline
+        const selfConn = baseConnections.find(c => c.relationshipStage === 'Self');
+        const otherConns = baseConnections.filter(c => c.relationshipStage !== 'Self');
+        
+        const sortedByTimeline = otherConns.sort((a, b) => {
+          // Focus connection first among non-Self
           if (mainFocusConnection) {
-            if (a.id === mainFocusConnection.id) return -1;
-            if (b.id === mainFocusConnection.id) return 1;
+            if (a.id === mainFocusConnection.id && b.id !== mainFocusConnection.id) return -1;
+            if (b.id === mainFocusConnection.id && a.id !== mainFocusConnection.id) return 1;
           }
           
           // Then by timeline
@@ -217,22 +217,12 @@ export default function Connections() {
           const bActivity = getConnectionActivity(b.id);
           return bActivity.lastActivity - aActivity.lastActivity;
         });
+        
+        return selfConn ? [selfConn, ...sortedByTimeline] : sortedByTimeline;
       
       default:
-        return baseConnections.sort((a, b) => {
-          // User profile always first
-          if (a.relationshipStage === 'Self') return -1;
-          if (b.relationshipStage === 'Self') return 1;
-          
-          // Focus connection second
-          if (mainFocusConnection) {
-            if (a.id === mainFocusConnection.id) return -1;
-            if (b.id === mainFocusConnection.id) return 1;
-          }
-          
-          // Then alphabetically by name
-          return a.name.localeCompare(b.name);
-        });
+        // Use the already optimized sort order from filteredConnections
+        return baseConnections;
     }
   };
 
