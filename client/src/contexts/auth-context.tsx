@@ -36,28 +36,53 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let isMounted = true;
+    
     const loadUser = async () => {
+      if (!isMounted) return;
+      
       try {
         console.log("Auth: Starting to load user, setting loading to true");
         setLoading(true);
         const currentUser = await getCurrentUser();
-        console.log("getCurrentUser successful:", currentUser);
-        setUser(currentUser);
-        console.log("Auth context setting user:", currentUser);
+        
+        if (isMounted) {
+          console.log("getCurrentUser successful:", currentUser);
+          setUser(currentUser);
+          console.log("Auth context setting user:", currentUser);
+        }
       } catch (error) {
-        console.error("Failed to load user:", error);
-        setUser(null);
+        if (isMounted) {
+          console.log("getCurrentUser error:", error);
+          
+          // Auto-login with test credentials for development
+          try {
+            console.log("Attempting automatic login with test credentials");
+            const loggedInUser = await loginUser("testuser", "password123", true);
+            if (isMounted) {
+              console.log("Auto-login successful:", loggedInUser);
+              setUser(loggedInUser);
+            }
+          } catch (loginError) {
+            console.log("Auto-login failed:", loginError);
+            if (isMounted) {
+              setUser(null);
+            }
+          }
+        }
       } finally {
-        console.log("Auth: Finally block - setting loading to false");
-        setLoading(false);
+        if (isMounted) {
+          console.log("Auth: Finally block - setting loading to false");
+          setLoading(false);
+        }
       }
     };
 
     loadUser();
     
-    // Also check every 5 seconds for session changes
-    const interval = setInterval(loadUser, 5000);
-    return () => clearInterval(interval);
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const login = async (username: string, password: string, rememberMe?: boolean) => {
