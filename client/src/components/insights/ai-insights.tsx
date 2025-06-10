@@ -43,7 +43,7 @@ export function AIInsights({ connections, moments, userData }: AIInsightsProps) 
     }];
   }
 
-  console.log("Final insights check:", { insightsLength: insights.length, insights });
+  console.log("Final insights check:", { insightsLength: insights.length });
   
   if (insights.length === 0) {
     console.log("Rendering no insights fallback");

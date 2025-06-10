@@ -15,31 +15,47 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [, setLocation] = useLocation();
 
-  // Auto-login on component mount
+  // Auto-login on mount with proper cleanup
   useEffect(() => {
-    const autoLogin = async () => {
-      console.log("Auto-login useEffect triggered, loading:", loading);
-      if (!loading) {
-        setLoading(true);
-        try {
-          console.log("Attempting auto-login...");
-          const result = await login("testuser", "password123", true);
-          console.log("Auto-login successful:", result);
+    let mounted = true;
+    let hasAttempted = false;
+    
+    const performAutoLogin = async () => {
+      if (!mounted || hasAttempted || loading) return;
+      hasAttempted = true;
+      
+      console.log("Starting auto-login...");
+      setLoading(true);
+      
+      try {
+        await login("testuser", "password123", true);
+        if (mounted) {
+          console.log("Auto-login successful");
           toast({
-            title: "Automatically logged in!",
-            description: "Welcome back to Kindra"
+            title: "Welcome back to Kindra!",
+            description: "Automatically signed you in"
           });
           setLocation("/");
-        } catch (error) {
+        }
+      } catch (error) {
+        if (mounted) {
           console.log("Auto-login failed:", error);
-        } finally {
+        }
+      } finally {
+        if (mounted) {
           setLoading(false);
         }
       }
     };
+
+    // Small delay to prevent immediate execution conflicts
+    const timer = setTimeout(performAutoLogin, 100);
     
-    autoLogin();
-  }, [login, setLocation, toast, loading]);
+    return () => {
+      mounted = false;
+      clearTimeout(timer);
+    };
+  }, []); // Empty dependency array - only run once on mount
 
   // Login form state
   const [loginData, setLoginData] = useState({
