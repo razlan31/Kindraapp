@@ -8,6 +8,7 @@ import { MomentCard } from "@/components/dashboard/moment-card";
 import { BadgeShowcase } from "@/components/dashboard/badge-showcase";
 import { AIInsights } from "@/components/insights/ai-insights";
 import { AIChat } from "@/components/ai-chat";
+import { CompactBadgeDisplay } from "@/components/dashboard/compact-badge-display";
 import { Connection, Moment, Badge, MenstrualCycle } from "@shared/schema";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
@@ -503,6 +504,9 @@ function MenstrualCycleTracker() {
             </div>
           </div>
         </section>
+
+        {/* Compact Badge Display */}
+        <CompactBadgeDisplay />
 
         {/* AI Chat Section */}
         <section className="px-3 py-2">
