@@ -296,24 +296,24 @@ export function AIChat() {
   return (
     <div className="w-full max-w-4xl mx-auto space-y-4">
       <Card className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-0 shadow-2xl overflow-hidden rounded-2xl">
-        <CardHeader className="pb-4 bg-gradient-to-r from-slate-900 via-gray-900 to-black text-white relative overflow-hidden">
-          {/* Animated background elements */}
-          <div className="absolute inset-0 opacity-10">
-            <div className="absolute top-0 left-1/4 w-32 h-32 bg-white rounded-full blur-3xl animate-pulse"></div>
-            <div className="absolute bottom-0 right-1/4 w-24 h-24 bg-white rounded-full blur-2xl animate-pulse" style={{animationDelay: '1s'}}></div>
+        <CardHeader className="pb-4 bg-gradient-to-r from-rose-100 via-pink-50 to-purple-100 dark:from-rose-900/30 dark:via-pink-900/30 dark:to-purple-900/30 text-gray-800 dark:text-white relative overflow-hidden border-b border-rose-200/30 dark:border-rose-700/30">
+          {/* Soft animated background elements */}
+          <div className="absolute inset-0 opacity-5">
+            <div className="absolute top-0 left-1/4 w-32 h-32 bg-rose-300 rounded-full blur-3xl animate-pulse"></div>
+            <div className="absolute bottom-0 right-1/4 w-24 h-24 bg-purple-300 rounded-full blur-2xl animate-pulse" style={{animationDelay: '1s'}}></div>
           </div>
           
           <div className="flex items-center justify-between relative z-10">
             <CardTitle className="flex items-center gap-4">
               <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-purple-500 rounded-2xl blur-lg opacity-75 animate-pulse"></div>
-                <div className="relative bg-gradient-to-r from-blue-500 to-purple-600 p-3 rounded-2xl">
+                <div className="absolute inset-0 bg-gradient-to-r from-rose-300 to-purple-300 rounded-2xl blur-lg opacity-30"></div>
+                <div className="relative bg-gradient-to-r from-rose-400 to-purple-400 p-3 rounded-2xl shadow-lg">
                   <MessageCircle className="h-7 w-7 text-white" />
                 </div>
               </div>
               <div className="flex flex-col">
-                <span className="text-2xl font-bold tracking-tight">Luna AI</span>
-                <span className="text-sm opacity-80 font-light tracking-wide">Relationship Intelligence</span>
+                <span className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Luna AI</span>
+                <span className="text-sm opacity-70 font-light tracking-wide text-gray-700 dark:text-gray-300">Relationship Intelligence</span>
               </div>
             </CardTitle>
             <TooltipProvider>
@@ -322,12 +322,12 @@ export function AIChat() {
                   <TooltipTrigger asChild>
                     <button
                       onClick={() => setShowHistory(!showHistory)}
-                      className="group p-2.5 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-sm transition-all duration-300 hover:scale-105"
+                      className="group p-2.5 rounded-xl bg-rose-50/50 hover:bg-rose-100/70 dark:bg-rose-800/20 dark:hover:bg-rose-700/30 backdrop-blur-sm transition-all duration-300 hover:scale-105"
                     >
-                      <History className="h-4 w-4 text-white/80 group-hover:text-white transition-colors" />
+                      <History className="h-4 w-4 text-rose-600/80 group-hover:text-rose-700 dark:text-rose-300/80 dark:group-hover:text-rose-200 transition-colors" />
                     </button>
                   </TooltipTrigger>
-                  <TooltipContent side="bottom" className="bg-gray-900 text-white border-0 rounded-lg">
+                  <TooltipContent side="bottom" className="bg-rose-600 text-white border-0 rounded-lg">
                     <p>History</p>
                   </TooltipContent>
                 </Tooltip>
@@ -336,12 +336,12 @@ export function AIChat() {
                   <TooltipTrigger asChild>
                     <button
                       onClick={startNewChat}
-                      className="group p-2.5 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-sm transition-all duration-300 hover:scale-105"
+                      className="group p-2.5 rounded-xl bg-purple-50/50 hover:bg-purple-100/70 dark:bg-purple-800/20 dark:hover:bg-purple-700/30 backdrop-blur-sm transition-all duration-300 hover:scale-105"
                     >
-                      <Plus className="h-4 w-4 text-white/80 group-hover:text-white transition-colors" />
+                      <Plus className="h-4 w-4 text-purple-600/80 group-hover:text-purple-700 dark:text-purple-300/80 dark:group-hover:text-purple-200 transition-colors" />
                     </button>
                   </TooltipTrigger>
-                  <TooltipContent side="bottom" className="bg-gray-900 text-white border-0 rounded-lg">
+                  <TooltipContent side="bottom" className="bg-purple-600 text-white border-0 rounded-lg">
                     <p>New Chat</p>
                   </TooltipContent>
                 </Tooltip>
@@ -351,12 +351,12 @@ export function AIChat() {
                     <button
                       onClick={() => clearMutation.mutate()}
                       disabled={conversation.length === 0 || clearMutation.isPending}
-                      className="group p-2.5 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-sm transition-all duration-300 hover:scale-105 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:bg-white/10"
+                      className="group p-2.5 rounded-xl bg-pink-50/50 hover:bg-pink-100/70 dark:bg-pink-800/20 dark:hover:bg-pink-700/30 backdrop-blur-sm transition-all duration-300 hover:scale-105 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:bg-pink-50/50"
                     >
-                      <Trash2 className="h-4 w-4 text-white/80 group-hover:text-white transition-colors" />
+                      <Trash2 className="h-4 w-4 text-pink-600/80 group-hover:text-pink-700 dark:text-pink-300/80 dark:group-hover:text-pink-200 transition-colors" />
                     </button>
                   </TooltipTrigger>
-                  <TooltipContent side="bottom" className="bg-gray-900 text-white border-0 rounded-lg">
+                  <TooltipContent side="bottom" className="bg-pink-600 text-white border-0 rounded-lg">
                     <p>Clear</p>
                   </TooltipContent>
                 </Tooltip>
@@ -366,12 +366,12 @@ export function AIChat() {
                     <button
                       onClick={downloadConversation}
                       disabled={conversation.length === 0}
-                      className="group p-2.5 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-sm transition-all duration-300 hover:scale-105 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:bg-white/10"
+                      className="group p-2.5 rounded-xl bg-indigo-50/50 hover:bg-indigo-100/70 dark:bg-indigo-800/20 dark:hover:bg-indigo-700/30 backdrop-blur-sm transition-all duration-300 hover:scale-105 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:bg-indigo-50/50"
                     >
-                      <Download className="h-4 w-4 text-white/80 group-hover:text-white transition-colors" />
+                      <Download className="h-4 w-4 text-indigo-600/80 group-hover:text-indigo-700 dark:text-indigo-300/80 dark:group-hover:text-indigo-200 transition-colors" />
                     </button>
                   </TooltipTrigger>
-                  <TooltipContent side="bottom" className="bg-gray-900 text-white border-0 rounded-lg">
+                  <TooltipContent side="bottom" className="bg-indigo-600 text-white border-0 rounded-lg">
                     <p>Download</p>
                   </TooltipContent>
                 </Tooltip>
@@ -441,35 +441,35 @@ export function AIChat() {
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-10">
                   <div className="group relative">
-                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl blur opacity-10 group-hover:opacity-20 transition-opacity"></div>
-                    <div className="relative bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/50 dark:border-gray-700/50 hover:shadow-xl transition-all duration-500 hover:-translate-y-1">
-                      <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-3 rounded-xl mb-4 inline-block shadow-lg">
+                    <div className="absolute inset-0 bg-gradient-to-r from-rose-300 to-rose-400 rounded-2xl blur opacity-15 group-hover:opacity-25 transition-opacity"></div>
+                    <div className="relative bg-rose-50/90 dark:bg-rose-900/30 backdrop-blur-sm rounded-2xl p-6 border border-rose-200/60 dark:border-rose-700/40 hover:shadow-xl transition-all duration-500 hover:-translate-y-1">
+                      <div className="bg-gradient-to-br from-rose-400 to-rose-500 p-3 rounded-xl mb-4 inline-block shadow-lg">
                         <Heart className="h-6 w-6 text-white" />
                       </div>
-                      <h4 className="font-semibold text-gray-900 dark:text-gray-100 text-lg mb-2">Deep Analysis</h4>
-                      <p className="text-gray-600 dark:text-gray-400 leading-relaxed">Understand your relationship patterns through advanced behavioral analysis</p>
+                      <h4 className="font-semibold text-gray-900 dark:text-gray-100 text-lg mb-3 text-left">Deep Analysis</h4>
+                      <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-left">Understand your relationship patterns through advanced behavioral analysis</p>
                     </div>
                   </div>
                   
                   <div className="group relative">
-                    <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-purple-600 rounded-2xl blur opacity-10 group-hover:opacity-20 transition-opacity"></div>
-                    <div className="relative bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/50 dark:border-gray-700/50 hover:shadow-xl transition-all duration-500 hover:-translate-y-1">
-                      <div className="bg-gradient-to-br from-purple-500 to-purple-600 p-3 rounded-xl mb-4 inline-block shadow-lg">
+                    <div className="absolute inset-0 bg-gradient-to-r from-purple-300 to-purple-400 rounded-2xl blur opacity-15 group-hover:opacity-25 transition-opacity"></div>
+                    <div className="relative bg-purple-50/90 dark:bg-purple-900/30 backdrop-blur-sm rounded-2xl p-6 border border-purple-200/60 dark:border-purple-700/40 hover:shadow-xl transition-all duration-500 hover:-translate-y-1">
+                      <div className="bg-gradient-to-br from-purple-400 to-purple-500 p-3 rounded-xl mb-4 inline-block shadow-lg">
                         <Sparkles className="h-6 w-6 text-white" />
                       </div>
-                      <h4 className="font-semibold text-gray-900 dark:text-gray-100 text-lg mb-2">Smart Guidance</h4>
-                      <p className="text-gray-600 dark:text-gray-400 leading-relaxed">Receive personalized recommendations tailored to your unique situation</p>
+                      <h4 className="font-semibold text-gray-900 dark:text-gray-100 text-lg mb-3 text-left">Smart Guidance</h4>
+                      <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-left">Receive personalized recommendations tailored to your unique situation</p>
                     </div>
                   </div>
                   
                   <div className="group relative">
-                    <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-indigo-600 rounded-2xl blur opacity-10 group-hover:opacity-20 transition-opacity"></div>
-                    <div className="relative bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/50 dark:border-gray-700/50 hover:shadow-xl transition-all duration-500 hover:-translate-y-1">
-                      <div className="bg-gradient-to-br from-indigo-500 to-indigo-600 p-3 rounded-xl mb-4 inline-block shadow-lg">
+                    <div className="absolute inset-0 bg-gradient-to-r from-pink-300 to-pink-400 rounded-2xl blur opacity-15 group-hover:opacity-25 transition-opacity"></div>
+                    <div className="relative bg-pink-50/90 dark:bg-pink-900/30 backdrop-blur-sm rounded-2xl p-6 border border-pink-200/60 dark:border-pink-700/40 hover:shadow-xl transition-all duration-500 hover:-translate-y-1">
+                      <div className="bg-gradient-to-br from-pink-400 to-pink-500 p-3 rounded-xl mb-4 inline-block shadow-lg">
                         <MessageCircle className="h-6 w-6 text-white" />
                       </div>
-                      <h4 className="font-semibold text-gray-900 dark:text-gray-100 text-lg mb-2">Always Available</h4>
-                      <p className="text-gray-600 dark:text-gray-400 leading-relaxed">24/7 emotional support whenever you need relationship guidance</p>
+                      <h4 className="font-semibold text-gray-900 dark:text-gray-100 text-lg mb-3 text-left">Always Available</h4>
+                      <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-left">24/7 emotional support whenever you need relationship guidance</p>
                     </div>
                   </div>
                 </div>
