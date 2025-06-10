@@ -322,8 +322,8 @@ export function AIChat() {
                 <MessageCircle className="h-6 w-6 text-white" />
               </div>
               <div className="flex flex-col">
-                <span className="text-xl font-semibold bg-gradient-to-r from-violet-600 to-pink-600 bg-clip-text text-transparent">Kindra</span>
-                <span className="text-sm text-violet-600/80 dark:text-violet-300/80">with Luna AI Coach</span>
+                <span className="text-xl font-semibold bg-gradient-to-r from-violet-600 to-pink-600 bg-clip-text text-transparent">Luna AI</span>
+                <span className="text-sm text-violet-600/80 dark:text-violet-300/80">Relationship Coach</span>
               </div>
             </CardTitle>
             <TooltipProvider>
@@ -436,10 +436,10 @@ export function AIChat() {
                     <MessageCircle className="h-8 w-8 text-white" />
                   </div>
                   <h3 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">
-                    Kindra
+                    Luna AI
                   </h3>
                   <p className="text-gray-600 dark:text-gray-400 max-w-md mx-auto">
-                    Your AI-powered relationship and wellness companion
+                    Your intelligent relationship coach
                   </p>
                 </div>
 
