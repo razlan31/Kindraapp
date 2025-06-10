@@ -99,7 +99,7 @@ export class DatabaseStorage implements IStorage {
     return moment;
   }
 
-  async getMomentsByUserId(userId: number, limit?: number): Promise<Moment[]> {
+  async getMomentsByUserId(userId: string, limit?: number): Promise<Moment[]> {
     let query = db.select().from(moments).where(eq(moments.userId, userId)).orderBy(desc(moments.createdAt));
     if (limit) {
       query = query.limit(limit);
