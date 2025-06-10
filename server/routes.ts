@@ -203,7 +203,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/login", async (req, res) => {
     try {
-      const { username, password } = req.body;
+      const { username, password, rememberMe } = req.body;
       
       // Validate input
       if (!username || !password) {
@@ -222,8 +222,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Invalid credentials" });
       }
       
-      // Set session
+      // Set session with extended duration if rememberMe is true
       (req.session as any).userId = user.id;
+      
+      // Extend session duration if "remember me" is checked
+      if (rememberMe) {
+        const extendedTtl = 30 * 24 * 60 * 60 * 1000; // 30 days
+        req.session.cookie.maxAge = extendedTtl;
+        console.log("Login: Extended session duration for 30 days");
+      }
+      
       console.log("Login: Setting session userId:", user.id);
       await new Promise((resolve, reject) => {
         req.session.save((err) => {
