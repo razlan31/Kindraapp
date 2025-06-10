@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 
 export default function Login() {
   const handleGoogleLogin = () => {
-    window.location.href = "/api/login";
+    window.location.href = "/api/auth/google";
   };
 
   return (
