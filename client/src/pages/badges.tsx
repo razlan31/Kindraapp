@@ -180,7 +180,7 @@ export default function BadgesPage() {
   }
 
   const earnedBadgeIds = new Set(userBadges.map(ub => ub.badgeId));
-  const earnedBadges = userBadges.map(ub => ub.badge).filter(badge => badge != null);
+  const earnedBadges = userBadges.filter(ub => ub.badge && ub.badge.id);
   const unearnedBadges = allBadges.filter(badge => badge && badge.id && !earnedBadgeIds.has(badge.id));
 
   // Group badges by category
