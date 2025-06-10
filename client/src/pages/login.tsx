@@ -1,9 +1,92 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useAuth } from "@/contexts/auth-context";
+import { useToast } from "@/hooks/use-toast";
+import { Separator } from "@/components/ui/separator";
 
 export default function Login() {
+  const { login, register } = useAuth();
+  const { toast } = useToast();
+  const [loading, setLoading] = useState(false);
+
+  // Login form state
+  const [loginData, setLoginData] = useState({
+    username: "",
+    password: ""
+  });
+
+  // Register form state
+  const [registerData, setRegisterData] = useState({
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    displayName: ""
+  });
+
   const handleGoogleLogin = () => {
     window.location.href = "/api/auth/google";
+  };
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    
+    try {
+      await login(loginData.username, loginData.password);
+      toast({
+        title: "Welcome back!",
+        description: "You've been logged in successfully.",
+      });
+    } catch (error) {
+      toast({
+        title: "Login failed",
+        description: "Please check your username and password.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (registerData.password !== registerData.confirmPassword) {
+      toast({
+        title: "Password mismatch",
+        description: "Please make sure your passwords match.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setLoading(true);
+    
+    try {
+      await register({
+        username: registerData.username,
+        email: registerData.email,
+        password: registerData.password,
+        displayName: registerData.displayName || registerData.username
+      });
+      toast({
+        title: "Account created!",
+        description: "Welcome to Luna AI. Let's start tracking your relationships.",
+      });
+    } catch (error) {
+      toast({
+        title: "Registration failed",
+        description: "Please try again with different credentials.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -17,11 +100,14 @@ export default function Login() {
             Your intelligent relationship wellness companion
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-6">
+          {/* Google Login Button */}
           <Button
             onClick={handleGoogleLogin}
-            className="w-full bg-gradient-to-r from-purple-600 via-pink-600 to-violet-600 hover:from-purple-700 hover:via-pink-700 hover:to-violet-700 text-white"
+            variant="outline"
+            className="w-full"
             size="lg"
+            disabled={loading}
           >
             <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
               <path
@@ -43,6 +129,125 @@ export default function Login() {
             </svg>
             Continue with Google
           </Button>
+
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <Separator className="w-full" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-white dark:bg-gray-950 px-2 text-gray-500">
+                Or continue with
+              </span>
+            </div>
+          </div>
+
+          {/* Manual Login/Register Tabs */}
+          <Tabs defaultValue="login" className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="login">Sign In</TabsTrigger>
+              <TabsTrigger value="register">Sign Up</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="login" className="space-y-4">
+              <form onSubmit={handleLogin} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="login-username">Username</Label>
+                  <Input
+                    id="login-username"
+                    type="text"
+                    value={loginData.username}
+                    onChange={(e) => setLoginData(prev => ({ ...prev, username: e.target.value }))}
+                    required
+                    disabled={loading}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="login-password">Password</Label>
+                  <Input
+                    id="login-password"
+                    type="password"
+                    value={loginData.password}
+                    onChange={(e) => setLoginData(prev => ({ ...prev, password: e.target.value }))}
+                    required
+                    disabled={loading}
+                  />
+                </div>
+                <Button 
+                  type="submit" 
+                  className="w-full bg-gradient-to-r from-purple-600 via-pink-600 to-violet-600 hover:from-purple-700 hover:via-pink-700 hover:to-violet-700 text-white"
+                  disabled={loading}
+                >
+                  {loading ? "Signing in..." : "Sign In"}
+                </Button>
+              </form>
+            </TabsContent>
+            
+            <TabsContent value="register" className="space-y-4">
+              <form onSubmit={handleRegister} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="register-username">Username</Label>
+                  <Input
+                    id="register-username"
+                    type="text"
+                    value={registerData.username}
+                    onChange={(e) => setRegisterData(prev => ({ ...prev, username: e.target.value }))}
+                    required
+                    disabled={loading}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="register-email">Email</Label>
+                  <Input
+                    id="register-email"
+                    type="email"
+                    value={registerData.email}
+                    onChange={(e) => setRegisterData(prev => ({ ...prev, email: e.target.value }))}
+                    required
+                    disabled={loading}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="register-displayName">Display Name (Optional)</Label>
+                  <Input
+                    id="register-displayName"
+                    type="text"
+                    value={registerData.displayName}
+                    onChange={(e) => setRegisterData(prev => ({ ...prev, displayName: e.target.value }))}
+                    disabled={loading}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="register-password">Password</Label>
+                  <Input
+                    id="register-password"
+                    type="password"
+                    value={registerData.password}
+                    onChange={(e) => setRegisterData(prev => ({ ...prev, password: e.target.value }))}
+                    required
+                    disabled={loading}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="register-confirmPassword">Confirm Password</Label>
+                  <Input
+                    id="register-confirmPassword"
+                    type="password"
+                    value={registerData.confirmPassword}
+                    onChange={(e) => setRegisterData(prev => ({ ...prev, confirmPassword: e.target.value }))}
+                    required
+                    disabled={loading}
+                  />
+                </div>
+                <Button 
+                  type="submit" 
+                  className="w-full bg-gradient-to-r from-purple-600 via-pink-600 to-violet-600 hover:from-purple-700 hover:via-pink-700 hover:to-violet-700 text-white"
+                  disabled={loading}
+                >
+                  {loading ? "Creating account..." : "Create Account"}
+                </Button>
+              </form>
+            </TabsContent>
+          </Tabs>
           
           <div className="text-center text-sm text-gray-600 dark:text-gray-400">
             Track your relationships, get AI insights, and grow together

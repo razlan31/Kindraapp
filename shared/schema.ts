@@ -59,7 +59,7 @@ export const relationshipStages = [
 // Connections (relationships)
 export const connections = pgTable("connections", {
   id: serial("id").primaryKey(),
-  userId: integer("user_id").notNull(),
+  userId: varchar("user_id").notNull(),
   name: text("name").notNull(),
   profileImage: text("profile_image"),
   relationshipStage: text("relationship_stage").notNull(),
@@ -142,7 +142,7 @@ export const momentTags = [
 // Moments (emotional logs)
 export const moments = pgTable("moments", {
   id: serial("id").primaryKey(),
-  userId: integer("user_id").notNull(),
+  userId: varchar("user_id").notNull(),
   connectionId: integer("connection_id").notNull(),
   title: text("title"),
   emoji: text("emoji").notNull(),
@@ -200,7 +200,7 @@ export type Badge = typeof badges.$inferSelect;
 // User Badges (junction table)
 export const userBadges = pgTable("user_badges", {
   id: serial("id").primaryKey(),
-  userId: integer("user_id").notNull(),
+  userId: varchar("user_id").notNull(),
   badgeId: integer("badge_id").notNull(),
   unlockedAt: timestamp("unlocked_at").defaultNow(),
 });
