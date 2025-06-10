@@ -6,7 +6,7 @@ type AuthContextType = {
   user: User | null;
   isAuthenticated: boolean;
   loading: boolean;
-  login: (username: string, password: string) => Promise<void>;
+  login: (username: string, password: string, rememberMe?: boolean) => Promise<void>;
   register: (userData: {
     username: string;
     email: string;
@@ -56,9 +56,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     loadUser();
   }, []);
 
-  const login = async (username: string, password: string) => {
+  const login = async (username: string, password: string, rememberMe?: boolean) => {
     try {
-      const loggedInUser = await loginUser(username, password);
+      const loggedInUser = await loginUser(username, password, rememberMe);
       setUser(loggedInUser);
       console.log("Auth context: Login successful, user set:", loggedInUser);
     } catch (error) {

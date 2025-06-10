@@ -1,8 +1,8 @@
 import { apiRequest } from "./queryClient";
 import { User } from "@shared/schema";
 
-export async function loginUser(username: string, password: string): Promise<User> {
-  const response = await apiRequest("/api/login", "POST", { username, password });
+export async function loginUser(username: string, password: string, rememberMe?: boolean): Promise<User> {
+  const response = await apiRequest("/api/login", "POST", { username, password, rememberMe });
   return await response.json();
 }
 

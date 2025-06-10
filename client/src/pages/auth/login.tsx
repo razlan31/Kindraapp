@@ -6,11 +6,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
 import { Eye, EyeOff, Heart } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
   const [, setLocation] = useLocation();
@@ -31,7 +33,7 @@ export default function Login() {
     setIsLoading(true);
     
     try {
-      await login(username.trim(), password);
+      await login(username.trim(), password, rememberMe);
       toast({
         title: "Welcome back!",
         description: "You've successfully signed in"
@@ -109,6 +111,21 @@ export default function Login() {
                   )}
                 </Button>
               </div>
+            </div>
+            
+            <div className="flex items-center space-x-2">
+              <Checkbox 
+                id="remember-me"
+                checked={rememberMe}
+                onCheckedChange={(checked) => setRememberMe(checked as boolean)}
+                disabled={isLoading}
+              />
+              <label 
+                htmlFor="remember-me" 
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                Keep me logged in
+              </label>
             </div>
             
             <Button type="submit" className="w-full" disabled={isLoading}>
