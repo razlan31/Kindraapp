@@ -37,6 +37,7 @@ import { ThemeProvider } from "./contexts/theme-context";
 import { MomentModal } from "./components/modals/simplified-moment-modal";
 
 import { MoodTrackerModal } from "./components/modals/mood-tracker-modal";
+import { BadgeNotificationMonitor } from "./components/BadgeNotificationMonitor";
 
 import { useEffect } from "react";
 import { useLocation } from "wouter";
@@ -98,6 +99,7 @@ function App() {
             <ModalProvider>
               <TooltipProvider>
                 <Toaster />
+                <BadgeNotificationMonitor />
                 <Router />
                 <ModalsContainer />
               </TooltipProvider>
