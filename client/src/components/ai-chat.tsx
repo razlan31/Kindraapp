@@ -26,14 +26,20 @@ interface ChatResponse {
 export function AIChat() {
   const [message, setMessage] = useState("");
   const [conversation, setConversation] = useState<ChatMessage[]>([]);
-  const [savedConversations, setSavedConversations] = useState<{id: string, title: string, messages: ChatMessage[], timestamp: Date}[]>([]);
+  const [currentConversationId, setCurrentConversationId] = useState<number | null>(null);
   const [showHistory, setShowHistory] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // Load conversation history
+  // Load saved conversations
+  const { data: savedConversations } = useQuery({
+    queryKey: ['/api/chat/conversations'],
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  });
+
+  // Load conversation history from in-memory storage
   const { data: conversationData } = useQuery({
     queryKey: ['/api/ai/conversation'],
     staleTime: 1000 * 60 * 5, // 5 minutes
@@ -45,24 +51,6 @@ export function AIChat() {
         ...msg,
         timestamp: new Date(msg.timestamp)
       })));
-    }
-    
-    // Load saved conversations from localStorage
-    const saved = localStorage.getItem('ai-chat-history');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        setSavedConversations(parsed.map((conv: any) => ({
-          ...conv,
-          timestamp: new Date(conv.timestamp),
-          messages: conv.messages.map((msg: any) => ({
-            ...msg,
-            timestamp: new Date(msg.timestamp)
-          }))
-        })));
-      } catch (error) {
-        console.error('Failed to load chat history:', error);
-      }
     }
   }, [conversationData]);
 

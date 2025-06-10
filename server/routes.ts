@@ -4,7 +4,7 @@ import { storage } from "./storage";
 import { z } from "zod";
 import { 
   userSchema, connectionSchema, momentSchema,
-  userBadgeSchema, menstrualCycleSchema, milestoneSchema, planSchema
+  userBadgeSchema, menstrualCycleSchema, milestoneSchema, planSchema, chatConversationSchema
 } from "@shared/schema";
 import bcrypt from "bcryptjs";
 import session from "express-session";
@@ -2714,6 +2714,123 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error: any) {
       console.error("Error generating mini insight:", error);
       res.status(500).json({ error: error.message || "Failed to generate insight" });
+    }
+  });
+
+  // Chat conversation API endpoints
+  app.get("/api/chat/conversations", isAuthenticated, async (req, res) => {
+    try {
+      const userId = (req.session as any).userId as number;
+      const conversations = await storage.getChatConversations(userId);
+      res.json(conversations);
+    } catch (error) {
+      console.error("Error fetching chat conversations:", error);
+      res.status(500).json({ message: "Server error fetching conversations" });
+    }
+  });
+
+  app.get("/api/chat/conversations/:id", isAuthenticated, async (req, res) => {
+    try {
+      const userId = (req.session as any).userId as number;
+      const conversationId = parseInt(req.params.id);
+      
+      if (isNaN(conversationId)) {
+        return res.status(400).json({ message: "Invalid conversation ID" });
+      }
+      
+      const conversation = await storage.getChatConversation(conversationId);
+      
+      if (!conversation) {
+        return res.status(404).json({ message: "Conversation not found" });
+      }
+      
+      if (conversation.userId !== userId) {
+        return res.status(403).json({ message: "Unauthorized to view this conversation" });
+      }
+      
+      res.json(conversation);
+    } catch (error) {
+      console.error("Error fetching chat conversation:", error);
+      res.status(500).json({ message: "Server error fetching conversation" });
+    }
+  });
+
+  app.post("/api/chat/conversations", isAuthenticated, async (req, res) => {
+    try {
+      const userId = (req.session as any).userId as number;
+      const validatedData = chatConversationSchema.parse(req.body);
+      
+      const conversation = await storage.createChatConversation({
+        ...validatedData,
+        userId
+      });
+      
+      res.status(201).json(conversation);
+    } catch (error) {
+      console.error("Error creating chat conversation:", error);
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid conversation data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Server error creating conversation" });
+    }
+  });
+
+  app.put("/api/chat/conversations/:id", isAuthenticated, async (req, res) => {
+    try {
+      const userId = (req.session as any).userId as number;
+      const conversationId = parseInt(req.params.id);
+      
+      if (isNaN(conversationId)) {
+        return res.status(400).json({ message: "Invalid conversation ID" });
+      }
+      
+      const conversation = await storage.getChatConversation(conversationId);
+      
+      if (!conversation) {
+        return res.status(404).json({ message: "Conversation not found" });
+      }
+      
+      if (conversation.userId !== userId) {
+        return res.status(403).json({ message: "Unauthorized to update this conversation" });
+      }
+      
+      const updatedConversation = await storage.updateChatConversation(conversationId, req.body);
+      res.json(updatedConversation);
+    } catch (error) {
+      console.error("Error updating chat conversation:", error);
+      res.status(500).json({ message: "Server error updating conversation" });
+    }
+  });
+
+  app.delete("/api/chat/conversations/:id", isAuthenticated, async (req, res) => {
+    try {
+      const userId = (req.session as any).userId as number;
+      const conversationId = parseInt(req.params.id);
+      
+      if (isNaN(conversationId)) {
+        return res.status(400).json({ message: "Invalid conversation ID" });
+      }
+      
+      const conversation = await storage.getChatConversation(conversationId);
+      
+      if (!conversation) {
+        return res.status(404).json({ message: "Conversation not found" });
+      }
+      
+      if (conversation.userId !== userId) {
+        return res.status(403).json({ message: "Unauthorized to delete this conversation" });
+      }
+      
+      const deleted = await storage.deleteChatConversation(conversationId);
+      
+      if (deleted) {
+        res.json({ message: "Conversation deleted successfully" });
+      } else {
+        res.status(500).json({ message: "Failed to delete conversation" });
+      }
+    } catch (error) {
+      console.error("Error deleting chat conversation:", error);
+      res.status(500).json({ message: "Server error deleting conversation" });
     }
   });
 

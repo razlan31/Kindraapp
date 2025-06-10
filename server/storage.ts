@@ -6,7 +6,8 @@ import {
   UserBadge, InsertUserBadge, userBadges,
   MenstrualCycle, InsertMenstrualCycle, menstrualCycles,
   Milestone, InsertMilestone, milestones,
-  Plan, InsertPlan, plans
+  Plan, InsertPlan, plans,
+  ChatConversation, InsertChatConversation, chatConversations
 } from "@shared/schema";
 
 export interface IStorage {
