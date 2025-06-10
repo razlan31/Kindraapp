@@ -43,6 +43,23 @@ export function AIChat() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
+  // Load draft message from localStorage on component mount
+  useEffect(() => {
+    const savedDraft = localStorage.getItem('luna-ai-draft-message');
+    if (savedDraft) {
+      setMessage(savedDraft);
+    }
+  }, []);
+
+  // Save draft message to localStorage whenever message changes
+  useEffect(() => {
+    if (message.trim()) {
+      localStorage.setItem('luna-ai-draft-message', message);
+    } else {
+      localStorage.removeItem('luna-ai-draft-message');
+    }
+  }, [message]);
+
   // Load saved conversations
   const { data: savedConversations } = useQuery({
     queryKey: ['/api/chat/conversations'],
@@ -95,6 +112,8 @@ export function AIChat() {
       setConversation(prev => [...prev, newUserMessage, newAssistantMessage]);
       queryClient.invalidateQueries({ queryKey: ['/api/ai/conversation'] });
       setMessage("");
+      // Clear the draft message from localStorage after successful send
+      localStorage.removeItem('luna-ai-draft-message');
       
       toast({
         title: "Response received",
