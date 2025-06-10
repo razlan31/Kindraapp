@@ -49,22 +49,13 @@ function Router() {
     if (!loading) {
       if (!isAuthenticated && location !== "/login") {
         console.log("Redirecting to login page - user not authenticated");
-        window.location.href = "/login";
+        setLocation("/login");
       } else if (isAuthenticated && location === "/login") {
         console.log("Redirecting to home page - user is authenticated");
         setLocation("/");
       }
     }
   }, [isAuthenticated, loading, location, setLocation]);
-
-  // Show login page if not authenticated
-  if (!loading && !isAuthenticated) {
-    return (
-      <Switch>
-        <Route path="*" component={Login} />
-      </Switch>
-    );
-  }
 
   return (
     <Switch>

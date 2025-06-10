@@ -54,6 +54,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     loadUser();
+    
+    // Also check every 5 seconds for session changes
+    const interval = setInterval(loadUser, 5000);
+    return () => clearInterval(interval);
   }, []);
 
   const login = async (username: string, password: string, rememberMe?: boolean) => {

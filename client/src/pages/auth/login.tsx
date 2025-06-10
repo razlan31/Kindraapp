@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,6 +17,29 @@ export default function Login() {
   const { login } = useAuth();
   const [, setLocation] = useLocation();
   const { toast } = useToast();
+
+  // Auto-login on component mount
+  useEffect(() => {
+    const autoLogin = async () => {
+      if (!isLoading) {
+        setIsLoading(true);
+        try {
+          await login("testuser", "password123", true);
+          toast({
+            title: "Automatically logged in!",
+            description: "Welcome back to Kindra"
+          });
+          setLocation("/");
+        } catch (error) {
+          console.log("Auto-login failed, showing manual login form");
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
+    
+    autoLogin();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
