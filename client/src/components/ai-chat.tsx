@@ -23,6 +23,15 @@ interface ChatResponse {
   timestamp: string;
 }
 
+interface SavedConversation {
+  id: number;
+  userId: number;
+  title: string;
+  messages: ChatMessage[];
+  createdAt: string;
+  updatedAt: string;
+}
+
 export function AIChat() {
   const [message, setMessage] = useState("");
   const [conversation, setConversation] = useState<ChatMessage[]>([]);
@@ -57,37 +66,40 @@ export function AIChat() {
   // Chat mutation
   const chatMutation = useMutation({
     mutationFn: async (userMessage: string) => {
-      const response = await fetch('/api/ai/chat', {
+      const response = await apiRequest('/api/ai/chat', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({ message: userMessage })
+        body: JSON.stringify({ message: userMessage }),
       });
-      if (!response.ok) throw new Error('Failed to send message');
-      return response.json();
+      return response as ChatResponse;
     },
-    onSuccess: (data: any, userMessage) => {
+    onSuccess: (response) => {
       const newUserMessage: ChatMessage = {
         role: 'user',
-        content: userMessage,
+        content: message,
         timestamp: new Date()
       };
+      
       const newAssistantMessage: ChatMessage = {
         role: 'assistant',
-        content: data.message,
-        timestamp: new Date(data.timestamp)
+        content: response.message,
+        timestamp: new Date(response.timestamp)
       };
       
       setConversation(prev => [...prev, newUserMessage, newAssistantMessage]);
       queryClient.invalidateQueries({ queryKey: ['/api/ai/conversation'] });
+      setMessage("");
+      
+      toast({
+        title: "Response received",
+        description: "Your AI coach has responded",
+      });
     },
-    onError: () => {
+    onError: (error) => {
+      console.error('Chat error:', error);
       toast({
         title: "Error",
         description: "Failed to send message. Please try again.",
-        variant: "destructive"
+        variant: "destructive",
       });
     }
   });
@@ -95,371 +107,340 @@ export function AIChat() {
   // Clear conversation mutation
   const clearMutation = useMutation({
     mutationFn: async () => {
-      const response = await fetch('/api/ai/conversation', {
+      return await apiRequest('/api/ai/conversation', {
         method: 'DELETE',
-        credentials: 'include'
       });
-      if (!response.ok) throw new Error('Failed to clear conversation');
-      return response.json();
     },
     onSuccess: () => {
       setConversation([]);
       queryClient.invalidateQueries({ queryKey: ['/api/ai/conversation'] });
       toast({
         title: "Conversation cleared",
-        description: "Your chat history has been reset."
+        description: "Your chat history has been cleared",
       });
     }
   });
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+  // Save conversation mutation
+  const saveConversationMutation = useMutation({
+    mutationFn: async (conversationToSave: ChatMessage[]) => {
+      if (conversationToSave.length === 0) {
+        throw new Error("No conversation to save");
+      }
+      
+      const title = conversationToSave[0]?.content.slice(0, 50) + "..." || "New Conversation";
+      
+      return await apiRequest('/api/chat/conversations', {
+        method: 'POST',
+        body: JSON.stringify({
+          title,
+          messages: JSON.stringify(conversationToSave)
+        }),
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/chat/conversations'] });
+      toast({
+        title: "Conversation saved",
+        description: "Your chat has been saved to history",
+      });
+    }
+  });
+
+  // Load conversation mutation
+  const loadConversationMutation = useMutation({
+    mutationFn: async (conversationId: number) => {
+      return await apiRequest(`/api/chat/conversations/${conversationId}`);
+    },
+    onSuccess: (loadedConversation: SavedConversation) => {
+      const parsedMessages = JSON.parse(loadedConversation.messages as any).map((msg: any) => ({
+        ...msg,
+        timestamp: new Date(msg.timestamp)
+      }));
+      setConversation(parsedMessages);
+      setCurrentConversationId(loadedConversation.id);
+      setShowHistory(false);
+      toast({
+        title: "Conversation loaded",
+        description: "Previous conversation has been restored",
+      });
+    }
+  });
+
+  // Delete conversation mutation
+  const deleteConversationMutation = useMutation({
+    mutationFn: async (conversationId: number) => {
+      return await apiRequest(`/api/chat/conversations/${conversationId}`, {
+        method: 'DELETE',
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/chat/conversations'] });
+      toast({
+        title: "Conversation deleted",
+        description: "The conversation has been removed from history",
+      });
+    }
+  });
 
   useEffect(() => {
-    scrollToBottom();
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [conversation]);
 
-  const handleSendMessage = async () => {
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
     if (!message.trim() || chatMutation.isPending) return;
     
-    const userMessage = message.trim();
-    setMessage("");
+    chatMutation.mutate(message.trim());
     
     // Auto-resize textarea
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
     }
-    
-    chatMutation.mutate(userMessage);
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      handleSendMessage();
+      handleSubmit(e);
     }
   };
 
-  // Save current conversation to history
-  const saveConversation = () => {
-    if (conversation.length === 0) return;
-    
-    const title = conversation.length > 0 
-      ? conversation[0].content.substring(0, 50) + (conversation[0].content.length > 50 ? '...' : '')
-      : 'New Conversation';
-    
-    const newSaved = {
-      id: Date.now().toString(),
-      title,
-      messages: [...conversation],
-      timestamp: new Date()
-    };
-    
-    const updated = [newSaved, ...savedConversations].slice(0, 10); // Keep max 10 conversations
-    setSavedConversations(updated);
-    localStorage.setItem('ai-chat-history', JSON.stringify(updated));
-    
-    toast({
-      title: "Conversation saved",
-      description: "Your chat has been saved to history."
-    });
-  };
-
-  // Start a new chat
   const startNewChat = () => {
     if (conversation.length > 0) {
-      saveConversation();
+      saveConversationMutation.mutate(conversation);
     }
+    setConversation([]);
+    setCurrentConversationId(null);
+    setMessage("");
     clearMutation.mutate();
   };
 
-  // Load a conversation from history
-  const loadConversation = (savedConv: any) => {
-    clearMutation.mutate();
-    setTimeout(() => {
-      setConversation(savedConv.messages);
-      setShowHistory(false);
-      toast({
-        title: "Conversation loaded",
-        description: "Previous chat has been restored."
-      });
-    }, 100);
-  };
-
-  // Download conversation as text
   const downloadConversation = () => {
     if (conversation.length === 0) {
       toast({
-        title: "No conversation to download",
-        description: "Start a conversation first.",
-        variant: "destructive"
+        title: "No conversation",
+        description: "There's nothing to download yet",
+        variant: "destructive",
       });
       return;
     }
-    
+
     const formatDate = (date: Date) => {
-      return date.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      });
+      return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
     };
-    
-    let text = `Luna AI Relationship Coach - Conversation Export\n`;
-    text += `Exported on: ${formatDate(new Date())}\n`;
-    text += `Total messages: ${conversation.length}\n`;
-    text += `\n${'='.repeat(50)}\n\n`;
-    
-    conversation.forEach((msg, index) => {
-      const speaker = msg.role === 'user' ? 'You' : 'Luna';
-      text += `[${formatDate(msg.timestamp)}] ${speaker}:\n`;
-      text += `${msg.content}\n\n`;
-      
-      if (index < conversation.length - 1) {
-        text += `${'-'.repeat(30)}\n\n`;
-      }
-    });
-    
-    text += `\n${'='.repeat(50)}\n`;
-    text += `End of conversation export`;
-    
-    const blob = new Blob([text], { type: 'text/plain' });
+
+    const conversationText = conversation
+      .map((msg, index) => {
+        const speaker = msg.role === 'user' ? 'You' : 'AI Coach';
+        const timestamp = formatDate(msg.timestamp);
+        return `[${timestamp}] ${speaker}: ${msg.content}`;
+      })
+      .join('\n\n');
+
+    const blob = new Blob([conversationText], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `luna-chat-${new Date().toISOString().split('T')[0]}.txt`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `ai-conversation-${new Date().toISOString().split('T')[0]}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
     URL.revokeObjectURL(url);
-    
+
     toast({
-      title: "Conversation downloaded",
-      description: "Your chat has been saved as a text file."
+      title: "Download started",
+      description: "Your conversation has been downloaded",
     });
   };
 
-  // Delete a saved conversation
-  const deleteSavedConversation = (id: string) => {
-    const updated = savedConversations.filter(conv => conv.id !== id);
-    setSavedConversations(updated);
-    localStorage.setItem('ai-chat-history', JSON.stringify(updated));
-    
-    toast({
-      title: "Conversation deleted",
-      description: "Chat removed from history."
-    });
+  const loadConversation = (conv: SavedConversation) => {
+    loadConversationMutation.mutate(conv.id);
   };
 
-
+  const deleteConversation = (conversationId: number, e: React.MouseEvent) => {
+    e.stopPropagation();
+    deleteConversationMutation.mutate(conversationId);
+  };
 
   const formatTimestamp = (timestamp: Date) => {
-    return new Intl.DateTimeFormat('en-US', {
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true
-    }).format(timestamp);
+    return timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
   return (
-    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-2xl p-6 border border-blue-100 dark:border-blue-800">
-      {/* Modern Header */}
-      <div className="flex items-center gap-3 mb-6">
-        <div className="p-2 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-xl">
-          <MessageCircle className="h-5 w-5 text-white" />
-        </div>
-        <div>
-          <h3 className="font-semibold text-lg bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-            Luna - Your Relationship Coach
-          </h3>
-          <p className="text-sm text-muted-foreground">
-            Warm, wise guidance for meaningful connections
-          </p>
-        </div>
-        <div className="ml-auto flex items-center gap-2">
-          {/* New Chat Button */}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={startNewChat}
-            disabled={clearMutation.isPending}
-            className="h-8 px-3 text-muted-foreground hover:text-blue-600 transition-colors"
-            title="Start new chat"
-          >
-            <Plus className="h-4 w-4 mr-1" />
-            New
-          </Button>
-          
-          {/* History Button */}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setShowHistory(!showHistory)}
-            className="h-8 px-3 text-muted-foreground hover:text-blue-600 transition-colors"
-            title="Chat history"
-          >
-            <History className="h-4 w-4 mr-1" />
-            History
-          </Button>
-          
-          {/* Download Button */}
-          {conversation.length > 0 && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={downloadConversation}
-              className="h-8 px-3 text-muted-foreground hover:text-green-600 transition-colors"
-              title="Download conversation"
-            >
-              <Download className="h-4 w-4 mr-1" />
-              Export
-            </Button>
-          )}
-          
-          {/* Clear Button */}
-          {conversation.length > 0 && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => clearMutation.mutate()}
-              disabled={clearMutation.isPending}
-              className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive transition-colors"
-              title="Clear current chat"
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
-          )}
-        </div>
-      </div>
-
-      {/* History Panel */}
-      {showHistory && (
-        <div className="mb-4 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm rounded-xl border border-white/50 dark:border-gray-800/50 overflow-hidden shadow-lg">
-          <div className="p-4 border-b border-gray-100 dark:border-gray-800">
-            <h4 className="font-medium text-gray-900 dark:text-gray-100">Chat History</h4>
-            <p className="text-sm text-muted-foreground">Your recent conversations with Luna</p>
+    <div className="w-full max-w-4xl mx-auto space-y-4">
+      <Card>
+        <CardHeader className="pb-3">
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2">
+              <Heart className="h-5 w-5 text-pink-500" />
+              AI Relationship Coach
+              <Sparkles className="h-4 w-4 text-yellow-500" />
+            </CardTitle>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowHistory(!showHistory)}
+                className="flex items-center gap-2"
+              >
+                <History className="h-4 w-4" />
+                History
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={downloadConversation}
+                disabled={conversation.length === 0}
+                className="flex items-center gap-2"
+              >
+                <Download className="h-4 w-4" />
+                Download
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={startNewChat}
+                className="flex items-center gap-2"
+              >
+                <Plus className="h-4 w-4" />
+                New Chat
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => clearMutation.mutate()}
+                disabled={conversation.length === 0 || clearMutation.isPending}
+                className="flex items-center gap-2"
+              >
+                <Trash2 className="h-4 w-4" />
+                Clear
+              </Button>
+            </div>
           </div>
-          <div className="max-h-60 overflow-y-auto">
-            {savedConversations.length === 0 ? (
-              <div className="p-8 text-center">
-                <History className="h-8 w-8 mx-auto text-gray-400 mb-2" />
-                <p className="text-sm text-gray-500 dark:text-gray-400">No saved conversations yet</p>
-                <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">Start chatting to build your history</p>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {showHistory && (
+            <Card className="mb-4">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg">Conversation History</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {savedConversations && Array.isArray(savedConversations) && savedConversations.length > 0 ? (
+                  <div className="space-y-2 max-h-60 overflow-y-auto">
+                    {savedConversations.map((conv: SavedConversation) => (
+                      <div
+                        key={conv.id}
+                        className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50 cursor-pointer"
+                        onClick={() => loadConversation(conv)}
+                      >
+                        <div className="flex-1">
+                          <div className="font-medium text-sm">{conv.title}</div>
+                          <div className="text-xs text-gray-500">
+                            {new Date(conv.createdAt).toLocaleDateString()}
+                          </div>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={(e) => deleteConversation(conv.id, e)}
+                          className="text-red-500 hover:text-red-700"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-gray-500 text-center py-4">No saved conversations yet</p>
+                )}
+              </CardContent>
+            </Card>
+          )}
+
+          <div className="min-h-[400px] max-h-[500px] overflow-y-auto border rounded-lg p-4 space-y-4 bg-gray-50">
+            {conversation.length === 0 ? (
+              <div className="text-center text-gray-500 py-8">
+                <MessageCircle className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                <p className="text-lg font-medium mb-2">Welcome to your AI Relationship Coach</p>
+                <p className="text-sm">
+                  Ask me anything about your relationships, get personalized insights, 
+                  or discuss any relationship challenges you're facing.
+                </p>
               </div>
             ) : (
-              <div className="p-2 space-y-1">
-                {savedConversations.map((conv) => (
+              conversation.map((msg, index) => (
+                <div
+                  key={index}
+                  className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                >
                   <div
-                    key={conv.id}
-                    className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors group"
+                    className={`max-w-[80%] p-3 rounded-lg ${
+                      msg.role === 'user'
+                        ? 'bg-blue-500 text-white'
+                        : 'bg-white border'
+                    }`}
                   >
-                    <div 
-                      className="flex-1 cursor-pointer"
-                      onClick={() => loadConversation(conv)}
-                    >
-                      <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
-                        {conv.title}
-                      </p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">
-                        {conv.timestamp.toLocaleDateString()} • {conv.messages.length} messages
-                      </p>
+                    <div className="whitespace-pre-wrap text-sm leading-relaxed">
+                      {msg.content}
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => deleteSavedConversation(conv.id)}
-                      className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive transition-all"
+                    <div
+                      className={`text-xs mt-2 ${
+                        msg.role === 'user' ? 'text-blue-100' : 'text-gray-500'
+                      }`}
                     >
-                      <Trash2 className="h-3 w-3" />
-                    </Button>
+                      {formatTimestamp(msg.timestamp)}
+                    </div>
                   </div>
-                ))}
+                </div>
+              ))
+            )}
+            {chatMutation.isPending && (
+              <div className="flex justify-start">
+                <div className="bg-white border p-3 rounded-lg flex items-center gap-2">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <span className="text-sm text-gray-600">AI is thinking...</span>
+                </div>
               </div>
             )}
+            <div ref={messagesEndRef} />
           </div>
-        </div>
-      )}
 
-      {/* Enhanced Chat Container */}
-      <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-xl border border-white/50 dark:border-gray-800/50 overflow-hidden shadow-lg">
-        {/* Messages */}
-        <div className="h-80 overflow-y-auto p-4 space-y-4">
-          {conversation.length === 0 ? (
-            <div className="text-center py-12">
-              <div className="relative mb-4">
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-200 to-indigo-200 dark:from-blue-700 dark:to-indigo-700 rounded-full opacity-20 animate-pulse"></div>
-                <div className="relative w-16 h-16 rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 flex items-center justify-center mx-auto">
-                  <Sparkles className="h-8 w-8 text-white" />
-                </div>
-              </div>
-              <p className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed max-w-sm mx-auto">
-                Hi! I'm Luna, your personal relationship coach. I analyze your relationship patterns to help you build deeper connections and navigate challenges with wisdom and care. What would you like to explore together?
-              </p>
-            </div>
-          ) : (
-            conversation.map((msg, index) => (
-              <div
-                key={index}
-                className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-in slide-in-from-bottom-2 duration-300`}
-              >
-                <div
-                  className={`max-w-[85%] rounded-2xl px-4 py-3 shadow-sm ${
-                    msg.role === 'user'
-                      ? 'bg-gradient-to-r from-rose-500 to-pink-500 text-white'
-                      : 'bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100'
-                  }`}
-                >
-                  <p className="text-sm leading-relaxed whitespace-pre-wrap">
-                    {msg.content}
-                  </p>
-                  <p className="text-xs opacity-60 mt-2">
-                    {formatTimestamp(msg.timestamp)}
-                  </p>
-                </div>
-              </div>
-            ))
-          )}
-          
-          {chatMutation.isPending && (
-            <div className="flex justify-start">
-              <div className="bg-gray-50 dark:bg-gray-800 rounded-2xl px-4 py-3 max-w-[85%]">
-                <div className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-                  <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-                  <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"></div>
-                </div>
-              </div>
-            </div>
-          )}
-          
-          <div ref={messagesEndRef} />
-        </div>
-
-        {/* Input Area */}
-        <div className="border-t border-gray-50 dark:border-gray-800 p-4">
-          <div className="flex gap-3">
+          <form onSubmit={handleSubmit} className="space-y-3">
             <Textarea
               ref={textareaRef}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              onKeyDown={handleKeyPress}
-              placeholder="Share what's on your mind..."
-              className="flex-1 min-h-[40px] max-h-28 resize-none border-0 bg-gray-50 dark:bg-gray-800 focus:ring-1 focus:ring-rose-200 dark:focus:ring-rose-800 rounded-xl text-sm"
-              rows={1}
+              onKeyDown={handleKeyDown}
+              placeholder="Ask your AI relationship coach anything..."
+              className="min-h-[80px] resize-none"
+              disabled={chatMutation.isPending}
             />
-            <Button
-              onClick={handleSendMessage}
-              disabled={!message.trim() || chatMutation.isPending}
-              className="px-4 py-2 bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white border-0 rounded-xl shadow-sm"
-            >
-              <Send className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-      </div>
+            <div className="flex justify-between items-center">
+              <div className="flex gap-2">
+                <Badge variant="secondary" className="text-xs">
+                  Press Enter to send
+                </Badge>
+                <Badge variant="secondary" className="text-xs">
+                  Shift + Enter for new line
+                </Badge>
+              </div>
+              <Button
+                type="submit"
+                disabled={!message.trim() || chatMutation.isPending}
+                className="flex items-center gap-2"
+              >
+                {chatMutation.isPending ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Send className="h-4 w-4" />
+                )}
+                Send
+              </Button>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 }
