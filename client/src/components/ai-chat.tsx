@@ -45,7 +45,7 @@ export function AIChat() {
 
   // Load draft message from localStorage on component mount
   useEffect(() => {
-    const savedDraft = localStorage.getItem('kindra-ai-draft-message');
+    const savedDraft = localStorage.getItem('luna-ai-draft-message');
     if (savedDraft) {
       setMessage(savedDraft);
     }
@@ -54,9 +54,9 @@ export function AIChat() {
   // Save draft message to localStorage whenever message changes
   useEffect(() => {
     if (message.trim()) {
-      localStorage.setItem('kindra-ai-draft-message', message);
+      localStorage.setItem('luna-ai-draft-message', message);
     } else {
-      localStorage.removeItem('kindra-ai-draft-message');
+      localStorage.removeItem('luna-ai-draft-message');
     }
   }, [message]);
 
@@ -113,7 +113,7 @@ export function AIChat() {
       queryClient.invalidateQueries({ queryKey: ['/api/ai/conversation'] });
       setMessage("");
       // Clear the draft message from localStorage after successful send
-      localStorage.removeItem('kindra-ai-draft-message');
+      localStorage.removeItem('luna-ai-draft-message');
       
       toast({
         title: "Response received",
