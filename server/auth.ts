@@ -9,9 +9,18 @@ import { storage } from "./database-storage";
 export function getSession() {
   const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week default
   
-  // Use in-memory store for development to fix session persistence issues
+  // Use PostgreSQL store for persistent sessions
+  const pgStore = connectPg(session);
+  const sessionStore = new pgStore({
+    conString: process.env.DATABASE_URL,
+    createTableIfMissing: true,
+    ttl: sessionTtl / 1000, // Convert to seconds
+    tableName: "session",
+  });
+  
   return session({
     secret: process.env.SESSION_SECRET || 'your-secret-key',
+    store: sessionStore,
     resave: false,
     saveUninitialized: false,
     rolling: true,

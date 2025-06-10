@@ -18,32 +18,6 @@ export default function Login() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
 
-  // Auto-login on component mount
-  useEffect(() => {
-    const autoLogin = async () => {
-      console.log("Auto-login useEffect triggered, isLoading:", isLoading);
-      if (!isLoading) {
-        setIsLoading(true);
-        try {
-          console.log("Attempting auto-login...");
-          const result = await login("testuser", "password123", true);
-          console.log("Auto-login successful:", result);
-          toast({
-            title: "Automatically logged in!",
-            description: "Welcome back to Kindra"
-          });
-          setLocation("/");
-        } catch (error) {
-          console.log("Auto-login failed:", error);
-        } finally {
-          setIsLoading(false);
-        }
-      }
-    };
-    
-    autoLogin();
-  }, [login, setLocation, toast, isLoading]);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
