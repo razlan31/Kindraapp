@@ -61,6 +61,13 @@ export interface IStorage {
   createPlan(plan: InsertPlan): Promise<Plan>;
   updatePlan(id: number, data: Partial<Plan>): Promise<Plan | undefined>;
   deletePlan(id: number): Promise<boolean>;
+  
+  // Chat conversation operations
+  getChatConversations(userId: number): Promise<ChatConversation[]>;
+  getChatConversation(id: number): Promise<ChatConversation | undefined>;
+  createChatConversation(conversation: InsertChatConversation): Promise<ChatConversation>;
+  updateChatConversation(id: number, data: Partial<ChatConversation>): Promise<ChatConversation | undefined>;
+  deleteChatConversation(id: number): Promise<boolean>;
 }
 
 export class MemStorage implements IStorage {
