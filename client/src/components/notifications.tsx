@@ -8,6 +8,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { apiRequest } from "@/lib/queryClient";
 import { formatDistanceToNow } from "date-fns";
+import { getLevelInfo } from "@/lib/levelSystem";
 
 interface Notification {
   id: number;
@@ -182,29 +183,34 @@ export function UserPointsDisplay() {
     queryKey: ["/api/me"],
   });
 
-  if (!user?.points) return null;
+  const { data: userBadges } = useQuery({
+    queryKey: ["/api/user-badges"],
+  });
 
-  // Calculate level based on points (every 100 points = 1 level)
-  const level = Math.floor((user.points || 0) / 100) + 1;
-  const pointsInCurrentLevel = (user.points || 0) % 100;
-  const pointsToNextLevel = 100 - pointsInCurrentLevel;
+  if (!user) return null;
+
+  const levelInfo = getLevelInfo(user.points || 0);
+  
+  // Get the latest badge
+  const latestBadge = userBadges && Array.isArray(userBadges) && userBadges.length > 0 
+    ? userBadges.sort((a: any, b: any) => new Date(b.unlockedAt).getTime() - new Date(a.unlockedAt).getTime())[0]
+    : null;
 
   return (
-    <div className="flex items-center gap-2 text-sm">
-      <div className="flex items-center gap-1">
-        <Star className="h-4 w-4 text-yellow-500" />
-        <span className="font-medium">{user.points || 0}</span>
-        <span className="text-muted-foreground">pts</span>
-      </div>
+    <div className="flex items-center gap-3 text-sm">
+      {latestBadge && (
+        <div className="flex items-center gap-1">
+          <span className="text-lg">{latestBadge.badge?.icon || "🏆"}</span>
+          <span className="font-medium text-xs">{latestBadge.badge?.name}</span>
+        </div>
+      )}
       <div className="flex items-center gap-1">
         <Trophy className="h-4 w-4 text-amber-500" />
-        <span className="font-medium">Level {level}</span>
+        <div className="flex flex-col">
+          <span className="font-medium">Level {levelInfo.level}</span>
+          <span className="text-xs text-muted-foreground font-medium">{levelInfo.title}</span>
+        </div>
       </div>
-      {pointsToNextLevel > 0 && (
-        <span className="text-xs text-muted-foreground">
-          ({pointsToNextLevel} to next level)
-        </span>
-      )}
     </div>
   );
 }
