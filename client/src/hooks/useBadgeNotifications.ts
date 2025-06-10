@@ -17,6 +17,14 @@ export function useBadgeNotifications() {
   const { toast } = useToast();
   const lastNotificationId = useRef<number>(0);
 
+  // Initialize from localStorage on mount
+  useEffect(() => {
+    const stored = localStorage.getItem('lastSeenNotificationId');
+    if (stored) {
+      lastNotificationId.current = parseInt(stored, 10);
+    }
+  }, []);
+
   // Poll for notifications every 3 seconds
   const { data: notifications } = useQuery({
     queryKey: ["/api/notifications"],
@@ -39,6 +47,9 @@ export function useBadgeNotifications() {
       // Update the last seen notification ID
       const maxId = Math.max(...newBadgeNotifications.map(n => n.id));
       lastNotificationId.current = maxId;
+      
+      // Store in localStorage to persist across restarts
+      localStorage.setItem('lastSeenNotificationId', maxId.toString());
 
       // Show toast for each new badge notification
       newBadgeNotifications.forEach((notification: BadgeNotification) => {
