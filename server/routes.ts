@@ -1605,19 +1605,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
           }
         }
 
-        // New connection this month badge
+        // New connection this month badge - award for every new connection since it's repeatable
         if (criteria.newConnectionThisMonth) {
-          const thisMonth = new Date();
-          thisMonth.setDate(1);
-          thisMonth.setHours(0, 0, 0, 0);
-          
-          const newConnectionsThisMonth = connections.filter(c => 
-            c.createdAt && new Date(c.createdAt) >= thisMonth
-          );
-          
-          if (newConnectionsThisMonth.length > 0) {
-            // Only award if it's repeatable or user doesn't have this badge yet
-            if (badge.isRepeatable || !earnedBadgeIds.includes(badge.id)) {
+          // For "New Beginnings" badge, award it for every new connection created
+          // Since this function is called after creating a connection, we know a new one was just added
+          if (badge.isRepeatable) {
+            isEarned = true;
+          } else {
+            // For non-repeatable badges, check if they already have it
+            const thisMonth = new Date();
+            thisMonth.setDate(1);
+            thisMonth.setHours(0, 0, 0, 0);
+            
+            const newConnectionsThisMonth = connections.filter(c => 
+              c.createdAt && new Date(c.createdAt) >= thisMonth
+            );
+            
+            if (newConnectionsThisMonth.length > 0 && !earnedBadgeIds.includes(badge.id)) {
               isEarned = true;
             }
           }
