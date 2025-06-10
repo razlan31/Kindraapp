@@ -1568,7 +1568,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Skip cooldown for connection-based badges (First Contact should be immediate)
         if (badge.isRepeatable && earnedBadgeIds.includes(badge.id)) {
           // No cooldown for connection-based badges
-          if (criteria.connectionsAdded || criteria.firstConnection) {
+          if (criteria.connectionsAdded || criteria.firstConnection || criteria.newConnectionThisMonth) {
             // Allow immediate re-award for connection badges
           } else {
             const lastEarned = userBadges
