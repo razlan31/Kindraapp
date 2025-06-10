@@ -14,20 +14,29 @@ export function CompactBadgeDisplay() {
 
   console.log("🎯 CompactBadgeDisplay: User data:", user, "loading:", loading);
   
+  // Always show the component for debugging
+  console.log("🎯 CompactBadgeDisplay: Rendering component regardless of user state");
+  
   if (loading) {
     console.log("CompactBadgeDisplay: Loading, showing placeholder");
     return (
       <section className="px-3 py-2">
         <div className="bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-950/20 dark:to-orange-950/20 border border-yellow-200 dark:border-yellow-800/30 rounded-xl p-3">
-          <div className="animate-pulse">Loading badges...</div>
+          <div className="animate-pulse text-yellow-800 dark:text-yellow-200">Loading badges...</div>
         </div>
       </section>
     );
   }
   
   if (!user) {
-    console.log("CompactBadgeDisplay: No user, returning null");
-    return null;
+    console.log("CompactBadgeDisplay: No user, showing fallback");
+    return (
+      <section className="px-3 py-2">
+        <div className="bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-950/20 dark:to-orange-950/20 border border-yellow-200 dark:border-yellow-800/30 rounded-xl p-3">
+          <div className="text-yellow-800 dark:text-yellow-200">Please log in to view badges</div>
+        </div>
+      </section>
+    );
   }
 
   console.log("CompactBadgeDisplay: User has points:", user.points);
