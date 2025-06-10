@@ -1,15 +1,28 @@
-import { pgTable, text, serial, integer, boolean, timestamp, json } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, timestamp, json, varchar, index } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
-// Users
+// Session storage table for authentication
+export const sessions = pgTable(
+  "sessions",
+  {
+    sid: varchar("sid").primaryKey(),
+    sess: json("sess").notNull(),
+    expire: timestamp("expire").notNull(),
+  },
+  (table) => [index("IDX_session_expire").on(table.expire)],
+);
+
+// Users with Google auth support
 export const users = pgTable("users", {
-  id: serial("id").primaryKey(),
-  username: text("username").notNull().unique(),
-  password: text("password").notNull(),
-  email: text("email").notNull().unique(),
+  id: varchar("id").primaryKey().notNull(), // Changed to varchar for Google ID
+  email: varchar("email").unique(),
+  firstName: varchar("first_name"),
+  lastName: varchar("last_name"),
+  profileImageUrl: varchar("profile_image_url"),
+  username: text("username").unique(),
+  password: text("password"), // Made optional for OAuth users
   displayName: text("display_name"),
-  profileImage: text("profile_image"),
   birthday: timestamp("birthday"),
   zodiacSign: text("zodiac_sign"),
   loveLanguage: text("love_language"),
@@ -20,10 +33,12 @@ export const users = pgTable("users", {
   stripeCustomerId: text("stripe_customer_id"),
   stripeSubscriptionId: text("stripe_subscription_id"),
   createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-export const userSchema = createInsertSchema(users).omit({ id: true, createdAt: true });
+export const userSchema = createInsertSchema(users).omit({ createdAt: true, updatedAt: true });
 export type InsertUser = z.infer<typeof userSchema>;
+export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
 
 // Relationship stages enum

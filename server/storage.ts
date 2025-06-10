@@ -1,5 +1,5 @@
 import { 
-  User, InsertUser, users,
+  User, InsertUser, UpsertUser, users,
   Connection, InsertConnection, connections,
   Moment, InsertMoment, moments, 
   Badge, InsertBadge, badges,
@@ -12,11 +12,12 @@ import {
 
 export interface IStorage {
   // User operations
-  getUser(id: number): Promise<User | undefined>;
+  getUser(id: string): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   getUserByEmail(email: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
-  updateUser(id: number, data: Partial<User>): Promise<User | undefined>;
+  updateUser(id: string, data: Partial<User>): Promise<User | undefined>;
+  upsertUser(user: UpsertUser): Promise<User>;
 
   // Connection operations
   getConnection(id: number): Promise<Connection | undefined>;
@@ -1090,4 +1091,6 @@ export class MemStorage implements IStorage {
 
 import { PgStorage } from "./pg-storage";
 
-export const storage = new PgStorage();
+import { DatabaseStorage } from "./database-storage";
+
+export const storage = new DatabaseStorage();
