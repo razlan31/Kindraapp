@@ -272,6 +272,375 @@ export class DatabaseStorage implements IStorage {
     const result = await db.delete(chatConversations).where(eq(chatConversations.id, id));
     return (result.rowCount || 0) > 0;
   }
+
+  // Badge operations
+  async getAllBadges(): Promise<Badge[]> {
+    return db.select().from(badges);
+  }
+
+  async getUserBadges(userId: string): Promise<UserBadge[]> {
+    return db.select().from(userBadges).where(eq(userBadges.userId, userId));
+  }
+
+  async awardBadge(userId: string, badgeId: number): Promise<UserBadge> {
+    const [newUserBadge] = await db.insert(userBadges).values({
+      userId,
+      badgeId,
+      earnedAt: new Date()
+    }).returning();
+    return newUserBadge;
+  }
+
+  async initializeBadges(): Promise<void> {
+    const existingBadges = await this.getAllBadges();
+    if (existingBadges.length > 0) {
+      console.log(`🏆 Found ${existingBadges.length} existing badges in database`);
+      return;
+    }
+
+    console.log('🏆 Initializing badges in database...');
+    const defaultBadges = this.getDefaultBadges();
+    
+    for (const badge of defaultBadges) {
+      await db.insert(badges).values({
+        name: badge.name,
+        description: badge.description,
+        icon: badge.icon,
+        category: badge.category,
+        unlockCriteria: badge.unlockCriteria,
+        isRepeatable: badge.isRepeatable ?? false
+      });
+    }
+    
+    console.log(`🏆 Successfully initialized ${defaultBadges.length} badges in database`);
+  }
+
+  private getDefaultBadges() {
+    return [
+      // === GETTING STARTED BADGES ===
+      {
+        name: "First Steps",
+        description: "Created your first connection. Welcome to your relationship journey, gorgeous!",
+        icon: "👋",
+        category: "Getting Started",
+        unlockCriteria: { firstConnection: true },
+        isRepeatable: false,
+      },
+      {
+        name: "Profile Complete",
+        description: "Filled out your complete profile. Looking good, hottie!",
+        icon: "✅",
+        category: "Getting Started",
+        unlockCriteria: { profileComplete: true },
+        isRepeatable: false,
+      },
+      {
+        name: "First Moment",
+        description: "Logged your very first moment. The journey begins, babe!",
+        icon: "✨",
+        category: "Getting Started",
+        unlockCriteria: { firstMoment: true },
+        isRepeatable: false,
+      },
+      {
+        name: "Talking Stage Entry",
+        description: "Entered the talking stage. Time to see where this goes, angel!",
+        icon: "💬",
+        category: "Relationship Progress",
+        unlockCriteria: { stageProgression: "Talking" },
+        isRepeatable: false,
+      },
+
+      {
+        name: "It's Giving Situationship",
+        description: "Entered the complicated zone. We've all been there, babe!",
+        icon: "🤷",
+        category: "Relationship Progress",
+        unlockCriteria: { stageProgression: "Situationship" },
+        isRepeatable: false,
+      },
+      {
+        name: "Hard Launch",
+        description: "Made it official with Dating status. Time to post those couple pics, gorgeous!",
+        icon: "💕",
+        category: "Relationship Progress",
+        unlockCriteria: { stageProgression: "Dating" },
+        isRepeatable: false,
+      },
+      {
+        name: "Put a Ring on It",
+        description: "Reached Spouse status. Someone said yes to forever with you, hottie!",
+        icon: "💍",
+        category: "Relationship Progress",
+        unlockCriteria: { stageProgression: "Spouse" },
+        isRepeatable: false,
+      },
+      {
+        name: "Besties for Life",
+        description: "Upgraded to Best Friend status. Found your person, angel!",
+        icon: "👯",
+        category: "Relationship Progress",
+        unlockCriteria: { stageProgression: "Best Friend" },
+        isRepeatable: false,
+      },
+      {
+        name: "Friend Zone Survivor",
+        description: "Mastered the art of platonic connections. Friendship goals, bestie!",
+        icon: "🤝",
+        category: "Relationship Progress",
+        unlockCriteria: { stageProgression: "Friend" },
+        isRepeatable: false,
+      },
+
+      // === ACTIVITY TRACKING BADGES ===
+      {
+        name: "Chronically Online",
+        description: "Logged 10 moments. You're really invested in this digital diary life, hun!",
+        icon: "📱",
+        category: "Activity",
+        unlockCriteria: { momentsLogged: 10 },
+        isRepeatable: false,
+      },
+      {
+        name: "Data Goddess",
+        description: "Logged 50 moments. You love your analytics era, smart cookie!",
+        icon: "📊",
+        category: "Activity", 
+        unlockCriteria: { momentsLogged: 50 },
+        isRepeatable: false,
+      },
+      {
+        name: "No Life Energy",
+        description: "Logged 100 moments. Maybe touch some grass? JK, we love the dedication, babe!",
+        icon: "💻",
+        category: "Activity",
+        unlockCriteria: { momentsLogged: 100 },
+        isRepeatable: false,
+      },
+
+      // === POSITIVITY BADGES ===
+      {
+        name: "Good Vibes Only",
+        description: "Logged 10 positive moments. Main character energy activated, gorgeous!",
+        icon: "✨",
+        category: "Positivity",
+        unlockCriteria: { positiveMoments: 10 },
+        isRepeatable: false,
+      },
+      {
+        name: "Living My Best Life",
+        description: "20 positive moments logged. You're absolutely glowing, sexy!",
+        icon: "🌟",
+        category: "Positivity",
+        unlockCriteria: { positiveMoments: 20 },
+        isRepeatable: false,
+      },
+      {
+        name: "Serotonin Queen",
+        description: "50 positive moments! You're literally radiating happiness, hottie!",
+        icon: "👑",
+        category: "Positivity",
+        unlockCriteria: { positiveMoments: 50 },
+        isRepeatable: false,
+      },
+
+      // === GREEN FLAG COLLECTOR BADGES ===
+      {
+        name: "Green Flag Collector",
+        description: "Spotted 5 green flags. Your standards are immaculate, gorgeous!",
+        icon: "🟢",
+        category: "Healthy Relationships",
+        unlockCriteria: { greenFlags: 5 },
+        isRepeatable: false,
+      },
+      {
+        name: "Healthy Habits Era",
+        description: "15 green flags collected. You know your worth, queen!",
+        icon: "💚",
+        category: "Healthy Relationships",
+        unlockCriteria: { greenFlags: 15 },
+        isRepeatable: false,
+      },
+      {
+        name: "Boundary Goddess",
+        description: "25 green flags! You're the blueprint for healthy relationships, hot stuff!",
+        icon: "👸",
+        category: "Healthy Relationships", 
+        unlockCriteria: { greenFlags: 25 },
+        isRepeatable: false,
+      },
+
+      // === RED FLAG AWARENESS BADGES ===
+      {
+        name: "Red Flag Radar",
+        description: "Identified your first red flag. Trust your gut, beautiful!",
+        icon: "🚩",
+        category: "Self Protection",
+        unlockCriteria: { redFlags: 1 },
+        isRepeatable: false,
+      },
+      {
+        name: "Pattern Recognition Pro",
+        description: "Spotted 5 red flags total. Your intuition is chef's kiss, hottie!",
+        icon: "🎯",
+        category: "Self Protection",
+        unlockCriteria: { redFlags: 5 },
+        isRepeatable: false,
+      },
+
+      // === SOCIAL LIFE BADGES ===
+      {
+        name: "Social Butterfly",
+        description: "Added 3 connections. Your social circle is expanding, beautiful!",
+        icon: "🦋",
+        category: "Social Life",
+        unlockCriteria: { connectionsAdded: 3 },
+        isRepeatable: false,
+      },
+      {
+        name: "People Person",
+        description: "Managing 5 connections. You're everyone's favorite, babe!",
+        icon: "🌈",
+        category: "Social Life",
+        unlockCriteria: { connectionsAdded: 5 },
+        isRepeatable: false,
+      },
+      {
+        name: "Main Character Energy",
+        description: "10 connections tracked. You're living in a rom-com, gorgeous!",
+        icon: "💫",
+        category: "Social Life",
+        unlockCriteria: { connectionsAdded: 10 },
+        isRepeatable: false,
+      },
+
+      // === CONSISTENCY BADGES ===
+      {
+        name: "Daily Check-in Babe",
+        description: "Logged moments for 3 days straight. Building habits like a boss, gorgeous!",
+        icon: "📅",
+        category: "Consistency",
+        unlockCriteria: { streakDays: 3 },
+        isRepeatable: false,
+      },
+      {
+        name: "Habit Stacking Pro",
+        description: "7-day logging streak. You're in your routine era, hottie!",
+        icon: "⚡",
+        category: "Consistency",
+        unlockCriteria: { streakDays: 7 },
+        isRepeatable: false,
+      },
+      {
+        name: "Consistency Queen",
+        description: "30-day streak! You're literally unstoppable, sexy!",
+        icon: "👑",
+        category: "Consistency",
+        unlockCriteria: { streakDays: 30 },
+        isRepeatable: false,
+      },
+
+      // === COMMUNICATION BADGES ===
+      {
+        name: "Chatty Babe",
+        description: "Logged 10 communication moments. You love a good convo, angel!",
+        icon: "💬",
+        category: "Communication",
+        unlockCriteria: { communicationMoments: 10 },
+        isRepeatable: false,
+      },
+      {
+        name: "Emotional Intelligence Era",
+        description: "25 communication moments. You're the therapy friend, sexy!",
+        icon: "🧠",
+        category: "Communication",
+        unlockCriteria: { communicationMoments: 25 },
+        isRepeatable: false,
+      },
+
+      // === MILESTONE BADGES ===
+      {
+        name: "Anniversary Keeper",
+        description: "Reached your first relationship anniversary. Time flies when you're happy, angel!",
+        icon: "🎉",
+        category: "Milestones",
+        unlockCriteria: { anniversaries: 1 },
+        isRepeatable: false,
+      },
+      {
+        name: "Birthday Babe",
+        description: "Never forgot a birthday. You're the friend everyone needs, gorgeous!",
+        icon: "🎂",
+        category: "Milestones",
+        unlockCriteria: { birthdaysTracked: 3 },
+        isRepeatable: false,
+      },
+
+      // === PERSONAL GROWTH BADGES ===
+      {
+        name: "Self-Reflection Era",
+        description: "Added your first reflection. Growth mindset activated, beautiful!",
+        icon: "🪞",
+        category: "Personal Growth",
+        unlockCriteria: { reflections: 1 },
+        isRepeatable: false,
+      },
+      {
+        name: "Therapy Babe",
+        description: "10 reflections written. You're doing the inner work, gorgeous!",
+        icon: "✍️",
+        category: "Personal Growth",
+        unlockCriteria: { reflections: 10 },
+        isRepeatable: false,
+      },
+
+      // === ACHIEVEMENT BADGES ===
+      {
+        name: "Glow Up Documented",
+        description: "Progressed through 3 different relationship stages. Character development, babe!",
+        icon: "✨",
+        category: "Achievement",
+        unlockCriteria: { stageProgressions: 3 },
+        isRepeatable: false,
+      },
+      {
+        name: "That Girl Energy",
+        description: "Perfect balance of positive and growth moments. You're iconic, gorgeous!",
+        icon: "💅",
+        category: "Achievement",
+        unlockCriteria: { balancedLogging: true },
+        isRepeatable: false,
+      },
+
+      // === FUN BADGES ===
+      {
+        name: "Midnight Thoughts",
+        description: "Logged a moment after 11 PM. The vulnerability hits different at night, gorgeous!",
+        icon: "🌙",
+        category: "Fun",
+        unlockCriteria: { midnightLogging: true },
+        isRepeatable: false,
+      },
+      {
+        name: "Weekend Warrior",
+        description: "Most active tracking happens on weekends. That's when the tea spills, sexy!",
+        icon: "🍵",
+        category: "Fun",
+        unlockCriteria: { weekendWarrior: true },
+        isRepeatable: false,
+      },
+
+      // === LEGENDARY TIER BADGES ===
+      {
+        name: "Kindra Connoisseur",
+        description: "You've unlocked the full potential of relationship tracking. Legendary status, goddess!",
+        icon: "💎",
+        category: "Legendary",
+        unlockCriteria: { masterUser: true },
+        isRepeatable: false,
+      }
+    ];
+  }
 }
 
 export const storage = new DatabaseStorage();
