@@ -1605,6 +1605,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
           }
         }
 
+        // New connection this month badge
+        if (criteria.newConnectionThisMonth) {
+          const thisMonth = new Date();
+          thisMonth.setDate(1);
+          thisMonth.setHours(0, 0, 0, 0);
+          
+          const newConnectionsThisMonth = connections.filter(c => 
+            c.createdAt && new Date(c.createdAt) >= thisMonth
+          );
+          
+          if (newConnectionsThisMonth.length > 0) {
+            // Only award if it's repeatable or user doesn't have this badge yet
+            if (badge.isRepeatable || !earnedBadgeIds.includes(badge.id)) {
+              isEarned = true;
+            }
+          }
+        }
+
         // Stage progression badges
         if (criteria.stageProgression) {
           const hasStage = connections.some(c => c.relationshipStage === criteria.stageProgression);
