@@ -43,8 +43,8 @@ function getLevelCategory(level: number): string {
 
 function getModernTitle(index: number): string {
   const titles = ["Hottie", "Snack", "Smoke Show", "Main Character", "Icon", "Legend", "Mood", "Vibe", "Energy", "Aura",
-                 "It Girl", "Moment", "Slay Queen", "Boss Babe", "Fire", "Flame", "Heat", "Steam", "Spice", "Thirst Trap",
-                 "Catch", "Prize", "Treasure", "Gem", "Diamond", "Star", "Queen", "Goddess", "Deity", "Supreme Being",
+                 "Superstar", "Moment", "Champion", "Boss", "Fire", "Flame", "Heat", "Steam", "Spice", "Stunner",
+                 "Catch", "Prize", "Treasure", "Gem", "Diamond", "Star", "Royalty", "Excellence", "Perfection", "Supreme Being",
                  "Force of Nature", "Unstoppable", "Irresistible", "Magnetic", "Electric", "Dynamic", "Explosive", "Nuclear",
                  "Cosmic", "Galactic", "Universal", "Infinite", "Eternal", "Transcendent", "Omnipotent", "All-Powerful",
                  "Ultimate", "Maximum", "Peak Performance"];
@@ -53,51 +53,51 @@ function getModernTitle(index: number): string {
 
 function getLevelTitle(level: number): string {
   // Novice Levels (1-10)
-  if (level === 1) return "Flirt Newbie";
-  if (level === 2) return "Swipe Right Specialist";
+  if (level === 1) return "Connection Rookie";
+  if (level === 2) return "Vibe Apprentice";
   if (level === 3) return "Butterflies Expert";
-  if (level === 4) return "Text Game Rookie";
-  if (level === 5) return "First Date Survivor";
+  if (level === 4) return "Energy Reader";
+  if (level === 5) return "Moment Maker";
   if (level === 6) return "Spark Collector";
   if (level === 7) return "Banter Boss";
   if (level === 8) return "Chemistry Detective";
-  if (level === 9) return "Heart Eyes Haver";
-  if (level === 10) return "Crush Whisperer";
+  if (level === 9) return "Heart Tracker";
+  if (level === 10) return "Bond Builder";
 
   // Explorer Levels (11-25)
   if (level === 11) return "Spice Seeker";
   if (level === 12) return "Vibe Checker";
   if (level === 13) return "Steam Creator";
-  if (level === 14) return "Trust Fall Champion";
-  if (level === 15) return "Pillow Talk Pro";
+  if (level === 14) return "Trust Champion";
+  if (level === 15) return "Deep Talk Pro";
   if (level === 16) return "Secret Keeper";
   if (level === 17) return "Fire Starter";
-  if (level === 18) return "Romance Hacker";
+  if (level === 18) return "Romance Scholar";
   if (level === 19) return "Tension Builder";
   if (level === 20) return "Flame Tender";
   if (level === 21) return "Soul Scanner";
   if (level === 22) return "Love Engineer";
-  if (level === 23) return "Intimacy Influencer";
-  if (level === 24) return "Connection Connoisseur";
+  if (level === 23) return "Intimacy Expert";
+  if (level === 24) return "Connection Curator";
   if (level === 25) return "Passion Professor";
 
   // Adventurer Levels (26-50)
   if (level === 26) return "Hot & Bothered";
-  if (level === 27) return "Thirst Trap Master";
-  if (level === 28) return "Bedroom Eyes Pro";
+  if (level === 27) return "Total Catch";
+  if (level === 28) return "Main Character Energy";
   if (level === 29) return "Smooth Operator";
-  if (level === 30) return "Netflix & Chill Expert";
-  if (level === 31) return "Dirty Mind Reader";
-  if (level === 32) return "Shower Thought Genius";
-  if (level === 33) return "Kiss & Tell Artist";
+  if (level === 30) return "Quality Time Expert";
+  if (level === 31) return "Mind Reader";
+  if (level === 32) return "Conversation Genius";
+  if (level === 33) return "Memory Keeper";
   if (level === 34) return "Temperature Rising";
   if (level === 35) return "Heart Rate Monitor";
   if (level === 36) return "Tension Maximizer";
   if (level === 37) return "Pulse Accelerator";
   if (level === 38) return "Sweet Talker Supreme";
   if (level === 39) return "Eye Contact Champion";
-  if (level === 40) return "Touch Magician";
-  if (level === 41) return "Mood Setter Extraordinaire";
+  if (level === 40) return "Touch Expert";
+  if (level === 41) return "Mood Setter";
   if (level === 42) return "Anticipation Builder";
   if (level === 43) return "Desire Amplifier";
   if (level === 44) return "Chemistry Reactor";
