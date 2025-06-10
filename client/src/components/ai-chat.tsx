@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Send, MessageCircle, Trash2, Heart, Sparkles } from "lucide-react";
+import { Loader2, Send, MessageCircle, Trash2, Heart, Sparkles, Plus, History, Download } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 
@@ -26,6 +26,8 @@ interface ChatResponse {
 export function AIChat() {
   const [message, setMessage] = useState("");
   const [conversation, setConversation] = useState<ChatMessage[]>([]);
+  const [savedConversations, setSavedConversations] = useState<{id: string, title: string, messages: ChatMessage[], timestamp: Date}[]>([]);
+  const [showHistory, setShowHistory] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { toast } = useToast();
@@ -43,6 +45,24 @@ export function AIChat() {
         ...msg,
         timestamp: new Date(msg.timestamp)
       })));
+    }
+    
+    // Load saved conversations from localStorage
+    const saved = localStorage.getItem('ai-chat-history');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        setSavedConversations(parsed.map((conv: any) => ({
+          ...conv,
+          timestamp: new Date(conv.timestamp),
+          messages: conv.messages.map((msg: any) => ({
+            ...msg,
+            timestamp: new Date(msg.timestamp)
+          }))
+        })));
+      } catch (error) {
+        console.error('Failed to load chat history:', error);
+      }
     }
   }, [conversationData]);
 
@@ -133,6 +153,119 @@ export function AIChat() {
     }
   };
 
+  // Save current conversation to history
+  const saveConversation = () => {
+    if (conversation.length === 0) return;
+    
+    const title = conversation.length > 0 
+      ? conversation[0].content.substring(0, 50) + (conversation[0].content.length > 50 ? '...' : '')
+      : 'New Conversation';
+    
+    const newSaved = {
+      id: Date.now().toString(),
+      title,
+      messages: [...conversation],
+      timestamp: new Date()
+    };
+    
+    const updated = [newSaved, ...savedConversations].slice(0, 10); // Keep max 10 conversations
+    setSavedConversations(updated);
+    localStorage.setItem('ai-chat-history', JSON.stringify(updated));
+    
+    toast({
+      title: "Conversation saved",
+      description: "Your chat has been saved to history."
+    });
+  };
+
+  // Start a new chat
+  const startNewChat = () => {
+    if (conversation.length > 0) {
+      saveConversation();
+    }
+    clearMutation.mutate();
+  };
+
+  // Load a conversation from history
+  const loadConversation = (savedConv: any) => {
+    clearMutation.mutate();
+    setTimeout(() => {
+      setConversation(savedConv.messages);
+      setShowHistory(false);
+      toast({
+        title: "Conversation loaded",
+        description: "Previous chat has been restored."
+      });
+    }, 100);
+  };
+
+  // Download conversation as text
+  const downloadConversation = () => {
+    if (conversation.length === 0) {
+      toast({
+        title: "No conversation to download",
+        description: "Start a conversation first.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    const formatDate = (date: Date) => {
+      return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    };
+    
+    let text = `Luna AI Relationship Coach - Conversation Export\n`;
+    text += `Exported on: ${formatDate(new Date())}\n`;
+    text += `Total messages: ${conversation.length}\n`;
+    text += `\n${'='.repeat(50)}\n\n`;
+    
+    conversation.forEach((msg, index) => {
+      const speaker = msg.role === 'user' ? 'You' : 'Luna';
+      text += `[${formatDate(msg.timestamp)}] ${speaker}:\n`;
+      text += `${msg.content}\n\n`;
+      
+      if (index < conversation.length - 1) {
+        text += `${'-'.repeat(30)}\n\n`;
+      }
+    });
+    
+    text += `\n${'='.repeat(50)}\n`;
+    text += `End of conversation export`;
+    
+    const blob = new Blob([text], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `luna-chat-${new Date().toISOString().split('T')[0]}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    
+    toast({
+      title: "Conversation downloaded",
+      description: "Your chat has been saved as a text file."
+    });
+  };
+
+  // Delete a saved conversation
+  const deleteSavedConversation = (id: string) => {
+    const updated = savedConversations.filter(conv => conv.id !== id);
+    setSavedConversations(updated);
+    localStorage.setItem('ai-chat-history', JSON.stringify(updated));
+    
+    toast({
+      title: "Conversation deleted",
+      description: "Chat removed from history."
+    });
+  };
+
 
 
   const formatTimestamp = (timestamp: Date) => {
@@ -158,20 +291,109 @@ export function AIChat() {
             Warm, wise guidance for meaningful connections
           </p>
         </div>
-        {conversation.length > 0 && (
-          <div className="ml-auto">
+        <div className="ml-auto flex items-center gap-2">
+          {/* New Chat Button */}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={startNewChat}
+            disabled={clearMutation.isPending}
+            className="h-8 px-3 text-muted-foreground hover:text-blue-600 transition-colors"
+            title="Start new chat"
+          >
+            <Plus className="h-4 w-4 mr-1" />
+            New
+          </Button>
+          
+          {/* History Button */}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setShowHistory(!showHistory)}
+            className="h-8 px-3 text-muted-foreground hover:text-blue-600 transition-colors"
+            title="Chat history"
+          >
+            <History className="h-4 w-4 mr-1" />
+            History
+          </Button>
+          
+          {/* Download Button */}
+          {conversation.length > 0 && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={downloadConversation}
+              className="h-8 px-3 text-muted-foreground hover:text-green-600 transition-colors"
+              title="Download conversation"
+            >
+              <Download className="h-4 w-4 mr-1" />
+              Export
+            </Button>
+          )}
+          
+          {/* Clear Button */}
+          {conversation.length > 0 && (
             <Button
               variant="ghost"
               size="sm"
               onClick={() => clearMutation.mutate()}
               disabled={clearMutation.isPending}
               className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive transition-colors"
+              title="Clear current chat"
             >
               <Trash2 className="h-4 w-4" />
             </Button>
-          </div>
-        )}
+          )}
+        </div>
       </div>
+
+      {/* History Panel */}
+      {showHistory && (
+        <div className="mb-4 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm rounded-xl border border-white/50 dark:border-gray-800/50 overflow-hidden shadow-lg">
+          <div className="p-4 border-b border-gray-100 dark:border-gray-800">
+            <h4 className="font-medium text-gray-900 dark:text-gray-100">Chat History</h4>
+            <p className="text-sm text-muted-foreground">Your recent conversations with Luna</p>
+          </div>
+          <div className="max-h-60 overflow-y-auto">
+            {savedConversations.length === 0 ? (
+              <div className="p-8 text-center">
+                <History className="h-8 w-8 mx-auto text-gray-400 mb-2" />
+                <p className="text-sm text-gray-500 dark:text-gray-400">No saved conversations yet</p>
+                <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">Start chatting to build your history</p>
+              </div>
+            ) : (
+              <div className="p-2 space-y-1">
+                {savedConversations.map((conv) => (
+                  <div
+                    key={conv.id}
+                    className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors group"
+                  >
+                    <div 
+                      className="flex-1 cursor-pointer"
+                      onClick={() => loadConversation(conv)}
+                    >
+                      <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                        {conv.title}
+                      </p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        {conv.timestamp.toLocaleDateString()} • {conv.messages.length} messages
+                      </p>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => deleteSavedConversation(conv.id)}
+                      className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive transition-all"
+                    >
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Enhanced Chat Container */}
       <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-xl border border-white/50 dark:border-gray-800/50 overflow-hidden shadow-lg">

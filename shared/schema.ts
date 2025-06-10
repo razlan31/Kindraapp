@@ -282,3 +282,17 @@ export const planSchema = createInsertSchema(plans).omit({ id: true }).extend({
 });
 export type InsertPlan = z.infer<typeof planSchema>;
 export type Plan = typeof plans.$inferSelect;
+
+// Chat conversations table for AI coach history
+export const chatConversations = pgTable("chat_conversations", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  title: text("title").notNull(),
+  messages: json("messages").notNull(), // Array of ChatMessage objects
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const chatConversationSchema = createInsertSchema(chatConversations).omit({ id: true });
+export type InsertChatConversation = z.infer<typeof chatConversationSchema>;
+export type ChatConversation = typeof chatConversations.$inferSelect;
