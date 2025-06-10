@@ -295,8 +295,8 @@ export function AIChat() {
 
   return (
     <div className="w-full max-w-4xl mx-auto space-y-4">
-      <Card className="bg-gradient-to-br from-purple-50 via-pink-50 to-indigo-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-indigo-900/20 border-0 shadow-2xl overflow-hidden">
-        <CardHeader className="pb-3 bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 text-white">
+      <Card className="bg-gradient-to-br from-blue-50 via-slate-50 to-indigo-50 dark:from-gray-900 dark:via-blue-900/10 dark:to-indigo-900/10 border border-blue-200/20 dark:border-blue-700/20 shadow-lg overflow-hidden">
+        <CardHeader className="pb-3 bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-600 text-white">
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-3">
               <div className="p-2 bg-white/20 rounded-full backdrop-blur-sm">
@@ -306,7 +306,7 @@ export function AIChat() {
                 <span className="text-xl font-bold">Luna AI Coach</span>
                 <span className="text-sm opacity-90 font-normal">Your Relationship Assistant</span>
               </div>
-              <Sparkles className="h-5 w-5 text-yellow-300 animate-pulse" />
+              <Sparkles className="h-5 w-5 text-blue-200" />
             </CardTitle>
             <TooltipProvider>
               <div className="flex gap-1">
@@ -371,7 +371,7 @@ export function AIChat() {
             </TooltipProvider>
           </div>
         </CardHeader>
-        <CardContent className="space-y-4 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm">
+        <CardContent className="space-y-4 bg-white/60 dark:bg-gray-900/60 backdrop-blur-sm">
           {showHistory && (
             <Card className="mb-4">
               <CardHeader className="pb-3">
@@ -410,47 +410,47 @@ export function AIChat() {
             </Card>
           )}
 
-          <div className="min-h-[400px] max-h-[500px] overflow-y-auto rounded-xl p-6 space-y-4 bg-gradient-to-br from-white via-purple-50/30 to-pink-50/30 dark:from-gray-800 dark:via-purple-900/20 dark:to-pink-900/20 border-0">
+          <div className="min-h-[400px] max-h-[500px] overflow-y-auto rounded-xl p-6 space-y-4 bg-gradient-to-br from-white via-blue-50/20 to-slate-50/30 dark:from-gray-800 dark:via-blue-900/10 dark:to-slate-900/20 border-0">
             {conversation.length === 0 ? (
-              <div className="text-center py-16">
-                <div className="relative mb-8">
-                  <div className="absolute inset-0 bg-gradient-to-r from-purple-400 via-pink-400 to-indigo-400 rounded-full blur-2xl opacity-20 animate-pulse"></div>
-                  <div className="relative bg-gradient-to-r from-purple-500 via-pink-500 to-indigo-500 p-6 rounded-full inline-block shadow-2xl">
-                    <MessageCircle className="h-16 w-16 text-white" />
+              <div className="text-center py-12">
+                <div className="relative mb-6">
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-full blur-xl opacity-10"></div>
+                  <div className="relative bg-gradient-to-r from-blue-500 to-indigo-600 p-4 rounded-full inline-block shadow-lg">
+                    <MessageCircle className="h-12 w-12 text-white" />
                   </div>
                 </div>
-                <h3 className="text-3xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 bg-clip-text text-transparent mb-4">
+                <h3 className="text-2xl font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-3">
                   Luna AI Coach
                 </h3>
-                <p className="text-gray-600 dark:text-gray-300 mb-8 text-lg max-w-lg mx-auto">
-                  Your intelligent relationship companion, ready to provide personalized insights and guidance
+                <p className="text-gray-600 dark:text-gray-300 mb-6 max-w-md mx-auto">
+                  Your intelligent relationship companion for personalized insights and guidance
                 </p>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-2xl mx-auto">
-                  <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-xl p-4 border border-purple-200/30 dark:border-purple-700/30 shadow-lg">
-                    <div className="bg-gradient-to-br from-purple-500 to-purple-600 p-3 rounded-lg mb-3 inline-block">
-                      <Heart className="h-6 w-6 text-white" />
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-lg mx-auto">
+                  <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-lg p-3 border border-blue-100/30 dark:border-blue-800/30">
+                    <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-2 rounded-md mb-2 inline-block">
+                      <Heart className="h-4 w-4 text-white" />
                     </div>
-                    <h4 className="font-semibold text-gray-800 dark:text-gray-200 mb-1">Deep Insights</h4>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">Analyze your relationship patterns</p>
+                    <h4 className="font-medium text-gray-800 dark:text-gray-200 text-sm mb-1">Deep Insights</h4>
+                    <p className="text-xs text-gray-600 dark:text-gray-400">Analyze relationship patterns</p>
                   </div>
-                  <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-xl p-4 border border-pink-200/30 dark:border-pink-700/30 shadow-lg">
-                    <div className="bg-gradient-to-br from-pink-500 to-pink-600 p-3 rounded-lg mb-3 inline-block">
-                      <Sparkles className="h-6 w-6 text-white" />
+                  <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-lg p-3 border border-blue-100/30 dark:border-blue-800/30">
+                    <div className="bg-gradient-to-br from-indigo-500 to-indigo-600 p-2 rounded-md mb-2 inline-block">
+                      <Sparkles className="h-4 w-4 text-white" />
                     </div>
-                    <h4 className="font-semibold text-gray-800 dark:text-gray-200 mb-1">Smart Advice</h4>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">Personalized recommendations</p>
+                    <h4 className="font-medium text-gray-800 dark:text-gray-200 text-sm mb-1">Smart Advice</h4>
+                    <p className="text-xs text-gray-600 dark:text-gray-400">Personalized recommendations</p>
                   </div>
-                  <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm rounded-xl p-4 border border-indigo-200/30 dark:border-indigo-700/30 shadow-lg">
-                    <div className="bg-gradient-to-br from-indigo-500 to-indigo-600 p-3 rounded-lg mb-3 inline-block">
-                      <MessageCircle className="h-6 w-6 text-white" />
+                  <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-lg p-3 border border-blue-100/30 dark:border-blue-800/30">
+                    <div className="bg-gradient-to-br from-slate-500 to-slate-600 p-2 rounded-md mb-2 inline-block">
+                      <MessageCircle className="h-4 w-4 text-white" />
                     </div>
-                    <h4 className="font-semibold text-gray-800 dark:text-gray-200 mb-1">Always Here</h4>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">24/7 relationship support</p>
+                    <h4 className="font-medium text-gray-800 dark:text-gray-200 text-sm mb-1">Always Here</h4>
+                    <p className="text-xs text-gray-600 dark:text-gray-400">24/7 relationship support</p>
                   </div>
                 </div>
-                <div className="mt-8 bg-gradient-to-r from-purple-50 via-pink-50 to-indigo-50 dark:from-purple-900/30 dark:via-pink-900/30 dark:to-indigo-900/30 rounded-xl p-4 border border-purple-200/50 dark:border-purple-700/50">
+                <div className="mt-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg p-3 border border-blue-100/50 dark:border-blue-800/50">
                   <p className="text-sm text-gray-600 dark:text-gray-400 italic">
-                    "Start by sharing what's on your mind about your relationships..."
+                    "Share what's on your mind about your relationships..."
                   </p>
                 </div>
               </div>
