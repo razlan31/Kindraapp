@@ -66,11 +66,17 @@ export function AIChat() {
   // Chat mutation
   const chatMutation = useMutation({
     mutationFn: async (userMessage: string) => {
-      const response = await apiRequest('/api/ai/chat', {
+      const response = await fetch('/api/ai/chat', {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({ message: userMessage }),
       });
-      return response as ChatResponse;
+      if (!response.ok) {
+        throw new Error('Failed to send message');
+      }
+      return await response.json() as ChatResponse;
     },
     onSuccess: (response) => {
       const newUserMessage: ChatMessage = {
@@ -107,9 +113,13 @@ export function AIChat() {
   // Clear conversation mutation
   const clearMutation = useMutation({
     mutationFn: async () => {
-      return await apiRequest('/api/ai/conversation', {
+      const response = await fetch('/api/ai/conversation', {
         method: 'DELETE',
       });
+      if (!response.ok) {
+        throw new Error('Failed to clear conversation');
+      }
+      return await response.json();
     },
     onSuccess: () => {
       setConversation([]);
@@ -130,13 +140,20 @@ export function AIChat() {
       
       const title = conversationToSave[0]?.content.slice(0, 50) + "..." || "New Conversation";
       
-      return await apiRequest('/api/chat/conversations', {
+      const response = await fetch('/api/chat/conversations', {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({
           title,
           messages: JSON.stringify(conversationToSave)
         }),
       });
+      if (!response.ok) {
+        throw new Error('Failed to save conversation');
+      }
+      return await response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/chat/conversations'] });
@@ -150,7 +167,11 @@ export function AIChat() {
   // Load conversation mutation
   const loadConversationMutation = useMutation({
     mutationFn: async (conversationId: number) => {
-      return await apiRequest(`/api/chat/conversations/${conversationId}`);
+      const response = await fetch(`/api/chat/conversations/${conversationId}`);
+      if (!response.ok) {
+        throw new Error('Failed to load conversation');
+      }
+      return await response.json() as SavedConversation;
     },
     onSuccess: (loadedConversation: SavedConversation) => {
       const parsedMessages = JSON.parse(loadedConversation.messages as any).map((msg: any) => ({
@@ -170,9 +191,13 @@ export function AIChat() {
   // Delete conversation mutation
   const deleteConversationMutation = useMutation({
     mutationFn: async (conversationId: number) => {
-      return await apiRequest(`/api/chat/conversations/${conversationId}`, {
+      const response = await fetch(`/api/chat/conversations/${conversationId}`, {
         method: 'DELETE',
       });
+      if (!response.ok) {
+        throw new Error('Failed to delete conversation');
+      }
+      return await response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/chat/conversations'] });
@@ -358,14 +383,15 @@ export function AIChat() {
             </Card>
           )}
 
-          <div className="min-h-[400px] max-h-[500px] overflow-y-auto border rounded-lg p-4 space-y-4 bg-gray-50">
+          <div className="min-h-[400px] max-h-[500px] overflow-y-auto rounded-lg p-4 space-y-4 bg-gradient-to-b from-slate-50 to-white border">
             {conversation.length === 0 ? (
-              <div className="text-center text-gray-500 py-8">
-                <MessageCircle className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p className="text-lg font-medium mb-2">Welcome to your AI Relationship Coach</p>
-                <p className="text-sm">
-                  Ask me anything about your relationships, get personalized insights, 
-                  or discuss any relationship challenges you're facing.
+              <div className="text-center text-gray-500 py-12">
+                <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-pink-100 to-purple-100 rounded-full flex items-center justify-center">
+                  <Heart className="h-8 w-8 text-pink-500" />
+                </div>
+                <h3 className="text-lg font-semibold mb-2 text-gray-700">Your AI Relationship Coach</h3>
+                <p className="text-sm text-gray-500 max-w-md mx-auto">
+                  Share your thoughts, get personalized insights, and receive guidance for your relationships.
                 </p>
               </div>
             ) : (
@@ -375,18 +401,18 @@ export function AIChat() {
                   className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
                   <div
-                    className={`max-w-[80%] p-3 rounded-lg ${
+                    className={`max-w-[85%] p-4 rounded-2xl ${
                       msg.role === 'user'
-                        ? 'bg-blue-500 text-white'
-                        : 'bg-white border'
+                        ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg'
+                        : 'bg-white border border-gray-200 shadow-sm'
                     }`}
                   >
-                    <div className="whitespace-pre-wrap text-sm leading-relaxed">
+                    <div className="text-sm leading-relaxed whitespace-pre-wrap">
                       {msg.content}
                     </div>
                     <div
                       className={`text-xs mt-2 ${
-                        msg.role === 'user' ? 'text-blue-100' : 'text-gray-500'
+                        msg.role === 'user' ? 'text-blue-100' : 'text-gray-400'
                       }`}
                     >
                       {formatTimestamp(msg.timestamp)}
@@ -397,8 +423,8 @@ export function AIChat() {
             )}
             {chatMutation.isPending && (
               <div className="flex justify-start">
-                <div className="bg-white border p-3 rounded-lg flex items-center gap-2">
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                <div className="bg-white border border-gray-200 p-4 rounded-2xl flex items-center gap-3 shadow-sm">
+                  <Loader2 className="h-4 w-4 animate-spin text-pink-500" />
                   <span className="text-sm text-gray-600">AI is thinking...</span>
                 </div>
               </div>
@@ -406,39 +432,29 @@ export function AIChat() {
             <div ref={messagesEndRef} />
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-3">
+          <div className="flex gap-3 items-end">
             <Textarea
               ref={textareaRef}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Ask your AI relationship coach anything..."
-              className="min-h-[80px] resize-none"
+              className="flex-1 min-h-[60px] max-h-[120px] resize-none"
               disabled={chatMutation.isPending}
             />
-            <div className="flex justify-between items-center">
-              <div className="flex gap-2">
-                <Badge variant="secondary" className="text-xs">
-                  Press Enter to send
-                </Badge>
-                <Badge variant="secondary" className="text-xs">
-                  Shift + Enter for new line
-                </Badge>
-              </div>
-              <Button
-                type="submit"
-                disabled={!message.trim() || chatMutation.isPending}
-                className="flex items-center gap-2"
-              >
-                {chatMutation.isPending ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <Send className="h-4 w-4" />
-                )}
-                Send
-              </Button>
-            </div>
-          </form>
+            <Button
+              onClick={handleSubmit}
+              disabled={!message.trim() || chatMutation.isPending}
+              className="h-[60px] px-6 flex items-center gap-2"
+            >
+              {chatMutation.isPending ? (
+                <Loader2 className="h-5 w-5 animate-spin" />
+              ) : (
+                <Send className="h-5 w-5" />
+              )}
+              Send
+            </Button>
+          </div>
         </CardContent>
       </Card>
     </div>
