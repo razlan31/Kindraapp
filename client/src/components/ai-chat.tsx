@@ -424,23 +424,23 @@ export function AIChat() {
                   </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl mx-auto mb-8">
-                  <div className="bg-gradient-to-br from-rose-50 to-pink-50 dark:from-rose-900/20 dark:to-pink-900/20 rounded-lg p-4 border border-rose-200/50 dark:border-rose-700/50">
-                    <Heart className="h-5 w-5 text-rose-500 mb-2" />
-                    <h4 className="font-medium text-gray-900 dark:text-white text-sm mb-1 break-words">Deep Analysis</h4>
-                    <p className="text-gray-600 dark:text-gray-400 text-xs leading-relaxed break-words">Understand relationship patterns</p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto mb-8">
+                  <div className="bg-gradient-to-br from-rose-50 to-pink-50 dark:from-rose-900/20 dark:to-pink-900/20 rounded-lg p-6 border border-rose-200/50 dark:border-rose-700/50 text-center">
+                    <Heart className="h-6 w-6 text-rose-500 mb-3 mx-auto" />
+                    <h4 className="font-semibold text-gray-900 dark:text-white text-base mb-2">Deep Analysis</h4>
+                    <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">Understand relationship patterns</p>
                   </div>
                   
-                  <div className="bg-gradient-to-br from-violet-50 to-purple-50 dark:from-violet-900/20 dark:to-purple-900/20 rounded-lg p-4 border border-violet-200/50 dark:border-violet-700/50">
-                    <Sparkles className="h-5 w-5 text-violet-500 mb-2" />
-                    <h4 className="font-medium text-gray-900 dark:text-white text-sm mb-1 break-words">Smart Guidance</h4>
-                    <p className="text-gray-600 dark:text-gray-400 text-xs leading-relaxed break-words">Personalized recommendations</p>
+                  <div className="bg-gradient-to-br from-violet-50 to-purple-50 dark:from-violet-900/20 dark:to-purple-900/20 rounded-lg p-6 border border-violet-200/50 dark:border-violet-700/50 text-center">
+                    <Sparkles className="h-6 w-6 text-violet-500 mb-3 mx-auto" />
+                    <h4 className="font-semibold text-gray-900 dark:text-white text-base mb-2">Smart Guidance</h4>
+                    <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">Personalized recommendations</p>
                   </div>
                   
-                  <div className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-lg p-4 border border-purple-200/50 dark:border-purple-700/50">
-                    <MessageCircle className="h-5 w-5 text-purple-500 mb-2" />
-                    <h4 className="font-medium text-gray-900 dark:text-white text-sm mb-1 break-words">Always Available</h4>
-                    <p className="text-gray-600 dark:text-gray-400 text-xs leading-relaxed break-words">24/7 emotional support</p>
+                  <div className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-lg p-6 border border-purple-200/50 dark:border-purple-700/50 text-center">
+                    <MessageCircle className="h-6 w-6 text-purple-500 mb-3 mx-auto" />
+                    <h4 className="font-semibold text-gray-900 dark:text-white text-base mb-2">Always Available</h4>
+                    <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">24/7 emotional support</p>
                   </div>
                 </div>
 
