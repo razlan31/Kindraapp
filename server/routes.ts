@@ -238,21 +238,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
-  app.get("/api/me", googleAuthMiddleware, async (req, res) => {
+  app.get("/api/me", async (req, res) => {
     try {
-      const user = req.user as any;
-      const userId = user?.claims?.sub;
-      
-      if (!userId) {
-        return res.status(404).json({ message: "User not found" });
+      // Try Google OAuth first
+      if (req.isAuthenticated && req.isAuthenticated()) {
+        const user = req.user as any;
+        if (user) {
+          return res.status(200).json(user);
+        }
       }
       
-      const dbUser = await storage.getUser(userId);
-      if (!dbUser) {
-        return res.status(404).json({ message: "User not found in database" });
+      // Try session-based auth
+      const session = req.session as any;
+      if (session?.userId) {
+        const dbUser = await storage.getUser(session.userId.toString());
+        if (dbUser) {
+          // Remove password from response
+          const { password, ...userWithoutPassword } = dbUser;
+          return res.status(200).json(userWithoutPassword);
+        }
       }
       
-      res.status(200).json(dbUser);
+      // No authentication found
+      res.status(401).json({ message: "Authentication required" });
     } catch (error) {
       console.error("Error fetching user:", error);
       res.status(500).json({ message: "Server error" });
