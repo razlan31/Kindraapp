@@ -29,15 +29,20 @@ export function CompactBadgeDisplay() {
 
   // Fetch user badges
   const { data: userBadges = [] } = useQuery<UserBadge[]>({
-    queryKey: ["/api/user-badges"],
+    queryKey: ["/api/badges"],
   });
 
   // Fetch all badges to get badge details
   const { data: badges = [] } = useQuery<Badge[]>({
-    queryKey: ["/api/badges"],
+    queryKey: ["/api/badges/all"],
   });
 
-  if (!user) return null;
+  console.log("CompactBadgeDisplay: Component mounted, user:", user?.points, "userBadges:", userBadges?.length, "badges:", badges?.length);
+  
+  if (!user) {
+    console.log("CompactBadgeDisplay: No user data, returning null");
+    return null;
+  }
 
   // Calculate level based on points
   const level = Math.floor((user.points || 0) / 100) + 1;
