@@ -9,11 +9,28 @@ interface User {
 }
 
 export function CompactBadgeDisplay() {
-  const { user } = useAuth() as { user: User | null };
+  console.log("🎯 CompactBadgeDisplay: Component is rendering");
+  const { user, loading } = useAuth();
 
+  console.log("🎯 CompactBadgeDisplay: User data:", user, "loading:", loading);
+  
+  if (loading) {
+    console.log("CompactBadgeDisplay: Loading, showing placeholder");
+    return (
+      <section className="px-3 py-2">
+        <div className="bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-950/20 dark:to-orange-950/20 border border-yellow-200 dark:border-yellow-800/30 rounded-xl p-3">
+          <div className="animate-pulse">Loading badges...</div>
+        </div>
+      </section>
+    );
+  }
+  
   if (!user) {
+    console.log("CompactBadgeDisplay: No user, returning null");
     return null;
   }
+
+  console.log("CompactBadgeDisplay: User has points:", user.points);
 
   // Calculate level based on points
   const level = Math.floor((user.points || 0) / 100) + 1;

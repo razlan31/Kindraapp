@@ -345,16 +345,13 @@ function MenstrualCycleTracker() {
         )}
       </div>
     </section>
-  );
-}
 
-  return (
-    <div className="max-w-md mx-auto bg-white dark:bg-neutral-900 min-h-screen flex flex-col relative">
-      <Header />
+        {/* Compact Badge Display */}
+        <CompactBadgeDisplay />
 
-      <main className="flex-1 overflow-y-auto pb-20">
-        {/* Welcome Section */}
-        <section className="px-4 pt-5 pb-3">
+        {/* AI Insights Section */}
+        {console.log("Dashboard: Rendering AI Insights section, momentsLoading:", momentsLoading, "momentsLength:", moments.length)}
+        <section className="px-3 py-2">
           <div className="flex items-center justify-between mb-2">
             <h2 className="text-xl font-heading font-semibold">
               {focusConnection ? `${focusConnection.name} Summary` : `Welcome back, ${user?.displayName || user?.username || "Friend"}!`}
