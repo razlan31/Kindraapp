@@ -8,25 +8,18 @@ import { storage } from "./database-storage";
 // Configure session store
 export function getSession() {
   const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week default
-  const pgStore = connectPg(session);
-  const sessionStore = new pgStore({
-    conString: process.env.DATABASE_URL,
-    createTableIfMissing: false,
-    ttl: sessionTtl,
-    tableName: "sessions",
-  });
   
+  // Use in-memory store for development to fix session persistence issues
   return session({
     secret: process.env.SESSION_SECRET || 'your-secret-key',
-    store: sessionStore,
     resave: false,
     saveUninitialized: false,
-    rolling: true, // Reset expiry on each request
+    rolling: true,
     cookie: {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: false,
       maxAge: sessionTtl,
-      sameSite: 'lax', // Better for cross-origin requests
+      sameSite: 'lax',
     },
   });
 }
