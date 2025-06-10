@@ -1154,9 +1154,9 @@ export class DatabaseStorage implements IStorage {
 
       // === FINAL THREE BADGES TO REACH 100 ===
       {
-        name: "Network Expander",
-        description: "Added a new connection this month. Your social circle is always growing, beautiful!",
-        icon: "🌐",
+        name: "Fresh Start Finder",
+        description: "Added a new connection this month. Always hunting for fresh drama, gorgeous!",
+        icon: "🎯",
         category: "Social Growth",
         unlockCriteria: { newConnectionThisMonth: true },
         isRepeatable: true,
