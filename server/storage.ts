@@ -29,7 +29,7 @@ export interface IStorage {
 
   // Moment operations
   getMoment(id: number): Promise<Moment | undefined>;
-  getMomentsByUserId(userId: number, limit?: number): Promise<Moment[]>;
+  getMomentsByUserId(userId: string, limit?: number): Promise<Moment[]>;
   getMomentsByConnectionId(connectionId: number): Promise<Moment[]>;
   createMoment(moment: Omit<InsertMoment, 'createdAt' | 'resolvedAt'> & { createdAt?: Date | string; resolvedAt?: Date | string | null }): Promise<Moment>;
   updateMoment(id: number, data: Partial<Moment>): Promise<Moment | undefined>;
@@ -41,7 +41,7 @@ export interface IStorage {
   createBadge(badge: InsertBadge): Promise<Badge>;
   
   // User Badge operations
-  getUserBadges(userId: number): Promise<(UserBadge & { badge: Badge })[]>;
+  getUserBadges(userId: string): Promise<(UserBadge & { badge: Badge })[]>;
   addUserBadge(userBadge: InsertUserBadge): Promise<UserBadge>;
   awardBadgeWithPoints(userId: string, badgeId: number): Promise<{ badge: Badge; userBadge: UserBadge; notification: Notification }>;
   
@@ -54,27 +54,27 @@ export interface IStorage {
   addPointsToUser(userId: string, points: number): Promise<User>;
   
   // Menstrual Cycle operations
-  getMenstrualCycles(userId: number): Promise<MenstrualCycle[]>;
+  getMenstrualCycles(userId: string): Promise<MenstrualCycle[]>;
   createMenstrualCycle(cycle: InsertMenstrualCycle): Promise<MenstrualCycle>;
   updateMenstrualCycle(id: number, data: Partial<MenstrualCycle>): Promise<MenstrualCycle | undefined>;
   deleteMenstrualCycle(id: number): Promise<boolean>;
   
   // Milestone operations
-  getMilestones(userId: number): Promise<Milestone[]>;
+  getMilestones(userId: string): Promise<Milestone[]>;
   getMilestonesByConnectionId(connectionId: number): Promise<Milestone[]>;
   createMilestone(milestone: InsertMilestone): Promise<Milestone>;
   updateMilestone(id: number, data: Partial<Milestone>): Promise<Milestone | undefined>;
   deleteMilestone(id: number): Promise<boolean>;
   
   // Plan operations
-  getPlans(userId: number): Promise<Plan[]>;
+  getPlans(userId: string): Promise<Plan[]>;
   getPlansByConnectionId(connectionId: number): Promise<Plan[]>;
   createPlan(plan: InsertPlan): Promise<Plan>;
   updatePlan(id: number, data: Partial<Plan>): Promise<Plan | undefined>;
   deletePlan(id: number): Promise<boolean>;
   
   // Chat conversation operations
-  getChatConversations(userId: number): Promise<ChatConversation[]>;
+  getChatConversations(userId: string): Promise<ChatConversation[]>;
   getChatConversation(id: number): Promise<ChatConversation | undefined>;
   createChatConversation(conversation: InsertChatConversation): Promise<ChatConversation>;
   updateChatConversation(id: number, data: Partial<ChatConversation>): Promise<ChatConversation | undefined>;

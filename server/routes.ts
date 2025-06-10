@@ -1305,6 +1305,60 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Notification Routes
+  app.get("/api/notifications", isAuthenticated, async (req, res) => {
+    try {
+      const userId = (req.session as any).userId as string;
+      const notifications = await storage.getNotifications(userId);
+      res.status(200).json(notifications);
+    } catch (error) {
+      console.error("Error fetching notifications:", error);
+      res.status(500).json({ message: "Server error fetching notifications" });
+    }
+  });
+
+  app.patch("/api/notifications/:id/read", isAuthenticated, async (req, res) => {
+    try {
+      const notificationId = parseInt(req.params.id);
+      if (isNaN(notificationId)) {
+        return res.status(400).json({ message: "Invalid notification ID" });
+      }
+      
+      const success = await storage.markNotificationAsRead(notificationId);
+      if (!success) {
+        return res.status(404).json({ message: "Notification not found" });
+      }
+      
+      res.status(200).json({ message: "Notification marked as read" });
+    } catch (error) {
+      console.error("Error marking notification as read:", error);
+      res.status(500).json({ message: "Server error updating notification" });
+    }
+  });
+
+  // Badge awarding endpoint (for testing or manual awards)
+  app.post("/api/award-badge", isAuthenticated, async (req, res) => {
+    try {
+      const userId = (req.session as any).userId as string;
+      const { badgeId } = req.body;
+      
+      if (!badgeId || isNaN(parseInt(badgeId))) {
+        return res.status(400).json({ message: "Valid badge ID required" });
+      }
+      
+      const result = await storage.awardBadgeWithPoints(userId, parseInt(badgeId));
+      res.status(201).json({
+        message: "Badge awarded successfully",
+        badge: result.badge,
+        pointsAwarded: result.userBadge.pointsAwarded,
+        notification: result.notification
+      });
+    } catch (error) {
+      console.error("Error awarding badge:", error);
+      res.status(500).json({ message: "Server error awarding badge" });
+    }
+  });
+
   // Settings Routes
   app.get("/api/settings", isAuthenticated, async (req, res) => {
     try {
