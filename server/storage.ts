@@ -43,6 +43,15 @@ export interface IStorage {
   // User Badge operations
   getUserBadges(userId: number): Promise<(UserBadge & { badge: Badge })[]>;
   addUserBadge(userBadge: InsertUserBadge): Promise<UserBadge>;
+  awardBadgeWithPoints(userId: string, badgeId: number): Promise<{ badge: Badge; userBadge: UserBadge; notification: Notification }>;
+  
+  // Notification operations
+  getNotifications(userId: string): Promise<Notification[]>;
+  createNotification(notification: any): Promise<any>;
+  markNotificationAsRead(id: number): Promise<boolean>;
+  
+  // Points operations
+  addPointsToUser(userId: string, points: number): Promise<User>;
   
   // Menstrual Cycle operations
   getMenstrualCycles(userId: number): Promise<MenstrualCycle[]>;

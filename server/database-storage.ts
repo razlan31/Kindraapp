@@ -4,6 +4,7 @@ import {
   Moment, InsertMoment, moments, 
   Badge, InsertBadge, badges,
   UserBadge, InsertUserBadge, userBadges,
+  Notification, InsertNotification, notifications,
   MenstrualCycle, InsertMenstrualCycle, menstrualCycles,
   Milestone, InsertMilestone, milestones,
   Plan, InsertPlan, plans,
@@ -286,9 +287,79 @@ export class DatabaseStorage implements IStorage {
     const [newUserBadge] = await db.insert(userBadges).values({
       userId,
       badgeId,
-      earnedAt: new Date()
+      pointsAwarded: 0,
+      unlockedAt: new Date()
     }).returning();
     return newUserBadge;
+  }
+
+  // Notification operations
+  async getNotifications(userId: string): Promise<Notification[]> {
+    return db.select().from(notifications)
+      .where(eq(notifications.userId, userId))
+      .orderBy(desc(notifications.createdAt));
+  }
+
+  async createNotification(notification: InsertNotification): Promise<Notification> {
+    const [newNotification] = await db.insert(notifications).values(notification).returning();
+    return newNotification;
+  }
+
+  async markNotificationAsRead(id: number): Promise<boolean> {
+    const result = await db
+      .update(notifications)
+      .set({ isRead: true })
+      .where(eq(notifications.id, id));
+    return (result.rowCount || 0) > 0;
+  }
+
+  // Points and badge awarding with notifications
+  async addPointsToUser(userId: string, points: number): Promise<User> {
+    // Get current user points first
+    const [currentUser] = await db.select().from(users).where(eq(users.id, userId));
+    const currentPoints = (currentUser?.points || 0) + points;
+    
+    const [updatedUser] = await db
+      .update(users)
+      .set({ 
+        points: currentPoints,
+        updatedAt: new Date()
+      })
+      .where(eq(users.id, userId))
+      .returning();
+    return updatedUser;
+  }
+
+  async awardBadgeWithPoints(userId: string, badgeId: number): Promise<{ badge: Badge; userBadge: UserBadge; notification: Notification }> {
+    // Get badge details
+    const [badge] = await db.select().from(badges).where(eq(badges.id, badgeId));
+    if (!badge) throw new Error(`Badge not found: ${badgeId}`);
+
+    const pointsToAward = badge.points || 10;
+
+    // Create user badge entry
+    const [userBadge] = await db.insert(userBadges).values({
+      userId,
+      badgeId,
+      pointsAwarded: pointsToAward,
+      unlockedAt: new Date()
+    }).returning();
+
+    // Add points to user
+    await this.addPointsToUser(userId, pointsToAward);
+
+    // Create notification
+    const [notification] = await db.insert(notifications).values({
+      userId,
+      type: 'badge_unlock',
+      title: `Badge Unlocked: ${badge.name}`,
+      message: `You've earned the "${badge.name}" badge and ${pointsToAward} points! ${badge.description}`,
+      badgeId,
+      pointsAwarded: pointsToAward,
+      isRead: false
+    }).returning();
+
+    return { badge, userBadge, notification };
   }
 
   async initializeBadges(): Promise<void> {
