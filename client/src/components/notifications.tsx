@@ -198,16 +198,16 @@ export function UserPointsDisplay() {
 
   return (
     <div className="flex items-center gap-4 text-sm">
-      <div className="flex items-center gap-2">
-        <Trophy className="h-4 w-4 text-amber-500" />
-        <div className="flex flex-col">
+      <div className="flex flex-col">
+        <div className="flex items-center gap-1">
+          <Trophy className="h-4 w-4 text-amber-500" />
           <span className="font-semibold text-amber-700 dark:text-amber-400">
             Level {levelInfo.level}
           </span>
-          <span className="text-xs text-muted-foreground font-medium">
-            {levelInfo.title}
-          </span>
         </div>
+        <span className="text-xs text-muted-foreground font-medium">
+          {levelInfo.title}
+        </span>
       </div>
       
       {latestBadge && (
