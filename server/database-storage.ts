@@ -614,7 +614,7 @@ export class DatabaseStorage implements IStorage {
 
       // === MORE ACTIVITY BADGES ===
       {
-        name: "Professional Documenter",
+        name: "Memoir Material",
         description: "200 moments logged. You could literally write a relationship memoir, darling!",
         icon: "📝",
         category: "Activity",
@@ -622,7 +622,7 @@ export class DatabaseStorage implements IStorage {
         isRepeatable: false,
       },
       {
-        name: "Archive Overlord",
+        name: "Netflix Series Star",
         description: "500+ moments! Your life is basically a Netflix series at this point, star!",
         icon: "📚",
         category: "Activity",
@@ -632,7 +632,7 @@ export class DatabaseStorage implements IStorage {
 
       // === MORE POSITIVITY BADGES ===
       {
-        name: "Joy Distributor",
+        name: "Sunshine Distributor",
         description: "100+ positive moments. You're basically sunshine in human form, babe!",
         icon: "☀️",
         category: "Positivity",
@@ -640,7 +640,7 @@ export class DatabaseStorage implements IStorage {
         isRepeatable: false,
       },
       {
-        name: "Happiness Mogul",
+        name: "Happiness CEO",
         description: "200+ positive moments. Teaching masterclasses in living your best life, angel!",
         icon: "🎊",
         category: "Positivity",
@@ -778,7 +778,7 @@ export class DatabaseStorage implements IStorage {
 
       // === MORE COMMUNICATION BADGES ===
       {
-        name: "Conversation Curator",
+        name: "Talk Show Host",
         description: "50+ communication moments. You could host a talk show, gorgeous!",
         icon: "🎙️",
         category: "Communication",
@@ -786,7 +786,7 @@ export class DatabaseStorage implements IStorage {
         isRepeatable: false,
       },
       {
-        name: "Word Wizard",
+        name: "Communication Queen",
         description: "100+ communication moments. You speak fluent human connection, babe!",
         icon: "🪄",
         category: "Communication",
@@ -1128,7 +1128,7 @@ export class DatabaseStorage implements IStorage {
         isRepeatable: false,
       },
       {
-        name: "Zodiac Compatibility Scholar",
+        name: "Constellation Casanova",
         description: "Tracked romantic patterns across all zodiac signs. Astrology expert, babe!",
         icon: "⭐",
         category: "Legendary",
