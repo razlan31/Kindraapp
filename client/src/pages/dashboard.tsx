@@ -8,7 +8,7 @@ import { MomentCard } from "@/components/dashboard/moment-card";
 import { BadgeShowcase } from "@/components/dashboard/badge-showcase";
 import { AIInsights } from "@/components/insights/ai-insights";
 import { AIChat } from "@/components/ai-chat";
-import { CompactBadgeDisplay } from "@/components/dashboard/compact-badge-display";
+import { MiniBadgeDashboard } from "@/components/dashboard/mini-badge-dashboard";
 import { Connection, Moment, Badge } from "@shared/schema";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
@@ -219,8 +219,8 @@ export default function Dashboard() {
           </section>
         )}
 
-        {/* Compact Badge Display */}
-        <CompactBadgeDisplay />
+        {/* Mini Badge Dashboard */}
+        <MiniBadgeDashboard />
 
         {/* AI Insights Section */}
         <section className="px-3 py-2">
