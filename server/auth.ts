@@ -3,7 +3,7 @@ import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import session from "express-session";
 import connectPg from "connect-pg-simple";
 import type { Express, RequestHandler } from "express";
-import { storage } from "./storage";
+import { storage } from "./database-storage";
 
 // Configure session store
 export function getSession() {
