@@ -76,7 +76,7 @@ export default function Login() {
       });
       toast({
         title: "Account created!",
-        description: "Welcome to Luna AI. Let's start tracking your relationships.",
+        description: "Welcome to Kindra. Let's start tracking your relationships.",
       });
     } catch (error) {
       toast({
@@ -94,10 +94,10 @@ export default function Login() {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-violet-600 bg-clip-text text-transparent">
-            Welcome to Luna AI
+            Welcome to Kindra
           </CardTitle>
           <CardDescription>
-            Your intelligent relationship wellness companion
+            Your intelligent relationship wellness platform
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
