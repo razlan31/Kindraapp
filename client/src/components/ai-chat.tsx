@@ -56,7 +56,7 @@ export function AIChat() {
     if (message.trim()) {
       localStorage.setItem('kindra-ai-draft-message', message);
     } else {
-      localStorage.removeItem('luna-ai-draft-message');
+      localStorage.removeItem('kindra-ai-draft-message');
     }
   }, [message]);
 
@@ -113,7 +113,7 @@ export function AIChat() {
       queryClient.invalidateQueries({ queryKey: ['/api/ai/conversation'] });
       setMessage("");
       // Clear the draft message from localStorage after successful send
-      localStorage.removeItem('luna-ai-draft-message');
+      localStorage.removeItem('kindra-ai-draft-message');
       
       toast({
         title: "Response received",
