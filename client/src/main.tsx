@@ -60,7 +60,7 @@ window.addEventListener('error', (event) => {
   }
 });
 createRoot(document.getElementById("root")!).render(
-  <ThemeProvider defaultTheme="light" storageKey="kindra-theme">
+  <ThemeProvider defaultTheme="light" storageKey="luna-ai-theme">
     <AuthProvider>
       <ModalProvider>
         <App />

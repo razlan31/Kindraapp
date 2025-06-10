@@ -14,9 +14,9 @@ export default function Welcome() {
             <Heart className="h-8 w-8 text-white" />
           </div>
           <div>
-            <CardTitle className="text-3xl font-bold mb-2">Welcome to Kindra</CardTitle>
+            <CardTitle className="text-3xl font-bold mb-2">Welcome to Luna AI</CardTitle>
             <CardDescription className="text-lg">
-              Your AI-powered relationship and wellness companion
+              Your relationship intelligence platform
             </CardDescription>
           </div>
         </CardHeader>
