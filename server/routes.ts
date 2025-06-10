@@ -182,6 +182,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Set session
       (req.session as any).userId = newUser.id;
+      await new Promise((resolve, reject) => {
+        req.session.save((err) => {
+          if (err) reject(err);
+          else resolve(undefined);
+        });
+      });
       
       res.status(201).json(userWithoutPassword);
     } catch (error) {
@@ -216,6 +222,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Set session
       (req.session as any).userId = user.id;
+      await new Promise((resolve, reject) => {
+        req.session.save((err) => {
+          if (err) reject(err);
+          else resolve(undefined);
+        });
+      });
       
       // Ensure user has their own connection for cycle tracking
       await ensureUserConnection(user);
