@@ -493,13 +493,13 @@ export function AIChat() {
               onChange={(e) => setMessage(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Ask your AI relationship coach anything..."
-              className="flex-1 min-h-[60px] max-h-[120px] resize-none"
+              className="flex-1 min-h-[60px] max-h-[120px] resize-none border-violet-200 focus:border-violet-400 focus:ring-violet-100"
               disabled={chatMutation.isPending}
             />
             <Button
               onClick={handleSubmit}
               disabled={!message.trim() || chatMutation.isPending}
-              className="h-[60px] px-6 flex items-center gap-2"
+              className="h-[60px] px-6 flex items-center gap-2 bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white border-0"
             >
               {chatMutation.isPending ? (
                 <Loader2 className="h-5 w-5 animate-spin" />
