@@ -1150,6 +1150,32 @@ export class DatabaseStorage implements IStorage {
         category: "Legendary",
         unlockCriteria: { influenceEra: true },
         isRepeatable: false,
+      },
+
+      // === FINAL THREE BADGES TO REACH 100 ===
+      {
+        name: "Network Expander",
+        description: "Added a new connection this month. Your social circle is always growing, beautiful!",
+        icon: "🌐",
+        category: "Social Growth",
+        unlockCriteria: { newConnectionThisMonth: true },
+        isRepeatable: true,
+      },
+      {
+        name: "Wedding Bells",
+        description: "Moved a connection to married stage. Here comes the bride, gorgeous!",
+        icon: "💍",
+        category: "Relationship Milestones",
+        unlockCriteria: { marriageStageReached: true },
+        isRepeatable: false,
+      },
+      {
+        name: "Loyalty Legend",
+        description: "Maintained a connection for 3+ years. That's real dedication, angel!",
+        icon: "🏛️",
+        category: "Long-term Commitment",
+        unlockCriteria: { threeYearConnection: true },
+        isRepeatable: false,
       }
     ];
   }
