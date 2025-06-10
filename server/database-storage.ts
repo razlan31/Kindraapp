@@ -402,7 +402,7 @@ export class DatabaseStorage implements IStorage {
         isRepeatable: false,
       },
       {
-        name: "Data Goddess",
+        name: "Data Wizard",
         description: "Logged 50 moments. You love your analytics era, smart cookie!",
         icon: "📊",
         category: "Activity", 
@@ -462,9 +462,9 @@ export class DatabaseStorage implements IStorage {
         isRepeatable: false,
       },
       {
-        name: "Boundary Goddess",
-        description: "25 green flags! You're the blueprint for healthy relationships, hot stuff!",
-        icon: "👸",
+        name: "Standards Master",
+        description: "25 green flags! You're the blueprint for healthy relationships, legend!",
+        icon: "🎯",
         category: "Healthy Relationships", 
         unlockCriteria: { greenFlags: 25 },
         isRepeatable: false,
@@ -516,8 +516,8 @@ export class DatabaseStorage implements IStorage {
 
       // === CONSISTENCY BADGES ===
       {
-        name: "Daily Check-in Babe",
-        description: "Logged moments for 3 days straight. Building habits like a boss, gorgeous!",
+        name: "Daily Check-in Pro",
+        description: "Logged moments for 3 days straight. Building habits like a boss!",
         icon: "📅",
         category: "Consistency",
         unlockCriteria: { streakDays: 3 },
@@ -532,9 +532,9 @@ export class DatabaseStorage implements IStorage {
         isRepeatable: false,
       },
       {
-        name: "Consistency Queen",
-        description: "30-day streak! You're literally unstoppable, sexy!",
-        icon: "👑",
+        name: "Streak Master",
+        description: "30-day streak! You're literally unstoppable, legend!",
+        icon: "🔥",
         category: "Consistency",
         unlockCriteria: { streakDays: 30 },
         isRepeatable: false,
