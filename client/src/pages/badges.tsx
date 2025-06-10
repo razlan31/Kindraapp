@@ -266,7 +266,7 @@ export default function BadgesPage() {
         <TabsContent value="earned" className="space-y-6">
           {earnedBadges.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {userBadges.map((userBadge) => (
+              {userBadges.filter(userBadge => userBadge.badge).map((userBadge) => (
                 <BadgeCard
                   key={userBadge.id}
                   badge={userBadge.badge}
@@ -291,7 +291,7 @@ export default function BadgesPage() {
         <TabsContent value="available" className="space-y-6">
           {unearnedBadges.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {unearnedBadges.map((badge) => (
+              {unearnedBadges.filter(badge => badge && badge.id).map((badge) => (
                 <BadgeCard
                   key={badge.id}
                   badge={badge}
