@@ -273,3 +273,5 @@ export class DatabaseStorage implements IStorage {
     return (result.rowCount || 0) > 0;
   }
 }
+
+export const storage = new DatabaseStorage();

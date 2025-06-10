@@ -4,8 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
-import Login from "@/pages/auth/login";
-import Register from "@/pages/auth/register";
+import Login from "@/pages/login";
 import OnboardingWelcome from "@/pages/onboarding/welcome";
 import OnboardingProfile from "@/pages/onboarding/profile";
 import OnboardingGoals from "@/pages/onboarding/goals";
@@ -48,9 +47,9 @@ function Router() {
 
   useEffect(() => {
     if (!loading) {
-      if (!isAuthenticated && !location.startsWith("/auth") && !location.startsWith("/onboarding")) {
-        setLocation("/auth/login");
-      } else if (isAuthenticated && (location.startsWith("/auth") || location === "/onboarding/welcome")) {
+      if (!isAuthenticated && location !== "/login") {
+        setLocation("/login");
+      } else if (isAuthenticated && location === "/login") {
         setLocation("/");
       }
     }
@@ -58,8 +57,7 @@ function Router() {
 
   return (
     <Switch>
-      <Route path="/auth/login" component={Login} />
-      <Route path="/auth/register" component={Register} />
+      <Route path="/login" component={Login} />
       <Route path="/onboarding/welcome" component={OnboardingWelcome} />
       <Route path="/onboarding/profile" component={OnboardingProfile} />
       <Route path="/onboarding/goals" component={OnboardingGoals} />

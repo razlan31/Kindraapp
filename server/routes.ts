@@ -1,6 +1,6 @@
 import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
-import { storage } from "./storage";
+import { storage } from "./database-storage";
 import { z } from "zod";
 import { 
   userSchema, connectionSchema, momentSchema,
@@ -12,7 +12,7 @@ import MemoryStore from "memorystore";
 import Stripe from "stripe";
 import { aiCoach, type RelationshipContext } from "./ai-relationship-coach";
 import { ensureUserConnection } from "./user-connection-utils";
-import { setupAuth, isAuthenticated } from "./auth";
+import { setupAuth, isAuthenticated as googleAuthMiddleware } from "./auth";
 
 // Initialize Stripe
 if (!process.env.STRIPE_SECRET_KEY) {
@@ -93,22 +93,8 @@ const isAuthenticated = (req: Request & { session: any }, res: Response, next: F
 };
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Set up session
-  const SessionStore = MemoryStore(session);
-  app.use(
-    session({
-      secret: process.env.SESSION_SECRET || "kindra-app-secret",
-      resave: false,
-      saveUninitialized: false,
-      cookie: { 
-        secure: false, // Allow cookies over HTTP in development
-        httpOnly: true,
-        maxAge: 24 * 60 * 60 * 1000,
-        sameSite: 'lax' // Better cross-origin handling
-      },
-      store: new SessionStore({ checkPeriod: 86400000 }),
-    })
-  );
+  // Setup Google OAuth authentication
+  await setupAuth(app);
 
   // Plan routes - use non-api route to bypass ALL Vite middleware conflicts  
   // Stats endpoint
@@ -252,20 +238,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
-  app.get("/api/me", isAuthenticated, async (req, res) => {
+  app.get("/api/me", googleAuthMiddleware, async (req, res) => {
     try {
-      const userId = (req.session as any).userId as number;
-      const user = await storage.getUser(userId);
+      const user = req.user as any;
+      const userId = user?.claims?.sub;
       
-      if (!user) {
+      if (!userId) {
         return res.status(404).json({ message: "User not found" });
       }
       
-      // Remove password from response
-      const { password, ...userWithoutPassword } = user;
+      const dbUser = await storage.getUser(userId);
+      if (!dbUser) {
+        return res.status(404).json({ message: "User not found in database" });
+      }
       
-      res.status(200).json(userWithoutPassword);
+      res.status(200).json(dbUser);
     } catch (error) {
+      console.error("Error fetching user:", error);
       res.status(500).json({ message: "Server error" });
     }
   });
