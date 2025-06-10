@@ -197,23 +197,19 @@ export function UserPointsDisplay() {
     : null;
 
   return (
-    <div className="flex items-center gap-4 text-sm">
-      <div className="flex flex-col">
-        <div className="flex items-center gap-1">
-          <Trophy className="h-4 w-4 text-amber-500" />
-          <span className="font-semibold text-amber-700 dark:text-amber-400">
-            Level {levelInfo.level}
-          </span>
+    <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2">
+        <Trophy className="h-4 w-4 text-amber-500" />
+        <div className="text-sm">
+          <span className="font-semibold text-amber-700 dark:text-amber-400">Level {levelInfo.level}</span>
+          <span className="text-xs text-muted-foreground ml-2">{levelInfo.title}</span>
         </div>
-        <span className="text-xs text-muted-foreground font-medium">
-          {levelInfo.title}
-        </span>
       </div>
       
       {latestBadge && (
-        <div className="flex items-center gap-2 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 px-3 py-1 rounded-full border border-purple-200/50 dark:border-purple-700/50">
-          <span className="text-base">{latestBadge.badge?.icon || "🏆"}</span>
-          <span className="font-medium text-purple-700 dark:text-purple-300 text-xs">
+        <div className="flex items-center gap-1 bg-purple-100/50 dark:bg-purple-900/20 px-2 py-1 rounded-md">
+          <span className="text-sm">{latestBadge.badge?.icon || "🏆"}</span>
+          <span className="text-xs font-medium text-purple-700 dark:text-purple-300">
             {latestBadge.badge?.name}
           </span>
         </div>
