@@ -295,25 +295,16 @@ export function AIChat() {
 
   return (
     <div className="w-full max-w-4xl mx-auto space-y-4">
-      <Card className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-0 shadow-2xl overflow-hidden rounded-2xl">
-        <CardHeader className="pb-4 bg-gradient-to-r from-rose-100 via-pink-50 to-purple-100 dark:from-rose-900/30 dark:via-pink-900/30 dark:to-purple-900/30 text-gray-800 dark:text-white relative overflow-hidden border-b border-rose-200/30 dark:border-rose-700/30">
-          {/* Soft animated background elements */}
-          <div className="absolute inset-0 opacity-5">
-            <div className="absolute top-0 left-1/4 w-32 h-32 bg-rose-300 rounded-full blur-3xl animate-pulse"></div>
-            <div className="absolute bottom-0 right-1/4 w-24 h-24 bg-purple-300 rounded-full blur-2xl animate-pulse" style={{animationDelay: '1s'}}></div>
-          </div>
-          
-          <div className="flex items-center justify-between relative z-10">
+      <Card className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-sm rounded-lg">
+        <CardHeader className="pb-6 bg-white dark:bg-gray-900 text-gray-800 dark:text-white border-b border-gray-100 dark:border-gray-800">
+          <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-4">
-              <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-rose-300 to-purple-300 rounded-2xl blur-lg opacity-30"></div>
-                <div className="relative bg-gradient-to-r from-rose-400 to-purple-400 p-3 rounded-2xl shadow-lg">
-                  <MessageCircle className="h-7 w-7 text-white" />
-                </div>
+              <div className="bg-gradient-to-r from-rose-400 to-purple-400 p-3 rounded-xl">
+                <MessageCircle className="h-6 w-6 text-white" />
               </div>
               <div className="flex flex-col">
-                <span className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Luna AI</span>
-                <span className="text-sm opacity-70 font-light tracking-wide text-gray-700 dark:text-gray-300">Relationship Intelligence</span>
+                <span className="text-xl font-semibold text-gray-900 dark:text-white">Luna AI</span>
+                <span className="text-sm text-gray-600 dark:text-gray-400">Relationship Intelligence</span>
               </div>
             </CardTitle>
             <TooltipProvider>
@@ -322,12 +313,12 @@ export function AIChat() {
                   <TooltipTrigger asChild>
                     <button
                       onClick={() => setShowHistory(!showHistory)}
-                      className="group p-2.5 rounded-xl bg-rose-50/50 hover:bg-rose-100/70 dark:bg-rose-800/20 dark:hover:bg-rose-700/30 backdrop-blur-sm transition-all duration-300 hover:scale-105"
+                      className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 transition-colors"
                     >
-                      <History className="h-4 w-4 text-rose-600/80 group-hover:text-rose-700 dark:text-rose-300/80 dark:group-hover:text-rose-200 transition-colors" />
+                      <History className="h-4 w-4 text-gray-600 dark:text-gray-400" />
                     </button>
                   </TooltipTrigger>
-                  <TooltipContent side="bottom" className="bg-rose-600 text-white border-0 rounded-lg">
+                  <TooltipContent side="bottom">
                     <p>History</p>
                   </TooltipContent>
                 </Tooltip>
@@ -336,12 +327,12 @@ export function AIChat() {
                   <TooltipTrigger asChild>
                     <button
                       onClick={startNewChat}
-                      className="group p-2.5 rounded-xl bg-purple-50/50 hover:bg-purple-100/70 dark:bg-purple-800/20 dark:hover:bg-purple-700/30 backdrop-blur-sm transition-all duration-300 hover:scale-105"
+                      className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 transition-colors"
                     >
-                      <Plus className="h-4 w-4 text-purple-600/80 group-hover:text-purple-700 dark:text-purple-300/80 dark:group-hover:text-purple-200 transition-colors" />
+                      <Plus className="h-4 w-4 text-gray-600 dark:text-gray-400" />
                     </button>
                   </TooltipTrigger>
-                  <TooltipContent side="bottom" className="bg-purple-600 text-white border-0 rounded-lg">
+                  <TooltipContent side="bottom">
                     <p>New Chat</p>
                   </TooltipContent>
                 </Tooltip>
@@ -351,12 +342,12 @@ export function AIChat() {
                     <button
                       onClick={() => clearMutation.mutate()}
                       disabled={conversation.length === 0 || clearMutation.isPending}
-                      className="group p-2.5 rounded-xl bg-pink-50/50 hover:bg-pink-100/70 dark:bg-pink-800/20 dark:hover:bg-pink-700/30 backdrop-blur-sm transition-all duration-300 hover:scale-105 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:bg-pink-50/50"
+                      className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      <Trash2 className="h-4 w-4 text-pink-600/80 group-hover:text-pink-700 dark:text-pink-300/80 dark:group-hover:text-pink-200 transition-colors" />
+                      <Trash2 className="h-4 w-4 text-gray-600 dark:text-gray-400" />
                     </button>
                   </TooltipTrigger>
-                  <TooltipContent side="bottom" className="bg-pink-600 text-white border-0 rounded-lg">
+                  <TooltipContent side="bottom">
                     <p>Clear</p>
                   </TooltipContent>
                 </Tooltip>
@@ -366,12 +357,12 @@ export function AIChat() {
                     <button
                       onClick={downloadConversation}
                       disabled={conversation.length === 0}
-                      className="group p-2.5 rounded-xl bg-indigo-50/50 hover:bg-indigo-100/70 dark:bg-indigo-800/20 dark:hover:bg-indigo-700/30 backdrop-blur-sm transition-all duration-300 hover:scale-105 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:bg-indigo-50/50"
+                      className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      <Download className="h-4 w-4 text-indigo-600/80 group-hover:text-indigo-700 dark:text-indigo-300/80 dark:group-hover:text-indigo-200 transition-colors" />
+                      <Download className="h-4 w-4 text-gray-600 dark:text-gray-400" />
                     </button>
                   </TooltipTrigger>
-                  <TooltipContent side="bottom" className="bg-indigo-600 text-white border-0 rounded-lg">
+                  <TooltipContent side="bottom">
                     <p>Download</p>
                   </TooltipContent>
                 </Tooltip>
@@ -379,7 +370,7 @@ export function AIChat() {
             </TooltipProvider>
           </div>
         </CardHeader>
-        <CardContent className="space-y-4 bg-white/60 dark:bg-gray-900/60 backdrop-blur-sm">
+        <CardContent className="space-y-4 bg-white dark:bg-gray-900">
           {showHistory && (
             <Card className="mb-4">
               <CardHeader className="pb-3">
@@ -418,66 +409,43 @@ export function AIChat() {
             </Card>
           )}
 
-          <div className="min-h-[400px] max-h-[500px] overflow-y-auto rounded-2xl p-8 space-y-6 bg-gradient-to-br from-gray-50/80 via-white to-gray-100/80 dark:from-gray-800/80 dark:via-gray-900/80 dark:to-black/80 backdrop-blur-xl border-0">
+          <div className="min-h-[400px] max-h-[500px] overflow-y-auto rounded-lg p-6 space-y-4 bg-gray-50 dark:bg-gray-800">
             {conversation.length === 0 ? (
-              <div className="text-center py-16">
-                <div className="relative mb-10 group">
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 rounded-3xl blur-2xl opacity-20 group-hover:opacity-30 transition-opacity duration-500 animate-pulse"></div>
-                  <div className="relative bg-gradient-to-br from-gray-900 via-black to-gray-800 p-6 rounded-3xl shadow-2xl">
-                    <div className="bg-gradient-to-r from-blue-400 to-purple-500 p-3 rounded-2xl inline-block">
-                      <MessageCircle className="h-8 w-8 text-white" />
-                    </div>
+              <div className="text-center py-12">
+                <div className="mb-8">
+                  <div className="bg-gradient-to-r from-rose-400 to-purple-400 p-4 rounded-xl w-16 h-16 mx-auto mb-6">
+                    <MessageCircle className="h-8 w-8 text-white" />
                   </div>
-                </div>
-                
-                <div className="space-y-4 mb-10">
-                  <h3 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-gray-900 via-black to-gray-800 dark:from-white dark:via-gray-100 dark:to-gray-300 bg-clip-text text-transparent">
+                  <h3 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">
                     Luna AI
                   </h3>
-                  <p className="text-xl font-light text-gray-600 dark:text-gray-400 max-w-lg mx-auto leading-relaxed">
-                    Advanced relationship intelligence designed to understand your emotional patterns and provide personalized guidance
+                  <p className="text-gray-600 dark:text-gray-400 max-w-md mx-auto">
+                    Your relationship intelligence assistant
                   </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-10">
-                  <div className="group relative">
-                    <div className="absolute inset-0 bg-gradient-to-r from-rose-300 to-rose-400 rounded-2xl blur opacity-15 group-hover:opacity-25 transition-opacity"></div>
-                    <div className="relative bg-rose-50/90 dark:bg-rose-900/30 backdrop-blur-sm rounded-2xl p-6 border border-rose-200/60 dark:border-rose-700/40 hover:shadow-xl transition-all duration-500 hover:-translate-y-1">
-                      <div className="bg-gradient-to-br from-rose-400 to-rose-500 p-3 rounded-xl mb-4 inline-block shadow-lg">
-                        <Heart className="h-6 w-6 text-white" />
-                      </div>
-                      <h4 className="font-semibold text-gray-900 dark:text-gray-100 text-lg mb-3 text-left">Deep Analysis</h4>
-                      <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-left">Understand your relationship patterns through advanced behavioral analysis</p>
-                    </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl mx-auto mb-8">
+                  <div className="bg-white dark:bg-gray-700 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
+                    <Heart className="h-5 w-5 text-rose-500 mb-2" />
+                    <h4 className="font-medium text-gray-900 dark:text-white text-sm mb-1">Deep Analysis</h4>
+                    <p className="text-gray-600 dark:text-gray-400 text-xs">Understand relationship patterns</p>
                   </div>
                   
-                  <div className="group relative">
-                    <div className="absolute inset-0 bg-gradient-to-r from-purple-300 to-purple-400 rounded-2xl blur opacity-15 group-hover:opacity-25 transition-opacity"></div>
-                    <div className="relative bg-purple-50/90 dark:bg-purple-900/30 backdrop-blur-sm rounded-2xl p-6 border border-purple-200/60 dark:border-purple-700/40 hover:shadow-xl transition-all duration-500 hover:-translate-y-1">
-                      <div className="bg-gradient-to-br from-purple-400 to-purple-500 p-3 rounded-xl mb-4 inline-block shadow-lg">
-                        <Sparkles className="h-6 w-6 text-white" />
-                      </div>
-                      <h4 className="font-semibold text-gray-900 dark:text-gray-100 text-lg mb-3 text-left">Smart Guidance</h4>
-                      <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-left">Receive personalized recommendations tailored to your unique situation</p>
-                    </div>
+                  <div className="bg-white dark:bg-gray-700 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
+                    <Sparkles className="h-5 w-5 text-purple-500 mb-2" />
+                    <h4 className="font-medium text-gray-900 dark:text-white text-sm mb-1">Smart Guidance</h4>
+                    <p className="text-gray-600 dark:text-gray-400 text-xs">Personalized recommendations</p>
                   </div>
                   
-                  <div className="group relative">
-                    <div className="absolute inset-0 bg-gradient-to-r from-pink-300 to-pink-400 rounded-2xl blur opacity-15 group-hover:opacity-25 transition-opacity"></div>
-                    <div className="relative bg-pink-50/90 dark:bg-pink-900/30 backdrop-blur-sm rounded-2xl p-6 border border-pink-200/60 dark:border-pink-700/40 hover:shadow-xl transition-all duration-500 hover:-translate-y-1">
-                      <div className="bg-gradient-to-br from-pink-400 to-pink-500 p-3 rounded-xl mb-4 inline-block shadow-lg">
-                        <MessageCircle className="h-6 w-6 text-white" />
-                      </div>
-                      <h4 className="font-semibold text-gray-900 dark:text-gray-100 text-lg mb-3 text-left">Always Available</h4>
-                      <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-left">24/7 emotional support whenever you need relationship guidance</p>
-                    </div>
+                  <div className="bg-white dark:bg-gray-700 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
+                    <MessageCircle className="h-5 w-5 text-blue-500 mb-2" />
+                    <h4 className="font-medium text-gray-900 dark:text-white text-sm mb-1">Always Available</h4>
+                    <p className="text-gray-600 dark:text-gray-400 text-xs">24/7 emotional support</p>
                   </div>
                 </div>
 
-                <div className="bg-gradient-to-r from-gray-100 via-white to-gray-100 dark:from-gray-800 dark:via-gray-900 dark:to-gray-800 rounded-2xl p-6 border border-gray-200/50 dark:border-gray-700/50 shadow-inner">
-                  <p className="text-gray-700 dark:text-gray-300 text-lg font-medium italic">
-                    "Ready to explore your relationship dynamics together?"
-                  </p>
+                <div className="text-gray-600 dark:text-gray-400 text-sm">
+                  Start a conversation to get personalized relationship insights
                 </div>
               </div>
             ) : (
@@ -487,10 +455,10 @@ export function AIChat() {
                   className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
                   <div
-                    className={`max-w-[85%] p-4 rounded-2xl ${
+                    className={`max-w-[85%] p-3 rounded-lg ${
                       msg.role === 'user'
-                        ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg'
-                        : 'bg-white border border-gray-200 shadow-sm'
+                        ? 'bg-blue-500 text-white'
+                        : 'bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600'
                     }`}
                   >
                     <div className="text-sm leading-relaxed whitespace-pre-wrap">
