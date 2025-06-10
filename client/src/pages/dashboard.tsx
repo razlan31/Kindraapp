@@ -13,7 +13,7 @@ import { Connection, Moment, Badge } from "@shared/schema";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
 import { useModal } from "@/contexts/modal-context";
-import { Sparkles, ChevronDown, Plus, TrendingUp } from "lucide-react";
+import { Sparkles, ChevronDown, Plus, TrendingUp, Star, Trophy, Award, ArrowRight } from "lucide-react";
 import { Link } from "wouter";
 import { useRelationshipFocus } from "@/contexts/relationship-focus-context";
 
@@ -220,7 +220,54 @@ export default function Dashboard() {
         )}
 
         {/* Mini Badge Dashboard */}
-        <MiniBadgeDashboard />
+        <section className="px-3 py-2">
+          <div className="bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-950/20 dark:to-yellow-950/20 border border-amber-200 dark:border-amber-800/30 rounded-xl p-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-1">
+                  <Star className="h-4 w-4 text-amber-500" />
+                  <span className="font-medium text-sm text-amber-800 dark:text-amber-200">
+                    {user?.points || 0} pts
+                  </span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Trophy className="h-4 w-4 text-yellow-600" />
+                  <span className="font-medium text-sm text-yellow-800 dark:text-yellow-200">
+                    Level {Math.floor((user?.points || 0) / 100) + 1}
+                  </span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Award className="h-4 w-4 text-orange-500" />
+                  <span className="font-medium text-sm text-orange-800 dark:text-orange-200">
+                    {userBadges?.length || 0} badges
+                  </span>
+                </div>
+              </div>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                asChild
+                className="h-7 px-2 text-xs text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/30"
+              >
+                <Link href="/badges">
+                  View All <ArrowRight className="h-3 w-3 ml-1" />
+                </Link>
+              </Button>
+            </div>
+            <div className="mt-2">
+              <div className="flex items-center justify-between text-xs text-amber-700 dark:text-amber-300 mb-1">
+                <span>Progress to Level {Math.floor((user?.points || 0) / 100) + 2}</span>
+                <span>{100 - ((user?.points || 0) % 100)} points needed</span>
+              </div>
+              <div className="w-full bg-amber-200 dark:bg-amber-900/40 rounded-full h-1.5">
+                <div 
+                  className="bg-amber-500 h-1.5 rounded-full transition-all duration-300"
+                  style={{ width: `${((100 - (100 - ((user?.points || 0) % 100))) / 100) * 100}%` }}
+                />
+              </div>
+            </div>
+          </div>
+        </section>
 
         {/* AI Insights Section */}
         <section className="px-3 py-2">

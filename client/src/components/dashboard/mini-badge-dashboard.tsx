@@ -23,7 +23,9 @@ interface Badge {
 }
 
 export function MiniBadgeDashboard() {
+  console.log("🔥 MiniBadgeDashboard: Component rendering");
   const { user } = useAuth();
+  console.log("🔥 MiniBadgeDashboard: User state:", user);
 
   // Fetch user badges
   const { data: userBadges = [] } = useQuery<UserBadge[]>({
@@ -37,8 +39,18 @@ export function MiniBadgeDashboard() {
     enabled: !!user,
   });
 
+  console.log("🔥 MiniBadgeDashboard: Badges data:", { userBadges, allBadges });
+
+  // Always render something for debugging
   if (!user) {
-    return null;
+    console.log("🔥 MiniBadgeDashboard: No user, showing placeholder");
+    return (
+      <section className="px-3 py-2">
+        <div className="bg-gradient-to-r from-red-50 to-pink-50 dark:from-red-950/20 dark:to-pink-950/20 border border-red-200 dark:border-red-800/30 rounded-xl p-3">
+          <div className="text-red-800 dark:text-red-200">Please log in to view your badges</div>
+        </div>
+      </section>
+    );
   }
 
   // Calculate user stats
