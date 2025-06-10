@@ -21,17 +21,20 @@ export default function Login() {
   // Auto-login on component mount
   useEffect(() => {
     const autoLogin = async () => {
+      console.log("Auto-login useEffect triggered, isLoading:", isLoading);
       if (!isLoading) {
         setIsLoading(true);
         try {
-          await login("testuser", "password123", true);
+          console.log("Attempting auto-login...");
+          const result = await login("testuser", "password123", true);
+          console.log("Auto-login successful:", result);
           toast({
             title: "Automatically logged in!",
             description: "Welcome back to Kindra"
           });
           setLocation("/");
         } catch (error) {
-          console.log("Auto-login failed, showing manual login form");
+          console.log("Auto-login failed:", error);
         } finally {
           setIsLoading(false);
         }
@@ -39,7 +42,7 @@ export default function Login() {
     };
     
     autoLogin();
-  }, []);
+  }, [login, setLocation, toast, isLoading]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

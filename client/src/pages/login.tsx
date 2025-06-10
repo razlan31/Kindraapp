@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -7,11 +7,39 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/contexts/auth-context";
 import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
+import { useLocation } from "wouter";
 
 export default function Login() {
   const { login, register } = useAuth();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [, setLocation] = useLocation();
+
+  // Auto-login on component mount
+  useEffect(() => {
+    const autoLogin = async () => {
+      console.log("Auto-login useEffect triggered, loading:", loading);
+      if (!loading) {
+        setLoading(true);
+        try {
+          console.log("Attempting auto-login...");
+          const result = await login("testuser", "password123", true);
+          console.log("Auto-login successful:", result);
+          toast({
+            title: "Automatically logged in!",
+            description: "Welcome back to Kindra"
+          });
+          setLocation("/");
+        } catch (error) {
+          console.log("Auto-login failed:", error);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+    
+    autoLogin();
+  }, [login, setLocation, toast, loading]);
 
   // Login form state
   const [loginData, setLoginData] = useState({
@@ -94,7 +122,7 @@ export default function Login() {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-violet-600 bg-clip-text text-transparent">
-            Welcome to Luna AI
+            Welcome to Kindra
           </CardTitle>
           <CardDescription>
             Your relationship intelligence platform

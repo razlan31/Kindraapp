@@ -45,7 +45,7 @@ export function AIChat() {
 
   // Load draft message from localStorage on component mount
   useEffect(() => {
-    const savedDraft = localStorage.getItem('luna-ai-draft-message');
+    const savedDraft = localStorage.getItem('kindra-ai-draft-message');
     if (savedDraft) {
       setMessage(savedDraft);
     }
@@ -54,7 +54,7 @@ export function AIChat() {
   // Save draft message to localStorage whenever message changes
   useEffect(() => {
     if (message.trim()) {
-      localStorage.setItem('luna-ai-draft-message', message);
+      localStorage.setItem('kindra-ai-draft-message', message);
     } else {
       localStorage.removeItem('luna-ai-draft-message');
     }
@@ -436,7 +436,7 @@ export function AIChat() {
                     <MessageCircle className="h-8 w-8 text-white" />
                   </div>
                   <h3 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">
-                    Luna AI
+                    Kindra AI
                   </h3>
                   <p className="text-gray-600 dark:text-gray-400 max-w-md mx-auto">
                     Your intelligent relationship coach
