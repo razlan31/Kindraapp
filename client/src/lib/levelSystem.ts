@@ -41,80 +41,98 @@ function getLevelCategory(level: number): string {
   return "Eternal";
 }
 
+function getModernTitle(index: number): string {
+  const titles = ["Hottie", "Snack", "Smoke Show", "Main Character", "Icon", "Legend", "Mood", "Vibe", "Energy", "Aura",
+                 "It Girl", "Moment", "Slay Queen", "Boss Babe", "Fire", "Flame", "Heat", "Steam", "Spice", "Thirst Trap",
+                 "Catch", "Prize", "Treasure", "Gem", "Diamond", "Star", "Queen", "Goddess", "Deity", "Supreme Being",
+                 "Force of Nature", "Unstoppable", "Irresistible", "Magnetic", "Electric", "Dynamic", "Explosive", "Nuclear",
+                 "Cosmic", "Galactic", "Universal", "Infinite", "Eternal", "Transcendent", "Omnipotent", "All-Powerful",
+                 "Ultimate", "Maximum", "Peak Performance"];
+  return titles[Math.min(index - 1, titles.length - 1)] || `Level ${index} Legend`;
+}
+
 function getLevelTitle(level: number): string {
   // Novice Levels (1-10)
-  if (level === 1) return "Connection Seeker";
-  if (level === 2) return "First Steps";
-  if (level === 3) return "Early Explorer";
-  if (level === 4) return "Relationship Rookie";
-  if (level === 5) return "Social Starter";
-  if (level === 6) return "Bond Builder";
-  if (level === 7) return "Heart Learner";
-  if (level === 8) return "Emotion Tracker";
-  if (level === 9) return "Memory Keeper";
-  if (level === 10) return "Connection Catalyst";
+  if (level === 1) return "Flirt Newbie";
+  if (level === 2) return "Swipe Right Specialist";
+  if (level === 3) return "Butterflies Expert";
+  if (level === 4) return "Text Game Rookie";
+  if (level === 5) return "First Date Survivor";
+  if (level === 6) return "Spark Collector";
+  if (level === 7) return "Banter Boss";
+  if (level === 8) return "Chemistry Detective";
+  if (level === 9) return "Heart Eyes Haver";
+  if (level === 10) return "Crush Whisperer";
 
   // Explorer Levels (11-25)
-  if (level === 11) return "Moment Collector";
-  if (level === 12) return "Intimacy Initiate";
-  if (level === 13) return "Feeling Finder";
-  if (level === 14) return "Trust Builder";
-  if (level === 15) return "Love Linguist";
-  if (level === 16) return "Relationship Researcher";
-  if (level === 17) return "Connection Cultivator";
-  if (level === 18) return "Heart Navigator";
-  if (level === 19) return "Bond Strengthener";
-  if (level === 20) return "Emotion Explorer";
-  if (level === 21) return "Intimacy Investigator";
-  if (level === 22) return "Memory Architect";
-  if (level === 23) return "Love Cartographer";
-  if (level === 24) return "Relationship Voyager";
-  if (level === 25) return "Connection Connoisseur";
+  if (level === 11) return "Spice Seeker";
+  if (level === 12) return "Vibe Checker";
+  if (level === 13) return "Steam Creator";
+  if (level === 14) return "Trust Fall Champion";
+  if (level === 15) return "Pillow Talk Pro";
+  if (level === 16) return "Secret Keeper";
+  if (level === 17) return "Fire Starter";
+  if (level === 18) return "Romance Hacker";
+  if (level === 19) return "Tension Builder";
+  if (level === 20) return "Flame Tender";
+  if (level === 21) return "Soul Scanner";
+  if (level === 22) return "Love Engineer";
+  if (level === 23) return "Intimacy Influencer";
+  if (level === 24) return "Connection Connoisseur";
+  if (level === 25) return "Passion Professor";
 
   // Adventurer Levels (26-50)
-  if (level <= 30) return `Relationship ${["Pioneer", "Trailblazer", "Pathfinder", "Scout", "Guide"][level - 26]}`;
-  if (level <= 35) return `Heart ${["Whisperer", "Healer", "Guardian", "Sage", "Oracle"][level - 31]}`;
-  if (level <= 40) return `Love ${["Alchemist", "Weaver", "Sculptor", "Painter", "Composer"][level - 36]}`;
-  if (level <= 45) return `Bond ${["Architect", "Engineer", "Designer", "Creator", "Innovator"][level - 41]}`;
-  if (level <= 50) return `Connection ${["Virtuoso", "Maestro", "Artist", "Craftsperson", "Artisan"][level - 46]}`;
+  if (level === 26) return "Hot & Bothered";
+  if (level === 27) return "Thirst Trap Master";
+  if (level === 28) return "Bedroom Eyes Pro";
+  if (level === 29) return "Smooth Operator";
+  if (level === 30) return "Netflix & Chill Expert";
+  if (level === 31) return "Dirty Mind Reader";
+  if (level === 32) return "Shower Thought Genius";
+  if (level === 33) return "Kiss & Tell Artist";
+  if (level === 34) return "Temperature Rising";
+  if (level === 35) return "Heart Rate Monitor";
+  if (level === 36) return "Tension Maximizer";
+  if (level === 37) return "Pulse Accelerator";
+  if (level === 38) return "Sweet Talker Supreme";
+  if (level === 39) return "Eye Contact Champion";
+  if (level === 40) return "Touch Magician";
+  if (level === 41) return "Mood Setter Extraordinaire";
+  if (level === 42) return "Anticipation Builder";
+  if (level === 43) return "Desire Amplifier";
+  if (level === 44) return "Chemistry Reactor";
+  if (level === 45) return "Spark Multiplier";
+  if (level === 46) return "Steam Generator";
+  if (level === 47) return "Heat Wave Creator";
+  if (level === 48) return "Fire Igniter";
+  if (level === 49) return "Passion Accelerator";
+  if (level === 50) return "Connection Overdrive";
 
   // Expert Levels (51-100)
-  if (level <= 60) return `Intimacy ${["Scholar", "Professor", "Researcher", "Theorist", "Philosopher", "Visionary", "Strategist", "Tactician", "Analyst", "Specialist"][level - 51]}`;
-  if (level <= 70) return `Emotion ${["Specialist", "Expert", "Authority", "Master", "Guru", "Sensei", "Mentor", "Coach", "Advisor", "Counselor"][level - 61]}`;
-  if (level <= 80) return `Memory ${["Curator", "Archivist", "Historian", "Chronicler", "Keeper", "Guardian", "Protector", "Preserver", "Collector", "Librarian"][level - 71]}`;
-  if (level <= 90) return `Trust ${["Builder", "Forger", "Weaver", "Creator", "Cultivator", "Nurturer", "Developer", "Strengthener", "Reinforcer", "Establisher"][level - 81]}`;
-  if (level <= 100) return `Love ${["Sage", "Mystic", "Enlightened", "Awakened", "Illuminated", "Transcendent", "Elevated", "Ascended", "Transformed", "Evolved"][level - 91]}`;
+  if (level <= 60) return `Thirst ${["Professor", "PhD", "Researcher", "Theorist", "Philosopher", "Genius", "Strategist", "Master", "Expert", "Specialist"][level - 51]}`;
+  if (level <= 70) return `Vibe ${["Specialist", "Expert", "Authority", "Master", "Guru", "Sensei", "Mentor", "Coach", "Advisor", "Whisperer"][level - 61]}`;
+  if (level <= 80) return `Spice ${["Curator", "Collector", "Historian", "Chronicler", "Keeper", "Guardian", "Protector", "Preserver", "Hoarder", "Librarian"][level - 71]}`;
+  if (level <= 90) return `Steam ${["Builder", "Creator", "Weaver", "Maker", "Cultivator", "Engineer", "Developer", "Architect", "Designer", "Producer"][level - 81]}`;
+  if (level <= 100) return `Fire ${["Sage", "Mystic", "Legend", "Icon", "God", "Deity", "Supreme", "Ultimate", "Max Level", "Final Boss"][level - 91]}`;
 
-  // Master Levels (101-200)
-  if (level <= 125) return `Grand ${getGrandTitle(level - 100)}`;
-  if (level <= 150) return `Supreme ${getSupremeTitle(level - 125)}`;
-  if (level <= 175) return `Divine ${getDivineTitle(level - 150)}`;
-  if (level <= 200) return `Celestial ${getCelestialTitle(level - 175)}`;
+  // Master Levels (101-200) - Keep it fun but escalate
+  if (level <= 125) return `Mega ${getModernTitle(level - 100)}`;
+  if (level <= 150) return `Ultra ${getModernTitle(level - 125)}`;
+  if (level <= 175) return `Hyper ${getModernTitle(level - 150)}`;
+  if (level <= 200) return `Legendary ${getModernTitle(level - 175)}`;
 
-  // Grandmaster Levels (201-400)
-  if (level <= 250) return `Legendary ${getLegendaryTitle(level - 200)}`;
-  if (level <= 300) return `Mythical ${getMythicalTitle(level - 250)}`;
-  if (level <= 350) return `Eternal ${getEternalTitle(level - 300)}`;
-  if (level <= 400) return `Infinite ${getInfiniteTitle(level - 350)}`;
+  // Higher levels keep the pattern but get more ridiculous
+  if (level <= 250) return `Mythical ${getModernTitle(level - 200)}`;
+  if (level <= 300) return `Godlike ${getModernTitle(level - 250)}`;
+  if (level <= 400) return `Cosmic ${getModernTitle(level - 300)}`;
+  if (level <= 500) return `Universal ${getModernTitle(level - 400)}`;
+  if (level <= 600) return `Multiversal ${getModernTitle(level - 500)}`;
+  if (level <= 700) return `Omnipotent ${getModernTitle(level - 600)}`;
+  if (level <= 800) return `Transcendent ${getModernTitle(level - 700)}`;
+  if (level <= 900) return `Ethereal ${getModernTitle(level - 800)}`;
+  if (level <= 1000) return `Ultimate ${getModernTitle(level - 900)}`;
 
-  // Legend Levels (401-600)
-  if (level <= 450) return `Cosmic ${getCosmicTitle(level - 400)}`;
-  if (level <= 500) return `Universal ${getUniversalTitle(level - 450)}`;
-  if (level <= 550) return `Omnipotent ${getOmnipotentTitle(level - 500)}`;
-  if (level <= 600) return `Transcendent ${getTranscendentTitle(level - 550)}`;
-
-  // Mythic Levels (601-800)
-  if (level <= 700) return `Primordial ${getPrimordialTitle(level - 600)}`;
-  if (level <= 800) return `Ethereal ${getEtherealTitle(level - 700)}`;
-
-  // Transcendent Levels (801-950)
-  if (level <= 875) return `Astral ${getAstralTitle(level - 800)}`;
-  if (level <= 950) return `Dimensional ${getDimensionalTitle(level - 875)}`;
-
-  // Eternal Levels (951-1000)
-  if (level <= 1000) return `Omniscient ${getOmniscientTitle(level - 950)}`;
-
-  return "Ultimate Being";
+  return "Kindra's Chosen One";
 }
 
 function getGrandTitle(index: number): string {
