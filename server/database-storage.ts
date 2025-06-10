@@ -668,7 +668,7 @@ export class DatabaseStorage implements IStorage {
 
       // === RED FLAG AWARENESS BADGES ===
       {
-        name: "Toxicity Detector",
+        name: "Red Flag Radar",
         description: "10+ red flags identified. You're basically a walking lie detector, babe!",
         icon: "🕵️",
         category: "Self Protection",
@@ -686,7 +686,7 @@ export class DatabaseStorage implements IStorage {
 
       // === CONFLICT RESOLUTION BADGES ===
       {
-        name: "First Conflict Chronicler",
+        name: "Reality Check Recorder",
         description: "Logged your first conflict. Growth starts with awareness, gorgeous!",
         icon: "📝",
         category: "Conflict Resolution",
@@ -710,7 +710,7 @@ export class DatabaseStorage implements IStorage {
         isRepeatable: true,
       },
       {
-        name: "First Peace Maker",
+        name: "Peace Maker",
         description: "Resolved your first conflict. Communication is your superpower, angel!",
         icon: "🕊️",
         category: "Conflict Resolution",
@@ -822,7 +822,7 @@ export class DatabaseStorage implements IStorage {
         isRepeatable: false,
       },
       {
-        name: "Connection Collector",
+        name: "Contact Queen",
         description: "20+ connections! Your contact list is giving LinkedIn vibes, sexy!",
         icon: "📇",
         category: "Social Life",
@@ -840,7 +840,7 @@ export class DatabaseStorage implements IStorage {
         isRepeatable: false,
       },
       {
-        name: "Celebration Station",
+        name: "Party Planner",
         description: "10+ milestones tracked. Every moment is worth celebrating with you, hottie!",
         icon: "🎊",
         category: "Milestones",
@@ -884,7 +884,7 @@ export class DatabaseStorage implements IStorage {
         isRepeatable: false,
       },
       {
-        name: "Multi-tasking Maven",
+        name: "Juggling Queen",
         description: "Managed multiple relationship progressions simultaneously. You're busy, sexy!",
         icon: "🤹",
         category: "Achievement",
@@ -1120,7 +1120,7 @@ export class DatabaseStorage implements IStorage {
         isRepeatable: false,
       },
       {
-        name: "Connection Architect",
+        name: "Relationship Designer",
         description: "Built and maintained 25+ meaningful relationships. You're an artist, beautiful!",
         icon: "🏗️",
         category: "Legendary",
