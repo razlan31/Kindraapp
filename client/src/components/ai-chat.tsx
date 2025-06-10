@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Loader2, Send, MessageCircle, Trash2, Heart, Sparkles, Plus, History, Download } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 
@@ -302,46 +303,67 @@ export function AIChat() {
               AI Relationship Coach
               <Sparkles className="h-4 w-4 text-yellow-500" />
             </CardTitle>
-            <div className="flex flex-wrap gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowHistory(!showHistory)}
-                className="flex items-center gap-1.5"
-              >
-                <History className="h-4 w-4" />
-                History
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={startNewChat}
-                className="flex items-center gap-1.5"
-              >
-                <Plus className="h-4 w-4" />
-                New Chat
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => clearMutation.mutate()}
-                disabled={conversation.length === 0 || clearMutation.isPending}
-                className="flex items-center gap-1.5"
-              >
-                <Trash2 className="h-4 w-4" />
-                Clear Chat
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={downloadConversation}
-                disabled={conversation.length === 0}
-                className="flex items-center gap-1.5"
-              >
-                <Download className="h-4 w-4" />
-                Download
-              </Button>
-            </div>
+            <TooltipProvider>
+              <div className="flex gap-1">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={() => setShowHistory(!showHistory)}
+                      className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                    >
+                      <History className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>View conversation history</p>
+                  </TooltipContent>
+                </Tooltip>
+
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={startNewChat}
+                      className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                    >
+                      <Plus className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Start new chat</p>
+                  </TooltipContent>
+                </Tooltip>
+
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={() => clearMutation.mutate()}
+                      disabled={conversation.length === 0 || clearMutation.isPending}
+                      className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <Trash2 className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Clear current chat</p>
+                  </TooltipContent>
+                </Tooltip>
+
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={downloadConversation}
+                      disabled={conversation.length === 0}
+                      className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <Download className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Download conversation</p>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
+            </TooltipProvider>
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
