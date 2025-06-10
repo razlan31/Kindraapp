@@ -197,19 +197,25 @@ export function UserPointsDisplay() {
     : null;
 
   return (
-    <div className="flex items-center gap-3 text-sm">
+    <div className="flex items-center gap-4 text-sm">
+      <div className="flex items-center gap-2">
+        <Trophy className="h-4 w-4 text-amber-500" />
+        <span className="font-semibold text-amber-700 dark:text-amber-400">
+          Level {levelInfo.level}
+        </span>
+      </div>
+      
       {latestBadge && (
-        <div className="flex items-center gap-1">
-          <span className="text-lg">{latestBadge.badge?.icon || "🏆"}</span>
-          <span className="font-medium text-xs">{latestBadge.badge?.name}</span>
+        <div className="flex items-center gap-2 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 px-3 py-1 rounded-full border border-purple-200/50 dark:border-purple-700/50">
+          <span className="text-base">{latestBadge.badge?.icon || "🏆"}</span>
+          <span className="font-medium text-purple-700 dark:text-purple-300 text-xs">
+            {latestBadge.badge?.name}
+          </span>
         </div>
       )}
-      <div className="flex items-center gap-1">
-        <Trophy className="h-4 w-4 text-amber-500" />
-        <div className="flex flex-col">
-          <span className="font-medium">Level {levelInfo.level}</span>
-          <span className="text-xs text-muted-foreground font-medium">{levelInfo.title}</span>
-        </div>
+      
+      <div className="text-xs text-muted-foreground font-medium italic">
+        {levelInfo.title}
       </div>
     </div>
   );
