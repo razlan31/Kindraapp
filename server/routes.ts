@@ -1546,9 +1546,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   async function checkAndAwardBadges(userId: number): Promise<Array<{badgeId: number, name: string, icon: string, description: string, category: string}>> {
     try {
       // Get all user data
-      const moments = await storage.getMomentsByUserId(userId);
-      const connections = await storage.getConnectionsByUserId(userId);
-      const userBadges = await storage.getUserBadges(userId);
+      const moments = await storage.getMomentsByUserId(userId.toString());
+      const connections = await storage.getConnectionsByUserId(userId.toString());
+      const userBadges = await storage.getUserBadges(userId.toString());
       const earnedBadgeIds = userBadges.map(ub => ub.badgeId);
       const allBadges = await storage.getAllBadges();
       const newBadges: Array<{badgeId: number, name: string, icon: string, description: string, category: string}> = [];
@@ -1856,7 +1856,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Award badge if earned
         if (isEarned) {
           try {
-            const result = await storage.awardBadgeWithPoints(userId, badge.id);
+            const result = await storage.awardBadgeWithPoints(userId.toString(), badge.id);
             console.log(`🎉 NEW BADGE UNLOCKED: ${badge.name} for user ${userId}! Points awarded: ${result.userBadge.pointsAwarded}`);
             
             // Add to newly earned badges array
@@ -1870,10 +1870,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           } catch (error) {
             console.error(`Error awarding badge ${badge.name}:`, error);
             // Fallback to basic badge award without points/notifications
-            await storage.addUserBadge({
-              userId,
-              badgeId: badge.id
-            });
+            await storage.awardBadge(userId.toString(), badge.id);
             console.log(`🎉 NEW BADGE UNLOCKED: ${badge.name} for user ${userId}! (no points/notification)`);
             
             newBadges.push({
