@@ -12,6 +12,7 @@ import MemoryStore from "memorystore";
 import Stripe from "stripe";
 import { aiCoach, type RelationshipContext } from "./ai-relationship-coach";
 import { ensureUserConnection } from "./user-connection-utils";
+import { setupAuth, isAuthenticated } from "./auth";
 
 // Initialize Stripe
 if (!process.env.STRIPE_SECRET_KEY) {
