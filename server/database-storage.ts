@@ -65,11 +65,11 @@ export class DatabaseStorage implements IStorage {
     return connection;
   }
 
-  async getConnectionsByUserId(userId: number): Promise<Connection[]> {
+  async getConnectionsByUserId(userId: string): Promise<Connection[]> {
     return db.select().from(connections).where(eq(connections.userId, userId));
   }
 
-  async getAllConnectionsByUserId(userId: number): Promise<Connection[]> {
+  async getAllConnectionsByUserId(userId: string): Promise<Connection[]> {
     return db.select().from(connections).where(eq(connections.userId, userId));
   }
 

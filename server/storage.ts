@@ -21,8 +21,8 @@ export interface IStorage {
 
   // Connection operations
   getConnection(id: number): Promise<Connection | undefined>;
-  getConnectionsByUserId(userId: number): Promise<Connection[]>;
-  getAllConnectionsByUserId(userId: number): Promise<Connection[]>;
+  getConnectionsByUserId(userId: string): Promise<Connection[]>;
+  getAllConnectionsByUserId(userId: string): Promise<Connection[]>;
   createConnection(connection: InsertConnection): Promise<Connection>;
   updateConnection(id: number, data: Partial<Connection>): Promise<Connection | undefined>;
   deleteConnection(id: number): Promise<boolean>;

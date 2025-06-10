@@ -224,10 +224,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Set session
       (req.session as any).userId = user.id;
+      console.log("Login: Setting session userId:", user.id);
       await new Promise((resolve, reject) => {
         req.session.save((err) => {
-          if (err) reject(err);
-          else resolve(undefined);
+          if (err) {
+            console.error("Session save error:", err);
+            reject(err);
+          } else {
+            console.log("Session saved successfully");
+            resolve(undefined);
+          }
         });
       });
       
@@ -264,8 +270,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Try session-based auth
       const session = req.session as any;
+      console.log("Auth check - session:", session?.userId ? "exists" : "missing", "userId:", session?.userId);
       if (session?.userId) {
-        const dbUser = await storage.getUser(session.userId.toString());
+        console.log("Looking up user with ID:", session.userId);
+        const dbUser = await storage.getUser(session.userId);
+        console.log("Database user lookup result:", dbUser ? "found" : "not found");
         if (dbUser) {
           // Remove password from response
           const { password, ...userWithoutPassword } = dbUser;
