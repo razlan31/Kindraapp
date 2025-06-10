@@ -915,7 +915,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Check for any new badges before returning the list
       await checkAndAwardBadges(userId);
       
-      const userBadges = await storage.getUserBadges(userId);
+      // Convert userId to string for database storage compatibility
+      const userBadges = await storage.getUserBadges(userId.toString());
       
       console.log(`🏆 Fetched ${userBadges.length} badges for user ${userId}`);
       res.json(userBadges);

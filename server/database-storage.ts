@@ -279,8 +279,18 @@ export class DatabaseStorage implements IStorage {
     return db.select().from(badges);
   }
 
-  async getUserBadges(userId: string): Promise<UserBadge[]> {
-    return db.select().from(userBadges).where(eq(userBadges.userId, userId));
+  async getUserBadges(userId: string): Promise<(UserBadge & { badge: Badge })[]> {
+    return db
+      .select()
+      .from(userBadges)
+      .leftJoin(badges, eq(userBadges.badgeId, badges.id))
+      .where(eq(userBadges.userId, userId))
+      .then(rows => 
+        rows.map(row => ({
+          ...row.user_badges,
+          badge: row.badges!
+        }))
+      );
   }
 
   async awardBadge(userId: string, badgeId: number): Promise<UserBadge> {
