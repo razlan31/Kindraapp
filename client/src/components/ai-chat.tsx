@@ -296,15 +296,15 @@ export function AIChat() {
   return (
     <div className="w-full max-w-4xl mx-auto space-y-4">
       <Card className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-sm rounded-lg">
-        <CardHeader className="pb-6 bg-white dark:bg-gray-900 text-gray-800 dark:text-white border-b border-gray-100 dark:border-gray-800">
+        <CardHeader className="pb-6 bg-gradient-to-r from-violet-50 via-purple-50 to-pink-50 dark:from-violet-900/20 dark:via-purple-900/20 dark:to-pink-900/20 text-gray-800 dark:text-white border-b border-violet-200/50 dark:border-violet-700/50">
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-4">
-              <div className="bg-gradient-to-r from-rose-400 to-purple-400 p-3 rounded-xl">
+              <div className="bg-gradient-to-r from-violet-400 via-purple-400 to-pink-400 p-3 rounded-xl shadow-lg">
                 <MessageCircle className="h-6 w-6 text-white" />
               </div>
               <div className="flex flex-col">
-                <span className="text-xl font-semibold text-gray-900 dark:text-white">Luna AI</span>
-                <span className="text-sm text-gray-600 dark:text-gray-400">Relationship Intelligence</span>
+                <span className="text-xl font-semibold bg-gradient-to-r from-violet-600 to-pink-600 bg-clip-text text-transparent">Luna AI</span>
+                <span className="text-sm text-violet-600/80 dark:text-violet-300/80">Relationship Intelligence</span>
               </div>
             </CardTitle>
             <TooltipProvider>
@@ -313,9 +313,9 @@ export function AIChat() {
                   <TooltipTrigger asChild>
                     <button
                       onClick={() => setShowHistory(!showHistory)}
-                      className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 transition-colors"
+                      className="p-2 rounded-lg bg-gradient-to-r from-violet-100 to-purple-100 hover:from-violet-200 hover:to-purple-200 dark:from-violet-800/20 dark:to-purple-800/20 dark:hover:from-violet-700/30 dark:hover:to-purple-700/30 transition-all"
                     >
-                      <History className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+                      <History className="h-4 w-4 text-violet-600 dark:text-violet-400" />
                     </button>
                   </TooltipTrigger>
                   <TooltipContent side="bottom">
@@ -327,9 +327,9 @@ export function AIChat() {
                   <TooltipTrigger asChild>
                     <button
                       onClick={startNewChat}
-                      className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 transition-colors"
+                      className="p-2 rounded-lg bg-gradient-to-r from-violet-100 to-purple-100 hover:from-violet-200 hover:to-purple-200 dark:from-violet-800/20 dark:to-purple-800/20 dark:hover:from-violet-700/30 dark:hover:to-purple-700/30 transition-all"
                     >
-                      <Plus className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+                      <Plus className="h-4 w-4 text-violet-600 dark:text-violet-400" />
                     </button>
                   </TooltipTrigger>
                   <TooltipContent side="bottom">
@@ -342,9 +342,9 @@ export function AIChat() {
                     <button
                       onClick={() => clearMutation.mutate()}
                       disabled={conversation.length === 0 || clearMutation.isPending}
-                      className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="p-2 rounded-lg bg-gradient-to-r from-violet-100 to-purple-100 hover:from-violet-200 hover:to-purple-200 dark:from-violet-800/20 dark:to-purple-800/20 dark:hover:from-violet-700/30 dark:hover:to-purple-700/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      <Trash2 className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+                      <Trash2 className="h-4 w-4 text-violet-600 dark:text-violet-400" />
                     </button>
                   </TooltipTrigger>
                   <TooltipContent side="bottom">
@@ -357,9 +357,9 @@ export function AIChat() {
                     <button
                       onClick={downloadConversation}
                       disabled={conversation.length === 0}
-                      className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="p-2 rounded-lg bg-gradient-to-r from-violet-100 to-purple-100 hover:from-violet-200 hover:to-purple-200 dark:from-violet-800/20 dark:to-purple-800/20 dark:hover:from-violet-700/30 dark:hover:to-purple-700/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      <Download className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+                      <Download className="h-4 w-4 text-violet-600 dark:text-violet-400" />
                     </button>
                   </TooltipTrigger>
                   <TooltipContent side="bottom">
@@ -409,7 +409,7 @@ export function AIChat() {
             </Card>
           )}
 
-          <div className="min-h-[400px] max-h-[500px] overflow-y-auto rounded-lg p-6 space-y-4 bg-gray-50 dark:bg-gray-800">
+          <div className="min-h-[400px] max-h-[500px] overflow-y-auto rounded-lg p-6 space-y-4 bg-gradient-to-br from-violet-50/50 via-purple-50/30 to-pink-50/50 dark:from-violet-900/10 dark:via-purple-900/10 dark:to-pink-900/10">
             {conversation.length === 0 ? (
               <div className="text-center py-12">
                 <div className="mb-8">
@@ -425,22 +425,22 @@ export function AIChat() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl mx-auto mb-8">
-                  <div className="bg-white dark:bg-gray-700 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
+                  <div className="bg-gradient-to-br from-rose-50 to-pink-50 dark:from-rose-900/20 dark:to-pink-900/20 rounded-lg p-4 border border-rose-200/50 dark:border-rose-700/50">
                     <Heart className="h-5 w-5 text-rose-500 mb-2" />
-                    <h4 className="font-medium text-gray-900 dark:text-white text-sm mb-1">Deep Analysis</h4>
-                    <p className="text-gray-600 dark:text-gray-400 text-xs">Understand relationship patterns</p>
+                    <h4 className="font-medium text-gray-900 dark:text-white text-sm mb-1 break-words">Deep Analysis</h4>
+                    <p className="text-gray-600 dark:text-gray-400 text-xs leading-relaxed break-words">Understand relationship patterns</p>
                   </div>
                   
-                  <div className="bg-white dark:bg-gray-700 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
-                    <Sparkles className="h-5 w-5 text-purple-500 mb-2" />
-                    <h4 className="font-medium text-gray-900 dark:text-white text-sm mb-1">Smart Guidance</h4>
-                    <p className="text-gray-600 dark:text-gray-400 text-xs">Personalized recommendations</p>
+                  <div className="bg-gradient-to-br from-violet-50 to-purple-50 dark:from-violet-900/20 dark:to-purple-900/20 rounded-lg p-4 border border-violet-200/50 dark:border-violet-700/50">
+                    <Sparkles className="h-5 w-5 text-violet-500 mb-2" />
+                    <h4 className="font-medium text-gray-900 dark:text-white text-sm mb-1 break-words">Smart Guidance</h4>
+                    <p className="text-gray-600 dark:text-gray-400 text-xs leading-relaxed break-words">Personalized recommendations</p>
                   </div>
                   
-                  <div className="bg-white dark:bg-gray-700 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
-                    <MessageCircle className="h-5 w-5 text-blue-500 mb-2" />
-                    <h4 className="font-medium text-gray-900 dark:text-white text-sm mb-1">Always Available</h4>
-                    <p className="text-gray-600 dark:text-gray-400 text-xs">24/7 emotional support</p>
+                  <div className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-lg p-4 border border-purple-200/50 dark:border-purple-700/50">
+                    <MessageCircle className="h-5 w-5 text-purple-500 mb-2" />
+                    <h4 className="font-medium text-gray-900 dark:text-white text-sm mb-1 break-words">Always Available</h4>
+                    <p className="text-gray-600 dark:text-gray-400 text-xs leading-relaxed break-words">24/7 emotional support</p>
                   </div>
                 </div>
 
