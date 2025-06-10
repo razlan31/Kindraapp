@@ -32,6 +32,7 @@ export const users = pgTable("users", {
   personalNotes: text("personal_notes"),
   stripeCustomerId: text("stripe_customer_id"),
   stripeSubscriptionId: text("stripe_subscription_id"),
+  points: integer("points").default(0),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -192,23 +193,42 @@ export const badges = pgTable("badges", {
   category: text("category").notNull(),
   unlockCriteria: json("unlock_criteria").notNull(),
   isRepeatable: boolean("is_repeatable").default(false),
+  points: integer("points").default(10),
 });
 
 export const badgeSchema = createInsertSchema(badges).omit({ id: true });
 export type InsertBadge = z.infer<typeof badgeSchema>;
 export type Badge = typeof badges.$inferSelect;
 
-// User Badges (junction table)
+// User Badges (junction table) - supports multiple unlocks of same badge
 export const userBadges = pgTable("user_badges", {
   id: serial("id").primaryKey(),
   userId: varchar("user_id").notNull(),
   badgeId: integer("badge_id").notNull(),
+  pointsAwarded: integer("points_awarded").default(0),
   unlockedAt: timestamp("unlocked_at").defaultNow(),
 });
 
 export const userBadgeSchema = createInsertSchema(userBadges).omit({ id: true, unlockedAt: true });
 export type InsertUserBadge = z.infer<typeof userBadgeSchema>;
 export type UserBadge = typeof userBadges.$inferSelect;
+
+// Notifications table for badge unlocks and other alerts
+export const notifications = pgTable("notifications", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull(),
+  type: text("type").notNull(), // "badge_unlock", "milestone", "reminder", etc.
+  title: text("title").notNull(),
+  message: text("message").notNull(),
+  badgeId: integer("badge_id"), // For badge unlock notifications
+  pointsAwarded: integer("points_awarded").default(0),
+  isRead: boolean("is_read").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const notificationSchema = createInsertSchema(notifications).omit({ id: true, createdAt: true });
+export type InsertNotification = z.infer<typeof notificationSchema>;
+export type Notification = typeof notifications.$inferSelect;
 
 // Menstrual cycles
 export const menstrualCycles = pgTable("menstrual_cycles", {
