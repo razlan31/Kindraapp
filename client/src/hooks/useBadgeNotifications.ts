@@ -35,12 +35,21 @@ export function useBadgeNotifications() {
   useEffect(() => {
     if (!notifications || !Array.isArray(notifications)) return;
 
+    // On first load, if we have notifications but no stored ID, set it to the highest existing ID
+    const stored = localStorage.getItem('lastSeenNotificationId');
+    if (!stored && notifications.length > 0) {
+      const allNotificationIds = notifications.map((n: BadgeNotification) => n.id);
+      const maxExistingId = Math.max(...allNotificationIds);
+      lastNotificationId.current = maxExistingId;
+      localStorage.setItem('lastSeenNotificationId', maxExistingId.toString());
+      return; // Don't show toasts for existing notifications on first load
+    }
+
     // Filter for new badge unlock notifications
     const newBadgeNotifications = notifications.filter(
       (notification: BadgeNotification) =>
         notification.type === "badge_unlock" &&
-        notification.id > lastNotificationId.current &&
-        !notification.isRead
+        notification.id > lastNotificationId.current
     );
 
     if (newBadgeNotifications.length > 0) {
