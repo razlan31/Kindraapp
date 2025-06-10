@@ -220,7 +220,10 @@ export default function Dashboard() {
         )}
 
         {/* Mini Badge Dashboard */}
-        <section className="px-3 py-2">
+        <section className="px-3 py-2" style={{ backgroundColor: 'red', border: '3px solid blue', minHeight: '50px' }}>
+          <div style={{ backgroundColor: 'yellow', padding: '10px' }}>
+            <h1 style={{ color: 'black', fontSize: '20px' }}>MINI BADGE DASHBOARD TEST</h1>
+          </div>
           <div className="bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-950/20 dark:to-yellow-950/20 border border-amber-200 dark:border-amber-800/30 rounded-xl p-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
