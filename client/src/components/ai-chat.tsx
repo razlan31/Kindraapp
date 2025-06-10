@@ -302,12 +302,12 @@ export function AIChat() {
               AI Relationship Coach
               <Sparkles className="h-4 w-4 text-yellow-500" />
             </CardTitle>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => setShowHistory(!showHistory)}
-                className="flex items-center gap-2"
+                className="flex items-center gap-1.5"
               >
                 <History className="h-4 w-4" />
                 History
@@ -315,18 +315,8 @@ export function AIChat() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={downloadConversation}
-                disabled={conversation.length === 0}
-                className="flex items-center gap-2"
-              >
-                <Download className="h-4 w-4" />
-                Download
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
                 onClick={startNewChat}
-                className="flex items-center gap-2"
+                className="flex items-center gap-1.5"
               >
                 <Plus className="h-4 w-4" />
                 New Chat
@@ -336,10 +326,20 @@ export function AIChat() {
                 size="sm"
                 onClick={() => clearMutation.mutate()}
                 disabled={conversation.length === 0 || clearMutation.isPending}
-                className="flex items-center gap-2"
+                className="flex items-center gap-1.5"
               >
                 <Trash2 className="h-4 w-4" />
-                Clear
+                Clear Chat
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={downloadConversation}
+                disabled={conversation.length === 0}
+                className="flex items-center gap-1.5"
+              >
+                <Download className="h-4 w-4" />
+                Download
               </Button>
             </div>
           </div>
