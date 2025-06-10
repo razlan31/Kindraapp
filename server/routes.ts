@@ -1857,20 +1857,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
         // Award badge if earned
         if (isEarned) {
-          await storage.addUserBadge({
-            userId,
-            badgeId: badge.id
-          });
-          console.log(`🎉 NEW BADGE UNLOCKED: ${badge.name} for user ${userId}!`);
-          
-          // Add to newly earned badges array
-          newBadges.push({
-            badgeId: badge.id,
-            name: badge.name,
-            icon: badge.icon,
-            description: badge.description,
-            category: badge.category
-          });
+          try {
+            const result = await storage.awardBadgeWithPoints(userId, badge.id);
+            console.log(`🎉 NEW BADGE UNLOCKED: ${badge.name} for user ${userId}! Points awarded: ${result.userBadge.pointsAwarded}`);
+            
+            // Add to newly earned badges array
+            newBadges.push({
+              badgeId: badge.id,
+              name: badge.name,
+              icon: badge.icon,
+              description: badge.description,
+              category: badge.category
+            });
+          } catch (error) {
+            console.error(`Error awarding badge ${badge.name}:`, error);
+            // Fallback to basic badge award without points/notifications
+            await storage.addUserBadge({
+              userId,
+              badgeId: badge.id
+            });
+            console.log(`🎉 NEW BADGE UNLOCKED: ${badge.name} for user ${userId}! (no points/notification)`);
+            
+            newBadges.push({
+              badgeId: badge.id,
+              name: badge.name,
+              icon: badge.icon,
+              description: badge.description,
+              category: badge.category
+            });
+          }
         }
       }
       
