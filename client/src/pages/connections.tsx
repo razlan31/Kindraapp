@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { Header } from "@/components/layout/header";
@@ -8,10 +8,138 @@ import { Button } from "@/components/ui/button";
 import { useModal } from "@/contexts/modal-context";
 import { useRelationshipFocus } from "@/contexts/relationship-focus-context";
 import { Input } from "@/components/ui/input";
-import { Search, Plus, X, Camera, Heart, Users, Activity, BarChart3, Clock, Calendar } from "lucide-react";
+import { Search, Plus, X, Camera, Heart, Users, Activity, BarChart3, Clock, Calendar, ChevronDown } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
+
+// Add Connection Modal Component with Custom Relationship Stages
+interface AddConnectionModalProps {
+  onClose: () => void;
+  onSubmit: (data: FormData) => void;
+  isLoading: boolean;
+}
+
+function AddConnectionModal({ onClose, onSubmit, isLoading }: AddConnectionModalProps) {
+  const [relationshipStage, setRelationshipStage] = useState("Potential");
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close suggestions when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setShowSuggestions(false);
+      }
+    }
+
+    if (showSuggestions) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [showSuggestions]);
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    // Add the custom relationship stage to form data
+    formData.set('relationshipStage', relationshipStage);
+    onSubmit(formData);
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white dark:bg-neutral-800 rounded-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
+        <div className="flex items-center justify-between p-4 border-b">
+          <h2 className="text-lg font-semibold">Add New Connection</h2>
+          <Button variant="ghost" size="sm" onClick={onClose}>
+            <X className="h-4 w-4" />
+          </Button>
+        </div>
+        
+        <form onSubmit={handleSubmit} className="p-4 space-y-4">
+          <div>
+            <label className="block text-sm font-medium mb-1">Profile Image</label>
+            <input 
+              name="profileImage" 
+              type="file" 
+              accept="image/*" 
+              className="w-full p-2 border rounded text-sm file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary/90"
+            />
+            <p className="text-xs text-gray-500 mt-1">Choose a photo from your device</p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">Name *</label>
+            <Input name="name" required />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium mb-1">Relationship Stage</label>
+            <div className="relative" ref={dropdownRef}>
+              <Input
+                value={relationshipStage}
+                onChange={(e) => setRelationshipStage(e.target.value)}
+                onFocus={() => setShowSuggestions(true)}
+                placeholder="Type custom stage or select from suggestions"
+                className="pr-10"
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 p-0"
+                onClick={() => setShowSuggestions(!showSuggestions)}
+              >
+                <ChevronDown className="h-4 w-4" />
+              </Button>
+              
+              {showSuggestions && (
+                <div className="absolute z-10 w-full mt-1 bg-white dark:bg-neutral-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg max-h-48 overflow-y-auto">
+                  {relationshipStages.map((stage) => (
+                    <button
+                      key={stage}
+                      type="button"
+                      className="w-full text-left px-3 py-2 hover:bg-gray-100 dark:hover:bg-neutral-600 text-sm"
+                      onClick={() => {
+                        setRelationshipStage(stage);
+                        setShowSuggestions(false);
+                      }}
+                    >
+                      {stage}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+            <p className="text-xs text-gray-500">
+              Examples: Mom, Dad, Sister, Colleague, Mentor, etc.
+            </p>
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium mb-1">Start Date</label>
+            <Input name="startDate" type="date" />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium mb-1">Birthday</label>
+            <Input name="birthday" type="date" />
+          </div>
+          
+          <div className="flex gap-2 pt-4">
+            <Button type="button" variant="outline" onClick={onClose} className="flex-1">
+              Cancel
+            </Button>
+            <Button type="submit" disabled={isLoading} className="flex-1">
+              {isLoading ? "Adding..." : "Add Connection"}
+            </Button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
 
 export default function Connections() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -528,76 +656,3 @@ function ConnectionCard({ connection, onSelect, recentEmojis, flagCount, mainFoc
   );
 }
 
-// Add Connection Modal Component
-interface AddConnectionModalProps {
-  onClose: () => void;
-  onSubmit: (data: FormData) => void;
-  isLoading: boolean;
-}
-
-function AddConnectionModal({ onClose, onSubmit, isLoading }: AddConnectionModalProps) {
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    onSubmit(formData);
-  };
-
-  return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-neutral-800 rounded-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
-        <div className="flex items-center justify-between p-4 border-b">
-          <h2 className="text-lg font-semibold">Add New Connection</h2>
-          <Button variant="ghost" size="sm" onClick={onClose}>
-            <X className="h-4 w-4" />
-          </Button>
-        </div>
-        
-        <form onSubmit={handleSubmit} className="p-4 space-y-4">
-          <div>
-            <label className="block text-sm font-medium mb-1">Profile Image</label>
-            <input 
-              name="profileImage" 
-              type="file" 
-              accept="image/*" 
-              className="w-full p-2 border rounded text-sm file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary/90"
-            />
-            <p className="text-xs text-gray-500 mt-1">Choose a photo from your device</p>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium mb-1">Name *</label>
-            <Input name="name" required />
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium mb-1">Relationship Stage</label>
-            <select name="relationshipStage" className="w-full p-2 border rounded">
-              {relationshipStages.map(stage => (
-                <option key={stage} value={stage}>{stage}</option>
-              ))}
-            </select>
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium mb-1">Start Date</label>
-            <Input name="startDate" type="date" />
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium mb-1">Birthday</label>
-            <Input name="birthday" type="date" />
-          </div>
-          
-          <div className="flex gap-2 pt-4">
-            <Button type="button" variant="outline" onClick={onClose} className="flex-1">
-              Cancel
-            </Button>
-            <Button type="submit" disabled={isLoading} className="flex-1">
-              {isLoading ? "Adding..." : "Add Connection"}
-            </Button>
-          </div>
-        </form>
-      </div>
-    </div>
-  );
-}
