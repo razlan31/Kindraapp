@@ -547,61 +547,13 @@ function analyzeMenstrualCycleCorrelations(moments: Moment[], connections: Conne
     return insights;
   }
   
-  // Create synthetic phase distribution for demonstration since real cycle mapping is complex
-  // In a real implementation, this would use actual cycle dates and phase calculations
-  const phasesWithData = Object.entries(phaseData).filter(([_, data]) => data.total > 0);
+  // Enhanced phase-specific analysis for detailed correlations
+  const phaseAnalysis = analyzeEachPhaseIndividually(phaseData, totalMoments);
+  insights.push(...phaseAnalysis);
   
-  if (phasesWithData.length >= 1 && phasesWithData[0][1].total >= 10) {
-    // If all moments are in one phase, create meaningful cycle insights anyway
-    const [mainPhase, mainData] = phasesWithData[0];
-    const conflictRate = mainData.conflicts / mainData.total;
-    const intimacyRate = mainData.intimate / mainData.total;
-    
-
-    
-    // Generate cycle-aware insights based on the dominant phase
-    if (conflictRate > 0.05) {
-      insights.push({
-        title: "Menstrual Cycle Conflict Pattern",
-        description: `Analysis of ${mainData.total} relationship moments reveals ${Math.round(conflictRate * 100)}% occur during conflict situations, with ${mainData.conflicts} conflicts recorded. This pattern suggests cycle-related stress may influence relationship dynamics during certain periods.`,
-        type: 'warning',
-        confidence: Math.min(85, Math.round(mainData.total * 2 + 50)),
-        category: 'correlation',
-        dataPoints: [
-          `${mainData.total} moments analyzed across cycle periods`,
-          `${Math.round(conflictRate * 100)}% conflict occurrence rate`,
-          `${mainData.positive} positive interactions recorded`
-        ],
-        actionItems: [
-          "Cycle awareness could help predict relationship stress periods",
-          "Hormonal patterns may influence communication dynamics",
-          "Timing discussions around cycle phases might improve outcomes"
-        ]
-      });
-    }
-    
-    if (intimacyRate > 0.1) {
-      insights.push({
-        title: "Cycle-Intimacy Correlation Analysis",
-        description: `Intimate moments show cycle phase correlation with ${Math.round(intimacyRate * 100)}% of interactions being intimate during tracked periods. ${mainData.intimate} intimate moments out of ${mainData.total} total interactions reflect natural hormonal influences on relationship intimacy.`,
-        type: 'positive',
-        confidence: Math.min(82, Math.round(mainData.total * 2 + 45)),
-        category: 'correlation',
-        dataPoints: [
-          `${Math.round(intimacyRate * 100)}% intimacy rate during cycle periods`,
-          `${mainData.intimate} intimate interactions tracked`,
-          `Natural hormonal patterns reflected in relationship data`
-        ],
-        actionItems: [
-          "Intimacy patterns align with natural cycle fluctuations",
-          "Cycle awareness enhances relationship understanding",
-          "Hormonal influences create predictable intimacy rhythms"
-        ]
-      });
-    }
-    
-    return insights;
-  }
+  // Cross-phase correlation patterns
+  const crossPhaseInsights = analyzeCrossPhasePatterns(phaseData);
+  insights.push(...crossPhaseInsights);
   
   // Original logic for multiple phases
   const conflictPhases = Object.entries(phaseData)
