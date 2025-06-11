@@ -25,15 +25,23 @@ export function AIInsights({ connections, moments, userData }: AIInsightsProps) 
     }))
   });
 
+  // Calculate current week number for rotation
+  const getCurrentWeek = () => {
+    const startOfYear = new Date(new Date().getFullYear(), 0, 1);
+    const today = new Date();
+    const daysDiff = Math.floor((today.getTime() - startOfYear.getTime()) / (1000 * 60 * 60 * 24));
+    return Math.floor(daysDiff / 7);
+  };
+
   // Generate data-driven insights with error handling
-  let insights: InsightData[] = [];
+  let allInsights: InsightData[] = [];
   try {
-    insights = generateDataInsights(connections, moments, userData);
-    console.log("Generated insights count:", insights.length);
-    console.log("Generated insights preview:", insights.map(i => ({ title: i.title, type: i.type })));
+    allInsights = generateDataInsights(connections, moments, userData);
+    console.log("Generated insights count:", allInsights.length);
+    console.log("Generated insights preview:", allInsights.map(i => ({ title: i.title, type: i.type })));
   } catch (error) {
     console.error("Error generating insights:", error);
-    insights = [{
+    allInsights = [{
       title: "Loading Insights",
       description: "Analyzing your relationship data...",
       type: 'neutral',
@@ -41,6 +49,23 @@ export function AIInsights({ connections, moments, userData }: AIInsightsProps) 
       icon: <TrendingUp className="h-4 w-4 text-blue-600" />,
       dataPoints: ["Processing data"]
     }];
+  }
+
+  // Weekly rotation: show different insights each week when there's enough data
+  let insights: InsightData[] = [];
+  if (allInsights.length > 3) {
+    const currentWeek = getCurrentWeek();
+    const rotationIndex = currentWeek % Math.ceil(allInsights.length / 3);
+    const startIndex = rotationIndex * 3;
+    insights = allInsights.slice(startIndex, startIndex + 3);
+    
+    // If we don't have enough insights in this rotation, fill from beginning
+    if (insights.length < 3) {
+      const remaining = 3 - insights.length;
+      insights = [...insights, ...allInsights.slice(0, remaining)];
+    }
+  } else {
+    insights = allInsights;
   }
 
   console.log("Final insights check:", { insightsLength: insights.length });
@@ -88,7 +113,7 @@ export function AIInsights({ connections, moments, userData }: AIInsightsProps) 
             AI Insights
           </h3>
           <p className="text-sm text-muted-foreground">
-            Smart patterns from your relationship data
+            Smart patterns from your relationship data • Updates weekly
           </p>
         </div>
       </div>

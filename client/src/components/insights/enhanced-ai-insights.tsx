@@ -12,8 +12,16 @@ interface EnhancedAIInsightsProps {
 }
 
 export function EnhancedAIInsights({ connections, moments, userData }: EnhancedAIInsightsProps) {
+  // Calculate current week number for rotation
+  const getCurrentWeek = () => {
+    const startOfYear = new Date(new Date().getFullYear(), 0, 1);
+    const today = new Date();
+    const daysDiff = Math.floor((today.getTime() - startOfYear.getTime()) / (1000 * 60 * 60 * 24));
+    return Math.floor(daysDiff / 7);
+  };
+
   // Generate advanced insights using the new analytics engine
-  const advancedInsights = generateAnalyticsInsights(moments, connections);
+  const allAdvancedInsights = generateAnalyticsInsights(moments, connections);
   
   // Add some basic insights for when we don't have enough data for advanced analytics
   const basicInsights: AnalyticsInsight[] = [];
@@ -40,8 +48,24 @@ export function EnhancedAIInsights({ connections, moments, userData }: EnhancedA
     });
   }
   
-  // Combine advanced and basic insights
-  const allInsights = [...advancedInsights, ...basicInsights].slice(0, 6);
+  // Combine all insights and apply weekly rotation
+  const combinedInsights = [...allAdvancedInsights, ...basicInsights];
+  let allInsights: AnalyticsInsight[] = [];
+  
+  if (combinedInsights.length > 3) {
+    const currentWeek = getCurrentWeek();
+    const rotationIndex = currentWeek % Math.ceil(combinedInsights.length / 3);
+    const startIndex = rotationIndex * 3;
+    allInsights = combinedInsights.slice(startIndex, startIndex + 3);
+    
+    // If we don't have enough insights in this rotation, fill from beginning
+    if (allInsights.length < 3) {
+      const remaining = 3 - allInsights.length;
+      allInsights = [...allInsights, ...combinedInsights.slice(0, remaining)];
+    }
+  } else {
+    allInsights = combinedInsights.slice(0, 6);
+  }
   
   const getCategoryIcon = (category: string) => {
     switch (category) {
@@ -89,7 +113,7 @@ export function EnhancedAIInsights({ connections, moments, userData }: EnhancedA
             Advanced Relationship Analytics
           </h3>
           <p className="text-sm text-muted-foreground">
-            AI-powered pattern recognition and predictive insights
+            AI-powered pattern recognition and predictive insights • Updates weekly
           </p>
 
         </div>
