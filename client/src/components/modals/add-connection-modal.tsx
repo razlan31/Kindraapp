@@ -53,35 +53,41 @@ export function AddConnectionModal({ onClose, onSubmit, isLoading }: AddConnecti
           
           <div>
             <label className="block text-sm font-medium mb-1">Relationship Stage</label>
-            <select 
-              value={isCustomStage ? "Custom" : relationshipStage}
-              onChange={(e) => {
-                console.log("Dropdown changed to:", e.target.value);
-                if (e.target.value === "Custom") {
-                  setIsCustomStage(true);
-                  setRelationshipStage("");
-                } else {
-                  setIsCustomStage(false);
-                  setRelationshipStage(e.target.value);
-                }
-              }}
-              className="w-full p-3 border-2 border-blue-500 rounded bg-white text-black"
-            >
-              <option value="Potential">Potential</option>
-              <option value="Talking">Talking</option>
-              <option value="Situationship">Situationship</option>
-              <option value="It's Complicated">It's Complicated</option>
-              <option value="Dating">Dating</option>
-              <option value="Spouse">Spouse</option>
-              <option value="FWB">FWB</option>
-              <option value="Ex">Ex</option>
-              <option value="Friend">Friend</option>
-              <option value="Best Friend">Best Friend</option>
-              <option value="Siblings">Siblings</option>
-              <option value="Custom" style={{ fontWeight: 'bold', backgroundColor: '#ffeb3b', color: '#000' }}>
-                🎯 Custom
-              </option>
-            </select>
+            <div className="relative">
+              <select 
+                value={isCustomStage ? "Custom" : relationshipStage}
+                onChange={(e) => {
+                  console.log("Dropdown changed to:", e.target.value);
+                  if (e.target.value === "Custom") {
+                    setIsCustomStage(true);
+                    setRelationshipStage("");
+                  } else {
+                    setIsCustomStage(false);
+                    setRelationshipStage(e.target.value);
+                  }
+                }}
+                className="w-full p-3 border-2 border-red-500 rounded bg-yellow-100 text-black appearance-none"
+              >
+                <option value="">-- Select Relationship Stage --</option>
+                <option value="Potential">Potential</option>
+                <option value="Talking">Talking</option>
+                <option value="Situationship">Situationship</option>
+                <option value="It's Complicated">It's Complicated</option>
+                <option value="Dating">Dating</option>
+                <option value="Spouse">Spouse</option>
+                <option value="FWB">FWB</option>
+                <option value="Ex">Ex</option>
+                <option value="Friend">Friend</option>
+                <option value="Best Friend">Best Friend</option>
+                <option value="Siblings">Siblings</option>
+                <option value="Custom">🎯 🎯 🎯 CUSTOM OPTION HERE 🎯 🎯 🎯</option>
+              </select>
+              <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                  <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+                </svg>
+              </div>
+            </div>
             
             {isCustomStage && (
               <div className="mt-2">
