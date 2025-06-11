@@ -25,6 +25,9 @@ function AddConnectionModal({ onClose, onSubmit, isLoading }: AddConnectionModal
   const [isCustomStage, setIsCustomStage] = useState(false);
   const [customStageValue, setCustomStageValue] = useState("");
 
+  // Debug log to check if relationshipStages is properly imported
+  console.log("relationshipStages array:", relationshipStages);
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -66,6 +69,7 @@ function AddConnectionModal({ onClose, onSubmit, isLoading }: AddConnectionModal
             <select 
               value={isCustomStage ? "Custom" : relationshipStage}
               onChange={(e) => {
+                console.log("Dropdown changed to:", e.target.value);
                 if (e.target.value === "Custom") {
                   setIsCustomStage(true);
                   setRelationshipStage("");
@@ -74,7 +78,7 @@ function AddConnectionModal({ onClose, onSubmit, isLoading }: AddConnectionModal
                   setRelationshipStage(e.target.value);
                 }
               }}
-              className="w-full p-2 border rounded"
+              className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white"
             >
               {relationshipStages.map(stage => (
                 <option key={stage} value={stage}>{stage}</option>
