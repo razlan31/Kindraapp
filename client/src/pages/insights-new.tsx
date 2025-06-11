@@ -143,6 +143,16 @@ export default function InsightsNew() {
         {/* AI Relationship Coach - Main Feature */}
         <AIChat />
 
+        {/* Weekly Relationship Insights */}
+        <WeeklyRelationshipInsights 
+          connections={connections} 
+          moments={moments} 
+          userData={{
+            zodiacSign: user?.zodiacSign || undefined,
+            loveLanguage: user?.loveLanguage || undefined
+          }}
+        />
+
         {/* Quote of the Day Section */}
         <QuoteOfTheDay 
           connections={connections} 
