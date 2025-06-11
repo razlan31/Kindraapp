@@ -12,9 +12,12 @@ import { Search, Plus, X, Camera, Heart, Users, Activity, BarChart3, Clock, Cale
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
+import { AddConnectionModal } from "@/components/modals/add-connection-modal";
 
-// Add Connection Modal Component with Custom Relationship Stages
-interface AddConnectionModalProps {
+// Use exported AddConnectionModal component
+
+// Remove inline modal since we're importing from separate file
+// interface AddConnectionModalProps {
   onClose: () => void;
   onSubmit: (data: FormData) => void;
   isLoading: boolean;

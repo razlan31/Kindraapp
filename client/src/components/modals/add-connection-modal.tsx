@@ -65,13 +65,22 @@ export function AddConnectionModal({ onClose, onSubmit, isLoading }: AddConnecti
                   setRelationshipStage(e.target.value);
                 }
               }}
-              className="w-full p-3 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white bg-white text-black"
+              className="w-full p-3 border-2 border-blue-500 rounded bg-white text-black"
             >
-              {[...relationshipStages, "Custom"].map(stage => (
-                <option key={stage} value={stage} style={stage === "Custom" ? { fontWeight: 'bold' } : {}}>
-                  {stage}
-                </option>
-              ))}
+              <option value="Potential">Potential</option>
+              <option value="Talking">Talking</option>
+              <option value="Situationship">Situationship</option>
+              <option value="It's Complicated">It's Complicated</option>
+              <option value="Dating">Dating</option>
+              <option value="Spouse">Spouse</option>
+              <option value="FWB">FWB</option>
+              <option value="Ex">Ex</option>
+              <option value="Friend">Friend</option>
+              <option value="Best Friend">Best Friend</option>
+              <option value="Siblings">Siblings</option>
+              <option value="Custom" style={{ fontWeight: 'bold', backgroundColor: '#ffeb3b', color: '#000' }}>
+                🎯 Custom
+              </option>
             </select>
             
             {isCustomStage && (
