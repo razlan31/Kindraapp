@@ -11,6 +11,7 @@ import { EnhancedAIInsights } from "@/components/insights/enhanced-ai-insights";
 import { AIAdvice } from "@/components/insights/ai-advice";
 import { AIChat } from "@/components/ai-chat";
 import { QuoteOfTheDay } from "@/components/insights/quote-of-the-day";
+import { WeeklyRelationshipInsights } from "@/components/insights/weekly-relationship-insights";
 import { 
   BarChart, 
   Bar, 

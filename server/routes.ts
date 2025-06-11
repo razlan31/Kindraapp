@@ -2320,6 +2320,264 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Helper functions for weekly insights
+  function getMostCommonEmojis(moments: any[]): string[] {
+    const emojiCounts: Record<string, number> = {};
+    moments.forEach(m => {
+      emojiCounts[m.emoji] = (emojiCounts[m.emoji] || 0) + 1;
+    });
+    
+    return Object.entries(emojiCounts)
+      .sort(([,a], [,b]) => b - a)
+      .slice(0, 3)
+      .map(([emoji]) => emoji);
+  }
+
+  function getCommunicationFrequency(moments: any[]): number {
+    const communicationMoments = moments.filter(m => 
+      m.content && (
+        m.content.toLowerCase().includes('text') ||
+        m.content.toLowerCase().includes('call') ||
+        m.content.toLowerCase().includes('talk') ||
+        m.content.toLowerCase().includes('conversation')
+      )
+    );
+    return moments.length > 0 ? communicationMoments.length / moments.length : 0;
+  }
+
+  function generateInsightTitle(type: string, momentCount: number): string {
+    switch (type) {
+      case 'positive':
+        return 'Thriving Relationship Patterns';
+      case 'growth':
+        return 'Growth Opportunity Detected';
+      default:
+        return momentCount >= 5 ? 'Weekly Pattern Analysis' : 'Building Your Data Foundation';
+    }
+  }
+
+  function generateActionableAdvice(type: string, context: any): string {
+    switch (type) {
+      case 'positive':
+        return `Your ${context.recentMomentsCount} tracked moments show strong positive patterns. Continue the behaviors that are working well and consider what specific actions contribute to these good moments.`;
+      case 'growth':
+        return `Based on your ${context.recentMomentsCount} recent moments, focus on open communication and consider what specific situations might benefit from a different approach.`;
+      default:
+        if (context.recentMomentsCount < 5) {
+          return 'Track more moments daily to unlock deeper insights about your relationship patterns and growth opportunities.';
+        }
+        const commFreq = context.dataPatterns.communicationFrequency;
+        return commFreq > 0.6 
+          ? 'Balance your strong communication habits with more in-person activities and shared experiences.'
+          : 'Consider increasing intentional communication moments to deepen your connections.';
+    }
+  }
+
+  function generateDataDrivenFallback(moments: any[], connections: any[], currentWeek: string): any {
+    // Analyze recent week's data
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+    
+    const recentMoments = moments.filter(m => 
+      new Date(m.createdAt || '') >= oneWeekAgo
+    );
+
+    if (recentMoments.length < 3) {
+      return {
+        title: 'Building Your Relationship Data',
+        insight: `You've tracked ${recentMoments.length} moments this week. Consistent tracking reveals meaningful patterns in your relationships and helps identify what works best for your connection style.`,
+        dataSource: `Based on ${moments.length} total moments tracked`,
+        actionableAdvice: 'Aim to track 5-7 moments per week to unlock personalized insights about your relationship patterns.',
+        confidence: 60,
+        type: 'neutral',
+        weekOf: currentWeek
+      };
+    }
+
+    // Analyze patterns
+    const positiveEmojis = ['😍', '💕', '❤️', '🥰', '😊', '🤗', '💖', '🌟', '✨'];
+    const recentPositive = recentMoments.filter(m => positiveEmojis.includes(m.emoji)).length;
+    const positiveRatio = recentPositive / recentMoments.length;
+
+    if (positiveRatio >= 0.7) {
+      return {
+        title: 'Strong Weekly Performance',
+        insight: `Your ${recentMoments.length} tracked moments show ${Math.round(positiveRatio * 100)}% positive interactions this week. This indicates healthy relationship dynamics and effective communication patterns.`,
+        dataSource: `Based on ${recentMoments.length} moments from the past week`,
+        actionableAdvice: 'Maintain this positive momentum by continuing the specific behaviors and interactions that are working well.',
+        confidence: 85,
+        type: 'positive',
+        weekOf: currentWeek
+      };
+    } else if (positiveRatio < 0.4) {
+      return {
+        title: 'Weekly Reflection Point',
+        insight: `Your ${recentMoments.length} moments show ${Math.round(positiveRatio * 100)}% positive interactions, indicating some challenges this week. This data provides valuable insight into relationship dynamics that need attention.`,
+        dataSource: `Based on ${recentMoments.length} moments from the past week`,
+        actionableAdvice: 'Focus on identifying specific patterns or situations that contribute to challenging moments and consider new approaches.',
+        confidence: 80,
+        type: 'growth',
+        weekOf: currentWeek
+      };
+    } else {
+      return {
+        title: 'Balanced Weekly Overview',
+        insight: `Your ${recentMoments.length} tracked moments show a balanced mix of experiences (${Math.round(positiveRatio * 100)}% positive). This suggests stable relationship dynamics with room for intentional growth.`,
+        dataSource: `Based on ${recentMoments.length} moments from the past week`,
+        actionableAdvice: 'Focus on increasing the frequency of activities and interactions that consistently create positive moments.',
+        confidence: 75,
+        type: 'neutral',
+        weekOf: currentWeek
+      };
+    }
+  }
+
+  // Weekly Relationship Insights API endpoint
+  app.get("/api/weekly-insights", isAuthenticated, async (req: Request, res: Response) => {
+    try {
+      const userId = (req.session as any).userId as number;
+      
+      // Get user's data for analysis
+      const [user, connections, moments] = await Promise.all([
+        storage.getUser(userId),
+        storage.getConnectionsByUserId(userId),
+        storage.getMomentsByUserId(userId, 100) // Get more moments for better analysis
+      ]);
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Calculate current week identifier
+      const getCurrentWeek = () => {
+        const now = new Date();
+        const yearStart = new Date(now.getFullYear(), 0, 1);
+        const weekNumber = Math.ceil(((now.getTime() - yearStart.getTime()) / 86400000 + 1) / 7);
+        return `${now.getFullYear()}-W${weekNumber}`;
+      };
+
+      const currentWeek = getCurrentWeek();
+
+      // Generate weekly insight using OpenAI for deeper analysis
+      try {
+        const OpenAI = (await import("openai")).default;
+        const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+        // Analyze recent week's data
+        const oneWeekAgo = new Date();
+        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+        
+        const recentMoments = moments.filter(m => 
+          new Date(m.createdAt || '') >= oneWeekAgo
+        );
+
+        const twoWeeksAgo = new Date();
+        twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
+        
+        const previousWeekMoments = moments.filter(m => {
+          const momentDate = new Date(m.createdAt || '');
+          return momentDate >= twoWeeksAgo && momentDate < oneWeekAgo;
+        });
+
+        // Create detailed context for AI analysis
+        const analysisContext = {
+          totalConnections: connections.length,
+          recentMomentsCount: recentMoments.length,
+          previousWeekMomentsCount: previousWeekMoments.length,
+          userProfile: {
+            loveLanguage: user.loveLanguage,
+            zodiacSign: user.zodiacSign,
+            relationshipGoals: user.relationshipGoals
+          },
+          dataPatterns: {
+            mostCommonEmojis: getMostCommonEmojis(recentMoments),
+            communicationFrequency: getCommunicationFrequency(recentMoments),
+            relationshipStages: connections.map(c => c.relationshipStage),
+            weeklyTrend: recentMoments.length >= previousWeekMoments.length ? 'increasing' : 'decreasing'
+          }
+        };
+
+        const prompt = `Analyze this user's relationship data and provide a personalized weekly insight:
+
+User Profile: ${user.loveLanguage ? `Love Language: ${user.loveLanguage}, ` : ''}${user.zodiacSign ? `Zodiac: ${user.zodiacSign}, ` : ''}${user.relationshipGoals ? `Goals: ${user.relationshipGoals}` : ''}
+
+Data Analysis:
+- This week: ${recentMoments.length} relationship moments tracked
+- Previous week: ${previousWeekMoments.length} moments tracked  
+- Total connections: ${connections.length}
+- Activity trend: ${analysisContext.dataPatterns.weeklyTrend}
+- Most used emojis: ${analysisContext.dataPatterns.mostCommonEmojis.join(', ')}
+
+Generate a data-driven weekly insight that:
+1. Focuses on actual patterns in their relationship data
+2. Provides specific, actionable advice based on what the data reveals
+3. Acknowledges their progress and growth areas
+4. Is encouraging but realistic
+
+Format as a brief analysis (2-3 sentences) focusing on what their data actually shows about their relationship patterns.`;
+
+        const response = await openai.chat.completions.create({
+          model: "gpt-4o",
+          messages: [
+            {
+              role: "system",
+              content: "You are a relationship data analyst who provides insights based on actual user behavior patterns. Focus on data trends, not generic advice. Be specific about what the numbers and patterns reveal."
+            },
+            {
+              role: "user",
+              content: prompt
+            }
+          ],
+          max_tokens: 200,
+          temperature: 0.3
+        });
+
+        const aiInsight = response.choices[0]?.message?.content || "";
+        
+        // Determine insight type based on data
+        let insightType: 'positive' | 'neutral' | 'growth' = 'neutral';
+        let confidence = 70;
+        
+        if (recentMoments.length >= 5) {
+          const positiveEmojis = ['😍', '💕', '❤️', '🥰', '😊', '🤗', '💖', '🌟', '✨'];
+          const positiveCount = recentMoments.filter(m => positiveEmojis.includes(m.emoji)).length;
+          const positiveRatio = positiveCount / recentMoments.length;
+          
+          if (positiveRatio >= 0.7) {
+            insightType = 'positive';
+            confidence = 85;
+          } else if (positiveRatio < 0.4) {
+            insightType = 'growth';
+            confidence = 80;
+          } else {
+            confidence = 75;
+          }
+        }
+
+        const result = {
+          title: generateInsightTitle(insightType, recentMoments.length),
+          insight: aiInsight,
+          dataSource: `Based on ${recentMoments.length} moments from the past week`,
+          actionableAdvice: generateActionableAdvice(insightType, analysisContext),
+          confidence,
+          type: insightType,
+          weekOf: currentWeek
+        };
+
+        res.json(result);
+      } catch (aiError) {
+        console.log("AI weekly insight generation failed, using data-driven fallback");
+        
+        // Generate fallback insight based on actual data patterns
+        const result = generateDataDrivenFallback(moments, connections, currentWeek);
+        res.json(result);
+      }
+    } catch (error) {
+      console.error("Error generating weekly insight:", error);
+      res.status(500).json({ message: "Failed to generate weekly insight" });
+    }
+  });
+
   // Quote of the Day API endpoint
   app.get("/api/quote-of-the-day", isAuthenticated, async (req: Request, res: Response) => {
     try {
