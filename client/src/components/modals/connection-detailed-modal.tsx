@@ -426,7 +426,7 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
 
           <TabsContent value="activity" className="space-y-4">
             <div className="text-sm text-muted-foreground mb-4">
-              Showing all {connectionMoments.length} activities with {connection.name}
+              Showing all {connectionMoments.length} activities with {currentConnection?.name}
             </div>
             
             <div className="space-y-3 max-h-96 overflow-y-auto">

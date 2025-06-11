@@ -544,11 +544,11 @@ function analyzeCyclePhaseCorrelations(moments: Moment[], cycles: MenstrualCycle
       riskFactors: strongestPhase.riskFactors,
       detailedAnalysis: detailedInsights,
       phaseBreakdown: phaseAnalysis.map(p => ({
-        phase: p.phase,
-        interactions: p.data.count,
-        positiveRate: Math.round(p.positiveRatio * 100),
-        conflictRate: Math.round(p.conflictRatio * 100),
-        intimacyRate: Math.round(p.intimateRatio * 100)
+        phase: p?.phase || 'Unknown',
+        interactions: p?.data?.count || 0,
+        positiveRate: Math.round((p?.positiveRatio || 0) * 100),
+        conflictRate: Math.round((p?.conflictRatio || 0) * 100),
+        intimacyRate: Math.round((p?.intimateRatio || 0) * 100)
       }))
     };
   }
