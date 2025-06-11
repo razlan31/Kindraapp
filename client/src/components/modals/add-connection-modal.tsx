@@ -1,8 +1,77 @@
-import { useState } from "react";
-import { X } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { X, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { relationshipStages } from "@shared/schema";
+
+interface DropdownOption {
+  value: string;
+  label: string;
+  highlight?: boolean;
+}
+
+interface CustomDropdownProps {
+  value: string;
+  onChange: (value: string) => void;
+  options: DropdownOption[];
+}
+
+function CustomDropdown({ value, onChange, options }: CustomDropdownProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  
+  const selectedOption = options.find(opt => opt.value === value);
+  
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    }
+    
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+  
+  return (
+    <div className="relative" ref={dropdownRef}>
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full p-3 border-2 border-gray-300 rounded bg-white text-left flex items-center justify-between focus:border-blue-500 focus:outline-none"
+      >
+        <span className={selectedOption?.value ? "text-black" : "text-gray-500"}>
+          {selectedOption?.label || "Select an option"}
+        </span>
+        <ChevronDown className={`h-4 w-4 transition-transform ${isOpen ? "rotate-180" : ""}`} />
+      </button>
+      
+      {isOpen && (
+        <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
+          {options.map((option) => (
+            <button
+              key={option.value}
+              type="button"
+              onClick={() => {
+                onChange(option.value);
+                setIsOpen(false);
+              }}
+              className={`w-full p-3 text-left hover:bg-gray-100 ${
+                option.highlight 
+                  ? "bg-red-500 text-white font-bold hover:bg-red-600" 
+                  : "text-black"
+              } ${
+                option.value === value ? "bg-blue-100" : ""
+              }`}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 interface AddConnectionModalProps {
   onClose: () => void;
@@ -53,42 +122,34 @@ export function AddConnectionModal({ onClose, onSubmit, isLoading }: AddConnecti
           
           <div>
             <label className="block text-sm font-medium mb-1">Relationship Stage</label>
-            <div className="relative">
-              <select 
-                value={isCustomStage ? "Custom" : relationshipStage}
-                onChange={(e) => {
-                  console.log("Dropdown changed to:", e.target.value);
-                  if (e.target.value === "Custom") {
-                    setIsCustomStage(true);
-                    setRelationshipStage("");
-                  } else {
-                    setIsCustomStage(false);
-                    setRelationshipStage(e.target.value);
-                  }
-                }}
-                className="w-full p-3 border-2 border-red-500 rounded bg-yellow-100 text-black appearance-none"
-                size={15}
-              >
-                <option value="">-- Select Relationship Stage --</option>
-                <option value="Custom" style={{backgroundColor: '#ff0000', color: '#ffffff', fontWeight: 'bold'}}>🎯 🎯 🎯 CUSTOM OPTION HERE 🎯 🎯 🎯</option>
-                <option value="Potential">Potential</option>
-                <option value="Talking">Talking</option>
-                <option value="Situationship">Situationship</option>
-                <option value="It's Complicated">It's Complicated</option>
-                <option value="Dating">Dating</option>
-                <option value="Spouse">Spouse</option>
-                <option value="FWB">FWB</option>
-                <option value="Ex">Ex</option>
-                <option value="Friend">Friend</option>
-                <option value="Best Friend">Best Friend</option>
-                <option value="Siblings">Siblings</option>
-              </select>
-              <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20">
-                  <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
-                </svg>
-              </div>
-            </div>
+            <CustomDropdown 
+              value={isCustomStage ? "Custom" : relationshipStage}
+              onChange={(value) => {
+                console.log("Custom dropdown changed to:", value);
+                if (value === "Custom") {
+                  setIsCustomStage(true);
+                  setRelationshipStage("");
+                } else {
+                  setIsCustomStage(false);
+                  setRelationshipStage(value);
+                }
+              }}
+              options={[
+                { value: "", label: "-- Select Relationship Stage --" },
+                { value: "Custom", label: "🎯 CUSTOM RELATIONSHIP STAGE 🎯", highlight: true },
+                { value: "Potential", label: "Potential" },
+                { value: "Talking", label: "Talking" },
+                { value: "Situationship", label: "Situationship" },
+                { value: "It's Complicated", label: "It's Complicated" },
+                { value: "Dating", label: "Dating" },
+                { value: "Spouse", label: "Spouse" },
+                { value: "FWB", label: "FWB" },
+                { value: "Ex", label: "Ex" },
+                { value: "Friend", label: "Friend" },
+                { value: "Best Friend", label: "Best Friend" },
+                { value: "Siblings", label: "Siblings" }
+              ]}
+            />
             
             {isCustomStage && (
               <div className="mt-2">
