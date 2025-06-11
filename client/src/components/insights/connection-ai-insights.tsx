@@ -317,26 +317,30 @@ function generateConnectionSpecificInsights(
     });
   }
 
-  // Menstrual cycle correlation analysis
-  if (cycles.length > 0 && moments.length > 8) {
+  // Menstrual cycle correlation analysis - analyze historical patterns even with recent low activity
+  if (cycles.length > 0 && moments.length > 3) {
     const cyclePhaseAnalysis = analyzeCyclePhaseCorrelations(moments, cycles);
     if (cyclePhaseAnalysis) {
+      const analysisTimeframe = getAnalysisTimeframe(moments, cycles);
+      
       insights.push({
-        title: isSelfConnection ? "Personal Cycle Awareness" : "Cycle-Aware Interactions",
+        title: isSelfConnection ? "Personal Cycle Awareness" : "Cycle-Aware Interaction Patterns",
         description: isSelfConnection ? 
-          `Your self-reflection patterns show ${cyclePhaseAnalysis.strongestPhase} phase correlation. Personal awareness during this phase could enhance emotional regulation and self-understanding.` :
-          `Your interactions with ${connection.name} show ${cyclePhaseAnalysis.strongestPhase} phase correlation. Understanding these patterns can improve relationship timing and emotional awareness.`,
-        type: 'neutral',
+          `Your historical self-reflection patterns show ${cyclePhaseAnalysis.strongestPhase} phase correlation (${analysisTimeframe}). Past data reveals ${cyclePhaseAnalysis.insights} during this cycle phase, providing valuable awareness for future personal development.` :
+          `Historical interaction patterns with ${connection.name} show ${cyclePhaseAnalysis.strongestPhase} phase correlation (${analysisTimeframe}). Past data reveals ${cyclePhaseAnalysis.insights} during this cycle phase, offering insights for future relationship timing.`,
+        type: cyclePhaseAnalysis.type,
         confidence: cyclePhaseAnalysis.confidence,
         category: 'correlation',
         dataPoints: [
-          `${cyclePhaseAnalysis.totalCycleData} cycle phases analyzed`,
-          `${cyclePhaseAnalysis.strongestPhase} phase shows strongest correlation`,
-          `${cycles.length} complete cycles tracked`
+          `${cyclePhaseAnalysis.totalCycleData} cycle interactions analyzed`,
+          `${cyclePhaseAnalysis.strongestPhase} phase: ${cyclePhaseAnalysis.patternStrength}`,
+          `Historical data: ${analysisTimeframe}`,
+          `${cycles.length} cycles tracked for ${connection.name}`
         ],
         actionItems: [
-          `Cycle awareness: ${cyclePhaseAnalysis.strongestPhase} phase insights available`,
-          "Biological rhythm patterns enhance relationship understanding"
+          `${cyclePhaseAnalysis.strongestPhase} phase pattern: ${cyclePhaseAnalysis.recommendation}`,
+          cyclePhaseAnalysis.futureGuidance,
+          "Historical cycle awareness enhances relationship understanding"
         ]
       });
     }
@@ -353,18 +357,20 @@ function generateConnectionSpecificInsights(
   return insights.slice(0, 4); // Return top 4 insights
 }
 
-// Helper function for cycle phase correlation analysis
+// Helper function for enhanced cycle phase correlation analysis
 function analyzeCyclePhaseCorrelations(moments: Moment[], cycles: MenstrualCycle[]) {
   if (cycles.length === 0) return null;
 
   const phaseCorrelations = {
-    menstrual: { count: 0, positive: 0 },
-    follicular: { count: 0, positive: 0 },
-    ovulation: { count: 0, positive: 0 },
-    luteal: { count: 0, positive: 0 }
-  };
+    menstrual: { count: 0, positive: 0, intimate: 0, conflict: 0 },
+    follicular: { count: 0, positive: 0, intimate: 0, conflict: 0 },
+    ovulation: { count: 0, positive: 0, intimate: 0, conflict: 0 },
+    luteal: { count: 0, positive: 0, intimate: 0, conflict: 0 }
+  } as Record<string, { count: number; positive: number; intimate: number; conflict: number }>;
 
   const positiveEmojis = ['😍', '💕', '❤️', '🥰', '😊', '🤗', '💖', '🌟', '✨', '💫', '🔥', '😘', '🥳', '🎉'];
+  const conflictEmojis = ['😢', '😞', '😕', '💔', '😤', '😠', '🙄', '😣', '😭', '😰', '⚡'];
+  const intimateEmojis = ['💋', '🔥', '😘', '🥰', '💖', '😍'];
 
   moments.forEach(moment => {
     if (!moment.createdAt) return;
@@ -380,27 +386,91 @@ function analyzeCyclePhaseCorrelations(moments: Moment[], cycles: MenstrualCycle
       const phase = getCyclePhase(momentDate, cycle);
       if (phase && phaseCorrelations[phase]) {
         phaseCorrelations[phase].count++;
+        
         if (positiveEmojis.includes(moment.emoji) || moment.tags?.includes('Green Flag')) {
           phaseCorrelations[phase].positive++;
+        }
+        
+        if (conflictEmojis.includes(moment.emoji) || moment.tags?.includes('Red Flag') || moment.tags?.includes('Yellow Flag')) {
+          phaseCorrelations[phase].conflict++;
+        }
+        
+        if (moment.isIntimate || intimateEmojis.includes(moment.emoji) || moment.tags?.includes('Physical Touch')) {
+          phaseCorrelations[phase].intimate++;
         }
       }
     }
   });
 
-  const phaseRatios = Object.entries(phaseCorrelations)
-    .map(([phase, data]) => ({
-      phase,
-      ratio: data.count > 0 ? data.positive / data.count : 0,
-      count: data.count
-    }))
-    .filter(item => item.count > 2)
-    .sort((a, b) => b.ratio - a.ratio);
+  // Find the most significant phase pattern
+  const phaseAnalysis = Object.entries(phaseCorrelations)
+    .map(([phase, data]) => {
+      const positiveRatio = data.count > 0 ? data.positive / data.count : 0;
+      const conflictRatio = data.count > 0 ? data.conflict / data.count : 0;
+      const intimateRatio = data.count > 0 ? data.intimate / data.count : 0;
+      
+      let dominantPattern = 'neutral';
+      let patternStrength = '';
+      let insights = '';
+      let recommendation = '';
+      
+      if (data.count >= 2) {
+        if (positiveRatio > 0.6) {
+          dominantPattern = 'positive';
+          patternStrength = `${Math.round(positiveRatio * 100)}% positive interactions`;
+          insights = `strong positive emotional connection`;
+          recommendation = 'optimal time for meaningful conversations';
+        } else if (conflictRatio > 0.4) {
+          dominantPattern = 'challenging';
+          patternStrength = `${Math.round(conflictRatio * 100)}% challenging interactions`;
+          insights = `heightened emotional sensitivity`;
+          recommendation = 'gentle communication and extra understanding';
+        } else if (intimateRatio > 0.3) {
+          dominantPattern = 'intimate';
+          patternStrength = `${Math.round(intimateRatio * 100)}% intimate moments`;
+          insights = `increased physical connection`;
+          recommendation = 'natural intimacy peak period';
+        } else {
+          patternStrength = `${data.count} interactions recorded`;
+          insights = `mixed emotional patterns`;
+          recommendation = 'varied emotional responses observed';
+        }
+      }
+      
+      return {
+        phase,
+        data,
+        positiveRatio,
+        conflictRatio,
+        intimateRatio,
+        dominantPattern,
+        patternStrength,
+        insights,
+        recommendation,
+        significance: data.count * (Math.max(positiveRatio, conflictRatio, intimateRatio) - 0.3)
+      };
+    })
+    .filter(item => item.data.count >= 2)
+    .sort((a, b) => b.significance - a.significance);
 
-  if (phaseRatios.length > 0) {
+  if (phaseAnalysis.length > 0) {
+    const strongestPhase = phaseAnalysis[0];
+    const totalCycleData = Object.values(phaseCorrelations).reduce((sum, data) => sum + data.count, 0);
+    
     return {
-      strongestPhase: phaseRatios[0].phase,
-      confidence: Math.min(85, Math.round(phaseRatios[0].count * 10 + 40)),
-      totalCycleData: Object.values(phaseCorrelations).reduce((sum, data) => sum + data.count, 0)
+      strongestPhase: strongestPhase.phase,
+      confidence: Math.min(85, Math.round(strongestPhase.data.count * 8 + 45)),
+      totalCycleData,
+      patternStrength: strongestPhase.patternStrength,
+      insights: strongestPhase.insights,
+      recommendation: strongestPhase.recommendation,
+      type: strongestPhase.dominantPattern === 'positive' ? 'positive' as const : 
+            strongestPhase.dominantPattern === 'challenging' ? 'warning' as const : 'neutral' as const,
+      futureGuidance: strongestPhase.dominantPattern === 'positive' ? 
+        'Historical patterns suggest this phase supports positive relationship moments' :
+        strongestPhase.dominantPattern === 'challenging' ?
+        'Historical patterns suggest extra care during this cycle phase' :
+        'Historical patterns provide valuable timing insights for future interactions'
     };
   }
 
@@ -456,4 +526,20 @@ function analyzeTagPatterns(moments: Moment[], connection: Connection) {
   }
 
   return null;
+}
+
+// Helper function to get analysis timeframe description
+function getAnalysisTimeframe(moments: Moment[], cycles: MenstrualCycle[]): string {
+  if (moments.length === 0) return "No data available";
+  
+  const validMoments = moments.filter(m => m.createdAt);
+  if (validMoments.length === 0) return "No dated moments";
+  
+  const earliest = new Date(validMoments[validMoments.length - 1].createdAt!);
+  const latest = new Date(validMoments[0].createdAt!);
+  const monthsDiff = Math.round((latest.getTime() - earliest.getTime()) / (1000 * 60 * 60 * 24 * 30));
+  
+  if (monthsDiff < 1) return "Recent weeks";
+  if (monthsDiff < 3) return `Past ${monthsDiff} months`;
+  return `${monthsDiff} month history`;
 }
