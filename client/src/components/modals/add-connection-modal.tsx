@@ -1,4 +1,5 @@
-import { X } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { X, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { relationshipStages } from "@shared/schema";
@@ -10,9 +11,29 @@ interface AddConnectionModalProps {
 }
 
 export function AddConnectionModal({ onClose, onSubmit, isLoading }: AddConnectionModalProps) {
+  const [relationshipStage, setRelationshipStage] = useState("Potential");
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close suggestions when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setShowSuggestions(false);
+      }
+    }
+
+    if (showSuggestions) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [showSuggestions]);
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
+    // Add the custom relationship stage to form data
+    formData.set('relationshipStage', relationshipStage);
     onSubmit(formData);
   };
 

@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { X } from "lucide-react";
+import { X, ChevronDown } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { relationshipStages } from "@shared/schema";
 
 interface ConnectionModalProps {
   isOpen: boolean;
@@ -16,9 +17,26 @@ export function ConnectionModal({ isOpen, onClose }: ConnectionModalProps) {
     name: "",
     relationshipStage: "Dating"
   });
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [customStage, setCustomStage] = useState("");
+  const dropdownRef = useRef<HTMLDivElement>(null);
   
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  // Close suggestions when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setShowSuggestions(false);
+      }
+    }
+
+    if (showSuggestions) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [showSuggestions]);
 
   const createConnectionMutation = useMutation({
     mutationFn: async (data: { name: string; relationshipStage: string }) => {
@@ -92,19 +110,50 @@ export function ConnectionModal({ isOpen, onClose }: ConnectionModalProps) {
             <label htmlFor="relationshipStage" className="text-sm font-medium">
               Relationship Stage
             </label>
-            <select
-              id="relationshipStage"
-              value={formData.relationshipStage}
-              onChange={(e) => setFormData({ ...formData, relationshipStage: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-            >
-              <option value="Dating">Dating</option>
-              <option value="Talking">Talking</option>
-              <option value="Relationship">Relationship</option>
-              <option value="Best Friend">Best Friend</option>
-              <option value="Friend">Friend</option>
-              <option value="Family">Family</option>
-            </select>
+            <div className="relative" ref={dropdownRef}>
+              <Input
+                id="relationshipStage"
+                value={formData.relationshipStage}
+                onChange={(e) => {
+                  setFormData({ ...formData, relationshipStage: e.target.value });
+                  setCustomStage(e.target.value);
+                }}
+                onFocus={() => setShowSuggestions(true)}
+                placeholder="Type custom stage or select from suggestions"
+                className="pr-10"
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 p-0"
+                onClick={() => setShowSuggestions(!showSuggestions)}
+              >
+                <ChevronDown className="h-4 w-4" />
+              </Button>
+              
+              {showSuggestions && (
+                <div className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg max-h-48 overflow-y-auto">
+                  {relationshipStages.map((stage) => (
+                    <button
+                      key={stage}
+                      type="button"
+                      className="w-full text-left px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 text-sm"
+                      onClick={() => {
+                        setFormData({ ...formData, relationshipStage: stage });
+                        setCustomStage(stage);
+                        setShowSuggestions(false);
+                      }}
+                    >
+                      {stage}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+            <p className="text-xs text-gray-500">
+              Examples: Mom, Dad, Sister, Colleague, Mentor, etc.
+            </p>
           </div>
 
           <div className="flex justify-between gap-2 pt-4 border-t">
