@@ -148,6 +148,14 @@ export function AIInsights({ connections, moments, userData }: AIInsightsProps) 
           );
         })}
       </div>
+      
+      <div className="mt-6 pt-4 border-t border-purple-200/50 dark:border-purple-800/50">
+        <div className="text-xs text-muted-foreground bg-white/50 dark:bg-black/20 rounded-md px-3 py-2">
+          <strong>Confidence</strong> represents how reliable and trustworthy a particular statistic or analysis is based on the available data.
+          <br />
+          <strong>80%+</strong> Very reliable • <strong>60-79%</strong> Generally reliable • <strong>&lt;60%</strong> Early indicators
+        </div>
+      </div>
     </div>
   );
 }

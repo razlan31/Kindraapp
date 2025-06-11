@@ -91,11 +91,7 @@ export function EnhancedAIInsights({ connections, moments, userData }: EnhancedA
           <p className="text-sm text-muted-foreground">
             AI-powered pattern recognition and predictive insights
           </p>
-          <div className="mt-2 text-xs text-muted-foreground bg-white/50 dark:bg-black/20 rounded-md px-2 py-1">
-            <strong>Confidence</strong> represents how reliable and trustworthy a particular statistic or analysis is based on the available data.
-            <br />
-            <strong>80%+</strong> Very reliable • <strong>60-79%</strong> Generally reliable • <strong>&lt;60%</strong> Early indicators
-          </div>
+
         </div>
       </div>
       
@@ -185,16 +181,21 @@ export function EnhancedAIInsights({ connections, moments, userData }: EnhancedA
         )}
       </div>
       
-      {moments.length >= 10 && (
-        <div className="mt-6 pt-4 border-t border-purple-200/50 dark:border-purple-800/50">
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+      <div className="mt-6 pt-4 border-t border-purple-200/50 dark:border-purple-800/50">
+        <div className="text-xs text-muted-foreground bg-white/50 dark:bg-black/20 rounded-md px-3 py-2">
+          <strong>Confidence</strong> represents how reliable and trustworthy a particular statistic or analysis is based on the available data.
+          <br />
+          <strong>80%+</strong> Very reliable • <strong>60-79%</strong> Generally reliable • <strong>&lt;60%</strong> Early indicators
+        </div>
+        {moments.length >= 10 && (
+          <div className="flex items-center gap-2 text-xs text-muted-foreground mt-2">
             <Zap className="h-3 w-3" />
             <span>
               Advanced analytics enabled with {moments.length} moments across {connections.length} connections
             </span>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
