@@ -698,12 +698,12 @@ function analyzeEachPhaseIndividually(phaseData: Record<string, any>, totalMomen
     const intimacyRate = data.intimate / data.total;
     const positiveRate = data.positive / data.total;
     
-    // Only generate insights if there are clear patterns (significant deviations)
-    const hasSignificantConflictPattern = conflictRate > 0.2 || conflictRate < 0.05;
-    const hasSignificantIntimacyPattern = intimacyRate > 0.3 || (intimacyRate < 0.1 && data.total > 8);
-    const hasSignificantPositivePattern = positiveRate > 0.7 || positiveRate < 0.2;
+    // Generate insights if phase has sufficient data and any notable patterns
+    const hasNotableConflictPattern = conflictRate > 0.08 || conflictRate < 0.05;
+    const hasNotableIntimacyPattern = intimacyRate > 0.12 || (intimacyRate < 0.08 && data.total > 8);
+    const hasNotablePositivePattern = positiveRate > 0.4 || positiveRate < 0.25;
     
-    if (!hasSignificantConflictPattern && !hasSignificantIntimacyPattern && !hasSignificantPositivePattern) {
+    if (!hasNotableConflictPattern && !hasNotableIntimacyPattern && !hasNotablePositivePattern) {
       return; // Skip this phase if no significant patterns
     }
     
