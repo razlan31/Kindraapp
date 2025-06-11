@@ -92,7 +92,9 @@ export function EnhancedAIInsights({ connections, moments, userData }: EnhancedA
             AI-powered pattern recognition and predictive insights
           </p>
           <div className="mt-2 text-xs text-muted-foreground bg-white/50 dark:bg-black/20 rounded-md px-2 py-1">
-            <strong>Confidence levels:</strong> High (80%+) = Very reliable • Medium (60-79%) = Generally reliable • Lower (&lt;60%) = Early indicators
+            <strong>Confidence</strong> represents how reliable and trustworthy a particular statistic or analysis is based on the available data.
+            <br />
+            <strong>80%+</strong> Very reliable • <strong>60-79%</strong> Generally reliable • <strong>&lt;60%</strong> Early indicators
           </div>
         </div>
       </div>
