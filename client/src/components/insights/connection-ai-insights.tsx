@@ -328,18 +328,18 @@ function generateConnectionSpecificInsights(
         description: isSelfConnection ? 
           `Your historical self-reflection patterns show ${cyclePhaseAnalysis.strongestPhase} phase correlation (${analysisTimeframe}). Past data reveals ${cyclePhaseAnalysis.insights} during this cycle phase, providing valuable awareness for future personal development.` :
           `Historical interaction patterns with ${connection.name} show ${cyclePhaseAnalysis.strongestPhase} phase correlation (${analysisTimeframe}). Past data reveals ${cyclePhaseAnalysis.insights} during this cycle phase, offering insights for future relationship timing.`,
-        type: cyclePhaseAnalysis.type,
+        type: cyclePhaseAnalysis.type || 'neutral',
         confidence: cyclePhaseAnalysis.confidence,
         category: 'correlation',
         dataPoints: [
           `${cyclePhaseAnalysis.totalCycleData} cycle interactions analyzed`,
-          `${cyclePhaseAnalysis.strongestPhase} phase: ${cyclePhaseAnalysis.patternStrength}`,
+          `${cyclePhaseAnalysis.strongestPhase} phase: ${cyclePhaseAnalysis.patternStrength || 'pattern detected'}`,
           `Historical data: ${analysisTimeframe}`,
           `${cycles.length} cycles tracked for ${connection.name}`
         ],
         actionItems: [
-          `${cyclePhaseAnalysis.strongestPhase} phase pattern: ${cyclePhaseAnalysis.recommendation}`,
-          cyclePhaseAnalysis.futureGuidance,
+          `${cyclePhaseAnalysis.strongestPhase} phase pattern: ${cyclePhaseAnalysis.recommendation || 'insights available'}`,
+          cyclePhaseAnalysis.futureGuidance || 'Historical patterns provide valuable timing insights',
           "Historical cycle awareness enhances relationship understanding"
         ]
       });
