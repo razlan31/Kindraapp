@@ -67,8 +67,10 @@ export function AddConnectionModal({ onClose, onSubmit, isLoading }: AddConnecti
                   }
                 }}
                 className="w-full p-3 border-2 border-red-500 rounded bg-yellow-100 text-black appearance-none"
+                size={15}
               >
                 <option value="">-- Select Relationship Stage --</option>
+                <option value="Custom" style={{backgroundColor: '#ff0000', color: '#ffffff', fontWeight: 'bold'}}>🎯 🎯 🎯 CUSTOM OPTION HERE 🎯 🎯 🎯</option>
                 <option value="Potential">Potential</option>
                 <option value="Talking">Talking</option>
                 <option value="Situationship">Situationship</option>
@@ -80,7 +82,6 @@ export function AddConnectionModal({ onClose, onSubmit, isLoading }: AddConnecti
                 <option value="Friend">Friend</option>
                 <option value="Best Friend">Best Friend</option>
                 <option value="Siblings">Siblings</option>
-                <option value="Custom">🎯 🎯 🎯 CUSTOM OPTION HERE 🎯 🎯 🎯</option>
               </select>
               <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                 <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20">
