@@ -26,8 +26,9 @@ function AddConnectionModal({ onClose, onSubmit, isLoading }: AddConnectionModal
   const [customStageValue, setCustomStageValue] = useState("");
 
   // Debug log to check if relationshipStages is properly imported
-  console.log("relationshipStages array:", relationshipStages);
+  console.log("AddConnectionModal rendered - relationshipStages array:", relationshipStages);
   console.log("Total options including Custom:", relationshipStages.length + 1);
+  console.log("Custom option array:", [...relationshipStages, "Custom"]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
