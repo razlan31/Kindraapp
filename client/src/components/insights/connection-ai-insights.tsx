@@ -154,22 +154,21 @@ export function ConnectionAIInsights({ connection, moments, userData }: Connecti
   );
 }
 
-// Generate connection-specific insights using full main insights functionality
+// Generate connection-specific insights using custom analytics for individual connections
 function generateConnectionSpecificInsights(
   connection: Connection, 
   moments: Moment[], 
   cycles: MenstrualCycle[], 
   userData: any
 ): AnalyticsInsight[] {
+  const insights: AnalyticsInsight[] = [];
+  
   // Check if this is a self-connection (personal development tracking)
   const isSelfConnection = connection.name.toLowerCase() === 'self' || 
                           connection.name.toLowerCase() === 'myself' ||
                           connection.relationshipStage === 'Self';
 
-  // Use the full generateAnalyticsInsights function with connection-filtered data
-  const allConnectionInsights = generateAnalyticsInsights(moments, [connection], cycles);
-
-  // If we don't have enough data for advanced analytics, provide basic insights
+  // Early exit for insufficient data
   if (moments.length < 3) {
     if (isSelfConnection) {
       return [{
@@ -194,90 +193,267 @@ function generateConnectionSpecificInsights(
     }
   }
 
-  // Add basic pattern recognition for small datasets
-  const basicInsights: AnalyticsInsight[] = [];
-  
-  if (moments.length >= 3 && moments.length < 10) {
-    const emotionalPatterns = moments.reduce((acc: Record<string, number>, moment) => {
-      acc[moment.emoji] = (acc[moment.emoji] || 0) + 1;
-      return acc;
-    }, {});
+  // Analyze recent activity patterns
+  const recentMoments = moments.filter(m => {
+    if (!m.createdAt) return false;
+    const momentDate = new Date(m.createdAt);
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+    return momentDate >= thirtyDaysAgo;
+  });
+
+  const positiveEmojis = ['😍', '💕', '❤️', '🥰', '😊', '🤗', '💖', '🌟', '✨', '💫', '🔥', '😘', '🥳', '🎉'];
+  const conflictEmojis = ['😢', '😞', '😕', '💔', '😤', '😠', '🙄', '😣', '😭', '😰', '⚡'];
+  const intimateEmojis = ['💋', '🔥', '😘', '🥰', '💖', '😍'];
+
+  const positiveCount = moments.filter(m => positiveEmojis.includes(m.emoji) || m.tags?.includes('Green Flag')).length;
+  const conflictCount = moments.filter(m => conflictEmojis.includes(m.emoji) || m.tags?.includes('Red Flag') || m.tags?.includes('Yellow Flag')).length;
+  const intimateCount = moments.filter(m => m.isIntimate || intimateEmojis.includes(m.emoji) || m.tags?.includes('Physical Touch')).length;
+
+  // Activity pattern analysis
+  if (recentMoments.length > 0) {
+    const validMoments = moments.filter(m => m.createdAt);
+    const avgDaysBetween = validMoments.length > 1 ? 
+      (new Date(validMoments[0].createdAt!).getTime() - new Date(validMoments[validMoments.length - 1].createdAt!).getTime()) / (1000 * 60 * 60 * 24) / (validMoments.length - 1) : 0;
+
+    if (isSelfConnection) {
+      insights.push({
+        title: "Self-Reflection Pattern",
+        description: `Your personal development tracking shows ${recentMoments.length} self-reflection moments in the last 30 days, with an average of ${avgDaysBetween > 0 ? Math.round(avgDaysBetween) : 'daily'} days between personal check-ins. This indicates ${recentMoments.length > 15 ? 'excellent' : recentMoments.length > 8 ? 'consistent' : 'developing'} self-awareness practice.`,
+        type: recentMoments.length > 8 ? 'positive' : recentMoments.length > 4 ? 'neutral' : 'warning',
+        confidence: Math.min(90, Math.round(recentMoments.length * 4 + 55)),
+        category: 'pattern',
+        dataPoints: [
+          `${recentMoments.length} recent self-reflections`,
+          `${moments.length} total personal moments`,
+          `${Math.round(avgDaysBetween)} days between check-ins`
+        ],
+        actionItems: [
+          `Self-reflection frequency: ${recentMoments.length > 15 ? 'highly committed' : recentMoments.length > 8 ? 'consistently mindful' : 'building awareness'}`,
+          "Regular self-check-ins enhance emotional intelligence"
+        ]
+      });
+    } else {
+      insights.push({
+        title: "Communication Pattern",
+        description: `Your interaction frequency with ${connection.name} shows ${recentMoments.length} moments in the last 30 days, with an average of ${avgDaysBetween > 0 ? Math.round(avgDaysBetween) : 'daily'} days between recorded interactions. This suggests ${recentMoments.length > 10 ? 'strong engagement' : recentMoments.length > 5 ? 'steady connection' : 'casual interaction'} in your relationship dynamic.`,
+        type: recentMoments.length > 10 ? 'positive' : recentMoments.length > 5 ? 'neutral' : 'warning',
+        confidence: Math.min(85, Math.round(recentMoments.length * 5 + 50)),
+        category: 'pattern',
+        dataPoints: [
+          `${recentMoments.length} recent interactions`,
+          `${moments.length} total moments recorded`,
+          `${Math.round(avgDaysBetween)} days between interactions`
+        ],
+        actionItems: [
+          `Interaction frequency: ${recentMoments.length > 10 ? 'highly engaged' : recentMoments.length > 5 ? 'moderately active' : 'occasional contact'}`,
+          `Communication pattern reflects ${connection.relationshipStage.toLowerCase()} stage dynamics`
+        ]
+      });
+    }
+  }
+
+  // Emotional dynamic analysis
+  if (positiveCount > 0 || conflictCount > 0) {
+    const totalEmotional = positiveCount + conflictCount;
+    const emotionalRatio = positiveCount / Math.max(1, totalEmotional);
+    const dominantPattern = emotionalRatio > 0.7 ? 'positive' : emotionalRatio < 0.3 ? 'challenging' : 'balanced';
+
+    if (isSelfConnection) {
+      insights.push({
+        title: "Personal Emotional Pattern",
+        description: `Your self-reflection shows ${Math.round(emotionalRatio * 100)}% positive personal moments versus ${Math.round((1 - emotionalRatio) * 100)}% challenging periods. This ${dominantPattern} emotional pattern indicates ${dominantPattern === 'positive' ? 'strong self-compassion and growth mindset' : dominantPattern === 'challenging' ? 'honest self-reflection and growth focus' : 'healthy emotional self-awareness'}.`,
+        type: dominantPattern === 'positive' ? 'positive' : dominantPattern === 'challenging' ? 'neutral' : 'positive',
+        confidence: Math.min(92, Math.round(totalEmotional * 7 + 50)),
+        category: 'behavioral',
+        dataPoints: [
+          `${positiveCount} positive self-moments`,
+          `${conflictCount} challenging reflections`,
+          `${Math.round(emotionalRatio * 100)}% positive ratio`
+        ],
+        actionItems: [
+          `Self-emotional pattern: ${dominantPattern} self-awareness`,
+          dominantPattern === 'positive' ? "Strong foundation for continued growth" : "Honest self-reflection enables development"
+        ]
+      });
+    } else {
+      insights.push({
+        title: "Emotional Dynamic",
+        description: `Your emotional pattern with ${connection.name} shows ${Math.round(emotionalRatio * 100)}% positive moments versus ${Math.round((1 - emotionalRatio) * 100)}% challenging interactions. This ${dominantPattern} dynamic indicates ${dominantPattern === 'positive' ? 'strong emotional harmony' : dominantPattern === 'challenging' ? 'areas for relationship attention' : 'natural emotional complexity'}.`,
+        type: dominantPattern === 'positive' ? 'positive' : dominantPattern === 'challenging' ? 'warning' : 'neutral',
+        confidence: Math.min(88, Math.round(totalEmotional * 8 + 45)),
+        category: 'behavioral',
+        dataPoints: [
+          `${positiveCount} positive moments`,
+          `${conflictCount} challenging moments`,
+          `${Math.round(emotionalRatio * 100)}% positive ratio`
+        ],
+        actionItems: [
+          `Emotional dynamic: ${dominantPattern} interaction pattern`,
+          dominantPattern === 'positive' ? "Strong emotional foundation detected" : dominantPattern === 'challenging' ? "Consider communication strategies" : "Natural emotional variety"
+        ]
+      });
+    }
+  }
+
+  // Intimacy analysis (for non-self connections)
+  if (!isSelfConnection && intimateCount > 0 && moments.length > 5) {
+    const intimacyFrequency = intimateCount / moments.length;
     
-    const dominantPattern = Object.entries(emotionalPatterns)
-      .sort(([,a], [,b]) => b - a)[0];
-    
-    basicInsights.push({
-      title: isSelfConnection ? "Early Self-Awareness Pattern" : `Early Pattern with ${connection.name}`,
-      description: isSelfConnection ? 
-        `Your ${moments.length} personal moments reveal early self-awareness patterns. The ${dominantPattern[0]} emotion appears most frequently, suggesting this represents a core aspect of your personal development journey.` :
-        `Your ${moments.length} moments with ${connection.name} reveal early relationship patterns. The ${dominantPattern[0]} emotion appears most frequently, suggesting this represents a core aspect of your dynamic together.`,
-      type: 'neutral',
-      confidence: 75,
-      category: 'pattern',
-      dataPoints: [`${moments.length} moments analyzed`, `${dominantPattern[0]} dominant pattern`, `${dominantPattern[1]} occurrences`],
-      actionItems: [`Primary emotional indicator: ${dominantPattern[0]}`, "Early behavioral patterns visible", "Foundation for deeper analysis emerging"]
+    insights.push({
+      title: "Intimacy Pattern",
+      description: `Intimate moments with ${connection.name} represent ${Math.round(intimacyFrequency * 100)}% of your tracked interactions (${intimateCount} out of ${moments.length} moments). This ${intimacyFrequency > 0.3 ? 'high' : intimacyFrequency > 0.15 ? 'moderate' : 'low'} intimacy frequency aligns with ${connection.relationshipStage.toLowerCase()} stage expectations.`,
+      type: 'positive',
+      confidence: Math.min(82, Math.round(intimateCount * 10 + 60)),
+      category: 'correlation',
+      dataPoints: [
+        `${intimateCount} intimate moments recorded`,
+        `${Math.round(intimacyFrequency * 100)}% intimacy frequency`,
+        `${connection.relationshipStage} stage context`
+      ],
+      actionItems: [
+        `Intimacy level: ${intimacyFrequency > 0.3 ? 'highly intimate' : intimacyFrequency > 0.15 ? 'moderately intimate' : 'developing intimacy'}`,
+        `Physical connection patterns align with ${connection.relationshipStage.toLowerCase()} expectations`
+      ]
     });
   }
 
-  // Connection-specific adaptations of insights
-  const adaptedInsights = allConnectionInsights.map(insight => {
-    let adaptedInsight = { ...insight };
-    
-    if (isSelfConnection) {
-      // Adapt insights for self-reflection
-      adaptedInsight.title = insight.title
-        .replace(/Relationship/g, 'Personal')
-        .replace(/relationship/g, 'personal development')
-        .replace(/Connection/g, 'Self-Development');
-        
-      adaptedInsight.description = insight.description
-        .replace(/relationship/g, 'personal development')
-        .replace(/interactions/g, 'personal moments')
-        .replace(/your connection/g, 'your self-awareness')
-        .replace(/partner/g, 'yourself')
-        .replace(/relationships/g, 'personal growth');
-    } else {
-      // Adapt insights for specific connection
-      if (!insight.title.includes(connection.name)) {
-        adaptedInsight.title = `${connection.name} ${insight.title}`;
-      }
-      
-      adaptedInsight.description = insight.description
-        .replace(/relationship/g, `relationship with ${connection.name}`)
-        .replace(/your connection/g, `your connection with ${connection.name}`)
-        .replace(/relationships/g, `relationship with ${connection.name}`);
+  // Menstrual cycle correlation analysis
+  if (cycles.length > 0 && moments.length > 8) {
+    const cyclePhaseAnalysis = analyzeCyclePhaseCorrelations(moments, cycles);
+    if (cyclePhaseAnalysis) {
+      insights.push({
+        title: isSelfConnection ? "Personal Cycle Awareness" : "Cycle-Aware Interactions",
+        description: isSelfConnection ? 
+          `Your self-reflection patterns show ${cyclePhaseAnalysis.strongestPhase} phase correlation. Personal awareness during this phase could enhance emotional regulation and self-understanding.` :
+          `Your interactions with ${connection.name} show ${cyclePhaseAnalysis.strongestPhase} phase correlation. Understanding these patterns can improve relationship timing and emotional awareness.`,
+        type: 'neutral',
+        confidence: cyclePhaseAnalysis.confidence,
+        category: 'correlation',
+        dataPoints: [
+          `${cyclePhaseAnalysis.totalCycleData} cycle phases analyzed`,
+          `${cyclePhaseAnalysis.strongestPhase} phase shows strongest correlation`,
+          `${cycles.length} complete cycles tracked`
+        ],
+        actionItems: [
+          `Cycle awareness: ${cyclePhaseAnalysis.strongestPhase} phase insights available`,
+          "Biological rhythm patterns enhance relationship understanding"
+        ]
+      });
     }
-    
-    return adaptedInsight;
-  });
-
-  // Combine basic insights with advanced insights
-  const combinedInsights = [...adaptedInsights, ...basicInsights];
-
-  // Apply weekly rotation if we have many insights (copied from main insights logic)
-  const getCurrentWeek = () => {
-    const startOfYear = new Date(new Date().getFullYear(), 0, 1);
-    const today = new Date();
-    const daysDiff = Math.floor((today.getTime() - startOfYear.getTime()) / (1000 * 60 * 60 * 24));
-    return Math.floor(daysDiff / 7);
-  };
-
-  let finalInsights: AnalyticsInsight[] = [];
-  
-  if (combinedInsights.length > 4) {
-    const currentWeek = getCurrentWeek();
-    const rotationIndex = currentWeek % Math.ceil(combinedInsights.length / 4);
-    const startIndex = rotationIndex * 4;
-    finalInsights = combinedInsights.slice(startIndex, startIndex + 4);
-    
-    // If we don't have enough insights in this rotation, fill from beginning
-    if (finalInsights.length < 4) {
-      const remaining = 4 - finalInsights.length;
-      finalInsights = [...finalInsights, ...combinedInsights.slice(0, remaining)];
-    }
-  } else {
-    finalInsights = combinedInsights.slice(0, 6);
   }
 
-  return finalInsights;
+  // Tag pattern analysis
+  if (moments.length > 10) {
+    const tagAnalysis = analyzeTagPatterns(moments, connection);
+    if (tagAnalysis) {
+      insights.push(tagAnalysis);
+    }
+  }
+
+  return insights.slice(0, 4); // Return top 4 insights
+}
+
+// Helper function for cycle phase correlation analysis
+function analyzeCyclePhaseCorrelations(moments: Moment[], cycles: MenstrualCycle[]) {
+  if (cycles.length === 0) return null;
+
+  const phaseCorrelations = {
+    menstrual: { count: 0, positive: 0 },
+    follicular: { count: 0, positive: 0 },
+    ovulation: { count: 0, positive: 0 },
+    luteal: { count: 0, positive: 0 }
+  };
+
+  const positiveEmojis = ['😍', '💕', '❤️', '🥰', '😊', '🤗', '💖', '🌟', '✨', '💫', '🔥', '😘', '🥳', '🎉'];
+
+  moments.forEach(moment => {
+    if (!moment.createdAt) return;
+    
+    const momentDate = new Date(moment.createdAt);
+    const cycle = cycles.find(c => {
+      const cycleStart = new Date(c.startDate);
+      const cycleEnd = c.endDate ? new Date(c.endDate) : new Date(cycleStart.getTime() + 28 * 24 * 60 * 60 * 1000);
+      return momentDate >= cycleStart && momentDate <= cycleEnd;
+    });
+
+    if (cycle) {
+      const phase = getCyclePhase(momentDate, cycle);
+      if (phase && phaseCorrelations[phase]) {
+        phaseCorrelations[phase].count++;
+        if (positiveEmojis.includes(moment.emoji) || moment.tags?.includes('Green Flag')) {
+          phaseCorrelations[phase].positive++;
+        }
+      }
+    }
+  });
+
+  const phaseRatios = Object.entries(phaseCorrelations)
+    .map(([phase, data]) => ({
+      phase,
+      ratio: data.count > 0 ? data.positive / data.count : 0,
+      count: data.count
+    }))
+    .filter(item => item.count > 2)
+    .sort((a, b) => b.ratio - a.ratio);
+
+  if (phaseRatios.length > 0) {
+    return {
+      strongestPhase: phaseRatios[0].phase,
+      confidence: Math.min(85, Math.round(phaseRatios[0].count * 10 + 40)),
+      totalCycleData: Object.values(phaseCorrelations).reduce((sum, data) => sum + data.count, 0)
+    };
+  }
+
+  return null;
+}
+
+// Helper function to determine cycle phase
+function getCyclePhase(date: Date, cycle: MenstrualCycle): string {
+  const cycleStart = new Date(cycle.startDate);
+  const daysSinceStart = Math.floor((date.getTime() - cycleStart.getTime()) / (1000 * 60 * 60 * 24));
+  
+  if (daysSinceStart < 0) return 'luteal'; // Before this cycle
+  if (daysSinceStart <= 5) return 'menstrual';
+  if (daysSinceStart <= 13) return 'follicular';
+  if (daysSinceStart <= 16) return 'ovulation';
+  return 'luteal';
+}
+
+// Helper function for tag pattern analysis
+function analyzeTagPatterns(moments: Moment[], connection: Connection) {
+  const tagCounts: Record<string, number> = {};
+  
+  moments.forEach(moment => {
+    moment.tags?.forEach(tag => {
+      tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+    });
+  });
+
+  const sortedTags = Object.entries(tagCounts)
+    .sort(([,a], [,b]) => b - a)
+    .slice(0, 3);
+
+  if (sortedTags.length > 0) {
+    const dominantTag = sortedTags[0];
+    const tagFrequency = dominantTag[1] / moments.length;
+
+    return {
+      title: `Behavioral Pattern: ${dominantTag[0]}`,
+      description: `The "${dominantTag[0]}" pattern appears in ${Math.round(tagFrequency * 100)}% of your moments with ${connection.name} (${dominantTag[1]} out of ${moments.length} interactions). This recurring theme suggests a significant aspect of your relationship dynamic.`,
+      type: dominantTag[0].includes('Green') ? 'positive' as const : dominantTag[0].includes('Red') ? 'warning' as const : 'neutral' as const,
+      confidence: Math.min(80, Math.round(dominantTag[1] * 8 + 40)),
+      category: 'pattern' as const,
+      dataPoints: [
+        `${dominantTag[0]} appears ${dominantTag[1]} times`,
+        `${Math.round(tagFrequency * 100)}% frequency rate`,
+        `Top 3 patterns: ${sortedTags.map(([tag]) => tag).join(', ')}`
+      ],
+      actionItems: [
+        `Dominant pattern: ${dominantTag[0]}`,
+        "Behavioral themes reveal relationship dynamics"
+      ]
+    };
+  }
+
+  return null;
 }
