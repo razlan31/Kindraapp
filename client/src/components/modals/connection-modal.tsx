@@ -17,26 +17,11 @@ export function ConnectionModal({ isOpen, onClose }: ConnectionModalProps) {
     name: "",
     relationshipStage: "Dating"
   });
-  const [showSuggestions, setShowSuggestions] = useState(false);
-  const [customStage, setCustomStage] = useState("");
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [isCustomStage, setIsCustomStage] = useState(false);
+  const [customStageValue, setCustomStageValue] = useState("");
   
   const { toast } = useToast();
   const queryClient = useQueryClient();
-
-  // Close suggestions when clicking outside
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setShowSuggestions(false);
-      }
-    }
-
-    if (showSuggestions) {
-      document.addEventListener('mousedown', handleClickOutside);
-      return () => document.removeEventListener('mousedown', handleClickOutside);
-    }
-  }, [showSuggestions]);
 
   const createConnectionMutation = useMutation({
     mutationFn: async (data: { name: string; relationshipStage: string }) => {
@@ -70,7 +55,11 @@ export function ConnectionModal({ isOpen, onClose }: ConnectionModalProps) {
       });
       return;
     }
-    createConnectionMutation.mutate(formData);
+    const finalStage = isCustomStage ? customStageValue : formData.relationshipStage;
+    createConnectionMutation.mutate({
+      name: formData.name,
+      relationshipStage: finalStage
+    });
   };
 
   if (!isOpen) return null;

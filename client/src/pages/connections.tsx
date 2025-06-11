@@ -22,28 +22,15 @@ interface AddConnectionModalProps {
 
 function AddConnectionModal({ onClose, onSubmit, isLoading }: AddConnectionModalProps) {
   const [relationshipStage, setRelationshipStage] = useState("Potential");
-  const [showSuggestions, setShowSuggestions] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
-  // Close suggestions when clicking outside
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setShowSuggestions(false);
-      }
-    }
-
-    if (showSuggestions) {
-      document.addEventListener('mousedown', handleClickOutside);
-      return () => document.removeEventListener('mousedown', handleClickOutside);
-    }
-  }, [showSuggestions]);
+  const [isCustomStage, setIsCustomStage] = useState(false);
+  const [customStageValue, setCustomStageValue] = useState("");
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    // Add the custom relationship stage to form data
-    formData.set('relationshipStage', relationshipStage);
+    // Add the relationship stage to form data (use custom value if it's a custom stage)
+    const finalStage = isCustomStage ? customStageValue : relationshipStage;
+    formData.set('relationshipStage', finalStage);
     onSubmit(formData);
   };
 
@@ -76,43 +63,37 @@ function AddConnectionModal({ onClose, onSubmit, isLoading }: AddConnectionModal
           
           <div>
             <label className="block text-sm font-medium mb-1">Relationship Stage</label>
-            <div className="relative" ref={dropdownRef}>
-              <Input
-                value={relationshipStage}
-                onChange={(e) => setRelationshipStage(e.target.value)}
-                onFocus={() => setShowSuggestions(true)}
-                placeholder="Type custom stage or select from suggestions"
-                className="pr-10"
-              />
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 p-0"
-                onClick={() => setShowSuggestions(!showSuggestions)}
-              >
-                <ChevronDown className="h-4 w-4" />
-              </Button>
-              
-              {showSuggestions && (
-                <div className="absolute z-10 w-full mt-1 bg-white dark:bg-neutral-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg max-h-48 overflow-y-auto">
-                  {relationshipStages.map((stage) => (
-                    <button
-                      key={stage}
-                      type="button"
-                      className="w-full text-left px-3 py-2 hover:bg-gray-100 dark:hover:bg-neutral-600 text-sm"
-                      onClick={() => {
-                        setRelationshipStage(stage);
-                        setShowSuggestions(false);
-                      }}
-                    >
-                      {stage}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-            <p className="text-xs text-gray-500">
+            <select 
+              value={isCustomStage ? "Custom" : relationshipStage}
+              onChange={(e) => {
+                if (e.target.value === "Custom") {
+                  setIsCustomStage(true);
+                  setRelationshipStage("");
+                } else {
+                  setIsCustomStage(false);
+                  setRelationshipStage(e.target.value);
+                }
+              }}
+              className="w-full p-2 border rounded"
+            >
+              {relationshipStages.map(stage => (
+                <option key={stage} value={stage}>{stage}</option>
+              ))}
+              <option value="Custom">Custom</option>
+            </select>
+            
+            {isCustomStage && (
+              <div className="mt-2">
+                <Input
+                  value={customStageValue}
+                  onChange={(e) => setCustomStageValue(e.target.value)}
+                  placeholder="Enter custom relationship stage (e.g., Mom, Dad, Sister, Colleague)"
+                  className="w-full"
+                />
+              </div>
+            )}
+            
+            <p className="text-xs text-gray-500 mt-1">
               Examples: Mom, Dad, Sister, Colleague, Mentor, etc.
             </p>
           </div>
