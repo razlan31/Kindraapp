@@ -33,7 +33,7 @@ export function Header() {
       <div className="flex items-center">
         <h1 className="text-2xl font-heading font-bold text-primary">Kindra</h1>
       </div>
-      <div className="flex items-center space-x-1">
+      <div className="flex items-center space-x-3">
         <UserPointsDisplay />
         <NotificationBell />
         <DropdownMenu>
