@@ -662,3 +662,168 @@ function analyzeMenstrualCycleCorrelations(moments: Moment[], connections: Conne
   
   return insights;
 }
+
+// Analyze each menstrual cycle phase individually for detailed correlations
+function analyzeEachPhaseIndividually(phaseData: Record<string, any>, totalMoments: number): AnalyticsInsight[] {
+  const insights: AnalyticsInsight[] = [];
+  
+  const phaseDescriptions = {
+    menstrual: {
+      name: "Menstrual Phase",
+      biology: "Low estrogen and progesterone levels",
+      expectedPatterns: "potential mood sensitivity, energy fluctuations"
+    },
+    follicular: {
+      name: "Follicular Phase", 
+      biology: "Rising estrogen levels",
+      expectedPatterns: "increasing energy, optimism, social openness"
+    },
+    ovulation: {
+      name: "Ovulation Phase",
+      biology: "Peak estrogen and LH surge",
+      expectedPatterns: "heightened confidence, attraction, communication"
+    },
+    luteal: {
+      name: "Luteal Phase",
+      biology: "High progesterone, declining estrogen",
+      expectedPatterns: "introspection, sensitivity, potential irritability"
+    }
+  };
+
+  Object.entries(phaseData).forEach(([phase, data]) => {
+    if (data.total < 5) return; // Only analyze phases with sufficient data
+    
+    const phaseInfo = phaseDescriptions[phase as keyof typeof phaseDescriptions];
+    const conflictRate = data.conflicts / data.total;
+    const intimacyRate = data.intimate / data.total;
+    const positiveRate = data.positive / data.total;
+    
+    // Only generate insights if there are clear patterns (significant deviations)
+    const hasSignificantConflictPattern = conflictRate > 0.2 || conflictRate < 0.05;
+    const hasSignificantIntimacyPattern = intimacyRate > 0.3 || (intimacyRate < 0.1 && data.total > 8);
+    const hasSignificantPositivePattern = positiveRate > 0.7 || positiveRate < 0.2;
+    
+    if (!hasSignificantConflictPattern && !hasSignificantIntimacyPattern && !hasSignificantPositivePattern) {
+      return; // Skip this phase if no significant patterns
+    }
+    
+    const phaseInsights = [];
+    
+    // Conflict analysis for this phase
+    if (conflictRate > 0.2) {
+      phaseInsights.push(`Elevated conflict rate (${Math.round(conflictRate * 100)}%) during ${phaseInfo.name.toLowerCase()}`);
+    } else if (conflictRate < 0.05) {
+      phaseInsights.push(`Remarkably low conflict rate (${Math.round(conflictRate * 100)}%) during ${phaseInfo.name.toLowerCase()}`);
+    }
+    
+    // Intimacy analysis for this phase
+    if (intimacyRate > 0.3) {
+      phaseInsights.push(`High intimacy frequency (${Math.round(intimacyRate * 100)}%) aligns with ${phaseInfo.biology.toLowerCase()}`);
+    } else if (intimacyRate < 0.1 && data.total > 8) {
+      phaseInsights.push(`Notably lower intimacy frequency (${Math.round(intimacyRate * 100)}%) during ${phaseInfo.name.toLowerCase()}`);
+    }
+    
+    // Positive interaction analysis
+    if (positiveRate > 0.7) {
+      phaseInsights.push(`High positive interaction rate (${Math.round(positiveRate * 100)}%) supports expected ${phaseInfo.expectedPatterns}`);
+    } else if (positiveRate < 0.2) {
+      phaseInsights.push(`Lower positive interaction rate (${Math.round(positiveRate * 100)}%) during ${phaseInfo.name.toLowerCase()}`);
+    }
+    
+    // Create insight with meaningful patterns
+    const insight: AnalyticsInsight = {
+      title: `${phaseInfo.name} Pattern Analysis`,
+      description: `During the ${phaseInfo.name.toLowerCase()} (${phaseInfo.biology.toLowerCase()}), analysis of ${data.total} relationship moments reveals distinct patterns. ${phaseInsights.join('. ')}. These patterns align with expected hormonal influences during this cycle phase.`,
+      type: conflictRate > 0.2 ? 'warning' : positiveRate > 0.7 ? 'positive' : 'neutral',
+      confidence: Math.min(88, Math.round(data.total * 6 + 50)),
+      category: 'correlation',
+      dataPoints: [
+        `${data.total} moments during ${phaseInfo.name.toLowerCase()}`,
+        `${Math.round(conflictRate * 100)}% conflict rate`,
+        `${Math.round(intimacyRate * 100)}% intimacy rate`,
+        `${Math.round(positiveRate * 100)}% positive interactions`,
+        `Biological context: ${phaseInfo.biology}`
+      ],
+      actionItems: [
+        `${phaseInfo.name} characteristics: ${phaseInfo.expectedPatterns}`,
+        `Hormonal influence: ${phaseInfo.biology}`,
+        phaseInsights.length > 1 ? "Multiple significant patterns detected" : "Single significant pattern identified"
+      ]
+    };
+    
+    insights.push(insight);
+  });
+  
+  return insights;
+}
+
+// Analyze cross-phase correlation patterns
+function analyzeCrossPhasePatterns(phaseData: Record<string, any>): AnalyticsInsight[] {
+  const insights: AnalyticsInsight[] = [];
+  
+  const phasesWithData = Object.entries(phaseData)
+    .filter(([_, data]) => data.total >= 5)
+    .map(([phase, data]) => ({
+      phase,
+      conflictRate: data.conflicts / data.total,
+      intimacyRate: data.intimate / data.total,
+      positiveRate: data.positive / data.total,
+      total: data.total
+    }));
+  
+  if (phasesWithData.length < 2) return insights;
+  
+  // Find most and least conflicted phases
+  const sortedByConflict = [...phasesWithData].sort((a, b) => b.conflictRate - a.conflictRate);
+  const highConflictPhase = sortedByConflict[0];
+  const lowConflictPhase = sortedByConflict[sortedByConflict.length - 1];
+  
+  // Only create insight if there's a significant difference
+  if (highConflictPhase.conflictRate - lowConflictPhase.conflictRate > 0.15) {
+    insights.push({
+      title: "Cycle Conflict Correlation",
+      description: `Conflict patterns vary significantly across menstrual cycle phases. ${highConflictPhase.phase} phase shows ${Math.round(highConflictPhase.conflictRate * 100)}% conflict rate compared to ${Math.round(lowConflictPhase.conflictRate * 100)}% during ${lowConflictPhase.phase} phase. This ${Math.round((highConflictPhase.conflictRate - lowConflictPhase.conflictRate) * 100)}% difference indicates strong cycle influence on relationship stress.`,
+      type: 'warning',
+      confidence: Math.min(85, Math.round((highConflictPhase.total + lowConflictPhase.total) * 3 + 45)),
+      category: 'correlation',
+      dataPoints: [
+        `${highConflictPhase.phase}: ${Math.round(highConflictPhase.conflictRate * 100)}% conflict rate`,
+        `${lowConflictPhase.phase}: ${Math.round(lowConflictPhase.conflictRate * 100)}% conflict rate`,
+        `${Math.round((highConflictPhase.conflictRate - lowConflictPhase.conflictRate) * 100)}% variance between phases`
+      ],
+      actionItems: [
+        `Avoid sensitive discussions during ${highConflictPhase.phase} phase`,
+        `Schedule important conversations during ${lowConflictPhase.phase} phase`,
+        "Cycle awareness enables strategic relationship timing"
+      ]
+    });
+  }
+  
+  // Find most and least intimate phases
+  const sortedByIntimacy = [...phasesWithData].sort((a, b) => b.intimacyRate - a.intimacyRate);
+  const highIntimacyPhase = sortedByIntimacy[0];
+  const lowIntimacyPhase = sortedByIntimacy[sortedByIntimacy.length - 1];
+  
+  // Only create insight if there's a significant difference
+  if (highIntimacyPhase.intimacyRate - lowIntimacyPhase.intimacyRate > 0.2) {
+    insights.push({
+      title: "Cycle Intimacy Patterns",
+      description: `Intimacy frequency shows clear cycle correlation. ${highIntimacyPhase.phase} phase demonstrates ${Math.round(highIntimacyPhase.intimacyRate * 100)}% intimacy rate versus ${Math.round(lowIntimacyPhase.intimacyRate * 100)}% during ${lowIntimacyPhase.phase} phase. This natural ${Math.round((highIntimacyPhase.intimacyRate - lowIntimacyPhase.intimacyRate) * 100)}% fluctuation reflects hormonal influences on desire and connection.`,
+      type: 'positive',
+      confidence: Math.min(82, Math.round((highIntimacyPhase.total + lowIntimacyPhase.total) * 3 + 40)),
+      category: 'correlation',
+      dataPoints: [
+        `${highIntimacyPhase.phase}: ${Math.round(highIntimacyPhase.intimacyRate * 100)}% intimacy rate`,
+        `${lowIntimacyPhase.phase}: ${Math.round(lowIntimacyPhase.intimacyRate * 100)}% intimacy rate`,
+        `Natural ${Math.round((highIntimacyPhase.intimacyRate - lowIntimacyPhase.intimacyRate) * 100)}% hormonal variation`
+      ],
+      actionItems: [
+        `${highIntimacyPhase.phase} phase: natural peak intimacy period`,
+        `${lowIntimacyPhase.phase} phase: focus on emotional connection`,
+        "Understanding natural rhythms reduces relationship pressure"
+      ]
+    });
+  }
+  
+  return insights;
+}
