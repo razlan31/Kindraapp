@@ -3,11 +3,10 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { Header } from "@/components/layout/header";
 import { BottomNavigation } from "@/components/layout/bottom-navigation";
-import { Connection, relationshipStages, Moment } from "@shared/schema";
+import { Connection, relationshipStages } from "@shared/schema";
 import { Button } from "@/components/ui/button";
 import { useModal } from "@/contexts/modal-context";
 import { useRelationshipFocus } from "@/contexts/relationship-focus-context";
-import { useAuth } from "@/contexts/auth-context";
 import { Input } from "@/components/ui/input";
 import { Search, Plus, X, Camera, Heart, Users, Activity, BarChart3, Clock, Calendar, ChevronDown } from "lucide-react";
 import { Card } from "@/components/ui/card";
@@ -97,8 +96,8 @@ export default function Connections() {
   const getFlagCount = (connectionId: number) => {
     const connectionMoments = moments.filter(m => m.connectionId === connectionId);
     return {
-      green: connectionMoments.filter(m => m.tags?.includes('green_flag')).length,
-      red: connectionMoments.filter(m => m.tags?.includes('red_flag')).length,
+      green: connectionMoments.filter(m => m.category === 'green_flag').length,
+      red: connectionMoments.filter(m => m.category === 'red_flag').length,
     };
   };
 
