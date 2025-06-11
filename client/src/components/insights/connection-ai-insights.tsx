@@ -23,8 +23,17 @@ export function ConnectionAIInsights({ connection, moments, userData }: Connecti
   const connectionMoments = moments.filter(m => m.connectionId === connection.id);
   const connectionCycles = menstrualCycles.filter(c => c.connectionId === connection.id);
 
+  console.log(`Connection ${connection.name} (ID: ${connection.id}) debug:`, {
+    totalMoments: moments.length,
+    connectionMoments: connectionMoments.length,
+    connectionCycles: connectionCycles.length,
+    momentsPreview: connectionMoments.slice(0, 3).map(m => ({ id: m.id, emoji: m.emoji, tags: m.tags }))
+  });
+
   // Generate connection-specific insights
   const connectionInsights = generateConnectionSpecificInsights(connection, connectionMoments, connectionCycles, userData);
+  
+  console.log(`Generated ${connectionInsights.length} insights for ${connection.name}:`, connectionInsights.map(i => i.title));
 
   const getTypeStyles = (type: string) => {
     switch (type) {
