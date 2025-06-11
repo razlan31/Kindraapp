@@ -424,15 +424,21 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
           </TabsContent>
 
           <TabsContent value="insights" className="space-y-4">
-            {currentConnection && user && (
+            {currentConnection && user ? (
               <ConnectionAIInsights
                 connection={currentConnection}
                 moments={connectionMoments}
                 userData={{
-                  zodiacSign: user.zodiacSign,
-                  loveLanguage: user.loveLanguage
+                  zodiacSign: (user as any).zodiacSign,
+                  loveLanguage: (user as any).loveLanguage
                 }}
               />
+            ) : (
+              <div className="flex items-center justify-center py-8">
+                <div className="text-center">
+                  <div className="text-sm text-muted-foreground">Loading insights...</div>
+                </div>
+              </div>
             )}
           </TabsContent>
 

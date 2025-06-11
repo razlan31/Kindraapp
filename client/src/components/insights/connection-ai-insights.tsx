@@ -316,17 +316,23 @@ function generateConnectionSpecificInsights(
   }
 
   // Cycle correlation analysis (if applicable)
-  if (cycles.length > 0 && moments.length > 8) {
+  if (cycles.length > 0 && moments.length > 5) {
     const cycleInsights = generateAnalyticsInsights(moments, [connection], cycles);
     const cycleSpecificInsights = cycleInsights.filter(insight => 
-      insight.category === 'correlation' && insight.title.toLowerCase().includes('cycle')
+      insight.category === 'correlation' || insight.title.toLowerCase().includes('cycle') || insight.title.toLowerCase().includes('phase')
     );
     
-    insights.push(...cycleSpecificInsights.map(insight => ({
-      ...insight,
-      title: `${connection.name} ${insight.title}`,
-      description: insight.description.replace(/relationship/g, `relationship with ${connection.name}`)
-    })));
+    if (cycleSpecificInsights.length > 0) {
+      insights.push(...cycleSpecificInsights.map(insight => ({
+        ...insight,
+        title: isSelfConnection ? 
+          insight.title.replace(/Relationship/g, 'Personal').replace(/relationship/g, 'personal development') :
+          `${connection.name} ${insight.title}`,
+        description: isSelfConnection ?
+          insight.description.replace(/relationship/g, 'personal development').replace(/interactions/g, 'personal moments').replace(/your connection/g, 'your self-awareness') :
+          insight.description.replace(/relationship/g, `relationship with ${connection.name}`).replace(/your connection/g, `your connection with ${connection.name}`)
+      })));
+    }
   }
 
   return insights.slice(0, 4); // Return top 4 connection-specific insights
