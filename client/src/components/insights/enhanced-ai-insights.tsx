@@ -91,6 +91,9 @@ export function EnhancedAIInsights({ connections, moments, userData }: EnhancedA
           <p className="text-sm text-muted-foreground">
             AI-powered pattern recognition and predictive insights
           </p>
+          <div className="mt-2 text-xs text-muted-foreground bg-white/50 dark:bg-black/20 rounded-md px-2 py-1">
+            <strong>Confidence levels:</strong> High (80%+) = Very reliable • Medium (60-79%) = Generally reliable • Lower (&lt;60%) = Early indicators
+          </div>
         </div>
       </div>
       
