@@ -399,8 +399,8 @@ function getStageSpecificInsight(stage: string, positiveRatio: number, connectio
           : `Consider focusing on appreciation exercises and quality time to strengthen committed bonds and reignite passion.`,
         type: baseType,
         recommendations: positiveRatio > 0.7
-          ? ["Maintain successful relationship practices", "Celebrate your partnership wins"]
-          : ["Schedule regular date nights", "Practice daily gratitude sharing", "Reignite shared interests"]
+          ? ["Long-term relationship management skills demonstrated", "Partnership stability patterns confirmed"]
+          : ["Committed relationship optimization opportunities identified", "Emotional investment patterns require attention"]
       };
       
     case 'Best Friend':
@@ -410,15 +410,15 @@ function getStageSpecificInsight(stage: string, positiveRatio: number, connectio
           : `Friendships might benefit from more shared activities and regular check-ins to maintain closeness.`,
         type: baseType,
         recommendations: positiveRatio > 0.7
-          ? ["Continue nurturing your friendship network", "Organize group activities"]
-          : ["Plan regular friend dates", "Create shared memory-making activities", "Increase communication frequency"]
+          ? ["Friendship network management demonstrates strong social skills", "Group dynamic facilitation patterns successful"]
+          : ["Friendship maintenance patterns show optimization opportunities", "Social connection depth requires strategic attention"]
       };
       
     default:
       return {
         description: `${stage} relationships show ${Math.round(positiveRatio * 100)}% positive moments across ${connectionCount} connections, indicating ${positiveRatio > 0.6 ? 'healthy' : 'developing'} relationship patterns.`,
         type: baseType,
-        recommendations: ["Continue building positive experiences", "Maintain consistent communication"]
+        recommendations: ["Standard relationship development patterns observed", "Baseline communication frequency established"]
       };
   }
 }
@@ -446,17 +446,17 @@ function calculateRelationshipTrajectory(moments: Moment[]) {
     direction = 'stable';
     confidence = 75;
     analysis = "Relationship patterns show consistent stability with predictable interaction quality.";
-    recommendations = ["Maintain current positive patterns", "Consider introducing fresh experiences"];
+    recommendations = ["Consistent relationship stability patterns confirmed", "Predictable interaction quality maintained"];
   } else if (trendChange > 0) {
     direction = 'upward';
     confidence = Math.min(95, Math.round(trendChange * 400 + 70));
     analysis = "Recent interactions indicate strengthening emotional connection and growing satisfaction.";
-    recommendations = ["Continue successful strategies", "Build on positive momentum", "Document what's working"];
+    recommendations = ["Positive trajectory confirmed through data analysis", "Relationship satisfaction metrics trending upward", "Emotional investment strategies proving effective"];
   } else {
     direction = 'downward';
     confidence = Math.min(95, Math.round(trendMagnitude * 400 + 70));
     analysis = "Recent patterns suggest declining satisfaction or emerging relationship stress requiring attention.";
-    recommendations = ["Address concerns proactively", "Increase quality time together", "Practice open communication"];
+    recommendations = ["Declining satisfaction patterns detected in data", "Relationship stress indicators present", "Attention and care metrics show downward trend"];
   }
   
   return { direction, confidence, analysis, recommendations };
