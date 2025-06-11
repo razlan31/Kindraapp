@@ -27,6 +27,7 @@ function AddConnectionModal({ onClose, onSubmit, isLoading }: AddConnectionModal
 
   // Debug log to check if relationshipStages is properly imported
   console.log("relationshipStages array:", relationshipStages);
+  console.log("Total options including Custom:", relationshipStages.length + 1);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -78,12 +79,14 @@ function AddConnectionModal({ onClose, onSubmit, isLoading }: AddConnectionModal
                   setRelationshipStage(e.target.value);
                 }
               }}
-              className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+              className="w-full p-3 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white bg-white text-black"
+              style={{ maxHeight: 'none' }}
             >
-              {relationshipStages.map(stage => (
-                <option key={stage} value={stage}>{stage}</option>
+              {[...relationshipStages, "Custom"].map(stage => (
+                <option key={stage} value={stage} style={stage === "Custom" ? { fontWeight: 'bold' } : {}}>
+                  {stage}
+                </option>
               ))}
-              <option value="Custom">Custom</option>
             </select>
             
             {isCustomStage && (
