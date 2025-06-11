@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/auth-context";
 
 interface BadgeNotification {
   id: number;
@@ -15,6 +16,7 @@ interface BadgeNotification {
 
 export function useBadgeNotifications() {
   const { toast } = useToast();
+  const { isAuthenticated } = useAuth();
   const lastNotificationId = useRef<number>(0);
 
   // Initialize from localStorage on mount
@@ -25,11 +27,12 @@ export function useBadgeNotifications() {
     }
   }, []);
 
-  // Poll for notifications every 3 seconds
+  // Poll for notifications every 3 seconds, but only if authenticated
   const { data: notifications } = useQuery({
     queryKey: ["/api/notifications"],
     refetchInterval: 3000,
     staleTime: 0,
+    enabled: isAuthenticated,
   });
 
   useEffect(() => {
