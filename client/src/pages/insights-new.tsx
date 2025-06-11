@@ -182,8 +182,8 @@ export default function InsightsNew() {
           
           {isInsightsExpanded && (
             <div className="transition-all duration-200 ease-in-out space-y-6">
-              {/* Enhanced Advanced Analytics */}
-              <EnhancedAIInsights 
+              {/* Traditional Insights */}
+              <AIInsights 
                 connections={connections} 
                 moments={moments} 
                 userData={{
@@ -192,8 +192,8 @@ export default function InsightsNew() {
                 }}
               />
               
-              {/* Traditional Insights for comparison */}
-              <AIInsights 
+              {/* Enhanced Advanced Analytics */}
+              <EnhancedAIInsights 
                 connections={connections} 
                 moments={moments} 
                 userData={{
