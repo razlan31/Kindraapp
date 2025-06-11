@@ -203,9 +203,16 @@ function generateDataInsights(connections: Connection[], moments: Moment[], user
     userData: userData
   });
 
-  if (moments.length < 2) {
-    console.log("Not enough moments for insights");
-    return insights;
+  // Always generate insights from available data, even with minimal moments
+  if (moments.length === 0) {
+    return [{
+      title: "Relationship Tracking Foundation",
+      description: "Your relationship journey is ready to begin. Each moment you track becomes part of understanding your unique connection patterns.",
+      type: 'neutral',
+      confidence: 100,
+      icon: <Calendar className="h-4 w-4 text-blue-600" />,
+      dataPoints: ["Ready to capture meaningful moments"]
+    }];
   }
 
   // Identify self-connection for personal growth tracking
@@ -288,17 +295,31 @@ function generateDataInsights(connections: Connection[], moments: Moment[], user
     });
   }
 
-  // Emotional variety analysis
+  // Emotional variety analysis - focus on what the current pattern reveals
   const uniqueEmotions = Object.keys(emotionCounts).length;
-  if (uniqueEmotions < 4 && totalMoments > 5) {
-    insights.push({
-      title: "Limited Emotional Range",
-      description: `Only ${uniqueEmotions} different emotions tracked. Expanding emotional awareness can improve relationship depth. Try identifying more nuanced feelings like contentment, excitement, or curiosity.`,
-      type: 'neutral',
-      confidence: 75,
-      icon: <TrendingUp className="h-4 w-4 text-blue-600" />,
-      dataPoints: [`${uniqueEmotions} emotion types`, `Expand emotional vocabulary`]
-    });
+  if (totalMoments >= 1) {
+    const dominantEmotion = Object.entries(emotionCounts)
+      .sort(([,a], [,b]) => b - a)[0];
+    
+    if (uniqueEmotions === 1) {
+      insights.push({
+        title: "Consistent Emotional Pattern",
+        description: `Your tracked moments show a consistent ${dominantEmotion[0]} pattern. This suggests a stable emotional foundation in your relationships, with clear understanding of what brings you fulfillment.`,
+        type: 'positive',
+        confidence: 85,
+        icon: <TrendingUp className="h-4 w-4 text-blue-600" />,
+        dataPoints: [`${uniqueEmotions} primary emotion`, `${dominantEmotion[1]} instances`]
+      });
+    } else if (uniqueEmotions <= 3) {
+      insights.push({
+        title: "Focused Emotional Awareness",
+        description: `Your ${uniqueEmotions} tracked emotions (${dominantEmotion[0]} most common) reveal focused relationship experiences. This indicates intentional attention to meaningful moments over scattered activity.`,
+        type: 'positive',
+        confidence: 80,
+        icon: <Heart className="h-4 w-4 text-blue-600" />,
+        dataPoints: [`${uniqueEmotions} emotion types`, `Quality over quantity approach`]
+      });
+    }
   }
 
   // Self-connection analysis for personal growth tracking
@@ -374,13 +395,15 @@ function generateDataInsights(connections: Connection[], moments: Moment[], user
       });
     }
   } else if (selfConnection && selfMoments.length === 0) {
+    // Focus on the fact that they have a self-connection set up rather than suggesting activity
+    const otherConnectionCount = connections.length - 1; // Exclude self-connection
     insights.push({
-      title: "Start Your Self-Journey",
-      description: `Your self-connection is ready for moments! Track personal achievements, reflections, and self-care activities to build powerful insights about your growth patterns.`,
-      type: 'neutral',
-      confidence: 90,
+      title: "Self-Awareness Framework Ready",
+      description: `You've established a self-connection alongside ${otherConnectionCount} other relationships. This shows intentional focus on personal growth as part of your relationship journey, indicating a holistic approach to emotional development.`,
+      type: 'positive',
+      confidence: 85,
       icon: <Users className="h-4 w-4 text-purple-600" />,
-      dataPoints: [`Self-connection available`, `Ready for personal moments`]
+      dataPoints: [`Self-connection established`, `${otherConnectionCount} relationship connections`]
     });
   }
 
@@ -429,27 +452,31 @@ function generateDataInsights(connections: Connection[], moments: Moment[], user
     });
   }
 
-  // Connection balance analysis
+  // Connection distribution analysis - interpret what the current pattern shows
   if (connections.length > 1) {
-    const connectionImbalance = connectionMomentCounts.some(conn => conn.count > totalMoments * 0.8);
-    const neglectedConnections = connectionMomentCounts.filter(conn => conn.count < 2);
+    const primaryConnection = connectionMomentCounts.reduce((max, conn) => 
+      conn.count > max.count ? conn : max, connectionMomentCounts[0]);
     
-    if (connectionImbalance && neglectedConnections.length > 0) {
-      const neglectedNames = neglectedConnections
-        .filter(c => c.name) // Safety check for name property
-        .map(c => c.name)
-        .join(', ');
-      
-      if (neglectedNames) {
-        insights.push({
-          title: "Connection Balance Alert",
-          description: `You're heavily focused on one relationship while ${neglectedConnections.length} other connection(s) need attention. Schedule dedicated time with ${neglectedNames} to maintain relationship health.`,
-          type: 'warning',
-          confidence: 82,
-          icon: <AlertCircle className="h-4 w-4 text-orange-600" />,
-          dataPoints: [`${neglectedConnections.length} connections need attention`]
-        });
-      }
+    const focusPercentage = Math.round((primaryConnection.count / totalMoments) * 100);
+    
+    if (focusPercentage > 70) {
+      insights.push({
+        title: "Concentrated Relationship Focus",
+        description: `${focusPercentage}% of your emotional energy centers on ${primaryConnection.name}. This deep focus pattern suggests either a primary relationship priority or intensive relationship development phase.`,
+        type: focusPercentage > 85 ? 'warning' : 'neutral',
+        confidence: 88,
+        icon: <Users className="h-4 w-4 text-blue-600" />,
+        dataPoints: [`${focusPercentage}% focus on primary connection`, `${connections.length - 1} other relationships maintained`]
+      });
+    } else if (focusPercentage < 40 && connections.length > 2) {
+      insights.push({
+        title: "Distributed Relationship Investment",
+        description: `Your attention is well-balanced across ${connections.length} connections, with no single relationship consuming more than ${focusPercentage}% of your tracked moments. This indicates strong relationship portfolio management.`,
+        type: 'positive',
+        confidence: 85,
+        icon: <TrendingUp className="h-4 w-4 text-green-600" />,
+        dataPoints: [`${focusPercentage}% max focus per connection`, `${connections.length} active relationships`]
+      });
     }
   }
 

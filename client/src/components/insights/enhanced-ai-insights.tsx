@@ -37,14 +37,22 @@ export function EnhancedAIInsights({ connections, moments, userData }: EnhancedA
       actionItems: ["Log your first relationship moment", "Add connections to begin analysis"]
     });
   } else if (moments.length < 10) {
+    const emotionalPatterns = moments.reduce((acc: Record<string, number>, moment) => {
+      acc[moment.emoji] = (acc[moment.emoji] || 0) + 1;
+      return acc;
+    }, {});
+    
+    const dominantPattern = Object.entries(emotionalPatterns)
+      .sort(([,a], [,b]) => b - a)[0];
+    
     basicInsights.push({
-      title: "Building Your Data Foundation",
-      description: `You have ${moments.length} moments recorded. Continue tracking to unlock advanced pattern analysis, trend detection, and predictive insights about your relationships.`,
+      title: "Early Pattern Recognition",
+      description: `Your ${moments.length} moments reveal early relationship patterns. The ${dominantPattern[0]} emotion appears most frequently, suggesting this represents a core aspect of your relationship experiences.`,
       type: 'neutral',
-      confidence: 80,
-      category: 'behavioral',
-      dataPoints: [`${moments.length} moments tracked`, "Need 10+ for advanced analytics"],
-      actionItems: ["Continue logging daily moments", "Track different types of interactions"]
+      confidence: 75,
+      category: 'pattern',
+      dataPoints: [`${moments.length} moments analyzed`, `${dominantPattern[0]} dominant pattern`],
+      actionItems: [`${dominantPattern[1]} instances of primary emotion`, "Early behavioral indicators visible"]
     });
   }
   
@@ -199,8 +207,8 @@ export function EnhancedAIInsights({ connections, moments, userData }: EnhancedA
         {allInsights.length === 0 && (
           <div className="text-center py-8 text-muted-foreground">
             <Brain className="h-8 w-8 mx-auto mb-2 opacity-50" />
-            <p className="text-sm">No insights available yet</p>
-            <p className="text-xs">Start tracking moments to unlock advanced analytics</p>
+            <p className="text-sm">Advanced analytics engine ready</p>
+            <p className="text-xs">Relationship pattern analysis will appear here as data becomes available</p>
           </div>
         )}
       </div>
