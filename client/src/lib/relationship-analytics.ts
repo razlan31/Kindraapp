@@ -1,4 +1,4 @@
-import { Connection, Moment } from "@shared/schema";
+import { Connection, Moment, MenstrualCycle } from "@shared/schema";
 
 export interface AnalyticsInsight {
   title: string;
@@ -12,7 +12,7 @@ export interface AnalyticsInsight {
 }
 
 // Advanced pattern detection for relationship insights
-export function generateAnalyticsInsights(moments: Moment[], connections: Connection[]): AnalyticsInsight[] {
+export function generateAnalyticsInsights(moments: Moment[], connections: Connection[], menstrualCycles?: MenstrualCycle[]): AnalyticsInsight[] {
   const insights: AnalyticsInsight[] = [];
   
   if (moments.length < 5) {
@@ -70,6 +70,12 @@ export function generateAnalyticsInsights(moments: Moment[], connections: Connec
   // Behavioral trend prediction
   const predictiveInsights = generatePredictiveAnalysis(moments, connections);
   insights.push(...predictiveInsights);
+  
+  // Menstrual cycle correlation analysis
+  if (menstrualCycles && menstrualCycles.length > 0) {
+    const cycleInsights = analyzeMenstrualCycleCorrelations(moments, connections, menstrualCycles);
+    insights.push(...cycleInsights);
+  }
   
   return insights.slice(0, 6); // Return top 6 insights
 }
@@ -460,4 +466,188 @@ function calculateRelationshipTrajectory(moments: Moment[]) {
   }
   
   return { direction, confidence, analysis, recommendations };
+}
+
+// Menstrual cycle correlation analysis
+function analyzeMenstrualCycleCorrelations(moments: Moment[], connections: Connection[], menstrualCycles: MenstrualCycle[]): AnalyticsInsight[] {
+  const insights: AnalyticsInsight[] = [];
+  
+  if (moments.length < 10 || menstrualCycles.length < 2) {
+    return insights;
+  }
+  
+  // Define cycle phases
+  const getCyclePhase = (momentDate: Date, cycleStart: Date, cycleLength: number = 28): string => {
+    const dayInCycle = Math.floor((momentDate.getTime() - cycleStart.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+    
+    if (dayInCycle >= 1 && dayInCycle <= 5) return 'menstrual';
+    if (dayInCycle >= 6 && dayInCycle <= 13) return 'follicular';
+    if (dayInCycle >= 14 && dayInCycle <= 16) return 'ovulation';
+    if (dayInCycle >= 17 && dayInCycle <= cycleLength) return 'luteal';
+    return 'unknown';
+  };
+  
+  // Categorize moments by cycle phase
+  const phaseData: Record<string, {
+    total: number;
+    positive: number;
+    conflicts: number;
+    intimate: number;
+    moments: Moment[];
+  }> = {
+    menstrual: { total: 0, positive: 0, conflicts: 0, intimate: 0, moments: [] },
+    follicular: { total: 0, positive: 0, conflicts: 0, intimate: 0, moments: [] },
+    ovulation: { total: 0, positive: 0, conflicts: 0, intimate: 0, moments: [] },
+    luteal: { total: 0, positive: 0, conflicts: 0, intimate: 0, moments: [] }
+  };
+  
+  const positiveEmojis = ['😍', '💕', '❤️', '🥰', '😊', '🤗', '💖', '🌟', '✨', '💫', '🔥', '😘', '🥳', '🎉'];
+  const conflictTags = ['Argument', 'Disagreement', 'Misunderstanding', 'Conflict'];
+  
+  // Analyze each moment against cycle phases
+  moments.forEach(moment => {
+    if (!moment.createdAt) return;
+    
+    const momentDate = new Date(moment.createdAt);
+    
+    // Find the relevant cycle
+    const relevantCycle = menstrualCycles.find(cycle => {
+      const cycleStart = new Date(cycle.startDate);
+      const cycleEnd = cycle.endDate ? new Date(cycle.endDate) : new Date(cycleStart.getTime() + 28 * 24 * 60 * 60 * 1000);
+      return momentDate >= cycleStart && momentDate <= cycleEnd;
+    });
+    
+    if (!relevantCycle) return;
+    
+    const phase = getCyclePhase(momentDate, new Date(relevantCycle.startDate));
+    if (phase === 'unknown') return;
+    
+    const phaseStats = phaseData[phase];
+    phaseStats.total++;
+    phaseStats.moments.push(moment);
+    
+    // Categorize moment types
+    if (positiveEmojis.includes(moment.emoji)) {
+      phaseStats.positive++;
+    }
+    
+    if (moment.tags && moment.tags.some(tag => conflictTags.includes(tag))) {
+      phaseStats.conflicts++;
+    }
+    
+    if (moment.isIntimate) {
+      phaseStats.intimate++;
+    }
+  });
+  
+  // Generate insights based on phase patterns
+  const totalMoments = Object.values(phaseData).reduce((sum, phase) => sum + phase.total, 0);
+  if (totalMoments < 10) return insights;
+  
+  // Conflict correlation analysis
+  const conflictPhases = Object.entries(phaseData)
+    .map(([phase, data]) => ({
+      phase,
+      conflictRate: data.total > 0 ? data.conflicts / data.total : 0,
+      totalConflicts: data.conflicts,
+      sampleSize: data.total
+    }))
+    .filter(p => p.sampleSize >= 3)
+    .sort((a, b) => b.conflictRate - a.conflictRate);
+  
+  if (conflictPhases.length >= 2 && conflictPhases[0].conflictRate > 0.3) {
+    const highestConflictPhase = conflictPhases[0];
+    const lowestConflictPhase = conflictPhases[conflictPhases.length - 1];
+    
+    insights.push({
+      title: "Cycle-Conflict Correlation Detected",
+      description: `Conflict patterns show strong correlation with menstrual cycle phases. ${Math.round(highestConflictPhase.conflictRate * 100)}% of ${highestConflictPhase.phase} phase moments involve conflicts, compared to ${Math.round(lowestConflictPhase.conflictRate * 100)}% during ${lowestConflictPhase.phase} phase. This suggests hormonal influences on relationship dynamics.`,
+      type: 'warning',
+      confidence: Math.min(90, Math.round(highestConflictPhase.sampleSize * 10 + 50)),
+      category: 'correlation',
+      dataPoints: [
+        `${highestConflictPhase.phase} phase: ${Math.round(highestConflictPhase.conflictRate * 100)}% conflict rate`,
+        `${lowestConflictPhase.phase} phase: ${Math.round(lowestConflictPhase.conflictRate * 100)}% conflict rate`,
+        `${totalMoments} moments analyzed across cycles`
+      ],
+      actionItems: [
+        "Hormonal cycle patterns significantly influence conflict frequency",
+        "Relationship stress peaks during specific menstrual phases",
+        "Cycle awareness could improve relationship management strategies"
+      ]
+    });
+  }
+  
+  // Intimacy correlation analysis
+  const intimacyPhases = Object.entries(phaseData)
+    .map(([phase, data]) => ({
+      phase,
+      intimacyRate: data.total > 0 ? data.intimate / data.total : 0,
+      totalIntimate: data.intimate,
+      sampleSize: data.total
+    }))
+    .filter(p => p.sampleSize >= 3)
+    .sort((a, b) => b.intimacyRate - a.intimacyRate);
+  
+  if (intimacyPhases.length >= 2 && intimacyPhases[0].intimacyRate > 0.2) {
+    const highestIntimacyPhase = intimacyPhases[0];
+    const lowestIntimacyPhase = intimacyPhases[intimacyPhases.length - 1];
+    
+    insights.push({
+      title: "Cycle-Intimacy Pattern Analysis",
+      description: `Intimate moments show clear cycle phase correlation. ${Math.round(highestIntimacyPhase.intimacyRate * 100)}% of ${highestIntimacyPhase.phase} phase interactions are intimate, versus ${Math.round(lowestIntimacyPhase.intimacyRate * 100)}% during ${lowestIntimacyPhase.phase} phase. This reflects natural hormonal fluctuations affecting relationship intimacy.`,
+      type: 'positive',
+      confidence: Math.min(88, Math.round(highestIntimacyPhase.sampleSize * 8 + 60)),
+      category: 'correlation',
+      dataPoints: [
+        `${highestIntimacyPhase.phase} phase: ${Math.round(highestIntimacyPhase.intimacyRate * 100)}% intimacy rate`,
+        `${lowestIntimacyPhase.phase} phase: ${Math.round(lowestIntimacyPhase.intimacyRate * 100)}% intimacy rate`,
+        `Natural hormonal cycle influences detected`
+      ],
+      actionItems: [
+        "Intimacy patterns align with natural hormonal cycles",
+        "Cycle awareness reveals optimal connection timing",
+        "Biological rhythms strongly influence relationship dynamics"
+      ]
+    });
+  }
+  
+  // Overall positive mood correlation
+  const positivePhases = Object.entries(phaseData)
+    .map(([phase, data]) => ({
+      phase,
+      positiveRate: data.total > 0 ? data.positive / data.total : 0,
+      totalPositive: data.positive,
+      sampleSize: data.total
+    }))
+    .filter(p => p.sampleSize >= 3)
+    .sort((a, b) => b.positiveRate - a.positiveRate);
+  
+  if (positivePhases.length >= 3) {
+    const bestPhase = positivePhases[0];
+    const worstPhase = positivePhases[positivePhases.length - 1];
+    const differential = bestPhase.positiveRate - worstPhase.positiveRate;
+    
+    if (differential > 0.25) {
+      insights.push({
+        title: "Cycle-Mood Relationship Correlation",
+        description: `Relationship satisfaction varies significantly across menstrual cycle phases. ${bestPhase.phase} phase shows ${Math.round(bestPhase.positiveRate * 100)}% positive interactions, while ${worstPhase.phase} phase shows ${Math.round(worstPhase.positiveRate * 100)}%. This ${Math.round(differential * 100)}% variation indicates strong hormonal influence on relationship experiences.`,
+        type: 'neutral',
+        confidence: Math.min(85, Math.round(totalMoments / 2 + 50)),
+        category: 'pattern',
+        dataPoints: [
+          `${bestPhase.phase} phase: ${Math.round(bestPhase.positiveRate * 100)}% positive moments`,
+          `${worstPhase.phase} phase: ${Math.round(worstPhase.positiveRate * 100)}% positive moments`,
+          `${Math.round(differential * 100)}% variation across cycle phases`
+        ],
+        actionItems: [
+          "Menstrual cycle significantly impacts relationship satisfaction",
+          "Hormonal fluctuations create predictable mood patterns",
+          "Cycle tracking reveals relationship optimization opportunities"
+        ]
+      });
+    }
+  }
+  
+  return insights;
 }

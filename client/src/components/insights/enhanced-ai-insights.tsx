@@ -1,6 +1,7 @@
 import { TrendingUp, Users, AlertCircle, Clock, Target, Brain, Zap, TrendingDown } from "lucide-react";
-import { Connection, Moment } from "@shared/schema";
+import { Connection, Moment, MenstrualCycle } from "@shared/schema";
 import { generateAnalyticsInsights, AnalyticsInsight } from "@/lib/relationship-analytics";
+import { useQuery } from "@tanstack/react-query";
 
 interface EnhancedAIInsightsProps {
   connections: Connection[];
@@ -12,6 +13,12 @@ interface EnhancedAIInsightsProps {
 }
 
 export function EnhancedAIInsights({ connections, moments, userData }: EnhancedAIInsightsProps) {
+  // Fetch menstrual cycle data for correlation analysis
+  const { data: menstrualCycles = [] } = useQuery<MenstrualCycle[]>({
+    queryKey: ['/api/menstrual-cycles'],
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+
   // Calculate current week number for rotation
   const getCurrentWeek = () => {
     const startOfYear = new Date(new Date().getFullYear(), 0, 1);
@@ -20,8 +27,8 @@ export function EnhancedAIInsights({ connections, moments, userData }: EnhancedA
     return Math.floor(daysDiff / 7);
   };
 
-  // Generate advanced insights using the new analytics engine
-  const allAdvancedInsights = generateAnalyticsInsights(moments, connections);
+  // Generate advanced insights using the new analytics engine with cycle data
+  const allAdvancedInsights = generateAnalyticsInsights(moments, connections, menstrualCycles);
   
   // Add some basic insights for when we don't have enough data for advanced analytics
   const basicInsights: AnalyticsInsight[] = [];
