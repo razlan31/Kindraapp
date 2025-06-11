@@ -73,11 +73,17 @@ export function generateAnalyticsInsights(moments: Moment[], connections: Connec
   
   // Menstrual cycle correlation analysis
   if (menstrualCycles && menstrualCycles.length > 0) {
+    console.log("Generating cycle insights with", menstrualCycles.length, "cycles");
     const cycleInsights = analyzeMenstrualCycleCorrelations(moments, connections, menstrualCycles);
+    console.log("Generated cycle insights:", cycleInsights.length, cycleInsights.map(i => i.title));
     insights.push(...cycleInsights);
   }
   
-  return insights.slice(0, 6); // Return top 6 insights
+  console.log("Total insights before filtering:", insights.length, insights.map(i => i.title));
+  const finalInsights = insights.slice(0, 6);
+  console.log("Final insights after filtering:", finalInsights.length, finalInsights.map(i => i.title));
+  
+  return finalInsights;
 }
 
 function analyzeEmotionalPatterns(moments: Moment[]): AnalyticsInsight | null {
@@ -472,7 +478,14 @@ function calculateRelationshipTrajectory(moments: Moment[]) {
 function analyzeMenstrualCycleCorrelations(moments: Moment[], connections: Connection[], menstrualCycles: MenstrualCycle[]): AnalyticsInsight[] {
   const insights: AnalyticsInsight[] = [];
   
+  console.log("Cycle correlation analysis:", {
+    momentsCount: moments.length,
+    cyclesCount: menstrualCycles.length,
+    cycles: menstrualCycles.slice(0, 3) // First 3 for debugging
+  });
+  
   if (moments.length < 10 || menstrualCycles.length < 2) {
+    console.log("Not enough data for cycle analysis:", { momentsCount: moments.length, cyclesCount: menstrualCycles.length });
     return insights;
   }
   
@@ -542,7 +555,13 @@ function analyzeMenstrualCycleCorrelations(moments: Moment[], connections: Conne
   
   // Generate insights based on phase patterns
   const totalMoments = Object.values(phaseData).reduce((sum, phase) => sum + phase.total, 0);
-  if (totalMoments < 10) return insights;
+  console.log("Cycle phase data:", phaseData);
+  console.log("Total moments mapped to cycles:", totalMoments);
+  
+  if (totalMoments < 10) {
+    console.log("Not enough moments mapped to cycles for analysis");
+    return insights;
+  }
   
   // Conflict correlation analysis
   const conflictPhases = Object.entries(phaseData)
@@ -555,7 +574,7 @@ function analyzeMenstrualCycleCorrelations(moments: Moment[], connections: Conne
     .filter(p => p.sampleSize >= 3)
     .sort((a, b) => b.conflictRate - a.conflictRate);
   
-  if (conflictPhases.length >= 2 && conflictPhases[0].conflictRate > 0.3) {
+  if (conflictPhases.length >= 2 && conflictPhases[0].conflictRate > 0.1) {
     const highestConflictPhase = conflictPhases[0];
     const lowestConflictPhase = conflictPhases[conflictPhases.length - 1];
     
@@ -589,7 +608,7 @@ function analyzeMenstrualCycleCorrelations(moments: Moment[], connections: Conne
     .filter(p => p.sampleSize >= 3)
     .sort((a, b) => b.intimacyRate - a.intimacyRate);
   
-  if (intimacyPhases.length >= 2 && intimacyPhases[0].intimacyRate > 0.2) {
+  if (intimacyPhases.length >= 2 && intimacyPhases[0].intimacyRate > 0.1) {
     const highestIntimacyPhase = intimacyPhases[0];
     const lowestIntimacyPhase = intimacyPhases[intimacyPhases.length - 1];
     
