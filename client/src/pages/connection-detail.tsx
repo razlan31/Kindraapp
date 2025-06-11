@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useLocation } from "wouter";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Connection } from "@shared/schema";
+import { Connection, Moment } from "@shared/schema";
 import { BottomNavigation } from "@/components/layout/bottom-navigation";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -13,6 +13,65 @@ import { useModal } from "@/contexts/modal-context";
 import { useRelationshipFocus } from "@/contexts/relationship-focus-context";
 import { MilestoneModal } from "@/components/modals/milestone-modal";
 import { PlanModal } from "@/components/modals/plan-modal";
+
+// Helper function to generate descriptive activity names when no title is provided
+function generateActivityName(moment: Moment): string {
+  if (moment.title && moment.title.trim() !== '') {
+    return moment.title;
+  }
+
+  // Define activity patterns based on emoji and tags
+  const positiveEmojis = ['😍', '💕', '❤️', '🥰', '😊', '🤗', '💖', '🌟', '✨', '💫', '🔥', '😘', '🥳', '🎉', '💯', '🎊'];
+  const conflictEmojis = ['😢', '😞', '😕', '💔', '😤', '😠', '🙄', '😣', '😭', '😰', '⚡', '😡', '🤬', '😩', '😫'];
+  const intimateEmojis = ['💋', '🔥', '😘', '🥰', '💖', '😍', '🌹', '🍷', '🕯️', '🛏️'];
+  const planEmojis = ['📅', '🎯', '✈️', '🎪', '🎭', '🎨', '🍽️', '🎬', '🎵', '🏞️', '🏖️', '🗓️'];
+  const communicationEmojis = ['💬', '📱', '📞', '💌', '✉️', '🗣️', '👂', '🤝', '💭'];
+  const supportEmojis = ['🤗', '🤲', '💪', '🙏', '💝', '🎁', '🌈', '☀️', '🌸'];
+
+  // Check tags first for more specific categorization
+  if (moment.tags?.includes('Green Flag')) return 'Positive Moment';
+  if (moment.tags?.includes('Red Flag')) return 'Conflict Moment';
+  if (moment.tags?.includes('Yellow Flag')) return 'Concerning Moment';
+  if (moment.tags?.includes('Physical Touch')) return 'Intimate Moment';
+  if (moment.tags?.includes('Quality Time')) return 'Quality Time Together';
+  if (moment.tags?.includes('Deep Talk')) return 'Deep Conversation';
+  if (moment.tags?.includes('Heart to Heart')) return 'Heart-to-Heart Talk';
+  if (moment.tags?.includes('Future Plans')) return 'Future Planning';
+  if (moment.tags?.includes('Date Night')) return 'Date Night';
+  if (moment.tags?.includes('Support')) return 'Support Moment';
+  if (moment.tags?.includes('Advice')) return 'Advice Exchange';
+  if (moment.tags?.includes('Milestone')) return 'Milestone Celebration';
+  if (moment.tags?.includes('Anniversary')) return 'Anniversary';
+  if (moment.tags?.includes('Gift')) return 'Gift Exchange';
+  if (moment.tags?.includes('Travel')) return 'Travel Experience';
+  if (moment.tags?.includes('Family')) return 'Family Time';
+  if (moment.tags?.includes('Friends')) return 'Social Gathering';
+
+  // Check emoji categories
+  if (intimateEmojis.includes(moment.emoji)) return 'Intimate Moment';
+  if (planEmojis.includes(moment.emoji)) return 'Planning Session';
+  if (communicationEmojis.includes(moment.emoji)) return 'Communication';
+  if (supportEmojis.includes(moment.emoji)) return 'Support Moment';
+  if (positiveEmojis.includes(moment.emoji)) return 'Positive Moment';
+  if (conflictEmojis.includes(moment.emoji)) return 'Challenging Moment';
+
+  // Check for intimate moments
+  if (moment.isIntimate) return 'Intimate Moment';
+
+  // Default based on content or fallback
+  if (moment.content) {
+    const content = moment.content.toLowerCase();
+    if (content.includes('plan') || content.includes('future')) return 'Planning Discussion';
+    if (content.includes('fight') || content.includes('argue') || content.includes('upset')) return 'Conflict Resolution';
+    if (content.includes('love') || content.includes('happy') || content.includes('amazing')) return 'Positive Moment';
+    if (content.includes('talk') || content.includes('discuss') || content.includes('conversation')) return 'Deep Conversation';
+    if (content.includes('date') || content.includes('dinner') || content.includes('movie')) return 'Date Activity';
+    if (content.includes('help') || content.includes('support') || content.includes('comfort')) return 'Support Moment';
+  }
+
+  // Final fallback
+  return 'Shared Moment';
+}
 
 export default function ConnectionDetail() {
   const { id } = useParams();
@@ -436,7 +495,7 @@ export default function ConnectionDetail() {
                       <div className="text-2xl">{moment.emoji}</div>
                       <div className="flex-1">
                         <div className="flex items-center justify-between mb-1">
-                          <h4 className="font-medium text-sm">{moment.title || 'Untitled Moment'}</h4>
+                          <h4 className="font-medium text-sm">{generateActivityName(moment)}</h4>
                           <span className="text-xs text-neutral-500">
                             {format(new Date(moment.createdAt), 'MMM d, yyyy')}
                           </span>
