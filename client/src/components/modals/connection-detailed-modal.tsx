@@ -10,6 +10,7 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import { EditConnectionModal } from './edit-connection-modal';
+import { ConnectionAIInsights } from '@/components/insights/connection-ai-insights';
 import type { Connection, Moment } from '@shared/schema';
 
 interface ConnectionDetailedModalProps {
@@ -77,6 +78,12 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
   // Fetch moments for this connection (must be before early return)
   const { data: moments = [] } = useQuery<Moment[]>({
     queryKey: ["/api/moments"],
+    enabled: isOpen && !!connection,
+  });
+
+  // Fetch user data for insights
+  const { data: user } = useQuery({
+    queryKey: ["/api/me"],
     enabled: isOpen && !!connection,
   });
 
