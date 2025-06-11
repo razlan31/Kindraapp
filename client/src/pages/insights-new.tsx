@@ -181,7 +181,18 @@ export default function InsightsNew() {
           </div>
           
           {isInsightsExpanded && (
-            <div className="transition-all duration-200 ease-in-out">
+            <div className="transition-all duration-200 ease-in-out space-y-6">
+              {/* Enhanced Advanced Analytics */}
+              <EnhancedAIInsights 
+                connections={connections} 
+                moments={moments} 
+                userData={{
+                  zodiacSign: user?.zodiacSign || undefined,
+                  loveLanguage: user?.loveLanguage || undefined
+                }}
+              />
+              
+              {/* Traditional Insights for comparison */}
               <AIInsights 
                 connections={connections} 
                 moments={moments} 

@@ -1,6 +1,6 @@
 import { TrendingUp, Users, AlertCircle, Clock, Target, Brain, Zap, TrendingDown } from "lucide-react";
 import { Connection, Moment } from "@shared/schema";
-import { generateAdvancedInsights, AdvancedInsight } from "@/lib/advanced-analytics";
+import { generateAnalyticsInsights, AnalyticsInsight } from "@/lib/relationship-analytics";
 
 interface EnhancedAIInsightsProps {
   connections: Connection[];
@@ -13,10 +13,10 @@ interface EnhancedAIInsightsProps {
 
 export function EnhancedAIInsights({ connections, moments, userData }: EnhancedAIInsightsProps) {
   // Generate advanced insights using the new analytics engine
-  const advancedInsights = generateAdvancedInsights(moments, connections);
+  const advancedInsights = generateAnalyticsInsights(moments, connections);
   
   // Add some basic insights for when we don't have enough data for advanced analytics
-  const basicInsights: AdvancedInsight[] = [];
+  const basicInsights: AnalyticsInsight[] = [];
   
   if (moments.length === 0) {
     basicInsights.push({
@@ -125,7 +125,7 @@ export function EnhancedAIInsights({ connections, moments, userData }: EnhancedA
                   <div className="mb-3">
                     <h5 className="text-xs font-medium text-muted-foreground mb-1">Key Data Points:</h5>
                     <div className="flex flex-wrap gap-1">
-                      {insight.dataPoints.map((point, idx) => (
+                      {insight.dataPoints.map((point: string, idx: number) => (
                         <span 
                           key={idx}
                           className="text-xs px-2 py-1 bg-white/50 dark:bg-black/20 rounded-md"
@@ -141,7 +141,7 @@ export function EnhancedAIInsights({ connections, moments, userData }: EnhancedA
                   <div className="mb-3">
                     <h5 className="text-xs font-medium text-muted-foreground mb-1">Recommended Actions:</h5>
                     <ul className="text-xs space-y-0.5">
-                      {insight.actionItems.map((action, idx) => (
+                      {insight.actionItems.map((action: string, idx: number) => (
                         <li key={idx} className="flex items-start gap-1">
                           <span className="text-muted-foreground">•</span>
                           <span>{action}</span>
@@ -155,7 +155,7 @@ export function EnhancedAIInsights({ connections, moments, userData }: EnhancedA
                   <div>
                     <h5 className="text-xs font-medium text-muted-foreground mb-1">Related Connections:</h5>
                     <div className="flex flex-wrap gap-1">
-                      {insight.relatedConnections.map((name, idx) => (
+                      {insight.relatedConnections.map((name: string, idx: number) => (
                         <span 
                           key={idx}
                           className="text-xs px-2 py-1 bg-purple-100/50 dark:bg-purple-900/30 rounded-md text-purple-700 dark:text-purple-300"
