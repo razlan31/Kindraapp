@@ -1,8 +1,8 @@
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { X, ChevronDown } from "lucide-react";
+import { X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { relationshipStages } from "@shared/schema";
@@ -99,47 +99,37 @@ export function ConnectionModal({ isOpen, onClose }: ConnectionModalProps) {
             <label htmlFor="relationshipStage" className="text-sm font-medium">
               Relationship Stage
             </label>
-            <div className="relative" ref={dropdownRef}>
-              <Input
-                id="relationshipStage"
-                value={formData.relationshipStage}
-                onChange={(e) => {
+            <select 
+              id="relationshipStage"
+              value={isCustomStage ? "Custom" : formData.relationshipStage}
+              onChange={(e) => {
+                if (e.target.value === "Custom") {
+                  setIsCustomStage(true);
+                  setFormData({ ...formData, relationshipStage: "" });
+                } else {
+                  setIsCustomStage(false);
                   setFormData({ ...formData, relationshipStage: e.target.value });
-                  setCustomStage(e.target.value);
-                }}
-                onFocus={() => setShowSuggestions(true)}
-                placeholder="Type custom stage or select from suggestions"
-                className="pr-10"
-              />
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 p-0"
-                onClick={() => setShowSuggestions(!showSuggestions)}
-              >
-                <ChevronDown className="h-4 w-4" />
-              </Button>
-              
-              {showSuggestions && (
-                <div className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg max-h-48 overflow-y-auto">
-                  {relationshipStages.map((stage) => (
-                    <button
-                      key={stage}
-                      type="button"
-                      className="w-full text-left px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 text-sm"
-                      onClick={() => {
-                        setFormData({ ...formData, relationshipStage: stage });
-                        setCustomStage(stage);
-                        setShowSuggestions(false);
-                      }}
-                    >
-                      {stage}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
+                }
+              }}
+              className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"
+            >
+              {relationshipStages.map(stage => (
+                <option key={stage} value={stage}>{stage}</option>
+              ))}
+              <option value="Custom">Custom</option>
+            </select>
+            
+            {isCustomStage && (
+              <div className="mt-2">
+                <Input
+                  value={customStageValue}
+                  onChange={(e) => setCustomStageValue(e.target.value)}
+                  placeholder="Enter custom relationship stage (e.g., Mom, Dad, Sister, Colleague)"
+                  className="w-full"
+                />
+              </div>
+            )}
+            
             <p className="text-xs text-gray-500">
               Examples: Mom, Dad, Sister, Colleague, Mentor, etc.
             </p>
@@ -149,7 +139,11 @@ export function ConnectionModal({ isOpen, onClose }: ConnectionModalProps) {
             <Button type="button" variant="outline" onClick={onClose} className="flex-1">
               Cancel
             </Button>
-            <Button type="submit" disabled={createConnectionMutation.isPending} className="flex-1">
+            <Button 
+              type="submit" 
+              disabled={createConnectionMutation.isPending || !formData.name.trim() || (isCustomStage && !customStageValue.trim())}
+              className="flex-1"
+            >
               {createConnectionMutation.isPending ? "Adding..." : "Add Connection"}
             </Button>
           </div>

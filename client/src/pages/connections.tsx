@@ -167,7 +167,7 @@ export default function Connections() {
         const connectionMoments = moments.filter((m: any) => m.connectionId === connection.id);
         const lastActivity = connectionMoments.length > 0 
           ? new Date(Math.max(...connectionMoments.map((m: any) => new Date(m.createdAt).getTime())))
-          : new Date(connection.createdAt);
+          : new Date(connection.createdAt || Date.now());
         
         const daysSinceActivity = Math.floor((Date.now() - lastActivity.getTime()) / (1000 * 60 * 60 * 24));
         const activityCount = connectionMoments.length;
