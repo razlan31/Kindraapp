@@ -250,24 +250,45 @@ function generateConnectionSpecificInsights(
     const emotionalRatio = positiveCount / Math.max(1, positiveCount + conflictCount);
     const dominantPattern = emotionalRatio > 0.7 ? 'positive' : emotionalRatio < 0.3 ? 'challenging' : 'balanced';
 
-    insights.push({
-      title: `${connection.name} Emotional Dynamic`,
-      description: `Your emotional pattern with ${connection.name} shows ${Math.round(emotionalRatio * 100)}% positive moments versus ${Math.round((1 - emotionalRatio) * 100)}% challenging interactions. This ${dominantPattern} dynamic indicates ${dominantPattern === 'positive' ? 'strong emotional harmony' : dominantPattern === 'challenging' ? 'areas for relationship attention' : 'natural emotional complexity'} in your connection.`,
-      type: dominantPattern === 'positive' ? 'positive' : dominantPattern === 'challenging' ? 'warning' : 'neutral',
-      confidence: Math.min(88, Math.round((positiveCount + conflictCount) * 8 + 45)),
-      category: 'behavioral',
-      dataPoints: [
-        `${positiveCount} positive moments`,
-        `${conflictCount} challenging moments`,
-        `${Math.round(emotionalRatio * 100)}% positive ratio`,
-        `${dominantPattern} emotional pattern`
-      ],
-      actionItems: [
-        `Emotional dynamic: ${dominantPattern} interaction pattern`,
-        dominantPattern === 'positive' ? "Strong emotional foundation detected" : dominantPattern === 'challenging' ? "Consider relationship communication strategies" : "Natural emotional variety in relationship",
-        "Pattern awareness enables emotional intelligence growth"
-      ]
-    });
+    if (isSelfConnection) {
+      insights.push({
+        title: "Personal Emotional Pattern",
+        description: `Your self-reflection shows ${Math.round(emotionalRatio * 100)}% positive personal moments versus ${Math.round((1 - emotionalRatio) * 100)}% challenging periods. This ${dominantPattern} emotional pattern indicates ${dominantPattern === 'positive' ? 'strong self-compassion and growth mindset' : dominantPattern === 'challenging' ? 'awareness of areas needing personal attention' : 'healthy emotional self-awareness'} in your personal development journey.`,
+        type: dominantPattern === 'positive' ? 'positive' : dominantPattern === 'challenging' ? 'neutral' : 'positive',
+        confidence: Math.min(92, Math.round((positiveCount + conflictCount) * 7 + 50)),
+        category: 'behavioral',
+        dataPoints: [
+          `${positiveCount} positive self-moments`,
+          `${conflictCount} challenging reflections`,
+          `${Math.round(emotionalRatio * 100)}% positive self-ratio`,
+          `${dominantPattern} emotional self-awareness`
+        ],
+        actionItems: [
+          `Self-emotional pattern: ${dominantPattern === 'positive' ? 'positive self-regard' : dominantPattern === 'challenging' ? 'growth-focused reflection' : 'balanced self-awareness'}`,
+          dominantPattern === 'positive' ? "Strong foundation for continued personal growth" : dominantPattern === 'challenging' ? "Honest self-reflection enables targeted development" : "Balanced emotional self-awareness supports growth",
+          "Self-awareness patterns enhance emotional regulation skills"
+        ]
+      });
+    } else {
+      insights.push({
+        title: `${connection.name} Emotional Dynamic`,
+        description: `Your emotional pattern with ${connection.name} shows ${Math.round(emotionalRatio * 100)}% positive moments versus ${Math.round((1 - emotionalRatio) * 100)}% challenging interactions. This ${dominantPattern} dynamic indicates ${dominantPattern === 'positive' ? 'strong emotional harmony' : dominantPattern === 'challenging' ? 'areas for relationship attention' : 'natural emotional complexity'} in your connection.`,
+        type: dominantPattern === 'positive' ? 'positive' : dominantPattern === 'challenging' ? 'warning' : 'neutral',
+        confidence: Math.min(88, Math.round((positiveCount + conflictCount) * 8 + 45)),
+        category: 'behavioral',
+        dataPoints: [
+          `${positiveCount} positive moments`,
+          `${conflictCount} challenging moments`,
+          `${Math.round(emotionalRatio * 100)}% positive ratio`,
+          `${dominantPattern} emotional pattern`
+        ],
+        actionItems: [
+          `Emotional dynamic: ${dominantPattern} interaction pattern`,
+          dominantPattern === 'positive' ? "Strong emotional foundation detected" : dominantPattern === 'challenging' ? "Consider relationship communication strategies" : "Natural emotional variety in relationship",
+          "Pattern awareness enables emotional intelligence growth"
+        ]
+      });
+    }
   }
 
   // Intimacy analysis

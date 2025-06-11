@@ -424,40 +424,16 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
           </TabsContent>
 
           <TabsContent value="insights" className="space-y-4">
-            <Card className="p-4">
-              <h3 className="font-semibold mb-3">Relationship Insights</h3>
-              <div className="space-y-4">
-                <div>
-                  <div className="text-sm font-medium">Activity Frequency</div>
-                  <div className="text-sm text-muted-foreground">
-                    {stats.total > 0 ? 
-                      `${(stats.total / Math.max(1, Math.ceil((Date.now() - new Date(connection.startDate || Date.now()).getTime()) / (1000 * 60 * 60 * 24)))).toFixed(1)} activities per day on average` :
-                      'No activity recorded yet'
-                    }
-                  </div>
-                </div>
-                
-                <div>
-                  <div className="text-sm font-medium">Positive Ratio</div>
-                  <div className="text-sm text-muted-foreground">
-                    {stats.total > 0 ? 
-                      `${Math.round((stats.positive / stats.total) * 100)}% positive interactions` :
-                      'No data available'
-                    }
-                  </div>
-                </div>
-
-                <div>
-                  <div className="text-sm font-medium">Communication Pattern</div>
-                  <div className="text-sm text-muted-foreground">
-                    {stats.conflicts > 0 && stats.positive > 0 ?
-                      stats.positive > stats.conflicts * 2 ? 'Healthy communication' : 'Moderate challenges' :
-                      'Developing communication'
-                    }
-                  </div>
-                </div>
-              </div>
-            </Card>
+            {currentConnection && user && (
+              <ConnectionAIInsights
+                connection={currentConnection}
+                moments={connectionMoments}
+                userData={{
+                  zodiacSign: user.zodiacSign,
+                  loveLanguage: user.loveLanguage
+                }}
+              />
+            )}
           </TabsContent>
 
           <TabsContent value="timeline" className="space-y-4">
