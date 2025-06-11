@@ -16,14 +16,36 @@ export function generateAnalyticsInsights(moments: Moment[], connections: Connec
   const insights: AnalyticsInsight[] = [];
   
   if (moments.length < 5) {
+    // Analyze what the existing moments reveal rather than requesting more
+    if (moments.length === 0) {
+      return [{
+        title: "Analytics Engine Ready",
+        description: "Your relationship analytics system is prepared to identify emotional patterns, communication trends, and behavioral insights once relationship data becomes available.",
+        type: 'neutral',
+        confidence: 100,
+        category: 'behavioral',
+        dataPoints: ["Analytics framework initialized", "Pattern detection algorithms ready"],
+        actionItems: ["Real-time analysis enabled", "Multi-dimensional relationship tracking available"]
+      }];
+    }
+    
+    // Analyze existing moments for early patterns
+    const emotionCounts = moments.reduce((acc: Record<string, number>, moment) => {
+      acc[moment.emoji] = (acc[moment.emoji] || 0) + 1;
+      return acc;
+    }, {});
+    
+    const dominantEmotion = Object.entries(emotionCounts)
+      .sort(([,a], [,b]) => b - a)[0];
+    
     return [{
-      title: "Building Analytics Foundation",
-      description: `Track ${5 - moments.length} more moments to unlock advanced pattern recognition, emotional trend analysis, and predictive relationship insights.`,
+      title: "Early Pattern Detection",
+      description: `Initial analysis of ${moments.length} moments reveals ${dominantEmotion[0]} as the primary emotional pattern. This early data suggests baseline relationship dynamics and emotional preferences.`,
       type: 'neutral',
-      confidence: 100,
-      category: 'behavioral',
-      dataPoints: [`${moments.length}/5 moments needed`, "Pattern detection ready"],
-      actionItems: ["Continue logging daily interactions", "Track diverse moment types"]
+      confidence: 70,
+      category: 'pattern',
+      dataPoints: [`${moments.length} data points analyzed`, `${dominantEmotion[0]} dominant pattern`],
+      actionItems: [`${dominantEmotion[1]} instances recorded`, "Baseline emotional profile emerging"]
     }];
   }
   
@@ -102,9 +124,9 @@ function analyzeEmotionalPatterns(moments: Moment[]): AnalyticsInsight | null {
         `Trend strength: ${maxPositiveStreak >= 6 ? 'Very Strong' : 'Strong'}`
       ],
       actionItems: [
-        "Document what's creating this positive momentum",
-        "Continue current successful relationship strategies",
-        "Share positive experiences with your connections"
+        "Pattern indicates sustainable relationship practices",
+        "Communication styles proving highly effective",
+        "Emotional investment strategies yielding strong returns"
       ]
     };
   }
@@ -122,9 +144,9 @@ function analyzeEmotionalPatterns(moments: Moment[]): AnalyticsInsight | null {
         `Intervention recommended`
       ],
       actionItems: [
-        "Schedule quality time with affected connections",
-        "Practice active listening and empathy",
-        "Consider addressing underlying concerns openly"
+        "Pattern suggests need for relationship attention",
+        "Communication frequency may require adjustment",
+        "Stress indicators present in relationship dynamics"
       ]
     };
   }
@@ -142,9 +164,9 @@ function analyzeEmotionalPatterns(moments: Moment[]): AnalyticsInsight | null {
         `Relationship satisfaction: Excellent`
       ],
       actionItems: [
-        "Maintain current relationship practices",
-        "Share your strategies with others",
-        "Continue celebrating positive moments"
+        "Current strategies demonstrate high effectiveness",
+        "Relationship management skills well-developed",
+        "Emotional intelligence patterns consistently strong"
       ]
     };
   }
@@ -194,9 +216,9 @@ function analyzeCommunicationFrequency(moments: Moment[], connections: Connectio
         `Balance score: ${Math.round(100 - topConnection.percentage)}/100`
       ],
       actionItems: [
-        `Schedule dedicated time with ${otherConnections.slice(0, 2).map(c => c.connection.name).join(' and ')}`,
-        "Set weekly reminders for relationship maintenance",
-        "Practice intentional relationship diversification"
+        "Primary relationship receives majority attention allocation",
+        "Secondary connections show reduced engagement levels",
+        "Focus concentration pattern indicates relationship priority"
       ],
       relatedConnections: [topConnection.connection.name, ...otherConnections.slice(0, 2).map(c => c.connection.name)]
     });
@@ -215,9 +237,9 @@ function analyzeCommunicationFrequency(moments: Moment[], connections: Connectio
         `Maintenance opportunity identified`
       ],
       actionItems: [
-        "Send check-in messages to dormant connections",
-        "Schedule coffee dates or calls",
-        "Share appreciation or memories"
+        "Low engagement patterns identified across multiple connections",
+        "Minimal activity suggests dormant relationship status",
+        "Attention distribution skewed toward primary relationships"
       ],
       relatedConnections: neglectedConnections.map(c => c.connection.name)
     });
@@ -307,13 +329,13 @@ function analyzeTemporalPatterns(moments: Moment[]): AnalyticsInsight[] {
         `Consistency strength: ${peakPercentage > 35 ? 'High' : 'Moderate'}`
       ],
       actionItems: isWeekend ? [
-        "Consider adding weekday check-ins",
-        "Maintain your weekend relationship focus",
-        "Balance leisure and routine connections"
+        "Weekend-focused relationship investment pattern identified",
+        "Leisure time strongly associated with connection activities",
+        "Time allocation suggests work-life relationship boundaries"
       ] : [
-        "Excellent routine integration",
-        "Add spontaneous weekend activities",
-        "Maintain consistent weekday patterns"
+        "Weekday relationship integration demonstrates routine prioritization",
+        "Consistent daily connection patterns established",
+        "Work-relationship balance successfully maintained"
       ]
     });
   }
@@ -366,8 +388,8 @@ function getStageSpecificInsight(stage: string, positiveRatio: number, connectio
           : `Dating relationships could benefit from more fun, spontaneous activities to build positive associations and romantic momentum.`,
         type: baseType,
         recommendations: positiveRatio > 0.7 
-          ? ["Continue your successful dating approach", "Share what works with other daters"]
-          : ["Plan more exciting shared experiences", "Focus on discovery and compatibility", "Add spontaneity to interactions"]
+          ? ["Dating strategy effectiveness confirmed", "Relationship building skills well-developed"]
+          : ["Dating phase challenges identified", "Compatibility exploration patterns emerging"]
       };
       
     case 'Committed Relationship':
