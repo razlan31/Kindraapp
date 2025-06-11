@@ -145,20 +145,22 @@ export function ConnectionAIInsights({ connection, moments, userData }: Connecti
   );
 }
 
-// Generate connection-specific insights
+// Generate connection-specific insights using full main insights functionality
 function generateConnectionSpecificInsights(
   connection: Connection, 
   moments: Moment[], 
   cycles: MenstrualCycle[], 
   userData: any
 ): AnalyticsInsight[] {
-  const insights: AnalyticsInsight[] = [];
-
   // Check if this is a self-connection (personal development tracking)
   const isSelfConnection = connection.name.toLowerCase() === 'self' || 
                           connection.name.toLowerCase() === 'myself' ||
                           connection.relationshipStage === 'Self';
 
+  // Use the full generateAnalyticsInsights function with connection-filtered data
+  const allConnectionInsights = generateAnalyticsInsights(moments, [connection], cycles);
+
+  // If we don't have enough data for advanced analytics, provide basic insights
   if (moments.length < 3) {
     if (isSelfConnection) {
       return [{
@@ -183,157 +185,90 @@ function generateConnectionSpecificInsights(
     }
   }
 
-  // Connection activity patterns
-  const recentMoments = moments.filter(m => {
-    if (!m.createdAt) return false;
-    const momentDate = new Date(m.createdAt);
-    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-    return momentDate >= thirtyDaysAgo;
-  });
-
-  const positiveEmojis = ['😍', '💕', '❤️', '🥰', '😊', '🤗', '💖', '🌟', '✨', '💫', '🔥', '😘', '🥳', '🎉'];
-  const conflictEmojis = ['😢', '😞', '😕', '💔', '😤', '😠', '🙄', '😣', '😭', '😰', '⚡'];
-
-  const positiveCount = moments.filter(m => positiveEmojis.includes(m.emoji) || m.tags?.includes('Positive')).length;
-  const conflictCount = moments.filter(m => conflictEmojis.includes(m.emoji) || m.tags?.includes('Conflict')).length;
-  const intimateCount = moments.filter(m => m.isIntimate || m.tags?.includes('Sex') || m.tags?.includes('Intimacy')).length;
-
-  // Self-reflection or communication frequency analysis
-  if (recentMoments.length > 0) {
-    const validMoments = moments.filter(m => m.createdAt);
-    const avgDaysBetween = validMoments.length > 1 ? 
-      (new Date(validMoments[0].createdAt!).getTime() - new Date(validMoments[validMoments.length - 1].createdAt!).getTime()) / (1000 * 60 * 60 * 24) / (validMoments.length - 1) : 0;
-
-    if (isSelfConnection) {
-      insights.push({
-        title: "Self-Reflection Pattern",
-        description: `Your personal development tracking shows ${recentMoments.length} self-reflection moments in the last 30 days, with an average of ${avgDaysBetween > 0 ? Math.round(avgDaysBetween) : 'daily'} days between personal check-ins. This ${recentMoments.length > 15 ? 'excellent' : recentMoments.length > 8 ? 'consistent' : 'developing'} self-awareness practice suggests ${recentMoments.length > 15 ? 'strong commitment to personal growth' : recentMoments.length > 8 ? 'regular self-reflection habits' : 'emerging mindfulness journey'}.`,
-        type: recentMoments.length > 8 ? 'positive' : recentMoments.length > 4 ? 'neutral' : 'warning',
-        confidence: Math.min(90, Math.round(recentMoments.length * 4 + 55)),
-        category: 'pattern',
-        dataPoints: [
-          `${recentMoments.length} recent self-reflections`,
-          `${moments.length} total personal moments`,
-          `${Math.round(avgDaysBetween)} days between check-ins`,
-          "Personal development tracking active"
-        ],
-        actionItems: [
-          `Self-reflection frequency: ${recentMoments.length > 15 ? 'highly committed' : recentMoments.length > 8 ? 'consistently mindful' : 'building awareness'}`,
-          "Regular self-check-ins enhance emotional intelligence",
-          "Personal growth patterns emerge through consistent tracking"
-        ]
-      });
-    } else {
-      insights.push({
-        title: `${connection.name} Communication Pattern`,
-        description: `Your interaction frequency with ${connection.name} shows ${recentMoments.length} moments in the last 30 days, with an average of ${avgDaysBetween > 0 ? Math.round(avgDaysBetween) : 'daily'} days between recorded interactions. This ${recentMoments.length > 10 ? 'high' : recentMoments.length > 5 ? 'moderate' : 'low'} frequency suggests ${recentMoments.length > 10 ? 'strong engagement' : recentMoments.length > 5 ? 'steady connection' : 'casual interaction'} in your relationship dynamic.`,
-        type: recentMoments.length > 10 ? 'positive' : recentMoments.length > 5 ? 'neutral' : 'warning',
-        confidence: Math.min(85, Math.round(recentMoments.length * 5 + 50)),
-        category: 'pattern',
-        dataPoints: [
-          `${recentMoments.length} recent interactions`,
-          `${moments.length} total moments recorded`,
-          `${Math.round(avgDaysBetween)} days average between interactions`,
-          `${connection.relationshipStage} relationship stage`
-        ],
-        actionItems: [
-          `Interaction frequency: ${recentMoments.length > 10 ? 'highly engaged' : recentMoments.length > 5 ? 'moderately active' : 'occasional contact'}`,
-          `Communication pattern reflects ${connection.relationshipStage.toLowerCase()} stage dynamics`,
-          "Consistent tracking reveals relationship rhythm patterns"
-        ]
-      });
-    }
-  }
-
-  // Emotional dynamic analysis
-  if (positiveCount > 0 || conflictCount > 0) {
-    const emotionalRatio = positiveCount / Math.max(1, positiveCount + conflictCount);
-    const dominantPattern = emotionalRatio > 0.7 ? 'positive' : emotionalRatio < 0.3 ? 'challenging' : 'balanced';
-
-    if (isSelfConnection) {
-      insights.push({
-        title: "Personal Emotional Pattern",
-        description: `Your self-reflection shows ${Math.round(emotionalRatio * 100)}% positive personal moments versus ${Math.round((1 - emotionalRatio) * 100)}% challenging periods. This ${dominantPattern} emotional pattern indicates ${dominantPattern === 'positive' ? 'strong self-compassion and growth mindset' : dominantPattern === 'challenging' ? 'awareness of areas needing personal attention' : 'healthy emotional self-awareness'} in your personal development journey.`,
-        type: dominantPattern === 'positive' ? 'positive' : dominantPattern === 'challenging' ? 'neutral' : 'positive',
-        confidence: Math.min(92, Math.round((positiveCount + conflictCount) * 7 + 50)),
-        category: 'behavioral',
-        dataPoints: [
-          `${positiveCount} positive self-moments`,
-          `${conflictCount} challenging reflections`,
-          `${Math.round(emotionalRatio * 100)}% positive self-ratio`,
-          `${dominantPattern} emotional self-awareness`
-        ],
-        actionItems: [
-          `Self-emotional pattern: ${dominantPattern === 'positive' ? 'positive self-regard' : dominantPattern === 'challenging' ? 'growth-focused reflection' : 'balanced self-awareness'}`,
-          dominantPattern === 'positive' ? "Strong foundation for continued personal growth" : dominantPattern === 'challenging' ? "Honest self-reflection enables targeted development" : "Balanced emotional self-awareness supports growth",
-          "Self-awareness patterns enhance emotional regulation skills"
-        ]
-      });
-    } else {
-      insights.push({
-        title: `${connection.name} Emotional Dynamic`,
-        description: `Your emotional pattern with ${connection.name} shows ${Math.round(emotionalRatio * 100)}% positive moments versus ${Math.round((1 - emotionalRatio) * 100)}% challenging interactions. This ${dominantPattern} dynamic indicates ${dominantPattern === 'positive' ? 'strong emotional harmony' : dominantPattern === 'challenging' ? 'areas for relationship attention' : 'natural emotional complexity'} in your connection.`,
-        type: dominantPattern === 'positive' ? 'positive' : dominantPattern === 'challenging' ? 'warning' : 'neutral',
-        confidence: Math.min(88, Math.round((positiveCount + conflictCount) * 8 + 45)),
-        category: 'behavioral',
-        dataPoints: [
-          `${positiveCount} positive moments`,
-          `${conflictCount} challenging moments`,
-          `${Math.round(emotionalRatio * 100)}% positive ratio`,
-          `${dominantPattern} emotional pattern`
-        ],
-        actionItems: [
-          `Emotional dynamic: ${dominantPattern} interaction pattern`,
-          dominantPattern === 'positive' ? "Strong emotional foundation detected" : dominantPattern === 'challenging' ? "Consider relationship communication strategies" : "Natural emotional variety in relationship",
-          "Pattern awareness enables emotional intelligence growth"
-        ]
-      });
-    }
-  }
-
-  // Intimacy analysis
-  if (intimateCount > 0 && moments.length > 5) {
-    const intimacyFrequency = intimateCount / moments.length;
+  // Add basic pattern recognition for small datasets
+  const basicInsights: AnalyticsInsight[] = [];
+  
+  if (moments.length >= 3 && moments.length < 10) {
+    const emotionalPatterns = moments.reduce((acc: Record<string, number>, moment) => {
+      acc[moment.emoji] = (acc[moment.emoji] || 0) + 1;
+      return acc;
+    }, {});
     
-    insights.push({
-      title: `${connection.name} Intimacy Pattern`,
-      description: `Intimate moments with ${connection.name} represent ${Math.round(intimacyFrequency * 100)}% of your tracked interactions (${intimateCount} out of ${moments.length} moments). This ${intimacyFrequency > 0.3 ? 'high' : intimacyFrequency > 0.15 ? 'moderate' : 'low'} intimacy frequency aligns with ${connection.relationshipStage.toLowerCase()} stage expectations and suggests ${intimacyFrequency > 0.3 ? 'strong physical connection' : intimacyFrequency > 0.15 ? 'developing intimacy' : 'emerging physical connection'}.`,
-      type: 'positive',
-      confidence: Math.min(82, Math.round(intimateCount * 10 + 60)),
-      category: 'correlation',
-      dataPoints: [
-        `${intimateCount} intimate moments recorded`,
-        `${Math.round(intimacyFrequency * 100)}% intimacy frequency`,
-        `${connection.relationshipStage} stage context`,
-        `${moments.length} total interactions analyzed`
-      ],
-      actionItems: [
-        `Intimacy level: ${intimacyFrequency > 0.3 ? 'highly intimate' : intimacyFrequency > 0.15 ? 'moderately intimate' : 'developing intimacy'}`,
-        `Physical connection patterns align with ${connection.relationshipStage.toLowerCase()} expectations`,
-        "Intimacy tracking reveals relationship progression patterns"
-      ]
+    const dominantPattern = Object.entries(emotionalPatterns)
+      .sort(([,a], [,b]) => b - a)[0];
+    
+    basicInsights.push({
+      title: isSelfConnection ? "Early Self-Awareness Pattern" : `Early Pattern with ${connection.name}`,
+      description: isSelfConnection ? 
+        `Your ${moments.length} personal moments reveal early self-awareness patterns. The ${dominantPattern[0]} emotion appears most frequently, suggesting this represents a core aspect of your personal development journey.` :
+        `Your ${moments.length} moments with ${connection.name} reveal early relationship patterns. The ${dominantPattern[0]} emotion appears most frequently, suggesting this represents a core aspect of your dynamic together.`,
+      type: 'neutral',
+      confidence: 75,
+      category: 'pattern',
+      dataPoints: [`${moments.length} moments analyzed`, `${dominantPattern[0]} dominant pattern`, `${dominantPattern[1]} occurrences`],
+      actionItems: [`Primary emotional indicator: ${dominantPattern[0]}`, "Early behavioral patterns visible", "Foundation for deeper analysis emerging"]
     });
   }
 
-  // Cycle correlation analysis (if applicable)
-  if (cycles.length > 0 && moments.length > 5) {
-    const cycleInsights = generateAnalyticsInsights(moments, [connection], cycles);
-    const cycleSpecificInsights = cycleInsights.filter(insight => 
-      insight.category === 'correlation' || insight.title.toLowerCase().includes('cycle') || insight.title.toLowerCase().includes('phase')
-    );
+  // Connection-specific adaptations of insights
+  const adaptedInsights = allConnectionInsights.map(insight => {
+    let adaptedInsight = { ...insight };
     
-    if (cycleSpecificInsights.length > 0) {
-      insights.push(...cycleSpecificInsights.map(insight => ({
-        ...insight,
-        title: isSelfConnection ? 
-          insight.title.replace(/Relationship/g, 'Personal').replace(/relationship/g, 'personal development') :
-          `${connection.name} ${insight.title}`,
-        description: isSelfConnection ?
-          insight.description.replace(/relationship/g, 'personal development').replace(/interactions/g, 'personal moments').replace(/your connection/g, 'your self-awareness') :
-          insight.description.replace(/relationship/g, `relationship with ${connection.name}`).replace(/your connection/g, `your connection with ${connection.name}`)
-      })));
+    if (isSelfConnection) {
+      // Adapt insights for self-reflection
+      adaptedInsight.title = insight.title
+        .replace(/Relationship/g, 'Personal')
+        .replace(/relationship/g, 'personal development')
+        .replace(/Connection/g, 'Self-Development');
+        
+      adaptedInsight.description = insight.description
+        .replace(/relationship/g, 'personal development')
+        .replace(/interactions/g, 'personal moments')
+        .replace(/your connection/g, 'your self-awareness')
+        .replace(/partner/g, 'yourself')
+        .replace(/relationships/g, 'personal growth');
+    } else {
+      // Adapt insights for specific connection
+      if (!insight.title.includes(connection.name)) {
+        adaptedInsight.title = `${connection.name} ${insight.title}`;
+      }
+      
+      adaptedInsight.description = insight.description
+        .replace(/relationship/g, `relationship with ${connection.name}`)
+        .replace(/your connection/g, `your connection with ${connection.name}`)
+        .replace(/relationships/g, `relationship with ${connection.name}`);
     }
+    
+    return adaptedInsight;
+  });
+
+  // Combine basic insights with advanced insights
+  const combinedInsights = [...adaptedInsights, ...basicInsights];
+
+  // Apply weekly rotation if we have many insights (copied from main insights logic)
+  const getCurrentWeek = () => {
+    const startOfYear = new Date(new Date().getFullYear(), 0, 1);
+    const today = new Date();
+    const daysDiff = Math.floor((today.getTime() - startOfYear.getTime()) / (1000 * 60 * 60 * 24));
+    return Math.floor(daysDiff / 7);
+  };
+
+  let finalInsights: AnalyticsInsight[] = [];
+  
+  if (combinedInsights.length > 4) {
+    const currentWeek = getCurrentWeek();
+    const rotationIndex = currentWeek % Math.ceil(combinedInsights.length / 4);
+    const startIndex = rotationIndex * 4;
+    finalInsights = combinedInsights.slice(startIndex, startIndex + 4);
+    
+    // If we don't have enough insights in this rotation, fill from beginning
+    if (finalInsights.length < 4) {
+      const remaining = 4 - finalInsights.length;
+      finalInsights = [...finalInsights, ...combinedInsights.slice(0, remaining)];
+    }
+  } else {
+    finalInsights = combinedInsights.slice(0, 6);
   }
 
-  return insights.slice(0, 4); // Return top 4 connection-specific insights
+  return finalInsights;
 }
