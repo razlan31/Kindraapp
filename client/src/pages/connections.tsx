@@ -43,7 +43,7 @@ function AddConnectionModal({ onClose, onSubmit, isLoading }: AddConnectionModal
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <div className="bg-white dark:bg-neutral-800 rounded-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between p-4 border-b">
-          <h2 className="text-lg font-semibold">Add New Connection</h2>
+          <h2 className="text-lg font-semibold">Add New Connection - INLINE MODAL</h2>
           <Button variant="ghost" size="sm" onClick={onClose}>
             <X className="h-4 w-4" />
           </Button>
