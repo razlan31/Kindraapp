@@ -105,6 +105,11 @@ GUIDELINES:
 - Recognize both relationship moments AND self-connection moments
 - For self-connection insights: focus on achievement patterns, reflection habits, growth opportunities
 - For relationships: emphasize communication, connection quality, and stage-appropriate advice
+- Adapt advice to relationship type (Family, Romantic, Friendship, Professional, Casual/Developing)
+- For family relationships (Mom, Dad, Sister, etc.): focus on appreciation, understanding, support, and maintaining healthy boundaries
+- For professional relationships: emphasize respect, collaboration, and appropriate boundaries
+- For romantic relationships: focus on intimacy, communication, and relationship growth
+- For friendships: emphasize mutual support, shared experiences, and loyalty
 - Avoid generic advice - make it deeply personal to their situation
 - If unclear, ask clarifying questions
 - Never provide medical, legal, or clinical psychological diagnoses
@@ -201,7 +206,28 @@ PERSONAL GROWTH TRACKING:`;
 
     connections.filter(c => c.relationshipStage !== 'Self').forEach(conn => {
       const healthData = connectionHealthScores.find(h => h.name === conn.name);
-      summary += `\n- ${conn.name}: ${conn.relationshipStage} stage`;
+      
+      // Determine connection category for better AI context
+      const familyStages = ['Mom', 'Dad', 'Mother', 'Father', 'Sister', 'Brother', 'Family', 'Parent', 'Child', 'Sibling'];
+      const professionalStages = ['Colleague', 'Boss', 'Mentor', 'Coworker', 'Manager', 'Employee'];
+      const romanticStages = ['Dating', 'Relationship', 'Partner', 'Spouse', 'Married', 'Engaged'];
+      const friendshipStages = ['Friend', 'Best Friend', 'Acquaintance', 'Buddy'];
+      const casualStages = ['Talking', 'Potential', 'Situationship', 'Crush'];
+      
+      let connectionType = 'Personal';
+      if (familyStages.some(stage => conn.relationshipStage.toLowerCase().includes(stage.toLowerCase()))) {
+        connectionType = 'Family';
+      } else if (professionalStages.some(stage => conn.relationshipStage.toLowerCase().includes(stage.toLowerCase()))) {
+        connectionType = 'Professional';
+      } else if (romanticStages.some(stage => conn.relationshipStage.toLowerCase().includes(stage.toLowerCase()))) {
+        connectionType = 'Romantic';
+      } else if (friendshipStages.some(stage => conn.relationshipStage.toLowerCase().includes(stage.toLowerCase()))) {
+        connectionType = 'Friendship';
+      } else if (casualStages.some(stage => conn.relationshipStage.toLowerCase().includes(stage.toLowerCase()))) {
+        connectionType = 'Casual/Developing';
+      }
+      
+      summary += `\n- ${conn.name}: ${conn.relationshipStage} (${connectionType}) stage`;
       if (conn.zodiacSign) summary += `, ${conn.zodiacSign}`;
       if (conn.loveLanguage) summary += `, Love Language: ${conn.loveLanguage}`;
       if (healthData) summary += `, Health Score: ${healthData.healthScore}% (${healthData.positivePatterns}/${healthData.totalMoments} positive interactions)`;

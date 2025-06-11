@@ -66,11 +66,45 @@ export function AddConnectionModal({ onClose, onSubmit, isLoading }: AddConnecti
           
           <div>
             <label className="block text-sm font-medium mb-1">Relationship Stage</label>
-            <select name="relationshipStage" className="w-full p-2 border rounded" defaultValue="Potential">
-              {relationshipStages.map(stage => (
-                <option key={stage} value={stage}>{stage}</option>
-              ))}
-            </select>
+            <div className="relative" ref={dropdownRef}>
+              <Input
+                value={relationshipStage}
+                onChange={(e) => setRelationshipStage(e.target.value)}
+                onFocus={() => setShowSuggestions(true)}
+                placeholder="Type custom stage or select from suggestions"
+                className="pr-10"
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 p-0"
+                onClick={() => setShowSuggestions(!showSuggestions)}
+              >
+                <ChevronDown className="h-4 w-4" />
+              </Button>
+              
+              {showSuggestions && (
+                <div className="absolute z-10 w-full mt-1 bg-white dark:bg-neutral-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg max-h-48 overflow-y-auto">
+                  {relationshipStages.map((stage) => (
+                    <button
+                      key={stage}
+                      type="button"
+                      className="w-full text-left px-3 py-2 hover:bg-gray-100 dark:hover:bg-neutral-600 text-sm"
+                      onClick={() => {
+                        setRelationshipStage(stage);
+                        setShowSuggestions(false);
+                      }}
+                    >
+                      {stage}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+            <p className="text-xs text-gray-500">
+              Examples: Mom, Dad, Sister, Colleague, Mentor, etc.
+            </p>
           </div>
           
           <div>

@@ -63,6 +63,8 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
   const [renderKey, setRenderKey] = useState(0);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showArchiveConfirm, setShowArchiveConfirm] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [editData, setEditData] = useState<Partial<Connection>>({});
   const { toast } = useToast();
 
   // Use fresh connection data from the connections list
@@ -178,8 +180,8 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
   // Update connection mutation (must be before early return)
   const updateConnection = useMutation({
     mutationFn: async (data: Partial<Connection>) => {
-      if (!connection) throw new Error('No connection');
-      const response = await fetch(`/api/connections/${connection.id}`, {
+      if (!currentConnection) throw new Error('No connection');
+      const response = await fetch(`/api/connections/${currentConnection.id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -240,7 +242,7 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
     return `${diffYears} year${diffYears > 1 ? 's' : ''}, ${remainingMonths} month${remainingMonths > 1 ? 's' : ''}`;
   };
 
-  const duration = calculateDuration(connection.startDate);
+  const duration = currentConnection ? calculateDuration(currentConnection.startDate) : 'Unknown';
 
   // Calculate detailed stats
   const stats = {
