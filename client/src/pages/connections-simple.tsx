@@ -21,6 +21,9 @@ export default function Connections() {
   const [searchTerm, setSearchTerm] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
   const [selectedStage, setSelectedStage] = useState<string>("all");
+  const [relationshipStage, setRelationshipStage] = useState("Potential");
+  const [isCustomStage, setIsCustomStage] = useState(false);
+  const [customStageValue, setCustomStageValue] = useState("");
   const [uploadedImage, setUploadedImage] = useState<string>('');
   const [imagePreview, setImagePreview] = useState<{isOpen: boolean, imageUrl: string, name: string}>({
     isOpen: false,
@@ -382,16 +385,57 @@ export default function Connections() {
                 <label className="block text-sm font-medium mb-2">
                   Relationship Stage <span className="text-red-500">*</span>
                 </label>
-                <select
-                  name="relationshipStage"
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md"
-                >
-                  {relationshipStages.map((stage) => (
-                    <option key={stage} value={stage}>
-                      {stage}
-                    </option>
+                <div className="space-y-2">
+                  {[
+                    ...relationshipStages.map(stage => ({ value: stage, label: stage })),
+                    { value: "Custom", label: "🎯 CUSTOM RELATIONSHIP STAGE 🎯" }
+                  ].map((stage) => (
+                    <label key={stage.value} className="flex items-center space-x-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="relationshipStage"
+                        value={stage.value}
+                        checked={
+                          stage.value === "Custom" 
+                            ? isCustomStage 
+                            : !isCustomStage && relationshipStage === stage.value
+                        }
+                        onChange={() => {
+                          console.log("Radio selected:", stage.value);
+                          if (stage.value === "Custom") {
+                            setIsCustomStage(true);
+                            setRelationshipStage("");
+                          } else {
+                            setIsCustomStage(false);
+                            setRelationshipStage(stage.value);
+                            setCustomStageValue("");
+                          }
+                        }}
+                        className="text-primary"
+                      />
+                      <span className="text-sm">{stage.label}</span>
+                    </label>
                   ))}
-                </select>
+                </div>
+                
+                {isCustomStage && (
+                  <div className="mt-3">
+                    <Input
+                      placeholder="Enter custom relationship stage"
+                      value={customStageValue}
+                      onChange={(e) => {
+                        console.log("Custom dropdown changed to:", e.target.value);
+                        setCustomStageValue(e.target.value);
+                      }}
+                      className="w-full"
+                    />
+                    <input type="hidden" name="relationshipStage" value={customStageValue} />
+                  </div>
+                )}
+                
+                {!isCustomStage && (
+                  <input type="hidden" name="relationshipStage" value={relationshipStage} />
+                )}
               </div>
               
               <div>
