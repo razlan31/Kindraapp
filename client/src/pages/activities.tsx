@@ -18,7 +18,7 @@ import { useModal } from "@/contexts/modal-context";
 import { Input } from "@/components/ui/input";
 import { Search, Plus, Calendar, ChevronDown, Activity, Users, Camera, X, UserPlus, Heart } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import { ConnectionModal } from "@/components/modals/connection-modal";
+
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
@@ -148,17 +148,21 @@ export default function Activities() {
   // Create connection mutation
   const createConnectionMutation = useMutation({
     mutationFn: async (formData: FormData) => {
-      // Get all selected love languages
-      const selectedLoveLanguages = formData.getAll('loveLanguages');
-      const loveLanguageString = selectedLoveLanguages.length > 0 ? selectedLoveLanguages.join(', ') : null;
+      const relationshipStage = formData.get('relationshipStage') as string;
+      const customStage = formData.get('customStage') as string;
+      
+      // Use custom stage if "Custom" is selected and custom value is provided
+      const finalStage = relationshipStage === 'Custom' && customStage.trim() 
+        ? customStage.trim() 
+        : relationshipStage || 'Dating';
 
       const data: any = {
         name: formData.get('name'),
-        relationshipStage: formData.get('relationshipStage') || 'Potential',
+        relationshipStage: finalStage,
         startDate: formData.get('startDate') || null,
         birthday: formData.get('birthday') || null,
         zodiacSign: formData.get('zodiacSign') || null,
-        loveLanguage: loveLanguageString,
+        loveLanguage: null,
         isPrivate: formData.get('isPrivate') === 'on',
       };
 
@@ -167,7 +171,7 @@ export default function Activities() {
         data.profileImage = uploadedImage;
       }
 
-      return apiRequest('POST', '/api/connections', data);
+      return apiRequest('/api/connections', 'POST', data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/connections'] });
@@ -1147,11 +1151,89 @@ export default function Activities() {
         connection={selectedConnectionForModal}
       />
 
-      {/* Connection Modal */}
-      <ConnectionModal 
-        isOpen={connectionModalOpen} 
-        onClose={() => setConnectionModalOpen(false)} 
-      />
+      {/* Add Connection Modal */}
+      {connectionModalOpen && (
+        <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between p-4 border-b">
+              <h2 className="font-heading font-semibold text-lg">Add New Connection</h2>
+              <Button variant="ghost" size="icon" onClick={() => setConnectionModalOpen(false)}>
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+            
+            <form onSubmit={(e) => {
+              e.preventDefault();
+              const formData = new FormData(e.currentTarget);
+              createConnectionMutation.mutate(formData);
+            }} className="p-4 space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Name <span className="text-red-500">*</span>
+                </label>
+                <Input name="name" required placeholder="Enter name" />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Relationship Stage <span className="text-red-500">*</span>
+                </label>
+                <div className="space-y-2">
+                  {[
+                    "Potential", "Talking", "Situationship", "It's Complicated", 
+                    "Dating", "Spouse", "FWB", "Ex", "Friend", "Best Friend", "Siblings"
+                  ].map((stage) => (
+                    <label key={stage} className="flex items-center space-x-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="relationshipStage"
+                        value={stage}
+                        defaultChecked={stage === "Dating"}
+                        className="text-blue-600"
+                      />
+                      <span>{stage}</span>
+                    </label>
+                  ))}
+                  <label className="flex items-center space-x-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="relationshipStage"
+                      value="Custom"
+                      className="text-blue-600"
+                    />
+                    <span>Custom Relationship Stage</span>
+                  </label>
+                </div>
+                
+                <div className="mt-2">
+                  <Input
+                    name="customStage"
+                    placeholder="Enter custom stage (e.g., Mom, Dad, Sister, Colleague)"
+                    className="w-full"
+                  />
+                </div>
+                
+                <p className="text-xs text-gray-500 mt-1">
+                  Examples: Mom, Dad, Sister, Colleague, Mentor, etc.
+                </p>
+              </div>
+
+              <div className="flex justify-between gap-2 pt-4 border-t">
+                <Button type="button" variant="outline" onClick={() => setConnectionModalOpen(false)} className="flex-1">
+                  Cancel
+                </Button>
+                <Button 
+                  type="submit" 
+                  disabled={createConnectionMutation.isPending}
+                  className="flex-1"
+                >
+                  {createConnectionMutation.isPending ? "Adding..." : "Add Connection"}
+                </Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
