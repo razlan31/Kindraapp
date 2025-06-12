@@ -13,7 +13,7 @@ interface ConnectionModalProps {
 }
 
 export function ConnectionModal({ isOpen, onClose }: ConnectionModalProps) {
-  console.log("🔥 ConnectionModal component is rendering - DROPDOWN VERSION");
+  console.log("🔥 ConnectionModal component is rendering - DROPDOWN VERSION", { isOpen });
   const [formData, setFormData] = useState({
     name: "",
     relationshipStage: "Dating"
@@ -75,8 +75,8 @@ export function ConnectionModal({ isOpen, onClose }: ConnectionModalProps) {
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between p-4 border-b">
-          <h2 className="font-heading font-semibold text-lg">Add New Connection</h2>
+        <div className="flex items-center justify-between p-4 border-b bg-green-100">
+          <h2 className="font-heading font-semibold text-lg text-green-800">🟢 MODAL WITH CUSTOM OPTION 🟢</h2>
           <Button variant="ghost" size="icon" onClick={onClose}>
             <X className="h-4 w-4" />
           </Button>
