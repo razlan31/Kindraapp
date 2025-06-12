@@ -1,0 +1,169 @@
+AI Insights Debug: {connectionsLength: 16, momentsLength: 0, userData: {…}, momentsPreview: Array(0)}
+Console.js:61 Starting insights generation: {momentsCount: 0, connectionsCount: 16, userData: {…}}
+Console.js:61 Generated insights count: 1
+Console.js:61 Generated insights preview: [{…}]
+Console.js:61 Final insights check: {insightsLength: 1}
+Console.js:61 MomentModal render - momentModalOpen: false activityType: moment
+Console.js:61 Focus Context Debug: {savedId: '6', connectionsLength: 16, connections: Array(16)}
+Console.js:61 Found saved connection: {id: 6, userId: '8', name: 'Amalina', profileImage: 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD…NBFVYa55AsNvqfMiHlz7DuXzATnACjbxt4OfvzgRwvR3Kj//Z', relationshipStage: 'Dating', …}
+Console.js:61 getCurrentUser successful: {id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+Console.js:61 getCurrentUser successful: {id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+Console.js:61 Auth context setting user: {id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+Console.js:61 Auth: Finally block - setting loading to false
+Console.js:61 InsightsNew - user: true user ID: 8 loading: false
+Console.js:61 InsightsNew - moments query: {momentsLength: 56, momentsLoading: false, momentsError: null, userEnabled: true, loading: false}
+Console.js:61 AI Insights Debug: {connectionsLength: 16, momentsLength: 56, userData: {…}, momentsPreview: Array(3)}
+Console.js:61 Starting insights generation: {momentsCount: 56, connectionsCount: 16, userData: {…}}
+Console.js:61 Adding Recent Activity Pattern insight: {totalMoments: 56, recentMomentsCount: 7, recentPositive: 5, positivePercent: 71}
+Console.js:61 Insights array after adding first insight: 6
+Console.js:61 Generated insights count: 6
+Console.js:61 Generated insights preview: (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+Console.js:61 Final insights check: {insightsLength: 3}
+frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.
+t @ frame_ant.js:2
+s @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ _app-82ab82ef9c5439f0.js:38
+(anonymous) @ _app-82ab82ef9c5439f0.js:25
+e @ _app-82ab82ef9c5439f0.js:14
+t.subscribe @ _app-82ab82ef9c5439f0.js:14
+e.consumeQueue @ _app-82ab82ef9c5439f0.js:25
+(anonymous) @ _app-82ab82ef9c5439f0.js:25
+r @ _app-82ab82ef9c5439f0.js:38
+setTimeout
+(anonymous) @ _app-82ab82ef9c5439f0.js:38
+e.scheduleQueueConsumption @ _app-82ab82ef9c5439f0.js:25
+(anonymous) @ _app-82ab82ef9c5439f0.js:25
+e @ _app-82ab82ef9c5439f0.js:14
+t.subscribe @ _app-82ab82ef9c5439f0.js:14
+(anonymous) @ _app-82ab82ef9c5439f0.js:25
+e @ _app-82ab82ef9c5439f0.js:14
+t.subscribe @ _app-82ab82ef9c5439f0.js:14
+e.try @ _app-82ab82ef9c5439f0.js:25
+e.start @ _app-82ab82ef9c5439f0.js:25
+t.request @ _app-82ab82ef9c5439f0.js:25
+(anonymous) @ _app-82ab82ef9c5439f0.js:14
+(anonymous) @ _app-82ab82ef9c5439f0.js:14
+(anonymous) @ _app-82ab82ef9c5439f0.js:25
+(anonymous) @ _app-82ab82ef9c5439f0.js:14
+e.execute @ _app-82ab82ef9c5439f0.js:14
+e.getObservableFromLink @ _app-82ab82ef9c5439f0.js:11
+e.getResultsFromLink @ _app-82ab82ef9c5439f0.js:11
+b @ _app-82ab82ef9c5439f0.js:11
+e.fetchQueryByPolicy @ _app-82ab82ef9c5439f0.js:11
+b @ _app-82ab82ef9c5439f0.js:11
+e.fetchConcastWithInfo @ _app-82ab82ef9c5439f0.js:11
+t.fetch @ _app-82ab82ef9c5439f0.js:14
+t.reobserveAsConcast @ _app-82ab82ef9c5439f0.js:14
+e.executeQuery @ _app-82ab82ef9c5439f0.js:26
+(anonymous) @ _app-82ab82ef9c5439f0.js:14
+(anonymous) @ 7799-bad5074c62251ca6.js:1
+(anonymous) @ 7227-173b3346da594251.js:1
+t.trigger @ _app-82ab82ef9c5439f0.js:6
+(anonymous) @ _app-82ab82ef9c5439f0.js:6
+(anonymous) @ main-0ac0d2e7bd3f0407.js:1
+n @ main-0ac0d2e7bd3f0407.js:1
+u @ main-0ac0d2e7bd3f0407.js:1
+Promise.then
+n @ main-0ac0d2e7bd3f0407.js:1
+u @ main-0ac0d2e7bd3f0407.js:1
+Promise.then
+n @ main-0ac0d2e7bd3f0407.js:1
+u @ main-0ac0d2e7bd3f0407.js:1
+Promise.then
+n @ main-0ac0d2e7bd3f0407.js:1
+u @ main-0ac0d2e7bd3f0407.js:1
+Promise.then
+n @ main-0ac0d2e7bd3f0407.js:1
+u @ main-0ac0d2e7bd3f0407.js:1
+Promise.then
+n @ main-0ac0d2e7bd3f0407.js:1
+u @ main-0ac0d2e7bd3f0407.js:1
+Promise.then
+n @ main-0ac0d2e7bd3f0407.js:1
+u @ main-0ac0d2e7bd3f0407.js:1
+Promise.then
+n @ main-0ac0d2e7bd3f0407.js:1
+u @ main-0ac0d2e7bd3f0407.js:1
+Promise.then
+n @ main-0ac0d2e7bd3f0407.js:1
+u @ main-0ac0d2e7bd3f0407.js:1
+Promise.then
+n @ main-0ac0d2e7bd3f0407.js:1
+u @ main-0ac0d2e7bd3f0407.js:1
+Promise.then
+n @ main-0ac0d2e7bd3f0407.js:1
+u @ main-0ac0d2e7bd3f0407.js:1
+Promise.then
+n @ main-0ac0d2e7bd3f0407.js:1
+u @ main-0ac0d2e7bd3f0407.js:1
+Promise.then
+n @ main-0ac0d2e7bd3f0407.js:1
+u @ main-0ac0d2e7bd3f0407.js:1
+Promise.then
+n @ main-0ac0d2e7bd3f0407.js:1
+u @ main-0ac0d2e7bd3f0407.js:1
+Promise.then
+n @ main-0ac0d2e7bd3f0407.js:1
+u @ main-0ac0d2e7bd3f0407.js:1
+Promise.then
+n @ main-0ac0d2e7bd3f0407.js:1
+u @ main-0ac0d2e7bd3f0407.js:1
+Promise.then
+n @ main-0ac0d2e7bd3f0407.js:1
+u @ main-0ac0d2e7bd3f0407.js:1
+Promise.then
+n @ main-0ac0d2e7bd3f0407.js:1
+u @ main-0ac0d2e7bd3f0407.js:1
+Promise.then
+n @ main-0ac0d2e7bd3f0407.js:1
+u @ main-0ac0d2e7bd3f0407.js:1
+Promise.then
+n @ main-0ac0d2e7bd3f0407.js:1
+u @ main-0ac0d2e7bd3f0407.js:1
+Promise.then
+n @ main-0ac0d2e7bd3f0407.js:1
+u @ main-0ac0d2e7bd3f0407.js:1
+Promise.then
+n @ main-0ac0d2e7bd3f0407.js:1
+u @ main-0ac0d2e7bd3f0407.js:1
+Promise.then
+n @ main-0ac0d2e7bd3f0407.js:1
+u @ main-0ac0d2e7bd3f0407.js:1
+Promise.then
+n @ main-0ac0d2e7bd3f0407.js:1
+u @ main-0ac0d2e7bd3f0407.js:1
+Promise.then
+n @ main-0ac0d2e7bd3f0407.js:1
+u @ main-0ac0d2e7bd3f0407.js:1
+Promise.then
+n @ main-0ac0d2e7bd3f0407.js:1
+u @ main-0ac0d2e7bd3f0407.js:1
+Promise.then
+n @ main-0ac0d2e7bd3f0407.js:1
+u @ main-0ac0d2e7bd3f0407.js:1Understand this error
+Console.js:61 Plans Debug: {plans: Array(0), plansLoading: false, plansError: null, activeTab: 'moments', user: true, …}
+Console.js:61 Activities Debug - Filtering: {totalMoments: 56, activeTab: 'moments', timelineFilter: 'all', selectedConnection: null, filteredMomentsCount: 43, …}
+Console.js:61 Connection Data Debug: {originalConnection: null, allConnections: 16, currentConnection: null, renderKey: 0}
+Console.js:61 Activities navigation check: {navigationConnectionId: null}
+Console.js:61 Setting activities to focus connection: Amalina
+Console.js:61 Plans Debug: {plans: Array(0), plansLoading: false, plansError: null, activeTab: 'moments', user: true, …}
+Console.js:61 Activities Debug - Filtering: {totalMoments: 56, activeTab: 'moments', timelineFilter: 'all', selectedConnection: null, filteredMomentsCount: 43, …}
+Console.js:61 Connection Data Debug: {originalConnection: null, allConnections: 16, currentConnection: null, renderKey: 0}
+Console.js:61 Plans Debug: {plans: Array(0), plansLoading: false, plansError: null, activeTab: 'moments', user: true, …}
+Console.js:61 Activities Debug - Filtering: {totalMoments: 56, activeTab: 'moments', timelineFilter: 'all', selectedConnection: null, filteredMomentsCount: 43, …}
+Console.js:61 Connection Data Debug: {originalConnection: null, allConnections: 16, currentConnection: null, renderKey: 0}
+11Console.js:61 Connection picker is scrolling!
+Console.js:61 Plans Debug: {plans: Array(0), plansLoading: false, plansError: null, activeTab: 'moments', user: true, …}
+Console.js:61 Activities Debug - Filtering: {totalMoments: 56, activeTab: 'moments', timelineFilter: 'all', selectedConnection: null, filteredMomentsCount: 43, …}
+Console.js:61 Connection Data Debug: {originalConnection: null, allConnections: 16, currentConnection: null, renderKey: 0}
+74Console.js:61 Connection picker is scrolling!
