@@ -1165,7 +1165,7 @@ export default function Activities() {
           }}
         >
           <div 
-            className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg w-full max-w-md max-h-[85vh] flex flex-col"
+            className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg w-full max-w-md h-[85vh] flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between p-4 border-b flex-shrink-0">
@@ -1176,7 +1176,7 @@ export default function Activities() {
             </div>
             
             <div 
-              className="flex-1 overflow-y-scroll min-h-0"
+              className="flex-1 overflow-y-scroll"
               onScroll={(e) => {
                 console.log('Modal is scrolling!', (e.target as HTMLElement).scrollTop);
               }}
@@ -1184,8 +1184,7 @@ export default function Activities() {
                 WebkitOverflowScrolling: 'touch',
                 overflowY: 'scroll',
                 scrollBehavior: 'smooth',
-                maxHeight: 'calc(85vh - 80px)',
-                minHeight: '300px'
+                height: 'calc(85vh - 80px)'
               }}
             >
               <form onSubmit={(e) => {
