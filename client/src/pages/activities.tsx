@@ -90,36 +90,15 @@ export default function Activities() {
     }
   }, [connectionModalOpen]);
 
-  // Force immediate modal interactivity with multiple strategies
+  // Simple focus management for modal
   useEffect(() => {
     if (connectionModalOpen) {
       const timer = setTimeout(() => {
-        // Strategy 1: Enable all form elements programmatically
-        const modalElement = document.querySelector('[data-modal="add-connection"]');
-        if (modalElement) {
-          const allInteractiveElements = modalElement.querySelectorAll('input, select, textarea, button');
-          allInteractiveElements.forEach(element => {
-            const el = element as HTMLElement;
-            
-            // Force enable the element
-            el.removeAttribute('disabled');
-            el.style.pointerEvents = 'auto';
-            el.style.userSelect = 'auto';
-            
-            // Trigger multiple events to activate handlers
-            ['mouseenter', 'mouseover', 'click', 'focus'].forEach(eventType => {
-              el.dispatchEvent(new Event(eventType, { bubbles: true, cancelable: true }));
-            });
-          });
-          
-          // Strategy 2: Focus first input immediately
-          const nameInput = modalElement.querySelector('input[name="name"]') as HTMLInputElement;
-          if (nameInput) {
-            nameInput.focus();
-            nameInput.click();
-          }
+        const nameInput = document.querySelector('[data-modal="add-connection"] input[name="name"]') as HTMLInputElement;
+        if (nameInput) {
+          nameInput.focus();
         }
-      }, 10);
+      }, 100);
       
       return () => clearTimeout(timer);
     }
