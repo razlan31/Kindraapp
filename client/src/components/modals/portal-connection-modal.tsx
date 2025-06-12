@@ -1,5 +1,4 @@
-import { useEffect, useRef } from "react";
-import { createPortal } from "react-dom";
+import { useEffect } from "react";
 import { X } from "lucide-react";
 
 interface PortalConnectionModalProps {
@@ -9,65 +8,33 @@ interface PortalConnectionModalProps {
 }
 
 export function PortalConnectionModal({ isOpen, onClose, children }: PortalConnectionModalProps) {
-  const modalRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
     if (isOpen) {
-      // Prevent body scroll
       document.body.style.overflow = 'hidden';
-      
-      // Focus modal after render
-      const timer = setTimeout(() => {
-        if (modalRef.current) {
-          modalRef.current.focus();
-          const firstInput = modalRef.current.querySelector('input') as HTMLInputElement;
-          if (firstInput) {
-            firstInput.focus();
-          }
+      // Delay to ensure DOM is ready, then focus
+      setTimeout(() => {
+        const nameInput = document.querySelector('input[name="name"]') as HTMLInputElement;
+        if (nameInput) {
+          nameInput.focus();
         }
-      }, 50);
-
-      return () => {
-        clearTimeout(timer);
-        document.body.style.overflow = 'unset';
-      };
+      }, 300);
     } else {
       document.body.style.overflow = 'unset';
     }
-  }, [isOpen]);
-
-  useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        onClose();
-      }
+    
+    return () => {
+      document.body.style.overflow = 'unset';
     };
-
-    if (isOpen) {
-      document.addEventListener('keydown', handleEscape);
-      return () => document.removeEventListener('keydown', handleEscape);
-    }
-  }, [isOpen, onClose]);
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
-  return createPortal(
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center">
-      {/* Backdrop */}
+  return (
+    <div className="fixed inset-0 z-[9999] bg-black/50 flex items-center justify-center p-4">
       <div 
-        className="absolute inset-0 bg-black/50"
-        onClick={onClose}
-      />
-      
-      {/* Modal Content */}
-      <div 
-        ref={modalRef}
-        className="relative bg-white rounded-lg shadow-xl w-full max-w-lg max-h-[90vh] mx-4 flex flex-col"
-        tabIndex={-1}
-        style={{ pointerEvents: 'auto' }}
+        className="bg-white rounded-lg shadow-xl w-full max-w-lg max-h-[90vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
         <div className="flex items-center justify-between p-4 border-b flex-shrink-0">
           <h2 className="text-lg font-semibold">Add New Connection</h2>
           <button
@@ -79,12 +46,10 @@ export function PortalConnectionModal({ isOpen, onClose, children }: PortalConne
           </button>
         </div>
         
-        {/* Scrollable Content */}
         <div className="flex-1 overflow-y-auto p-4">
           {children}
         </div>
       </div>
-    </div>,
-    document.body
+    </div>
   );
 }

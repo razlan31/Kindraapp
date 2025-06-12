@@ -1251,6 +1251,12 @@ export default function Activities() {
                     placeholder="Connection name"
                     required
                     autoFocus
+                    style={{ 
+                      pointerEvents: 'auto',
+                      opacity: 1,
+                      userSelect: 'auto',
+                      cursor: 'text'
+                    }}
                   />
                 </div>
 
