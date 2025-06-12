@@ -1159,11 +1159,6 @@ export default function Activities() {
         >
           <div 
             className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto"
-            style={{
-              maxHeight: '90vh',
-              overflowY: 'auto',
-              WebkitOverflowScrolling: 'touch'
-            }}
             onScroll={() => console.log('Modal is scrolling!')}
           >
             <div className="flex items-center justify-between p-4 border-b">
