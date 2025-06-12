@@ -442,7 +442,7 @@ export default function Activities() {
     <div className="max-w-md mx-auto bg-white dark:bg-neutral-900 min-h-screen flex flex-col relative">
       <Header />
 
-      <main className="flex-1 overflow-y-auto pb-20 h-0">
+      <main className="flex-1 overflow-y-auto pb-20">
         {/* Page Title */}
         <div className="px-3 pt-3 pb-2">
           <div className="flex items-center justify-between mb-3">
@@ -1201,12 +1201,6 @@ export default function Activities() {
               const formData = new FormData(e.currentTarget);
               handleAddConnection(formData);
             }} className="p-4 space-y-6">
-              {/* DEBUG: Force tall content to test scrolling */}
-              <div style={{height: '200vh', background: 'linear-gradient(red, blue)', opacity: 0.2, border: '2px solid red'}}>
-                <p style={{color: 'black', fontWeight: 'bold', padding: '20px'}}>SCROLL TEST - This content is 200vh tall</p>
-                <p style={{color: 'black', padding: '20px'}}>If you can scroll here, the mechanism works</p>
-              </div>
-              
               <div>
                 <label className="block text-sm font-medium mb-2">
                   Profile Image
