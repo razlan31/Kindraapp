@@ -1201,6 +1201,12 @@ export default function Activities() {
               const formData = new FormData(e.currentTarget);
               handleAddConnection(formData);
             }} className="p-4 space-y-6">
+              {/* DEBUG: Force tall content to test scrolling */}
+              <div style={{height: '200vh', background: 'linear-gradient(red, blue)', opacity: 0.2, border: '2px solid red'}}>
+                <p style={{color: 'black', fontWeight: 'bold', padding: '20px'}}>SCROLL TEST - This content is 200vh tall</p>
+                <p style={{color: 'black', padding: '20px'}}>If you can scroll here, the mechanism works</p>
+              </div>
+              
               <div>
                 <label className="block text-sm font-medium mb-2">
                   Profile Image
@@ -1414,7 +1420,6 @@ export default function Activities() {
                 </Button>
               </div>
             </form>
-            </div>
           </div>
         </div>
       )}
