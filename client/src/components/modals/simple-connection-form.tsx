@@ -99,7 +99,13 @@ export function SimpleConnectionForm({
             <select
               name="relationshipStage"
               className="w-full p-3 border rounded-lg text-base"
+              defaultValue="Friend"
+              onFocus={(e) => {
+                // Prevent the refresh behavior by ensuring the select stays focused
+                e.target.style.outline = 'none';
+              }}
               onChange={(e) => {
+                e.preventDefault();
                 if (e.target.value === "Custom") {
                   setCustomStageValue("");
                 }
