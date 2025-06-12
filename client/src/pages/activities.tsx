@@ -10,7 +10,7 @@ import { MilestoneModal } from "@/components/modals/milestone-modal";
 import { PlanModal } from "@/components/modals/plan-modal";
 import { ConflictResolutionModal } from "@/components/modals/conflict-resolution-modal";
 import { ConnectionDetailedModal } from "@/components/modals/connection-detailed-modal";
-import { Moment, Connection, Plan } from "@shared/schema";
+import { Moment, Connection, Plan, relationshipStages } from "@shared/schema";
 import { useAuth } from "@/contexts/auth-context";
 import { useRelationshipFocus } from "@/contexts/relationship-focus-context";
 import { Button } from "@/components/ui/button";
@@ -62,8 +62,9 @@ export default function Activities() {
 
   // Connection modal state
   const [connectionModalOpen, setConnectionModalOpen] = useState(false);
-  
-
+  const [relationshipStage, setRelationshipStage] = useState("Potential");
+  const [isCustomStage, setIsCustomStage] = useState(false);
+  const [customStageValue, setCustomStageValue] = useState("");
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const { toast } = useToast();
 
@@ -90,10 +91,30 @@ export default function Activities() {
     }
   });
 
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const result = event.target?.result as string;
+        setUploadedImage(result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleAddConnection = (formData: FormData) => {
+    const relationshipStageValue = formData.get('relationshipStage') as string;
+    const customStage = formData.get('customStage') as string;
+    
+    // Use custom stage if "Custom" is selected and custom value is provided
+    const finalStage = relationshipStageValue === 'Custom' && customStage.trim() 
+      ? customStage.trim() 
+      : relationshipStageValue || 'Potential';
+
     const data = {
       name: formData.get('name') as string,
-      relationshipStage: formData.get('relationshipStage') as string,
+      relationshipStage: finalStage,
       startDate: formData.get('startDate') ? new Date(formData.get('startDate') as string) : null,
       birthday: formData.get('birthday') ? new Date(formData.get('birthday') as string) : null,
       zodiacSign: formData.get('zodiacSign') as string || null,
@@ -173,17 +194,7 @@ export default function Activities() {
     setUploadedImage(null);
   };
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const result = e.target?.result as string;
-        setUploadedImage(result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+
   
   useEffect(() => {
     const handleMomentCreated = () => {
@@ -1256,6 +1267,7 @@ export default function Activities() {
                 {isCustomStage && (
                   <div className="mt-2">
                     <Input
+                      name="customStage"
                       value={customStageValue}
                       onChange={(e) => setCustomStageValue(e.target.value)}
                       placeholder="Enter custom stage (e.g., Mom, Dad, Sister, Colleague)"
