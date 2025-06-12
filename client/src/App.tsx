@@ -37,11 +37,13 @@ import { ThemeProvider } from "./contexts/theme-context";
 import { MomentModal } from "./components/modals/simplified-moment-modal";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Camera, X } from "lucide-react";
 import { MoodTrackerModal } from "./components/modals/mood-tracker-modal";
 import { BadgeNotificationMonitor } from "./components/BadgeNotificationMonitor";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { useMutation } from "@tanstack/react-query";
 
