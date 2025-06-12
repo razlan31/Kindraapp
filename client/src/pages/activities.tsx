@@ -90,26 +90,36 @@ export default function Activities() {
     }
   }, [connectionModalOpen]);
 
-  // Auto-focus modal content when opened and ensure immediate interactivity
+  // Force immediate modal interactivity with multiple strategies
   useEffect(() => {
-    if (connectionModalOpen && modalContentRef.current) {
-      // Small delay to ensure DOM is ready
+    if (connectionModalOpen) {
       const timer = setTimeout(() => {
-        if (modalContentRef.current) {
-          // Focus the scrollable container first
-          modalContentRef.current.focus();
+        // Strategy 1: Enable all form elements programmatically
+        const modalElement = document.querySelector('[data-modal="add-connection"]');
+        if (modalElement) {
+          const allInteractiveElements = modalElement.querySelectorAll('input, select, textarea, button');
+          allInteractiveElements.forEach(element => {
+            const el = element as HTMLElement;
+            
+            // Force enable the element
+            el.removeAttribute('disabled');
+            el.style.pointerEvents = 'auto';
+            el.style.userSelect = 'auto';
+            
+            // Trigger multiple events to activate handlers
+            ['mouseenter', 'mouseover', 'click', 'focus'].forEach(eventType => {
+              el.dispatchEvent(new Event(eventType, { bubbles: true, cancelable: true }));
+            });
+          });
           
-          // Simulate a user interaction to activate all event handlers
-          const firstInput = modalContentRef.current.querySelector('input[name="name"]') as HTMLInputElement;
-          if (firstInput) {
-            // Trigger focus and blur to activate the form
-            firstInput.focus();
-            firstInput.blur();
-            // Then focus again to prepare for user input
-            firstInput.focus();
+          // Strategy 2: Focus first input immediately
+          const nameInput = modalElement.querySelector('input[name="name"]') as HTMLInputElement;
+          if (nameInput) {
+            nameInput.focus();
+            nameInput.click();
           }
         }
-      }, 50); // Slightly longer delay to ensure everything is ready
+      }, 10);
       
       return () => clearTimeout(timer);
     }
@@ -1231,6 +1241,7 @@ export default function Activities() {
           <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 pointer-events-none">
             <div 
               className="bg-white rounded-lg shadow-xl w-full max-w-lg max-h-[90vh] flex flex-col pointer-events-auto"
+              data-modal="add-connection"
             >
               <div className="flex items-center justify-between p-4 border-b flex-shrink-0">
                 <h2 className="text-lg font-semibold">Add New Connection</h2>
