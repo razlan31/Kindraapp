@@ -55,7 +55,8 @@ export const relationshipStages = [
   "Ex",
   "Friend",
   "Best Friend",
-  "Siblings"
+  "Siblings",
+  "Custom"
 ] as const;
 
 // Connections (relationships)
