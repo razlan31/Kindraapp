@@ -93,16 +93,23 @@ export default function Activities() {
   // Auto-focus modal content when opened and ensure immediate interactivity
   useEffect(() => {
     if (connectionModalOpen && modalContentRef.current) {
-      // Small delay to ensure DOM is ready and prevent event capture conflicts
+      // Small delay to ensure DOM is ready
       const timer = setTimeout(() => {
         if (modalContentRef.current) {
+          // Focus the scrollable container first
           modalContentRef.current.focus();
-          // Force repaint to ensure styles are applied
-          modalContentRef.current.style.display = 'block';
-          modalContentRef.current.offsetHeight; // Trigger reflow
-          modalContentRef.current.style.display = '';
+          
+          // Simulate a user interaction to activate all event handlers
+          const firstInput = modalContentRef.current.querySelector('input[name="name"]') as HTMLInputElement;
+          if (firstInput) {
+            // Trigger focus and blur to activate the form
+            firstInput.focus();
+            firstInput.blur();
+            // Then focus again to prepare for user input
+            firstInput.focus();
+          }
         }
-      }, 10);
+      }, 50); // Slightly longer delay to ensure everything is ready
       
       return () => clearTimeout(timer);
     }
