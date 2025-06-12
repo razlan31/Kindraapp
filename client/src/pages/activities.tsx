@@ -1171,19 +1171,17 @@ export default function Activities() {
       })() && (
         <div 
           className="fixed inset-0 z-[200] bg-black/50 flex items-center justify-center p-4"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) {
-              setConnectionModalOpen(false);
-            }
-          }}
         >
           <div 
             className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg w-full max-w-md h-[85vh] flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between p-4 border-b flex-shrink-0">
-              <h2 className="font-heading font-semibold text-lg">Add New Connection</h2>
-              <Button variant="ghost" size="icon" onClick={() => setConnectionModalOpen(false)}>
+              <h2 className="font-heading font-semibold text-lg">🧪 Scroll Test Modal</h2>
+              <Button variant="ghost" size="icon" onClick={() => {
+                console.log('🔴 CLOSING MODAL VIA BUTTON');
+                setConnectionModalOpen(false);
+              }}>
                 <X className="h-4 w-4" />
               </Button>
             </div>
