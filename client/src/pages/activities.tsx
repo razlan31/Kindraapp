@@ -1148,19 +1148,20 @@ export default function Activities() {
       {/* Add Connection Modal */}
       {connectionModalOpen && (
         <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between p-4 border-b">
+          <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg w-full max-w-md max-h-[90vh] flex flex-col">
+            <div className="flex items-center justify-between p-4 border-b flex-shrink-0">
               <h2 className="font-heading font-semibold text-lg">Add New Connection</h2>
               <Button variant="ghost" size="icon" onClick={() => setConnectionModalOpen(false)}>
                 <X className="h-4 w-4" />
               </Button>
             </div>
             
-            <form onSubmit={(e) => {
-              e.preventDefault();
-              const formData = new FormData(e.currentTarget);
-              handleAddConnection(formData);
-            }} className="p-4 space-y-6">
+            <div className="flex-1 overflow-y-auto">
+              <form onSubmit={(e) => {
+                e.preventDefault();
+                const formData = new FormData(e.currentTarget);
+                handleAddConnection(formData);
+              }} className="p-4 space-y-6">
               <div>
                 <label className="block text-sm font-medium mb-2">
                   Profile Image
@@ -1336,7 +1337,8 @@ export default function Activities() {
                   {activitiesConnectionMutation.isPending ? "Adding..." : "Add Connection"}
                 </Button>
               </div>
-            </form>
+              </form>
+            </div>
           </div>
         </div>
       )}
