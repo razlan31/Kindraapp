@@ -1189,15 +1189,15 @@ export default function Activities() {
             </div>
             
             <div 
-              className="flex-1 overflow-y-scroll"
+              className="overflow-y-scroll"
               onScroll={(e) => {
                 console.log('Modal is scrolling!', (e.target as HTMLElement).scrollTop);
               }}
               style={{
-                WebkitOverflowScrolling: 'touch',
+                height: '70vh',
                 overflowY: 'scroll',
-                scrollBehavior: 'smooth',
-                height: 'calc(85vh - 80px)'
+                WebkitOverflowScrolling: 'touch',
+                scrollBehavior: 'smooth'
               }}
             >
               <form onSubmit={(e) => {
@@ -1428,15 +1428,17 @@ export default function Activities() {
               
               {/* DEBUG: Force tall content to test scrolling */}
               <div className="p-4 space-y-4 bg-red-50 border border-red-200 m-4">
-                <p className="text-red-700 font-semibold">DEBUG: Scroll Test Area</p>
-                {Array.from({ length: 20 }, (_, i) => (
-                  <div key={i} className="p-4 bg-white border rounded">
-                    <p>Debug content block {i + 1}</p>
-                    <p>This is additional content to make the modal very tall</p>
-                    <p>Try scrolling to see if this works</p>
+                <p className="text-red-700 font-semibold text-xl">DEBUG: START - Scroll Test Area</p>
+                {Array.from({ length: 50 }, (_, i) => (
+                  <div key={i} className="p-6 bg-white border-2 rounded shadow-sm">
+                    <p className="text-lg font-bold">Debug Block #{i + 1}</p>
+                    <p>This content should create overflow requiring scroll</p>
+                    <p>Modal scroll container height: 70vh</p>
+                    <p>If you see this block and can scroll, the fix worked!</p>
+                    <div className="h-4 bg-gradient-to-r from-blue-200 to-purple-200 rounded mt-2"></div>
                   </div>
                 ))}
-                <p className="text-red-700 font-semibold">DEBUG: End of scroll test</p>
+                <p className="text-red-700 font-semibold text-xl">DEBUG: END - Bottom of scroll test</p>
               </div>
             </form>
             </div>
