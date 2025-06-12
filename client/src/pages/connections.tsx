@@ -180,7 +180,10 @@ export default function Connections() {
               <p className="text-sm text-muted-foreground mb-4">
                 {searchTerm || filterStage ? "Try adjusting your search or filters" : "Start building your network"}
               </p>
-              <Button onClick={() => setShowAddModal(true)}>
+              <Button onClick={() => {
+                console.log("🟡 EMPTY STATE BUTTON CLICKED - Opening AddConnectionModal");
+                setShowAddModal(true);
+              }}>
                 <Plus className="h-4 w-4 mr-2" />
                 Add Connection
               </Button>

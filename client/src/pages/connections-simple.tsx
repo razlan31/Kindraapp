@@ -226,7 +226,10 @@ export default function Connections() {
                 className="pl-10 h-12"
               />
             </div>
-            <Button onClick={() => setShowAddModal(true)} className="w-full h-12">
+            <Button onClick={() => {
+              console.log("🟢 CONNECTIONS-SIMPLE ADD BUTTON CLICKED - Opening inline modal");
+              setShowAddModal(true);
+            }} className="w-full h-12">
               <Plus className="h-5 w-5 mr-2" />
               Add Connection
             </Button>
