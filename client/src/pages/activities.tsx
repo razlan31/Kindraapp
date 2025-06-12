@@ -1165,298 +1165,132 @@ export default function Activities() {
       />
 
       {/* Add Connection Modal */}
-      {connectionModalOpen && (() => {
-        console.log('🔴 ADD CONNECTION MODAL IS OPEN');
-        return true;
-      })() && (
+      {connectionModalOpen && (
         <div 
-          className="fixed inset-0 z-[200] bg-black/50 flex items-center justify-center p-4"
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            zIndex: 9999,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '16px'
+          }}
         >
           <div 
-            className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg w-full max-w-md h-[85vh] flex flex-col"
+            style={{
+              backgroundColor: 'white',
+              borderRadius: '8px',
+              width: '100%',
+              maxWidth: '400px',
+              height: '80vh',
+              display: 'flex',
+              flexDirection: 'column',
+              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
+            }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between p-4 border-b flex-shrink-0">
-              <h2 className="font-heading font-semibold text-lg">🧪 Scroll Test Modal</h2>
-              <Button variant="ghost" size="icon" onClick={() => {
-                console.log('🔴 CLOSING MODAL VIA BUTTON');
-                setConnectionModalOpen(false);
-              }}>
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
-            
-            {/* SCROLL TEST - Simplified */}
-            <div 
-              className="border-4 border-red-500 bg-yellow-100"
-              style={{ height: '70vh' }}
-            >
-              <div 
-                className="h-full overflow-y-scroll bg-blue-100 border-2 border-green-500"
-                onScroll={(e) => {
-                  console.log('🟠 SCROLL EVENT DETECTED!', (e.target as HTMLElement).scrollTop);
+            <div style={{ 
+              padding: '16px', 
+              borderBottom: '1px solid #e5e7eb',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              flexShrink: 0
+            }}>
+              <h2 style={{ fontSize: '18px', fontWeight: '600', margin: 0 }}>Pure Scroll Test</h2>
+              <button
+                onClick={() => {
+                  console.log('🔴 CLOSING MODAL VIA BUTTON');
+                  setConnectionModalOpen(false);
                 }}
                 style={{
-                  overflowY: 'scroll',
-                  height: '100%'
+                  background: 'none',
+                  border: 'none',
+                  fontSize: '20px',
+                  cursor: 'pointer',
+                  padding: '4px',
+                  color: '#666'
                 }}
               >
-                <div style={{ height: '200vh', background: 'linear-gradient(to bottom, red, orange, yellow, green, blue, purple)' }}>
-                  <div className="p-8 text-2xl font-bold text-white">
-                    🔴 TOP - Try scrolling down
-                  </div>
-                  <div className="p-8 text-2xl font-bold text-white" style={{ marginTop: '50vh' }}>
-                    🟡 MIDDLE
-                  </div>
-                  <div className="p-8 text-2xl font-bold text-white" style={{ marginTop: '50vh' }}>
-                    🟢 BOTTOM - Scroll worked!
-                  </div>
-                </div>
-              </div>
+                ×
+              </button>
             </div>
             
-            <div style={{ display: 'none' }}>
-              <form onSubmit={(e) => {
-              e.preventDefault();
-              const formData = new FormData(e.currentTarget);
-              handleAddConnection(formData);
-            }} className="p-4 space-y-6">
-              <div>
-                <label className="block text-sm font-medium mb-2">
-                  Profile Image
-                </label>
-                <div className="mb-4">
-                  <div className="flex items-center justify-center mb-3">
-                    <Avatar className="h-20 w-20 border-2 border-blue-100 dark:border-blue-900">
-                      {uploadedImage ? (
-                        <AvatarImage src={uploadedImage} alt="Profile preview" />
-                      ) : (
-                        <AvatarFallback className="bg-blue-50 dark:bg-blue-950 text-blue-500">
-                          <Camera className="h-6 w-6" />
-                        </AvatarFallback>
-                      )}
-                    </Avatar>
+            <div
+              style={{
+                flex: 1,
+                overflow: 'hidden',
+                position: 'relative'
+              }}
+            >
+              <div 
+                style={{
+                  height: '100%',
+                  overflowY: 'auto',
+                  background: 'linear-gradient(to bottom, #ff0000, #ff8800, #ffff00, #00ff00, #0088ff, #8800ff)'
+                }}
+                onScroll={(e) => {
+                  console.log('🎉 PURE SCROLL DETECTED!', (e.target as HTMLElement).scrollTop);
+                }}
+                onWheel={(e) => {
+                  console.log('🎡 WHEEL EVENT!', e.deltaY);
+                }}
+                onTouchMove={(e) => {
+                  console.log('📱 TOUCH MOVE!', e.touches.length);
+                }}
+              >
+                <div style={{ minHeight: '200vh', padding: '20px' }}>
+                  <div style={{ 
+                    color: 'white', 
+                    fontSize: '24px', 
+                    fontWeight: 'bold', 
+                    padding: '20px',
+                    textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
+                    backgroundColor: 'rgba(0,0,0,0.3)',
+                    borderRadius: '8px',
+                    marginBottom: '20px'
+                  }}>
+                    🔴 TOP - Try scrolling down!
                   </div>
                   
-                  <div>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      id="fileUpload"
-                      name="profileImageFile"
-                      onChange={async (e) => {
-                        const file = e.target.files?.[0];
-                        if (file) {
-                          try {
-                            const compressedImage = await compressImage(file);
-                            setUploadedImage(compressedImage);
-                          } catch (error) {
-                            console.error('Error compressing image:', error);
-                            // Fallback to original file if compression fails
-                            const reader = new FileReader();
-                            reader.onload = (event) => {
-                              const result = event.target?.result as string;
-                              setUploadedImage(result);
-                            };
-                            reader.readAsDataURL(file);
-                          }
-                        }
-                      }}
-                    />
-                    <Button 
-                      type="button" 
-                      variant="outline" 
-                      onClick={() => document.getElementById('fileUpload')?.click()}
-                      className="w-full"
-                    >
-                      <Camera className="h-4 w-4 mr-2" />
-                      Upload Photo from Device
-                    </Button>
+                  <div style={{ height: '50vh' }}></div>
+                  
+                  <div style={{ 
+                    color: 'white', 
+                    fontSize: '24px', 
+                    fontWeight: 'bold', 
+                    padding: '20px',
+                    textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
+                    backgroundColor: 'rgba(0,0,0,0.3)',
+                    borderRadius: '8px',
+                    marginBottom: '20px'
+                  }}>
+                    🟡 MIDDLE - Keep scrolling!
                   </div>
                   
-                  <p className="text-xs text-neutral-500 mt-1">
-                    Choose a photo from your device to personalize this connection
-                  </p>
-                </div>
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium mb-2">
-                  Name <span className="text-red-500">*</span>
-                </label>
-                <Input
-                  name="name"
-                  required
-                  placeholder="Enter name"
-                  className="w-full"
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium mb-2">
-                  Relationship Stage <span className="text-red-500">*</span>
-                </label>
-                <div className="space-y-2">
-                  {[
-                    ...relationshipStages.map(stage => ({ value: stage, label: stage })),
-                    { value: "Custom", label: "Custom Relationship Stage" }
-                  ].map((stage) => (
-                    <label key={stage.value} className="flex items-center space-x-2 cursor-pointer">
-                      <input
-                        type="radio"
-                        name="relationshipStage"
-                        value={stage.value}
-                        checked={
-                          stage.value === "Custom" 
-                            ? isCustomStage 
-                            : !isCustomStage && relationshipStage === stage.value
-                        }
-                        onChange={() => {
-                          console.log("Radio selected:", stage.value);
-                          if (stage.value === "Custom") {
-                            setIsCustomStage(true);
-                            setRelationshipStage("");
-                          } else {
-                            setIsCustomStage(false);
-                            setRelationshipStage(stage.value);
-                            setCustomStageValue("");
-                          }
-                        }}
-                        className="text-primary"
-                      />
-                      <span className="text-sm">{stage.label}</span>
-                    </label>
-                  ))}
-                </div>
-                
-                {isCustomStage && (
-                  <div className="mt-2">
-                    <Input
-                      name="customStage"
-                      value={customStageValue}
-                      onChange={(e) => setCustomStageValue(e.target.value)}
-                      placeholder="Enter custom stage (e.g., Mom, Dad, Sister, Colleague)"
-                      className="w-full"
-                    />
+                  <div style={{ height: '50vh' }}></div>
+                  
+                  <div style={{ 
+                    color: 'white', 
+                    fontSize: '24px', 
+                    fontWeight: 'bold', 
+                    padding: '20px',
+                    textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
+                    backgroundColor: 'rgba(0,0,0,0.3)',
+                    borderRadius: '8px',
+                    marginBottom: '20px'
+                  }}>
+                    🟢 BOTTOM - Scroll worked!
                   </div>
-                )}
-                
-                <p className="text-xs text-neutral-500 mt-1">
-                  Examples: Mom, Dad, Sister, Colleague, Mentor, etc.
-                </p>
-              </div>
-              
-              <div className="space-y-3">
-                <div className="relative">
-                  <CalendarIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-neutral-400" />
-                  <Input
-                    name="startDate"
-                    type="date"
-                    className="pl-10"
-                  />
-                </div>
-                <p className="text-xs text-neutral-500 mt-1">
-                  When did this relationship begin?
-                </p>
-              </div>
-              
-              <div className="space-y-3">
-                <div className="relative">
-                  <CalendarIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-neutral-400" />
-                  <Input
-                    name="birthday"
-                    type="date"
-                    className="pl-10"
-                  />
-                </div>
-                <p className="text-xs text-neutral-500 mt-1">
-                  Remember important dates
-                </p>
-              </div>
-              
-              <div className="space-y-3 bg-neutral-50 dark:bg-neutral-900 p-4 rounded-lg">
-                <h3 className="text-sm font-medium">Optional Details</h3>
-                
-                <div className="space-y-2">
-                  <label className="block text-xs text-neutral-500">Zodiac Sign</label>
-                  <select name="zodiacSign" className="w-full p-2 border rounded-md bg-background text-sm">
-                    <option value="">Select sign</option>
-                    <option value="Aries">Aries</option>
-                    <option value="Taurus">Taurus</option>
-                    <option value="Gemini">Gemini</option>
-                    <option value="Cancer">Cancer</option>
-                    <option value="Leo">Leo</option>
-                    <option value="Virgo">Virgo</option>
-                    <option value="Libra">Libra</option>
-                    <option value="Scorpio">Scorpio</option>
-                    <option value="Sagittarius">Sagittarius</option>
-                    <option value="Capricorn">Capricorn</option>
-                    <option value="Aquarius">Aquarius</option>
-                    <option value="Pisces">Pisces</option>
-                  </select>
-                </div>
-                
-                <div className="space-y-2">
-                  <label className="block text-xs text-neutral-500">Love Languages</label>
-                  <div className="space-y-2">
-                    {["Words of Affirmation", "Quality Time", "Physical Touch", "Acts of Service", "Receiving Gifts"].map((language) => (
-                      <div key={language} className="flex items-center space-x-2">
-                        <input 
-                          type="checkbox" 
-                          name="loveLanguages" 
-                          value={language}
-                          id={`love-${language.replace(/\s+/g, '-').toLowerCase()}`}
-                          className="rounded"
-                        />
-                        <label 
-                          htmlFor={`love-${language.replace(/\s+/g, '-').toLowerCase()}`}
-                          className="text-sm"
-                        >
-                          {language}
-                        </label>
-                      </div>
-                    ))}
-                  </div>
+                  
+                  <div style={{ height: '20vh' }}></div>
                 </div>
               </div>
-              
-              <div className="flex items-start space-x-3 space-y-0 rounded-md border p-4">
-                <input 
-                  type="checkbox" 
-                  name="isPrivate" 
-                  id="private"
-                  className="mt-1"
-                />
-                <div className="space-y-1 leading-none">
-                  <label htmlFor="private" className="text-sm font-medium">Keep this connection private</label>
-                  <p className="text-sm text-gray-500">
-                    Private connections are only visible to you
-                  </p>
-                </div>
-              </div>
-              
-              <div className="pt-2">
-                <Button type="submit" className="w-full bg-primary text-white" disabled={activitiesConnectionMutation.isPending}>
-                  {activitiesConnectionMutation.isPending ? "Adding..." : "Add Connection"}
-                </Button>
-              </div>
-              
-              {/* DEBUG: Force tall content to test scrolling */}
-              <div className="p-4 space-y-4 bg-red-50 border border-red-200 m-4">
-                <p className="text-red-700 font-semibold text-xl">DEBUG: START - Scroll Test Area</p>
-                {Array.from({ length: 50 }, (_, i) => (
-                  <div key={i} className="p-6 bg-white border-2 rounded shadow-sm">
-                    <p className="text-lg font-bold">Debug Block #{i + 1}</p>
-                    <p>This content should create overflow requiring scroll</p>
-                    <p>Modal scroll container height: 70vh</p>
-                    <p>If you see this block and can scroll, the fix worked!</p>
-                    <div className="h-4 bg-gradient-to-r from-blue-200 to-purple-200 rounded mt-2"></div>
-                  </div>
-                ))}
-                <p className="text-red-700 font-semibold text-xl">DEBUG: END - Bottom of scroll test</p>
-              </div>
-            </form>
             </div>
           </div>
         </div>
