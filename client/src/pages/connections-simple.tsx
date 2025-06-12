@@ -326,7 +326,10 @@ export default function Connections() {
       {/* Add Connection Modal */}
       {showAddModal && (
         <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
+          <div 
+            className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto"
+            onScroll={() => console.log('Connections modal is scrolling!')}
+          >
             <div className="flex items-center justify-between p-4 border-b">
               <h2 className="font-heading font-semibold text-lg">Add New Connection</h2>
               <Button variant="ghost" size="icon" onClick={() => setShowAddModal(false)}>
@@ -571,6 +574,19 @@ export default function Connections() {
                 <Button type="submit" className="w-full bg-primary text-white" disabled={isPending}>
                   {isPending ? "Adding..." : "Add Connection"}
                 </Button>
+              </div>
+              
+              {/* DEBUG: Force tall content to test scrolling */}
+              <div className="p-4 space-y-4 bg-red-50 border border-red-200 m-4">
+                <p className="text-red-700 font-semibold">DEBUG: Scroll Test Area</p>
+                {Array.from({ length: 20 }, (_, i) => (
+                  <div key={i} className="p-4 bg-white border rounded">
+                    <p>Debug content block {i + 1}</p>
+                    <p>This is additional content to make the modal very tall</p>
+                    <p>Try scrolling to see if this works</p>
+                  </div>
+                ))}
+                <p className="text-red-700 font-semibold">DEBUG: End of scroll test</p>
               </div>
             </form>
           </div>
