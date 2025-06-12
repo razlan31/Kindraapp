@@ -3,7 +3,6 @@ import { Connection, Moment } from "@shared/schema";
 
 type ModalContextType = {
   momentModalOpen: boolean;
-  connectionModalOpen: boolean;
   moodTrackerModalOpen: boolean;
   planModalOpen: boolean;
   selectedConnectionId: number | null;
@@ -15,8 +14,7 @@ type ModalContextType = {
   navigationConnectionId: number | null;
   openMomentModal: (activityType?: 'moment' | 'conflict' | 'intimacy' | 'plan', moment?: Moment, date?: Date) => void;
   closeMomentModal: () => void;
-  openConnectionModal: () => void;
-  closeConnectionModal: () => void;
+
   openMoodTrackerModal: (connection?: Connection) => void;
   closeMoodTrackerModal: () => void;
   openPlanModal: (connection?: Connection, date?: Date) => void;
@@ -28,7 +26,6 @@ type ModalContextType = {
 
 const ModalContext = createContext<ModalContextType>({
   momentModalOpen: false,
-  connectionModalOpen: false,
   moodTrackerModalOpen: false,
   planModalOpen: false,
   selectedConnectionId: null,
@@ -40,8 +37,6 @@ const ModalContext = createContext<ModalContextType>({
   navigationConnectionId: null,
   openMomentModal: () => {},
   closeMomentModal: () => {},
-  openConnectionModal: () => {},
-  closeConnectionModal: () => {},
   openMoodTrackerModal: () => {},
   closeMoodTrackerModal: () => {},
   openPlanModal: () => {},

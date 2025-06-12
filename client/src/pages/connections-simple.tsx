@@ -34,7 +34,10 @@ export default function Connections() {
   const [loadingConnectionId, setLoadingConnectionId] = useState<number | null>(null);
   const [selectedConnection, setSelectedConnection] = useState<Connection | null>(null);
   const [showConnectionDetails, setShowConnectionDetails] = useState(false);
-  const { openMomentModal, openConnectionModal } = useModal();
+  const { openMomentModal } = useModal();
+  
+  // Local connection modal state
+  const [connectionModalOpen, setConnectionModalOpen] = useState(false);
   const { mainFocusConnection, setMainFocusConnection } = useRelationshipFocus();
   const { toast } = useToast();
 
