@@ -499,9 +499,9 @@ export default function Activities() {
                   <ChevronDown className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-[var(--radix-dropdown-menu-trigger-width)] max-h-80 flex flex-col" sideOffset={4}>
+              <DropdownMenuContent className="w-[var(--radix-dropdown-menu-trigger-width)] max-h-80 overflow-hidden" sideOffset={4}>
                 {/* Scrollable content area */}
-                <div className="overflow-y-auto flex-1">
+                <div className="overflow-y-auto max-h-72">
                   <DropdownMenuItem 
                     onClick={() => {
                       setSelectedConnections([]);
