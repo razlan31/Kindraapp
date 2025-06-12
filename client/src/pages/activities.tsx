@@ -501,9 +501,16 @@ export default function Activities() {
                   <ChevronDown className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-[var(--radix-dropdown-menu-trigger-width)] max-h-80 overflow-hidden" sideOffset={4}>
+              <DropdownMenuContent className="w-[var(--radix-dropdown-menu-trigger-width)] max-h-80 overflow-y-auto" sideOffset={4}>
                 {/* Scrollable content area */}
-                <div className="overflow-y-auto max-h-72">
+                <div 
+                  className="overflow-y-auto max-h-72"
+                  onScroll={() => console.log('Connection picker is scrolling!')}
+                  style={{
+                    WebkitOverflowScrolling: 'touch',
+                    overflowY: 'auto'
+                  }}
+                >
                   <DropdownMenuItem 
                     onClick={() => {
                       setSelectedConnections([]);
@@ -559,6 +566,28 @@ export default function Activities() {
                       </div>
                     </DropdownMenuCheckboxItem>
                   ))}
+                  <div className="border-t border-border my-1" />
+                  
+                  {/* DEBUG: Add many fake connections to test scrolling */}
+                  {Array.from({ length: 20 }, (_, i) => (
+                    <DropdownMenuCheckboxItem
+                      key={`debug-${i}`}
+                      checked={false}
+                      onCheckedChange={() => {}}
+                      onSelect={(e) => e.preventDefault()}
+                      className="py-3 px-4 text-base"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center">
+                          <span className="text-xs font-medium text-red-500">
+                            {i + 1}
+                          </span>
+                        </div>
+                        <span className="text-red-500">DEBUG Connection {i + 1}</span>
+                      </div>
+                    </DropdownMenuCheckboxItem>
+                  ))}
+                  
                   <div className="border-t border-border my-1" />
                   <div 
                     className="flex items-center gap-3 py-3 px-4 text-base cursor-pointer hover:bg-accent rounded-sm"
