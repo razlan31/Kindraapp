@@ -1,0 +1,42 @@
+
+Console.js:61 InsightsNew - moments query: 
+{momentsLength: 0, momentsLoading: true, momentsError: null, userEnabled: true, loading: false}
+Console.js:61 AI Insights Debug: 
+{connectionsLength: 13, momentsLength: 0, userData: {…}, momentsPreview: Array(0)}
+Console.js:61 Starting insights generation: 
+{momentsCount: 0, connectionsCount: 13, userData: {…}}
+Console.js:61 Generated insights count: 1
+Console.js:61 Generated insights preview: 
+[{…}]
+Console.js:61 Final insights check: 
+{insightsLength: 1}
+Console.js:61 MomentModal render - momentModalOpen: false activityType: moment
+Console.js:61 getCurrentUser successful: 
+{id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+Console.js:61 getCurrentUser successful: 
+{id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+Console.js:61 Auth context setting user: 
+{id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+Console.js:61 Auth: Finally block - setting loading to false
+Console.js:61 InsightsNew - user: true user ID: 8 loading: false
+Console.js:61 InsightsNew - moments query: 
+{momentsLength: 56, momentsLoading: false, momentsError: null, userEnabled: true, loading: false}
+Console.js:61 AI Insights Debug: 
+{connectionsLength: 13, momentsLength: 56, userData: {…}, momentsPreview: Array(3)}
+Console.js:61 Starting insights generation: 
+{momentsCount: 56, connectionsCount: 13, userData: {…}}
+Console.js:61 Adding Recent Activity Pattern insight: 
+{totalMoments: 56, recentMomentsCount: 7, recentPositive: 5, positivePercent: 71}
+Console.js:61 Insights array after adding first insight: 6
+Console.js:61 Generated insights count: 6
+Console.js:61 Generated insights preview: 
+(6) [{…}, {…}, {…}, {…}, {…}, {…}]
+Console.js:61 Final insights check: 
+{insightsLength: 3}
+frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.
+Console.js:61 Connection Data Debug: 
+{originalConnection: null, allConnections: 13, currentConnection: null, renderKey: 0}
+Console.js:61 Connection Data Debug: 
+{originalConnection: null, allConnections: 13, currentConnection: null, renderKey: 0}
+﻿
+
