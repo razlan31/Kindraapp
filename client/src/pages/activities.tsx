@@ -1173,13 +1173,16 @@ export default function Activities() {
             </div>
             
             <div 
-              className="flex-1 overflow-y-auto min-h-0"
-              onScroll={() => console.log('Modal is scrolling!')}
+              className="flex-1 overflow-y-scroll min-h-0"
+              onScroll={(e) => {
+                console.log('Modal is scrolling!', e.target.scrollTop);
+              }}
               style={{
                 WebkitOverflowScrolling: 'touch',
-                overflowY: 'auto',
+                overflowY: 'scroll',
                 scrollBehavior: 'smooth',
-                maxHeight: 'calc(90vh - 80px)' // Account for header height
+                maxHeight: 'calc(90vh - 80px)',
+                minHeight: '200px'
               }}
             >
               <form onSubmit={(e) => {
