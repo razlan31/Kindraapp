@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { Header } from "@/components/layout/header";
@@ -77,28 +77,16 @@ export default function Activities() {
   const [customStageValue, setCustomStageValue] = useState("");
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [selectedLoveLanguages, setSelectedLoveLanguages] = useState<string[]>([]);
+  const modalContentRef = useRef<HTMLDivElement>(null);
 
-  // Fix modal initialization issues
+  // Reset state when modal closes to ensure clean reopening
   useEffect(() => {
-    if (connectionModalOpen) {
-      // Ensure proper modal initialization
-      const timer = setTimeout(() => {
-        const modal = document.querySelector('[data-modal="add-connection"]') as HTMLElement;
-        const scrollableContainer = document.querySelector('[data-scroll="modal-content"]') as HTMLElement;
-        
-        if (modal && scrollableContainer) {
-          // Force focus and ensure interactive state
-          modal.focus();
-          
-          // Trigger a small scroll to activate scroll handlers
-          scrollableContainer.scrollTop = 1;
-          scrollableContainer.scrollTop = 0;
-          
-          // Force a reflow to ensure all event handlers are attached
-          modal.offsetHeight;
-        }
-      }, 100);
-      return () => clearTimeout(timer);
+    if (!connectionModalOpen) {
+      setUploadedImage(null);
+      setSelectedLoveLanguages([]);
+      setRelationshipStage("Potential");
+      setIsCustomStage(false);
+      setCustomStageValue("");
     }
   }, [connectionModalOpen]);
 
@@ -1211,15 +1199,16 @@ export default function Activities() {
       {/* Add Connection Modal */}
       {connectionModalOpen && (
         <div 
-          className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
-          style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
-          onClick={() => setConnectionModalOpen(false)}
+          className="fixed inset-0 z-[9999] bg-black/50 flex items-center justify-center p-4"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setConnectionModalOpen(false);
+            }
+          }}
         >
           <div 
             className="bg-white rounded-lg shadow-xl w-full max-w-lg max-h-[90vh] flex flex-col"
             onClick={(e) => e.stopPropagation()}
-            data-modal="add-connection"
-            tabIndex={-1}
           >
             <div className="flex items-center justify-between p-4 border-b flex-shrink-0">
               <h2 className="text-lg font-semibold">Add New Connection</h2>
@@ -1231,7 +1220,7 @@ export default function Activities() {
               </button>
             </div>
             
-            <div className="flex-1 overflow-y-auto p-4" data-scroll="modal-content">
+            <div className="flex-1 overflow-y-auto p-4">
               <form onSubmit={(e) => {
                 e.preventDefault();
                 const formData = new FormData(e.currentTarget);
