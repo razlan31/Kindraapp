@@ -1292,31 +1292,96 @@ export default function Activities() {
                   </select>
                 </div>
 
+                {/* When did you start this connection field */}
                 <div>
-                  <label className="block text-sm font-medium mb-2">Love Language (Optional)</label>
-                  <select name="loveLanguage" className="w-full p-2 border rounded-lg">
-                    <option value="">Select love language</option>
-                    <option value="Words of Affirmation">Words of Affirmation</option>
-                    <option value="Acts of Service">Acts of Service</option>
-                    <option value="Receiving Gifts">Receiving Gifts</option>
-                    <option value="Quality Time">Quality Time</option>
-                    <option value="Physical Touch">Physical Touch</option>
-                  </select>
+                  <label className="block text-sm font-medium mb-2">
+                    When did you start this connection?
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                      <Calendar className="h-4 w-4 text-gray-400" />
+                    </div>
+                    <input
+                      name="startDate"
+                      type="date"
+                      className="w-full p-2 border rounded-lg pl-10"
+                    />
+                  </div>
+                  <p className="text-xs text-neutral-500 mt-1">
+                    Track when you first connected with this person
+                  </p>
                 </div>
 
+                {/* Love Languages - multiple choice */}
                 <div>
-                  <label className="block text-sm font-medium mb-2">Profile Picture (Optional)</label>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageUpload}
-                    className="w-full p-2 border rounded-lg"
-                  />
-                  {uploadedImage && (
-                    <div className="mt-2">
-                      <img src={uploadedImage} alt="Preview" className="w-16 h-16 rounded-full object-cover" />
+                  <label className="block text-sm font-medium mb-2">
+                    Love Languages <span className="text-xs text-neutral-500">(Select all that apply)</span>
+                  </label>
+                  <div className="space-y-2">
+                    {[
+                      'Words of Affirmation',
+                      'Acts of Service', 
+                      'Receiving Gifts',
+                      'Quality Time',
+                      'Physical Touch'
+                    ].map((language) => (
+                      <label key={language} className="flex items-center space-x-2">
+                        <input
+                          type="checkbox"
+                          name="loveLanguages"
+                          value={language}
+                          className="rounded"
+                        />
+                        <span className="text-sm">{language}</span>
+                      </label>
+                    ))}
+                  </div>
+                  <p className="text-xs text-neutral-500 mt-1">
+                    Understanding love languages can improve your connection
+                  </p>
+                </div>
+
+                {/* Profile Picture - moved to top with thumbnail */}
+                <div>
+                  <label className="block text-sm font-medium mb-3 text-center">
+                    Profile Picture
+                  </label>
+                  <div className="flex flex-col items-center space-y-3">
+                    <Avatar className="h-24 w-24 border-2 border-blue-100 dark:border-blue-900">
+                      {uploadedImage ? (
+                        <AvatarImage src={uploadedImage} alt="Profile preview" />
+                      ) : (
+                        <AvatarFallback className="bg-blue-50 dark:bg-blue-950 text-blue-500">
+                          <Camera className="h-8 w-8" />
+                        </AvatarFallback>
+                      )}
+                    </Avatar>
+                    
+                    <div className="w-full">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        className="hidden"
+                        id="fileUploadActivities"
+                      />
+                      <Button 
+                        type="button" 
+                        variant="outline" 
+                        onClick={() => document.getElementById('fileUploadActivities')?.click()}
+                        className="w-full"
+                      >
+                        <Camera className="h-4 w-4 mr-2" />
+                        {uploadedImage ? 'Change Photo' : 'Upload Photo'}
+                      </Button>
                     </div>
-                  )}
+                    
+                    {uploadedImage && (
+                      <p className="text-xs text-green-600 dark:text-green-400 text-center">
+                        Photo uploaded successfully
+                      </p>
+                    )}
+                  </div>
                 </div>
 
                 <div className="flex items-center space-x-2">
