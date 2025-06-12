@@ -1167,130 +1167,160 @@ export default function Activities() {
       {/* Add Connection Modal */}
       {connectionModalOpen && (
         <div 
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            zIndex: 9999,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '16px'
-          }}
+          className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+          style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
+          onClick={() => setConnectionModalOpen(false)}
         >
           <div 
-            style={{
-              backgroundColor: 'white',
-              borderRadius: '8px',
-              width: '100%',
-              maxWidth: '400px',
-              height: '80vh',
-              display: 'flex',
-              flexDirection: 'column',
-              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
-            }}
+            className="bg-white rounded-lg shadow-xl w-full max-w-lg max-h-[90vh] flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
-            <div style={{ 
-              padding: '16px', 
-              borderBottom: '1px solid #e5e7eb',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              flexShrink: 0
-            }}>
-              <h2 style={{ fontSize: '18px', fontWeight: '600', margin: 0 }}>Pure Scroll Test</h2>
+            <div className="flex items-center justify-between p-4 border-b flex-shrink-0">
+              <h2 className="text-lg font-semibold">Add New Connection</h2>
               <button
-                onClick={() => {
-                  console.log('🔴 CLOSING MODAL VIA BUTTON');
-                  setConnectionModalOpen(false);
-                }}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  fontSize: '20px',
-                  cursor: 'pointer',
-                  padding: '4px',
-                  color: '#666'
-                }}
+                onClick={() => setConnectionModalOpen(false)}
+                className="p-1 hover:bg-gray-100 rounded"
               >
-                ×
+                <X className="h-5 w-5" />
               </button>
             </div>
             
-            <div
-              style={{
-                flex: 1,
-                overflow: 'hidden',
-                position: 'relative'
-              }}
-            >
-              <div 
-                style={{
-                  height: '100%',
-                  overflowY: 'auto',
-                  background: 'linear-gradient(to bottom, #ff0000, #ff8800, #ffff00, #00ff00, #0088ff, #8800ff)'
-                }}
-                onScroll={(e) => {
-                  console.log('🎉 PURE SCROLL DETECTED!', (e.target as HTMLElement).scrollTop);
-                }}
-                onWheel={(e) => {
-                  console.log('🎡 WHEEL EVENT!', e.deltaY);
-                }}
-                onTouchMove={(e) => {
-                  console.log('📱 TOUCH MOVE!', e.touches.length);
-                }}
-              >
-                <div style={{ minHeight: '200vh', padding: '20px' }}>
-                  <div style={{ 
-                    color: 'white', 
-                    fontSize: '24px', 
-                    fontWeight: 'bold', 
-                    padding: '20px',
-                    textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
-                    backgroundColor: 'rgba(0,0,0,0.3)',
-                    borderRadius: '8px',
-                    marginBottom: '20px'
-                  }}>
-                    🔴 TOP - Try scrolling down!
-                  </div>
-                  
-                  <div style={{ height: '50vh' }}></div>
-                  
-                  <div style={{ 
-                    color: 'white', 
-                    fontSize: '24px', 
-                    fontWeight: 'bold', 
-                    padding: '20px',
-                    textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
-                    backgroundColor: 'rgba(0,0,0,0.3)',
-                    borderRadius: '8px',
-                    marginBottom: '20px'
-                  }}>
-                    🟡 MIDDLE - Keep scrolling!
-                  </div>
-                  
-                  <div style={{ height: '50vh' }}></div>
-                  
-                  <div style={{ 
-                    color: 'white', 
-                    fontSize: '24px', 
-                    fontWeight: 'bold', 
-                    padding: '20px',
-                    textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
-                    backgroundColor: 'rgba(0,0,0,0.3)',
-                    borderRadius: '8px',
-                    marginBottom: '20px'
-                  }}>
-                    🟢 BOTTOM - Scroll worked!
-                  </div>
-                  
-                  <div style={{ height: '20vh' }}></div>
+            <div className="flex-1 overflow-y-auto p-4">
+              <form onSubmit={(e) => {
+                e.preventDefault();
+                const formData = new FormData(e.currentTarget);
+                handleAddConnection(formData);
+              }} className="space-y-4">
+                
+                <div>
+                  <label className="block text-sm font-medium mb-2">Name*</label>
+                  <input
+                    name="name"
+                    type="text"
+                    className="w-full p-2 border rounded-lg"
+                    placeholder="Connection name"
+                    required
+                  />
                 </div>
-              </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2">Relationship Stage</label>
+                  <select
+                    name="relationshipStage"
+                    value={relationshipStage}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setRelationshipStage(value);
+                      setIsCustomStage(value === "custom");
+                    }}
+                    className="w-full p-2 border rounded-lg"
+                  >
+                    <option value="Potential">Potential</option>
+                    <option value="Talking">Talking</option>
+                    <option value="Dating">Dating</option>
+                    <option value="Partner">Partner</option>
+                    <option value="Engaged">Engaged</option>
+                    <option value="Married">Married</option>
+                    <option value="Best Friend">Best Friend</option>
+                    <option value="Friend">Friend</option>
+                    <option value="Family">Family</option>
+                    <option value="Colleague">Colleague</option>
+                    <option value="Acquaintance">Acquaintance</option>
+                    <option value="Ex">Ex</option>
+                    <option value="custom">Custom</option>
+                  </select>
+                </div>
+
+                {isCustomStage && (
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Custom Stage</label>
+                    <input
+                      name="customStage"
+                      type="text"
+                      value={customStageValue}
+                      onChange={(e) => setCustomStageValue(e.target.value)}
+                      className="w-full p-2 border rounded-lg"
+                      placeholder="Enter custom relationship stage"
+                    />
+                  </div>
+                )}
+
+                <div>
+                  <label className="block text-sm font-medium mb-2">Birthday (Optional)</label>
+                  <input
+                    name="birthday"
+                    type="date"
+                    className="w-full p-2 border rounded-lg"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2">Zodiac Sign (Optional)</label>
+                  <select name="zodiacSign" className="w-full p-2 border rounded-lg">
+                    <option value="">Select zodiac sign</option>
+                    <option value="Aries">Aries</option>
+                    <option value="Taurus">Taurus</option>
+                    <option value="Gemini">Gemini</option>
+                    <option value="Cancer">Cancer</option>
+                    <option value="Leo">Leo</option>
+                    <option value="Virgo">Virgo</option>
+                    <option value="Libra">Libra</option>
+                    <option value="Scorpio">Scorpio</option>
+                    <option value="Sagittarius">Sagittarius</option>
+                    <option value="Capricorn">Capricorn</option>
+                    <option value="Aquarius">Aquarius</option>
+                    <option value="Pisces">Pisces</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2">Love Language (Optional)</label>
+                  <select name="loveLanguage" className="w-full p-2 border rounded-lg">
+                    <option value="">Select love language</option>
+                    <option value="Words of Affirmation">Words of Affirmation</option>
+                    <option value="Acts of Service">Acts of Service</option>
+                    <option value="Receiving Gifts">Receiving Gifts</option>
+                    <option value="Quality Time">Quality Time</option>
+                    <option value="Physical Touch">Physical Touch</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2">Profile Picture (Optional)</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="w-full p-2 border rounded-lg"
+                  />
+                  {uploadedImage && (
+                    <div className="mt-2">
+                      <img src={uploadedImage} alt="Preview" className="w-16 h-16 rounded-full object-cover" />
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    name="isPrivate"
+                    id="isPrivate"
+                    className="rounded"
+                  />
+                  <label htmlFor="isPrivate" className="text-sm">
+                    Private connection - only visible to you
+                  </label>
+                </div>
+
+                <div className="pt-4 space-y-2">
+                  <Button type="submit" className="w-full" disabled={activitiesConnectionMutation.isPending}>
+                    {activitiesConnectionMutation.isPending ? "Adding..." : "Add Connection"}
+                  </Button>
+                  <Button type="button" variant="outline" onClick={() => setConnectionModalOpen(false)} className="w-full">
+                    Cancel
+                  </Button>
+                </div>
+              </form>
             </div>
           </div>
         </div>
