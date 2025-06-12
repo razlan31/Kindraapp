@@ -128,10 +128,12 @@ export default function Activities() {
 
   // Connection modal helper functions
   const openConnectionModal = () => {
+    console.log("🚀 openConnectionModal called - setting state to true");
     setConnectionModalOpen(true);
   };
 
   const closeConnectionModal = () => {
+    console.log("🔒 closeConnectionModal called - setting state to false");
     setConnectionModalOpen(false);
     setUploadedImage(null);
   };
