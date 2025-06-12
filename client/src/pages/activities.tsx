@@ -1201,11 +1201,6 @@ export default function Activities() {
               const formData = new FormData(e.currentTarget);
               handleAddConnection(formData);
             }} className="p-4 space-y-6">
-              {/* Temporary content to force scrolling - REMOVE AFTER TESTING */}
-              <div style={{height: '150vh', background: 'linear-gradient(to bottom, red, blue)', opacity: 0.1}}>
-                <p>SCROLL TEST - This should make the modal scroll</p>
-              </div>
-              
               <div>
                 <label className="block text-sm font-medium mb-2">
                   Profile Image
@@ -1419,6 +1414,7 @@ export default function Activities() {
                 </Button>
               </div>
             </form>
+            </div>
           </div>
         </div>
       )}
