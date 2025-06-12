@@ -47,7 +47,9 @@ export default function Connections() {
   });
 
   // Get all unique relationship stages from connections (including custom ones)
-  const allUniqueStages = [...new Set(connections.map(c => c.relationshipStage))];
+  const allUniqueStages = connections
+    .map(c => c.relationshipStage)
+    .filter((stage, index, arr) => arr.indexOf(stage) === index);
   
   // Predefined stage order for common relationship types
   const stageOrder = ["Potential", "Talking", "Situationship", "It's Complicated", "Dating", "Spouse", "FWB", "Ex", "Friend", "Best Friend", "Siblings"];
@@ -412,7 +414,7 @@ export default function Connections() {
                 <div className="space-y-2">
                   {[
                     ...relationshipStages.map(stage => ({ value: stage, label: stage })),
-                    { value: "Custom", label: "🎯 CUSTOM RELATIONSHIP STAGE 🎯" }
+                    { value: "Custom", label: "Custom Relationship Stage" }
                   ].map((stage) => (
                     <label key={stage.value} className="flex items-center space-x-2 cursor-pointer">
                       <input
