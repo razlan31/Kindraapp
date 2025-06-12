@@ -161,15 +161,9 @@ export default function Connections() {
     
     // Handle custom relationship stage
     const relationshipStageValue = formData.get('relationshipStage') as string;
-    console.log("Form submission - relationshipStage from form:", relationshipStageValue);
-    console.log("Form submission - isCustomStage:", isCustomStage);
-    console.log("Form submission - customStageValue:", customStageValue);
-    
-    const finalRelationshipStage = isCustomStage && customStageValue.trim() 
+    const finalRelationshipStage = relationshipStageValue === 'custom' && customStageValue.trim() 
       ? customStageValue.trim() 
       : relationshipStageValue;
-    
-    console.log("Form submission - final relationshipStage:", finalRelationshipStage);
     
     const data = {
       name: formData.get('name') as string,
@@ -182,7 +176,6 @@ export default function Connections() {
       isPrivate: formData.get('isPrivate') === 'on',
     };
 
-    console.log("Final form data being sent:", data);
     createConnection(data);
   };
 
@@ -200,83 +193,69 @@ export default function Connections() {
                 {connections.length} people in your network
               </p>
             </div>
-            <Users className="h-8 w-8 text-primary" />
+            <Button onClick={() => setShowAddModal(true)} size="sm" className="bg-primary text-white">
+              <Plus className="h-4 w-4 mr-1" />
+              Add
+            </Button>
           </div>
-        </section>
 
-        {/* Controls Section */}
-        <section className="px-4 pt-2 pb-2 sticky top-0 bg-white dark:bg-neutral-900 z-10">
-          {/* Horizontal Stage Bubbles */}
-          <div className="mb-3">
-            <div className="flex overflow-x-auto gap-2 pb-2 scrollbar-hide">
-              <button
+          {/* Search and Filter */}
+          <div className="space-y-3">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-400 h-4 w-4" />
+              <Input
+                type="text"
+                placeholder="Search connections..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-9 bg-white dark:bg-neutral-800"
+              />
+            </div>
+
+            <div className="flex space-x-2 overflow-x-auto pb-1">
+              <Button
+                variant={selectedStage === "all" ? "default" : "outline"}
+                size="sm"
                 onClick={() => setSelectedStage("all")}
-                className={`shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                  selectedStage === "all"
-                    ? 'bg-primary text-primary-foreground'
-                    : 'bg-muted text-muted-foreground hover:bg-muted/80'
-                }`}
+                className="whitespace-nowrap"
               >
                 All ({connections.length})
-              </button>
-              <button
-                onClick={() => setSelectedStage("main-focus")}
-                className={`shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                  selectedStage === "main-focus"
-                    ? 'bg-primary text-primary-foreground'
-                    : 'bg-muted text-muted-foreground hover:bg-muted/80'
-                }`}
-              >
-                Main Focus ({mainFocusConnection ? 1 : 0})
-              </button>
+              </Button>
+              {mainFocusConnection && (
+                <Button
+                  variant={selectedStage === "main-focus" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setSelectedStage("main-focus")}
+                  className="whitespace-nowrap"
+                >
+                  Main Focus
+                </Button>
+              )}
               {availableStages.map(stage => {
                 const count = connections.filter(c => c.relationshipStage === stage).length;
                 return (
-                  <button
+                  <Button
                     key={stage}
+                    variant={selectedStage === stage ? "default" : "outline"}
+                    size="sm"
                     onClick={() => setSelectedStage(stage)}
-                    className={`shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                      selectedStage === stage
-                        ? 'bg-primary text-primary-foreground'
-                        : 'bg-muted text-muted-foreground hover:bg-muted/80'
-                    }`}
+                    className="whitespace-nowrap"
                   >
                     {stage} ({count})
-                  </button>
+                  </Button>
                 );
               })}
             </div>
           </div>
-
-          {/* Search and Add Button - Same Width */}
-          <div className="space-y-2">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-neutral-500" />
-              <Input
-                placeholder="Search connections..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 h-12"
-              />
-            </div>
-            <Button onClick={() => {
-              console.log("🟢 CONNECTIONS-SIMPLE ADD BUTTON CLICKED - Opening inline modal");
-              setShowAddModal(true);
-            }} className="w-full h-12">
-              <Plus className="h-5 w-5 mr-2" />
-              Add Connection
-            </Button>
-          </div>
         </section>
 
         {/* Connections List */}
-        <section className="px-4 pb-4">
+        <section className="p-4">
           <div className="space-y-3">
-            {displayConnections.map((connection: any) => {
+            {displayConnections.map((connection) => {
               const emojis = getConnectionEmojis(connection.id);
               const { greenFlags, redFlags } = getFlagCounts(connection.id);
-              const isMainFocus = mainFocusConnection?.id === connection.id;
-
+              
               return (
                 <ConnectionCard
                   key={connection.id}
@@ -284,17 +263,7 @@ export default function Connections() {
                   emojis={emojis}
                   greenFlags={greenFlags}
                   redFlags={redFlags}
-                  isMainFocus={isMainFocus}
-                  onSelect={handleSelectConnection}
-                  onToggleFocus={() => {
-                    if (isMainFocus) {
-                      setMainFocusConnection(null);
-                    } else {
-                      setMainFocusConnection(connection);
-                    }
-                  }}
-                  daysSinceActivity={connection.daysSinceActivity}
-                  activityCount={connection.activityCount}
+                  onSelect={() => handleSelectConnection(connection)}
                   onImageClick={(imageUrl, name) => {
                     setImagePreview({ isOpen: true, imageUrl, name });
                   }}
@@ -343,7 +312,7 @@ export default function Connections() {
               handleAddConnection(formData);
             }} className="p-4 space-y-6">
               
-              {/* Profile Picture - moved to top */}
+              {/* Profile Picture - moved to top with thumbnail */}
               <div>
                 <label className="block text-sm font-medium mb-3 text-center">
                   Profile Picture
@@ -423,7 +392,7 @@ export default function Connections() {
                 <div className="space-y-2">
                   {[
                     ...relationshipStages.map(stage => ({ value: stage, label: stage })),
-                    { value: "Custom", label: "Custom Relationship Stage" }
+                    { value: "custom", label: "Custom Relationship Stage" }
                   ].map((stage) => (
                     <label key={stage.value} className="flex items-center space-x-2 cursor-pointer">
                       <input
@@ -431,13 +400,12 @@ export default function Connections() {
                         name="relationshipStage"
                         value={stage.value}
                         checked={
-                          stage.value === "Custom" 
+                          stage.value === "custom" 
                             ? isCustomStage 
                             : !isCustomStage && relationshipStage === stage.value
                         }
                         onChange={() => {
-                          console.log("Radio selected:", stage.value);
-                          if (stage.value === "Custom") {
+                          if (stage.value === "custom") {
                             setIsCustomStage(true);
                             setRelationshipStage("");
                           } else {
@@ -459,20 +427,15 @@ export default function Connections() {
                       placeholder="Enter custom relationship stage"
                       value={customStageValue}
                       onChange={(e) => {
-                        console.log("Custom dropdown changed to:", e.target.value);
                         setCustomStageValue(e.target.value);
                       }}
                       className="w-full"
                     />
-                    <input type="hidden" name="relationshipStage" value={customStageValue} />
                   </div>
-                )}
-                
-                {!isCustomStage && (
-                  <input type="hidden" name="relationshipStage" value={relationshipStage} />
                 )}
               </div>
               
+              {/* When did you start this connection field */}
               <div>
                 <label className="block text-sm font-medium mb-2">
                   When did you start this connection?
@@ -498,7 +461,7 @@ export default function Connections() {
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                    <Calendar className="h-4 w-4 text-gray-400" />
+                    <Heart className="h-4 w-4 text-gray-400" />
                   </div>
                   <Input
                     name="birthday"
@@ -507,66 +470,74 @@ export default function Connections() {
                   />
                 </div>
                 <p className="text-xs text-neutral-500 mt-1">
-                  Remember important dates
+                  Optional - helps track special moments
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Zodiac Sign
+                </label>
+                <select name="zodiacSign" className="w-full p-2 border rounded-lg bg-white dark:bg-neutral-700">
+                  <option value="">Select zodiac sign</option>
+                  <option value="Aries">Aries ♈</option>
+                  <option value="Taurus">Taurus ♉</option>
+                  <option value="Gemini">Gemini ♊</option>
+                  <option value="Cancer">Cancer ♋</option>
+                  <option value="Leo">Leo ♌</option>
+                  <option value="Virgo">Virgo ♍</option>
+                  <option value="Libra">Libra ♎</option>
+                  <option value="Scorpio">Scorpio ♏</option>
+                  <option value="Sagittarius">Sagittarius ♐</option>
+                  <option value="Capricorn">Capricorn ♑</option>
+                  <option value="Aquarius">Aquarius ♒</option>
+                  <option value="Pisces">Pisces ♓</option>
+                </select>
+              </div>
+
+              {/* Love Languages - multiple choice */}
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Love Languages <span className="text-xs text-neutral-500">(Select all that apply)</span>
+                </label>
+                <div className="space-y-2">
+                  {[
+                    'Words of Affirmation',
+                    'Acts of Service', 
+                    'Receiving Gifts',
+                    'Quality Time',
+                    'Physical Touch'
+                  ].map((language) => (
+                    <label key={language} className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        name="loveLanguages"
+                        value={language}
+                        className="rounded"
+                      />
+                      <span className="text-sm">{language}</span>
+                    </label>
+                  ))}
+                </div>
+                <p className="text-xs text-neutral-500 mt-1">
+                  Understanding love languages can improve your connection
                 </p>
               </div>
               
-              <div className="space-y-3 bg-neutral-50 dark:bg-neutral-900 p-4 rounded-lg">
-                <h3 className="text-sm font-medium">Optional Details</h3>
-                
-                <div className="space-y-2">
-                  <label className="block text-xs text-neutral-500">Zodiac Sign</label>
-                  <select name="zodiacSign" className="w-full p-2 border rounded-md bg-background text-sm">
-                    <option value="">Select sign</option>
-                    <option value="Aries">Aries</option>
-                    <option value="Taurus">Taurus</option>
-                    <option value="Gemini">Gemini</option>
-                    <option value="Cancer">Cancer</option>
-                    <option value="Leo">Leo</option>
-                    <option value="Virgo">Virgo</option>
-                    <option value="Libra">Libra</option>
-                    <option value="Scorpio">Scorpio</option>
-                    <option value="Sagittarius">Sagittarius</option>
-                    <option value="Capricorn">Capricorn</option>
-                    <option value="Aquarius">Aquarius</option>
-                    <option value="Pisces">Pisces</option>
-                  </select>
+              <div className="border-t pt-4">
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    name="isPrivate"
+                    id="isPrivate"
+                    className="rounded"
+                  />
+                  <label htmlFor="isPrivate" className="text-sm">
+                    Make this connection private
+                  </label>
                 </div>
-                
-                <div className="space-y-2">
-                  <label className="block text-xs text-neutral-500">Love Languages</label>
-                  <div className="space-y-2">
-                    {["Words of Affirmation", "Quality Time", "Physical Touch", "Acts of Service", "Receiving Gifts"].map((language) => (
-                      <div key={language} className="flex items-center space-x-2">
-                        <input 
-                          type="checkbox" 
-                          name="loveLanguages" 
-                          value={language}
-                          id={`love-${language.replace(/\s+/g, '-').toLowerCase()}`}
-                          className="rounded"
-                        />
-                        <label 
-                          htmlFor={`love-${language.replace(/\s+/g, '-').toLowerCase()}`}
-                          className="text-sm"
-                        >
-                          {language}
-                        </label>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-              
-              <div className="flex items-start space-x-3 space-y-0 rounded-md border p-4">
-                <input 
-                  type="checkbox" 
-                  name="isPrivate" 
-                  id="private"
-                  className="mt-1"
-                />
-                <div className="space-y-1 leading-none">
-                  <label htmlFor="private" className="text-sm font-medium">Keep this connection private</label>
-                  <p className="text-sm text-gray-500">
+                <div className="mt-1">
+                  <p className="text-xs text-neutral-500">
                     Private connections are only visible to you
                   </p>
                 </div>
@@ -608,145 +579,77 @@ interface ConnectionCardProps {
   emojis: string;
   greenFlags: number;
   redFlags: number;
-  isMainFocus: boolean;
-  onSelect: (connection: Connection) => void;
-  onToggleFocus: () => void;
-  daysSinceActivity: number;
-  activityCount: number;
-  onImageClick?: (imageUrl: string, name: string) => void;
-  isLoading?: boolean;
+  onSelect: () => void;
+  onImageClick: (imageUrl: string, name: string) => void;
+  isLoading: boolean;
 }
 
-function ConnectionCard({ 
-  connection, 
-  emojis, 
-  greenFlags, 
-  redFlags, 
-  isMainFocus, 
-  onSelect, 
-  onToggleFocus,
-  daysSinceActivity,
-  activityCount,
-  onImageClick,
-  isLoading = false
-}: ConnectionCardProps) {
-  // Calculate relationship insights
-  const getRelationshipInsight = () => {
-    if (daysSinceActivity === 0) return { text: "Active today", color: "text-green-600" };
-    if (daysSinceActivity <= 3) return { text: "Recently active", color: "text-green-500" };
-    if (daysSinceActivity <= 7) return { text: "Needs attention", color: "text-yellow-600" };
-    if (daysSinceActivity <= 14) return { text: "Low contact", color: "text-orange-500" };
-    return { text: "Distant", color: "text-red-500" };
-  };
-
-  const getConnectionStrength = () => {
-    if (activityCount >= 10) return { level: "Strong", color: "bg-green-100 text-green-800" };
-    if (activityCount >= 5) return { level: "Growing", color: "bg-blue-100 text-blue-800" };
-    if (activityCount >= 2) return { level: "New", color: "bg-purple-100 text-purple-800" };
-    return { level: "Building", color: "bg-gray-100 text-gray-800" };
-  };
-
-  const insight = getRelationshipInsight();
-  const strength = getConnectionStrength();
-
+function ConnectionCard({ connection, emojis, greenFlags, redFlags, onSelect, onImageClick, isLoading }: ConnectionCardProps) {
   return (
-    <Card 
-      className={`p-4 cursor-pointer transition-all hover:shadow-md ${
-        isMainFocus ? 'ring-2 ring-primary bg-primary/5' : ''
-      } ${isLoading ? 'opacity-70 pointer-events-none' : ''}`}
-      onClick={() => !isLoading && onSelect(connection)}
-    >
-      <div className="flex items-start justify-between">
-        <div className="flex items-start space-x-3 flex-1">
-          {/* Profile Image or Initial */}
-          <div className="relative">
-            {connection.profileImage ? (
-              <img 
-                src={connection.profileImage} 
-                alt={connection.name}
-                className="w-12 h-12 rounded-full object-cover cursor-pointer hover:opacity-80 transition-opacity"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onImageClick?.(connection.profileImage, connection.name);
-                }}
-              />
-            ) : (
-              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                <span className="text-lg font-medium text-primary">
-                  {connection.name.charAt(0).toUpperCase()}
+    <Card className="p-3 hover:shadow-md transition-all duration-200 border-l-4 border-l-primary/20 cursor-pointer" onClick={onSelect}>
+      <div className="flex items-center space-x-3">
+        <div className="relative">
+          <Avatar 
+            className="h-12 w-12 cursor-pointer hover:ring-2 hover:ring-primary transition-all" 
+            onClick={(e) => {
+              e.stopPropagation();
+              if (connection.profileImage) {
+                onImageClick(connection.profileImage, connection.name);
+              }
+            }}
+          >
+            <AvatarImage src={connection.profileImage || undefined} />
+            <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10 text-primary font-medium">
+              {connection.name.charAt(0).toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
+          {isLoading && (
+            <div className="absolute inset-0 bg-black/20 rounded-full flex items-center justify-center">
+              <Loader2 className="h-4 w-4 animate-spin text-white" />
+            </div>
+          )}
+        </div>
+        
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center justify-between mb-1">
+            <h3 className="font-medium text-foreground truncate">{connection.name}</h3>
+            <div className="flex items-center space-x-1 text-xs">
+              {greenFlags > 0 && (
+                <span className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-1.5 py-0.5 rounded">
+                  +{greenFlags}
                 </span>
-              </div>
-            )}
-            {isMainFocus && (
-              <div className="absolute -top-1 -right-1 w-5 h-5 bg-primary rounded-full flex items-center justify-center">
-                <Heart className="h-3 w-3 text-white fill-current" />
-              </div>
-            )}
+              )}
+              {redFlags > 0 && (
+                <span className="bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 px-1.5 py-0.5 rounded">
+                  -{redFlags}
+                </span>
+              )}
+            </div>
           </div>
-
-          {/* Connection Info */}
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-1">
-              <h3 className="font-medium text-foreground truncate">{connection.name}</h3>
-              <span className="text-xs px-2 py-1 bg-muted rounded-full text-muted-foreground">
+          
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">
                 {connection.relationshipStage}
               </span>
+              {emojis && (
+                <span className="text-sm">{emojis}</span>
+              )}
             </div>
             
-            {/* Insights Row */}
-            <div className="flex items-center gap-2 mb-2">
-              <span className={`text-xs px-2 py-1 rounded ${strength.color}`}>
-                {strength.level}
-              </span>
-              <span className={`text-xs ${insight.color}`}>
-                {insight.text}
-              </span>
-            </div>
-
-            {/* Activity and Emojis */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-sm">
-                {emojis && <span className="text-sm">{emojis}</span>}
-                {greenFlags > 0 && <span className="text-green-600 text-xs">+{greenFlags}</span>}
-                {redFlags > 0 && <span className="text-red-500 text-xs">-{redFlags}</span>}
-              </div>
-              
-              <div className="text-xs text-muted-foreground">
-                {activityCount} memories
-              </div>
-            </div>
-
-            {/* Last Contact */}
-            <div className="text-xs text-muted-foreground mt-1">
-              Last contact: {daysSinceActivity === 0 ? 'Today' : 
-               daysSinceActivity === 1 ? '1 day ago' : 
-               daysSinceActivity < 7 ? `${daysSinceActivity} days ago` : 
-               daysSinceActivity < 30 ? `${Math.floor(daysSinceActivity / 7)}w ago` : 
-               '30+ days ago'}
+            <div className="flex items-center space-x-1 text-xs text-muted-foreground">
+              <Activity className="h-3 w-3" />
+              <span>{connection.activityCount}</span>
+              {connection.daysSinceActivity > 0 && (
+                <>
+                  <Clock className="h-3 w-3 ml-1" />
+                  <span>{connection.daysSinceActivity}d</span>
+                </>
+              )}
             </div>
           </div>
         </div>
-
-        {/* Focus Toggle or Loading */}
-        {isLoading ? (
-          <div className="ml-2 mt-1 p-2">
-            <Loader2 className="h-4 w-4 animate-spin text-primary" />
-          </div>
-        ) : (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={(e) => {
-              e.stopPropagation();
-              onToggleFocus();
-            }}
-            className="ml-2 mt-1"
-          >
-            <Heart className={`h-4 w-4 ${isMainFocus ? 'fill-current text-primary' : ''}`} />
-          </Button>
-        )}
       </div>
     </Card>
   );
 }
-
