@@ -62,6 +62,9 @@ export default function Activities() {
 
   // Connection modal state
   const [connectionModalOpen, setConnectionModalOpen] = useState(false);
+  
+  // Debug connection modal state changes
+  console.log("🔍 Activities render - connectionModalOpen:", connectionModalOpen);
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const { toast } = useToast();
 
@@ -569,7 +572,9 @@ export default function Activities() {
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
+                      console.log("🔥 CONNECTION PICKER CLICKED - Setting local state to true");
                       setConnectionModalOpen(true);
+                      console.log("🔥 Local state updated, connectionModalOpen should be:", true);
                     }}
                   >
                     <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
@@ -1154,7 +1159,10 @@ export default function Activities() {
       {/* Add Connection Modal */}
       <InlineConnectionModal
         isOpen={connectionModalOpen}
-        onClose={() => setConnectionModalOpen(false)}
+        onClose={() => {
+          console.log("🟦 InlineConnectionModal onClose called");
+          setConnectionModalOpen(false);
+        }}
       />
     </div>
   );
