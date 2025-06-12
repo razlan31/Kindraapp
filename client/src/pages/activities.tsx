@@ -23,6 +23,7 @@ import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { compressImage } from "@/lib/image-utils";
 import { InlineConnectionModal } from "@/components/modals/inline-connection-modal";
 import { MiniInsight } from "@/components/insights/mini-insight";
 import { 
@@ -91,17 +92,7 @@ export default function Activities() {
     }
   });
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const result = event.target?.result as string;
-        setUploadedImage(result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+
 
   const handleAddConnection = (formData: FormData) => {
     const relationshipStageValue = formData.get('relationshipStage') as string;
@@ -1158,8 +1149,23 @@ export default function Activities() {
 
       {/* Add Connection Modal */}
       {connectionModalOpen && (
-        <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
+        <div 
+          className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setConnectionModalOpen(false);
+            }
+          }}
+        >
+          <div 
+            className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto"
+            style={{
+              maxHeight: '90vh',
+              overflowY: 'auto',
+              WebkitOverflowScrolling: 'touch'
+            }}
+            onScroll={() => console.log('Modal is scrolling!')}
+          >
             <div className="flex items-center justify-between p-4 border-b">
               <h2 className="font-heading font-semibold text-lg">Add New Connection</h2>
               <Button variant="ghost" size="icon" onClick={() => setConnectionModalOpen(false)}>
@@ -1196,7 +1202,24 @@ export default function Activities() {
                       className="hidden"
                       id="fileUpload"
                       name="profileImageFile"
-                      onChange={handleImageUpload}
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          try {
+                            const compressedImage = await compressImage(file);
+                            setUploadedImage(compressedImage);
+                          } catch (error) {
+                            console.error('Error compressing image:', error);
+                            // Fallback to original file if compression fails
+                            const reader = new FileReader();
+                            reader.onload = (event) => {
+                              const result = event.target?.result as string;
+                              setUploadedImage(result);
+                            };
+                            reader.readAsDataURL(file);
+                          }
+                        }
+                      }}
                     />
                     <Button 
                       type="button" 
