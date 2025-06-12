@@ -1218,17 +1218,11 @@ export default function Activities() {
       {connectionModalOpen && (
         <div 
           className="fixed inset-0 z-[9999] bg-black/50 flex items-center justify-center p-4"
-          style={{ pointerEvents: 'auto' }}
-          onMouseDown={(e) => {
-            if (e.target === e.currentTarget) {
-              setConnectionModalOpen(false);
-            }
-          }}
+          onClick={() => setConnectionModalOpen(false)}
         >
           <div 
             className="bg-white rounded-lg shadow-xl w-full max-w-lg max-h-[90vh] flex flex-col"
-            style={{ pointerEvents: 'auto' }}
-            onMouseDown={(e) => e.stopPropagation()}
+            onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between p-4 border-b flex-shrink-0">
               <h2 className="text-lg font-semibold">Add New Connection</h2>
@@ -1243,14 +1237,13 @@ export default function Activities() {
             <div 
               ref={modalContentRef}
               className="flex-1 overflow-y-auto p-4"
-              tabIndex={-1}
-              style={{ outline: 'none', pointerEvents: 'auto' }}
+              tabIndex={0}
             >
               <form onSubmit={(e) => {
                 e.preventDefault();
                 const formData = new FormData(e.currentTarget);
                 handleAddConnection(formData);
-              }} className="space-y-4 [&_*]:pointer-events-auto" style={{ pointerEvents: 'auto' }}>
+              }} className="space-y-4">
                 
                 {/* Profile Picture Section - Top */}
                 <div className="text-center">
@@ -1280,6 +1273,7 @@ export default function Activities() {
                     className="w-full p-2 border rounded-lg"
                     placeholder="Connection name"
                     required
+                    autoFocus
                   />
                 </div>
 
