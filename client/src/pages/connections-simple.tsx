@@ -8,12 +8,8 @@ import { Button } from "@/components/ui/button";
 import { useModal } from "@/contexts/modal-context";
 import { useRelationshipFocus } from "@/contexts/relationship-focus-context";
 import { Input } from "@/components/ui/input";
-import { Search, Plus, X, Camera, Heart, Users, Clock, Activity, Calendar, Loader2 } from "lucide-react";
+import { Search, Plus, Heart, Users, Clock, Activity, Loader2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { useToast } from "@/hooks/use-toast";
-import { apiRequest, queryClient } from "@/lib/queryClient";
-import { compressImage } from "@/lib/image-utils";
 import { ImagePreviewModal } from "@/components/ui/image-preview-modal";
 import { ConnectionDetailedModal } from "@/components/modals/connection-detailed-modal";
 
@@ -30,7 +26,6 @@ export default function Connections() {
   const [showConnectionDetails, setShowConnectionDetails] = useState(false);
   const { openMomentModal, openConnectionModal } = useModal();
   const { mainFocusConnection, setMainFocusConnection } = useRelationshipFocus();
-  const { toast } = useToast();
 
   // Fetch connections and moments
   const { data: connections = [] } = useQuery<Connection[]>({
@@ -228,7 +223,7 @@ export default function Connections() {
               <div className="text-center py-8 text-neutral-500">
                 <Users className="h-12 w-12 mx-auto mb-2 opacity-50" />
                 <p>No connections yet</p>
-                <Button onClick={() => setShowAddModal(true)} className="mt-2">
+                <Button onClick={() => openConnectionModal()} className="mt-2">
                   Add your first connection
                 </Button>
               </div>
