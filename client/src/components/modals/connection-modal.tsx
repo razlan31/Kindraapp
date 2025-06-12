@@ -99,25 +99,39 @@ export function ConnectionModal({ isOpen, onClose }: ConnectionModalProps) {
             <label htmlFor="relationshipStage" className="text-sm font-medium">
               Relationship Stage
             </label>
-            <select 
-              id="relationshipStage"
-              value={isCustomStage ? "Custom" : formData.relationshipStage}
-              onChange={(e) => {
-                if (e.target.value === "Custom") {
-                  setIsCustomStage(true);
-                  setFormData({ ...formData, relationshipStage: "" });
-                } else {
-                  setIsCustomStage(false);
-                  setFormData({ ...formData, relationshipStage: e.target.value });
-                }
-              }}
-              className="w-full p-2 border rounded dark:bg-gray-700 dark:border-gray-600"
-            >
-              {relationshipStages.map(stage => (
-                <option key={stage} value={stage}>{stage}</option>
+            <div className="space-y-2">
+              {[
+                ...relationshipStages.map(stage => ({ value: stage, label: stage })),
+                { value: "Custom", label: "🎯 CUSTOM RELATIONSHIP STAGE 🎯" }
+              ].map((stage) => (
+                <label key={stage.value} className="flex items-center space-x-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="relationshipStage"
+                    value={stage.value}
+                    checked={
+                      stage.value === "Custom" 
+                        ? isCustomStage 
+                        : !isCustomStage && formData.relationshipStage === stage.value
+                    }
+                    onChange={() => {
+                      console.log("Radio selected:", stage.value);
+                      if (stage.value === "Custom") {
+                        setIsCustomStage(true);
+                        setFormData({ ...formData, relationshipStage: "" });
+                      } else {
+                        setIsCustomStage(false);
+                        setFormData({ ...formData, relationshipStage: stage.value });
+                      }
+                    }}
+                    className="text-blue-600"
+                  />
+                  <span className={stage.value === "Custom" ? "font-bold text-red-600" : ""}>
+                    {stage.label}
+                  </span>
+                </label>
               ))}
-              <option value="Custom">Custom</option>
-            </select>
+            </div>
             
             {isCustomStage && (
               <div className="mt-2">
