@@ -126,8 +126,8 @@ export default function Activities() {
     const relationshipStageValue = formData.get('relationshipStage') as string;
     const customStage = formData.get('customStage') as string;
     
-    // Use custom stage if "Custom" is selected and custom value is provided
-    const finalStage = relationshipStageValue === 'Custom' && customStage.trim() 
+    // Use custom stage if "custom" is selected and custom value is provided
+    const finalStage = relationshipStageValue === 'custom' && customStage && customStage.trim() 
       ? customStage.trim() 
       : relationshipStageValue || 'Potential';
 
