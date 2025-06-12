@@ -1211,16 +1211,31 @@ export default function Activities() {
         connection={selectedConnectionForModal}
       />
 
-      {/* Add Connection Modal */}
-      <PortalConnectionModal
-        isOpen={connectionModalOpen}
-        onClose={() => setConnectionModalOpen(false)}
-      >
-        <form onSubmit={(e) => {
-          e.preventDefault();
-          const formData = new FormData(e.currentTarget);
-          handleAddConnection(formData);
-        }} className="space-y-4">
+      </main>
+      
+      <BottomNavigation />
+      </div>
+
+      {/* Add Connection Form - Inline instead of modal */}
+      {connectionModalOpen && (
+        <div className="fixed inset-0 z-50 bg-white p-4 overflow-y-auto">
+          <div className="max-w-lg mx-auto">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold">Add New Connection</h2>
+              <button
+                onClick={() => setConnectionModalOpen(false)}
+                className="p-2 hover:bg-gray-100 rounded-full"
+                type="button"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+            
+            <form onSubmit={(e) => {
+              e.preventDefault();
+              const formData = new FormData(e.currentTarget);
+              handleAddConnection(formData);
+            }} className="space-y-6">
                 
                 {/* Profile Picture Section - Top */}
                 <div className="text-center">
@@ -1382,8 +1397,10 @@ export default function Activities() {
                     Cancel
                   </Button>
                 </div>
-                </form>
-      </PortalConnectionModal>
-    </div>
+              </form>
+            </div>
+          </div>
+        )}
+    </>
   );
 }
