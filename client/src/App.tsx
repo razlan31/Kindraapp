@@ -35,7 +35,7 @@ import { RelationshipFocusProvider } from "./contexts/relationship-focus-context
 import { ModalProvider } from "./contexts/modal-context";
 import { ThemeProvider } from "./contexts/theme-context";
 import { MomentModal } from "./components/modals/simplified-moment-modal";
-import { ConnectionModal } from "./components/modals/connection-modal";
+
 import { MoodTrackerModal } from "./components/modals/mood-tracker-modal";
 import { BadgeNotificationMonitor } from "./components/BadgeNotificationMonitor";
 
@@ -115,18 +115,12 @@ function ModalsContainer() {
   const { 
     moodTrackerModalOpen, 
     closeMoodTrackerModal,
-    connectionModalOpen,
-    closeConnectionModal,
     selectedConnection 
   } = useModal();
   
   return (
     <>
       <MomentModal />
-      <ConnectionModal 
-        isOpen={connectionModalOpen} 
-        onClose={closeConnectionModal}
-      />
       <MoodTrackerModal 
         isOpen={moodTrackerModalOpen} 
         onClose={closeMoodTrackerModal}
