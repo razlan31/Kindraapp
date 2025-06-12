@@ -1186,7 +1186,7 @@ export default function Activities() {
       {connectionModalOpen && (
         <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
           <div 
-            className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto"
+            className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg w-full max-w-md h-[90vh] overflow-y-auto"
             onScroll={() => console.log('Activities modal is scrolling!')}
           >
             <div className="flex items-center justify-between p-4 border-b">
