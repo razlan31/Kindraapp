@@ -1146,10 +1146,227 @@ export default function Activities() {
       />
 
       {/* Add Connection Modal */}
-      <InlineConnectionModal
-        isOpen={connectionModalOpen}
-        onClose={() => setConnectionModalOpen(false)}
-      />
+      {connectionModalOpen && (
+        <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between p-4 border-b">
+              <h2 className="font-heading font-semibold text-lg">Add New Connection</h2>
+              <Button variant="ghost" size="icon" onClick={() => setConnectionModalOpen(false)}>
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+            
+            <form onSubmit={(e) => {
+              e.preventDefault();
+              const formData = new FormData(e.currentTarget);
+              handleAddConnection(formData);
+            }} className="p-4 space-y-6">
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Profile Image
+                </label>
+                <div className="mb-4">
+                  <div className="flex items-center justify-center mb-3">
+                    <Avatar className="h-20 w-20 border-2 border-blue-100 dark:border-blue-900">
+                      {uploadedImage ? (
+                        <AvatarImage src={uploadedImage} alt="Profile preview" />
+                      ) : (
+                        <AvatarFallback className="bg-blue-50 dark:bg-blue-950 text-blue-500">
+                          <Camera className="h-6 w-6" />
+                        </AvatarFallback>
+                      )}
+                    </Avatar>
+                  </div>
+                  
+                  <div>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      id="fileUpload"
+                      name="profileImageFile"
+                      onChange={handleImageUpload}
+                    />
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      onClick={() => document.getElementById('fileUpload')?.click()}
+                      className="w-full"
+                    >
+                      <Camera className="h-4 w-4 mr-2" />
+                      Upload Photo from Device
+                    </Button>
+                  </div>
+                  
+                  <p className="text-xs text-neutral-500 mt-1">
+                    Choose a photo from your device to personalize this connection
+                  </p>
+                </div>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Name <span className="text-red-500">*</span>
+                </label>
+                <Input
+                  name="name"
+                  required
+                  placeholder="Enter name"
+                  className="w-full"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Relationship Stage <span className="text-red-500">*</span>
+                </label>
+                <div className="space-y-2">
+                  {[
+                    ...relationshipStages.map(stage => ({ value: stage, label: stage })),
+                    { value: "Custom", label: "Custom Relationship Stage" }
+                  ].map((stage) => (
+                    <label key={stage.value} className="flex items-center space-x-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="relationshipStage"
+                        value={stage.value}
+                        checked={
+                          stage.value === "Custom" 
+                            ? isCustomStage 
+                            : !isCustomStage && relationshipStage === stage.value
+                        }
+                        onChange={() => {
+                          console.log("Radio selected:", stage.value);
+                          if (stage.value === "Custom") {
+                            setIsCustomStage(true);
+                            setRelationshipStage("");
+                          } else {
+                            setIsCustomStage(false);
+                            setRelationshipStage(stage.value);
+                            setCustomStageValue("");
+                          }
+                        }}
+                        className="text-primary"
+                      />
+                      <span className="text-sm">{stage.label}</span>
+                    </label>
+                  ))}
+                </div>
+                
+                {isCustomStage && (
+                  <div className="mt-2">
+                    <Input
+                      value={customStageValue}
+                      onChange={(e) => setCustomStageValue(e.target.value)}
+                      placeholder="Enter custom stage (e.g., Mom, Dad, Sister, Colleague)"
+                      className="w-full"
+                    />
+                  </div>
+                )}
+                
+                <p className="text-xs text-neutral-500 mt-1">
+                  Examples: Mom, Dad, Sister, Colleague, Mentor, etc.
+                </p>
+              </div>
+              
+              <div className="space-y-3">
+                <div className="relative">
+                  <CalendarIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-neutral-400" />
+                  <Input
+                    name="startDate"
+                    type="date"
+                    className="pl-10"
+                  />
+                </div>
+                <p className="text-xs text-neutral-500 mt-1">
+                  When did this relationship begin?
+                </p>
+              </div>
+              
+              <div className="space-y-3">
+                <div className="relative">
+                  <CalendarIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-neutral-400" />
+                  <Input
+                    name="birthday"
+                    type="date"
+                    className="pl-10"
+                  />
+                </div>
+                <p className="text-xs text-neutral-500 mt-1">
+                  Remember important dates
+                </p>
+              </div>
+              
+              <div className="space-y-3 bg-neutral-50 dark:bg-neutral-900 p-4 rounded-lg">
+                <h3 className="text-sm font-medium">Optional Details</h3>
+                
+                <div className="space-y-2">
+                  <label className="block text-xs text-neutral-500">Zodiac Sign</label>
+                  <select name="zodiacSign" className="w-full p-2 border rounded-md bg-background text-sm">
+                    <option value="">Select sign</option>
+                    <option value="Aries">Aries</option>
+                    <option value="Taurus">Taurus</option>
+                    <option value="Gemini">Gemini</option>
+                    <option value="Cancer">Cancer</option>
+                    <option value="Leo">Leo</option>
+                    <option value="Virgo">Virgo</option>
+                    <option value="Libra">Libra</option>
+                    <option value="Scorpio">Scorpio</option>
+                    <option value="Sagittarius">Sagittarius</option>
+                    <option value="Capricorn">Capricorn</option>
+                    <option value="Aquarius">Aquarius</option>
+                    <option value="Pisces">Pisces</option>
+                  </select>
+                </div>
+                
+                <div className="space-y-2">
+                  <label className="block text-xs text-neutral-500">Love Languages</label>
+                  <div className="space-y-2">
+                    {["Words of Affirmation", "Quality Time", "Physical Touch", "Acts of Service", "Receiving Gifts"].map((language) => (
+                      <div key={language} className="flex items-center space-x-2">
+                        <input 
+                          type="checkbox" 
+                          name="loveLanguages" 
+                          value={language}
+                          id={`love-${language.replace(/\s+/g, '-').toLowerCase()}`}
+                          className="rounded"
+                        />
+                        <label 
+                          htmlFor={`love-${language.replace(/\s+/g, '-').toLowerCase()}`}
+                          className="text-sm"
+                        >
+                          {language}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              
+              <div className="flex items-start space-x-3 space-y-0 rounded-md border p-4">
+                <input 
+                  type="checkbox" 
+                  name="isPrivate" 
+                  id="private"
+                  className="mt-1"
+                />
+                <div className="space-y-1 leading-none">
+                  <label htmlFor="private" className="text-sm font-medium">Keep this connection private</label>
+                  <p className="text-sm text-gray-500">
+                    Private connections are only visible to you
+                  </p>
+                </div>
+              </div>
+              
+              <div className="pt-2">
+                <Button type="submit" className="w-full bg-primary text-white" disabled={activitiesConnectionMutation.isPending}>
+                  {activitiesConnectionMutation.isPending ? "Adding..." : "Add Connection"}
+                </Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
