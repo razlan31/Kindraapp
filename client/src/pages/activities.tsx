@@ -100,7 +100,7 @@ export default function Activities() {
   // Create connection mutation for activities page
   const activitiesConnectionMutation = useMutation({
     mutationFn: async (data: any) => {
-      return await apiRequest('POST', '/api/connections', data);
+      return await apiRequest('/api/connections', 'POST', data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/connections'] });
