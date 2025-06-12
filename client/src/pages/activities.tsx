@@ -90,20 +90,21 @@ export default function Activities() {
     }
   }, [connectionModalOpen]);
 
-  // Auto-focus modal content when opened and ensure all elements are interactive
+  // Auto-focus modal content when opened and ensure immediate interactivity
   useEffect(() => {
     if (connectionModalOpen && modalContentRef.current) {
-      // Focus the modal content
-      modalContentRef.current.focus();
+      // Small delay to ensure DOM is ready and prevent event capture conflicts
+      const timer = setTimeout(() => {
+        if (modalContentRef.current) {
+          modalContentRef.current.focus();
+          // Force repaint to ensure styles are applied
+          modalContentRef.current.style.display = 'block';
+          modalContentRef.current.offsetHeight; // Trigger reflow
+          modalContentRef.current.style.display = '';
+        }
+      }, 10);
       
-      // Force all form elements to be interactive immediately
-      const formElements = modalContentRef.current.querySelectorAll('input, select, textarea, button');
-      formElements.forEach(element => {
-        const el = element as HTMLElement;
-        el.style.pointerEvents = 'auto';
-        // Trigger a small interaction to ensure event handlers are active
-        el.dispatchEvent(new Event('mouseover', { bubbles: true }));
-      });
+      return () => clearTimeout(timer);
     }
   }, [connectionModalOpen]);
 
@@ -1217,7 +1218,8 @@ export default function Activities() {
       {connectionModalOpen && (
         <div 
           className="fixed inset-0 z-[9999] bg-black/50 flex items-center justify-center p-4"
-          onClick={(e) => {
+          style={{ pointerEvents: 'auto' }}
+          onMouseDown={(e) => {
             if (e.target === e.currentTarget) {
               setConnectionModalOpen(false);
             }
@@ -1225,7 +1227,8 @@ export default function Activities() {
         >
           <div 
             className="bg-white rounded-lg shadow-xl w-full max-w-lg max-h-[90vh] flex flex-col"
-            onClick={(e) => e.stopPropagation()}
+            style={{ pointerEvents: 'auto' }}
+            onMouseDown={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between p-4 border-b flex-shrink-0">
               <h2 className="text-lg font-semibold">Add New Connection</h2>
