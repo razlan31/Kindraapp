@@ -80,6 +80,7 @@ interface AddConnectionModalProps {
 }
 
 export function AddConnectionModal({ onClose, onSubmit, isLoading }: AddConnectionModalProps) {
+  console.log("🎯 AddConnectionModal component is rendering - RADIO BUTTONS VERSION");
   const [relationshipStage, setRelationshipStage] = useState("Potential");
   const [isCustomStage, setIsCustomStage] = useState(false);
   const [customStageValue, setCustomStageValue] = useState("");

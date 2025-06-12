@@ -13,6 +13,7 @@ interface ConnectionModalProps {
 }
 
 export function ConnectionModal({ isOpen, onClose }: ConnectionModalProps) {
+  console.log("🔥 ConnectionModal component is rendering - DROPDOWN VERSION");
   const [formData, setFormData] = useState({
     name: "",
     relationshipStage: "Dating"
