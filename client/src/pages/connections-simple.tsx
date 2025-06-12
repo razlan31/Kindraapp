@@ -17,6 +17,7 @@ import { compressImage } from "@/lib/image-utils";
 import { ImagePreviewModal } from "@/components/ui/image-preview-modal";
 import { ConnectionDetailedModal } from "@/components/modals/connection-detailed-modal";
 import { InlineConnectionModal } from "@/components/modals/inline-connection-modal";
+import { calculateZodiacSign } from "@shared/zodiac-utils";
 
 export default function Connections() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -26,6 +27,7 @@ export default function Connections() {
   const [isCustomStage, setIsCustomStage] = useState(false);
   const [customStageValue, setCustomStageValue] = useState("");
   const [uploadedImage, setUploadedImage] = useState<string>('');
+  const [selectedZodiacSign, setSelectedZodiacSign] = useState<string>('');
   const [imagePreview, setImagePreview] = useState<{isOpen: boolean, imageUrl: string, name: string}>({
     isOpen: false,
     imageUrl: '',
