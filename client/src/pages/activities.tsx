@@ -18,11 +18,13 @@ import { useModal } from "@/contexts/modal-context";
 import { Input } from "@/components/ui/input";
 import { Search, Plus, Calendar, ChevronDown, Activity, Users, Camera, X, UserPlus, Heart, Calendar as CalendarIcon } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import { InlineConnectionModal } from "@/components/modals/inline-connection-modal";
+
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { compressImage } from "@/lib/image-utils";
+import { InlineConnectionModal } from "@/components/modals/inline-connection-modal";
 import { MiniInsight } from "@/components/insights/mini-insight";
 import { 
   DropdownMenu, 
@@ -441,7 +443,7 @@ export default function Activities() {
     <div className="max-w-md mx-auto bg-white dark:bg-neutral-900 min-h-screen flex flex-col relative">
       <Header />
 
-      <main className="flex-1 overflow-y-auto pb-20">
+      <main className="flex-1 overflow-y-auto pb-20 h-0">
         {/* Page Title */}
         <div className="px-3 pt-3 pb-2">
           <div className="flex items-center justify-between mb-3">
@@ -1181,10 +1183,167 @@ export default function Activities() {
         connection={selectedConnectionForModal}
       />
 
-      <InlineConnectionModal
-        isOpen={connectionModalOpen}
-        onClose={() => setConnectionModalOpen(false)}
-      />
+      {/* Add Connection Modal */}
+      {connectionModalOpen && (
+        <div 
+          className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+          style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}
+          onClick={() => setConnectionModalOpen(false)}
+        >
+          <div 
+            className="bg-white rounded-lg shadow-xl w-full max-w-lg max-h-[90vh] flex flex-col"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between p-4 border-b flex-shrink-0">
+              <h2 className="text-lg font-semibold">Add New Connection</h2>
+              <button
+                onClick={() => setConnectionModalOpen(false)}
+                className="p-1 hover:bg-gray-100 rounded"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            
+            <div className="flex-1 overflow-y-auto p-4">
+              <form onSubmit={(e) => {
+                e.preventDefault();
+                const formData = new FormData(e.currentTarget);
+                handleAddConnection(formData);
+              }} className="space-y-4">
+                
+                <div>
+                  <label className="block text-sm font-medium mb-2">Name*</label>
+                  <input
+                    name="name"
+                    type="text"
+                    className="w-full p-2 border rounded-lg"
+                    placeholder="Connection name"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2">Relationship Stage</label>
+                  <select
+                    name="relationshipStage"
+                    value={relationshipStage}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setRelationshipStage(value);
+                      setIsCustomStage(value === "custom");
+                    }}
+                    className="w-full p-2 border rounded-lg"
+                  >
+                    <option value="Potential">Potential</option>
+                    <option value="Talking">Talking</option>
+                    <option value="Dating">Dating</option>
+                    <option value="Partner">Partner</option>
+                    <option value="Engaged">Engaged</option>
+                    <option value="Married">Married</option>
+                    <option value="Best Friend">Best Friend</option>
+                    <option value="Friend">Friend</option>
+                    <option value="Family">Family</option>
+                    <option value="Colleague">Colleague</option>
+                    <option value="Acquaintance">Acquaintance</option>
+                    <option value="Ex">Ex</option>
+                    <option value="custom">Custom</option>
+                  </select>
+                </div>
+
+                {isCustomStage && (
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Custom Stage</label>
+                    <input
+                      name="customStage"
+                      type="text"
+                      value={customStageValue}
+                      onChange={(e) => setCustomStageValue(e.target.value)}
+                      className="w-full p-2 border rounded-lg"
+                      placeholder="Enter custom relationship stage"
+                    />
+                  </div>
+                )}
+
+                <div>
+                  <label className="block text-sm font-medium mb-2">Birthday (Optional)</label>
+                  <input
+                    name="birthday"
+                    type="date"
+                    className="w-full p-2 border rounded-lg"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2">Zodiac Sign (Optional)</label>
+                  <select name="zodiacSign" className="w-full p-2 border rounded-lg">
+                    <option value="">Select zodiac sign</option>
+                    <option value="Aries">Aries</option>
+                    <option value="Taurus">Taurus</option>
+                    <option value="Gemini">Gemini</option>
+                    <option value="Cancer">Cancer</option>
+                    <option value="Leo">Leo</option>
+                    <option value="Virgo">Virgo</option>
+                    <option value="Libra">Libra</option>
+                    <option value="Scorpio">Scorpio</option>
+                    <option value="Sagittarius">Sagittarius</option>
+                    <option value="Capricorn">Capricorn</option>
+                    <option value="Aquarius">Aquarius</option>
+                    <option value="Pisces">Pisces</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2">Love Language (Optional)</label>
+                  <select name="loveLanguage" className="w-full p-2 border rounded-lg">
+                    <option value="">Select love language</option>
+                    <option value="Words of Affirmation">Words of Affirmation</option>
+                    <option value="Acts of Service">Acts of Service</option>
+                    <option value="Receiving Gifts">Receiving Gifts</option>
+                    <option value="Quality Time">Quality Time</option>
+                    <option value="Physical Touch">Physical Touch</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2">Profile Picture (Optional)</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="w-full p-2 border rounded-lg"
+                  />
+                  {uploadedImage && (
+                    <div className="mt-2">
+                      <img src={uploadedImage} alt="Preview" className="w-16 h-16 rounded-full object-cover" />
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    name="isPrivate"
+                    id="isPrivate"
+                    className="rounded"
+                  />
+                  <label htmlFor="isPrivate" className="text-sm">
+                    Private connection - only visible to you
+                  </label>
+                </div>
+
+                <div className="pt-4 space-y-2">
+                  <Button type="submit" className="w-full" disabled={activitiesConnectionMutation.isPending}>
+                    {activitiesConnectionMutation.isPending ? "Adding..." : "Add Connection"}
+                  </Button>
+                  <Button type="button" variant="outline" onClick={() => setConnectionModalOpen(false)} className="w-full">
+                    Cancel
+                  </Button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
