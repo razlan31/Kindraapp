@@ -16,6 +16,7 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import { compressImage } from "@/lib/image-utils";
 import { ImagePreviewModal } from "@/components/ui/image-preview-modal";
 import { ConnectionDetailedModal } from "@/components/modals/connection-detailed-modal";
+import { InlineConnectionModal } from "@/components/modals/inline-connection-modal";
 
 export default function Connections() {
   const [searchTerm, setSearchTerm] = useState("");

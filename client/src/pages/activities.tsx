@@ -23,6 +23,7 @@ import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { InlineConnectionModal } from "@/components/modals/inline-connection-modal";
 import { MiniInsight } from "@/components/insights/mini-insight";
 import { 
   DropdownMenu, 
@@ -1152,88 +1153,10 @@ export default function Activities() {
       />
 
       {/* Add Connection Modal */}
-      {connectionModalOpen && (
-        <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between p-4 border-b">
-              <h2 className="font-heading font-semibold text-lg">Add New Connection</h2>
-              <Button variant="ghost" size="icon" onClick={() => setConnectionModalOpen(false)}>
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
-            
-            <form onSubmit={(e) => {
-              e.preventDefault();
-              const formData = new FormData(e.currentTarget);
-              createConnectionMutation.mutate(formData);
-            }} className="p-4 space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-2">
-                  Name <span className="text-red-500">*</span>
-                </label>
-                <Input name="name" required placeholder="Enter name" />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-2">
-                  Relationship Stage <span className="text-red-500">*</span>
-                </label>
-                <div className="space-y-2">
-                  {[
-                    "Potential", "Talking", "Situationship", "It's Complicated", 
-                    "Dating", "Spouse", "FWB", "Ex", "Friend", "Best Friend", "Siblings"
-                  ].map((stage) => (
-                    <label key={stage} className="flex items-center space-x-2 cursor-pointer">
-                      <input
-                        type="radio"
-                        name="relationshipStage"
-                        value={stage}
-                        defaultChecked={stage === "Dating"}
-                        className="text-blue-600"
-                      />
-                      <span>{stage}</span>
-                    </label>
-                  ))}
-                  <label className="flex items-center space-x-2 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="relationshipStage"
-                      value="Custom"
-                      className="text-blue-600"
-                    />
-                    <span>Custom Relationship Stage</span>
-                  </label>
-                </div>
-                
-                <div className="mt-2">
-                  <Input
-                    name="customStage"
-                    placeholder="Enter custom stage (e.g., Mom, Dad, Sister, Colleague)"
-                    className="w-full"
-                  />
-                </div>
-                
-                <p className="text-xs text-gray-500 mt-1">
-                  Examples: Mom, Dad, Sister, Colleague, Mentor, etc.
-                </p>
-              </div>
-
-              <div className="flex justify-between gap-2 pt-4 border-t">
-                <Button type="button" variant="outline" onClick={() => setConnectionModalOpen(false)} className="flex-1">
-                  Cancel
-                </Button>
-                <Button 
-                  type="submit" 
-                  disabled={createConnectionMutation.isPending}
-                  className="flex-1"
-                >
-                  {createConnectionMutation.isPending ? "Adding..." : "Add Connection"}
-                </Button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      <InlineConnectionModal
+        isOpen={connectionModalOpen}
+        onClose={() => setConnectionModalOpen(false)}
+      />
     </div>
   );
 }
