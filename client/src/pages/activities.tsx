@@ -570,7 +570,7 @@ export default function Activities() {
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
-                      openConnectionModal();
+                      setConnectionModalOpen(true);
                     }}
                   >
                     <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
