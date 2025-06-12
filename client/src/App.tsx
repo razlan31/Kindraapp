@@ -35,12 +35,13 @@ import { RelationshipFocusProvider } from "./contexts/relationship-focus-context
 import { ModalProvider } from "./contexts/modal-context";
 import { ThemeProvider } from "./contexts/theme-context";
 import { MomentModal } from "./components/modals/simplified-moment-modal";
-import { ConnectionModal } from "./components/modals/connection-modal";
+import { AddConnectionModal } from "./components/modals/add-connection-modal";
 import { MoodTrackerModal } from "./components/modals/mood-tracker-modal";
 import { BadgeNotificationMonitor } from "./components/BadgeNotificationMonitor";
 
 import { useEffect } from "react";
 import { useLocation } from "wouter";
+import { useMutation } from "@tanstack/react-query";
 
 function Router() {
   const { isAuthenticated, loading } = useAuth();
@@ -119,14 +120,55 @@ function ModalsContainer() {
     closeConnectionModal,
     selectedConnection 
   } = useModal();
+
+  const { mutate: createConnection, isPending } = useMutation({
+    mutationFn: async (formData: FormData) => {
+      const loveLanguages = formData.getAll('loveLanguages') as string[];
+      
+      const data = {
+        name: formData.get('name') as string,
+        relationshipStage: formData.get('relationshipStage') as string,
+        startDate: formData.get('startDate') ? new Date(formData.get('startDate') as string) : null,
+        birthday: formData.get('birthday') ? new Date(formData.get('birthday') as string) : null,
+        zodiacSign: formData.get('zodiacSign') as string || null,
+        loveLanguage: loveLanguages.length > 0 ? loveLanguages.join(', ') : null,
+        profileImage: null,
+        isPrivate: formData.get('isPrivate') === 'on',
+      };
+
+      const response = await fetch('/api/connections', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to create connection');
+      }
+      
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/connections'] });
+      closeConnectionModal();
+    },
+    onError: (error: any) => {
+      console.error('Failed to create connection:', error);
+    },
+  });
   
   return (
     <>
       <MomentModal />
-      <ConnectionModal 
-        isOpen={connectionModalOpen} 
-        onClose={closeConnectionModal}
-      />
+      {connectionModalOpen && (
+        <AddConnectionModal 
+          onClose={closeConnectionModal}
+          onSubmit={createConnection}
+          isLoading={isPending}
+        />
+      )}
       <MoodTrackerModal 
         isOpen={moodTrackerModalOpen} 
         onClose={closeMoodTrackerModal}
