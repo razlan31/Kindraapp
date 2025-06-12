@@ -90,6 +90,25 @@ export default function Activities() {
     }
   }, [connectionModalOpen]);
 
+  // Ensure modal content is properly interactive when opened
+  useEffect(() => {
+    if (connectionModalOpen && modalContentRef.current) {
+      // Force focus on the modal content
+      modalContentRef.current.focus();
+      
+      // Trigger a scroll event to ensure all event handlers are active
+      modalContentRef.current.scrollTop = 0;
+      
+      // Force a repaint
+      modalContentRef.current.style.transform = 'translateZ(0)';
+      setTimeout(() => {
+        if (modalContentRef.current) {
+          modalContentRef.current.style.transform = '';
+        }
+      }, 0);
+    }
+  }, [connectionModalOpen]);
+
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -1220,7 +1239,12 @@ export default function Activities() {
               </button>
             </div>
             
-            <div className="flex-1 overflow-y-auto p-4">
+            <div 
+              ref={modalContentRef}
+              className="flex-1 overflow-y-auto p-4"
+              tabIndex={-1}
+              style={{ outline: 'none' }}
+            >
               <form onSubmit={(e) => {
                 e.preventDefault();
                 const formData = new FormData(e.currentTarget);
