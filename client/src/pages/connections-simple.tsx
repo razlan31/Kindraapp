@@ -142,9 +142,21 @@ export default function Connections() {
     // Collect multiple love languages
     const loveLanguages = formData.getAll('loveLanguages') as string[];
     
+    // Handle custom relationship stage
+    const relationshipStageValue = formData.get('relationshipStage') as string;
+    console.log("Form submission - relationshipStage from form:", relationshipStageValue);
+    console.log("Form submission - isCustomStage:", isCustomStage);
+    console.log("Form submission - customStageValue:", customStageValue);
+    
+    const finalRelationshipStage = isCustomStage && customStageValue.trim() 
+      ? customStageValue.trim() 
+      : relationshipStageValue;
+    
+    console.log("Form submission - final relationshipStage:", finalRelationshipStage);
+    
     const data = {
       name: formData.get('name') as string,
-      relationshipStage: formData.get('relationshipStage') as string,
+      relationshipStage: finalRelationshipStage,
       startDate: formData.get('startDate') ? new Date(formData.get('startDate') as string) : null,
       birthday: formData.get('birthday') ? new Date(formData.get('birthday') as string) : null,
       zodiacSign: formData.get('zodiacSign') as string || null,
@@ -153,6 +165,7 @@ export default function Connections() {
       isPrivate: formData.get('isPrivate') === 'on',
     };
 
+    console.log("Final form data being sent:", data);
     createConnection(data);
   };
 
