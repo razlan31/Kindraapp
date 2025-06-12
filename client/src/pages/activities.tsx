@@ -90,10 +90,20 @@ export default function Activities() {
     }
   }, [connectionModalOpen]);
 
-  // Auto-focus modal content when opened for better accessibility
+  // Auto-focus modal content when opened and ensure all elements are interactive
   useEffect(() => {
     if (connectionModalOpen && modalContentRef.current) {
+      // Focus the modal content
       modalContentRef.current.focus();
+      
+      // Force all form elements to be interactive immediately
+      const formElements = modalContentRef.current.querySelectorAll('input, select, textarea, button');
+      formElements.forEach(element => {
+        const el = element as HTMLElement;
+        el.style.pointerEvents = 'auto';
+        // Trigger a small interaction to ensure event handlers are active
+        el.dispatchEvent(new Event('mouseover', { bubbles: true }));
+      });
     }
   }, [connectionModalOpen]);
 
@@ -1237,7 +1247,7 @@ export default function Activities() {
                 e.preventDefault();
                 const formData = new FormData(e.currentTarget);
                 handleAddConnection(formData);
-              }} className="space-y-4">
+              }} className="space-y-4 [&_*]:pointer-events-auto" style={{ pointerEvents: 'auto' }}>
                 
                 {/* Profile Picture Section - Top */}
                 <div className="text-center">
