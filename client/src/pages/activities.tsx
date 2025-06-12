@@ -90,34 +90,62 @@ export default function Activities() {
     }
   }, [connectionModalOpen]);
 
-  // Force immediate interactivity on modal open
+  // Debug modal state and interactivity
   useEffect(() => {
     if (connectionModalOpen) {
-      // Use requestAnimationFrame to ensure DOM is ready
+      console.log('🔍 Modal opened - investigating interactivity');
+      
       requestAnimationFrame(() => {
         if (modalContentRef.current) {
-          // Force hardware acceleration
-          modalContentRef.current.style.willChange = 'scroll-position';
-          modalContentRef.current.style.transform = 'translate3d(0, 0, 0)';
+          console.log('📋 Modal content ref found:', {
+            scrollHeight: modalContentRef.current.scrollHeight,
+            clientHeight: modalContentRef.current.clientHeight,
+            overflow: getComputedStyle(modalContentRef.current).overflow,
+            pointerEvents: getComputedStyle(modalContentRef.current).pointerEvents,
+            position: getComputedStyle(modalContentRef.current).position
+          });
           
-          // Trigger events to wake up all handlers
-          modalContentRef.current.dispatchEvent(new Event('scroll'));
-          modalContentRef.current.dispatchEvent(new Event('touchstart'));
-          modalContentRef.current.dispatchEvent(new Event('mouseenter'));
-          
-          // Clean up styles after a brief moment
-          setTimeout(() => {
+          // Test scroll functionality
+          const testScroll = () => {
             if (modalContentRef.current) {
-              modalContentRef.current.style.willChange = 'auto';
-              modalContentRef.current.style.transform = '';
+              const initialScrollTop = modalContentRef.current.scrollTop;
+              modalContentRef.current.scrollTop = 10;
+              const afterScrollTop = modalContentRef.current.scrollTop;
+              modalContentRef.current.scrollTop = initialScrollTop;
+              console.log('🔄 Scroll test:', { initialScrollTop, afterScrollTop, canScroll: afterScrollTop !== initialScrollTop });
             }
-          }, 100);
+          };
+          
+          testScroll();
+          
+          // Test click event on various elements
+          const testClicks = () => {
+            const fileInput = modalContentRef.current?.querySelector('input[type="file"]') as HTMLInputElement;
+            const nameInput = modalContentRef.current?.querySelector('input[name="name"]') as HTMLInputElement;
+            
+            console.log('🖱️ Element accessibility test:', {
+              fileInput: !!fileInput,
+              nameInput: !!nameInput,
+              fileInputDisabled: fileInput?.disabled,
+              nameInputDisabled: nameInput?.disabled,
+              modalContentClickable: modalContentRef.current ? getComputedStyle(modalContentRef.current).pointerEvents : 'none'
+            });
+          };
+          
+          testClicks();
         }
       });
     }
   }, [connectionModalOpen]);
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log('📸 Image upload triggered - this seems to activate modal interactivity');
+    console.log('📸 Event details:', {
+      target: e.target,
+      files: e.target.files,
+      fileCount: e.target.files?.length || 0
+    });
+    
     const file = e.target.files?.[0];
     if (file) {
       try {
@@ -1274,6 +1302,14 @@ export default function Activities() {
                       type="file"
                       accept="image/*"
                       onChange={handleImageUpload}
+                      onClick={(e) => {
+                        console.log('📸 File input clicked:', {
+                          currentTarget: e.currentTarget,
+                          target: e.target,
+                          modalScrollable: modalContentRef.current ? 'found' : 'not found',
+                          canScroll: modalContentRef.current ? modalContentRef.current.scrollHeight > modalContentRef.current.clientHeight : false
+                        });
+                      }}
                       className="text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                     />
                   </div>
@@ -1287,6 +1323,24 @@ export default function Activities() {
                     className="w-full p-2 border rounded-lg"
                     placeholder="Connection name"
                     required
+                    onClick={(e) => {
+                      console.log('📝 Name input clicked:', {
+                        target: e.target,
+                        modalScrollTop: modalContentRef.current?.scrollTop,
+                        modalInteractive: modalContentRef.current ? 'yes' : 'no'
+                      });
+                    }}
+                    onFocus={(e) => {
+                      console.log('📝 Name input focused:', {
+                        target: e.target,
+                        scrollBehavior: 'testing'
+                      });
+                      // Test if focus triggers scroll functionality
+                      if (modalContentRef.current) {
+                        modalContentRef.current.scrollTop += 1;
+                        modalContentRef.current.scrollTop -= 1;
+                      }
+                    }}
                   />
                 </div>
 
