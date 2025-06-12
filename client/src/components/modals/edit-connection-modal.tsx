@@ -21,6 +21,7 @@ interface EditConnectionModalProps {
 }
 
 export function EditConnectionModal({ isOpen, onClose, connection, onEditSuccess }: EditConnectionModalProps) {
+  console.log("🔧 EditConnectionModal component is rendering");
   const [editData, setEditData] = useState<Partial<Connection>>({});
   const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
