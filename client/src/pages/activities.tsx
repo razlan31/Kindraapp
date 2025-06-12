@@ -78,6 +78,30 @@ export default function Activities() {
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [selectedLoveLanguages, setSelectedLoveLanguages] = useState<string[]>([]);
 
+  // Fix modal initialization issues
+  useEffect(() => {
+    if (connectionModalOpen) {
+      // Ensure proper modal initialization
+      const timer = setTimeout(() => {
+        const modal = document.querySelector('[data-modal="add-connection"]') as HTMLElement;
+        const scrollableContainer = document.querySelector('[data-scroll="modal-content"]') as HTMLElement;
+        
+        if (modal && scrollableContainer) {
+          // Force focus and ensure interactive state
+          modal.focus();
+          
+          // Trigger a small scroll to activate scroll handlers
+          scrollableContainer.scrollTop = 1;
+          scrollableContainer.scrollTop = 0;
+          
+          // Force a reflow to ensure all event handlers are attached
+          modal.offsetHeight;
+        }
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [connectionModalOpen]);
+
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -1194,6 +1218,8 @@ export default function Activities() {
           <div 
             className="bg-white rounded-lg shadow-xl w-full max-w-lg max-h-[90vh] flex flex-col"
             onClick={(e) => e.stopPropagation()}
+            data-modal="add-connection"
+            tabIndex={-1}
           >
             <div className="flex items-center justify-between p-4 border-b flex-shrink-0">
               <h2 className="text-lg font-semibold">Add New Connection</h2>
@@ -1205,7 +1231,7 @@ export default function Activities() {
               </button>
             </div>
             
-            <div className="flex-1 overflow-y-auto p-4">
+            <div className="flex-1 overflow-y-auto p-4" data-scroll="modal-content">
               <form onSubmit={(e) => {
                 e.preventDefault();
                 const formData = new FormData(e.currentTarget);
