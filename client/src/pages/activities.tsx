@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { Header } from "@/components/layout/header";
@@ -24,7 +25,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { compressImage } from "@/lib/image-utils";
-import { InlineConnectionModal } from "@/components/modals/inline-connection-modal";
+import { PortalConnectionModal } from "@/components/modals/portal-connection-modal";
 import { MiniInsight } from "@/components/insights/mini-insight";
 import { 
   DropdownMenu, 
@@ -1211,36 +1212,15 @@ export default function Activities() {
       />
 
       {/* Add Connection Modal */}
-      {connectionModalOpen && (
-        <>
-          <div 
-            className="fixed inset-0 z-[9998] bg-black/50"
-            onClick={() => setConnectionModalOpen(false)}
-          />
-          <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 pointer-events-none">
-            <div 
-              className="bg-white rounded-lg shadow-xl w-full max-w-lg max-h-[90vh] flex flex-col pointer-events-auto"
-              data-modal="add-connection"
-            >
-              <div className="flex items-center justify-between p-4 border-b flex-shrink-0">
-                <h2 className="text-lg font-semibold">Add New Connection</h2>
-                <button
-                  onClick={() => setConnectionModalOpen(false)}
-                  className="p-1 hover:bg-gray-100 rounded"
-                >
-                  <X className="h-5 w-5" />
-                </button>
-              </div>
-              
-              <div 
-                ref={modalContentRef}
-                className="flex-1 overflow-y-auto p-4"
-              >
-                <form onSubmit={(e) => {
-                e.preventDefault();
-                const formData = new FormData(e.currentTarget);
-                handleAddConnection(formData);
-              }} className="space-y-4">
+      <PortalConnectionModal
+        isOpen={connectionModalOpen}
+        onClose={() => setConnectionModalOpen(false)}
+      >
+        <form onSubmit={(e) => {
+          e.preventDefault();
+          const formData = new FormData(e.currentTarget);
+          handleAddConnection(formData);
+        }} className="space-y-4">
                 
                 {/* Profile Picture Section - Top */}
                 <div className="text-center">
@@ -1397,11 +1377,7 @@ export default function Activities() {
                   </Button>
                 </div>
                 </form>
-              </div>
-            </div>
-          </div>
-        </>
-      )}
+      </PortalConnectionModal>
     </div>
   );
 }
