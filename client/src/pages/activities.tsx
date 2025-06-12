@@ -1164,18 +1164,24 @@ export default function Activities() {
             }
           }}
         >
-          <div 
-            className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto"
-            onScroll={() => console.log('Modal is scrolling!')}
-          >
-            <div className="flex items-center justify-between p-4 border-b">
+          <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg w-full max-w-md max-h-[90vh] flex flex-col">
+            <div className="flex items-center justify-between p-4 border-b flex-shrink-0">
               <h2 className="font-heading font-semibold text-lg">Add New Connection</h2>
               <Button variant="ghost" size="icon" onClick={() => setConnectionModalOpen(false)}>
                 <X className="h-4 w-4" />
               </Button>
             </div>
             
-            <form onSubmit={(e) => {
+            <div 
+              className="flex-1 overflow-y-auto"
+              onScroll={() => console.log('Modal is scrolling!')}
+              style={{
+                WebkitOverflowScrolling: 'touch',
+                overflowY: 'auto',
+                scrollBehavior: 'smooth'
+              }}
+            >
+              <form onSubmit={(e) => {
               e.preventDefault();
               const formData = new FormData(e.currentTarget);
               handleAddConnection(formData);
@@ -1414,6 +1420,7 @@ export default function Activities() {
                 <p className="text-red-700 font-semibold">DEBUG: End of scroll test</p>
               </div>
             </form>
+            </div>
           </div>
         </div>
       )}
