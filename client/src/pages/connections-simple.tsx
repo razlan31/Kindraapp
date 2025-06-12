@@ -46,11 +46,22 @@ export default function Connections() {
     queryKey: ['/api/moments'],
   });
 
-  // Only show stages that have connections
+  // Get all unique relationship stages from connections (including custom ones)
+  const allUniqueStages = [...new Set(connections.map(c => c.relationshipStage))];
+  
+  // Predefined stage order for common relationship types
   const stageOrder = ["Potential", "Talking", "Situationship", "It's Complicated", "Dating", "Spouse", "FWB", "Ex", "Friend", "Best Friend", "Siblings"];
-  const availableStages = stageOrder.filter(stage => 
+  
+  // Show predefined stages that have connections, followed by custom stages
+  const predefinedStages = stageOrder.filter(stage => 
     connections.some(c => c.relationshipStage === stage)
   );
+  
+  const customStages = allUniqueStages.filter(stage => 
+    !stageOrder.includes(stage)
+  ).sort(); // Sort custom stages alphabetically
+  
+  const availableStages = [...predefinedStages, ...customStages];
 
   // Simple connection filtering and processing
   const displayConnections = connections
