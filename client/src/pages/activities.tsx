@@ -1188,18 +1188,36 @@ export default function Activities() {
               </Button>
             </div>
             
+            {/* SCROLL TEST - Simplified */}
             <div 
-              className="overflow-y-scroll"
-              onScroll={(e) => {
-                console.log('Modal is scrolling!', (e.target as HTMLElement).scrollTop);
-              }}
-              style={{
-                height: '70vh',
-                overflowY: 'scroll',
-                WebkitOverflowScrolling: 'touch',
-                scrollBehavior: 'smooth'
-              }}
+              className="border-4 border-red-500 bg-yellow-100"
+              style={{ height: '70vh' }}
             >
+              <div 
+                className="h-full overflow-y-scroll bg-blue-100 border-2 border-green-500"
+                onScroll={(e) => {
+                  console.log('🟠 SCROLL EVENT DETECTED!', (e.target as HTMLElement).scrollTop);
+                }}
+                style={{
+                  overflowY: 'scroll',
+                  height: '100%'
+                }}
+              >
+                <div style={{ height: '200vh', background: 'linear-gradient(to bottom, red, orange, yellow, green, blue, purple)' }}>
+                  <div className="p-8 text-2xl font-bold text-white">
+                    🔴 TOP - Try scrolling down
+                  </div>
+                  <div className="p-8 text-2xl font-bold text-white" style={{ marginTop: '50vh' }}>
+                    🟡 MIDDLE
+                  </div>
+                  <div className="p-8 text-2xl font-bold text-white" style={{ marginTop: '50vh' }}>
+                    🟢 BOTTOM - Scroll worked!
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div style={{ display: 'none' }}>
               <form onSubmit={(e) => {
               e.preventDefault();
               const formData = new FormData(e.currentTarget);
