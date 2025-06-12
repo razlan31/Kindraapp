@@ -135,7 +135,10 @@ export default function Connections() {
             <Button
               variant="outline"
               size="icon"
-              onClick={() => setShowAddModal(true)}
+              onClick={() => {
+                console.log("🔴 PLUS BUTTON CLICKED - Opening AddConnectionModal");
+                setShowAddModal(true);
+              }}
             >
               <Plus className="h-4 w-4" />
             </Button>
