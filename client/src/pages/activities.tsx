@@ -184,52 +184,6 @@ export default function Activities() {
       reader.readAsDataURL(file);
     }
   };
-
-  // Create connection mutation
-  const createConnectionMutation = useMutation({
-    mutationFn: async (formData: FormData) => {
-      const relationshipStage = formData.get('relationshipStage') as string;
-      const customStage = formData.get('customStage') as string;
-      
-      // Use custom stage if "Custom" is selected and custom value is provided
-      const finalStage = relationshipStage === 'Custom' && customStage.trim() 
-        ? customStage.trim() 
-        : relationshipStage || 'Dating';
-
-      const data: any = {
-        name: formData.get('name'),
-        relationshipStage: finalStage,
-        startDate: formData.get('startDate') || null,
-        birthday: formData.get('birthday') || null,
-        zodiacSign: formData.get('zodiacSign') || null,
-        loveLanguage: null,
-        isPrivate: formData.get('isPrivate') === 'on',
-      };
-
-      // Use the uploaded image from state if available
-      if (uploadedImage) {
-        data.profileImage = uploadedImage;
-      }
-
-      return apiRequest('/api/connections', 'POST', data);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/connections'] });
-      closeConnectionModal();
-      toast({
-        title: "Connection Added",
-        description: "New connection has been successfully added.",
-      });
-    },
-    onError: (error) => {
-      console.error('Connection creation error:', error);
-      toast({
-        title: "Error",
-        description: "Failed to add connection. Please try again.",
-        variant: "destructive",
-      });
-    }
-  });
   
   useEffect(() => {
     const handleMomentCreated = () => {
@@ -1378,8 +1332,8 @@ export default function Activities() {
               </div>
               
               <div className="pt-2">
-                <Button type="submit" className="w-full bg-primary text-white" disabled={createConnectionMutation.isPending}>
-                  {createConnectionMutation.isPending ? "Adding..." : "Add Connection"}
+                <Button type="submit" className="w-full bg-primary text-white" disabled={activitiesConnectionMutation.isPending}>
+                  {activitiesConnectionMutation.isPending ? "Adding..." : "Add Connection"}
                 </Button>
               </div>
             </form>
