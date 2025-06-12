@@ -1157,14 +1157,17 @@ export default function Activities() {
       {/* Add Connection Modal */}
       {connectionModalOpen && (
         <div 
-          className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4"
+          className="fixed inset-0 z-[200] bg-black/50 flex items-center justify-center p-4"
           onClick={(e) => {
             if (e.target === e.currentTarget) {
               setConnectionModalOpen(false);
             }
           }}
         >
-          <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg w-full max-w-md max-h-[90vh] flex flex-col">
+          <div 
+            className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg w-full max-w-md max-h-[85vh] flex flex-col"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="flex items-center justify-between p-4 border-b flex-shrink-0">
               <h2 className="font-heading font-semibold text-lg">Add New Connection</h2>
               <Button variant="ghost" size="icon" onClick={() => setConnectionModalOpen(false)}>
@@ -1175,14 +1178,14 @@ export default function Activities() {
             <div 
               className="flex-1 overflow-y-scroll min-h-0"
               onScroll={(e) => {
-                console.log('Modal is scrolling!', e.target.scrollTop);
+                console.log('Modal is scrolling!', (e.target as HTMLElement).scrollTop);
               }}
               style={{
                 WebkitOverflowScrolling: 'touch',
                 overflowY: 'scroll',
                 scrollBehavior: 'smooth',
-                maxHeight: 'calc(90vh - 80px)',
-                minHeight: '200px'
+                maxHeight: 'calc(85vh - 80px)',
+                minHeight: '300px'
               }}
             >
               <form onSubmit={(e) => {
