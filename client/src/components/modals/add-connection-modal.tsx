@@ -122,21 +122,8 @@ export function AddConnectionModal({ onClose, onSubmit, isLoading }: AddConnecti
           
           <div>
             <label className="block text-sm font-medium mb-1">Relationship Stage</label>
-            <CustomDropdown 
-              value={isCustomStage ? "Custom" : relationshipStage}
-              onChange={(value) => {
-                console.log("Custom dropdown changed to:", value);
-                if (value === "Custom") {
-                  setIsCustomStage(true);
-                  setRelationshipStage("");
-                } else {
-                  setIsCustomStage(false);
-                  setRelationshipStage(value);
-                }
-              }}
-              options={[
-                { value: "", label: "-- Select Relationship Stage --" },
-                { value: "Custom", label: "🎯 CUSTOM RELATIONSHIP STAGE 🎯", highlight: true },
+            <div className="space-y-2">
+              {[
                 { value: "Potential", label: "Potential" },
                 { value: "Talking", label: "Talking" },
                 { value: "Situationship", label: "Situationship" },
@@ -147,9 +134,37 @@ export function AddConnectionModal({ onClose, onSubmit, isLoading }: AddConnecti
                 { value: "Ex", label: "Ex" },
                 { value: "Friend", label: "Friend" },
                 { value: "Best Friend", label: "Best Friend" },
-                { value: "Siblings", label: "Siblings" }
-              ]}
-            />
+                { value: "Siblings", label: "Siblings" },
+                { value: "Custom", label: "🎯 CUSTOM STAGE 🎯" }
+              ].map((stage) => (
+                <label key={stage.value} className="flex items-center space-x-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="relationshipStage"
+                    value={stage.value}
+                    checked={
+                      stage.value === "Custom" 
+                        ? isCustomStage 
+                        : !isCustomStage && relationshipStage === stage.value
+                    }
+                    onChange={() => {
+                      console.log("Radio selected:", stage.value);
+                      if (stage.value === "Custom") {
+                        setIsCustomStage(true);
+                        setRelationshipStage("");
+                      } else {
+                        setIsCustomStage(false);
+                        setRelationshipStage(stage.value);
+                      }
+                    }}
+                    className="text-blue-600"
+                  />
+                  <span className={stage.value === "Custom" ? "font-bold text-red-600" : ""}>
+                    {stage.label}
+                  </span>
+                </label>
+              ))}
+            </div>
             
             {isCustomStage && (
               <div className="mt-2">
