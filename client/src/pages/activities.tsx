@@ -569,7 +569,9 @@ export default function Activities() {
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
+                      console.log("🔴 CONNECTION PICKER CLICK - Before state change:", { connectionModalOpen });
                       setConnectionModalOpen(true);
+                      console.log("🔴 CONNECTION PICKER CLICK - After state change, should be true");
                     }}
                   >
                     <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">

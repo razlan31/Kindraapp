@@ -55,7 +55,7 @@ export const useModal = () => useContext(ModalContext);
 
 export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [momentModalOpen, setMomentModalOpen] = useState(false);
-  const [connectionModalOpen, setConnectionModalOpen] = useState(false);
+
   const [moodTrackerModalOpen, setMoodTrackerModalOpen] = useState(false);
   const [planModalOpen, setPlanModalOpen] = useState(false);
   const [selectedConnectionId, setSelectedConnectionId] = useState<number | null>(null);
@@ -100,14 +100,7 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     // Don't reset the selected connection ID here so it can be used when the modal is opened
   };
 
-  const openConnectionModal = () => {
-    console.log("Opening connection modal from context");
-    setConnectionModalOpen(true);
-  };
 
-  const closeConnectionModal = () => {
-    setConnectionModalOpen(false);
-  };
 
   const openMoodTrackerModal = (connection?: Connection) => {
     if (connection) {
@@ -149,7 +142,6 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     <ModalContext.Provider
       value={{
         momentModalOpen,
-        connectionModalOpen,
         moodTrackerModalOpen,
         planModalOpen,
         selectedConnectionId,
@@ -161,8 +153,6 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         navigationConnectionId,
         openMomentModal,
         closeMomentModal,
-        openConnectionModal,
-        closeConnectionModal,
         openMoodTrackerModal,
         closeMoodTrackerModal,
         openPlanModal,
