@@ -1,0 +1,132 @@
+
+Mt.forEach.n.<computed> @ Console.js:61
+JSON.parse @ main.tsx:17
+(anonymous) @ frame_ant.js:2
+p @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+u @ frame_ant.js:2
+window.fetch @ frame_ant.js:2
+window.fetch @ Network.js:219
+getCurrentUser @ auth.ts:28
+loadUser @ auth-context.tsx:47
+(anonymous) @ auth-context.tsx:81
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=f5502327:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=f5502327:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=f5502327:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=f5502327:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=f5502327:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=f5502327:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=f5502327:19447
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=f5502327:18868
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=f5502327:9119
+commitRootImpl @ chunk-RPCDYKBN.js?v=f5502327:19432
+commitRoot @ chunk-RPCDYKBN.js?v=f5502327:19277
+finishConcurrentRender @ chunk-RPCDYKBN.js?v=f5502327:18805
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=f5502327:18718
+workLoop @ chunk-RPCDYKBN.js?v=f5502327:197
+flushWork @ chunk-RPCDYKBN.js?v=f5502327:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=f5502327:384Understand this warning
+Console.js:61 getCurrentUser successful: {id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+Console.js:61 getCurrentUser successful: {id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+Console.js:61 Auth context setting user: {id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+Console.js:61 Auth: Finally block - setting loading to false
+Console.js:61 InsightsNew - user: true user ID: 8 loading: false
+Console.js:61 InsightsNew - moments query: {momentsLength: 56, momentsLoading: false, momentsError: null, userEnabled: true, loading: false}
+Console.js:61 AI Insights Debug: {connectionsLength: 13, momentsLength: 56, userData: {…}, momentsPreview: Array(3)}
+Console.js:61 Starting insights generation: {momentsCount: 56, connectionsCount: 13, userData: {…}}
+Console.js:61 Adding Recent Activity Pattern insight: {totalMoments: 56, recentMomentsCount: 7, recentPositive: 5, positivePercent: 71}
+Console.js:61 Insights array after adding first insight: 6
+Console.js:61 Generated insights count: 6
+Console.js:61 Generated insights preview: (6) [{…}, {…}, {…}, {…}, {…}, {…}]
+Console.js:61 Final insights check: {insightsLength: 3}
+frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.
+t @ frame_ant.js:2
+s @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ _app-85323991547d4538.js:38
+(anonymous) @ _app-85323991547d4538.js:25
+e @ _app-85323991547d4538.js:14
+t.subscribe @ _app-85323991547d4538.js:14
+e.consumeQueue @ _app-85323991547d4538.js:25
+(anonymous) @ _app-85323991547d4538.js:25
+r @ _app-85323991547d4538.js:38
+setTimeout
+(anonymous) @ _app-85323991547d4538.js:38
+e.scheduleQueueConsumption @ _app-85323991547d4538.js:25
+(anonymous) @ _app-85323991547d4538.js:25
+e @ _app-85323991547d4538.js:14
+t.subscribe @ _app-85323991547d4538.js:14
+(anonymous) @ _app-85323991547d4538.js:25
+e @ _app-85323991547d4538.js:14
+t.subscribe @ _app-85323991547d4538.js:14
+e.try @ _app-85323991547d4538.js:25
+e.start @ _app-85323991547d4538.js:25
+t.request @ _app-85323991547d4538.js:25
+(anonymous) @ _app-85323991547d4538.js:14
+(anonymous) @ _app-85323991547d4538.js:14
+(anonymous) @ _app-85323991547d4538.js:25
+(anonymous) @ _app-85323991547d4538.js:14
+e.execute @ _app-85323991547d4538.js:14
+e.getObservableFromLink @ _app-85323991547d4538.js:11
+e.getResultsFromLink @ _app-85323991547d4538.js:11
+b @ _app-85323991547d4538.js:11
+e.fetchQueryByPolicy @ _app-85323991547d4538.js:11
+b @ _app-85323991547d4538.js:11
+e.fetchConcastWithInfo @ _app-85323991547d4538.js:11
+t.fetch @ _app-85323991547d4538.js:14
+t.reobserveAsConcast @ _app-85323991547d4538.js:14
+e.executeQuery @ _app-85323991547d4538.js:26
+(anonymous) @ _app-85323991547d4538.js:14
+(anonymous) @ 307-0f1f9969d7c1cdcf.js:1
+(anonymous) @ _app-85323991547d4538.js:26
+t.trigger @ _app-85323991547d4538.js:6
+(anonymous) @ _app-85323991547d4538.js:6
+(anonymous) @ main-69808b3ae174dd6a.js:1
+n @ main-69808b3ae174dd6a.js:1
+u @ main-69808b3ae174dd6a.js:1
+Promise.then
+n @ main-69808b3ae174dd6a.js:1
+u @ main-69808b3ae174dd6a.js:1
+Promise.then
+n @ main-69808b3ae174dd6a.js:1
+u @ main-69808b3ae174dd6a.js:1
+Promise.then
+n @ main-69808b3ae174dd6a.js:1
+u @ main-69808b3ae174dd6a.js:1
+Promise.then
+n @ main-69808b3ae174dd6a.js:1
+u @ main-69808b3ae174dd6a.js:1
+Promise.then
+n @ main-69808b3ae174dd6a.js:1
+u @ main-69808b3ae174dd6a.js:1
+Promise.then
+n @ main-69808b3ae174dd6a.js:1
+u @ main-69808b3ae174dd6a.js:1
+Promise.then
+n @ main-69808b3ae174dd6a.js:1
+u @ main-69808b3ae174dd6a.js:1
+Promise.then
+n @ main-69808b3ae174dd6a.js:1
+u @ main-69808b3ae174dd6a.js:1
+Promise.then
+n @ main-69808b3ae174dd6a.js:1
+u @ main-69808b3ae174dd6a.js:1Understand this error
+Console.js:61 Connection Data Debug: {originalConnection: null, allConnections: 13, currentConnection: null, renderKey: 0}
+Console.js:61 Connection Data Debug: {originalConnection: null, allConnections: 13, currentConnection: null, renderKey: 0}
