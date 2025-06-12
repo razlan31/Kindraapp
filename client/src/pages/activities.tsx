@@ -76,6 +76,25 @@ export default function Activities() {
   const [isCustomStage, setIsCustomStage] = useState(false);
   const [customStageValue, setCustomStageValue] = useState("");
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      try {
+        const compressedImage = await compressImage(file);
+        setUploadedImage(compressedImage);
+      } catch (error) {
+        console.error('Error compressing image:', error);
+        // Fallback to original file if compression fails
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const result = event.target?.result as string;
+          setUploadedImage(result);
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+  };
   const { toast } = useToast();
 
   // Create connection mutation for activities page
