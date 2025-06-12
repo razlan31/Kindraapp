@@ -125,7 +125,6 @@ export default function Activities() {
 
   // Connection modal helper functions
   const openConnectionModal = () => {
-    console.log("Opening connection modal from context");
     setConnectionModalOpen(true);
   };
 
@@ -570,7 +569,6 @@ export default function Activities() {
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
-                      console.log("🟢 CONNECTION PICKER ADD CONNECTION CLICKED - Opening inline modal");
                       setConnectionModalOpen(true);
                     }}
                   >
