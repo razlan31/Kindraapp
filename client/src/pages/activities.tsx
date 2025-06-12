@@ -413,7 +413,7 @@ export default function Activities() {
     <div className="max-w-md mx-auto bg-white dark:bg-neutral-900 min-h-screen flex flex-col relative">
       <Header />
 
-      <main className="flex-1 overflow-y-auto pb-20">
+      <main className="flex-1 overflow-y-auto pb-20 h-0">
         {/* Page Title */}
         <div className="px-3 pt-3 pb-2">
           <div className="flex items-center justify-between mb-3">
