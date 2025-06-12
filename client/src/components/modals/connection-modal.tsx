@@ -101,34 +101,31 @@ export function ConnectionModal({ isOpen, onClose }: ConnectionModalProps) {
               Relationship Stage
             </label>
             <div className="space-y-2">
-              {[
-                ...relationshipStages.map(stage => ({ value: stage, label: stage })),
-                { value: "Custom", label: "🎯 CUSTOM RELATIONSHIP STAGE 🎯" }
-              ].map((stage) => (
-                <label key={stage.value} className="flex items-center space-x-2 cursor-pointer">
+              {relationshipStages.map((stage) => (
+                <label key={stage} className="flex items-center space-x-2 cursor-pointer">
                   <input
                     type="radio"
                     name="relationshipStage"
-                    value={stage.value}
+                    value={stage}
                     checked={
-                      stage.value === "Custom" 
+                      stage === "Custom" 
                         ? isCustomStage 
-                        : !isCustomStage && formData.relationshipStage === stage.value
+                        : !isCustomStage && formData.relationshipStage === stage
                     }
                     onChange={() => {
-                      console.log("Radio selected:", stage.value);
-                      if (stage.value === "Custom") {
+                      console.log("Radio selected:", stage);
+                      if (stage === "Custom") {
                         setIsCustomStage(true);
                         setFormData({ ...formData, relationshipStage: "" });
                       } else {
                         setIsCustomStage(false);
-                        setFormData({ ...formData, relationshipStage: stage.value });
+                        setFormData({ ...formData, relationshipStage: stage });
                       }
                     }}
                     className="text-blue-600"
                   />
-                  <span className={stage.value === "Custom" ? "font-bold text-red-600" : ""}>
-                    {stage.label}
+                  <span className={stage === "Custom" ? "font-bold text-red-600" : ""}>
+                    {stage === "Custom" ? "🎯 CUSTOM RELATIONSHIP STAGE 🎯" : stage}
                   </span>
                 </label>
               ))}
