@@ -90,22 +90,30 @@ export default function Activities() {
     }
   }, [connectionModalOpen]);
 
-  // Ensure modal content is properly interactive when opened
+  // Force immediate interactivity on modal open
   useEffect(() => {
-    if (connectionModalOpen && modalContentRef.current) {
-      // Force focus on the modal content
-      modalContentRef.current.focus();
-      
-      // Trigger a scroll event to ensure all event handlers are active
-      modalContentRef.current.scrollTop = 0;
-      
-      // Force a repaint
-      modalContentRef.current.style.transform = 'translateZ(0)';
-      setTimeout(() => {
+    if (connectionModalOpen) {
+      // Use requestAnimationFrame to ensure DOM is ready
+      requestAnimationFrame(() => {
         if (modalContentRef.current) {
-          modalContentRef.current.style.transform = '';
+          // Force hardware acceleration
+          modalContentRef.current.style.willChange = 'scroll-position';
+          modalContentRef.current.style.transform = 'translate3d(0, 0, 0)';
+          
+          // Trigger events to wake up all handlers
+          modalContentRef.current.dispatchEvent(new Event('scroll'));
+          modalContentRef.current.dispatchEvent(new Event('touchstart'));
+          modalContentRef.current.dispatchEvent(new Event('mouseenter'));
+          
+          // Clean up styles after a brief moment
+          setTimeout(() => {
+            if (modalContentRef.current) {
+              modalContentRef.current.style.willChange = 'auto';
+              modalContentRef.current.style.transform = '';
+            }
+          }, 100);
         }
-      }, 0);
+      });
     }
   }, [connectionModalOpen]);
 
