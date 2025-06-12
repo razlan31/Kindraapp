@@ -567,28 +567,6 @@ export default function Activities() {
                     </DropdownMenuCheckboxItem>
                   ))}
                   <div className="border-t border-border my-1" />
-                  
-                  {/* DEBUG: Add many fake connections to test scrolling */}
-                  {Array.from({ length: 20 }, (_, i) => (
-                    <DropdownMenuCheckboxItem
-                      key={`debug-${i}`}
-                      checked={false}
-                      onCheckedChange={() => {}}
-                      onSelect={(e) => e.preventDefault()}
-                      className="py-3 px-4 text-base"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center">
-                          <span className="text-xs font-medium text-red-500">
-                            {i + 1}
-                          </span>
-                        </div>
-                        <span className="text-red-500">DEBUG Connection {i + 1}</span>
-                      </div>
-                    </DropdownMenuCheckboxItem>
-                  ))}
-                  
-                  <div className="border-t border-border my-1" />
                   <div 
                     className="flex items-center gap-3 py-3 px-4 text-base cursor-pointer hover:bg-accent rounded-sm"
                     onClick={(e) => {
