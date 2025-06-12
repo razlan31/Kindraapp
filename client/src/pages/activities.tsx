@@ -1148,15 +1148,15 @@ export default function Activities() {
       {/* Add Connection Modal */}
       {connectionModalOpen && (
         <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg w-full max-w-md max-h-[90vh] flex flex-col">
-            <div className="flex items-center justify-between p-4 border-b flex-shrink-0">
+          <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg w-full max-w-md max-h-[90vh] overflow-hidden">
+            <div className="flex items-center justify-between p-4 border-b">
               <h2 className="font-heading font-semibold text-lg">Add New Connection</h2>
               <Button variant="ghost" size="icon" onClick={() => setConnectionModalOpen(false)}>
                 <X className="h-4 w-4" />
               </Button>
             </div>
             
-            <div className="flex-1 overflow-y-auto min-h-0">
+            <div className="overflow-y-auto" style={{maxHeight: 'calc(90vh - 80px)'}}>
               <form onSubmit={(e) => {
                 e.preventDefault();
                 const formData = new FormData(e.currentTarget);
