@@ -25,7 +25,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { compressImage } from "@/lib/image-utils";
-import { PortalConnectionModal } from "@/components/modals/portal-connection-modal";
+import { SimpleConnectionForm } from "@/components/modals/simple-connection-form";
 import { MiniInsight } from "@/components/insights/mini-insight";
 import { 
   DropdownMenu, 
@@ -1214,31 +1214,20 @@ export default function Activities() {
       </main>
       
       <BottomNavigation />
-      </div>
 
-      {/* Add Connection Form - Inline instead of modal */}
-      {connectionModalOpen && (
-        <div className="fixed inset-0 z-50 bg-white p-4 overflow-y-auto">
-          <div className="max-w-lg mx-auto">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold">Add New Connection</h2>
-              <button
-                onClick={() => setConnectionModalOpen(false)}
-                className="p-2 hover:bg-gray-100 rounded-full"
-                type="button"
-              >
-                <X className="w-6 h-6" />
-              </button>
-            </div>
-            
-            <form onSubmit={(e) => {
-              e.preventDefault();
-              const formData = new FormData(e.currentTarget);
-              handleAddConnection(formData);
-            }} className="space-y-6">
-                
-                {/* Profile Picture Section - Top */}
-                <div className="text-center">
+      {/* Simple Connection Form */}
+      <SimpleConnectionForm
+        isOpen={connectionModalOpen}
+        onClose={() => setConnectionModalOpen(false)}
+        onSubmit={handleAddConnection}
+        uploadedImage={uploadedImage}
+        onImageUpload={handleImageUpload}
+        customStageValue={customStageValue}
+        setCustomStageValue={setCustomStageValue}
+      />
+    </div>
+  );
+}
                   <label className="block text-sm font-medium mb-3">Profile Picture</label>
                   <div className="flex flex-col items-center space-y-3">
                     <div className="w-20 h-20 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden bg-gray-50">
@@ -1401,6 +1390,6 @@ export default function Activities() {
             </div>
           </div>
         )}
-    </>
+    </div>
   );
 }
