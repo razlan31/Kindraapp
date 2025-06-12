@@ -22,7 +22,6 @@ export function InlineConnectionModal({
   onClose, 
   relationshipStages = defaultRelationshipStages 
 }: InlineConnectionModalProps) {
-  console.log("🟦 InlineConnectionModal render - isOpen:", isOpen);
   
   const [isCustomStage, setIsCustomStage] = useState(false);
   const [customStageValue, setCustomStageValue] = useState("");
