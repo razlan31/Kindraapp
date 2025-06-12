@@ -76,6 +76,7 @@ export default function Activities() {
   const [isCustomStage, setIsCustomStage] = useState(false);
   const [customStageValue, setCustomStageValue] = useState("");
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const [selectedLoveLanguages, setSelectedLoveLanguages] = useState<string[]>([]);
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -134,10 +135,10 @@ export default function Activities() {
     const data = {
       name: formData.get('name') as string,
       relationshipStage: finalStage,
-      startDate: formData.get('startDate') ? new Date(formData.get('startDate') as string) : null,
+      startDate: formData.get('connectionStartDate') ? new Date(formData.get('connectionStartDate') as string) : null,
       birthday: formData.get('birthday') ? new Date(formData.get('birthday') as string) : null,
       zodiacSign: formData.get('zodiacSign') as string || null,
-      loveLanguage: formData.get('loveLanguage') as string || null,
+      loveLanguage: selectedLoveLanguages.length > 0 ? selectedLoveLanguages.join(', ') : null,
       profileImage: uploadedImage || null,
       isPrivate: formData.get('isPrivate') === 'on',
     };
@@ -1211,6 +1212,26 @@ export default function Activities() {
                 handleAddConnection(formData);
               }} className="space-y-4">
                 
+                {/* Profile Picture Section - Top */}
+                <div className="text-center">
+                  <label className="block text-sm font-medium mb-3">Profile Picture</label>
+                  <div className="flex flex-col items-center space-y-3">
+                    <div className="w-20 h-20 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden bg-gray-50">
+                      {uploadedImage ? (
+                        <img src={uploadedImage} alt="Profile preview" className="w-full h-full object-cover rounded-full" />
+                      ) : (
+                        <Camera className="h-8 w-8 text-gray-400" />
+                      )}
+                    </div>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      className="text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                    />
+                  </div>
+                </div>
+
                 <div>
                   <label className="block text-sm font-medium mb-2">Name*</label>
                   <input
@@ -1265,6 +1286,15 @@ export default function Activities() {
                 )}
 
                 <div>
+                  <label className="block text-sm font-medium mb-2">When did you start this connection?</label>
+                  <input
+                    name="connectionStartDate"
+                    type="date"
+                    className="w-full p-2 border rounded-lg"
+                  />
+                </div>
+
+                <div>
                   <label className="block text-sm font-medium mb-2">Birthday (Optional)</label>
                   <input
                     name="birthday"
@@ -1293,30 +1323,26 @@ export default function Activities() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">Love Language (Optional)</label>
-                  <select name="loveLanguage" className="w-full p-2 border rounded-lg">
-                    <option value="">Select love language</option>
-                    <option value="Words of Affirmation">Words of Affirmation</option>
-                    <option value="Acts of Service">Acts of Service</option>
-                    <option value="Receiving Gifts">Receiving Gifts</option>
-                    <option value="Quality Time">Quality Time</option>
-                    <option value="Physical Touch">Physical Touch</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-2">Profile Picture (Optional)</label>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageUpload}
-                    className="w-full p-2 border rounded-lg"
-                  />
-                  {uploadedImage && (
-                    <div className="mt-2">
-                      <img src={uploadedImage} alt="Preview" className="w-16 h-16 rounded-full object-cover" />
-                    </div>
-                  )}
+                  <label className="block text-sm font-medium mb-2">Love Languages (Optional)</label>
+                  <div className="space-y-2">
+                    {['Words of Affirmation', 'Acts of Service', 'Receiving Gifts', 'Quality Time', 'Physical Touch'].map((language) => (
+                      <label key={language} className="flex items-center space-x-2">
+                        <input
+                          type="checkbox"
+                          checked={selectedLoveLanguages.includes(language)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setSelectedLoveLanguages([...selectedLoveLanguages, language]);
+                            } else {
+                              setSelectedLoveLanguages(selectedLoveLanguages.filter(l => l !== language));
+                            }
+                          }}
+                          className="rounded"
+                        />
+                        <span className="text-sm">{language}</span>
+                      </label>
+                    ))}
+                  </div>
                 </div>
 
                 <div className="flex items-center space-x-2">
