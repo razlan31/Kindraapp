@@ -63,6 +63,15 @@ export default function Activities() {
 
   // Connection modal state
   const [connectionModalOpen, setConnectionModalOpen] = useState(false);
+  
+  // Debug connection modal state changes
+  useEffect(() => {
+    if (connectionModalOpen) {
+      console.log('🔴 ADD CONNECTION MODAL OPENED');
+    } else {
+      console.log('🟢 ADD CONNECTION MODAL CLOSED');
+    }
+  }, [connectionModalOpen]);
   const [relationshipStage, setRelationshipStage] = useState("Potential");
   const [isCustomStage, setIsCustomStage] = useState(false);
   const [customStageValue, setCustomStageValue] = useState("");
@@ -572,6 +581,7 @@ export default function Activities() {
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
+                      console.log('🚀 ADD CONNECTION BUTTON CLICKED - Opening modal');
                       setConnectionModalOpen(true);
                     }}
                   >
@@ -1155,7 +1165,10 @@ export default function Activities() {
       />
 
       {/* Add Connection Modal */}
-      {connectionModalOpen && (
+      {connectionModalOpen && (() => {
+        console.log('🔴 ADD CONNECTION MODAL IS OPEN');
+        return true;
+      })() && (
         <div 
           className="fixed inset-0 z-[200] bg-black/50 flex items-center justify-center p-4"
           onClick={(e) => {
