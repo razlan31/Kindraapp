@@ -18,8 +18,7 @@ import { useModal } from "@/contexts/modal-context";
 import { Input } from "@/components/ui/input";
 import { Search, Plus, Calendar, ChevronDown, Activity, Users, Camera, X, UserPlus, Heart, Calendar as CalendarIcon } from "lucide-react";
 import { Card } from "@/components/ui/card";
-
-
+import { InlineConnectionModal } from "@/components/modals/inline-connection-modal";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
@@ -1182,23 +1181,13 @@ export default function Activities() {
         connection={selectedConnectionForModal}
       />
 
-      {/* Add Connection Modal */}
-      {connectionModalOpen && (
-        <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between p-4 border-b">
-              <h2 className="font-heading font-semibold text-lg">Add New Connection</h2>
-              <Button variant="ghost" size="icon" onClick={() => setConnectionModalOpen(false)}>
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
-            
-            <form onSubmit={(e) => {
-              e.preventDefault();
-              const formData = new FormData(e.currentTarget);
-              handleAddConnection(formData);
-            }} className="p-4 space-y-6">
-              <div>
+      <InlineConnectionModal
+        isOpen={connectionModalOpen}
+        onClose={() => setConnectionModalOpen(false)}
+      />
+    </div>
+  );
+}
                 <label className="block text-sm font-medium mb-2">
                   Profile Image
                 </label>
