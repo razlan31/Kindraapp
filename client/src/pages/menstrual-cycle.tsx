@@ -983,6 +983,20 @@ export default function MenstrualCyclePage() {
                 {monthDays.map(day => {
                   const cyclesOnDay = getCyclesForDay(day);
                   const isToday = isSameDay(day, new Date());
+                  
+                  // Debug specific days
+                  if (format(day, 'd') === '13' || format(day, 'd') === '27') {
+                    console.log(`Day ${format(day, 'MM-dd')}:`, {
+                      cyclesOnDay: cyclesOnDay.length,
+                      cycles: cyclesOnDay.map(c => ({
+                        id: c.id,
+                        startDate: c.startDate,
+                        endDate: c.endDate,
+                        connectionId: c.connectionId,
+                        isPrediction: (c as any).isPrediction
+                      }))
+                    });
+                  }
 
                   
                   return (
