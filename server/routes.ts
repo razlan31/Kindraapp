@@ -1587,9 +1587,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const criteria = badge.unlockCriteria as Record<string, any>;
         let isEarned = false;
         
-        // New Beginnings badge - award for each new connection
+        // New Beginnings badge - award only if not earned in the last 24 hours
         if (criteria.newConnectionThisMonth && badge.name === "New Beginnings") {
-          isEarned = true;
+          const lastEarned = userBadges.find(ub => ub.badgeId === badge.id);
+          if (!lastEarned || Date.now() - new Date(lastEarned.unlockedAt).getTime() > 24 * 60 * 60 * 1000) {
+            isEarned = true;
+          }
         }
         
         // First connection badge
@@ -1686,10 +1689,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
           }
         }
 
-        // New connection this month badge - only award when called from connection creation
+        // New connection this month badge - NEVER award during routine checks
         if (criteria.newConnectionThisMonth) {
-          // This badge should only be awarded during actual connection creation
-          // Don't award it during routine badge checks
+          // This badge should ONLY be awarded through the connection-specific badge function
+          // Never award during general badge checks to prevent spam
           isEarned = false;
         }
 
