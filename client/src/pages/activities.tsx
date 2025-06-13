@@ -617,6 +617,15 @@ export default function Activities() {
         connection={selectedConnectionForModal}
       />
 
+      {/* Plan Modal */}
+      <PlanModal
+        isOpen={planModalOpen}
+        onClose={closePlanModal}
+        selectedConnection={selectedConnection ? connections.find(c => c.id === selectedConnection) || null : null}
+        selectedDate={null}
+        showConnectionPicker={true}
+      />
+
       {/* Simple Connection Form - Addresses refresh issue */}
       <SimpleConnectionForm
         isOpen={connectionModalOpen}
