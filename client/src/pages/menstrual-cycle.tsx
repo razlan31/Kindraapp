@@ -269,7 +269,13 @@ export default function MenstrualCyclePage() {
         selectedPersonIds,
         totalCycles: cycles.length,
         allConnectionIds: Array.from(new Set(cycles.map(c => c.connectionId))),
-        martinezCycles: cycles.filter(c => c.connectionId === 9).length
+        martinezCycles: cycles.filter(c => c.connectionId === 9).length,
+        martinezCycleDetails: cycles.filter(c => c.connectionId === 9).map(c => ({
+          id: c.id,
+          start: c.startDate,
+          end: c.endDate,
+          periodEnd: c.periodEndDate
+        }))
       });
     }
     
