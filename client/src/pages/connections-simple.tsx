@@ -27,7 +27,6 @@ export default function Connections() {
   const [isCustomStage, setIsCustomStage] = useState(false);
   const [customStageValue, setCustomStageValue] = useState("");
   const [uploadedImage, setUploadedImage] = useState<string>('');
-  const [selectedZodiacSign, setSelectedZodiacSign] = useState<string>('');
   const [imagePreview, setImagePreview] = useState<{isOpen: boolean, imageUrl: string, name: string}>({
     isOpen: false,
     imageUrl: '',
@@ -143,10 +142,6 @@ export default function Connections() {
       queryClient.invalidateQueries({ queryKey: ['/api/connections'] });
       setShowAddModal(false);
       setUploadedImage(''); // Reset uploaded image
-      setSelectedZodiacSign(''); // Reset zodiac sign
-      setRelationshipStage("Potential");
-      setIsCustomStage(false);
-      setCustomStageValue("");
       toast({
         title: "Connection created",
         description: "New connection has been added successfully.",
@@ -182,7 +177,7 @@ export default function Connections() {
       relationshipStage: finalRelationshipStage,
       startDate: formData.get('startDate') ? new Date(formData.get('startDate') as string) : null,
       birthday: formData.get('birthday') ? new Date(formData.get('birthday') as string) : null,
-      zodiacSign: selectedZodiacSign || null,
+      zodiacSign: formData.get('zodiacSign') as string || null,
       loveLanguage: loveLanguages.length > 0 ? loveLanguages.join(', ') : null,
       profileImage: uploadedImage || null,
       isPrivate: formData.get('isPrivate') === 'on',
@@ -338,14 +333,7 @@ export default function Connections() {
           >
             <div className="flex items-center justify-between p-4 border-b">
               <h2 className="font-heading font-semibold text-lg">Add New Connection</h2>
-              <Button variant="ghost" size="icon" onClick={() => {
-                setShowAddModal(false);
-                setUploadedImage('');
-                setSelectedZodiacSign('');
-                setRelationshipStage("Potential");
-                setIsCustomStage(false);
-                setCustomStageValue("");
-              }}>
+              <Button variant="ghost" size="icon" onClick={() => setShowAddModal(false)}>
                 <X className="h-4 w-4" />
               </Button>
             </div>
@@ -515,19 +503,10 @@ export default function Connections() {
                     name="birthday"
                     type="date"
                     className="pl-10"
-                    onChange={(e) => {
-                      const birthday = e.target.value;
-                      if (birthday) {
-                        const calculatedZodiac = calculateZodiacSign(new Date(birthday));
-                        setSelectedZodiacSign(calculatedZodiac);
-                      } else {
-                        setSelectedZodiacSign('');
-                      }
-                    }}
                   />
                 </div>
                 <p className="text-xs text-neutral-500 mt-1">
-                  Remember important dates (zodiac sign will be calculated automatically)
+                  Remember important dates
                 </p>
               </div>
               
@@ -535,16 +514,9 @@ export default function Connections() {
                 <h3 className="text-sm font-medium">Optional Details</h3>
                 
                 <div className="space-y-2">
-                  <label className="block text-xs text-neutral-500">
-                    Zodiac Sign {selectedZodiacSign && <span className="text-green-600">(Auto-calculated)</span>}
-                  </label>
-                  <select 
-                    name="zodiacSign" 
-                    value={selectedZodiacSign}
-                    onChange={(e) => setSelectedZodiacSign(e.target.value)}
-                    className="w-full p-2 border rounded-md bg-background text-sm"
-                  >
-                    <option value="">Select sign or enter birthday above</option>
+                  <label className="block text-xs text-neutral-500">Zodiac Sign</label>
+                  <select name="zodiacSign" className="w-full p-2 border rounded-md bg-background text-sm">
+                    <option value="">Select sign</option>
                     <option value="Aries">Aries</option>
                     <option value="Taurus">Taurus</option>
                     <option value="Gemini">Gemini</option>

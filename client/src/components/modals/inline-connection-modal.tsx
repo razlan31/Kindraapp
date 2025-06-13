@@ -147,6 +147,73 @@ export function InlineConnectionModal({
             </p>
           </div>
 
+          <div className="space-y-3 bg-neutral-50 dark:bg-neutral-900 p-4 rounded-lg">
+            <h3 className="text-sm font-medium">Optional Details</h3>
+            
+            <div className="space-y-2">
+              <label className="block text-xs text-neutral-500">Zodiac Sign</label>
+              <select name="zodiacSign" className="w-full p-2 border rounded-md bg-background text-sm">
+                <option value="">Select sign or enter birthday above</option>
+                <option value="Aries">Aries</option>
+                <option value="Taurus">Taurus</option>
+                <option value="Gemini">Gemini</option>
+                <option value="Cancer">Cancer</option>
+                <option value="Leo">Leo</option>
+                <option value="Virgo">Virgo</option>
+                <option value="Libra">Libra</option>
+                <option value="Scorpio">Scorpio</option>
+                <option value="Sagittarius">Sagittarius</option>
+                <option value="Capricorn">Capricorn</option>
+                <option value="Aquarius">Aquarius</option>
+                <option value="Pisces">Pisces</option>
+              </select>
+            </div>
+
+            <div className="space-y-2">
+              <label className="block text-xs text-neutral-500">Birthday</label>
+              <input
+                name="birthday"
+                type="date"
+                className="w-full p-2 border rounded-md bg-background text-sm"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="block text-xs text-neutral-500">Connection Start Date</label>
+              <input
+                name="startDate"
+                type="date"
+                className="w-full p-2 border rounded-md bg-background text-sm"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="block text-xs text-neutral-500">Love Languages</label>
+              <div className="space-y-2">
+                <label className="flex items-center">
+                  <input type="checkbox" name="loveLanguage" value="Words of Affirmation" className="mr-2" />
+                  <span className="text-sm">Words of Affirmation</span>
+                </label>
+                <label className="flex items-center">
+                  <input type="checkbox" name="loveLanguage" value="Quality Time" className="mr-2" />
+                  <span className="text-sm">Quality Time</span>
+                </label>
+                <label className="flex items-center">
+                  <input type="checkbox" name="loveLanguage" value="Physical Touch" className="mr-2" />
+                  <span className="text-sm">Physical Touch</span>
+                </label>
+                <label className="flex items-center">
+                  <input type="checkbox" name="loveLanguage" value="Acts of Service" className="mr-2" />
+                  <span className="text-sm">Acts of Service</span>
+                </label>
+                <label className="flex items-center">
+                  <input type="checkbox" name="loveLanguage" value="Receiving Gifts" className="mr-2" />
+                  <span className="text-sm">Receiving Gifts</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
           <div className="flex justify-between gap-2 pt-4 border-t">
             <Button type="button" variant="outline" onClick={onClose} className="flex-1">
               Cancel
