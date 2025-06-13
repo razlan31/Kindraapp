@@ -211,21 +211,31 @@ export default function Calendar() {
         const periodEnd = new Date(cycle.periodEndDate);
         const periodDays = Math.floor((periodEnd.getTime() - cycleStart.getTime()) / (1000 * 60 * 60 * 24)) + 1;
         
-        // Calculate cycle length (use 28 as default if cycle is still active)
+        // For menstrual cycles, we need to look at the full cycle, not just the period
+        // If we have an end date, use it; otherwise estimate based on typical 28-day cycle
         let cycleLength = 28;
         if (cycle.endDate) {
           cycleLength = Math.floor((new Date(cycle.endDate).getTime() - cycleStart.getTime()) / (1000 * 60 * 60 * 24)) + 1;
         }
         
-        // Ovulation occurs 14 days before cycle end
-        const ovulationDay = cycleLength - 14;
+        // Ovulation occurs around day 14 of a typical 28-day cycle (14 days before next period)
+        const ovulationDay = Math.round(cycleLength / 2);
+        
+        // Debug logging for Amalina's cycles
+        if (connectionId === 6) {
+          console.log(`Amalina cycle debug - Day: ${format(day, 'yyyy-MM-dd')}, dayOfCycle: ${dayOfCycle}, cycleLength: ${cycleLength}, ovulationDay: ${ovulationDay}, periodDays: ${periodDays}`);
+        }
         
         if (dayOfCycle <= periodDays) {
           return { phase: 'menstrual', day: dayOfCycle, cycle };
         } else if (dayOfCycle <= ovulationDay - 3) {
           return { phase: 'follicular', day: dayOfCycle, cycle };
         } else if (dayOfCycle >= ovulationDay - 2 && dayOfCycle <= ovulationDay + 2) {
-          return { phase: 'fertile', day: dayOfCycle, cycle, isOvulation: dayOfCycle === ovulationDay };
+          const isOvulation = dayOfCycle === ovulationDay;
+          if (connectionId === 6 && isOvulation) {
+            console.log(`FOUND OVULATION for Amalina on ${format(day, 'yyyy-MM-dd')} - day ${dayOfCycle} of cycle`);
+          }
+          return { phase: 'fertile', day: dayOfCycle, cycle, isOvulation };
         } else {
           return { phase: 'luteal', day: dayOfCycle, cycle };
         }
