@@ -1,59 +1,55 @@
-import { useState } from "react";
-import { X, Camera } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Camera, X } from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 interface SimpleConnectionFormProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (formData: FormData) => Promise<void>;
-  uploadedImage: string | null;
+  uploadedImage?: string | null;
   onImageUpload: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  customStageValue: string;
-  setCustomStageValue: (value: string) => void;
 }
 
 const defaultRelationshipStages = [
-  "Potential", "Talking", "Situationship", "It's Complicated", 
-  "Dating", "Spouse", "FWB", "Ex", "Friend", "Best Friend", "Siblings"
+  'Potential', 'Talking', 'Dating', 'Relationship', 'Best Friend', 'Close Friend', 'Friend', 'Roommate', 'Family', 'Situationship', 'Ex'
 ];
 
 export function SimpleConnectionForm({ 
   isOpen, 
   onClose, 
-  onSubmit,
-  uploadedImage,
-  onImageUpload
+  onSubmit, 
+  uploadedImage, 
+  onImageUpload 
 }: SimpleConnectionFormProps) {
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     
-    // Handle image upload
+    // Handle love languages as array
+    const loveLanguages = formData.getAll('loveLanguage');
+    formData.delete('loveLanguage');
+    formData.append('loveLanguage', JSON.stringify(loveLanguages));
+    
+    // Add uploaded image if exists
     if (uploadedImage) {
-      formData.set('profileImage', uploadedImage);
+      formData.append('profileImage', uploadedImage);
     }
     
-    onSubmit(formData);
+    await onSubmit(formData);
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4 pb-24">
-      <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg w-full max-w-md max-h-[85vh] overflow-y-auto">
-        <div className="flex items-center justify-between p-4 border-b">
-          <h2 className="font-heading font-semibold text-lg">Add New Connection</h2>
-          <Button variant="ghost" size="icon" onClick={onClose}>
-            <X className="h-4 w-4" />
-          </Button>
-        </div>
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="max-w-sm mx-auto max-h-[80vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>Add New Connection</DialogTitle>
+        </DialogHeader>
         
-        <form onSubmit={handleSubmit} className="p-4 space-y-4">
-          <div className="grid grid-cols-1 gap-4">
-            {/* Image Upload Section - First */}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-3">
+            {/* Image Upload Section */}
             <div className="flex flex-col items-center space-y-3">
               <div className="relative">
                 <Avatar className="w-20 h-20">
@@ -96,7 +92,7 @@ export function SimpleConnectionForm({
               </div>
             </div>
 
-            {/* Name Field - Second */}
+            {/* Name Field */}
             <div>
               <label className="block text-sm font-medium mb-2">Name *</label>
               <Input
@@ -107,7 +103,7 @@ export function SimpleConnectionForm({
               />
             </div>
 
-            {/* Relationship Stage Dropdown - Third */}
+            {/* Relationship Stage Dropdown */}
             <div>
               <label className="block text-sm font-medium mb-2">
                 Relationship Stage
@@ -123,7 +119,7 @@ export function SimpleConnectionForm({
               </select>
             </div>
 
-            {/* Start Date - Fourth */}
+            {/* Start Date */}
             <div>
               <label className="block text-sm font-medium mb-2">
                 Start Date
@@ -135,7 +131,7 @@ export function SimpleConnectionForm({
               />
             </div>
 
-            {/* Birthday - Fifth */}
+            {/* Birthday */}
             <div>
               <label className="block text-sm font-medium mb-2">
                 Birthday
@@ -147,7 +143,7 @@ export function SimpleConnectionForm({
               />
             </div>
 
-            {/* Zodiac Sign - Sixth */}
+            {/* Zodiac Sign */}
             <div>
               <label className="block text-sm font-medium mb-2">
                 Zodiac Sign
@@ -172,7 +168,7 @@ export function SimpleConnectionForm({
               </select>
             </div>
 
-            {/* Love Languages - Seventh */}
+            {/* Love Languages */}
             <div>
               <label className="block text-sm font-medium mb-2">
                 Love Languages
@@ -201,7 +197,7 @@ export function SimpleConnectionForm({
               </div>
             </div>
 
-            {/* Privacy Setting - Eighth */}
+            {/* Privacy Setting */}
             <div className="flex items-center space-x-2">
               <input
                 type="checkbox"
@@ -227,7 +223,7 @@ export function SimpleConnectionForm({
             </Button>
           </div>
         </form>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }
