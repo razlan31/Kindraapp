@@ -258,6 +258,55 @@ export default function MenstrualCyclePage() {
     return name.charAt(0).toUpperCase();
   };
 
+  // Get cycle phase for a specific day and connection
+  const getCyclePhaseForDay = (day: Date, connectionId: number) => {
+    const connectionCycles = cycles.filter(c => c.connectionId === connectionId);
+    if (connectionCycles.length === 0) return null;
+
+    const sortedCycles = [...connectionCycles].sort((a, b) => 
+      new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
+    );
+
+    // Find the cycle that this day belongs to
+    for (const cycle of sortedCycles) {
+      const cycleStart = new Date(cycle.startDate);
+      let cycleEnd: Date;
+      
+      if (cycle.endDate) {
+        cycleEnd = new Date(cycle.endDate);
+      } else {
+        // For active cycles, calculate expected end based on average cycle length
+        const avgCycleLength = calculateCycleLength(connectionCycles) || 28;
+        cycleEnd = addDays(cycleStart, avgCycleLength - 1);
+      }
+      
+      if (day >= cycleStart && day <= cycleEnd) {
+        const dayInCycle = differenceInDays(day, cycleStart) + 1;
+        const periodEnd = cycle.periodEndDate ? new Date(cycle.periodEndDate) : addDays(cycleStart, 4);
+        
+        // Calculate cycle length for ovulation timing
+        const cycleLength = cycle.endDate ? 
+          differenceInDays(new Date(cycle.endDate), cycleStart) + 1 : 
+          (calculateCycleLength(connectionCycles) || 28);
+        
+        const ovulationDay = Math.max(10, cycleLength - 14); // Ovulation ~14 days before cycle end
+        
+        if (day <= periodEnd) {
+          return { phase: 'menstrual', day: dayInCycle, cycle, isOvulation: false };
+        } else if (dayInCycle >= ovulationDay - 2 && dayInCycle <= ovulationDay + 2) {
+          const isOvulation = dayInCycle === ovulationDay;
+          return { phase: 'fertile', day: dayInCycle, cycle, isOvulation };
+        } else if (dayInCycle < ovulationDay - 2) {
+          return { phase: 'follicular', day: dayInCycle, cycle, isOvulation: false };
+        } else {
+          return { phase: 'luteal', day: dayInCycle, cycle, isOvulation: false };
+        }
+      }
+    }
+
+    return null;
+  };
+
   // Get all cycles for a specific day (for multi-person view)
   const getCyclesForDay = (day: Date) => {
     // If no cycles exist at all, return empty array
