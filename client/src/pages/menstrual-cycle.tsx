@@ -67,7 +67,7 @@ export default function MenstrualCyclePage() {
   const filteredCycles = useMemo(() => {
     if (!cycles) return [];
     if (selectedConnectionIds.length === 0) return cycles;
-    return cycles.filter(cycle => selectedConnectionIds.includes(cycle.connectionId));
+    return cycles.filter(cycle => cycle.connectionId && selectedConnectionIds.includes(cycle.connectionId));
   }, [cycles, selectedConnectionIds]);
 
   // Set default selection to main focus connection if it's trackable
