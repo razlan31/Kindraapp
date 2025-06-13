@@ -984,19 +984,7 @@ export default function MenstrualCyclePage() {
                   const cyclesOnDay = getCyclesForDay(day);
                   const isToday = isSameDay(day, new Date());
                   
-                  // Debug specific days
-                  if (format(day, 'd') === '13' || format(day, 'd') === '27') {
-                    console.log(`Day ${format(day, 'MM-dd')}:`, {
-                      cyclesOnDay: cyclesOnDay.length,
-                      cycles: cyclesOnDay.map(c => ({
-                        id: c.id,
-                        startDate: c.startDate,
-                        endDate: c.endDate,
-                        connectionId: c.connectionId,
-                        isPrediction: (c as any).isPrediction
-                      }))
-                    });
-                  }
+
 
                   
                   return (
@@ -1005,7 +993,7 @@ export default function MenstrualCyclePage() {
                       className={`
                         relative p-1 h-10 w-10 flex flex-col items-center justify-center text-xs border rounded-lg transition-colors hover:bg-accent/50
                         ${isToday ? 'border-primary/30' : 'border-border/20'}
-                        ${cyclesOnDay.length > 0 && cycles.length > 0 ? 
+                        ${cyclesOnDay.length > 0 ? 
                           // Apply cycle background styling to match calendar page
                           cyclesOnDay.length === 1 ? 
                             getCycleStage(day, cyclesOnDay[0]) === 'menstrual' ? 'bg-red-100 dark:bg-red-900/30 border-red-300 dark:border-red-700 border-2' :
@@ -1022,7 +1010,7 @@ export default function MenstrualCyclePage() {
                         }
                       `}
                     >
-                      {cyclesOnDay.length > 0 && cycles.length > 0 ? (
+                      {cyclesOnDay.length > 0 ? (
                         // Multiple cycles - show colored initials like calendar page
                         cyclesOnDay.length > 1 ? (
                           <div className="flex flex-col items-center justify-center">
