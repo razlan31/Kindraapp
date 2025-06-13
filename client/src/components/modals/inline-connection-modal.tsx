@@ -38,13 +38,17 @@ export function InlineConnectionModal({
         ? customStage.trim() 
         : relationshipStage || 'Dating';
 
+      // Handle multiple love languages
+      const loveLanguages = formData.getAll('loveLanguage') as string[];
+      const loveLanguageString = loveLanguages.length > 0 ? loveLanguages.join(', ') : null;
+
       const data = {
         name: formData.get('name') as string,
         relationshipStage: finalStage,
         startDate: formData.get('startDate') || null,
         birthday: formData.get('birthday') || null,
         zodiacSign: formData.get('zodiacSign') || null,
-        loveLanguage: null,
+        loveLanguage: loveLanguageString,
         isPrivate: formData.get('isPrivate') === 'on',
       };
 
