@@ -309,11 +309,7 @@ export default function MenstrualCyclePage() {
       // Only process selected persons, skip if no selection
       const personsToProcess = selectedPersonIds.length === 0 ? [] : selectedPersonIds;
       
-      const personNames = personsToProcess.map(id => {
-        const person = trackablePersons.find(p => p.id === id);
-        return { id, name: person?.name || 'Unknown' };
-      });
-      console.log('Debug personsToProcess:', { selectedPersonIds, personsToProcess, personNames, checkDay: checkDay.toISOString() });
+
       
       for (const personId of personsToProcess) {
         const personCycles = relevantCycles.filter(cycle => {
@@ -343,16 +339,7 @@ export default function MenstrualCyclePage() {
           // Track the base cycle for proper spacing
           let baseDate = lastCycle.endDate ? new Date(lastCycle.endDate) : addDays(lastCycleStart, avgCycleLength - 1);
           
-          console.log('Prediction debug:', {
-            personId,
-            selectedPersonIds,
-            shouldProcess: selectedPersonIds.includes(personId),
-            lastCycleStart: lastCycleStart.toISOString(),
-            lastCycleEnd: lastCycle.endDate,
-            baseDate: baseDate.toISOString(),
-            avgCycleLength,
-            checkDay: checkDay.toISOString()
-          });
+
           
           for (let i = 1; i <= 6; i++) {
             // Calculate next cycle start: 1 day after the previous cycle ended
@@ -372,14 +359,7 @@ export default function MenstrualCyclePage() {
             const predictedPeriodEndDay = startOfDay(predictedPeriodEnd);
             const checkDayStart = startOfDay(new Date(checkDay));
             
-            console.log(`Cycle ${i} prediction:`, {
-              predictedStart: predictedStart.toISOString(),
-              predictedPeriodEnd: predictedPeriodEnd.toISOString(),
-              checkDay: checkDay.toISOString(),
-              checkDayStart: checkDayStart.toISOString(),
-              periodLength,
-              isMatch: checkDayStart >= predictedStartDay && checkDayStart <= predictedPeriodEndDay
-            });
+
             
             // Check if the day falls within this predicted period (only show during period days, not full cycle)
             if (checkDayStart >= predictedStartDay && checkDayStart <= predictedPeriodEndDay) {
@@ -513,12 +493,7 @@ export default function MenstrualCyclePage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    console.log("Form submission debug:", {
-      selectedPersonIds,
-      trackablePersons,
-      connections,
-      editingCycle
-    });
+
 
     // Determine which person to create/update the cycle for
     let targetPersonId: number;
@@ -646,8 +621,22 @@ export default function MenstrualCyclePage() {
   };
 
   const getCycleStage = (day: Date, cycle: MenstrualCycle) => {
-    const daysSinceStart = differenceInDays(day, new Date(cycle.startDate)) + 1; // +1 to match cycle day counting
-    const cycleLength = getCycleLength(cycle) || 28; // Default to 28 if null
+    const checkDay = startOfDay(day);
+    const cycleStart = startOfDay(new Date(cycle.startDate));
+    
+    // For predicted cycles, check if we're in the predicted period
+    if ((cycle as any).isPrediction && cycle.periodEndDate) {
+      const periodStart = startOfDay(new Date(cycle.startDate));
+      const periodEnd = startOfDay(new Date(cycle.periodEndDate));
+      
+      if (checkDay >= periodStart && checkDay <= periodEnd) {
+        return 'menstrual';
+      }
+    }
+    
+    // For regular cycles, use existing logic
+    const daysSinceStart = differenceInDays(day, cycleStart) + 1;
+    const cycleLength = getCycleLength(cycle) || 28;
     const phase = getCyclePhase(daysSinceStart, cycleLength);
     
     return phase.phase.toLowerCase();
