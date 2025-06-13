@@ -57,7 +57,8 @@ export function BottomNavigation() {
     mutationFn: async (formData: FormData) => {
       // Convert FormData to object for JSON request
       const connectionData: any = {};
-      for (const [key, value] of formData.entries()) {
+      const entries = Array.from(formData.entries());
+      for (const [key, value] of entries) {
         connectionData[key] = value;
       }
       return await apiRequest("/api/connections", "POST", connectionData);
