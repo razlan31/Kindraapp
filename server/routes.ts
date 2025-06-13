@@ -1512,9 +1512,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ? Math.floor((completedCyclePeriodEnd.getTime() - completedCycleStart.getTime()) / (1000 * 60 * 60 * 24)) + 1
         : 5; // Default 5 days
 
-      // Calculate next cycle start date
-      const nextStartDate = new Date(completedCycle.endDate);
-      nextStartDate.setDate(nextStartDate.getDate() + 1); // Start the day after current cycle ends
+      // Calculate next cycle start date based on average cycle length
+      const nextStartDate = new Date(completedCycle.startDate);
+      nextStartDate.setDate(nextStartDate.getDate() + avgCycleLength); // Start based on cycle length, not end date
 
       // Calculate period end date for next cycle
       const nextPeriodEndDate = new Date(nextStartDate);
@@ -1524,8 +1524,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const nextCycleData = {
         userId: completedCycle.userId,
         connectionId: completedCycle.connectionId,
-        startDate: nextStartDate.toISOString().split('T')[0],
-        periodEndDate: nextPeriodEndDate.toISOString().split('T')[0],
+        startDate: nextStartDate,
+        periodEndDate: nextPeriodEndDate,
         endDate: null, // Will be set when cycle is completed
         notes: `Auto-generated cycle following ${avgCycleLength}-day pattern`,
         mood: null,
