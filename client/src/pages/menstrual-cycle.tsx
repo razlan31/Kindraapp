@@ -993,8 +993,8 @@ export default function MenstrualCyclePage() {
                           // Apply cycle background styling to match calendar page
                           cyclesOnDay.length === 1 ? 
                             getCycleStage(day, cyclesOnDay[0]) === 'menstrual' ? 'bg-red-100 dark:bg-red-900/30 border-red-300 dark:border-red-700 border-2' :
-                            getCycleStage(day, cyclesOnDay[0]) === 'ovulation' ? 'bg-pink-100 dark:bg-pink-900/30 border-pink-300 dark:border-pink-700 border-2' :
-                            getCycleStage(day, cyclesOnDay[0]) === 'fertile' ? 'bg-yellow-100 dark:bg-yellow-900/30 border-yellow-300 dark:border-yellow-700 border-2' :
+                            getCycleStage(day, cyclesOnDay[0]) === 'ovulation' ? 'bg-blue-700 dark:bg-blue-800 border-blue-800 dark:border-blue-900 border-2' :
+                            getCycleStage(day, cyclesOnDay[0]) === 'fertile' ? 'bg-blue-100 dark:bg-blue-900/30 border-blue-300 dark:border-blue-700 border-2' :
                             getCycleStage(day, cyclesOnDay[0]) === 'follicular' ? 'bg-green-100 dark:bg-green-900/30 border-green-300 dark:border-green-700 border-2' :
                             getCycleStage(day, cyclesOnDay[0]) === 'luteal' ? 'bg-purple-100 dark:bg-purple-900/30 border-purple-300 dark:border-purple-700 border-2' :
                             (isToday ? 'bg-primary/10' : 'bg-background/50')
@@ -1041,8 +1041,8 @@ export default function MenstrualCyclePage() {
                             let indicator = '';
                             
                             if (stage === 'menstrual') indicator = '🩸';
-                            else if (stage === 'ovulation') indicator = '🥚';
-                            else if (stage === 'fertile') indicator = '💛';
+                            else if (stage === 'ovulation') indicator = '🔵';
+                            else if (stage === 'fertile') indicator = '💙';
                             else if (stage === 'follicular') indicator = '🌱';
                             else if (stage === 'luteal') indicator = '🌙';
                             
@@ -1079,14 +1079,14 @@ export default function MenstrualCyclePage() {
                     <span>Follicular phase</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 bg-yellow-100 dark:bg-yellow-900/30 border border-yellow-300 dark:border-yellow-700 rounded flex items-center justify-center">
-                      <span className="text-xs">💛</span>
+                    <div className="w-4 h-4 bg-blue-100 dark:bg-blue-900/30 border border-blue-300 dark:border-blue-700 rounded flex items-center justify-center">
+                      <span className="text-xs">💙</span>
                     </div>
                     <span>Fertile window</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 bg-pink-100 dark:bg-pink-900/30 border border-pink-300 dark:border-pink-700 rounded flex items-center justify-center">
-                      <span className="text-xs">🥚</span>
+                    <div className="w-4 h-4 bg-blue-700 dark:bg-blue-800 border border-blue-800 dark:border-blue-900 rounded flex items-center justify-center">
+                      <span className="text-xs text-white">🔵</span>
                     </div>
                     <span>Ovulation day</span>
                   </div>
