@@ -864,8 +864,30 @@ export default function Calendar() {
                           className="h-3 w-3"
                         />
                       </div>
-                      <div className="text-xs text-muted-foreground opacity-75 ml-6">
-                        Includes period, fertile window, ovulation & phases
+                      <div className="text-xs text-muted-foreground opacity-75 ml-6 space-y-1">
+                        <div>Includes period, fertile window, ovulation & phases</div>
+                        <div className="grid grid-cols-2 gap-1 mt-2">
+                          <div className="flex items-center gap-1">
+                            <span className="text-sm">🩸</span>
+                            <span>Period</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <span className="text-sm">🌱</span>
+                            <span>Follicular</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <span className="text-sm">💛</span>
+                            <span>Fertile</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <span className="text-sm">🥚</span>
+                            <span>Ovulation</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <span className="text-sm">🌙</span>
+                            <span>Luteal</span>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -1096,7 +1118,7 @@ export default function Calendar() {
                     {/* Moment, Milestone, and Cycle indicators */}
                     <div className={`flex flex-wrap ${viewMode === 'daily' ? 'gap-2' : viewMode === 'weekly' ? 'gap-1' : 'gap-0.5'} items-center`}>
                       {/* Show cycle phase indicator first */}
-                      {cycleDisplay && filters.cycle && (
+                      {cycleDisplay && filters.menstrualCycle && (
                         <div className="flex gap-0.5">
                           {cycleDisplay.isMultiple && cycleDisplay.coloredInitials ? (
                             // Show colored initials for multiple connections
