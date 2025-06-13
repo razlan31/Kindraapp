@@ -81,6 +81,7 @@ function Router() {
       <Route path="/insights" component={InsightsNew} />
       <Route path="/profile" component={Profile} />
       <Route path="/settings" component={Settings} />
+      <Route path="/cycle" component={MenstrualCycle} />
       <Route path="/cycle-tracking" component={MenstrualCycle} />
       <Route path="/menstrual-cycle" component={MenstrualCycle} />
       <Route path="/ai-coach" component={AICoach} />
