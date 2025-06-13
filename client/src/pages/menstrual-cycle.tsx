@@ -263,6 +263,16 @@ export default function MenstrualCyclePage() {
     // If no cycles exist at all, return empty array
     if (!cycles || cycles.length === 0) return [];
     
+    // Debug for June 13th
+    if (format(day, 'MM-dd') === '06-13') {
+      console.log('June 13 getCyclesForDay:', {
+        selectedPersonIds,
+        totalCycles: cycles.length,
+        allConnectionIds: Array.from(new Set(cycles.map(c => c.connectionId))),
+        martinezCycles: cycles.filter(c => c.connectionId === 9).length
+      });
+    }
+    
     // First, filter cycles to only selected persons
     const relevantCycles = selectedPersonIds.length === 0 ? cycles : cycles.filter(cycle => {
       // Check if this cycle belongs to a selected person
@@ -301,13 +311,15 @@ export default function MenstrualCyclePage() {
     const checkDay = startOfDay(day);
     const today = startOfDay(new Date());
     
-    // Only generate predictions for future dates
-    if (checkDay > today) {
+    // Generate predictions for future dates and today
+    if (checkDay >= today) {
       const predictedCycles = [];
       
       // For each selected person, generate predicted cycles
-      // Only process selected persons, skip if no selection
-      const personsToProcess = selectedPersonIds.length === 0 ? [] : selectedPersonIds;
+      // If no selection, process all connections; if filtered, process the filtered connection
+      const personsToProcess = selectedPersonIds.length === 0 ? 
+        Array.from(new Set(relevantCycles.map(c => c.connectionId).filter(id => id !== null))) : 
+        selectedPersonIds;
       
 
       
