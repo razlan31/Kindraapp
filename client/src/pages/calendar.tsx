@@ -740,161 +740,167 @@ export default function Calendar() {
             </div>
             {!isLegendCollapsed && (
               <>
-                <div className="space-y-3">
-                  {/* Moment Types */}
+                <div className="space-y-4">
+                  {/* Moments Section - Combined Legend and Filter */}
                   <div>
                     <h4 className="text-xs font-medium mb-2 text-muted-foreground">Moments</h4>
-                    <div className="grid grid-cols-2 gap-2 text-xs">
-                      <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                        <span>Positive</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-                        <span>Neutral</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full bg-orange-500"></div>
-                        <span>Negative</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm">⚡</span>
-                        <span>Conflicts</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm">💕</span>
-                        <span>Sex</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm text-purple-500">📅</span>
-                        <span>Plans</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm">🏆</span>
-                        <span>Milestones</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Menstrual Cycle Phases */}
-                  <div>
-                    <h4 className="text-xs font-medium mb-2 text-muted-foreground">Menstrual Cycle</h4>
-                    <div className="grid grid-cols-2 gap-2 text-xs">
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm">🩸</span>
-                        <span>Period</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm">🌱</span>
-                        <span>Follicular</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm">💛</span>
-                        <span>Fertile Window</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm">🥚</span>
-                        <span>Ovulation</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm">🌙</span>
-                        <span>Luteal</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Filter Checkboxes */}
-                <div className="mt-4 pt-3 border-t border-border/20">
-                  <h4 className="text-xs font-medium mb-2 text-muted-foreground">Show on Calendar</h4>
-                  
-                  {/* Moment Filters */}
-                  <div className="mb-3">
-                    <h5 className="text-xs font-medium mb-2 text-muted-foreground/80">Moments</h5>
-                    <div className="grid grid-cols-2 gap-2 text-xs">
-                      <div className="flex items-center space-x-2">
+                    <div className="grid grid-cols-1 gap-1.5 text-xs">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                          <span>Positive</span>
+                        </div>
                         <Checkbox
                           id="positive"
                           checked={filters.positive}
                           onCheckedChange={(checked) => 
                             setFilters(prev => ({ ...prev, positive: !!checked }))
                           }
+                          className="h-3 w-3"
                         />
-                        <label htmlFor="positive" className="text-xs cursor-pointer">Positive</label>
                       </div>
-                      <div className="flex items-center space-x-2">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+                          <span>Neutral</span>
+                        </div>
                         <Checkbox
                           id="neutral"
                           checked={filters.neutral}
                           onCheckedChange={(checked) => 
                             setFilters(prev => ({ ...prev, neutral: !!checked }))
                           }
+                          className="h-3 w-3"
                         />
-                        <label htmlFor="neutral" className="text-xs cursor-pointer">Neutral</label>
                       </div>
-                      <div className="flex items-center space-x-2">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="w-3 h-3 rounded-full bg-orange-500"></div>
+                          <span>Negative</span>
+                        </div>
                         <Checkbox
                           id="negative"
                           checked={filters.negative}
                           onCheckedChange={(checked) => 
                             setFilters(prev => ({ ...prev, negative: !!checked }))
                           }
+                          className="h-3 w-3"
                         />
-                        <label htmlFor="negative" className="text-xs cursor-pointer">Negative</label>
                       </div>
-                      <div className="flex items-center space-x-2">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm">⚡</span>
+                          <span>Conflicts</span>
+                        </div>
                         <Checkbox
-                          id="conflict"
-                          checked={filters.conflict}
+                          id="conflicts"
+                          checked={filters.conflicts}
                           onCheckedChange={(checked) => 
-                            setFilters(prev => ({ ...prev, conflict: !!checked }))
+                            setFilters(prev => ({ ...prev, conflicts: !!checked }))
                           }
+                          className="h-3 w-3"
                         />
-                        <label htmlFor="conflict" className="text-xs cursor-pointer">Conflicts</label>
                       </div>
-                      <div className="flex items-center space-x-2">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm">💕</span>
+                          <span>Intimacy</span>
+                        </div>
                         <Checkbox
-                          id="sex"
-                          checked={filters.sex}
+                          id="intimacy"
+                          checked={filters.intimacy}
                           onCheckedChange={(checked) => 
-                            setFilters(prev => ({ ...prev, sex: !!checked }))
+                            setFilters(prev => ({ ...prev, intimacy: !!checked }))
                           }
+                          className="h-3 w-3"
                         />
-                        <label htmlFor="sex" className="text-xs cursor-pointer">Sex</label>
                       </div>
-                      <div className="flex items-center space-x-2">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm text-purple-500">📅</span>
+                          <span>Plans</span>
+                        </div>
                         <Checkbox
-                          id="plan"
-                          checked={filters.plan}
+                          id="plans"
+                          checked={filters.plans}
                           onCheckedChange={(checked) => 
-                            setFilters(prev => ({ ...prev, plan: !!checked }))
+                            setFilters(prev => ({ ...prev, plans: !!checked }))
                           }
+                          className="h-3 w-3"
                         />
-                        <label htmlFor="plan" className="text-xs cursor-pointer">Plans</label>
                       </div>
-                      <div className="flex items-center space-x-2">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm">🏆</span>
+                          <span>Milestones</span>
+                        </div>
                         <Checkbox
-                          id="milestone"
-                          checked={filters.milestone}
+                          id="milestones"
+                          checked={filters.milestones}
                           onCheckedChange={(checked) => 
-                            setFilters(prev => ({ ...prev, milestone: !!checked }))
+                            setFilters(prev => ({ ...prev, milestones: !!checked }))
                           }
+                          className="h-3 w-3"
                         />
-                        <label htmlFor="milestone" className="text-xs cursor-pointer">Milestones</label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Checkbox
-                          id="cycle"
-                          checked={filters.cycle}
-                          onCheckedChange={(checked) => 
-                            setFilters(prev => ({ ...prev, cycle: !!checked }))
-                          }
-                        />
-                        <label htmlFor="cycle" className="text-xs cursor-pointer">Cycle</label>
                       </div>
                     </div>
                   </div>
 
+                  {/* Menstrual Cycle Section - Combined Legend and Filter */}
+                  <div className="border-t border-border/20 pt-3">
+                    <h4 className="text-xs font-medium mb-2 text-muted-foreground">Menstrual Cycle</h4>
+                    <div className="grid grid-cols-1 gap-1.5 text-xs">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm">🩸</span>
+                          <span>Period</span>
+                        </div>
+                        <Checkbox
+                          id="menstrual"
+                          checked={filters.menstrual}
+                          onCheckedChange={(checked) => 
+                            setFilters(prev => ({ ...prev, menstrual: !!checked }))
+                          }
+                          className="h-3 w-3"
+                        />
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm">🌱</span>
+                          <span>Follicular</span>
+                        </div>
+                        <span className="text-xs text-muted-foreground opacity-50">Info only</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm">💛</span>
+                          <span>Fertile Window</span>
+                        </div>
+                        <Checkbox
+                          id="fertile"
+                          checked={filters.fertile}
+                          onCheckedChange={(checked) => 
+                            setFilters(prev => ({ ...prev, fertile: !!checked }))
+                          }
+                          className="h-3 w-3"
+                        />
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm">🥚</span>
+                          <span>Ovulation</span>
+                        </div>
+                        <span className="text-xs text-muted-foreground opacity-50">Auto</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm">🌙</span>
+                          <span>Luteal</span>
+                        </div>
+                        <span className="text-xs text-muted-foreground opacity-50">Info only</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </>
             )}
