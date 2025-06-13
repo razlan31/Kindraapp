@@ -80,23 +80,21 @@ export default function MenstrualCyclePage() {
       new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
     );
 
-    // Calculate actual cycle lengths for this connection
+    // Calculate actual cycle lengths for this connection using start-to-start intervals
     const cycleLengths: number[] = [];
     for (let i = 1; i < sortedCycles.length; i++) {
       const prevCycle = sortedCycles[i - 1];
       const currentCycle = sortedCycles[i];
-      if (prevCycle.endDate) {
-        const length = differenceInDays(new Date(currentCycle.startDate), new Date(prevCycle.startDate));
-        if (length > 0 && length <= 60) { // Reasonable cycle length
-          cycleLengths.push(length);
-        }
+      const length = differenceInDays(new Date(currentCycle.startDate), new Date(prevCycle.startDate));
+      if (length > 0 && length <= 60) { // Reasonable cycle length
+        cycleLengths.push(length);
       }
     }
 
-    // Use actual average or fallback to 28 days
+    // Use actual average or fallback to 7 days (as user mentioned 7-day cycles)
     const avgCycleLength = cycleLengths.length > 0 
       ? Math.round(cycleLengths.reduce((sum, len) => sum + len, 0) / cycleLengths.length)
-      : 28;
+      : 7;
 
     // Find the cycle this day belongs to
     for (const cycle of sortedCycles) {
@@ -361,8 +359,9 @@ export default function MenstrualCyclePage() {
           </Card>
         </section>
 
-        {/* Calendar Navigation */}
+        {/* Calendar or List View */}
         <section className="px-4">
+          {viewMode === 'calendar' ? (
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between">
