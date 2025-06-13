@@ -359,14 +359,15 @@ export default function MenstrualCyclePage() {
             // Calculate when this predicted cycle would end (for spacing the next one)
             const predictedCycleEnd = addDays(predictedStart, avgCycleLength - 1);
             
-            const predictedStartDay = startOfDay(predictedStart);
-            const predictedPeriodEndDay = startOfDay(predictedPeriodEnd);
-            const checkDayStart = startOfDay(checkDay);
+            // Use date-only comparison to avoid timezone issues
+            const predictedStartDate = format(predictedStart, 'yyyy-MM-dd');
+            const predictedPeriodEndDate = format(predictedPeriodEnd, 'yyyy-MM-dd');
+            const checkDate = format(checkDay, 'yyyy-MM-dd');
             
 
             
             // Check if the day falls within this predicted period (only show during period days, not full cycle)
-            if (checkDayStart >= predictedStartDay && checkDayStart <= predictedPeriodEndDay) {
+            if (checkDate >= predictedStartDate && checkDate <= predictedPeriodEndDate) {
               // Create a virtual cycle for prediction
               const virtualCycle = {
                 ...lastCycle,
@@ -381,21 +382,19 @@ export default function MenstrualCyclePage() {
               // Debug for June 9-13 range
               if (format(checkDay, 'MM-dd').startsWith('06-')) {
                 console.log(`June prediction for ${format(checkDay, 'MM-dd')}:`, {
-                  predictedStart: predictedStart.toISOString(),
-                  predictedPeriodEnd: predictedPeriodEnd.toISOString(),
-                  checkDay: checkDay.toISOString(),
+                  predictedStartDate,
+                  predictedPeriodEndDate,
+                  checkDate,
                   match: true,
                   cycleId: -i
                 });
               }
             } else if (format(checkDay, 'MM-dd').startsWith('06-')) {
               console.log(`June NO prediction for ${format(checkDay, 'MM-dd')}:`, {
-                predictedStart: predictedStart.toISOString(),
-                predictedPeriodEnd: predictedPeriodEnd.toISOString(),
-                checkDayStart: checkDayStart.toISOString(),
-                predictedStartDay: predictedStartDay.toISOString(),
-                predictedPeriodEndDay: predictedPeriodEndDay.toISOString(),
-                inRange: checkDayStart >= predictedStartDay && checkDayStart <= predictedPeriodEndDay
+                predictedStartDate,
+                predictedPeriodEndDate,
+                checkDate,
+                inRange: checkDate >= predictedStartDate && checkDate <= predictedPeriodEndDate
               });
             }
             
