@@ -2197,24 +2197,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const lastCompletedCycle = completedCycles.sort((a: any, b: any) => 
         new Date(b.endDate).getTime() - new Date(a.endDate).getTime()
       )[0];
+      
+      // Calculate cycle patterns from the last cycle
+      const lastStartDate = new Date(lastCompletedCycle.startDate);
       const lastEndDate = new Date(lastCompletedCycle.endDate);
-      const nextCycleStartDate = new Date(lastEndDate);
-      nextCycleStartDate.setDate(nextCycleStartDate.getDate() + 1); // Next day after cycle ends
+      const lastPeriodEndDate = lastCompletedCycle.periodEndDate ? 
+        new Date(lastCompletedCycle.periodEndDate) : null;
+      
+      // Calculate full cycle length (start to start, typically 28-30 days)
+      const fullCycleLength = Math.ceil((lastEndDate.getTime() - lastStartDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+      const averageCycleLength = fullCycleLength > 35 ? 30 : (fullCycleLength < 21 ? 28 : fullCycleLength); // Reasonable cycle length
+      const periodLength = lastPeriodEndDate ? 
+        Math.ceil((lastPeriodEndDate.getTime() - lastStartDate.getTime()) / (1000 * 60 * 60 * 24)) + 1 : 5; // Default to 5 days
+
+      // Calculate next cycle start date based on average cycle length from last start date
+      const nextCycleStartDate = new Date(lastStartDate);
+      nextCycleStartDate.setDate(nextCycleStartDate.getDate() + averageCycleLength);
 
       // Only create new cycle if the next cycle start date is today or in the past
       if (nextCycleStartDate > today) {
         continue;
       }
-
-      // Calculate cycle patterns from the last cycle
-      const lastStartDate = new Date(lastCompletedCycle.startDate);
-      const lastPeriodEndDate = lastCompletedCycle.periodEndDate ? 
-        new Date(lastCompletedCycle.periodEndDate) : null;
-      
-      // Calculate cycle length and period length
-      const cycleLength = Math.ceil((lastEndDate.getTime() - lastStartDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-      const periodLength = lastPeriodEndDate ? 
-        Math.ceil((lastPeriodEndDate.getTime() - lastStartDate.getTime()) / (1000 * 60 * 60 * 24)) + 1 : 5; // Default to 5 days
 
       // Calculate new cycle dates
       const newCycleStartDate = new Date(nextCycleStartDate);
