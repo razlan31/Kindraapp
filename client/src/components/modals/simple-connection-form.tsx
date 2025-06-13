@@ -43,7 +43,7 @@ export function SimpleConnectionForm({
 
   return (
     <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4 pb-24">
-      <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg w-full max-w-md max-h-[75vh] overflow-hidden flex flex-col">
+      <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg w-full max-w-md max-h-[85vh] overflow-y-auto">
         <div className="flex items-center justify-between p-4 border-b">
           <h2 className="font-heading font-semibold text-lg">Add New Connection</h2>
           <Button variant="ghost" size="icon" onClick={onClose}>
@@ -51,10 +51,9 @@ export function SimpleConnectionForm({
           </Button>
         </div>
         
-        <div className="flex-1 overflow-y-auto">
-          <form onSubmit={handleSubmit} className="p-4 space-y-4">
-            <div className="grid grid-cols-1 gap-4">
-              {/* Image Upload Section - First */}
+        <form onSubmit={handleSubmit} className="p-4 space-y-4">
+          <div className="grid grid-cols-1 gap-4">
+            {/* Image Upload Section - First */}
             <div className="flex flex-col items-center space-y-3">
               <div className="relative">
                 <Avatar className="w-20 h-20">
@@ -85,7 +84,6 @@ export function SimpleConnectionForm({
                     variant="outline"
                     size="sm"
                     onClick={() => {
-                      // Clear the uploaded image by calling the parent component's handler
                       const event = { target: { files: null } } as any;
                       onImageUpload(event);
                     }}
@@ -217,19 +215,18 @@ export function SimpleConnectionForm({
             </div>
           </div>
 
-            <div className="flex justify-between gap-2 pt-4 border-t">
-              <Button type="button" variant="outline" onClick={onClose} className="flex-1">
-                Cancel
-              </Button>
-              <Button 
-                type="submit" 
-                className="flex-1"
-              >
-                Add Connection
-              </Button>
-            </div>
-          </form>
-        </div>
+          <div className="flex justify-between gap-2 pt-4 border-t">
+            <Button type="button" variant="outline" onClick={onClose} className="flex-1">
+              Cancel
+            </Button>
+            <Button 
+              type="submit" 
+              className="flex-1"
+            >
+              Add Connection
+            </Button>
+          </div>
+        </form>
       </div>
     </div>
   );
