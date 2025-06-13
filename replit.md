@@ -111,12 +111,9 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
-- June 13, 2025: Restored specific features from June 1st working version
-  - Restored colored alphabets/initials for multiple connections on same day
-  - Restored automatic cycle generation when manually setting end dates
-  - Reverted unauthorized modifications to match June 1st baseline
+- June 13, 2025. Initial setup
 
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
-Development approach: Make precise, targeted fixes only. Do not modify working features when fixing unrelated issues. Avoid scope creep - stick strictly to the requested changes. NEVER make unauthorized changes without explicit user permission. Only work on exactly what the user requests.
+Development approach: Make precise, targeted fixes only. Do not modify working features when fixing unrelated issues. Avoid scope creep - stick strictly to the requested changes.

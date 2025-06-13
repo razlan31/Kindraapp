@@ -1463,85 +1463,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       const updatedCycle = await storage.updateMenstrualCycle(cycleId, req.body);
-      
-      // Auto-generate next cycle if end date is set and this is a newly completed cycle
-      if (req.body.endDate && !cycle.endDate) {
-        try {
-          await generateNextCycle(userId, updatedCycle);
-        } catch (error) {
-          console.error('Error generating next cycle:', error);
-          // Don't fail the update if next cycle generation fails
-        }
-      }
-      
       res.status(200).json(updatedCycle);
     } catch (error) {
       res.status(500).json({ message: "Server error updating menstrual cycle" });
     }
   });
-
-  // Helper function to generate next cycle automatically
-  async function generateNextCycle(userId: number, completedCycle: any) {
-    try {
-      // Get all cycles for this connection to calculate pattern
-      const allCycles = await storage.getMenstrualCycles(userId);
-      const connectionCycles = allCycles
-        .filter(c => c.connectionId === completedCycle.connectionId)
-        .sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
-
-      // Calculate average cycle length from historical data
-      const cycleLengths: number[] = [];
-      for (let i = 1; i < connectionCycles.length; i++) {
-        const prevCycle = connectionCycles[i - 1];
-        const currentCycle = connectionCycles[i];
-        const length = Math.floor((new Date(currentCycle.startDate).getTime() - new Date(prevCycle.startDate).getTime()) / (1000 * 60 * 60 * 24));
-        if (length > 0 && length <= 60) { // Reasonable cycle length
-          cycleLengths.push(length);
-        }
-      }
-
-      // Use average cycle length or fallback to 28 days
-      const avgCycleLength = cycleLengths.length > 0 
-        ? Math.round(cycleLengths.reduce((sum, len) => sum + len, 0) / cycleLengths.length)
-        : 28;
-
-      // Calculate period length from completed cycle or use default
-      const completedCycleStart = new Date(completedCycle.startDate);
-      const completedCyclePeriodEnd = completedCycle.periodEndDate ? new Date(completedCycle.periodEndDate) : null;
-      const periodLength = completedCyclePeriodEnd 
-        ? Math.floor((completedCyclePeriodEnd.getTime() - completedCycleStart.getTime()) / (1000 * 60 * 60 * 24)) + 1
-        : 5; // Default 5 days
-
-      // Calculate next cycle start date based on average cycle length
-      const nextStartDate = new Date(completedCycle.startDate);
-      nextStartDate.setDate(nextStartDate.getDate() + avgCycleLength); // Start based on cycle length, not end date
-
-      // Calculate period end date for next cycle
-      const nextPeriodEndDate = new Date(nextStartDate);
-      nextPeriodEndDate.setDate(nextPeriodEndDate.getDate() + periodLength - 1);
-
-      // Create next cycle
-      const nextCycleData = {
-        userId: completedCycle.userId,
-        connectionId: completedCycle.connectionId,
-        startDate: nextStartDate,
-        periodEndDate: nextPeriodEndDate,
-        endDate: null, // Will be set when cycle is completed
-        notes: `Auto-generated cycle following ${avgCycleLength}-day pattern`,
-        mood: null,
-        symptoms: null,
-        flowIntensity: null
-      };
-
-      console.log(`Auto-generating next cycle for connection ${completedCycle.connectionId}:`, nextCycleData);
-      
-      const newCycle = await storage.createMenstrualCycle(nextCycleData);
-      return newCycle;
-    } catch (error) {
-      console.error('Error in generateNextCycle:', error);
-      throw error;
-    }
-  }
   
   // Milestone routes
   app.get("/api/milestones", isAuthenticated, async (req, res) => {
