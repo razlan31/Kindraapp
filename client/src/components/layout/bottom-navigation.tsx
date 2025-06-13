@@ -55,7 +55,12 @@ export function BottomNavigation() {
   // Create connection mutation
   const createConnectionMutation = useMutation({
     mutationFn: async (formData: FormData) => {
-      return await apiRequest("/api/connections", "POST", formData);
+      // Convert FormData to object for JSON request
+      const connectionData: any = {};
+      for (const [key, value] of formData.entries()) {
+        connectionData[key] = value;
+      }
+      return await apiRequest("/api/connections", "POST", connectionData);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/connections"] });
