@@ -316,7 +316,7 @@ export default function Activities() {
                   <ChevronDown className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-[var(--radix-dropdown-menu-trigger-width)] min-w-[var(--radix-dropdown-menu-trigger-width)]" align="start">
+              <DropdownMenuContent className="w-[var(--radix-dropdown-menu-trigger-width)] min-w-[var(--radix-dropdown-menu-trigger-width)] max-h-80 overflow-y-auto" align="start">
                 <div className="p-2">
                   <div 
                     className="flex items-center gap-3 py-3 px-4 text-base cursor-pointer hover:bg-accent rounded-sm"
