@@ -69,15 +69,14 @@ export default function Activities() {
   // Handle image upload
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file) return;
+    if (!file) {
+      setUploadedImage(null);
+      return;
+    }
 
     try {
-      const compressedBlob = await compressImage(file);
-      const reader = new FileReader();
-      reader.onload = () => {
-        setUploadedImage(reader.result as string);
-      };
-      reader.readAsDataURL(compressedBlob);
+      const compressedDataUrl = await compressImage(file);
+      setUploadedImage(compressedDataUrl);
     } catch (error) {
       console.error("Error processing image:", error);
       toast({
@@ -110,10 +109,7 @@ export default function Activities() {
         startDate: startDate ? new Date(startDate) : null,
       };
 
-      const response = await apiRequest('/api/connections', {
-        method: 'POST',
-        body: JSON.stringify(connectionData),
-      });
+      const response = await apiRequest('/api/connections', 'POST', connectionData);
 
       if (response.ok) {
         queryClient.invalidateQueries({ queryKey: ['/api/connections'] });
@@ -548,8 +544,6 @@ export default function Activities() {
         onSubmit={handleAddConnection}
         uploadedImage={uploadedImage}
         onImageUpload={handleImageUpload}
-        customStageValue={customStageValue}
-        setCustomStageValue={setCustomStageValue}
       />
     </div>
   );

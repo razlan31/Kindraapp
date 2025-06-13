@@ -13,7 +13,17 @@ interface SimpleConnectionFormProps {
 }
 
 const defaultRelationshipStages = [
-  'Potential', 'Talking', 'Dating', 'Relationship', 'Best Friend', 'Close Friend', 'Friend', 'Roommate', 'Family', 'Situationship', 'Ex'
+  "Potential",
+  "Talking", 
+  "Situationship",
+  "It's Complicated",
+  "Dating",
+  "Spouse",
+  "FWB",
+  "Ex",
+  "Friend",
+  "Best Friend",
+  "Siblings"
 ];
 
 export function SimpleConnectionForm({ 
