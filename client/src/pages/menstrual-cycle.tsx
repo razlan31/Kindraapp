@@ -1002,12 +1002,13 @@ export default function MenstrualCyclePage() {
                               const initial = getPersonInitial(cycle.connectionId);
                               const stage = getCycleStage(day, cycle);
                               
-                              // Get stage color
+                              // Get stage color to match calendar page
                               let stageColor = colors.accent;
                               if (stage === 'menstrual') stageColor = 'bg-red-500';
-                              else if (stage === 'ovulation') stageColor = 'bg-blue-600';
-                              else if (stage === 'fertile') stageColor = 'bg-blue-300';
+                              else if (stage === 'ovulation') stageColor = 'bg-pink-500';
+                              else if (stage === 'fertile') stageColor = 'bg-yellow-500';
                               else if (stage === 'luteal') stageColor = 'bg-purple-500';
+                              else if (stage === 'follicular') stageColor = 'bg-green-500';
                               
                               return (
                                 <div
@@ -1037,7 +1038,7 @@ export default function MenstrualCyclePage() {
                             const initial = getPersonInitial(cycle.connectionId);
                             const stage = getCycleStage(day, cycle);
                             
-                            // Get stage color and style
+                            // Get stage color and style to match calendar page
                             if (stage === 'menstrual') {
                               return (
                                 <div className="w-8 h-8 rounded-full bg-red-500 flex flex-col items-center justify-center text-white">
@@ -1047,14 +1048,21 @@ export default function MenstrualCyclePage() {
                               );
                             } else if (stage === 'ovulation') {
                               return (
-                                <div className="w-8 h-8 rounded-full bg-blue-600 flex flex-col items-center justify-center text-white">
+                                <div className="w-8 h-8 rounded-full bg-pink-500 flex flex-col items-center justify-center text-white">
                                   <span className="text-xs font-bold">{initial}</span>
                                   <span className="text-xs">{format(day, 'd')}</span>
                                 </div>
                               );
                             } else if (stage === 'fertile') {
                               return (
-                                <div className="w-8 h-8 rounded-full bg-blue-300 flex flex-col items-center justify-center text-white">
+                                <div className="w-8 h-8 rounded-full bg-yellow-500 flex flex-col items-center justify-center text-white">
+                                  <span className="text-xs font-bold">{initial}</span>
+                                  <span className="text-xs">{format(day, 'd')}</span>
+                                </div>
+                              );
+                            } else if (stage === 'follicular') {
+                              return (
+                                <div className="w-8 h-8 rounded-full bg-green-500 flex flex-col items-center justify-center text-white">
                                   <span className="text-xs font-bold">{initial}</span>
                                   <span className="text-xs">{format(day, 'd')}</span>
                                 </div>
@@ -1087,20 +1095,24 @@ export default function MenstrualCyclePage() {
               <div className="mt-4 space-y-3">
                 <div className="grid grid-cols-1 gap-2 text-xs">
                   <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded-full bg-red-500 flex items-center justify-center text-white text-xs font-bold">A</div>
-                    <span>Menstrual phase (with person initial)</span>
+                    <span className="text-lg">🩸</span>
+                    <span>Menstrual phase</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded-full bg-blue-300 flex items-center justify-center text-white text-xs font-bold">A</div>
-                    <span>Fertile window (with person initial)</span>
+                    <span className="text-lg">🌱</span>
+                    <span>Follicular phase</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-bold">A</div>
-                    <span>Ovulation day (with person initial)</span>
+                    <span className="text-lg">💛</span>
+                    <span>Fertile window</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded-full bg-purple-500 flex items-center justify-center text-white text-xs font-bold">A</div>
-                    <span>Luteal phase (with person initial)</span>
+                    <span className="text-lg">🥚</span>
+                    <span>Ovulation day</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">🌙</span>
+                    <span>Luteal phase</span>
                   </div>
                 </div>
                 
