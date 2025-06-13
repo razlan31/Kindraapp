@@ -434,8 +434,28 @@ export default function MenstrualCyclePage() {
                     }
                   }
                   
-                  // Use the first cycle phase for display
-                  if (cyclePhases.length > 0) {
+                  // Handle multiple connections display
+                  if (cyclePhases.length > 1) {
+                    // Multiple connections - show colored initials
+                    const colors = ['bg-red-200', 'bg-blue-200', 'bg-green-200', 'bg-purple-200', 'bg-yellow-200', 'bg-pink-200'];
+                    const coloredInitials = cyclePhases.map((phase, index) => ({
+                      initial: phase.connection?.name?.charAt(0) || '?',
+                      color: colors[index % colors.length],
+                      connection: phase.connection,
+                      phase: phase.phase
+                    }));
+                    
+                    cycleDisplay = {
+                      color: 'bg-gradient-to-r from-red-100 to-blue-100 border-2 border-primary/30',
+                      indicator: '',
+                      title: `Multiple cycles: ${cyclePhases.map(p => p.connection?.name || 'Unknown').join(', ')}`,
+                      description: 'Multiple connections',
+                      isMultiple: true,
+                      phases: cyclePhases,
+                      coloredInitials
+                    };
+                  } else if (cyclePhases.length === 1) {
+                    // Single connection - use normal display
                     cycleDisplay = getCycleDisplayInfo(cyclePhases[0]);
                   }
                   
@@ -457,9 +477,21 @@ export default function MenstrualCyclePage() {
                         <span className={`text-xs ${isToday ? 'font-bold text-primary' : ''}`}>
                           {format(day, 'd')}
                         </span>
-                        {cycleDisplay && (
+                        {cycleDisplay && cycleDisplay.isMultiple ? (
+                          <div className="flex flex-wrap gap-0.5 mt-0.5">
+                            {cycleDisplay.coloredInitials?.map((item: any, index: number) => (
+                              <span 
+                                key={index}
+                                className={`text-xs px-1 rounded ${item.color} text-gray-800 font-medium`}
+                                title={item.connection?.name}
+                              >
+                                {item.initial}
+                              </span>
+                            ))}
+                          </div>
+                        ) : cycleDisplay ? (
                           <span className="text-xs mt-0.5">{cycleDisplay.indicator}</span>
-                        )}
+                        ) : null}
                       </div>
                     </button>
                   );
