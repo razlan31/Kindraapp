@@ -1041,7 +1041,7 @@ export default function MenstrualCyclePage() {
                             let indicator = '';
                             
                             if (stage === 'menstrual') indicator = '🩸';
-                            else if (stage === 'ovulation') indicator = '💗';
+                            else if (stage === 'ovulation') indicator = '🥚';
                             else if (stage === 'fertile') indicator = '💗';
                             else if (stage === 'follicular') indicator = '🌱';
                             else if (stage === 'luteal') indicator = '🌙';
@@ -1086,7 +1086,7 @@ export default function MenstrualCyclePage() {
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="w-4 h-4 bg-blue-700 dark:bg-blue-800 border border-blue-800 dark:border-blue-900 rounded flex items-center justify-center">
-                      <span className="text-xs">💗</span>
+                      <span className="text-xs">🥚</span>
                     </div>
                     <span>Ovulation day</span>
                   </div>
