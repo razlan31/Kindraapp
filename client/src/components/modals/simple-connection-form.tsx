@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { X, Camera } from "lucide-react";
 
 interface SimpleConnectionFormProps {
@@ -21,6 +21,10 @@ export function SimpleConnectionForm({
   setCustomStageValue
 }: SimpleConnectionFormProps) {
   
+  const [selectedStage, setSelectedStage] = useState("Friend");
+  const [isCustomStage, setIsCustomStage] = useState(false);
+  const [internalCustomValue, setInternalCustomValue] = useState("");
+
   // Disable body scroll when modal is open
   useEffect(() => {
     if (isOpen) {
@@ -32,6 +36,15 @@ export function SimpleConnectionForm({
     return () => {
       document.body.style.overflow = 'unset';
     };
+  }, [isOpen]);
+
+  // Reset form when modal closes
+  useEffect(() => {
+    if (!isOpen) {
+      setSelectedStage("Friend");
+      setIsCustomStage(false);
+      setInternalCustomValue("");
+    }
   }, [isOpen]);
 
   if (!isOpen) return null;
@@ -95,47 +108,64 @@ export function SimpleConnectionForm({
 
           {/* Relationship Stage */}
           <div>
-            <label className="block text-sm font-medium mb-2">Relationship Stage</label>
-            <select
-              name="relationshipStage"
-              className="w-full p-3 border rounded-lg text-base"
-              defaultValue="Friend"
-              onFocus={(e) => {
-                // Prevent the refresh behavior by ensuring the select stays focused
-                e.target.style.outline = 'none';
-              }}
-              onChange={(e) => {
-                e.preventDefault();
-                if (e.target.value === "Custom") {
-                  setCustomStageValue("");
-                }
-              }}
-            >
-              <option value="Stranger">Stranger</option>
-              <option value="Acquaintance">Acquaintance</option>
-              <option value="Friend">Friend</option>
-              <option value="Close Friend">Close Friend</option>
-              <option value="Best Friend">Best Friend</option>
-              <option value="Dating">Dating</option>
-              <option value="In a Relationship">In a Relationship</option>
-              <option value="Engaged">Engaged</option>
-              <option value="Married">Married</option>
-              <option value="Family">Family</option>
-              <option value="Custom">Custom</option>
-            </select>
-          </div>
-
-          {/* Custom Stage Input */}
-          <div>
-            <label className="block text-sm font-medium mb-2">Custom Stage</label>
-            <input
-              name="customStage"
-              type="text"
-              value={customStageValue}
-              onChange={(e) => setCustomStageValue(e.target.value)}
-              className="w-full p-3 border rounded-lg text-base"
-              placeholder="Enter custom relationship stage"
-            />
+            <label className="block text-sm font-medium mb-2">Relationship Stage <span className="text-red-500">*</span></label>
+            <div className="space-y-2 max-h-40 overflow-y-auto border rounded-lg p-3">
+              {[
+                "Potential", "Talking", "Situationship", "It's Complicated", 
+                "Dating", "Spouse", "FWB", "Ex", "Friend", "Best Friend", "Siblings"
+              ].map((stage) => (
+                <label key={stage} className="flex items-center space-x-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="relationshipStage"
+                    value={stage}
+                    checked={!isCustomStage && selectedStage === stage}
+                    onChange={() => {
+                      setSelectedStage(stage);
+                      setIsCustomStage(false);
+                      setInternalCustomValue("");
+                    }}
+                    className="text-blue-600"
+                  />
+                  <span className="text-sm">{stage}</span>
+                </label>
+              ))}
+              <label className="flex items-center space-x-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="relationshipStage"
+                  value="Custom"
+                  checked={isCustomStage}
+                  onChange={() => {
+                    setIsCustomStage(true);
+                    setSelectedStage("");
+                  }}
+                  className="text-blue-600"
+                />
+                <span className="text-sm">Custom Relationship Stage</span>
+              </label>
+            </div>
+            
+            {isCustomStage && (
+              <div className="mt-3">
+                <input
+                  name="customStage"
+                  type="text"
+                  value={internalCustomValue}
+                  onChange={(e) => setInternalCustomValue(e.target.value)}
+                  placeholder="Enter custom stage (e.g., Mom, Dad, Sister, Colleague)"
+                  className="w-full p-3 border rounded-lg text-base"
+                />
+              </div>
+            )}
+            
+            {!isCustomStage && (
+              <input type="hidden" name="relationshipStage" value={selectedStage} />
+            )}
+            
+            <p className="text-xs text-gray-500 mt-1">
+              Examples: Mom, Dad, Sister, Colleague, Mentor, etc.
+            </p>
           </div>
 
           {/* Love Languages */}
@@ -156,36 +186,6 @@ export function SimpleConnectionForm({
             </div>
           </div>
 
-          {/* Birthday */}
-          <div>
-            <label className="block text-sm font-medium mb-2">Birthday</label>
-            <input
-              name="birthday"
-              type="date"
-              className="w-full p-3 border rounded-lg text-base"
-            />
-          </div>
-
-          {/* Zodiac Sign */}
-          <div>
-            <label className="block text-sm font-medium mb-2">Zodiac Sign</label>
-            <select name="zodiacSign" className="w-full p-3 border rounded-lg text-base">
-              <option value="">Select sign or enter birthday above</option>
-              <option value="Aries">Aries</option>
-              <option value="Taurus">Taurus</option>
-              <option value="Gemini">Gemini</option>
-              <option value="Cancer">Cancer</option>
-              <option value="Leo">Leo</option>
-              <option value="Virgo">Virgo</option>
-              <option value="Libra">Libra</option>
-              <option value="Scorpio">Scorpio</option>
-              <option value="Sagittarius">Sagittarius</option>
-              <option value="Capricorn">Capricorn</option>
-              <option value="Aquarius">Aquarius</option>
-              <option value="Pisces">Pisces</option>
-            </select>
-          </div>
-
           {/* Connection Start Date */}
           <div>
             <label className="block text-sm font-medium mb-2">Connection Start Date</label>
@@ -194,6 +194,59 @@ export function SimpleConnectionForm({
               type="date"
               className="w-full p-3 border rounded-lg text-base"
             />
+            <p className="text-xs text-gray-500 mt-1">When did this connection begin?</p>
+          </div>
+
+          {/* Birthday */}
+          <div>
+            <label className="block text-sm font-medium mb-2">Birthday</label>
+            <input
+              name="birthday"
+              type="date"
+              className="w-full p-3 border rounded-lg text-base"
+            />
+            <p className="text-xs text-gray-500 mt-1">Remember important dates</p>
+          </div>
+
+          {/* Optional Details Section */}
+          <div className="space-y-4 bg-gray-50 p-4 rounded-lg">
+            <h3 className="text-sm font-medium">Optional Details</h3>
+            
+            {/* Zodiac Sign */}
+            <div>
+              <label className="block text-xs text-gray-500 mb-2">Zodiac Sign</label>
+              <select name="zodiacSign" className="w-full p-2 border rounded-md bg-white text-sm">
+                <option value="">Select sign or enter birthday above</option>
+                <option value="Aries">Aries</option>
+                <option value="Taurus">Taurus</option>
+                <option value="Gemini">Gemini</option>
+                <option value="Cancer">Cancer</option>
+                <option value="Leo">Leo</option>
+                <option value="Virgo">Virgo</option>
+                <option value="Libra">Libra</option>
+                <option value="Scorpio">Scorpio</option>
+                <option value="Sagittarius">Sagittarius</option>
+                <option value="Capricorn">Capricorn</option>
+                <option value="Aquarius">Aquarius</option>
+                <option value="Pisces">Pisces</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Privacy Option */}
+          <div className="flex items-start space-x-3 space-y-0 rounded-md border p-4">
+            <input 
+              type="checkbox" 
+              name="isPrivate" 
+              id="private"
+              className="mt-1"
+            />
+            <div className="space-y-1 leading-none">
+              <label htmlFor="private" className="text-sm font-medium">Keep this connection private</label>
+              <p className="text-sm text-gray-500">
+                Private connections are only visible to you
+              </p>
+            </div>
           </div>
 
           {/* Submit Buttons */}
