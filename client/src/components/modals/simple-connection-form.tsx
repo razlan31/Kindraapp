@@ -43,7 +43,7 @@ export function SimpleConnectionForm({
 
   return (
     <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4 pb-24">
-      <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg w-full max-w-md max-h-[80vh] overflow-hidden flex flex-col">
+      <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg w-full max-w-md max-h-[75vh] overflow-hidden flex flex-col">
         <div className="flex items-center justify-between p-4 border-b">
           <h2 className="font-heading font-semibold text-lg">Add New Connection</h2>
           <Button variant="ghost" size="icon" onClick={onClose}>
@@ -54,7 +54,7 @@ export function SimpleConnectionForm({
         <div className="flex-1 overflow-y-auto">
           <form onSubmit={handleSubmit} className="p-4 space-y-4">
             <div className="grid grid-cols-1 gap-4">
-            {/* Image Upload Section - First */}
+              {/* Image Upload Section - First */}
             <div className="flex flex-col items-center space-y-3">
               <div className="relative">
                 <Avatar className="w-20 h-20">
