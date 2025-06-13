@@ -535,10 +535,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = (req.session as any).userId as number;
       console.log("User ID from session:", userId);
       
+      // Validate required fields
+      if (!req.body.name || req.body.name.trim() === '') {
+        console.log("Validation failed: name is required");
+        return res.status(400).json({
+          message: "Connection name is required",
+          field: "name"
+        });
+      }
+      
       // Create connection object with all form data
       const connectionData: any = {
         userId: userId,
-        name: req.body.name,
+        name: req.body.name.trim(),
         relationshipStage: req.body.relationshipStage || "Talking",
         startDate: req.body.startDate ? new Date(req.body.startDate) : null,
         birthday: req.body.birthday ? new Date(req.body.birthday) : null,
