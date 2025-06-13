@@ -81,7 +81,7 @@ export function MomentModal() {
   const { mutate: createMoment, isPending } = useMutation({
     mutationFn: async (data: z.infer<typeof formSchema>) => {
       console.log("Creating moment with data:", data);
-      const response = await apiRequest("/api/moments", "POST", data);
+      const response = await apiRequest("POST", "/api/moments", data);
       return response.json();
     },
     onSuccess: () => {
@@ -118,7 +118,7 @@ export function MomentModal() {
   // Milestone creation mutation
   const { mutate: createMilestone } = useMutation({
     mutationFn: async (milestoneData: any) => {
-      return await apiRequest("/api/milestones", "POST", milestoneData);
+      return await apiRequest("POST", "/api/milestones", milestoneData);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/milestones"] });
@@ -266,7 +266,7 @@ export function MomentModal() {
                           </div>
                           <div className="flex items-center gap-2">
                             <span className="h-4 w-4 rounded-full bg-pink-500 flex-shrink-0"></span>
-                            <span className="text-xs">Sex: Physical/emotional intimate moments</span>
+                            <span className="text-xs">Intimacy: Physical/emotional intimate moments</span>
                           </div>
                           <div className="flex items-center gap-2">
                             <span className="h-4 w-4 rounded-full bg-blue-500 flex-shrink-0"></span>
@@ -300,9 +300,9 @@ export function MomentModal() {
                     />
                   </FormControl>
                   <div className="space-y-1 leading-none">
-                    <FormLabel>This is a sexual moment</FormLabel>
+                    <FormLabel>This is an intimate moment</FormLabel>
                     <FormDescription>
-                      Track sexual moments to identify patterns in your relationship
+                      Track intimate moments to identify patterns in your relationship
                     </FormDescription>
                   </div>
                 </FormItem>
@@ -315,7 +315,7 @@ export function MomentModal() {
                 name="intimacyRating"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Experience Quality</FormLabel>
+                    <FormLabel>Intimacy Quality</FormLabel>
                     <Select
                       value={field.value}
                       onValueChange={field.onChange}
@@ -333,7 +333,7 @@ export function MomentModal() {
                       </SelectContent>
                     </Select>
                     <FormDescription>
-                      This helps identify patterns in your sexual connection
+                      This helps identify patterns in your intimate connection
                     </FormDescription>
                     <FormMessage />
                   </FormItem>

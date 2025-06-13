@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useLocation } from "wouter";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Connection, Moment } from "@shared/schema";
+import { Connection } from "@shared/schema";
 import { BottomNavigation } from "@/components/layout/bottom-navigation";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -13,45 +13,6 @@ import { useModal } from "@/contexts/modal-context";
 import { useRelationshipFocus } from "@/contexts/relationship-focus-context";
 import { MilestoneModal } from "@/components/modals/milestone-modal";
 import { PlanModal } from "@/components/modals/plan-modal";
-
-// Helper function to generate descriptive activity names when no title is provided
-function generateActivityName(moment: Moment): string {
-  if (moment.title && moment.title.trim() !== '') {
-    return moment.title;
-  }
-
-  // Check for specific moment types only: conflicts, intimacy, plans, or regular moments
-  
-  // 1. Check for conflicts first
-  if (moment.tags?.includes('Conflict') || moment.emoji === '⚡') {
-    return 'Conflict';
-  }
-  
-  // 2. Check for intimacy
-  if (moment.isIntimate || moment.tags?.includes('Intimacy')) {
-    return 'Intimacy';
-  }
-  
-  // 3. Check for plans
-  if (moment.tags?.includes('Plan')) {
-    return 'Plan';
-  }
-  
-  // 4. For regular moments, determine if positive, negative, or neutral
-  const positiveEmojis = ['😍', '💕', '❤️', '🥰', '😊', '🤗', '💖', '🌟', '✨', '💫', '🔥', '😘', '🥳', '🎉'];
-  const negativeEmojis = ['😢', '😞', '😕', '💔', '😤', '😠', '🙄', '😣', '😭', '😰', '😡', '🤬', '😩', '😫'];
-  
-  if (moment.tags?.includes('Green Flag') || positiveEmojis.includes(moment.emoji)) {
-    return 'Positive Moment';
-  }
-  
-  if (moment.tags?.includes('Red Flag') || moment.tags?.includes('Yellow Flag') || negativeEmojis.includes(moment.emoji)) {
-    return 'Negative Moment';
-  }
-  
-  // Default to neutral moment
-  return 'Moment';
-}
 
 export default function ConnectionDetail() {
   const { id } = useParams();
@@ -475,7 +436,7 @@ export default function ConnectionDetail() {
                       <div className="text-2xl">{moment.emoji}</div>
                       <div className="flex-1">
                         <div className="flex items-center justify-between mb-1">
-                          <h4 className="font-medium text-sm">{generateActivityName(moment)}</h4>
+                          <h4 className="font-medium text-sm">{moment.title || 'Untitled Moment'}</h4>
                           <span className="text-xs text-neutral-500">
                             {format(new Date(moment.createdAt), 'MMM d, yyyy')}
                           </span>

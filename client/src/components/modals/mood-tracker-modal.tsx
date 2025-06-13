@@ -110,7 +110,7 @@ export function MoodTrackerModal({ isOpen, onClose, connection }: MoodTrackerMod
   // Create moment mutation
   const { mutate: createMoment, isPending } = useMutation({
     mutationFn: async (data: any) => {
-      const response = await apiRequest("/api/moments", "POST", data);
+      const response = await apiRequest("POST", "/api/moments", data);
       return response.json();
     },
     onSuccess: () => {

@@ -1,8 +1,8 @@
 import { apiRequest } from "./queryClient";
 import { User } from "@shared/schema";
 
-export async function loginUser(username: string, password: string, rememberMe?: boolean): Promise<User> {
-  const response = await apiRequest("/api/login", "POST", { username, password, rememberMe });
+export async function loginUser(username: string, password: string): Promise<User> {
+  const response = await apiRequest("POST", "/api/login", { username, password });
   return await response.json();
 }
 
@@ -15,12 +15,12 @@ export async function registerUser(userData: {
   zodiacSign?: string;
   loveLanguage?: string;
 }): Promise<User> {
-  const response = await apiRequest("/api/register", "POST", userData);
+  const response = await apiRequest("POST", "/api/register", userData);
   return await response.json();
 }
 
 export async function logoutUser(): Promise<void> {
-  await apiRequest("/api/logout", "POST");
+  await apiRequest("POST", "/api/logout");
 }
 
 export async function getCurrentUser(): Promise<User | null> {

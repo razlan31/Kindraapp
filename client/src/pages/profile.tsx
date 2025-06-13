@@ -16,16 +16,10 @@ import { Checkbox } from "@/components/ui/checkbox";
 export default function ProfilePage() {
   const { logout, refreshUser } = useAuth();
   
-  // Use React Query to fetch user data directly with forced refresh
-  const { data: user, isLoading: loading, refetch } = useQuery({
+  // Use React Query to fetch user data directly
+  const { data: user, isLoading: loading } = useQuery({
     queryKey: ['/api/me'],
-    queryFn: () => fetch('/api/me', { 
-      cache: 'no-cache',
-      headers: { 'Cache-Control': 'no-cache' }
-    }).then(res => res.json()),
-    staleTime: 0,
-    refetchOnMount: true,
-    refetchOnWindowFocus: true
+    queryFn: () => fetch('/api/me').then(res => res.json())
   });
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -34,48 +28,64 @@ export default function ProfilePage() {
   // Edit mode state - always start in view mode
   const [isEditing, setIsEditing] = useState(false);
   
-  // Force refresh form data when user data changes
+  // Initialize form data when user loads
   useEffect(() => {
-    if (user && typeof user === 'object' && user.id) {
-      console.log("Force refreshing form data with user:", user);
-      const newFormData = {
+    if (user) {
+      console.log("Initializing form data with user:", user);
+      setFormData({
         displayName: user.displayName || "",
         email: user.email || "",
-        birthday: user.birthday ? new Date(user.birthday).toISOString().split('T')[0] : "",
         zodiacSign: user.zodiacSign || "",
-        loveLanguages: user.loveLanguage ? user.loveLanguage.split(", ").filter((lang: string, index: number, arr: string[]) => arr.indexOf(lang) === index) : [],
-        relationshipGoals: user.relationshipGoals || "",
-        relationshipStyle: user.relationshipStyle || "",
-        bio: user.personalNotes || "",
+        loveLanguages: user.loveLanguage ? user.loveLanguage.split(", ").filter((lang, index, arr) => arr.indexOf(lang) === index) : [],
+        relationshipGoals: "Finding meaningful connections",
+        relationshipStyle: "Exploring",
+        bio: "Building deeper emotional connections and understanding relationship patterns.",
         notifications: true,
         privateMode: false,
         analyticsSharing: true,
         profileImage: user.profileImage || ""
-      };
-      setFormData(newFormData);
+      });
     }
-  }, [user?.id, user?.email, user?.relationshipGoals, user?.relationshipStyle, user?.personalNotes]);
+  }, [user]);
 
   // Form state
   const [formData, setFormData] = useState({
     displayName: "",
     email: "",
-    birthday: "",
     zodiacSign: "",
     loveLanguages: [] as string[],
-    relationshipGoals: "",
-    relationshipStyle: "",
-    bio: "",
+    relationshipGoals: "Finding meaningful connections",
+    relationshipStyle: "Exploring",
+    bio: "Building deeper emotional connections and understanding relationship patterns.",
     notifications: true,
     privateMode: false,
     analyticsSharing: true,
     profileImage: ""
   });
 
+  // Update form when user data loads
+  useEffect(() => {
+    if (user) {
+      setFormData({
+        displayName: user.displayName || "",
+        email: user.email || "",
+        zodiacSign: user.zodiacSign || "",
+        loveLanguages: user.loveLanguage ? [user.loveLanguage] : [],
+        relationshipGoals: "Finding meaningful connections",
+        relationshipStyle: "Exploring",
+        bio: "Building deeper emotional connections and understanding relationship patterns.",
+        notifications: true,
+        privateMode: false,
+        analyticsSharing: true,
+        profileImage: ""
+      });
+    }
+  }, [user]);
+
   const saveMutation = useMutation({
     mutationFn: async (data: any) => {
       const response = await fetch('/api/me', {
-        method: 'PATCH',
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -83,25 +93,24 @@ export default function ProfilePage() {
       });
       
       if (!response.ok) {
-        try {
-          const errorData = await response.json();
-          throw new Error(errorData.message || 'Failed to update profile');
-        } catch {
-          throw new Error('Failed to update profile');
-        }
+        const errorText = await response.text();
+        throw new Error(errorText || 'Failed to update profile');
       }
       
       return response.json();
     },
-    onSuccess: async (updatedUser) => {
+    onSuccess: async () => {
       toast({
         title: "Profile updated",
         description: "Your profile has been updated successfully.",
       });
-      // Invalidate and refetch user data to ensure fresh data from server
-      await queryClient.invalidateQueries({ queryKey: ['/api/me'] });
-      // Also invalidate connections cache since self-connection data is updated
-      await queryClient.invalidateQueries({ queryKey: ['/api/connections'] });
+      // Optimistic update - update cache immediately
+      queryClient.setQueryData(['/api/me'], (oldData: any) => ({
+        ...oldData,
+        ...Object.fromEntries(
+          Object.entries(formData).filter(([_, value]) => value !== undefined && value !== null)
+        )
+      }));
       await refreshUser(); // Refresh the auth context user data
       setIsEditing(false);
     },
@@ -118,12 +127,8 @@ export default function ProfilePage() {
     saveMutation.mutate({
       displayName: formData.displayName,
       email: formData.email,
-      birthday: formData.birthday ? new Date(formData.birthday).toISOString() : null,
       zodiacSign: formData.zodiacSign,
       loveLanguage: formData.loveLanguages.join(", "),
-      relationshipGoals: formData.relationshipGoals,
-      relationshipStyle: formData.relationshipStyle,
-      personalNotes: formData.bio,
       profileImage: formData.profileImage,
     });
   };
@@ -134,12 +139,11 @@ export default function ProfilePage() {
       setFormData({
         displayName: user.displayName || "",
         email: user.email || "",
-        birthday: user.birthday ? new Date(user.birthday).toISOString().split('T')[0] : "",
         zodiacSign: user.zodiacSign || "",
         loveLanguages: user.loveLanguage ? user.loveLanguage.split(", ").filter((lang, index, arr) => arr.indexOf(lang) === index) : [],
-        relationshipGoals: user.relationshipGoals || "",
-        relationshipStyle: user.relationshipStyle || "",
-        bio: user.personalNotes || "",
+        relationshipGoals: "Finding meaningful connections",
+        relationshipStyle: "Exploring",
+        bio: "Building deeper emotional connections and understanding relationship patterns.",
         notifications: true,
         privateMode: false,
         analyticsSharing: true,
@@ -202,10 +206,9 @@ export default function ProfilePage() {
   };
 
   console.log("Profile page - loading:", loading, "user:", user, "isEditing:", isEditing);
-  console.log("Profile debug - user.email:", user?.email, "user.relationshipGoals:", user?.relationshipGoals, "user.relationshipStyle:", user?.relationshipStyle);
 
-  // Show loading while auth is loading
-  if (loading) {
+  // Show loading while auth is loading or user is not available
+  if (loading || !user) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
@@ -216,14 +219,8 @@ export default function ProfilePage() {
     );
   }
 
-  // Redirect to login if no user
-  if (!user || typeof user !== 'object' || !user.id) {
-    window.location.href = '/login';
-    return null;
-  }
-
   return (
-    <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900" key={`profile-${user.id}-${user.email}-${user.relationshipGoals}`}>
+    <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900">
       <div className="max-w-2xl mx-auto p-3 space-y-4">
         {/* Header */}
         <div className="flex items-center gap-4 pt-4">
@@ -249,14 +246,12 @@ export default function ProfilePage() {
                   setFormData({
                     displayName: user.displayName || "",
                     email: user.email || "",
-                    birthday: user.birthday ? new Date(user.birthday).toISOString().split('T')[0] : "",
                     zodiacSign: user.zodiacSign || "",
                     loveLanguages: currentLoveLanguages,
-                    relationshipGoals: user.relationshipGoals || "",
-                    relationshipStyle: user.relationshipStyle || "",
-                    bio: user.personalNotes || "",
+                    relationshipGoals: "Finding meaningful connections",
+                    relationshipStyle: "Exploring",
+                    bio: "Building deeper emotional connections and understanding relationship patterns.",
                     notifications: true,
-                    privateMode: false,
                     analyticsSharing: true,
                     profileImage: user.profileImage || ""
                   });
@@ -356,23 +351,6 @@ export default function ProfilePage() {
               </div>
 
               <div>
-                <Label htmlFor="birthday">Birthday</Label>
-                {isEditing ? (
-                  <Input
-                    id="birthday"
-                    type="date"
-                    value={formData.birthday}
-                    onChange={(e) => setFormData(prev => ({ ...prev, birthday: e.target.value }))}
-                    className="mt-1"
-                  />
-                ) : (
-                  <p className="mt-1 text-sm text-neutral-900 dark:text-neutral-100">
-                    {user.birthday ? new Date(user.birthday).toLocaleDateString() : "Not set"}
-                  </p>
-                )}
-              </div>
-
-              <div>
                 <Label htmlFor="zodiacSign">Zodiac Sign</Label>
                 {isEditing ? (
                   <Select value={formData.zodiacSign} onValueChange={(value) => setFormData(prev => ({ ...prev, zodiacSign: value }))}>
@@ -440,7 +418,7 @@ export default function ProfilePage() {
                 </Select>
               ) : (
                 <p className="mt-1 text-sm text-neutral-900 dark:text-neutral-100">
-                  {user.relationshipGoals || "Not set"}
+                  {formData.relationshipGoals}
                 </p>
               )}
             </div>
@@ -461,7 +439,7 @@ export default function ProfilePage() {
                 </Select>
               ) : (
                 <p className="mt-1 text-sm text-neutral-900 dark:text-neutral-100">
-                  {user.relationshipStyle || "Not set"}
+                  {formData.relationshipStyle}
                 </p>
               )}
             </div>
@@ -478,7 +456,7 @@ export default function ProfilePage() {
                 />
               ) : (
                 <p className="mt-1 text-sm text-neutral-900 dark:text-neutral-100">
-                  {user.personalNotes || "Not set"}
+                  {formData.bio}
                 </p>
               )}
             </div>

@@ -2,40 +2,14 @@ import { QueryClient, QueryFunction } from "@tanstack/react-query";
 
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
-    let errorMessage = res.statusText;
-    try {
-      const responseText = await res.text();
-      try {
-        // Try to parse as JSON first
-        const errorData = JSON.parse(responseText);
-        if (errorData.message) {
-          errorMessage = errorData.message;
-        } else if (errorData.error) {
-          errorMessage = errorData.error;
-        } else {
-          errorMessage = responseText;
-        }
-      } catch (jsonError) {
-        // If not JSON, use the text as is
-        errorMessage = responseText || res.statusText;
-      }
-    } catch (e) {
-      errorMessage = res.statusText;
-    }
-    console.error('HTTP Error:', {
-      url: res.url,
-      status: res.status,
-      statusText: res.statusText,
-      responseText: errorMessage,
-      headers: Object.fromEntries(res.headers.entries())
-    });
-    throw new Error(errorMessage);
+    const text = (await res.text()) || res.statusText;
+    throw new Error(`${res.status}: ${text}`);
   }
 }
 
 export async function apiRequest(
-  url: string,
   method: string,
+  url: string,
   data?: unknown | undefined,
 ): Promise<Response> {
   const res = await fetch(url, {
@@ -64,40 +38,7 @@ export const getQueryFn: <T>(options: {
     }
 
     await throwIfResNotOk(res);
-    
-    // Handle empty responses or non-JSON content
-    const contentType = res.headers.get('content-type');
-    if (!contentType || !contentType.includes('application/json')) {
-      const text = await res.text();
-      if (!text.trim()) {
-        return null;
-      }
-      throw new Error(`Expected JSON response but got: ${contentType}`);
-    }
-    
-    const text = await res.text();
-    if (!text.trim()) {
-      return null;
-    }
-    
-    // Check for the specific "undefined" string that causes JSON parsing errors
-    if (text === 'undefined' || text.trim() === 'undefined') {
-      console.error('Response is literal "undefined" string from:', res.url);
-      throw new Error(`Response is undefined string from ${res.url}`);
-    }
-    
-    try {
-      return JSON.parse(text);
-    } catch (error) {
-      console.error('JSON parsing failed for response:', {
-        url: res.url,
-        status: res.status,
-        contentType: res.headers.get('content-type'),
-        responseText: text.substring(0, 100),
-        error: error instanceof Error ? error.message : 'Unknown error'
-      });
-      throw new Error(`Invalid JSON response from ${res.url}: ${error instanceof Error ? error.message : 'Unknown error'}`);
-    }
+    return await res.json();
   };
 
 export const queryClient = new QueryClient({

@@ -5,7 +5,6 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Bell, LogOut, Settings, User, Trophy, Calendar } from "lucide-react";
 import { Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
-import { NotificationBell, UserPointsDisplay } from "@/components/notifications";
 
 export function Header() {
   const { logout, isAuthenticated } = useAuth();
@@ -29,14 +28,14 @@ export function Header() {
   const initials = getInitials(displayName);
 
   return (
-    <header className="sticky top-0 z-50 bg-white dark:bg-neutral-900 px-4 py-3 border-b border-neutral-200 dark:border-neutral-800 flex items-center">
+    <header className="sticky top-0 z-50 bg-white dark:bg-neutral-900 px-4 py-3 border-b border-neutral-200 dark:border-neutral-800 flex justify-between items-center">
       <div className="flex items-center">
         <h1 className="text-2xl font-heading font-bold text-primary">Kindra</h1>
       </div>
-      <div className="flex-1"></div>
       <div className="flex items-center space-x-3">
-        <UserPointsDisplay />
-        <NotificationBell />
+        <Button variant="ghost" size="icon" className="text-neutral-600 dark:text-neutral-400 rounded-full">
+          <Bell className="h-5 w-5" />
+        </Button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="relative h-9 w-9 rounded-full p-0">

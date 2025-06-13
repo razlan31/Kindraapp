@@ -10,6 +10,7 @@ import { Eye, EyeOff, Heart } from "lucide-react";
 export default function Register() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
+  const [displayName, setDisplayName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -54,14 +55,15 @@ export default function Register() {
       await register({
         username: username.trim(),
         email: email.trim(),
-        password
+        password,
+        displayName: displayName.trim() || undefined
       });
       
       toast({
         title: "Welcome to Kindra!",
         description: "Your account has been created successfully"
       });
-      setLocation("/onboarding/welcome");
+      setLocation("/");
     } catch (error) {
       toast({
         title: "Registration failed",
@@ -119,7 +121,19 @@ export default function Register() {
               />
             </div>
 
-
+            <div className="space-y-2">
+              <label htmlFor="displayName" className="text-sm font-medium">
+                Display Name
+              </label>
+              <Input
+                id="displayName"
+                type="text"
+                placeholder="How should we call you?"
+                value={displayName}
+                onChange={(e) => setDisplayName(e.target.value)}
+                disabled={isLoading}
+              />
+            </div>
             
             <div className="space-y-2">
               <label htmlFor="password" className="text-sm font-medium">

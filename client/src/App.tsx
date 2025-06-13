@@ -4,11 +4,8 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
-import Login from "@/pages/login";
-import OnboardingWelcome from "@/pages/onboarding/welcome";
-import OnboardingProfile from "@/pages/onboarding/profile";
-import OnboardingGoals from "@/pages/onboarding/goals";
-import OnboardingComplete from "@/pages/onboarding/complete";
+import Login from "@/pages/auth/login";
+import Register from "@/pages/auth/register";
 import Dashboard from "@/pages/dashboard";
 import Connections from "@/pages/connections-simple";
 import ConnectionsNew from "@/pages/connections-new";
@@ -19,17 +16,17 @@ import SimpleConnectionCreate from "./pages/simple-connection-create";
 import SimpleForm from "./pages/simple-form";
 import Activities from "@/pages/activities";
 import Calendar from "@/pages/calendar";
-import InsightsNew from "@/pages/insights-new";
+import Insights from "@/pages/insights";
 import Profile from "@/pages/profile";
 import Settings from "@/pages/settings";
-
+import CycleTracking from "@/pages/cycle-tracking";
 import MenstrualCycle from "@/pages/menstrual-cycle";
 import AICoach from "@/pages/ai-coach";
 import SummaryReport from "@/pages/summary-report";
 import ConnectionDetail from "@/pages/connection-detail";
 import ConnectionEdit from "@/pages/connection-edit";
 import Badges from "@/pages/badges";
-import { AuthProvider, useAuth } from "./contexts/auth-context";
+import { useAuth } from "./contexts/auth-context";
 import { useModal } from "./contexts/modal-context";
 import { RelationshipFocusProvider } from "./contexts/relationship-focus-context";
 import { ModalProvider } from "./contexts/modal-context";
@@ -37,7 +34,6 @@ import { ThemeProvider } from "./contexts/theme-context";
 import { MomentModal } from "./components/modals/simplified-moment-modal";
 
 import { MoodTrackerModal } from "./components/modals/mood-tracker-modal";
-import { BadgeNotificationMonitor } from "./components/BadgeNotificationMonitor";
 
 import { useEffect } from "react";
 import { useLocation } from "wouter";
@@ -47,26 +43,16 @@ function Router() {
   const [location, setLocation] = useLocation();
 
   useEffect(() => {
-    if (!loading) {
-      if (!isAuthenticated && location !== "/login") {
-        console.log("Redirecting to login page - user not authenticated");
-        setLocation("/login");
-      } else if (isAuthenticated && location === "/login") {
-        console.log("Redirecting to home page - user is authenticated");
-        setLocation("/");
-      }
+    if (!loading && !isAuthenticated && !location.startsWith("/auth")) {
+      setLocation("/auth/login");
     }
   }, [isAuthenticated, loading, location, setLocation]);
 
   return (
     <Switch>
-      <Route path="/login" component={Login} />
-      <Route path="/onboarding/welcome" component={OnboardingWelcome} />
-      <Route path="/onboarding/profile" component={OnboardingProfile} />
-      <Route path="/onboarding/goals" component={OnboardingGoals} />
-      <Route path="/onboarding/complete" component={OnboardingComplete} />
-      <Route path="/" component={InsightsNew} />
-      <Route path="/dashboard" component={Dashboard} />
+      <Route path="/auth/login" component={Login} />
+      <Route path="/auth/register" component={Register} />
+      <Route path="/" component={Dashboard} />
       <Route path="/connections" component={Connections} />
       <Route path="/connections/add" component={ConnectionsFormNew} />
       <Route path="/connections/simple" component={SimpleConnectionForm} />
@@ -78,11 +64,10 @@ function Router() {
       <Route path="/activities" component={Activities} />
       <Route path="/calendar" component={Calendar} />
       <Route path="/badges" component={Badges} />
-      <Route path="/insights" component={InsightsNew} />
+      <Route path="/insights" component={Insights} />
       <Route path="/profile" component={Profile} />
       <Route path="/settings" component={Settings} />
-      <Route path="/cycle" component={MenstrualCycle} />
-      <Route path="/cycle-tracking" component={MenstrualCycle} />
+      <Route path="/cycle-tracking" component={CycleTracking} />
       <Route path="/menstrual-cycle" component={MenstrualCycle} />
       <Route path="/ai-coach" component={AICoach} />
       <Route path="/summary-report" component={SummaryReport} />
@@ -94,20 +79,17 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <ThemeProvider>
-          <RelationshipFocusProvider>
-            <ModalProvider>
-              <TooltipProvider>
-                <Toaster />
-                <BadgeNotificationMonitor />
-                <Router />
-                <ModalsContainer />
-              </TooltipProvider>
-            </ModalProvider>
-          </RelationshipFocusProvider>
-        </ThemeProvider>
-      </AuthProvider>
+      <ThemeProvider>
+        <RelationshipFocusProvider>
+          <ModalProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Router />
+              <ModalsContainer />
+            </TooltipProvider>
+          </ModalProvider>
+        </RelationshipFocusProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }

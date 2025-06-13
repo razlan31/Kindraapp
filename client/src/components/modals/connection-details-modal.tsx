@@ -9,7 +9,6 @@ import { format } from 'date-fns';
 import { useQuery } from '@tanstack/react-query';
 import { ConnectionDetailedModal } from './connection-detailed-modal';
 import { EditConnectionModal } from './edit-connection-modal';
-import { MiniInsight } from '@/components/insights/mini-insight';
 
 import type { Connection, Moment } from '@shared/schema';
 
@@ -190,29 +189,6 @@ export function ConnectionDetailsModal({ isOpen, onClose, connection }: Connecti
               </div>
             </div>
           </Card>
-
-          {/* AI Relationship Insight */}
-          <MiniInsight 
-            context="connection-profile"
-            data={{
-              relationshipStage: connection.relationshipStage,
-              loveLanguage: connection.loveLanguage,
-              zodiacSign: connection.zodiacSign,
-              recentMoments: recentMoments.map(m => ({
-                emoji: m.emoji,
-                content: m.content,
-                title: m.title,
-                isIntimate: m.isIntimate,
-                tags: m.tags
-              })),
-              totalMoments,
-              positiveMoments,
-              conflictMoments,
-              intimateMoments,
-              connectionName: connection.name
-            }}
-            className="mx-4"
-          />
 
           {/* Recent Activity */}
           {recentMoments.length > 0 && (

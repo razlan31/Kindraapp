@@ -145,9 +145,9 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
 
       // If editing, use PATCH; otherwise, use POST
       if (editingMoment) {
-        return apiRequest(`/api/moments/${editingMoment.id}`, 'PATCH', momentData);
+        return apiRequest('PATCH', `/api/moments/${editingMoment.id}`, momentData);
       } else {
-        return apiRequest('/api/moments', 'POST', momentData);
+        return apiRequest('POST', '/api/moments', momentData);
       }
     },
     onSuccess: () => {

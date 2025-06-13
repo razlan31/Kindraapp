@@ -23,9 +23,7 @@ import {
   LogOut,
   Lock,
   Save,
-  CreditCard,
-  RotateCcw,
-  Archive
+  CreditCard
 } from "lucide-react";
 
 // Billing component that connects to real Stripe data
@@ -226,11 +224,15 @@ export default function Settings() {
   const [settings, setSettings] = useState({
     notifications: {
       pushEnabled: true,
-      globalFrequency: "daily" as "daily" | "twice-daily" | "3-times-daily" | "weekly" | "every-2-weeks" | "monthly",
       momentReminders: true,
+      momentReminderFrequency: "daily" as "daily" | "twice-daily" | "3-times-daily" | "weekly" | "every-2-weeks" | "monthly" | "custom",
+      momentReminderCustomHour: "9",
       insightAlerts: true,
-      quoteOfTheDay: true,
+      insightAlertFrequency: "weekly" as "daily" | "twice-daily" | "3-times-daily" | "weekly" | "every-2-weeks" | "monthly" | "custom",
+      insightAlertCustomHour: "18",
       cycleReminders: true,
+      cycleReminderFrequency: "daily" as "daily" | "twice-daily" | "3-times-daily" | "weekly" | "every-2-weeks" | "monthly" | "custom",
+      cycleReminderCustomHour: "8",
       soundEnabled: true,
     },
     privacy: {
@@ -265,36 +267,6 @@ export default function Settings() {
       }));
     }
   }, [theme, settings.preferences.theme]);
-
-  // Fetch archived connections
-  const { data: archivedConnections = [] } = useQuery<any[]>({
-    queryKey: ["/api/connections/archived"],
-    enabled: !!user,
-  });
-
-  // Restore connection mutation
-  const restoreConnectionMutation = useMutation({
-    mutationFn: async (connectionId: number) => {
-      return await apiRequest(`/api/connections/${connectionId}`, "PATCH", {
-        isArchived: false
-      });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/connections"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/connections/archived"] });
-      toast({
-        title: "Connection Restored",
-        description: "Connection has been restored to your active connections.",
-      });
-    },
-    onError: (error: any) => {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to restore connection",
-        variant: "destructive",
-      });
-    },
-  });
 
   // Save settings mutation
   const saveSettingsMutation = useMutation({
@@ -403,8 +375,7 @@ export default function Settings() {
                 Choose what notifications you'd like to receive
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6">
-              {/* Master toggle for all notifications */}
+            <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
                   <Label htmlFor="pushEnabled">Push Notifications</Label>
@@ -417,19 +388,28 @@ export default function Settings() {
                 />
               </div>
 
-              {settings.notifications.pushEnabled && (
-                <>
-                  <Separator />
+              <Separator />
 
-                  {/* Global notification frequency */}
-                  <div className="space-y-3">
-                    <div>
-                      <Label className="text-sm font-medium">Notification Frequency</Label>
-                      <p className="text-sm text-neutral-600 dark:text-neutral-400">How often you want to receive notifications (randomly distributed throughout the day)</p>
-                    </div>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label htmlFor="momentReminders">Moment Reminders</Label>
+                    <p className="text-sm text-neutral-600 dark:text-neutral-400">Prompts to log moments</p>
+                  </div>
+                  <Switch
+                    id="momentReminders"
+                    checked={settings.notifications.momentReminders}
+                    onCheckedChange={(checked) => updateNotificationSetting('momentReminders', checked)}
+                    disabled={!settings.notifications.pushEnabled}
+                  />
+                </div>
+                
+                {settings.notifications.momentReminders && (
+                  <div className="ml-4 space-y-2">
+                    <Label className="text-sm">Frequency</Label>
                     <Select 
-                      value={settings.notifications.globalFrequency} 
-                      onValueChange={(value) => updateNotificationSetting('globalFrequency', value as any)}
+                      value={settings.notifications.momentReminderFrequency} 
+                      onValueChange={(value) => updateNotificationSetting('momentReminderFrequency', value as any)}
                     >
                       <SelectTrigger className="w-full">
                         <SelectValue />
@@ -441,91 +421,112 @@ export default function Settings() {
                         <SelectItem value="weekly">Weekly</SelectItem>
                         <SelectItem value="every-2-weeks">Every Two Weeks</SelectItem>
                         <SelectItem value="monthly">Monthly</SelectItem>
+                        <SelectItem value="custom">Custom Time</SelectItem>
                       </SelectContent>
                     </Select>
-                  </div>
-
-                  <Separator />
-
-                  {/* Notification types - toggles only */}
-                  <div className="space-y-4">
-                    <div>
-                      <Label className="text-sm font-medium">Notification Types</Label>
-                      <p className="text-xs text-neutral-500 dark:text-neutral-500 mt-1">
-                        Notifications will be randomly distributed throughout the day based on your frequency setting. 
-                        Only scheduled plans and events will notify at specific times.
-                      </p>
-                    </div>
                     
-                    {/* Moment Reminders */}
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <Label htmlFor="momentReminders">Moment Reminders</Label>
-                        <p className="text-sm text-neutral-600 dark:text-neutral-400">Prompts to log relationship moments</p>
+                    {settings.notifications.momentReminderFrequency === 'custom' && (
+                      <div className="space-y-1">
+                        <Label className="text-xs text-neutral-600 dark:text-neutral-400">Hour (0-23)</Label>
+                        <Input
+                          type="number"
+                          min="0"
+                          max="23"
+                          value={settings.notifications.momentReminderCustomHour}
+                          onChange={(e) => updateNotificationSetting('momentReminderCustomHour', e.target.value)}
+                          className="w-full"
+                          placeholder="9"
+                        />
                       </div>
-                      <Switch
-                        id="momentReminders"
-                        checked={settings.notifications.momentReminders}
-                        onCheckedChange={(checked) => updateNotificationSetting('momentReminders', checked)}
-                      />
-                    </div>
-
-                    {/* Insight Alerts */}
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <Label htmlFor="insightAlerts">AI Insights</Label>
-                        <p className="text-sm text-neutral-600 dark:text-neutral-400">Relationship pattern insights</p>
-                      </div>
-                      <Switch
-                        id="insightAlerts"
-                        checked={settings.notifications.insightAlerts}
-                        onCheckedChange={(checked) => updateNotificationSetting('insightAlerts', checked)}
-                      />
-                    </div>
-
-                    {/* Quote of the Day */}
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <Label htmlFor="quoteOfTheDay">Quote of the Day</Label>
-                        <p className="text-sm text-neutral-600 dark:text-neutral-400">Daily relationship wisdom</p>
-                      </div>
-                      <Switch
-                        id="quoteOfTheDay"
-                        checked={settings.notifications.quoteOfTheDay}
-                        onCheckedChange={(checked) => updateNotificationSetting('quoteOfTheDay', checked)}
-                      />
-                    </div>
-
-                    {/* Cycle Reminders */}
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <Label htmlFor="cycleReminders">Cycle Reminders</Label>
-                        <p className="text-sm text-neutral-600 dark:text-neutral-400">Menstrual cycle tracking reminders</p>
-                      </div>
-                      <Switch
-                        id="cycleReminders"
-                        checked={settings.notifications.cycleReminders}
-                        onCheckedChange={(checked) => updateNotificationSetting('cycleReminders', checked)}
-                      />
-                    </div>
+                    )}
                   </div>
+                )}
+              </div>
 
-                  <Separator />
+              <Separator />
 
-                  {/* Notification Sound */}
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <Label htmlFor="soundEnabled">Notification Sound</Label>
-                      <p className="text-sm text-neutral-600 dark:text-neutral-400">Play sound with notifications</p>
-                    </div>
-                    <Switch
-                      id="soundEnabled"
-                      checked={settings.notifications.soundEnabled}
-                      onCheckedChange={(checked) => updateNotificationSetting('soundEnabled', checked)}
-                    />
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label htmlFor="insightAlerts">Insight Alerts</Label>
+                    <p className="text-sm text-neutral-600 dark:text-neutral-400">AI-powered relationship insights</p>
                   </div>
-                </>
-              )}
+                  <Switch
+                    id="insightAlerts"
+                    checked={settings.notifications.insightAlerts}
+                    onCheckedChange={(checked) => updateNotificationSetting('insightAlerts', checked)}
+                    disabled={!settings.notifications.pushEnabled}
+                  />
+                </div>
+                
+                {settings.notifications.insightAlerts && (
+                  <div className="ml-4 space-y-2">
+                    <Label className="text-sm">Frequency</Label>
+                    <Select 
+                      value={settings.notifications.insightAlertFrequency} 
+                      onValueChange={(value) => updateNotificationSetting('insightAlertFrequency', value as any)}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="daily">Daily</SelectItem>
+                        <SelectItem value="twice-daily">Twice a Day</SelectItem>
+                        <SelectItem value="3-times-daily">3 Times a Day</SelectItem>
+                        <SelectItem value="weekly">Weekly</SelectItem>
+                        <SelectItem value="every-2-weeks">Every Two Weeks</SelectItem>
+                        <SelectItem value="monthly">Monthly</SelectItem>
+                        <SelectItem value="custom">Custom Time</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    
+                    {settings.notifications.insightAlertFrequency === 'custom' && (
+                      <div className="space-y-1">
+                        <Label className="text-xs text-neutral-600 dark:text-neutral-400">Hour (0-23)</Label>
+                        <Input
+                          type="number"
+                          min="0"
+                          max="23"
+                          value={settings.notifications.insightAlertCustomHour}
+                          onChange={(e) => updateNotificationSetting('insightAlertCustomHour', e.target.value)}
+                          className="w-full"
+                          placeholder="18"
+                        />
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              <Separator />
+
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label htmlFor="cycleReminders">Cycle Reminders</Label>
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400">Menstrual cycle notifications</p>
+                </div>
+                <Switch
+                  id="cycleReminders"
+                  checked={settings.notifications.cycleReminders}
+                  onCheckedChange={(checked) => updateNotificationSetting('cycleReminders', checked)}
+                  disabled={!settings.notifications.pushEnabled}
+                />
+              </div>
+
+              <Separator />
+
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label htmlFor="soundEnabled">Notification Sound</Label>
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400">Play sound with notifications</p>
+                </div>
+                <Switch
+                  id="soundEnabled"
+                  checked={settings.notifications.soundEnabled}
+                  onCheckedChange={(checked) => updateNotificationSetting('soundEnabled', checked)}
+                  disabled={!settings.notifications.pushEnabled}
+                />
+              </div>
             </CardContent>
           </Card>
 
@@ -682,67 +683,6 @@ export default function Settings() {
                   Delete
                 </Button>
               </div>
-            </CardContent>
-          </Card>
-
-          {/* Archived Connections */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Archive className="h-5 w-5" />
-                Archived Connections
-              </CardTitle>
-              <CardDescription>
-                Restore archived connections back to your active list
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {archivedConnections.length === 0 ? (
-                <div className="text-center py-6">
-                  <Archive className="h-12 w-12 mx-auto text-neutral-400 mb-3" />
-                  <p className="text-neutral-600 dark:text-neutral-400">No archived connections</p>
-                  <p className="text-sm text-neutral-500 dark:text-neutral-500">
-                    Connections you archive will appear here
-                  </p>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {archivedConnections.map((connection: any) => (
-                    <div key={connection.id} className="flex items-center justify-between p-3 border rounded-lg dark:border-neutral-700">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-neutral-200 dark:bg-neutral-700 rounded-full flex items-center justify-center">
-                          {connection.profileImage ? (
-                            <img 
-                              src={connection.profileImage} 
-                              alt={connection.name}
-                              className="w-10 h-10 rounded-full object-cover"
-                            />
-                          ) : (
-                            <span className="text-sm font-medium text-neutral-600 dark:text-neutral-300">
-                              {connection.name.charAt(0).toUpperCase()}
-                            </span>
-                          )}
-                        </div>
-                        <div>
-                          <p className="font-medium">{connection.name}</p>
-                          <p className="text-sm text-neutral-600 dark:text-neutral-400">
-                            {connection.relationshipStage}
-                          </p>
-                        </div>
-                      </div>
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => restoreConnectionMutation.mutate(connection.id)}
-                        disabled={restoreConnectionMutation.isPending}
-                      >
-                        <RotateCcw className="h-4 w-4 mr-2" />
-                        {restoreConnectionMutation.isPending ? "Restoring..." : "Restore"}
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              )}
             </CardContent>
           </Card>
 

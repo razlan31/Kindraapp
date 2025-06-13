@@ -1,9 +1,9 @@
-import { eq, desc, and } from 'drizzle-orm';
+import { eq, desc } from 'drizzle-orm';
 import { db } from './db';
 import {
-  users, connections, moments, badges, userBadges, menstrualCycles, milestones, plans, chatConversations,
-  type User, type Connection, type Moment, type Badge, type UserBadge, type MenstrualCycle, type Milestone, type Plan, type ChatConversation,
-  type InsertUser, type InsertConnection, type InsertMoment, type InsertBadge, type InsertUserBadge, type InsertMenstrualCycle, type InsertMilestone, type InsertPlan, type InsertChatConversation
+  users, connections, moments, badges, userBadges, menstrualCycles, milestones, plans,
+  type User, type Connection, type Moment, type Badge, type UserBadge, type MenstrualCycle, type Milestone, type Plan,
+  type InsertUser, type InsertConnection, type InsertMoment, type InsertBadge, type InsertUserBadge, type InsertMenstrualCycle, type InsertMilestone, type InsertPlan
 } from '@shared/schema';
 import type { IStorage } from './storage';
 import bcrypt from "bcryptjs";
@@ -15,6 +15,14 @@ export class PgStorage implements IStorage {
     if (this.initialized) return;
     
     console.log('🗄️ Initializing PostgreSQL storage...');
+    this.initialized = true; // Set this early to prevent infinite recursion
+    
+    // Create test user if it doesn't exist
+    const existingUser = await db.select().from(users).where(eq(users.username, 'testuser')).limit(1);
+    if (!existingUser) {
+      await this.createTestUser();
+    }
+    
     this.initialized = true;
     console.log('✅ PostgreSQL storage initialized');
   }
@@ -131,23 +139,6 @@ export class PgStorage implements IStorage {
 
   async getConnectionsByUserId(userId: number): Promise<Connection[]> {
     await this.initialize();
-    const result = await db.select().from(connections).where(
-      and(
-        eq(connections.userId, userId),
-        eq(connections.isArchived, false)
-      )
-    );
-    
-    // Sort to ensure user's own profile (Self) appears first
-    return result.sort((a, b) => {
-      if (a.relationshipStage === 'Self') return -1;
-      if (b.relationshipStage === 'Self') return 1;
-      return 0;
-    });
-  }
-
-  async getAllConnectionsByUserId(userId: number): Promise<Connection[]> {
-    await this.initialize();
     return await db.select().from(connections).where(eq(connections.userId, userId));
   }
 
@@ -165,13 +156,6 @@ export class PgStorage implements IStorage {
 
   async deleteConnection(id: number): Promise<boolean> {
     await this.initialize();
-    
-    // Delete all associated data in order (foreign key constraints)
-    await db.delete(moments).where(eq(moments.connectionId, id));
-    await db.delete(milestones).where(eq(milestones.connectionId, id));
-    await db.delete(plans).where(eq(plans.connectionId, id));
-    
-    // Finally delete the connection
     const result = await db.delete(connections).where(eq(connections.id, id));
     return result.rowCount !== null && result.rowCount > 0;
   }
@@ -205,16 +189,9 @@ export class PgStorage implements IStorage {
   async createMoment(moment: InsertMoment): Promise<Moment> {
     await this.initialize();
     
-    // Ensure dates are properly converted to Date objects
-    const momentData = {
-      ...moment,
-      createdAt: moment.createdAt ? new Date(moment.createdAt) : new Date(),
-      resolvedAt: moment.resolvedAt ? new Date(moment.resolvedAt) : null
-    };
+    console.log("🗓️ PG Storage - Creating moment with date:", (moment as any).createdAt);
     
-    console.log("🗓️ PG Storage - Creating moment with date:", momentData.createdAt);
-    
-    const result = await db.insert(moments).values([momentData]).returning();
+    const result = await db.insert(moments).values([moment]).returning();
     console.log(`📝 PG Storage - Created moment with date:`, result[0].createdAt);
     return result[0];
   }
@@ -363,39 +340,6 @@ export class PgStorage implements IStorage {
   async deletePlan(id: number): Promise<boolean> {
     await this.initialize();
     const result = await db.delete(plans).where(eq(plans.id, id));
-    return result.rowCount !== null && result.rowCount > 0;
-  }
-
-  // Chat conversation operations
-  async getChatConversations(userId: number): Promise<ChatConversation[]> {
-    await this.initialize();
-    return db.select().from(chatConversations)
-      .where(eq(chatConversations.userId, userId))
-      .orderBy(desc(chatConversations.updatedAt));
-  }
-
-  async getChatConversation(id: number): Promise<ChatConversation | undefined> {
-    await this.initialize();
-    const result = await db.select().from(chatConversations).where(eq(chatConversations.id, id));
-    return result[0];
-  }
-
-  async createChatConversation(conversation: InsertChatConversation): Promise<ChatConversation> {
-    await this.initialize();
-    const result = await db.insert(chatConversations).values(conversation).returning();
-    return result[0];
-  }
-
-  async updateChatConversation(id: number, data: Partial<ChatConversation>): Promise<ChatConversation | undefined> {
-    await this.initialize();
-    const updateData = { ...data, updatedAt: new Date() };
-    const result = await db.update(chatConversations).set(updateData).where(eq(chatConversations.id, id)).returning();
-    return result[0];
-  }
-
-  async deleteChatConversation(id: number): Promise<boolean> {
-    await this.initialize();
-    const result = await db.delete(chatConversations).where(eq(chatConversations.id, id));
     return result.rowCount !== null && result.rowCount > 0;
   }
 }

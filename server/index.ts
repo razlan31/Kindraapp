@@ -1,7 +1,6 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
-import { storage } from "./database-storage";
 
 const app = express();
 app.use(express.json({ limit: '10mb' }));
@@ -38,31 +37,14 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  // Initialize badges on startup
-  try {
-    await storage.initializeBadges();
-  } catch (error) {
-    console.error('Failed to initialize badges:', error);
-  }
-
   const server = await registerRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
 
-    console.error('API Error:', {
-      status,
-      message,
-      stack: err.stack,
-      url: _req.url,
-      method: _req.method
-    });
-
-    // Ensure response is properly formatted JSON
-    if (!res.headersSent) {
-      res.status(status).json({ error: true, message });
-    }
+    res.status(status).json({ message });
+    throw err;
   });
 
   // importantly only setup vite in development and after
@@ -78,20 +60,10 @@ app.use((req, res, next) => {
   // this serves both the API and the client.
   // It is the only port that is not firewalled.
   const port = 5000;
-  
-  server.on('error', (err: any) => {
-    if (err.code === 'EADDRINUSE') {
-      console.error(`Port ${port} is already in use. Attempting to kill existing processes...`);
-      process.exit(1);
-    } else {
-      console.error('Server error:', err);
-      process.exit(1);
-    }
-  });
-
   server.listen({
     port,
     host: "0.0.0.0",
+    reusePort: true,
   }, () => {
     log(`serving on port ${port}`);
   });

@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Header } from "@/components/layout/header";
 import { BottomNavigation } from "@/components/layout/bottom-navigation";
@@ -6,13 +6,11 @@ import { StatCard } from "@/components/dashboard/stat-card";
 import { ConnectionCard } from "@/components/dashboard/connection-card";
 import { MomentCard } from "@/components/dashboard/moment-card";
 import { BadgeShowcase } from "@/components/dashboard/badge-showcase";
-import { AIInsights } from "@/components/insights/ai-insights";
-import { AIChat } from "@/components/ai-chat";
 import { Connection, Moment, Badge, MenstrualCycle } from "@shared/schema";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
 import { useModal } from "@/contexts/modal-context";
-import { Sparkles, Calendar, ChevronDown, Heart, Plus, Circle, TrendingUp } from "lucide-react";
+import { Sparkles, Calendar, ChevronDown, Heart, Plus, Circle } from "lucide-react";
 import { Link } from "wouter";
 import { FocusSelector } from "@/components/relationships/focus-selector";
 import { useRelationshipFocus } from "@/contexts/relationship-focus-context";
@@ -20,9 +18,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
 export default function Dashboard() {
-  console.log("Dashboard component rendered");
   const { user, loading } = useAuth();
-  console.log("Dashboard: user loaded", !!user, "loading:", loading);
   const { openMomentModal, openConnectionModal, setSelectedConnection } = useModal();
   const [insight, setInsight] = useState<string>("");
   const [dashboardConnection, setDashboardConnection] = useState<Connection | null>(null);
@@ -34,41 +30,11 @@ export default function Dashboard() {
     enabled: !loading && !!user,
   });
 
-  // State for moments data
-  const [moments, setMoments] = useState<Moment[]>([]);
-  const [momentsLoading, setMomentsLoading] = useState(false);
-  const [momentsError, setMomentsError] = useState<string | null>(null);
-
-  // Function to fetch moments
-  const refetchMoments = useCallback(() => {
-    if (user?.id) {
-      console.log("Starting to fetch moments for user:", user.id);
-      setMomentsLoading(true);
-      setMomentsError(null);
-      fetch("/api/moments")
-        .then(res => res.json())
-        .then(data => {
-          console.log("Moments loaded successfully:", data.length);
-          setMoments(data);
-        })
-        .catch(err => {
-          console.error("Error loading moments:", err);
-          setMomentsError("Failed to load moments");
-        })
-        .finally(() => setMomentsLoading(false));
-    }
-  }, [user?.id]);
-
-  // Fetch moments when user loads
-  useEffect(() => {
-    console.log("Dashboard useEffect - user:", user?.id, "loading:", loading);
-    if (!loading && user?.id) {
-      console.log("Calling refetchMoments for user:", user.id);
-      refetchMoments();
-    } else {
-      console.log("Dashboard useEffect - conditions not met:", { loading, userId: user?.id });
-    }
-  }, [user?.id, loading]);
+  // Fetch recent moments
+  const { data: moments = [], isLoading: momentsLoading, error: momentsError, refetch: refetchMoments } = useQuery<Moment[]>({
+    queryKey: ["/api/moments"],
+    enabled: true,
+  });
 
   // Listen for moment creation and update events to refetch data immediately
   useEffect(() => {
@@ -103,27 +69,8 @@ export default function Dashboard() {
     momentsLength: moments.length, 
     momentsLoading,
     momentsError,
-    momentsState: moments.length > 0 ? "HAS_DATA" : "NO_DATA",
-    connectionsLength: connections.length,
-    connectionsState: connections.length > 0 ? "HAS_DATA" : "NO_DATA",
-    aiInsightsCondition: !momentsLoading && !momentsError ? "SHOULD_RENDER" : "BLOCKED"
+    moments 
   });
-
-  // Force refetch moments if they're empty but user is loaded
-  useEffect(() => {
-    if (!loading && user && moments.length === 0 && !momentsLoading) {
-      console.log("Force refetching moments...");
-      refetchMoments();
-    }
-  }, [loading, user, moments.length, momentsLoading, refetchMoments]);
-
-  // Additional trigger when user changes
-  useEffect(() => {
-    if (user && moments.length === 0) {
-      console.log("User loaded, triggering moments refetch...");
-      refetchMoments();
-    }
-  }, [user?.id, refetchMoments]);
 
   // Determine which connection to focus on - prioritize dashboard selection, then main focus
   const focusConnection = dashboardConnection || mainFocusConnection || null;
@@ -425,89 +372,6 @@ function MenstrualCycleTracker() {
             </div>
           </section>
         )}
-
-        {/* AI Insights Section */}
-        {console.log("Dashboard: Rendering AI Insights section, momentsLoading:", momentsLoading, "momentsLength:", moments.length)}
-        <section className="px-3 py-2">
-          <div className="bg-white dark:bg-neutral-900 rounded-xl border border-neutral-200 dark:border-neutral-800">
-            <div className="p-4 border-b border-neutral-200 dark:border-neutral-800">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <TrendingUp className="h-5 w-5 text-primary" />
-                  <h3 className="font-heading font-semibold text-primary">AI Insights</h3>
-                </div>
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={() => {
-                    console.log("Manual refresh clicked, user:", user?.id);
-                    if (user?.id) {
-                      console.log("Manually fetching moments...");
-                      setMomentsLoading(true);
-                      fetch("/api/moments")
-                        .then(res => res.json())
-                        .then(data => {
-                          console.log("Manual fetch success:", data.length, "moments");
-                          setMoments(data);
-                        })
-                        .catch(err => console.error("Manual fetch error:", err))
-                        .finally(() => setMomentsLoading(false));
-                    }
-                  }}
-                  disabled={momentsLoading}
-                >
-                  {momentsLoading ? "Loading..." : "Load Moments"}
-                </Button>
-              </div>
-              <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
-                Data-driven patterns from your relationship tracking
-              </p>
-            </div>
-            <div className="p-4">
-              {console.log("Dashboard: AI Insights rendering condition check:", {
-                momentsLoading,
-                momentsError,
-                momentsLength: moments.length,
-                connectionsLength: connections.length,
-                willRender: !momentsLoading && !momentsError
-              })}
-              {momentsLoading ? (
-                <div className="text-center py-4">
-                  <div className="animate-pulse">
-                    <div className="h-4 bg-neutral-200 dark:bg-neutral-700 rounded w-3/4 mb-2"></div>
-                    <div className="h-3 bg-neutral-200 dark:bg-neutral-700 rounded w-1/2"></div>
-                  </div>
-                </div>
-              ) : momentsError ? (
-                <div className="text-center py-4 text-red-500">
-                  <p>Error loading insights: {String(momentsError)}</p>
-                </div>
-              ) : (
-                <>
-                  {console.log("Dashboard: About to render AIInsights with:", {
-                    connectionsLength: connections.length,
-                    momentsLength: moments.length,
-                    momentsLoading,
-                    momentsError
-                  })}
-                  <AIInsights 
-                    connections={connections} 
-                    moments={moments} 
-                    userData={{
-                      zodiacSign: user?.zodiacSign || undefined,
-                      loveLanguage: user?.loveLanguage || undefined
-                    }}
-                  />
-                </>
-              )}
-            </div>
-          </div>
-        </section>
-
-        {/* AI Chat Section */}
-        <section className="px-3 py-2">
-          <AIChat />
-        </section>
 
         {/* Connection Focus Section */}
         {focusConnection && (

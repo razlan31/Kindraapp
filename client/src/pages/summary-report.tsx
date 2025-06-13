@@ -352,11 +352,7 @@ export default function SummaryReport() {
                     <span>All connections</span>
                   </div>
                 </SelectItem>
-                {[...connections].sort((a, b) => {
-                  if (a.relationshipStage === 'Self') return 1;
-                  if (b.relationshipStage === 'Self') return -1;
-                  return 0;
-                }).map((connection) => (
+                {connections.map((connection) => (
                   <SelectItem key={connection.id} value={connection.id.toString()}>
                     <div className="flex items-center gap-2">
                       {connection.profileImage ? (
@@ -372,7 +368,7 @@ export default function SummaryReport() {
                           </span>
                         </div>
                       )}
-                      <span>{connection.relationshipStage === 'Self' ? `${connection.name} (ME)` : connection.name}</span>
+                      <span>{connection.name}</span>
                     </div>
                   </SelectItem>
                 ))}

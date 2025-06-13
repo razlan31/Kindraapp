@@ -33,9 +33,6 @@ function BadgeCard({ badge, isEarned, earnedCount = 0, progress }: {
   earnedCount?: number;
   progress?: number;
 }) {
-  if (!badge) {
-    return null;
-  }
   const getCategoryIcon = (category: string) => {
     switch (category) {
       case "Getting Started": return <UserPlus className="w-4 h-4" />;
@@ -58,15 +55,15 @@ function BadgeCard({ badge, isEarned, earnedCount = 0, progress }: {
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-2">
-            <span className="text-2xl">{badge?.icon || '🏆'}</span>
+            <span className="text-2xl">{badge.icon}</span>
             <div>
               <CardTitle className={`text-sm leading-tight ${isEarned ? 'text-yellow-700 dark:text-yellow-300' : 'text-gray-600 dark:text-gray-400'}`}>
-                {badge?.name || 'Badge'}
+                {badge.name}
               </CardTitle>
               <div className="flex items-center gap-2 mt-1">
                 <Badge variant="secondary" className="text-xs px-2 py-0">
-                  <span className="mr-1">{getCategoryIcon(badge?.category || 'Default')}</span>
-                  {badge?.category || 'Badge'}
+                  <span className="mr-1">{getCategoryIcon(badge.category)}</span>
+                  {badge.category}
                 </Badge>
 
               </div>
@@ -90,7 +87,7 @@ function BadgeCard({ badge, isEarned, earnedCount = 0, progress }: {
       
       <CardContent className="pt-0">
         <CardDescription className="text-sm leading-relaxed">
-          {badge?.description || 'Achievement unlocked!'}
+          {badge.description}
         </CardDescription>
         
         {!isEarned && progress !== undefined && progress > 0 && (
@@ -136,7 +133,7 @@ function CategorySection({ title, badges, userBadges, icon }: {
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {badges.filter(badge => badge && badge.id).map(badge => {
+        {badges.map(badge => {
           const earnedBadges = earnedBadgeMap.get(badge.id) || [];
           const isEarned = earnedBadges.length > 0;
           
@@ -158,11 +155,11 @@ export default function BadgesPage() {
   const [activeTab, setActiveTab] = useState("all");
   const [, setLocation] = useLocation();
 
-  const { data: userBadges = [], isLoading: userBadgesLoading } = useQuery<UserBadge[]>({
+  const { data: userBadges = [], isLoading: userBadgesLoading } = useQuery({
     queryKey: ["/api/badges"],
   });
 
-  const { data: allBadges = [], isLoading: allBadgesLoading } = useQuery<Badge[]>({
+  const { data: allBadges = [], isLoading: allBadgesLoading } = useQuery({
     queryKey: ["/api/badges/all"],
   });
 
@@ -179,19 +176,18 @@ export default function BadgesPage() {
     );
   }
 
-  const earnedBadgeIds = new Set(userBadges.map(ub => ub.badgeId));
-  const earnedBadges = userBadges.filter(ub => ub.badge && ub.badge.id);
-  const unearnedBadges = allBadges.filter(badge => badge && badge.id && !earnedBadgeIds.has(badge.id));
+  const earnedBadgeIds = new Set(userBadges.map((ub: UserBadge) => ub.badgeId));
+  const earnedBadges = userBadges.map((ub: UserBadge) => ub.badge);
+  const unearnedBadges = allBadges.filter((badge: Badge) => !earnedBadgeIds.has(badge.id));
 
   // Group badges by category
-  const badgesByCategory = allBadges.reduce((acc: Record<string, Badge[]>, badge) => {
-    if (!badge || !badge.category) return acc;
+  const badgesByCategory = allBadges.reduce((acc: Record<string, Badge[]>, badge: Badge) => {
     if (!acc[badge.category]) {
       acc[badge.category] = [];
     }
     acc[badge.category].push(badge);
     return acc;
-  }, {} as Record<string, Badge[]>);
+  }, {});
 
   const categoryIcons = {
     "Getting Started": <UserPlus className="w-5 h-5 text-blue-500" />,
@@ -266,12 +262,12 @@ export default function BadgesPage() {
         <TabsContent value="earned" className="space-y-6">
           {earnedBadges.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {userBadges.filter(userBadge => userBadge.badge).map((userBadge) => (
+              {userBadges.map((userBadge: UserBadge) => (
                 <BadgeCard
                   key={userBadge.id}
                   badge={userBadge.badge}
                   isEarned={true}
-                  earnedCount={userBadges.filter(ub => ub.badgeId === userBadge.badgeId).length}
+                  earnedCount={userBadges.filter((ub: UserBadge) => ub.badgeId === userBadge.badgeId).length}
                 />
               ))}
             </div>
@@ -291,7 +287,7 @@ export default function BadgesPage() {
         <TabsContent value="available" className="space-y-6">
           {unearnedBadges.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {unearnedBadges.filter(badge => badge && badge.id).map((badge) => (
+              {unearnedBadges.map((badge: Badge) => (
                 <BadgeCard
                   key={badge.id}
                   badge={badge}
