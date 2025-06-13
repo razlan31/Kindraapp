@@ -25,6 +25,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { SimpleConnectionForm } from "@/components/modals/simple-connection-form";
+import { apiRequest } from "@/lib/queryClient";
 
 export function BottomNavigation() {
   const [location, setLocation] = useLocation();
@@ -33,6 +35,49 @@ export function BottomNavigation() {
   
   // Local connection modal state
   const [connectionModalOpen, setConnectionModalOpen] = useState(false);
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  // Handle image upload
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setUploadedImage(event.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Create connection mutation
+  const createConnectionMutation = useMutation({
+    mutationFn: async (formData: FormData) => {
+      return await apiRequest("/api/connections", "POST", formData);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/connections"] });
+      toast({
+        title: "Success",
+        description: "Connection created successfully!",
+      });
+      setConnectionModalOpen(false);
+      setUploadedImage(null);
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: "Failed to create connection. Please try again.",
+        variant: "destructive",
+      });
+    }
+  });
+
+  const handleConnectionSubmit = async (formData: FormData) => {
+    await createConnectionMutation.mutateAsync(formData);
+  };
 
   const handleActionClick = (action: () => void) => {
     action();
@@ -134,7 +179,14 @@ export function BottomNavigation() {
         </div>
       </nav>
 
-
+      {/* Connection Modal */}
+      <SimpleConnectionForm
+        isOpen={connectionModalOpen}
+        onClose={() => setConnectionModalOpen(false)}
+        onSubmit={handleConnectionSubmit}
+        uploadedImage={uploadedImage}
+        onImageUpload={handleImageUpload}
+      />
     </>
   );
 }

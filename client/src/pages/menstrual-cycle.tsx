@@ -22,7 +22,7 @@ import { MenstrualCycle, Connection } from "@shared/schema";
 import { Header } from "@/components/layout/header";
 import { useAuth } from "@/contexts/auth-context";
 import { useModal } from "@/contexts/modal-context";
-import { AddConnectionModal } from "@/components/modals/add-connection-modal";
+import { SimpleConnectionForm } from "@/components/modals/simple-connection-form";
 
 const symptomsList = [
   "Cramps", "Bloating", "Headache", "Mood swings", "Fatigue", 
