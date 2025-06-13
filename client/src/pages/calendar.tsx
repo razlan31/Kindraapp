@@ -190,6 +190,11 @@ export default function Calendar() {
     staleTime: 0,
   });
 
+  // Debug cycle data for Amalina
+  console.log('All cycles:', cycles);
+  const amalinaCycles = cycles.filter(cycle => cycle.connectionId === 6);
+  console.log('Amalina cycles (connection 6):', amalinaCycles);
+
   // Menstrual cycle calculation functions
   const getCyclePhaseForDay = (day: Date, connectionId: number | null) => {
     if (!connectionId) return null;
@@ -1054,6 +1059,11 @@ export default function Calendar() {
                   if (phaseInfo) {
                     const connection = connections.find(c => c.id === selectedConnectionIds[0]);
                     cyclePhases.push({ ...phaseInfo, connection });
+                    
+                    // Debug ovulation days for Amalina (connection 6)
+                    if (selectedConnectionIds[0] === 6 && phaseInfo.isOvulation) {
+                      console.log(`Found ovulation day for Amalina on ${format(day, 'yyyy-MM-dd')}:`, phaseInfo);
+                    }
                   }
                 } else {
                   // Multiple connections selected - find cycles from selected connections
@@ -1062,6 +1072,11 @@ export default function Calendar() {
                     if (phaseInfo) {
                       const connection = connections.find(c => c.id === connectionId);
                       cyclePhases.push({ ...phaseInfo, connection });
+                      
+                      // Debug ovulation days for Amalina (connection 6)
+                      if (connectionId === 6 && phaseInfo.isOvulation) {
+                        console.log(`Found ovulation day for Amalina on ${format(day, 'yyyy-MM-dd')}:`, phaseInfo);
+                      }
                     }
                   }
                 }
