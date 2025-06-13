@@ -263,21 +263,7 @@ export default function MenstrualCyclePage() {
     // If no cycles exist at all, return empty array
     if (!cycles || cycles.length === 0) return [];
     
-    // Debug for June 13th
-    if (format(day, 'MM-dd') === '06-13') {
-      console.log('June 13 getCyclesForDay:', {
-        selectedPersonIds,
-        totalCycles: cycles.length,
-        allConnectionIds: Array.from(new Set(cycles.map(c => c.connectionId))),
-        martinezCycles: cycles.filter(c => c.connectionId === 9).length,
-        martinezCycleDetails: cycles.filter(c => c.connectionId === 9).map(c => ({
-          id: c.id,
-          start: c.startDate,
-          end: c.endDate,
-          periodEnd: c.periodEndDate
-        }))
-      });
-    }
+
     
     // First, filter cycles to only selected persons
     const relevantCycles = selectedPersonIds.length === 0 ? cycles : cycles.filter(cycle => {
@@ -375,7 +361,7 @@ export default function MenstrualCyclePage() {
             
             const predictedStartDay = startOfDay(predictedStart);
             const predictedPeriodEndDay = startOfDay(predictedPeriodEnd);
-            const checkDayStart = startOfDay(new Date(checkDay));
+            const checkDayStart = startOfDay(checkDay);
             
 
             
@@ -391,27 +377,6 @@ export default function MenstrualCyclePage() {
                 isPrediction: true
               } as any;
               predictedCycles.push(virtualCycle);
-              
-              // Debug for June 13th
-              if (format(checkDay, 'MM-dd') === '06-13') {
-                console.log('June 13 prediction match:', {
-                  predictedStart: predictedStart.toISOString(),
-                  predictedPeriodEnd: predictedPeriodEnd.toISOString(),
-                  checkDay: checkDay.toISOString(),
-                  isMatch: true,
-                  cycleId: -i
-                });
-              }
-            } else if (format(checkDay, 'MM-dd') === '06-13') {
-              console.log('June 13 prediction NO match:', {
-                predictedStart: predictedStart.toISOString(),
-                predictedPeriodEnd: predictedPeriodEnd.toISOString(),
-                checkDay: checkDay.toISOString(),
-                checkDayStart: checkDayStart.toISOString(),
-                predictedStartDay: predictedStartDay.toISOString(),
-                predictedPeriodEndDay: predictedPeriodEndDay.toISOString(),
-                isInRange: checkDayStart >= predictedStartDay && checkDayStart <= predictedPeriodEndDay
-              });
             }
             
             // Update baseDate for next iteration
