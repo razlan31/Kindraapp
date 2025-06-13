@@ -449,7 +449,7 @@ export default function MenstrualCyclePage() {
       mood: '',
       symptoms: [],
       notes: '',
-      connectionId: selectedPersonIds.length === 1 ? selectedPersonIds[0] : null
+      connectionId: null
     });
   };
 
