@@ -115,6 +115,9 @@ The badges system currently has several issues that need attention:
   - Restored colored alphabets/initials for multiple connections on same day
   - Restored automatic cycle generation when manually setting end dates
   - Reverted unauthorized modifications to match June 1st baseline
+  - Updated cycle tracker legends and emojis to match calendar page exactly
+    - Changed from colored circles to emoji indicators (🩸🌱💛🥚🌙)
+    - Updated colors: ovulation (pink), fertile (yellow), follicular (green)
 
 ## User Preferences
 
