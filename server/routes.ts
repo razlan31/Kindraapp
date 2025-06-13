@@ -653,8 +653,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Don't fail the connection creation if milestone creation fails
       }
       
-      // Check if any badges should be unlocked
-      const awardedBadges = await checkAndAwardBadges(userId);
+      // Award connection-specific badges
+      const awardedBadges = await awardConnectionBadges(userId, newConnection);
       
       // Log the saved connection to verify all fields are preserved
       const savedConnection = await storage.getConnection(newConnection.id);
@@ -1572,6 +1572,57 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
 
 
+  // Helper function to award connection-specific badges (called only during connection creation)
+  async function awardConnectionBadges(userId: number, newConnection: any): Promise<Array<{badgeId: number, name: string, icon: string, description: string, category: string}>> {
+    try {
+      const allBadges = await storage.getAllBadges();
+      const userBadges = await storage.getUserBadges(userId.toString());
+      const earnedBadgeIds = userBadges.map(ub => ub.badgeId);
+      const newBadges: Array<{badgeId: number, name: string, icon: string, description: string, category: string}> = [];
+      
+      console.log(`🎯 Connection Badge Check - User ${userId} created connection: ${newConnection.name}`);
+      
+      // Award specific connection badges
+      for (const badge of allBadges) {
+        const criteria = badge.unlockCriteria as Record<string, any>;
+        let isEarned = false;
+        
+        // New Beginnings badge - award for each new connection
+        if (criteria.newConnectionThisMonth && badge.name === "New Beginnings") {
+          isEarned = true;
+        }
+        
+        // First connection badge
+        if (criteria.firstConnection && !earnedBadgeIds.includes(badge.id)) {
+          isEarned = true;
+        }
+        
+        // Award badge if earned
+        if (isEarned) {
+          try {
+            const result = await storage.awardBadgeWithPoints(userId.toString(), badge.id);
+            console.log(`🎉 CONNECTION BADGE UNLOCKED: ${badge.name} for user ${userId}! Points awarded: ${result.userBadge.pointsAwarded}`);
+            
+            newBadges.push({
+              badgeId: badge.id,
+              name: badge.name,
+              icon: badge.icon,
+              description: badge.description,
+              category: badge.category
+            });
+          } catch (error) {
+            console.error(`Error awarding connection badge ${badge.name}:`, error);
+          }
+        }
+      }
+      
+      return newBadges;
+    } catch (error) {
+      console.error("Error in connection badge check:", error);
+      return [];
+    }
+  }
+
   // Helper function to check and award badges
   async function checkAndAwardBadges(userId: number): Promise<Array<{badgeId: number, name: string, icon: string, description: string, category: string}>> {
     try {
@@ -1635,26 +1686,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
           }
         }
 
-        // New connection this month badge - award for every new connection since it's repeatable
+        // New connection this month badge - only award when called from connection creation
         if (criteria.newConnectionThisMonth) {
-          // For "New Beginnings" badge, award it for every new connection created
-          // Since this function is called after creating a connection, we know a new one was just added
-          if (badge.isRepeatable) {
-            isEarned = true;
-          } else {
-            // For non-repeatable badges, check if they already have it
-            const thisMonth = new Date();
-            thisMonth.setDate(1);
-            thisMonth.setHours(0, 0, 0, 0);
-            
-            const newConnectionsThisMonth = connections.filter(c => 
-              c.createdAt && new Date(c.createdAt) >= thisMonth
-            );
-            
-            if (newConnectionsThisMonth.length > 0 && !earnedBadgeIds.includes(badge.id)) {
-              isEarned = true;
-            }
-          }
+          // This badge should only be awarded during actual connection creation
+          // Don't award it during routine badge checks
+          isEarned = false;
         }
 
         // Stage progression badges
