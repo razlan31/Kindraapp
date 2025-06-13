@@ -119,11 +119,11 @@ export default function MenstrualCyclePage() {
   };
 
   // Fetch data
-  const { data: cycles = [], isLoading } = useQuery({
+  const { data: cycles = [], isLoading } = useQuery<MenstrualCycle[]>({
     queryKey: ['/api/menstrual-cycles'],
   });
 
-  const { data: connections = [] } = useQuery({
+  const { data: connections = [] } = useQuery<Connection[]>({
     queryKey: ['/api/connections'],
   });
 
@@ -230,7 +230,7 @@ export default function MenstrualCyclePage() {
               </CardContent>
             </Card>
 
-            {cycles.length === 0 ? (
+            {(cycles as MenstrualCycle[]).length === 0 ? (
               <Card>
                 <CardContent className="p-6 text-center">
                   <p className="text-muted-foreground">No cycles recorded yet.</p>
@@ -241,7 +241,7 @@ export default function MenstrualCyclePage() {
               </Card>
             ) : (
               <div className="space-y-4">
-                {cycles.map((cycle) => (
+                {(cycles as MenstrualCycle[]).map((cycle) => (
                   <Card key={cycle.id}>
                     <CardContent className="p-4">
                       <div className="flex items-center justify-between">

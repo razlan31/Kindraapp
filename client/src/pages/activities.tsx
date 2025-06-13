@@ -534,13 +534,14 @@ export default function Activities() {
       <ReflectionModal
         isOpen={reflectionModalOpen}
         onClose={() => setReflectionModalOpen(false)}
-        momentId={selectedMomentForReflection}
+        moment={moments.find(m => m.id === selectedMomentForReflection) || null}
       />
 
       <EntryDetailModal
         isOpen={entryDetailModalOpen}
         onClose={() => setEntryDetailModalOpen(false)}
         moment={selectedMomentForDetail}
+        connection={selectedMomentForDetail ? connections.find(c => c.id === selectedMomentForDetail.connectionId) || null : null}
       />
 
       <ConflictResolutionModal
