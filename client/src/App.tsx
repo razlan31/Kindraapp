@@ -22,7 +22,7 @@ import Calendar from "@/pages/calendar";
 import InsightsNew from "@/pages/insights-new";
 import Profile from "@/pages/profile";
 import Settings from "@/pages/settings";
-import CycleTracking from "@/pages/cycle-tracking";
+
 import MenstrualCycle from "@/pages/menstrual-cycle";
 import AICoach from "@/pages/ai-coach";
 import SummaryReport from "@/pages/summary-report";
