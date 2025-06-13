@@ -996,7 +996,7 @@ export default function MenstrualCyclePage() {
                             getCycleStage(day, cyclesOnDay[0]) === 'ovulation' ? 'bg-blue-700 dark:bg-blue-800 border-blue-800 dark:border-blue-900 border-2' :
                             getCycleStage(day, cyclesOnDay[0]) === 'fertile' ? 'bg-blue-100 dark:bg-blue-900/30 border-blue-300 dark:border-blue-700 border-2' :
                             getCycleStage(day, cyclesOnDay[0]) === 'follicular' ? 'bg-green-100 dark:bg-green-900/30 border-green-300 dark:border-green-700 border-2' :
-                            getCycleStage(day, cyclesOnDay[0]) === 'luteal' ? 'bg-purple-100 dark:bg-purple-900/30 border-purple-300 dark:border-purple-700 border-2' :
+                            getCycleStage(day, cyclesOnDay[0]) === 'luteal' ? 'bg-yellow-100 dark:bg-yellow-900/30 border-yellow-300 dark:border-yellow-700 border-2' :
                             (isToday ? 'bg-primary/10' : 'bg-background/50')
                           :
                           // Multiple cycles - use gradient background like calendar page
@@ -1091,7 +1091,7 @@ export default function MenstrualCyclePage() {
                     <span>Ovulation day</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 bg-purple-100 dark:bg-purple-900/30 border border-purple-300 dark:border-purple-700 rounded flex items-center justify-center">
+                    <div className="w-4 h-4 bg-yellow-100 dark:bg-yellow-900/30 border border-yellow-300 dark:border-yellow-700 rounded flex items-center justify-center">
                       <span className="text-xs">🌙</span>
                     </div>
                     <span>Luteal phase</span>
