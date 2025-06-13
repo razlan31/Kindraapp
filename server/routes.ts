@@ -714,8 +714,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const oldStage = connection.relationshipStage;
       const newStage = req.body.relationshipStage;
       
-      console.log("Updating connection with data:", req.body);
-      const updatedConnection = await storage.updateConnection(connectionId, req.body);
+      // Convert string dates to Date objects for database
+      const updateData = { ...req.body };
+      // Handle date fields properly
+      ['startDate', 'birthday', 'createdAt'].forEach(field => {
+        if (updateData[field] && typeof updateData[field] === 'string') {
+          updateData[field] = new Date(updateData[field]);
+        }
+      });
+      
+      // Ensure userId is converted to string to match schema
+      if (updateData.userId) {
+        updateData.userId = updateData.userId.toString();
+      }
+      
+      console.log("Updating connection with data:", updateData);
+      const updatedConnection = await storage.updateConnection(connectionId, updateData);
       console.log("Updated connection result:", updatedConnection);
       
       // Create milestone entry if relationship stage changed
@@ -1053,11 +1067,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log("🚀 ROUTES - momentData.createdAt:", momentData.createdAt);
       console.log("🚀 ROUTES - Using selected date:", momentData.createdAt);
       
-      // Convert createdAt string to ISO string for database
+      // Convert string dates to Date objects for database
       const momentDataWithDate = {
         ...momentData,
-        createdAt: momentData.createdAt || new Date().toISOString(),
-        resolvedAt: momentData.resolvedAt || null
+        createdAt: momentData.createdAt ? new Date(momentData.createdAt) : new Date(),
+        resolvedAt: momentData.resolvedAt ? new Date(momentData.resolvedAt) : null,
+        userId: userId.toString() // Convert userId to string for schema consistency
       };
       
       // Skip connection validation for performance - rely on foreign key constraints
