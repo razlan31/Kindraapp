@@ -9,6 +9,8 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { useModal } from "@/contexts/modal-context";
+import { ManualInsight } from "@/components/insights/manual-insight";
+import { MediaViewerModal } from "@/components/ui/media-viewer-modal";
 import type { Moment, Connection } from "@shared/schema";
 
 interface EntryDetailModalProps {
@@ -27,6 +29,8 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection, onUpdate
   const [editedEmoji, setEditedEmoji] = useState("");
   const [customTag, setCustomTag] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [mediaViewerOpen, setMediaViewerOpen] = useState(false);
+  const [selectedMediaIndex, setSelectedMediaIndex] = useState(0);
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { openMomentModal } = useModal();
@@ -227,6 +231,9 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection, onUpdate
   };
 
   const getTagColor = (tag: string) => {
+    if (tag === "Sex") {
+      return "bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-300";
+    }
     if (tag === "Green Flag" || ["Intimacy", "Affection", "Support", "Growth", "Trust", "Celebration"].includes(tag)) {
       return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300";
     }
@@ -339,6 +346,47 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection, onUpdate
               </p>
             )}
           </div>
+
+          {/* Media Files */}
+          {freshMoment.mediaFiles && freshMoment.mediaFiles.length > 0 && (
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Photos & Videos ({freshMoment.mediaFiles.length})</label>
+              <div className="grid grid-cols-2 gap-3 max-h-64 overflow-y-auto">
+                {freshMoment.mediaFiles.map((file, index) => (
+                  <div key={file.id} className="relative bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden">
+                    {file.type === 'photo' ? (
+                      <img
+                        src={file.url}
+                        alt={file.filename}
+                        className="w-full h-32 object-cover cursor-pointer hover:opacity-90 transition-opacity"
+                        onClick={() => {
+                          setSelectedMediaIndex(index);
+                          setMediaViewerOpen(true);
+                        }}
+                      />
+                    ) : (
+                      <div 
+                        className="w-full h-32 flex items-center justify-center bg-gray-200 dark:bg-gray-700 cursor-pointer hover:opacity-90 transition-opacity"
+                        onClick={() => {
+                          setSelectedMediaIndex(index);
+                          setMediaViewerOpen(true);
+                        }}
+                      >
+                        <div className="text-center">
+                          <div className="text-2xl mb-1">🎥</div>
+                          <div className="text-xs text-gray-600 dark:text-gray-400">Video</div>
+                          <div className="text-xs text-gray-500 truncate px-2">{file.filename}</div>
+                        </div>
+                      </div>
+                    )}
+                    <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-xs p-1 truncate">
+                      {file.filename}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Conflict Resolution Info */}
           {activityType === 'conflict' && (
@@ -483,6 +531,33 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection, onUpdate
             </div>
           )}
 
+          {/* Manual AI Insight Generation */}
+          {!isEditing && (
+            <div className="space-y-2">
+              <label className="text-sm font-medium">AI Insight</label>
+              <ManualInsight 
+                context={
+                  getActivityType(freshMoment) === 'conflict' ? 'conflict-entry' :
+                  getActivityType(freshMoment) === 'intimacy' ? 'moment-entry' :
+                  'activity-card'
+                }
+                data={{
+                  content: freshMoment.content,
+                  title: freshMoment.title,
+                  emoji: freshMoment.emoji,
+                  isPrivate: freshMoment.isPrivate,
+                  isIntimate: freshMoment.isIntimate,
+                  tags: freshMoment.tags,
+                  connectionName: connection.name,
+                  description: freshMoment.content,
+                  resolution: freshMoment.resolutionNotes,
+                  notes: freshMoment.reflection
+                }}
+                className="w-full"
+              />
+            </div>
+          )}
+
           {/* Action Buttons */}
           <div className="flex justify-between items-center pt-4">
             <Button 
@@ -526,6 +601,14 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection, onUpdate
           </div>
         </div>
       </DialogContent>
+
+      {/* Media Viewer Modal */}
+      <MediaViewerModal
+        isOpen={mediaViewerOpen}
+        onClose={() => setMediaViewerOpen(false)}
+        mediaFiles={freshMoment.mediaFiles || []}
+        initialIndex={selectedMediaIndex}
+      />
     </Dialog>
   );
 }

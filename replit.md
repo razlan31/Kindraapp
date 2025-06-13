@@ -2,128 +2,121 @@
 
 ## Overview
 
-Kindra is a comprehensive relationship tracking application built with React and Express.js that helps users track, reflect, and grow their emotional connections. The application provides emotional intelligence features for relationship management, including moment tracking, badge achievements, menstrual cycle tracking, and AI-powered insights.
+Kindra is a comprehensive relationship tracking application built with React and Express.js. It helps users track, reflect, and grow their emotional connections through features like moment tracking, AI-powered insights, badges, and relationship analytics. The app focuses on emotional intelligence and provides tools for understanding relationship patterns and dynamics.
 
 ## System Architecture
 
 ### Frontend Architecture
 - **Framework**: React 18 with TypeScript
-- **Build Tool**: Vite with custom configuration
-- **UI Framework**: Shadcn/UI with Radix UI primitives
-- **Styling**: Tailwind CSS with custom theme variables
+- **Build Tool**: Vite for fast development and optimized builds
+- **Styling**: Tailwind CSS with custom design system
+- **UI Components**: Radix UI components with shadcn/ui styling
 - **State Management**: React Query (TanStack Query) for server state, React Context for global state
-- **Routing**: Wouter for lightweight client-side routing
-- **Authentication**: Session-based authentication with custom auth context
+- **Routing**: Wouter for client-side routing
+- **Forms**: React Hook Form with Zod validation
 
 ### Backend Architecture
 - **Framework**: Express.js with TypeScript
 - **Database**: PostgreSQL with Drizzle ORM
-- **Session Management**: Express-session with PostgreSQL session store
-- **Authentication**: bcryptjs for password hashing
-- **API Design**: RESTful API with JSON responses
-- **File Upload**: Base64 image handling with compression utilities
+- **Authentication**: Passport.js with Google OAuth and session-based auth
+- **Session Storage**: PostgreSQL-backed sessions with connect-pg-simple
+- **File Structure**: Modular architecture with separate route handlers
 
-### Database Schema
-The application uses PostgreSQL with the following key entities:
-- **Users**: Core user profiles with authentication and personal details
-- **Connections**: Relationship tracking with various stages and metadata
-- **Moments**: Activity/emotion tracking entries linked to connections
-- **Badges**: Achievement system with unlock criteria
-- **Menstrual Cycles**: Health tracking with symptoms and mood data
-- **Milestones**: Relationship milestone tracking
-- **Plans**: Future planning and goal setting
+### Key Design Decisions
+- **Monorepo Structure**: Client and server code in same repository with shared types
+- **Type Safety**: Shared schema definitions between frontend and backend
+- **Real-time Features**: Built-in preparation for WebSocket connections
+- **Responsive Design**: Mobile-first approach with bottom navigation
 
 ## Key Components
 
+### Core Features
+1. **Connection Management**: Track relationships across different stages (Potential, Talking, Dating, etc.)
+2. **Moment Tracking**: Record relationship moments with emotions, tags, and context
+3. **AI Insights**: OpenAI-powered relationship coaching and advice
+4. **Badge System**: Gamification through achievement badges
+5. **Cycle Tracking**: Menstrual cycle tracking with mood correlations
+6. **Calendar Integration**: Timeline view of relationship events
+
+### User Experience
+- **Onboarding Flow**: Multi-step user setup with profile configuration
+- **Dashboard**: Central hub showing key metrics and recent activity
+- **Modal System**: Centralized modal management for forms and details
+- **Theme Support**: Dark/light mode with system preference detection
+
 ### Authentication System
-- Session-based authentication using express-session
-- Password hashing with bcryptjs
-- Protected routes with authentication middleware
-- User context provider for global auth state
-
-### Relationship Management
-- Connection tracking with relationship stages (Potential, Talking, Dating, etc.)
-- Focus connection system for prioritizing main relationships
-- Smart connection prioritization algorithm
-- Profile images with compression and storage
-
-### Activity Tracking
-- Moment creation with emotional data and connection linking
-- Multiple activity types: moments, conflicts, intimacy, plans
-- Timeline view with filtering and search capabilities
-- Badge system with automatic achievement unlocking
-
-### Badge System
-- Category-based achievements (Getting Started, Relationship Progress, etc.)
-- Automatic badge awarding based on user activity
-- Streak tracking and milestone recognition
-- In-memory badge storage with database persistence issues (noted in diagnostics)
-
-### Health Tracking
-- Menstrual cycle tracking with symptoms and mood correlation
-- Cycle prediction and average length calculations
-- Integration with relationship emotional patterns
+- **Google OAuth**: Primary authentication method
+- **Session Management**: Persistent sessions with PostgreSQL storage
+- **User Profiles**: Extended user data including zodiac signs, love languages
 
 ## Data Flow
 
-1. **User Authentication**: Session-based login stores user data in PostgreSQL session store
-2. **Connection Management**: Users create and manage relationships with various metadata
-3. **Activity Logging**: Moments are created and linked to connections, triggering badge evaluations
-4. **Badge Awards**: System evaluates criteria and awards badges, with notifications sent to frontend
-5. **Data Persistence**: All data stored in PostgreSQL with real-time updates via React Query
-6. **Image Handling**: Profile images compressed client-side and stored as base64 strings
+### Database Schema
+- **Users**: Core user profiles with OAuth integration
+- **Connections**: Relationship entities with stages and metadata
+- **Moments**: Timestamped relationship events with emotional context
+- **Badges**: Achievement system with unlock criteria
+- **Menstrual Cycles**: Health tracking integration
+- **Notifications**: In-app notification system
+
+### State Management
+- **Server State**: React Query handles API calls, caching, and synchronization
+- **Client State**: React Context for authentication, modals, and relationship focus
+- **Local Storage**: Persistent UI preferences and temporary data
+
+### API Structure
+- **RESTful Endpoints**: Standard CRUD operations for all entities
+- **Authentication Middleware**: Protected routes with session validation
+- **Error Handling**: Consistent error responses with proper HTTP status codes
 
 ## External Dependencies
 
-### Core Dependencies
-- **@neondatabase/serverless**: PostgreSQL connection via Neon
-- **drizzle-orm**: Type-safe database queries and migrations
-- **@tanstack/react-query**: Server state management and caching
-- **@stripe/stripe-js**: Payment processing integration
-- **bcryptjs**: Password hashing and authentication
-- **express-session**: Session management
-- **date-fns**: Date manipulation and formatting
+### Core Libraries
+- **Database**: Drizzle ORM with PostgreSQL driver (@neondatabase/serverless)
+- **Authentication**: Passport.js with Google OAuth strategy
+- **AI Integration**: OpenAI API for relationship insights
+- **UI Framework**: Radix UI primitives with Tailwind CSS
+- **Date Handling**: date-fns for date manipulation and formatting
 
-### UI Dependencies
-- **@radix-ui/***: Accessible UI primitives
-- **tailwindcss**: Utility-first CSS framework
-- **class-variance-authority**: Component variant management
-- **cmdk**: Command palette and search functionality
+### Development Tools
+- **TypeScript**: Full type safety across the stack
+- **ESBuild**: Fast production builds
+- **Vite**: Development server with hot reloading
+
+### Third-Party Services
+- **Stripe**: Payment processing for premium features
+- **OpenAI**: AI-powered relationship coaching
+- **Google OAuth**: User authentication
 
 ## Deployment Strategy
 
-### Development Environment
-- **Runtime**: Node.js 20 with TypeScript execution via tsx
-- **Database**: PostgreSQL 16 via Replit modules
-- **Development Server**: Vite dev server with HMR
-- **Port Configuration**: Application runs on port 5000
+### Replit Configuration
+- **Runtime**: Node.js 20 with PostgreSQL 16
+- **Build Process**: Vite build for frontend, ESBuild for backend
+- **Process Management**: npm scripts for development and production
+- **Port Configuration**: Port 5000 mapped to external port 80
 
-### Production Build
-- **Frontend**: Vite build process outputs to `dist/public`
-- **Backend**: esbuild bundles server code to `dist/index.js`
-- **Database**: Drizzle migrations for schema management
-- **Deployment**: Replit autoscale deployment target
+### Environment Variables
+- **Database**: DATABASE_URL for PostgreSQL connection
+- **Authentication**: Google OAuth credentials and session secrets
+- **External APIs**: OpenAI and Stripe API keys
 
-### Configuration Files
-- **drizzle.config.ts**: Database migration configuration
-- **vite.config.ts**: Frontend build and development configuration
-- **tsconfig.json**: TypeScript compilation settings
-- **tailwind.config.ts**: Styling and theme configuration
-
-## Known Issues
-
-Based on the badges diagnostic file, there are several areas requiring attention:
-
-1. **Badge Persistence**: System uses in-memory storage that resets on server restart
-2. **Badge Initialization**: Default badges may not be properly loaded on startup
-3. **Badge Logic**: Incorrect triggering of certain achievements like "Habit Stacking Pro"
-4. **Frontend Cache**: Badge display issues due to cache invalidation problems
-5. **API Consistency**: Inconsistent badge response formats between endpoints
+### Known Issues
+The badges system currently has several issues that need attention:
+- Badge storage uses in-memory storage that resets on server restart
+- Badge initialization may not be called properly on startup
+- Badge award logic has issues with streak calculations
+- Frontend cache invalidation prevents badges from displaying correctly
+- Inconsistent badge response formats between endpoints
 
 ## Changelog
 
-- June 13, 2025. Initial setup
+- June 13, 2025: Restored specific features from June 1st working version
+  - Restored colored alphabets/initials for multiple connections on same day
+  - Restored automatic cycle generation when manually setting end dates
+  - Reverted unauthorized modifications to match June 1st baseline
 
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
+Development approach: Make precise, targeted fixes only. Do not modify working features when fixing unrelated issues. Avoid scope creep - stick strictly to the requested changes. NEVER make unauthorized changes without explicit user permission. Only work on exactly what the user requests.

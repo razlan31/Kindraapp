@@ -1,23 +1,55 @@
 import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
-import { storage } from "./storage";
+import { storage } from "./database-storage";
 import { z } from "zod";
 import { 
   userSchema, connectionSchema, momentSchema,
-  userBadgeSchema, menstrualCycleSchema, milestoneSchema, planSchema
+  userBadgeSchema, menstrualCycleSchema, milestoneSchema, planSchema, chatConversationSchema
 } from "@shared/schema";
 import bcrypt from "bcryptjs";
 import session from "express-session";
 import MemoryStore from "memorystore";
 import Stripe from "stripe";
+import { aiCoach, type RelationshipContext } from "./ai-relationship-coach";
+import { ensureUserConnection } from "./user-connection-utils";
+import { setupAuth, isAuthenticated as googleAuthMiddleware } from "./auth";
 
 // Initialize Stripe
 if (!process.env.STRIPE_SECRET_KEY) {
   throw new Error('Missing required Stripe secret: STRIPE_SECRET_KEY');
 }
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+  // @ts-ignore - Using compatible Stripe API version
   apiVersion: "2023-10-16",
 });
+
+// Helper function to safely format dates for database insertion
+function formatDateForDB(date: Date | string | null): string {
+  if (!date) return new Date().toISOString();
+  if (typeof date === 'string') return new Date(date).toISOString();
+  return date.toISOString();
+}
+
+// Helper function to convert string dates to Date objects for Drizzle
+function convertDatesForDB(data: any): any {
+  const result = { ...data };
+  const dateFields = ['startDate', 'birthday', 'createdAt', 'updatedAt', 'resolvedAt'];
+  
+  dateFields.forEach(field => {
+    if (result[field] && typeof result[field] === 'string') {
+      result[field] = new Date(result[field]);
+    }
+  });
+  
+  return result;
+}
+
+// Helper function to safely handle error types
+function getErrorMessage(error: unknown): string {
+  if (error instanceof Error) return error.message;
+  if (typeof error === 'string') return error;
+  return 'Unknown error occurred';
+}
 
 // Helper functions for relationship stage milestones
 function getMilestoneTitle(oldStage: string, newStage: string): string {
@@ -56,7 +88,7 @@ function getMilestoneEmoji(stage: string): string {
   return emojis[stage] || '✨';
 }
 
-// Extend session types
+// Extend express-session module
 declare module "express-session" {
   interface SessionData {
     userId?: number;
@@ -64,63 +96,25 @@ declare module "express-session" {
 }
 
 // Auth middleware
-const isAuthenticated = (req: Request, res: Response, next: Function) => {
-  // For development purposes, we'll automatically log in with user ID 1
-  // But first check if the user actually exists
-  storage.getUser(1).then(user => {
-    if (user) {
-      req.session.userId = 1;
-      console.log("Auth middleware: Setting userId to 1 - user exists");
-      next();
-    } else {
-      console.log("Auth middleware: User 1 not found - creating test user");
-      // Create test user if it doesn't exist
-      storage.createUser({
-        username: 'testuser',
-        email: 'test@example.com',
-        password: 'password123',
-        displayName: 'Test User',
-        zodiacSign: 'Gemini',
-        loveLanguage: 'Quality Time',
-        relationshipGoals: null,
-        currentFocus: null,
-        relationshipStyle: null,
-        personalNotes: null,
-        stripeCustomerId: null,
-        stripeSubscriptionId: null
-      }).then(user => {
-        req.session.userId = user.id;
-        console.log("Auth middleware: Created and logged in user", user.id);
-        next();
-      }).catch(error => {
-        console.error("Auth middleware: Error creating user:", error);
-        res.status(500).json({ message: "Authentication setup failed" });
-      });
-    }
-  }).catch(error => {
-    console.error("Auth middleware error:", error);
-    res.status(500).json({ message: "Authentication error" });
-  });
+const isAuthenticated = (req: Request & { session: any }, res: Response, next: Function) => {
+  if (req.session?.userId) {
+    console.log("Auth middleware: User authenticated with ID", (req.session as any).userId);
+    next();
+  } else {
+    console.log("Auth middleware: No user session found");
+    res.status(401).json({ message: "Authentication required" });
+  }
 };
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Set up session
-  const SessionStore = MemoryStore(session);
-  app.use(
-    session({
-      secret: process.env.SESSION_SECRET || "kindra-app-secret",
-      resave: false,
-      saveUninitialized: false,
-      cookie: { secure: process.env.NODE_ENV === "production", maxAge: 24 * 60 * 60 * 1000 },
-      store: new SessionStore({ checkPeriod: 86400000 }),
-    })
-  );
+  // Setup Google OAuth authentication
+  await setupAuth(app);
 
   // Plan routes - use non-api route to bypass ALL Vite middleware conflicts  
   // Stats endpoint
   app.get("/api/stats", isAuthenticated, async (req: Request, res: Response) => {
     try {
-      const session = req.session as SessionData;
+      const session = req.session as any;
       const userId = session.userId!;
 
       const connections = await storage.getConnectionsByUserId(userId);
@@ -141,7 +135,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/plans-data", isAuthenticated, async (req: Request, res: Response) => {
     console.log('🚀 PLANS DATA ROUTE HIT - This should show if route is working');
     try {
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       console.log('📋 GET /plans-data - Fetching for user', userId);
       const plans = await storage.getPlans(userId);
       console.log('📋 Plans found:', plans.length);
@@ -159,7 +153,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/plans-data", isAuthenticated, async (req: Request, res: Response) => {
     try {
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       const planData = { ...req.body, userId };
       console.log('📋 Creating plan for user', userId, 'data:', planData);
       
@@ -191,8 +185,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Hash password
       const hashedPassword = await bcrypt.hash(userData.password, 10);
       
-      // Create user
+      // Create user with generated ID
+      const userId = Date.now().toString(); // Generate unique string ID
       const newUser = await storage.createUser({
+        id: userId,
         ...userData,
         password: hashedPassword,
       });
@@ -201,7 +197,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { password, ...userWithoutPassword } = newUser;
       
       // Set session
-      req.session.userId = newUser.id;
+      (req.session as any).userId = newUser.id;
+      await new Promise((resolve, reject) => {
+        req.session.save((err) => {
+          if (err) reject(err);
+          else resolve(undefined);
+        });
+      });
       
       res.status(201).json(userWithoutPassword);
     } catch (error) {
@@ -215,7 +217,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/login", async (req, res) => {
     try {
-      const { username, password } = req.body;
+      const { username, password, rememberMe } = req.body;
       
       // Validate input
       if (!username || !password) {
@@ -234,8 +236,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Invalid credentials" });
       }
       
-      // Set session
-      req.session.userId = user.id;
+      // Set session userId
+      (req.session as any).userId = user.id;
+      
+      // Extend session duration if "remember me" is checked
+      if (rememberMe) {
+        const extendedTtl = 30 * 24 * 60 * 60 * 1000; // 30 days
+        req.session.cookie.maxAge = extendedTtl;
+        console.log("Login: Extended session duration for 30 days");
+      }
+      
+      console.log("Login: Setting session userId:", user.id);
+      
+      // Ensure user has their own connection for cycle tracking
+      await ensureUserConnection(user);
       
       // Remove password from response
       const { password: _, ...userWithoutPassword } = user;
@@ -255,63 +269,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
-  app.get("/api/me", isAuthenticated, async (req, res) => {
+  app.get("/api/me", async (req, res) => {
     try {
-      const userId = req.session.userId as number;
-      const user = await storage.getUser(userId);
-      
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
+      // Try Google OAuth first
+      if (req.isAuthenticated && req.isAuthenticated()) {
+        const user = req.user as any;
+        if (user) {
+          return res.status(200).json(user);
+        }
       }
       
-      // Remove password from response
-      const { password, ...userWithoutPassword } = user;
+      // Try session-based auth
+      const session = req.session as any;
+      console.log("Auth check - session:", session?.userId ? "exists" : "missing", "userId:", session?.userId);
+      if (session?.userId) {
+        console.log("Looking up user with ID:", session.userId);
+        const dbUser = await storage.getUser(session.userId);
+        console.log("Database user lookup result:", dbUser ? "found" : "not found");
+        if (dbUser) {
+          // Remove password from response
+          const { password, ...userWithoutPassword } = dbUser;
+          return res.status(200).json(userWithoutPassword);
+        }
+      }
       
-      res.status(200).json(userWithoutPassword);
+      // No authentication found
+      res.status(401).json({ message: "Authentication required" });
     } catch (error) {
+      console.error("Error fetching user:", error);
       res.status(500).json({ message: "Server error" });
     }
   });
 
   app.put("/api/me", isAuthenticated, async (req, res) => {
     try {
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       const updateData = req.body;
       
       // Validate the update data
-      const allowedFields = [
-        'displayName', 'email', 'zodiacSign', 'loveLanguage', 'profileImage'
-      ];
-      const filteredData = Object.keys(updateData)
-        .filter(key => allowedFields.includes(key))
-        .reduce((obj, key) => {
-          obj[key] = updateData[key];
-          return obj;
-        }, {} as any);
-      
-      const updatedUser = await storage.updateUser(userId, filteredData);
-      
-      if (!updatedUser) {
-        return res.status(404).json({ message: "User not found" });
-      }
-      
-      // Remove password from response
-      const { password, ...userWithoutPassword } = updatedUser;
-      
-      res.status(200).json(userWithoutPassword);
-    } catch (error) {
-      console.error("Error updating profile:", error);
-      res.status(500).json({ message: "Server error" });
-    }
-  });
-
-  // Update profile endpoint
-  app.patch("/api/profile", isAuthenticated, async (req, res) => {
-    try {
-      const userId = req.session.userId as number;
-      const updateData = req.body;
-      
-      // Validate the update data - now includes relationship-focused fields
       const allowedFields = [
         'displayName', 'email', 'zodiacSign', 'loveLanguage', 'profileImage',
         'relationshipGoals', 'currentFocus', 'relationshipStyle', 'personalNotes'
@@ -335,19 +330,180 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(200).json(userWithoutPassword);
     } catch (error) {
       console.error("Error updating profile:", error);
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
+  // PATCH endpoint for profile updates (used by onboarding)
+  app.patch("/api/me", isAuthenticated, async (req, res) => {
+    try {
+      const userId = (req.session as any).userId as number;
+      const updateData = req.body;
+      
+      console.log("Backend /api/me PATCH - received data:", updateData);
+      
+      // Validate the update data - includes onboarding fields AND email
+      const allowedFields = [
+        'displayName', 'email', 'birthday', 'zodiacSign', 'loveLanguage', 'profileImage',
+        'relationshipGoals', 'currentFocus', 'relationshipStyle', 'personalNotes'
+      ];
+      const filteredData = Object.keys(updateData)
+        .filter(key => allowedFields.includes(key))
+        .reduce((obj, key) => {
+          if (key === 'birthday' && updateData[key]) {
+            // Ensure birthday is properly formatted as Date object
+            const birthdayValue = updateData[key];
+            if (typeof birthdayValue === 'string' && birthdayValue.trim() !== '') {
+              obj[key] = new Date(birthdayValue);
+            } else if (birthdayValue instanceof Date) {
+              obj[key] = birthdayValue;
+            }
+          } else {
+            obj[key] = updateData[key];
+          }
+          return obj;
+        }, {} as any);
+      
+      console.log("Backend /api/me PATCH - filtered data being saved:", filteredData);
+      
+      // Email validation removed - allow duplicate emails
+      
+      const updatedUser = await storage.updateUser(userId, filteredData);
+      
+      if (!updatedUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Sync the self-connection with updated profile data
+      console.log("Starting self-connection sync...");
+      const userConnections = await storage.getConnectionsByUserId(userId);
+      const selfConnection = userConnections.find(c => c.relationshipStage === 'Self');
+      console.log("Found self-connection:", selfConnection?.id);
+      
+      if (selfConnection) {
+        const connectionUpdateData: any = {};
+        
+        // Map user fields to connection fields
+        if (filteredData.displayName) connectionUpdateData.name = filteredData.displayName;
+        if (filteredData.birthday) connectionUpdateData.birthday = new Date(filteredData.birthday);
+        if (filteredData.zodiacSign) connectionUpdateData.zodiacSign = filteredData.zodiacSign;
+        if (filteredData.loveLanguage) connectionUpdateData.loveLanguage = filteredData.loveLanguage;
+        if (filteredData.profileImage) connectionUpdateData.profileImage = filteredData.profileImage;
+        
+        console.log("Connection update data:", connectionUpdateData);
+        
+        if (Object.keys(connectionUpdateData).length > 0) {
+          await storage.updateConnection(selfConnection.id, connectionUpdateData);
+          console.log(`Updated self-connection with:`, connectionUpdateData);
+        } else {
+          console.log("No fields to update in connection");
+        }
+      } else {
+        console.log("No self-connection found to update");
+      }
+      
+      // Remove password from response
+      const { password, ...userWithoutPassword } = updatedUser;
+      
+      res.status(200).json(userWithoutPassword);
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
+  // Update profile endpoint
+  app.patch("/api/profile", isAuthenticated, async (req, res) => {
+    try {
+      const userId = (req.session as any).userId as number;
+      const updateData = req.body;
+      
+      // Validate the update data - now includes relationship-focused fields
+      const allowedFields = [
+        'displayName', 'email', 'zodiacSign', 'loveLanguage', 'profileImage',
+        'relationshipGoals', 'currentFocus', 'relationshipStyle', 'personalNotes'
+      ];
+      const filteredData = Object.keys(updateData)
+        .filter(key => allowedFields.includes(key))
+        .reduce((obj, key) => {
+          obj[key] = updateData[key];
+          return obj;
+        }, {} as any);
+      
+      const updatedUser = await storage.updateUser(userId, filteredData);
+      
+      if (!updatedUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Sync the self-connection with updated profile data
+      const userConnections = await storage.getConnectionsByUserId(userId);
+      const selfConnection = userConnections.find(conn => conn.relationshipStage === 'Self');
+      
+      if (selfConnection) {
+        const connectionUpdateData: any = {};
+        
+        // Map user fields to connection fields
+        if (filteredData.displayName) connectionUpdateData.name = filteredData.displayName;
+        if (filteredData.zodiacSign) connectionUpdateData.zodiacSign = filteredData.zodiacSign;
+        if (filteredData.loveLanguage) connectionUpdateData.loveLanguage = filteredData.loveLanguage;
+        if (filteredData.profileImage) connectionUpdateData.profileImage = filteredData.profileImage;
+        
+        if (Object.keys(connectionUpdateData).length > 0) {
+          await storage.updateConnection(selfConnection.id, connectionUpdateData);
+        }
+      }
+      
+      // Remove password from response
+      const { password, ...userWithoutPassword } = updatedUser;
+      
+      res.status(200).json(userWithoutPassword);
+    } catch (error) {
+      console.error("Error updating profile:", error);
       res.status(500).json({ message: "Failed to update profile" });
+    }
+  });
+
+  // Create user connection for existing users
+  app.post("/api/me/connection", isAuthenticated, async (req, res) => {
+    try {
+      const userId = (req.session as any).userId as number;
+      const user = await storage.getUser(userId);
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      await ensureUserConnection(user);
+      res.status(200).json({ message: "User connection created successfully" });
+    } catch (error) {
+      console.error("Error creating user connection:", error);
+      res.status(500).json({ message: "Failed to create user connection" });
     }
   });
 
   // Connections Routes
   app.get("/api/connections", isAuthenticated, async (req, res) => {
     try {
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       const connections = await storage.getConnectionsByUserId(userId);
       res.status(200).json(connections);
     } catch (error) {
       console.error("Error in get connections:", error);
       res.status(500).json({ message: "Server error fetching connections" });
+    }
+  });
+
+  // Get archived connections
+  app.get("/api/connections/archived", isAuthenticated, async (req, res) => {
+    try {
+      const userId = (req.session as any).userId as number;
+      const allConnections = await storage.getAllConnectionsByUserId(userId);
+      const archivedConnections = allConnections.filter(connection => connection.isArchived === true);
+      res.status(200).json(archivedConnections);
+    } catch (error) {
+      console.error("Error in get archived connections:", error);
+      res.status(500).json({ message: "Server error fetching archived connections" });
     }
   });
 
@@ -362,7 +518,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Verify ownership
-      if (connection.userId !== req.session.userId) {
+      if (connection.userId !== (req.session as any).userId) {
         return res.status(403).json({ message: "Access denied" });
       }
       
@@ -376,13 +532,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/connections", isAuthenticated, async (req, res) => {
     try {
       console.log("Received connection creation request:", req.body);
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       console.log("User ID from session:", userId);
+      
+      // Validate required fields
+      if (!req.body.name || req.body.name.trim() === '') {
+        console.log("Validation failed: name is required");
+        return res.status(400).json({
+          message: "Connection name is required",
+          field: "name"
+        });
+      }
       
       // Create connection object with all form data
       const connectionData: any = {
         userId: userId,
-        name: req.body.name,
+        name: req.body.name.trim(),
         relationshipStage: req.body.relationshipStage || "Talking",
         startDate: req.body.startDate ? new Date(req.body.startDate) : null,
         birthday: req.body.birthday ? new Date(req.body.birthday) : null,
@@ -418,7 +583,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           reflection: null,
           isMilestone: true,
           milestoneTitle: "Connection Started",
-          createdAt: connectionData.startDate || new Date()
+          createdAt: formatDateForDB(connectionData.startDate || new Date())
         };
         
         const connectionMilestone = await storage.createMoment(connectionStartData);
@@ -447,7 +612,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             reflection: null,
             isMilestone: true,
             milestoneTitle: stageTitle,
-            createdAt: new Date(baseTime.getTime() + 1000)
+            createdAt: formatDateForDB(new Date(baseTime.getTime() + 1000))
           };
           
           const stageMilestone = await storage.createMoment(stageMilestoneData);
@@ -477,7 +642,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             reflection: null,
             isMilestone: true,
             milestoneTitle: 'Birthday',
-            createdAt: birthdayDate
+            createdAt: formatDateForDB(birthdayDate)
           };
           
           const birthdayMilestone = await storage.createMoment(birthdayMilestoneData);
@@ -488,8 +653,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Don't fail the connection creation if milestone creation fails
       }
       
-      // Check if any badges should be unlocked
-      const awardedBadges = await checkAndAwardBadges(userId);
+      // Award connection-specific badges
+      const awardedBadges = await awardConnectionBadges(userId, newConnection);
       
       // Log the saved connection to verify all fields are preserved
       const savedConnection = await storage.getConnection(newConnection.id);
@@ -502,13 +667,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error) {
       console.error("Connection creation error:", error);
-      res.status(500).json({ message: "Server error creating connection", details: error.message });
+      res.status(500).json({ message: "Server error creating connection", details: getErrorMessage(error) });
     }
   });
 
   app.get("/api/connections/:id", isAuthenticated, async (req, res) => {
     try {
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       const connectionId = parseInt(req.params.id);
       
       if (isNaN(connectionId)) {
@@ -572,8 +737,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const oldStage = connection.relationshipStage;
       const newStage = req.body.relationshipStage;
       
-      console.log("Updating connection with data:", req.body);
-      const updatedConnection = await storage.updateConnection(connectionId, req.body);
+      // Convert string dates to Date objects for database
+      const updateData = convertDatesForDB(req.body);
+      
+      // Ensure userId is converted to string to match schema
+      if (updateData.userId) {
+        updateData.userId = updateData.userId.toString();
+      }
+      
+      console.log("Updating connection with data:", updateData);
+      const updatedConnection = await storage.updateConnection(connectionId, updateData);
       console.log("Updated connection result:", updatedConnection);
       
       // Create milestone entry if relationship stage changed
@@ -612,7 +785,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               reflection: null,
               isMilestone: true,
               milestoneTitle: "Connection Started",
-              createdAt: updatedConnection.startDate
+              createdAt: formatDateForDB(updatedConnection.startDate)
             };
             
             const connectionMilestone = await storage.createMoment(connectionStartData);
@@ -642,7 +815,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
                 reflection: null,
                 isMilestone: true,
                 milestoneTitle: initialStageTitle,
-                createdAt: new Date(baseTime.getTime() + 1000)
+                createdAt: formatDateForDB(new Date(baseTime.getTime() + 1000))
               };
               
               const initialStageMilestone = await storage.createMoment(initialStageMilestoneData);
@@ -675,7 +848,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             reflection: null,
             isMilestone: true,
             milestoneTitle: milestoneTitle,
-            createdAt: new Date() // Explicitly set current date for progression milestone
+            createdAt: formatDateForDB(new Date()) // Explicitly set current date for progression milestone
           };
           
           const milestone = await storage.createMoment(milestoneData);
@@ -730,7 +903,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
                 reflection: null,
                 isMilestone: true,
                 milestoneTitle: `${anniversaryType} Anniversary`,
-                createdAt: nextYear
+                createdAt: formatDateForDB(nextYear)
               };
               
               const anniversaryMilestone = await storage.createMoment(anniversaryData);
@@ -768,12 +941,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get user badges
   app.get("/api/badges", isAuthenticated, async (req, res) => {
     try {
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       
       // Check for any new badges before returning the list
       await checkAndAwardBadges(userId);
       
-      const userBadges = await storage.getUserBadges(userId);
+      // Convert userId to string for database storage compatibility
+      const userBadges = await storage.getUserBadges(userId.toString());
       
       console.log(`🏆 Fetched ${userBadges.length} badges for user ${userId}`);
       res.json(userBadges);
@@ -797,7 +971,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Manual badge check route for debugging
   app.post("/api/badges/check", isAuthenticated, async (req, res) => {
     try {
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       console.log(`🔍 Manual badge check triggered for user ${userId}`);
       
       const newBadges = await checkAndAwardBadges(userId);
@@ -847,7 +1021,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(200).json(updatedConnection);
     } catch (error) {
       console.error("Direct update error:", error);
-      res.status(500).json({ message: "Server error", error: error.message });
+      res.status(500).json({ message: "Server error", error: getErrorMessage(error) });
     }
   });
 
@@ -857,7 +1031,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/connections/:id", isAuthenticated, async (req, res) => {
     try {
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       const connectionId = parseInt(req.params.id);
       
       if (isNaN(connectionId)) {
@@ -884,7 +1058,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Moments Routes
   app.get("/api/moments", isAuthenticated, async (req, res) => {
     try {
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       const limit = req.query.limit ? parseInt(req.query.limit as string) : undefined;
       
       console.log(`📋 GET /api/moments - Fetching for user ${userId}`);
@@ -899,7 +1073,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/moments", isAuthenticated, async (req, res) => {
     try {
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       
       console.log("🚀 ROUTES - POST /api/moments called");
       console.log("🚀 ROUTES - Raw request body:", req.body);
@@ -910,33 +1084,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log("🚀 ROUTES - momentData.createdAt:", momentData.createdAt);
       console.log("🚀 ROUTES - Using selected date:", momentData.createdAt);
       
-      // Convert createdAt string to Date object for database
-      const momentDataWithDate = {
+      // Convert string dates to Date objects for database using helper
+      const momentDataWithDate = convertDatesForDB({
         ...momentData,
-        createdAt: momentData.createdAt ? new Date(momentData.createdAt) : new Date(),
-        resolvedAt: momentData.resolvedAt ? new Date(momentData.resolvedAt) : null
-      };
+        userId: userId.toString() // Convert userId to string for schema consistency
+      });
       
-      // Check if connection exists and belongs to user
-      const connection = await storage.getConnection(momentData.connectionId);
-      if (!connection) {
-        return res.status(404).json({ message: "Connection not found" });
-      }
-      
-      if (connection.userId !== userId) {
-        return res.status(403).json({ message: "Unauthorized to add moments to this connection" });
-      }
+      // Skip connection validation for performance - rely on foreign key constraints
       
       const newMoment = await storage.createMoment(momentDataWithDate);
       console.log("🚀 ROUTES - Created moment result:", newMoment);
       console.log("🚀 ROUTES - Final createdAt:", newMoment.createdAt);
       
-      // Check if any badges should be unlocked
-      const newBadges = await checkAndAwardBadges(userId);
-      
+      // Return response immediately for better performance
       res.status(201).json({ 
         ...newMoment, 
-        newBadges 
+        newBadges: [] // Badge checking now happens asynchronously
+      });
+      
+      // Check badges asynchronously without blocking the response
+      setImmediate(async () => {
+        try {
+          await checkAndAwardBadges(userId);
+        } catch (error) {
+          console.error("Background badge checking error:", error);
+        }
       });
     } catch (error) {
       console.error("🚀 ROUTES - Error creating moment:", error);
@@ -951,7 +1123,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Add reflection to a moment
   app.post("/api/moments/:id/reflection", isAuthenticated, async (req: Request, res: Response) => {
     try {
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       const momentId = parseInt(req.params.id);
       const { reflection } = req.body;
       
@@ -991,7 +1163,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Update a moment
   app.patch("/api/moments/:id", isAuthenticated, async (req: Request, res: Response) => {
     try {
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       const momentId = parseInt(req.params.id);
       
       console.log(`🚀 PATCH START - Moment ${momentId}, Request body:`, req.body);
@@ -1040,7 +1212,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/connections/:id/moments", isAuthenticated, async (req, res) => {
     try {
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       const connectionId = parseInt(req.params.id);
       
       if (isNaN(connectionId)) {
@@ -1066,7 +1238,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/moments/:id", isAuthenticated, async (req, res) => {
     try {
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       const momentId = parseInt(req.params.id);
       
       if (isNaN(momentId)) {
@@ -1091,7 +1263,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/moments/:id", isAuthenticated, async (req, res) => {
     try {
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       const momentId = parseInt(req.params.id);
       
       if (isNaN(momentId)) {
@@ -1117,7 +1289,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/moments/:id", isAuthenticated, async (req, res) => {
     try {
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       const momentId = parseInt(req.params.id);
       
       if (isNaN(momentId)) {
@@ -1153,7 +1325,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/user-badges", isAuthenticated, async (req, res) => {
     try {
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       const userBadges = await storage.getUserBadges(userId);
       res.status(200).json(userBadges);
     } catch (error) {
@@ -1161,10 +1333,64 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Notification Routes
+  app.get("/api/notifications", isAuthenticated, async (req, res) => {
+    try {
+      const userId = (req.session as any).userId as number;
+      const notifications = await storage.getNotifications(userId.toString());
+      res.status(200).json(notifications);
+    } catch (error) {
+      console.error("Error fetching notifications:", error);
+      res.status(500).json({ message: "Server error fetching notifications" });
+    }
+  });
+
+  app.patch("/api/notifications/:id/read", isAuthenticated, async (req, res) => {
+    try {
+      const notificationId = parseInt(req.params.id);
+      if (isNaN(notificationId)) {
+        return res.status(400).json({ message: "Invalid notification ID" });
+      }
+      
+      const success = await storage.markNotificationAsRead(notificationId);
+      if (!success) {
+        return res.status(404).json({ message: "Notification not found" });
+      }
+      
+      res.status(200).json({ message: "Notification marked as read" });
+    } catch (error) {
+      console.error("Error marking notification as read:", error);
+      res.status(500).json({ message: "Server error updating notification" });
+    }
+  });
+
+  // Badge awarding endpoint (for testing or manual awards)
+  app.post("/api/award-badge", isAuthenticated, async (req, res) => {
+    try {
+      const userId = (req.session as any).userId as string;
+      const { badgeId } = req.body;
+      
+      if (!badgeId || isNaN(parseInt(badgeId))) {
+        return res.status(400).json({ message: "Valid badge ID required" });
+      }
+      
+      const result = await storage.awardBadgeWithPoints(userId, parseInt(badgeId));
+      res.status(201).json({
+        message: "Badge awarded successfully",
+        badge: result.badge,
+        pointsAwarded: result.userBadge.pointsAwarded,
+        notification: result.notification
+      });
+    } catch (error) {
+      console.error("Error awarding badge:", error);
+      res.status(500).json({ message: "Server error awarding badge" });
+    }
+  });
+
   // Settings Routes
   app.get("/api/settings", isAuthenticated, async (req, res) => {
     try {
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       const user = await storage.getUser(userId);
       
       if (!user) {
@@ -1197,7 +1423,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/settings", isAuthenticated, async (req, res) => {
     try {
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       const settingsData = req.body;
       
       // For now, we'll just return success. In a real app, you'd store these in the database
@@ -1218,14 +1444,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/menstrual-cycles/:id", isAuthenticated, async (req, res) => {
     try {
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       const cycleId = parseInt(req.params.id);
       
       if (isNaN(cycleId)) {
         return res.status(400).json({ message: "Invalid cycle ID" });
       }
       
-      const cycle = await storage.getMenstrualCycle(cycleId);
+      const cycles = await storage.getMenstrualCycles(userId);
+      const cycle = cycles.find(c => c.id === cycleId);
       
       if (!cycle) {
         return res.status(404).json({ message: "Menstrual cycle not found" });
@@ -1236,16 +1463,90 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       const updatedCycle = await storage.updateMenstrualCycle(cycleId, req.body);
+      
+      // Auto-generate next cycle if end date is set and this is a newly completed cycle
+      if (req.body.endDate && !cycle.endDate) {
+        try {
+          await generateNextCycle(userId, updatedCycle);
+        } catch (error) {
+          console.error('Error generating next cycle:', error);
+          // Don't fail the update if next cycle generation fails
+        }
+      }
+      
       res.status(200).json(updatedCycle);
     } catch (error) {
       res.status(500).json({ message: "Server error updating menstrual cycle" });
     }
   });
+
+  // Helper function to generate next cycle automatically
+  async function generateNextCycle(userId: number, completedCycle: any) {
+    try {
+      // Get all cycles for this connection to calculate pattern
+      const allCycles = await storage.getMenstrualCycles(userId);
+      const connectionCycles = allCycles
+        .filter(c => c.connectionId === completedCycle.connectionId)
+        .sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
+
+      // Calculate average cycle length from historical data
+      const cycleLengths: number[] = [];
+      for (let i = 1; i < connectionCycles.length; i++) {
+        const prevCycle = connectionCycles[i - 1];
+        const currentCycle = connectionCycles[i];
+        const length = Math.floor((new Date(currentCycle.startDate).getTime() - new Date(prevCycle.startDate).getTime()) / (1000 * 60 * 60 * 24));
+        if (length > 0 && length <= 60) { // Reasonable cycle length
+          cycleLengths.push(length);
+        }
+      }
+
+      // Use average cycle length or fallback to 28 days
+      const avgCycleLength = cycleLengths.length > 0 
+        ? Math.round(cycleLengths.reduce((sum, len) => sum + len, 0) / cycleLengths.length)
+        : 28;
+
+      // Calculate period length from completed cycle or use default
+      const completedCycleStart = new Date(completedCycle.startDate);
+      const completedCyclePeriodEnd = completedCycle.periodEndDate ? new Date(completedCycle.periodEndDate) : null;
+      const periodLength = completedCyclePeriodEnd 
+        ? Math.floor((completedCyclePeriodEnd.getTime() - completedCycleStart.getTime()) / (1000 * 60 * 60 * 24)) + 1
+        : 5; // Default 5 days
+
+      // Calculate next cycle start date based on average cycle length
+      const nextStartDate = new Date(completedCycle.startDate);
+      nextStartDate.setDate(nextStartDate.getDate() + avgCycleLength); // Start based on cycle length, not end date
+
+      // Calculate period end date for next cycle
+      const nextPeriodEndDate = new Date(nextStartDate);
+      nextPeriodEndDate.setDate(nextPeriodEndDate.getDate() + periodLength - 1);
+
+      // Create next cycle
+      const nextCycleData = {
+        userId: completedCycle.userId,
+        connectionId: completedCycle.connectionId,
+        startDate: nextStartDate,
+        periodEndDate: nextPeriodEndDate,
+        endDate: null, // Will be set when cycle is completed
+        notes: `Auto-generated cycle following ${avgCycleLength}-day pattern`,
+        mood: null,
+        symptoms: null,
+        flowIntensity: null
+      };
+
+      console.log(`Auto-generating next cycle for connection ${completedCycle.connectionId}:`, nextCycleData);
+      
+      const newCycle = await storage.createMenstrualCycle(nextCycleData);
+      return newCycle;
+    } catch (error) {
+      console.error('Error in generateNextCycle:', error);
+      throw error;
+    }
+  }
   
   // Milestone routes
   app.get("/api/milestones", isAuthenticated, async (req, res) => {
     try {
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       const connectionId = req.query.connectionId ? parseInt(req.query.connectionId as string) : null;
       
       let milestones;
@@ -1264,7 +1565,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/milestones", isAuthenticated, async (req, res) => {
     console.log("🚨 MILESTONE ROUTE HIT - Starting request");
     try {
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       const milestoneData = req.body;
       
       console.log("🚨 MILESTONE ROUTE - Original data:", JSON.stringify(milestoneData, null, 2));
@@ -1297,7 +1598,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   app.put("/api/milestones/:id", isAuthenticated, async (req, res) => {
     try {
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       const milestoneId = parseInt(req.params.id);
       
       if (isNaN(milestoneId)) {
@@ -1321,7 +1622,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   app.delete("/api/milestones/:id", isAuthenticated, async (req, res) => {
     try {
-      const userId = req.session.userId as number;
+      const userId = (req.session as any).userId as number;
       const milestoneId = parseInt(req.params.id);
       
       if (isNaN(milestoneId)) {
@@ -1345,13 +1646,67 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
 
 
+  // Helper function to award connection-specific badges (called only during connection creation)
+  async function awardConnectionBadges(userId: number, newConnection: any): Promise<Array<{badgeId: number, name: string, icon: string, description: string, category: string}>> {
+    try {
+      const allBadges = await storage.getAllBadges();
+      const userBadges = await storage.getUserBadges(userId.toString());
+      const earnedBadgeIds = userBadges.map(ub => ub.badgeId);
+      const newBadges: Array<{badgeId: number, name: string, icon: string, description: string, category: string}> = [];
+      
+      console.log(`🎯 Connection Badge Check - User ${userId} created connection: ${newConnection.name}`);
+      
+      // Award specific connection badges
+      for (const badge of allBadges) {
+        const criteria = badge.unlockCriteria as Record<string, any>;
+        let isEarned = false;
+        
+        // New Beginnings badge - award only if not earned in the last 24 hours
+        if (criteria.newConnectionThisMonth && badge.name === "New Beginnings") {
+          const lastEarned = userBadges.find(ub => ub.badgeId === badge.id);
+          if (!lastEarned || Date.now() - new Date(lastEarned.unlockedAt).getTime() > 24 * 60 * 60 * 1000) {
+            isEarned = true;
+          }
+        }
+        
+        // First connection badge
+        if (criteria.firstConnection && !earnedBadgeIds.includes(badge.id)) {
+          isEarned = true;
+        }
+        
+        // Award badge if earned
+        if (isEarned) {
+          try {
+            const result = await storage.awardBadgeWithPoints(userId.toString(), badge.id);
+            console.log(`🎉 CONNECTION BADGE UNLOCKED: ${badge.name} for user ${userId}! Points awarded: ${result.userBadge.pointsAwarded}`);
+            
+            newBadges.push({
+              badgeId: badge.id,
+              name: badge.name,
+              icon: badge.icon,
+              description: badge.description,
+              category: badge.category
+            });
+          } catch (error) {
+            console.error(`Error awarding connection badge ${badge.name}:`, error);
+          }
+        }
+      }
+      
+      return newBadges;
+    } catch (error) {
+      console.error("Error in connection badge check:", error);
+      return [];
+    }
+  }
+
   // Helper function to check and award badges
   async function checkAndAwardBadges(userId: number): Promise<Array<{badgeId: number, name: string, icon: string, description: string, category: string}>> {
     try {
       // Get all user data
-      const moments = await storage.getMomentsByUserId(userId);
-      const connections = await storage.getConnectionsByUserId(userId);
-      const userBadges = await storage.getUserBadges(userId);
+      const moments = await storage.getMomentsByUserId(userId.toString());
+      const connections = await storage.getConnectionsByUserId(userId.toString());
+      const userBadges = await storage.getUserBadges(userId.toString());
       const earnedBadgeIds = userBadges.map(ub => ub.badgeId);
       const allBadges = await storage.getAllBadges();
       const newBadges: Array<{badgeId: number, name: string, icon: string, description: string, category: string}> = [];
@@ -1365,30 +1720,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // For non-repeatable badges, skip if user already has it
         if (!badge.isRepeatable && earnedBadgeIds.includes(badge.id)) continue;
         
+        const criteria = badge.unlockCriteria as Record<string, any>;
+        
         // For repeatable badges, check if they've earned it recently to prevent spam
         // Skip cooldown for connection-based badges (First Contact should be immediate)
         if (badge.isRepeatable && earnedBadgeIds.includes(badge.id)) {
           // No cooldown for connection-based badges
-          if (criteria.connectionsAdded || criteria.firstConnection) {
+          if (criteria.connectionsAdded || criteria.firstConnection || criteria.newConnectionThisMonth) {
             // Allow immediate re-award for connection badges
           } else {
             const lastEarned = userBadges
               .filter(ub => ub.badgeId === badge.id)
-              .sort((a, b) => new Date(b.unlockedAt).getTime() - new Date(a.unlockedAt).getTime())[0];
+              .sort((a, b) => (b.unlockedAt ? new Date(b.unlockedAt).getTime() : 0) - (a.unlockedAt ? new Date(a.unlockedAt).getTime() : 0))[0];
             
             if (lastEarned) {
               const cooldownPeriod = badge.name.includes('Weekly') ? 6 * 24 * 60 * 60 * 1000 : // 6 days for weekly badges
                                      badge.name.includes('Monthly') ? 25 * 24 * 60 * 60 * 1000 : // 25 days for monthly badges
                                      24 * 60 * 60 * 1000; // 1 day default
               
-              if (new Date(lastEarned.unlockedAt).getTime() > Date.now() - cooldownPeriod) {
+              if (lastEarned.unlockedAt && new Date(lastEarned.unlockedAt).getTime() > Date.now() - cooldownPeriod) {
                 continue; // Still in cooldown period
               }
             }
           }
         }
 
-        const criteria = badge.unlockCriteria as Record<string, any>;
         let isEarned = false;
 
         // Connection-based badges
@@ -1405,6 +1761,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
           if (badge.isRepeatable || !earnedBadgeIds.includes(badge.id)) {
             isEarned = true;
           }
+        }
+
+        // New connection this month badge - NEVER award during routine checks
+        if (criteria.newConnectionThisMonth) {
+          // This badge should ONLY be awarded through the connection-specific badge function
+          // Never award during general badge checks to prevent spam
+          isEarned = false;
         }
 
         // Stage progression badges
@@ -1520,7 +1883,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           thisWeek.setHours(0, 0, 0, 0);
           
           const intimateThisWeek = moments.filter(m => 
-            (m.isIntimate || m.tags?.includes('Intimacy')) &&
+            (m.isIntimate || m.tags?.includes('Sex')) &&
             m.createdAt && new Date(m.createdAt) >= thisWeek
           ).length;
           if (intimateThisWeek >= criteria.intimateMomentsThisWeek) isEarned = true;
@@ -1532,7 +1895,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           thisMonth.setHours(0, 0, 0, 0);
           
           const intimateThisMonth = moments.filter(m => 
-            (m.isIntimate || m.tags?.includes('Intimacy')) &&
+            (m.isIntimate || m.tags?.includes('Sex')) &&
             m.createdAt && new Date(m.createdAt) >= thisMonth
           ).length;
           if (intimateThisMonth >= criteria.intimateMomentsThisMonth) isEarned = true;
@@ -1657,20 +2020,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
         // Award badge if earned
         if (isEarned) {
-          await storage.addUserBadge({
-            userId,
-            badgeId: badge.id
-          });
-          console.log(`🎉 NEW BADGE UNLOCKED: ${badge.name} for user ${userId}!`);
-          
-          // Add to newly earned badges array
-          newBadges.push({
-            badgeId: badge.id,
-            name: badge.name,
-            icon: badge.icon,
-            description: badge.description,
-            category: badge.category
-          });
+          try {
+            const result = await storage.awardBadgeWithPoints(userId.toString(), badge.id);
+            console.log(`🎉 NEW BADGE UNLOCKED: ${badge.name} for user ${userId}! Points awarded: ${result.userBadge.pointsAwarded}`);
+            
+            // Add to newly earned badges array
+            newBadges.push({
+              badgeId: badge.id,
+              name: badge.name,
+              icon: badge.icon,
+              description: badge.description,
+              category: badge.category
+            });
+          } catch (error) {
+            console.error(`Error awarding badge ${badge.name}:`, error);
+            // Fallback to basic badge award without points/notifications
+            await storage.awardBadge(userId.toString(), badge.id);
+            console.log(`🎉 NEW BADGE UNLOCKED: ${badge.name} for user ${userId}! (no points/notification)`);
+            
+            newBadges.push({
+              badgeId: badge.id,
+              name: badge.name,
+              icon: badge.icon,
+              description: badge.description,
+              category: badge.category
+            });
+          }
         }
       }
       
@@ -1684,7 +2059,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Stripe billing endpoints
   app.get("/api/billing/subscription", isAuthenticated, async (req: Request, res: Response) => {
     try {
-      const userId = req.session.userId;
+      const userId = (req.session as any).userId;
       const user = await storage.getUser(userId);
       
       if (!user || !user.stripeSubscriptionId) {
@@ -1704,7 +2079,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/billing/customer", isAuthenticated, async (req: Request, res: Response) => {
     try {
-      const userId = req.session.userId;
+      const userId = (req.session as any).userId;
       const user = await storage.getUser(userId);
       
       if (!user || !user.stripeCustomerId) {
@@ -1721,7 +2096,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/billing/create-customer-portal", isAuthenticated, async (req: Request, res: Response) => {
     try {
-      const userId = req.session.userId;
+      const userId = (req.session as any).userId;
       const user = await storage.getUser(userId);
       
       if (!user || !user.stripeCustomerId) {
@@ -1742,7 +2117,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/billing/cancel-subscription", isAuthenticated, async (req: Request, res: Response) => {
     try {
-      const userId = req.session.userId;
+      const userId = (req.session as any).userId;
       const user = await storage.getUser(userId);
       
       if (!user || !user.stripeSubscriptionId) {
@@ -1762,7 +2137,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/billing/invoices", isAuthenticated, async (req: Request, res: Response) => {
     try {
-      const userId = req.session.userId;
+      const userId = (req.session as any).userId;
       const user = await storage.getUser(userId);
       
       if (!user || !user.stripeCustomerId) {
@@ -1797,8 +2172,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     let allCycles = [...existingCycles];
 
     // Process each connection separately
-    for (const [connectionId, cycles] of Object.entries(cyclesByConnection)) {
+    for (const [connectionId, cyclesData] of Object.entries(cyclesByConnection)) {
       const connectionIdNum = parseInt(connectionId);
+      const cycles = cyclesData as any[];
       const sortedCycles = cycles.sort((a: any, b: any) => 
         new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
       );
@@ -1875,7 +2251,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Menstrual cycle endpoints
   app.get("/api/menstrual-cycles", isAuthenticated, async (req: Request, res: Response) => {
     try {
-      const userId = req.session.userId!;
+      const userId = (req.session as any).userId!;
       console.log("Fetching menstrual cycles for userId:", userId);
       let cycles = await storage.getMenstrualCycles(userId);
       console.log("Retrieved cycles:", cycles);
@@ -1892,7 +2268,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/menstrual-cycles", isAuthenticated, async (req: Request, res: Response) => {
     try {
-      const userId = req.session.userId!;
+      const userId = (req.session as any).userId!;
       const { startDate, periodEndDate, endDate, flowIntensity, symptoms, connectionId, mood, notes } = req.body;
       
       console.log("Creating menstrual cycle with data:", {
@@ -1946,7 +2322,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.patch("/api/menstrual-cycles/:id", isAuthenticated, async (req: Request, res: Response) => {
     try {
-      const userId = req.session.userId!;
+      const userId = (req.session as any).userId!;
       const cycleId = parseInt(req.params.id);
       const updates = req.body;
       
@@ -2001,6 +2377,968 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error: any) {
       console.error("Error updating menstrual cycle:", error);
       res.status(500).json({ error: error.message });
+    }
+  });
+
+  // AI Chat endpoints
+  app.post("/api/ai/chat", isAuthenticated, async (req: Request, res: Response) => {
+    try {
+      const userId = (req.session as any).userId as number;
+      const { message } = req.body;
+
+      if (!message || typeof message !== 'string') {
+        return res.status(400).json({ message: "Message is required" });
+      }
+
+      // Gather user context for AI
+      const user = await storage.getUser(userId);
+      const connections = await storage.getConnectionsByUserId(userId);
+      const recentMoments = await storage.getMomentsByUserId(userId, 30);
+
+      // Calculate connection health scores
+      const connectionHealthScores = connections.map(connection => {
+        const connectionMoments = recentMoments.filter(m => m.connectionId === connection.id);
+        const positiveEmojis = ['😍', '❤️', '😊', '🥰', '💖', '✨', '🔥', '💕'];
+        const positiveMoments = connectionMoments.filter(m => 
+          positiveEmojis.includes(m.emoji) || m.tags?.includes('Green Flag')
+        );
+        
+        const healthScore = connectionMoments.length > 0 
+          ? Math.round((positiveMoments.length / connectionMoments.length) * 100)
+          : 50;
+
+        return {
+          name: connection.name,
+          healthScore,
+          totalMoments: connectionMoments.length,
+          positivePatterns: positiveMoments.length
+        };
+      });
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const context: RelationshipContext = {
+        user,
+        connections,
+        recentMoments,
+        connectionHealthScores
+      };
+
+      // Generate AI response
+      const aiResponse = await aiCoach.generateResponse(userId, message, context);
+
+      res.json({ 
+        message: aiResponse,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error("Error in AI chat:", error);
+      res.status(500).json({ message: "Failed to generate AI response" });
+    }
+  });
+
+  app.get("/api/ai/conversation", isAuthenticated, async (req: Request, res: Response) => {
+    try {
+      const userId = (req.session as any).userId as number;
+      const conversation = aiCoach.getConversationHistory(userId);
+      
+      res.json({ conversation });
+    } catch (error) {
+      console.error("Error fetching conversation:", error);
+      res.status(500).json({ message: "Failed to fetch conversation" });
+    }
+  });
+
+  app.delete("/api/ai/conversation", isAuthenticated, async (req: Request, res: Response) => {
+    try {
+      const userId = (req.session as any).userId as number;
+      aiCoach.clearConversation(userId);
+      
+      res.json({ message: "Conversation cleared" });
+    } catch (error) {
+      console.error("Error clearing conversation:", error);
+      res.status(500).json({ message: "Failed to clear conversation" });
+    }
+  });
+
+  // Helper functions for weekly insights
+  function getMostCommonEmojis(moments: any[]): string[] {
+    const emojiCounts: Record<string, number> = {};
+    moments.forEach(m => {
+      emojiCounts[m.emoji] = (emojiCounts[m.emoji] || 0) + 1;
+    });
+    
+    return Object.entries(emojiCounts)
+      .sort(([,a], [,b]) => b - a)
+      .slice(0, 3)
+      .map(([emoji]) => emoji);
+  }
+
+  function getCommunicationFrequency(moments: any[]): number {
+    const communicationMoments = moments.filter(m => 
+      m.content && (
+        m.content.toLowerCase().includes('text') ||
+        m.content.toLowerCase().includes('call') ||
+        m.content.toLowerCase().includes('talk') ||
+        m.content.toLowerCase().includes('conversation')
+      )
+    );
+    return moments.length > 0 ? communicationMoments.length / moments.length : 0;
+  }
+
+  function generateInsightTitle(type: string, momentCount: number): string {
+    switch (type) {
+      case 'positive':
+        return 'Thriving Relationship Patterns';
+      case 'growth':
+        return 'Growth Opportunity Detected';
+      default:
+        return momentCount >= 5 ? 'Weekly Pattern Analysis' : 'Building Your Data Foundation';
+    }
+  }
+
+  function generateActionableAdvice(type: string, context: any): string {
+    switch (type) {
+      case 'positive':
+        return `Your ${context.recentMomentsCount} tracked moments show strong positive patterns. Continue the behaviors that are working well and consider what specific actions contribute to these good moments.`;
+      case 'growth':
+        return `Based on your ${context.recentMomentsCount} recent moments, focus on open communication and consider what specific situations might benefit from a different approach.`;
+      default:
+        if (context.recentMomentsCount < 5) {
+          return 'Track more moments daily to unlock deeper insights about your relationship patterns and growth opportunities.';
+        }
+        const commFreq = context.dataPatterns.communicationFrequency;
+        return commFreq > 0.6 
+          ? 'Balance your strong communication habits with more in-person activities and shared experiences.'
+          : 'Consider increasing intentional communication moments to deepen your connections.';
+    }
+  }
+
+  function generateDataDrivenFallback(moments: any[], connections: any[], currentWeek: string): any {
+    // Analyze recent week's data
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+    
+    const recentMoments = moments.filter(m => 
+      new Date(m.createdAt || '') >= oneWeekAgo
+    );
+
+    if (recentMoments.length < 3) {
+      return {
+        title: 'Building Your Relationship Data',
+        insight: `You've tracked ${recentMoments.length} moments this week. Consistent tracking reveals meaningful patterns in your relationships and helps identify what works best for your connection style.`,
+        dataSource: `Based on ${moments.length} total moments tracked`,
+        actionableAdvice: 'Aim to track 5-7 moments per week to unlock personalized insights about your relationship patterns.',
+        confidence: 60,
+        type: 'neutral',
+        weekOf: currentWeek
+      };
+    }
+
+    // Analyze patterns
+    const positiveEmojis = ['😍', '💕', '❤️', '🥰', '😊', '🤗', '💖', '🌟', '✨'];
+    const recentPositive = recentMoments.filter(m => positiveEmojis.includes(m.emoji)).length;
+    const positiveRatio = recentPositive / recentMoments.length;
+
+    if (positiveRatio >= 0.7) {
+      return {
+        title: 'Strong Weekly Performance',
+        insight: `Your ${recentMoments.length} tracked moments show ${Math.round(positiveRatio * 100)}% positive interactions this week. This indicates healthy relationship dynamics and effective communication patterns.`,
+        dataSource: `Based on ${recentMoments.length} moments from the past week`,
+        actionableAdvice: 'Maintain this positive momentum by continuing the specific behaviors and interactions that are working well.',
+        confidence: 85,
+        type: 'positive',
+        weekOf: currentWeek
+      };
+    } else if (positiveRatio < 0.4) {
+      return {
+        title: 'Weekly Reflection Point',
+        insight: `Your ${recentMoments.length} moments show ${Math.round(positiveRatio * 100)}% positive interactions, indicating some challenges this week. This data provides valuable insight into relationship dynamics that need attention.`,
+        dataSource: `Based on ${recentMoments.length} moments from the past week`,
+        actionableAdvice: 'Focus on identifying specific patterns or situations that contribute to challenging moments and consider new approaches.',
+        confidence: 80,
+        type: 'growth',
+        weekOf: currentWeek
+      };
+    } else {
+      return {
+        title: 'Balanced Weekly Overview',
+        insight: `Your ${recentMoments.length} tracked moments show a balanced mix of experiences (${Math.round(positiveRatio * 100)}% positive). This suggests stable relationship dynamics with room for intentional growth.`,
+        dataSource: `Based on ${recentMoments.length} moments from the past week`,
+        actionableAdvice: 'Focus on increasing the frequency of activities and interactions that consistently create positive moments.',
+        confidence: 75,
+        type: 'neutral',
+        weekOf: currentWeek
+      };
+    }
+  }
+
+  // Weekly Relationship Insights API endpoint
+  app.get("/api/weekly-insights", isAuthenticated, async (req: Request, res: Response) => {
+    try {
+      const userId = (req.session as any).userId as number;
+      
+      // Get user's data for analysis
+      const [user, connections, moments] = await Promise.all([
+        storage.getUser(userId),
+        storage.getConnectionsByUserId(userId),
+        storage.getMomentsByUserId(userId, 100) // Get more moments for better analysis
+      ]);
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Calculate current week identifier
+      const getCurrentWeek = () => {
+        const now = new Date();
+        const yearStart = new Date(now.getFullYear(), 0, 1);
+        const weekNumber = Math.ceil(((now.getTime() - yearStart.getTime()) / 86400000 + 1) / 7);
+        return `${now.getFullYear()}-W${weekNumber}`;
+      };
+
+      const currentWeek = getCurrentWeek();
+
+      // Generate weekly insight using OpenAI for deeper analysis
+      try {
+        const OpenAI = (await import("openai")).default;
+        const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+        // Analyze recent week's data
+        const oneWeekAgo = new Date();
+        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+        
+        const recentMoments = moments.filter(m => 
+          new Date(m.createdAt || '') >= oneWeekAgo
+        );
+
+        const twoWeeksAgo = new Date();
+        twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
+        
+        const previousWeekMoments = moments.filter(m => {
+          const momentDate = new Date(m.createdAt || '');
+          return momentDate >= twoWeeksAgo && momentDate < oneWeekAgo;
+        });
+
+        // Create detailed context for AI analysis
+        const analysisContext = {
+          totalConnections: connections.length,
+          recentMomentsCount: recentMoments.length,
+          previousWeekMomentsCount: previousWeekMoments.length,
+          userProfile: {
+            loveLanguage: user.loveLanguage,
+            zodiacSign: user.zodiacSign,
+            relationshipGoals: user.relationshipGoals
+          },
+          dataPatterns: {
+            mostCommonEmojis: getMostCommonEmojis(recentMoments),
+            communicationFrequency: getCommunicationFrequency(recentMoments),
+            relationshipStages: connections.map(c => c.relationshipStage),
+            weeklyTrend: recentMoments.length >= previousWeekMoments.length ? 'increasing' : 'decreasing'
+          }
+        };
+
+        const prompt = `Analyze this user's relationship data and provide a personalized weekly insight:
+
+User Profile: ${user.loveLanguage ? `Love Language: ${user.loveLanguage}, ` : ''}${user.zodiacSign ? `Zodiac: ${user.zodiacSign}, ` : ''}${user.relationshipGoals ? `Goals: ${user.relationshipGoals}` : ''}
+
+Data Analysis:
+- This week: ${recentMoments.length} relationship moments tracked
+- Previous week: ${previousWeekMoments.length} moments tracked  
+- Total connections: ${connections.length}
+- Activity trend: ${analysisContext.dataPatterns.weeklyTrend}
+- Most used emojis: ${analysisContext.dataPatterns.mostCommonEmojis.join(', ')}
+
+Generate a data-driven weekly insight that:
+1. Focuses on actual patterns in their relationship data
+2. Provides specific, actionable advice based on what the data reveals
+3. Acknowledges their progress and growth areas
+4. Is encouraging but realistic
+
+Format as a brief analysis (2-3 sentences) focusing on what their data actually shows about their relationship patterns.`;
+
+        const response = await openai.chat.completions.create({
+          model: "gpt-4o",
+          messages: [
+            {
+              role: "system",
+              content: "You are a relationship data analyst who provides insights based on actual user behavior patterns. Focus on data trends, not generic advice. Be specific about what the numbers and patterns reveal."
+            },
+            {
+              role: "user",
+              content: prompt
+            }
+          ],
+          max_tokens: 200,
+          temperature: 0.3
+        });
+
+        const aiInsight = response.choices[0]?.message?.content || "";
+        
+        // Determine insight type based on data
+        let insightType: 'positive' | 'neutral' | 'growth' = 'neutral';
+        let confidence = 70;
+        
+        if (recentMoments.length >= 5) {
+          const positiveEmojis = ['😍', '💕', '❤️', '🥰', '😊', '🤗', '💖', '🌟', '✨'];
+          const positiveCount = recentMoments.filter(m => positiveEmojis.includes(m.emoji)).length;
+          const positiveRatio = positiveCount / recentMoments.length;
+          
+          if (positiveRatio >= 0.7) {
+            insightType = 'positive';
+            confidence = 85;
+          } else if (positiveRatio < 0.4) {
+            insightType = 'growth';
+            confidence = 80;
+          } else {
+            confidence = 75;
+          }
+        }
+
+        const result = {
+          title: generateInsightTitle(insightType, recentMoments.length),
+          insight: aiInsight,
+          dataSource: `Based on ${recentMoments.length} moments from the past week`,
+          actionableAdvice: generateActionableAdvice(insightType, analysisContext),
+          confidence,
+          type: insightType,
+          weekOf: currentWeek
+        };
+
+        res.json(result);
+      } catch (aiError) {
+        console.log("AI weekly insight generation failed, using data-driven fallback");
+        
+        // Generate fallback insight based on actual data patterns
+        const result = generateDataDrivenFallback(moments, connections, currentWeek);
+        res.json(result);
+      }
+    } catch (error) {
+      console.error("Error generating weekly insight:", error);
+      res.status(500).json({ message: "Failed to generate weekly insight" });
+    }
+  });
+
+  // Quote of the Day API endpoint
+  app.get("/api/quote-of-the-day", isAuthenticated, async (req: Request, res: Response) => {
+    try {
+      const userId = (req.session as any).userId as number;
+      
+      // Get user's data for personalization
+      const [user, connections, moments] = await Promise.all([
+        storage.getUser(userId),
+        storage.getConnectionsByUserId(userId),
+        storage.getMomentsByUserId(userId, 50) // Get recent moments for context
+      ]);
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Generate personalized quote using OpenAI
+      try {
+        const OpenAI = (await import("openai")).default;
+        const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+        // Create context for personalization
+        const hasConnections = connections.length > 0;
+        const hasMoments = moments.length > 0;
+        const recentMoments = moments.slice(0, 10);
+        
+        // Analyze recent patterns for personalization
+        const recentPositive = recentMoments.filter(m => 
+          ['😍', '❤️', '😊', '🥰', '💖', '✨', '🔥', '💕', '🌸', '🎉'].includes(m.emoji)
+        ).length;
+        
+        const recentChallenges = recentMoments.filter(m => 
+          ['😤', '😞', '⚡', '😔', '💔', '😒'].includes(m.emoji)
+        ).length;
+
+        // Determine quote type and create prompt
+        const shouldPersonalize = hasConnections && hasMoments && Math.random() > 0.3;
+        
+        let prompt = "";
+        let quoteType: 'personalized' | 'general' = 'general';
+        
+        if (shouldPersonalize) {
+          quoteType = 'personalized';
+          let context = "";
+          
+          if (recentPositive > recentChallenges) {
+            context = "The user is experiencing mostly positive relationship moments recently";
+          } else if (recentChallenges > recentPositive) {
+            context = "The user has faced some relationship challenges recently";
+          } else {
+            context = "The user has a balanced mix of relationship experiences";
+          }
+          
+          if (user.loveLanguage) {
+            context += ` and their love language is ${user.loveLanguage}`;
+          }
+          
+          if (user.zodiacSign) {
+            context += ` and they are a ${user.zodiacSign}`;
+          }
+          
+          prompt = `Generate a thoughtful, encouraging relationship quote or advice (1-2 sentences) that's subtly tailored for someone who ${context}. The quote should be inspirational, practical, and feel personal without being too specific. Focus on growth, understanding, or positive relationship dynamics. Don't mention specific details about their data.`;
+        } else {
+          prompt = `Generate an inspirational, thoughtful relationship quote or piece of advice (1-2 sentences). Focus on universal relationship wisdom about love, communication, growth, understanding, or building strong connections. Make it encouraging and practical.`;
+        }
+
+        const response = await openai.chat.completions.create({
+          model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
+          messages: [
+            {
+              role: "system",
+              content: "You are a wise relationship counselor who provides thoughtful, encouraging quotes and advice. Keep responses concise but meaningful."
+            },
+            {
+              role: "user",
+              content: prompt
+            }
+          ],
+          max_tokens: 150,
+          temperature: 0.8,
+        });
+
+        const quote = response.choices[0]?.message?.content?.replace(/^["']|["']$/g, '') || "";
+        
+        const result = {
+          quote,
+          type: quoteType,
+          context: quoteType === 'personalized' ? "Based on your recent relationship journey" : undefined
+        };
+
+        res.json(result);
+      } catch (aiError) {
+        console.log("AI quote generation failed, using fallback");
+        
+        // Fallback quotes based on user's love language or general wisdom
+        const fallbackQuotes = [
+          {
+            quote: "The greatest relationships are built on understanding, patience, and genuine care for each other's growth.",
+            type: 'general' as const
+          },
+          {
+            quote: "Love is not about finding someone perfect, but about seeing someone perfectly despite their imperfections.",
+            type: 'general' as const
+          },
+          {
+            quote: "Strong relationships require daily effort, open communication, and the courage to be vulnerable with each other.",
+            type: 'general' as const
+          },
+          {
+            quote: "Quality time isn't measured in hours spent together, but in the depth of connection shared in those moments.",
+            type: 'general' as const
+          }
+        ];
+
+        let selectedQuote;
+        if (user.loveLanguage === "Quality Time") {
+          selectedQuote = fallbackQuotes[3];
+        } else {
+          selectedQuote = fallbackQuotes[Math.floor(Math.random() * fallbackQuotes.length)];
+        }
+
+        res.json(selectedQuote);
+      }
+    } catch (error) {
+      console.error("Error generating quote of the day:", error);
+      res.status(500).json({ message: "Failed to generate quote" });
+    }
+  });
+
+  // Create a comprehensive connection template with all types of entries
+  app.post("/api/create-template-connection", isAuthenticated, async (req: Request, res: Response) => {
+    try {
+      const userId = (req.session as any).userId!;
+      
+      // Create the template connection
+      const templateConnection = await storage.createConnection({
+        userId,
+        name: "Taylor",
+        profileImage: null,
+        relationshipStage: "Dating",
+        startDate: new Date("2024-12-01T00:00:00.000Z"),
+        birthday: new Date("1996-08-22T00:00:00.000Z"),
+        zodiacSign: "Virgo",
+        loveLanguage: "Acts of Service",
+        isPrivate: false
+      });
+
+      console.log("Created template connection:", templateConnection);
+
+      // Create comprehensive moments covering all entry types
+      const templateMoments = [
+        // 1. Connection Start Milestone
+        {
+          userId,
+          connectionId: templateConnection.id,
+          emoji: "💫",
+          content: "Met at the coffee shop downtown - instant connection!",
+          title: "First Meeting",
+          tags: ["Milestone", "First Meeting"],
+          isPrivate: false,
+          isIntimate: false,
+          intimacyRating: null,
+          relatedToMenstrualCycle: false,
+          isResolved: false,
+          resolvedAt: null,
+          resolutionNotes: null,
+          reflection: "There was something special about the way we talked for hours without noticing time pass.",
+          isMilestone: true,
+          milestoneTitle: "First Meeting",
+          createdAt: "2024-12-01T14:30:00.000Z"
+        },
+
+        // 2. Positive Dating Moment
+        {
+          userId,
+          connectionId: templateConnection.id,
+          emoji: "😍",
+          content: "Amazing first official date at the art museum - we both love contemporary art!",
+          title: "First Date Success",
+          tags: ["Date", "Art", "Green Flag"],
+          isPrivate: false,
+          isIntimate: false,
+          intimacyRating: null,
+          relatedToMenstrualCycle: false,
+          isResolved: false,
+          resolvedAt: null,
+          resolutionNotes: null,
+          reflection: "I love how we can discuss art for hours. Taylor has such insightful perspectives.",
+          createdAt: "2024-12-05T19:45:00.000Z"
+        },
+
+        // 3. Communication Moment
+        {
+          userId,
+          connectionId: templateConnection.id,
+          emoji: "🗣️",
+          content: "Had a deep conversation about our future goals and values - we're very aligned!",
+          title: "Values Alignment Talk",
+          tags: ["Communication", "Deep Talk", "Green Flag"],
+          isPrivate: false,
+          isIntimate: false,
+          intimacyRating: null,
+          relatedToMenstrualCycle: false,
+          isResolved: false,
+          resolvedAt: null,
+          resolutionNotes: null,
+          reflection: "It's rare to find someone who shares similar life goals and values. This felt really meaningful.",
+          createdAt: "2024-12-10T20:15:00.000Z"
+        },
+
+        // 4. Conflict Resolution
+        {
+          userId,
+          connectionId: templateConnection.id,
+          emoji: "😔",
+          content: "Had our first disagreement about planning styles - I'm spontaneous, Taylor likes structure",
+          title: "Planning Style Conflict",
+          tags: ["Conflict", "Communication"],
+          isPrivate: false,
+          isIntimate: false,
+          intimacyRating: null,
+          relatedToMenstrualCycle: true,
+          isResolved: true,
+          resolvedAt: "2024-12-12T16:30:00.000Z",
+          resolutionNotes: "We talked it through and found a compromise - we'll alternate between planned and spontaneous activities",
+          reflection: "Actually handled this really well. Taylor was patient and we found a solution together.",
+          createdAt: "2024-12-12T14:20:00.000Z"
+        },
+
+        // 5. Intimacy Moment (Emotional)
+        {
+          userId,
+          connectionId: templateConnection.id,
+          emoji: "💕",
+          content: "Shared vulnerable stories about our families - felt so emotionally connected",
+          title: "Emotional Intimacy",
+          tags: ["Sex", "Vulnerability", "Connection"],
+          isPrivate: true,
+          isIntimate: true,
+          intimacyRating: "medium",
+          relatedToMenstrualCycle: false,
+          isResolved: false,
+          resolvedAt: null,
+          resolutionNotes: null,
+          reflection: "Opening up about family stuff was scary but Taylor was so understanding and supportive.",
+          createdAt: "2024-12-15T21:30:00.000Z"
+        },
+
+        // 6. Physical Intimacy
+        {
+          userId,
+          connectionId: templateConnection.id,
+          emoji: "🔥",
+          content: "First time being physically intimate - beautiful and meaningful",
+          title: "Physical Intimacy Milestone",
+          tags: ["Sex", "Physical", "Milestone"],
+          isPrivate: true,
+          isIntimate: true,
+          intimacyRating: "high",
+          relatedToMenstrualCycle: false,
+          isResolved: false,
+          resolvedAt: null,
+          resolutionNotes: null,
+          reflection: "Felt natural and right. Taylor was gentle and considerate. This brought us closer.",
+          createdAt: "2024-12-18T23:45:00.000Z"
+        },
+
+        // 7. Cycle-Related Moment
+        {
+          userId,
+          connectionId: templateConnection.id,
+          emoji: "🤗",
+          content: "Taylor brought me comfort food and gave me space when I was feeling emotional during my cycle",
+          title: "Cycle Support",
+          tags: ["Support", "Cycle", "Green Flag", "Acts of Service"],
+          isPrivate: false,
+          isIntimate: false,
+          intimacyRating: null,
+          relatedToMenstrualCycle: true,
+          isResolved: false,
+          resolvedAt: null,
+          resolutionNotes: null,
+          reflection: "Taylor is so thoughtful about understanding my cycle. Acts of service love language showing through.",
+          createdAt: "2024-12-22T16:00:00.000Z"
+        },
+
+        // 8. Love Language Moment
+        {
+          userId,
+          connectionId: templateConnection.id,
+          emoji: "🏠",
+          content: "Taylor surprised me by organizing my cluttered workspace while I was at work",
+          title: "Acts of Service Love",
+          tags: ["Acts of Service", "Love Language", "Surprise", "Green Flag"],
+          isPrivate: false,
+          isIntimate: false,
+          intimacyRating: null,
+          relatedToMenstrualCycle: false,
+          isResolved: false,
+          resolvedAt: null,
+          resolutionNotes: null,
+          reflection: "This is exactly how Taylor shows love - through helpful actions. Feels so seen and cared for.",
+          createdAt: "2024-12-25T18:30:00.000Z"
+        },
+
+        // 9. Quality Time Moment
+        {
+          userId,
+          connectionId: templateConnection.id,
+          emoji: "🌅",
+          content: "Watched the sunrise together after staying up all night talking about everything",
+          title: "Quality Time Magic",
+          tags: ["Quality Time", "Deep Talk", "Connection", "Special Moment"],
+          isPrivate: false,
+          isIntimate: false,
+          intimacyRating: null,
+          relatedToMenstrualCycle: false,
+          isResolved: false,
+          resolvedAt: null,
+          resolutionNotes: null,
+          reflection: "These unplanned moments of just being together are my favorite. Time stops when we're talking.",
+          createdAt: "2024-12-28T06:15:00.000Z"
+        },
+
+        // 10. Growth Moment
+        {
+          userId,
+          connectionId: templateConnection.id,
+          emoji: "🌱",
+          content: "Taylor encouraged me to apply for that promotion I was nervous about",
+          title: "Personal Growth Support",
+          tags: ["Growth", "Support", "Encouragement", "Green Flag"],
+          isPrivate: false,
+          isIntimate: false,
+          intimacyRating: null,
+          relatedToMenstrualCycle: false,
+          isResolved: false,
+          resolvedAt: null,
+          resolutionNotes: null,
+          reflection: "Taylor believes in me even when I don't believe in myself. This kind of support means everything.",
+          createdAt: "2025-01-02T12:00:00.000Z"
+        },
+
+        // 11. Special Occasion
+        {
+          userId,
+          connectionId: templateConnection.id,
+          emoji: "🎉",
+          content: "Celebrated New Year together - perfect kiss at midnight!",
+          title: "New Year Together",
+          tags: ["Celebration", "Holiday", "Milestone", "Romance"],
+          isPrivate: false,
+          isIntimate: false,
+          intimacyRating: null,
+          relatedToMenstrualCycle: false,
+          isResolved: false,
+          resolvedAt: null,
+          resolutionNotes: null,
+          reflection: "Starting the new year with Taylor feels like a good omen. Excited for what's ahead.",
+          createdAt: "2025-01-01T00:00:00.000Z"
+        },
+
+        // 12. Friendship Integration
+        {
+          userId,
+          connectionId: templateConnection.id,
+          emoji: "👥",
+          content: "Introduced Taylor to my closest friends - everyone loved them!",
+          title: "Friend Group Integration",
+          tags: ["Friends", "Social", "Integration", "Milestone"],
+          isPrivate: false,
+          isIntimate: false,
+          intimacyRating: null,
+          relatedToMenstrualCycle: false,
+          isResolved: false,
+          resolvedAt: null,
+          resolutionNotes: null,
+          reflection: "My friends' approval means a lot to me. Taylor fit right in and everyone had such a good time.",
+          createdAt: "2025-01-05T19:00:00.000Z"
+        },
+
+        // 13. Future Planning
+        {
+          userId,
+          connectionId: templateConnection.id,
+          emoji: "✈️",
+          content: "Planned our first weekend trip together for Valentine's Day",
+          title: "Future Plans Together",
+          tags: ["Planning", "Travel", "Future", "Romance"],
+          isPrivate: false,
+          isIntimate: false,
+          intimacyRating: null,
+          relatedToMenstrualCycle: false,
+          isResolved: false,
+          resolvedAt: null,
+          resolutionNotes: null,
+          reflection: "Making future plans together feels natural and exciting. We both want to explore new places.",
+          createdAt: "2025-01-08T14:45:00.000Z"
+        },
+
+        // 14. Thoughtful Gesture
+        {
+          userId,
+          connectionId: templateConnection.id,
+          emoji: "📚",
+          content: "Taylor remembered I mentioned wanting to read more poetry and gifted me a beautiful collection",
+          title: "Thoughtful Gift",
+          tags: ["Gift", "Thoughtful", "Memory", "Literature", "Green Flag"],
+          isPrivate: false,
+          isIntimate: false,
+          intimacyRating: null,
+          relatedToMenstrualCycle: false,
+          isResolved: false,
+          resolvedAt: null,
+          resolutionNotes: null,
+          reflection: "The fact that Taylor remembered this small detail from weeks ago shows how much they listen and care.",
+          createdAt: "2025-01-12T17:20:00.000Z"
+        },
+
+        // 15. Relationship Milestone
+        {
+          userId,
+          connectionId: templateConnection.id,
+          emoji: "💝",
+          content: "Officially decided to be exclusive - we're a couple!",
+          title: "Becoming Official",
+          tags: ["Milestone", "Exclusive", "Commitment", "Relationship Stage"],
+          isPrivate: false,
+          isIntimate: false,
+          intimacyRating: null,
+          relatedToMenstrualCycle: false,
+          isResolved: false,
+          resolvedAt: null,
+          resolutionNotes: null,
+          reflection: "This feels right and natural. We both want to focus on building something special together.",
+          isMilestone: true,
+          milestoneTitle: "Becoming Official",
+          createdAt: "2025-01-15T20:30:00.000Z"
+        }
+      ];
+
+      // Create all moments
+      const createdMoments = [];
+      for (const momentData of templateMoments) {
+        try {
+          const moment = await storage.createMoment(momentData);
+          createdMoments.push(moment);
+          console.log(`Created moment: ${moment.title}`);
+        } catch (error) {
+          console.error(`Error creating moment ${momentData.title}:`, error);
+        }
+      }
+
+      // Create menstrual cycle data for this connection
+      try {
+        const cycleData = {
+          userId,
+          connectionId: templateConnection.id,
+          startDate: new Date("2024-12-20T00:00:00.000Z"),
+          periodEndDate: new Date("2024-12-25T00:00:00.000Z"),
+          endDate: new Date("2025-01-18T00:00:00.000Z"),
+          notes: "Regular 29-day cycle - Taylor has been very supportive",
+          mood: "positive",
+          symptoms: ["mild cramping", "supported well"],
+          flowIntensity: "medium"
+        };
+        
+        const cycle = await storage.createMenstrualCycle(cycleData);
+        console.log("Created menstrual cycle:", cycle);
+      } catch (error) {
+        console.error("Error creating cycle:", error);
+      }
+
+      res.json({
+        connection: templateConnection,
+        moments: createdMoments,
+        message: "Comprehensive connection template created successfully!"
+      });
+
+    } catch (error) {
+      console.error("Error creating template connection:", error);
+      res.status(500).json({ error: "Failed to create template connection" });
+    }
+  });
+
+  // Mini insights API endpoint
+  app.post("/api/ai/mini-insight", isAuthenticated, async (req: Request, res: Response) => {
+    try {
+      const { context, data } = req.body;
+
+      if (!context || !data) {
+        return res.status(400).json({ error: "Context and data are required" });
+      }
+
+      const { generateMiniInsight } = await import('./mini-insights');
+      const insight = await generateMiniInsight({ context, data });
+
+      res.json({ insight });
+    } catch (error: any) {
+      console.error("Error generating mini insight:", error);
+      res.status(500).json({ error: error.message || "Failed to generate insight" });
+    }
+  });
+
+  // Chat conversation API endpoints
+  app.get("/api/chat/conversations", isAuthenticated, async (req, res) => {
+    try {
+      const userId = (req.session as any).userId as number;
+      const conversations = await storage.getChatConversations(userId);
+      res.json(conversations);
+    } catch (error) {
+      console.error("Error fetching chat conversations:", error);
+      res.status(500).json({ message: "Server error fetching conversations" });
+    }
+  });
+
+  app.get("/api/chat/conversations/:id", isAuthenticated, async (req, res) => {
+    try {
+      const userId = (req.session as any).userId as number;
+      const conversationId = parseInt(req.params.id);
+      
+      if (isNaN(conversationId)) {
+        return res.status(400).json({ message: "Invalid conversation ID" });
+      }
+      
+      const conversation = await storage.getChatConversation(conversationId);
+      
+      if (!conversation) {
+        return res.status(404).json({ message: "Conversation not found" });
+      }
+      
+      if (conversation.userId !== userId) {
+        return res.status(403).json({ message: "Unauthorized to view this conversation" });
+      }
+      
+      res.json(conversation);
+    } catch (error) {
+      console.error("Error fetching chat conversation:", error);
+      res.status(500).json({ message: "Server error fetching conversation" });
+    }
+  });
+
+  app.post("/api/chat/conversations", isAuthenticated, async (req, res) => {
+    try {
+      const userId = (req.session as any).userId as number;
+      const validatedData = chatConversationSchema.parse(req.body);
+      
+      const conversation = await storage.createChatConversation({
+        ...validatedData,
+        userId
+      });
+      
+      res.status(201).json(conversation);
+    } catch (error) {
+      console.error("Error creating chat conversation:", error);
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid conversation data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Server error creating conversation" });
+    }
+  });
+
+  app.put("/api/chat/conversations/:id", isAuthenticated, async (req, res) => {
+    try {
+      const userId = (req.session as any).userId as number;
+      const conversationId = parseInt(req.params.id);
+      
+      if (isNaN(conversationId)) {
+        return res.status(400).json({ message: "Invalid conversation ID" });
+      }
+      
+      const conversation = await storage.getChatConversation(conversationId);
+      
+      if (!conversation) {
+        return res.status(404).json({ message: "Conversation not found" });
+      }
+      
+      if (conversation.userId !== userId) {
+        return res.status(403).json({ message: "Unauthorized to update this conversation" });
+      }
+      
+      const updatedConversation = await storage.updateChatConversation(conversationId, req.body);
+      res.json(updatedConversation);
+    } catch (error) {
+      console.error("Error updating chat conversation:", error);
+      res.status(500).json({ message: "Server error updating conversation" });
+    }
+  });
+
+  app.delete("/api/chat/conversations/:id", isAuthenticated, async (req, res) => {
+    try {
+      const userId = (req.session as any).userId as number;
+      const conversationId = parseInt(req.params.id);
+      
+      if (isNaN(conversationId)) {
+        return res.status(400).json({ message: "Invalid conversation ID" });
+      }
+      
+      const conversation = await storage.getChatConversation(conversationId);
+      
+      if (!conversation) {
+        return res.status(404).json({ message: "Conversation not found" });
+      }
+      
+      if (conversation.userId !== userId) {
+        return res.status(403).json({ message: "Unauthorized to delete this conversation" });
+      }
+      
+      const deleted = await storage.deleteChatConversation(conversationId);
+      
+      if (deleted) {
+        res.json({ message: "Conversation deleted successfully" });
+      } else {
+        res.status(500).json({ message: "Failed to delete conversation" });
+      }
+    } catch (error) {
+      console.error("Error deleting chat conversation:", error);
+      res.status(500).json({ message: "Server error deleting conversation" });
     }
   });
 

@@ -121,13 +121,13 @@ export default function Calendar() {
   // Filter states for different entry types
   const [filters, setFilters] = useState({
     positive: true,
-    intimacy: true,
     neutral: true,
     negative: true,
-    conflict: true,
-    plan: true,
-    milestone: true,
-    cycle: true,
+    conflicts: true,
+    intimacy: true,
+    plans: true,
+    milestones: true,
+    menstrualCycle: true,
   });
   
   // Connection filter state
@@ -155,8 +155,12 @@ export default function Calendar() {
       return;
     }
 
-    // Don't auto-filter to focus connection - show all connections by default
-    // The calendar should show all activities unless the user explicitly selects a specific connection
+    // If no navigation connection and user hasn't manually selected, use focus connection
+    if (!hasUserSelectedConnection && mainFocusConnection && !focusLoading) {
+      console.log("Setting calendar to focus connection:", mainFocusConnection.name);
+      setSelectedConnectionId(mainFocusConnection.id);
+      setSelectedConnectionIds([mainFocusConnection.id]);
+    }
   }, [mainFocusConnection, focusLoading, hasUserSelectedConnection]);
   
   // Legend collapse state - start collapsed by default
@@ -186,6 +190,11 @@ export default function Calendar() {
     staleTime: 0,
   });
 
+  // Debug cycle data for Amalina
+  console.log('All cycles:', cycles);
+  const amalinaCycles = cycles.filter(cycle => cycle.connectionId === 6);
+  console.log('Amalina cycles (connection 6):', amalinaCycles);
+
   // Menstrual cycle calculation functions
   const getCyclePhaseForDay = (day: Date, connectionId: number | null) => {
     if (!connectionId) return null;
@@ -202,21 +211,44 @@ export default function Calendar() {
         const periodEnd = new Date(cycle.periodEndDate);
         const periodDays = Math.floor((periodEnd.getTime() - cycleStart.getTime()) / (1000 * 60 * 60 * 24)) + 1;
         
-        // Calculate cycle length (use 28 as default if cycle is still active)
-        let cycleLength = 28;
+        // Calculate actual cycle length from the data
+        let cycleLength;
         if (cycle.endDate) {
+          // Use actual cycle length if we have end date
           cycleLength = Math.floor((new Date(cycle.endDate).getTime() - cycleStart.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+        } else {
+          // For active cycles, estimate based on previous cycles for this connection
+          const connectionCycles = relevantCycles.filter(c => c.connectionId === connectionId && c.endDate);
+          if (connectionCycles.length > 0) {
+            const avgLength = connectionCycles.reduce((sum, c) => {
+              const length = Math.floor((new Date(c.endDate!).getTime() - new Date(c.startDate).getTime()) / (1000 * 60 * 60 * 24)) + 1;
+              return sum + length;
+            }, 0) / connectionCycles.length;
+            cycleLength = Math.round(avgLength);
+          } else {
+            cycleLength = 28; // Default only if no historical data
+          }
         }
         
-        // Ovulation occurs 14 days before cycle end
-        const ovulationDay = cycleLength - 14;
+        // For shorter cycles (like Amalina's 4-6 day cycles), ovulation would occur mid-cycle
+        // But for very short cycles, we may not have a traditional ovulation pattern
+        const ovulationDay = cycleLength > 14 ? 14 : Math.round(cycleLength * 0.6);
+        
+        // Debug logging for Amalina's cycles
+        if (connectionId === 6) {
+          console.log(`Amalina cycle debug - Day: ${format(day, 'yyyy-MM-dd')}, dayOfCycle: ${dayOfCycle}, cycleLength: ${cycleLength}, ovulationDay: ${ovulationDay}, periodDays: ${periodDays}`);
+        }
         
         if (dayOfCycle <= periodDays) {
           return { phase: 'menstrual', day: dayOfCycle, cycle };
         } else if (dayOfCycle <= ovulationDay - 3) {
           return { phase: 'follicular', day: dayOfCycle, cycle };
         } else if (dayOfCycle >= ovulationDay - 2 && dayOfCycle <= ovulationDay + 2) {
-          return { phase: 'fertile', day: dayOfCycle, cycle, isOvulation: dayOfCycle === ovulationDay };
+          const isOvulation = dayOfCycle === ovulationDay;
+          if (connectionId === 6 && isOvulation) {
+            console.log(`FOUND OVULATION for Amalina on ${format(day, 'yyyy-MM-dd')} - day ${dayOfCycle} of cycle`);
+          }
+          return { phase: 'fertile', day: dayOfCycle, cycle, isOvulation };
         } else {
           return { phase: 'luteal', day: dayOfCycle, cycle };
         }
@@ -346,12 +378,12 @@ export default function Calendar() {
     
     // Check different moment types
     const isConflict = moment.tags?.includes('Conflict') || moment.emoji === '⚡';
-    const isIntimacy = moment.tags?.includes('Intimacy') || moment.isIntimate || moment.emoji === '💕';
+    const isIntimacy = moment.tags?.includes('Sex') || moment.isIntimate || moment.emoji === '💕';
     const isPlan = moment.tags?.includes('Plan') || moment.emoji === '📅';
     const isMilestone = moment.isMilestone || moment.tags?.includes('Milestone') || moment.emoji === '🏆' || (moment as any).isBirthday;
     
     // Type filters
-    if (isConflict && !filters.conflict) {
+    if (isConflict && !filters.conflicts) {
       console.log(`Filtered out moment ${moment.id} - conflict filter off`);
       return false;
     }
@@ -359,11 +391,11 @@ export default function Calendar() {
       console.log(`Filtered out moment ${moment.id} - intimacy filter off`);
       return false;
     }
-    if (isPlan && !filters.plan) {
+    if (isPlan && !filters.plans) {
       console.log(`Filtered out moment ${moment.id} - plan filter off`);
       return false;
     }
-    if (isMilestone && !filters.milestone) {
+    if (isMilestone && !filters.milestones) {
       console.log(`Filtered out moment ${moment.id} - milestone filter off`);
       return false;
     }
@@ -659,7 +691,11 @@ export default function Calendar() {
                   </div>
                 </DropdownMenuItem>
                 <div className="border-t border-border my-1" />
-                {connections.map((connection) => (
+                {[...connections].sort((a, b) => {
+                  if (a.relationshipStage === 'Self') return 1;
+                  if (b.relationshipStage === 'Self') return -1;
+                  return 0;
+                }).map((connection) => (
                   <DropdownMenuCheckboxItem
                     key={connection.id}
                     checked={selectedConnectionIds.includes(connection.id)}
@@ -688,7 +724,10 @@ export default function Calendar() {
                           </span>
                         </div>
                       )}
-                      <span>{connection.name}</span>
+                      <span>{connection.relationshipStage === 'Self' ? `${connection.name} (ME)` : connection.name}</span>
+                      {mainFocusConnection?.id === connection.id && (
+                        <Heart className="h-3 w-3 text-red-500 fill-current ml-1" />
+                      )}
                     </div>
                   </DropdownMenuCheckboxItem>
                 ))}
@@ -729,161 +768,157 @@ export default function Calendar() {
             </div>
             {!isLegendCollapsed && (
               <>
-                <div className="space-y-3">
-                  {/* Moment Types */}
+                <div className="space-y-4">
+                  {/* Moments Section - Combined Legend and Filter */}
                   <div>
                     <h4 className="text-xs font-medium mb-2 text-muted-foreground">Moments</h4>
-                    <div className="grid grid-cols-2 gap-2 text-xs">
-                      <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                        <span>Positive</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-                        <span>Neutral</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full bg-orange-500"></div>
-                        <span>Negative</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm">⚡</span>
-                        <span>Conflicts</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm">💕</span>
-                        <span>Intimacy</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm text-purple-500">📅</span>
-                        <span>Plans</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm">🏆</span>
-                        <span>Milestones</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Menstrual Cycle Phases */}
-                  <div>
-                    <h4 className="text-xs font-medium mb-2 text-muted-foreground">Menstrual Cycle</h4>
-                    <div className="grid grid-cols-2 gap-2 text-xs">
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm">🩸</span>
-                        <span>Period</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm">🌱</span>
-                        <span>Follicular</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm">💛</span>
-                        <span>Fertile Window</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm">🥚</span>
-                        <span>Ovulation</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm">🌙</span>
-                        <span>Luteal</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Filter Checkboxes */}
-                <div className="mt-4 pt-3 border-t border-border/20">
-                  <h4 className="text-xs font-medium mb-2 text-muted-foreground">Show on Calendar</h4>
-                  
-                  {/* Moment Filters */}
-                  <div className="mb-3">
-                    <h5 className="text-xs font-medium mb-2 text-muted-foreground/80">Moments</h5>
-                    <div className="grid grid-cols-2 gap-2 text-xs">
-                      <div className="flex items-center space-x-2">
+                    <div className="grid grid-cols-1 gap-1.5 text-xs">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                          <span>Positive</span>
+                        </div>
                         <Checkbox
                           id="positive"
                           checked={filters.positive}
                           onCheckedChange={(checked) => 
                             setFilters(prev => ({ ...prev, positive: !!checked }))
                           }
+                          className="h-3 w-3"
                         />
-                        <label htmlFor="positive" className="text-xs cursor-pointer">Positive</label>
                       </div>
-                      <div className="flex items-center space-x-2">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+                          <span>Neutral</span>
+                        </div>
                         <Checkbox
                           id="neutral"
                           checked={filters.neutral}
                           onCheckedChange={(checked) => 
                             setFilters(prev => ({ ...prev, neutral: !!checked }))
                           }
+                          className="h-3 w-3"
                         />
-                        <label htmlFor="neutral" className="text-xs cursor-pointer">Neutral</label>
                       </div>
-                      <div className="flex items-center space-x-2">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="w-3 h-3 rounded-full bg-orange-500"></div>
+                          <span>Negative</span>
+                        </div>
                         <Checkbox
                           id="negative"
                           checked={filters.negative}
                           onCheckedChange={(checked) => 
                             setFilters(prev => ({ ...prev, negative: !!checked }))
                           }
+                          className="h-3 w-3"
                         />
-                        <label htmlFor="negative" className="text-xs cursor-pointer">Negative</label>
                       </div>
-                      <div className="flex items-center space-x-2">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm">⚡</span>
+                          <span>Conflicts</span>
+                        </div>
                         <Checkbox
-                          id="conflict"
-                          checked={filters.conflict}
+                          id="conflicts"
+                          checked={filters.conflicts}
                           onCheckedChange={(checked) => 
-                            setFilters(prev => ({ ...prev, conflict: !!checked }))
+                            setFilters(prev => ({ ...prev, conflicts: !!checked }))
                           }
+                          className="h-3 w-3"
                         />
-                        <label htmlFor="conflict" className="text-xs cursor-pointer">Conflicts</label>
                       </div>
-                      <div className="flex items-center space-x-2">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm">💕</span>
+                          <span>Intimacy</span>
+                        </div>
                         <Checkbox
                           id="intimacy"
                           checked={filters.intimacy}
                           onCheckedChange={(checked) => 
                             setFilters(prev => ({ ...prev, intimacy: !!checked }))
                           }
+                          className="h-3 w-3"
                         />
-                        <label htmlFor="intimacy" className="text-xs cursor-pointer">Intimacy</label>
                       </div>
-                      <div className="flex items-center space-x-2">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm text-purple-500">📅</span>
+                          <span>Plans</span>
+                        </div>
                         <Checkbox
-                          id="plan"
-                          checked={filters.plan}
+                          id="plans"
+                          checked={filters.plans}
                           onCheckedChange={(checked) => 
-                            setFilters(prev => ({ ...prev, plan: !!checked }))
+                            setFilters(prev => ({ ...prev, plans: !!checked }))
                           }
+                          className="h-3 w-3"
                         />
-                        <label htmlFor="plan" className="text-xs cursor-pointer">Plans</label>
                       </div>
-                      <div className="flex items-center space-x-2">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm">🏆</span>
+                          <span>Milestones</span>
+                        </div>
                         <Checkbox
-                          id="milestone"
-                          checked={filters.milestone}
+                          id="milestones"
+                          checked={filters.milestones}
                           onCheckedChange={(checked) => 
-                            setFilters(prev => ({ ...prev, milestone: !!checked }))
+                            setFilters(prev => ({ ...prev, milestones: !!checked }))
                           }
+                          className="h-3 w-3"
                         />
-                        <label htmlFor="milestone" className="text-xs cursor-pointer">Milestones</label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Checkbox
-                          id="cycle"
-                          checked={filters.cycle}
-                          onCheckedChange={(checked) => 
-                            setFilters(prev => ({ ...prev, cycle: !!checked }))
-                          }
-                        />
-                        <label htmlFor="cycle" className="text-xs cursor-pointer">Cycle</label>
                       </div>
                     </div>
                   </div>
 
+                  {/* Menstrual Cycle Section - Combined Legend and Filter */}
+                  <div className="border-t border-border/20 pt-3">
+                    <h4 className="text-xs font-medium mb-2 text-muted-foreground">Menstrual Cycle</h4>
+                    <div className="grid grid-cols-1 gap-1.5 text-xs">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm">🌸</span>
+                          <span>Show All Cycle Info</span>
+                        </div>
+                        <Checkbox
+                          id="menstrualCycle"
+                          checked={filters.menstrualCycle}
+                          onCheckedChange={(checked) => 
+                            setFilters(prev => ({ ...prev, menstrualCycle: !!checked }))
+                          }
+                          className="h-3 w-3"
+                        />
+                      </div>
+                      <div className="text-xs text-muted-foreground opacity-75 ml-6 space-y-1">
+                        <div>Includes period, fertile window, ovulation & phases</div>
+                        <div className="grid grid-cols-2 gap-1 mt-2">
+                          <div className="flex items-center gap-1">
+                            <span className="text-sm">🩸</span>
+                            <span>Period</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <span className="text-sm">🌱</span>
+                            <span>Follicular</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <span className="text-sm">💛</span>
+                            <span>Fertile</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <span className="text-sm">🥚</span>
+                            <span>Ovulation</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <span className="text-sm">🌙</span>
+                            <span>Luteal</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </>
             )}
@@ -1047,6 +1082,11 @@ export default function Calendar() {
                   if (phaseInfo) {
                     const connection = connections.find(c => c.id === selectedConnectionIds[0]);
                     cyclePhases.push({ ...phaseInfo, connection });
+                    
+                    // Debug ovulation days for Amalina (connection 6)
+                    if (selectedConnectionIds[0] === 6 && phaseInfo.isOvulation) {
+                      console.log(`Found ovulation day for Amalina on ${format(day, 'yyyy-MM-dd')}:`, phaseInfo);
+                    }
                   }
                 } else {
                   // Multiple connections selected - find cycles from selected connections
@@ -1055,6 +1095,11 @@ export default function Calendar() {
                     if (phaseInfo) {
                       const connection = connections.find(c => c.id === connectionId);
                       cyclePhases.push({ ...phaseInfo, connection });
+                      
+                      // Debug ovulation days for Amalina (connection 6)
+                      if (connectionId === 6 && phaseInfo.isOvulation) {
+                        console.log(`Found ovulation day for Amalina on ${format(day, 'yyyy-MM-dd')}:`, phaseInfo);
+                      }
                     }
                   }
                 }
@@ -1111,7 +1156,7 @@ export default function Calendar() {
                     {/* Moment, Milestone, and Cycle indicators */}
                     <div className={`flex flex-wrap ${viewMode === 'daily' ? 'gap-2' : viewMode === 'weekly' ? 'gap-1' : 'gap-0.5'} items-center`}>
                       {/* Show cycle phase indicator first */}
-                      {cycleDisplay && filters.cycle && (
+                      {cycleDisplay && filters.menstrualCycle && (
                         <div className="flex gap-0.5">
                           {cycleDisplay.isMultiple && cycleDisplay.coloredInitials ? (
                             // Show colored initials for multiple connections
@@ -1332,7 +1377,7 @@ export default function Calendar() {
               variant="outline"
             >
               <div className="text-lg mb-1">💕</div>
-              <span>Intimacy</span>
+              <span>Sex</span>
             </Button>
             <Button 
               size="sm" 
@@ -1447,7 +1492,7 @@ export default function Calendar() {
 
       {/* Connection Modal */}
       <Dialog open={connectionModalOpen} onOpenChange={setConnectionModalOpen}>
-        <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
+        <DialogContent className="sm:max-w-md max-h-[85vh] overflow-y-auto mb-20">
           <DialogHeader>
             <DialogTitle>Add New Connection</DialogTitle>
           </DialogHeader>

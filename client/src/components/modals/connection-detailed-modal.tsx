@@ -4,13 +4,53 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Calendar, Heart, MessageCircle, Sparkles, Edit, Trash2, Activity, Clock, TrendingUp, Users } from 'lucide-react';
+import { Calendar, Heart, MessageCircle, Sparkles, Edit, Trash2, Activity, Clock, TrendingUp, Users, Archive, AlertTriangle } from 'lucide-react';
 import { format } from 'date-fns';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import { EditConnectionModal } from './edit-connection-modal';
+import { ConnectionAIInsights } from '@/components/insights/connection-ai-insights';
 import type { Connection, Moment } from '@shared/schema';
+
+// Helper function to generate descriptive activity names when no title is provided
+function generateActivityName(moment: Moment): string {
+  if (moment.title && moment.title.trim() !== '') {
+    return moment.title;
+  }
+
+  // Check for specific moment types only: conflicts, intimacy, plans, or regular moments
+  
+  // 1. Check for conflicts first
+  if (moment.tags?.includes('Conflict') || moment.emoji === '⚡') {
+    return 'Conflict';
+  }
+  
+  // 2. Check for intimacy
+  if (moment.isIntimate || moment.tags?.includes('Intimacy')) {
+    return 'Intimacy';
+  }
+  
+  // 3. Check for plans
+  if (moment.tags?.includes('Plan')) {
+    return 'Plan';
+  }
+  
+  // 4. For regular moments, determine if positive, negative, or neutral
+  const positiveEmojis = ['😍', '💕', '❤️', '🥰', '😊', '🤗', '💖', '🌟', '✨', '💫', '🔥', '😘', '🥳', '🎉'];
+  const negativeEmojis = ['😢', '😞', '😕', '💔', '😤', '😠', '🙄', '😣', '😭', '😰', '😡', '🤬', '😩', '😫'];
+  
+  if (moment.tags?.includes('Green Flag') || positiveEmojis.includes(moment.emoji)) {
+    return 'Positive Moment';
+  }
+  
+  if (moment.tags?.includes('Red Flag') || moment.tags?.includes('Yellow Flag') || negativeEmojis.includes(moment.emoji)) {
+    return 'Negative Moment';
+  }
+  
+  // Default to neutral moment
+  return 'Moment';
+}
 
 interface ConnectionDetailedModalProps {
   isOpen: boolean;
@@ -21,6 +61,10 @@ interface ConnectionDetailedModalProps {
 export function ConnectionDetailedModal({ isOpen, onClose, connection }: ConnectionDetailedModalProps) {
   const [showEditModal, setShowEditModal] = useState(false);
   const [renderKey, setRenderKey] = useState(0);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showArchiveConfirm, setShowArchiveConfirm] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [editData, setEditData] = useState<Partial<Connection>>({});
   const { toast } = useToast();
 
   // Use fresh connection data from the connections list
@@ -78,11 +122,66 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
     enabled: isOpen && !!connection,
   });
 
+  // Fetch user data for insights
+  const { data: user } = useQuery({
+    queryKey: ["/api/me"],
+    enabled: isOpen && !!connection,
+  });
+
+  // Delete connection mutation
+  const deleteConnectionMutation = useMutation({
+    mutationFn: async (connectionId: number) => {
+      return await apiRequest(`/api/connections/${connectionId}`, "DELETE");
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/connections"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/moments"] });
+      setShowDeleteConfirm(false);
+      toast({
+        title: "Connection Deleted",
+        description: "Connection and all associated entries have been permanently deleted.",
+      });
+      onClose();
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to delete connection",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Archive connection mutation
+  const archiveConnectionMutation = useMutation({
+    mutationFn: async (connectionId: number) => {
+      return await apiRequest(`/api/connections/${connectionId}`, "PATCH", {
+        isArchived: true
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/connections"] });
+      setShowArchiveConfirm(false);
+      toast({
+        title: "Connection Archived",
+        description: "Connection has been archived. You can restore it from settings.",
+      });
+      onClose();
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to archive connection",
+        variant: "destructive",
+      });
+    },
+  });
+
   // Update connection mutation (must be before early return)
   const updateConnection = useMutation({
     mutationFn: async (data: Partial<Connection>) => {
-      if (!connection) throw new Error('No connection');
-      const response = await fetch(`/api/connections/${connection.id}`, {
+      if (!currentConnection) throw new Error('No connection');
+      const response = await fetch(`/api/connections/${currentConnection.id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -143,7 +242,7 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
     return `${diffYears} year${diffYears > 1 ? 's' : ''}, ${remainingMonths} month${remainingMonths > 1 ? 's' : ''}`;
   };
 
-  const duration = calculateDuration(connection.startDate);
+  const duration = currentConnection ? calculateDuration(currentConnection.startDate) : 'Unknown';
 
   // Calculate detailed stats
   const stats = {
@@ -228,15 +327,33 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
           </TabsList>
 
           <TabsContent value="overview" className="space-y-4">
-            {/* Edit Button */}
-            <div className="flex justify-end mb-4">
+            {/* Action Buttons */}
+            <div className="flex justify-end gap-2 mb-4">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => setShowEditModal(true)}
               >
                 <Edit className="h-4 w-4 mr-2" />
-                Edit Connection
+                Edit
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowArchiveConfirm(true)}
+                disabled={archiveConnectionMutation.isPending}
+              >
+                <Archive className="h-4 w-4 mr-2" />
+                Archive
+              </Button>
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={() => setShowDeleteConfirm(true)}
+                disabled={deleteConnectionMutation.isPending}
+              >
+                <Trash2 className="h-4 w-4 mr-2" />
+                Delete
               </Button>
             </div>
 
@@ -309,7 +426,7 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
 
           <TabsContent value="activity" className="space-y-4">
             <div className="text-sm text-muted-foreground mb-4">
-              Showing all {connectionMoments.length} activities with {connection.name}
+              Showing all {connectionMoments.length} activities with {currentConnection?.name}
             </div>
             
             <div className="space-y-3 max-h-96 overflow-y-auto">
@@ -319,7 +436,7 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
                     <div className="text-2xl">{moment.emoji}</div>
                     <div className="flex-1 min-w-0">
                       <div className="font-medium text-sm">
-                        {moment.title || 'Untitled moment'}
+                        {generateActivityName(moment)}
                       </div>
                       {moment.content && (
                         <div className="text-sm text-muted-foreground mt-1">
@@ -348,40 +465,22 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
           </TabsContent>
 
           <TabsContent value="insights" className="space-y-4">
-            <Card className="p-4">
-              <h3 className="font-semibold mb-3">Relationship Insights</h3>
-              <div className="space-y-4">
-                <div>
-                  <div className="text-sm font-medium">Activity Frequency</div>
-                  <div className="text-sm text-muted-foreground">
-                    {stats.total > 0 ? 
-                      `${(stats.total / Math.max(1, Math.ceil((Date.now() - new Date(connection.startDate || Date.now()).getTime()) / (1000 * 60 * 60 * 24)))).toFixed(1)} activities per day on average` :
-                      'No activity recorded yet'
-                    }
-                  </div>
-                </div>
-                
-                <div>
-                  <div className="text-sm font-medium">Positive Ratio</div>
-                  <div className="text-sm text-muted-foreground">
-                    {stats.total > 0 ? 
-                      `${Math.round((stats.positive / stats.total) * 100)}% positive interactions` :
-                      'No data available'
-                    }
-                  </div>
-                </div>
-
-                <div>
-                  <div className="text-sm font-medium">Communication Pattern</div>
-                  <div className="text-sm text-muted-foreground">
-                    {stats.conflicts > 0 && stats.positive > 0 ?
-                      stats.positive > stats.conflicts * 2 ? 'Healthy communication' : 'Moderate challenges' :
-                      'Developing communication'
-                    }
-                  </div>
+            {currentConnection && user ? (
+              <ConnectionAIInsights
+                connection={currentConnection}
+                moments={connectionMoments}
+                userData={{
+                  zodiacSign: (user as any).zodiacSign,
+                  loveLanguage: (user as any).loveLanguage
+                }}
+              />
+            ) : (
+              <div className="flex items-center justify-center py-8">
+                <div className="text-center">
+                  <div className="text-sm text-muted-foreground">Loading insights...</div>
                 </div>
               </div>
-            </Card>
+            )}
           </TabsContent>
 
           <TabsContent value="timeline" className="space-y-4">
@@ -402,7 +501,7 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
                   </div>
                   <div className="flex-1 pb-4">
                     <div className="font-medium text-sm">
-                      {moment.title || 'Untitled moment'}
+                      {generateActivityName(moment)}
                     </div>
                     <div className="text-xs text-muted-foreground">
                       {formatDateTime(moment.createdAt)}
@@ -427,6 +526,86 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
         connection={currentConnection}
         onEditSuccess={handleEditSuccess}
       />
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <AlertTriangle className="h-5 w-5 text-red-500" />
+              Delete Connection
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              Are you sure you want to delete this connection? This action will permanently delete:
+            </p>
+            <ul className="text-sm text-muted-foreground list-disc list-inside space-y-1">
+              <li>The connection profile for {currentConnection.name}</li>
+              <li>All moments and entries associated with this connection</li>
+              <li>All milestones and plans</li>
+              <li>This action cannot be undone</li>
+            </ul>
+            <div className="flex justify-end gap-2 pt-4">
+              <Button
+                variant="outline"
+                onClick={() => setShowDeleteConfirm(false)}
+                disabled={deleteConnectionMutation.isPending}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={() => {
+                  deleteConnectionMutation.mutate(currentConnection.id);
+                }}
+                disabled={deleteConnectionMutation.isPending}
+              >
+                {deleteConnectionMutation.isPending ? "Deleting..." : "Delete Forever"}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Archive Confirmation Dialog */}
+      <Dialog open={showArchiveConfirm} onOpenChange={setShowArchiveConfirm}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Archive className="h-5 w-5 text-orange-500" />
+              Archive Connection
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              Are you sure you want to archive this connection?
+            </p>
+            <ul className="text-sm text-muted-foreground list-disc list-inside space-y-1">
+              <li>The connection will be hidden from your active connections</li>
+              <li>All data will be preserved</li>
+              <li>You can restore it anytime from Settings</li>
+            </ul>
+            <div className="flex justify-end gap-2 pt-4">
+              <Button
+                variant="outline"
+                onClick={() => setShowArchiveConfirm(false)}
+                disabled={archiveConnectionMutation.isPending}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={() => {
+                  archiveConnectionMutation.mutate(currentConnection.id);
+                }}
+                disabled={archiveConnectionMutation.isPending}
+              >
+                {archiveConnectionMutation.isPending ? "Archiving..." : "Archive Connection"}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </Dialog>
   );
 }

@@ -1,0 +1,40 @@
+Auth: Starting to load user, setting loading to true
+eruda.js:2 getCurrentUser successful: {id: 1, username: 'testuser', email: 'test@example.com', displayName: 'Test User', profileImage: null, …}
+eruda.js:2 getCurrentUser successful: {id: 1, username: 'testuser', email: 'test@example.com', displayName: 'Test User', profileImage: null, …}
+eruda.js:2 Auth context setting user: {id: 1, username: 'testuser', email: 'test@example.com', displayName: 'Test User', profileImage: null, …}
+eruda.js:2 Auth: Finally block - setting loading to false
+eruda.js:2 AI Insights Debug: {connectionsLength: 4, momentsLength: 0, userData: {…}, moments: Array(0)}
+eruda.js:2 Generated insights: []
+eruda.js:2 Focus Context Debug: {savedId: null, connectionsLength: 4, connections: Array(4)}
+eruda.js:2 AI Insights Debug: {connectionsLength: 4, momentsLength: 0, userData: {…}, moments: Array(0)}
+eruda.js:2 Generated insights: []
+eruda.js:2 Modal useEffect - selectedDate from context: null
+eruda.js:2 Modal useEffect - editingMoment: null
+eruda.js:2 Modal useEffect - momentModalOpen: false
+eruda.js:2 [vite] server connection lost. Polling for restart...
+Console.js:61 AI Insights Debug: {connectionsLength: 0, momentsLength: 0, userData: {…}, moments: Array(0)}
+Console.js:61 Generated insights: []
+Console.js:61 Modal useEffect - selectedDate from context: null
+Console.js:61 Modal useEffect - editingMoment: null
+Console.js:61 Modal useEffect - momentModalOpen: false
+Console.js:61 Auth: Starting to load user, setting loading to true
+Console.js:61 getCurrentUser successful: {id: 1, username: 'testuser', email: 'test@example.com', displayName: 'Test User', profileImage: null, …}
+Console.js:61 getCurrentUser successful: {id: 1, username: 'testuser', email: 'test@example.com', displayName: 'Test User', profileImage: null, …}
+Console.js:61 Auth context setting user: {id: 1, username: 'testuser', email: 'test@example.com', displayName: 'Test User', profileImage: null, …}
+Console.js:61 Auth: Finally block - setting loading to false
+Console.js:61 AI Insights Debug: {connectionsLength: 4, momentsLength: 0, userData: {…}, moments: Array(0)}
+Console.js:61 Generated insights: []
+Console.js:61 Focus Context Debug: {savedId: null, connectionsLength: 4, connections: Array(4)}
+Console.js:61 AI Insights Debug: {connectionsLength: 0, momentsLength: 0, userData: {…}, moments: Array(0)}
+Console.js:61 Generated insights: []
+Console.js:61 Modal useEffect - selectedDate from context: null
+Console.js:61 Modal useEffect - editingMoment: null
+Console.js:61 Modal useEffect - momentModalOpen: false
+Console.js:61 Auth: Starting to load user, setting loading to true
+Console.js:61 getCurrentUser successful: {id: 1, username: 'testuser', email: 'test@example.com', displayName: 'Test User', profileImage: null, …}
+Console.js:61 getCurrentUser successful: {id: 1, username: 'testuser', email: 'test@example.com', displayName: 'Test User', profileImage: null, …}
+Console.js:61 Auth context setting user: {id: 1, username: 'testuser', email: 'test@example.com', displayName: 'Test User', profileImage: null, …}
+Console.js:61 Auth: Finally block - setting loading to false
+Console.js:61 AI Insights Debug: {connectionsLength: 4, momentsLength: 0, userData: {…}, moments: Array(0)}
+Console.js:61 Generated insights: []
+Console.js:61 Focus Context Debug: {savedId: null, connectionsLength: 4, connections: Array(4)}

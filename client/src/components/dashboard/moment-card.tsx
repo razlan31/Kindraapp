@@ -2,9 +2,13 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MessageSquare, Sparkles } from "lucide-react";
+import { MessageSquare, Sparkles, ZoomIn, ZoomOut, RotateCcw, Eye } from "lucide-react";
 import { Moment } from "@shared/schema";
 import { formatDistanceToNow } from "date-fns";
+import { ManualInsight } from "@/components/insights/manual-insight";
+import { useState } from "react";
+import { MediaViewerModal } from "@/components/ui/media-viewer-modal";
+
 
 interface MomentCardProps {
   moment: Moment;
@@ -21,8 +25,33 @@ interface MomentCardProps {
 }
 
 export function MomentCard({ moment, connection, onAddReflection, onViewDetail, onResolveConflict, onViewConnection, hasAiReflection }: MomentCardProps) {
+  const [zoomLevel, setZoomLevel] = useState(1);
+  const [mediaViewerOpen, setMediaViewerOpen] = useState(false);
+  const [selectedMediaIndex, setSelectedMediaIndex] = useState(0);
+  
   const getInitials = (name: string) => {
     return name.split(' ').map(part => part[0]).join('').toUpperCase();
+  };
+
+  const handleZoomIn = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setZoomLevel(prev => Math.min(prev * 1.5, 3));
+  };
+
+  const handleZoomOut = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setZoomLevel(prev => Math.max(prev / 1.5, 0.5));
+  };
+
+  const handleResetZoom = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setZoomLevel(1);
+  };
+
+  const openMediaViewer = (e: React.MouseEvent, index: number) => {
+    e.stopPropagation();
+    setSelectedMediaIndex(index);
+    setMediaViewerOpen(true);
   };
 
   const getMomentType = (moment: Moment) => {
@@ -38,6 +67,9 @@ export function MomentCard({ moment, connection, onAddReflection, onViewDetail, 
   };
 
   const getTagColor = (tag: string) => {
+    if (tag === "Sex") {
+      return "bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-300";
+    }
     if (tag === "Green Flag" || ["Intimacy", "Affection", "Support", "Growth", "Trust", "Celebration"].includes(tag)) {
       return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300";
     }
@@ -124,9 +156,90 @@ export function MomentCard({ moment, connection, onAddReflection, onViewDetail, 
                 {moment.content}
               </p>
             )}
+
+            {/* Media Files with Zoom Controls */}
+            {moment.mediaFiles && moment.mediaFiles.length > 0 && (
+              <div className="mb-3">
+                <div className="grid grid-cols-2 gap-2">
+                  {moment.mediaFiles.slice(0, 4).map((file, index) => (
+                    <div key={file.id} className="relative bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden">
+                      {file.type === 'photo' ? (
+                        <div className="relative group">
+                          <img
+                            src={file.url}
+                            alt={file.filename}
+                            className="w-full h-20 object-cover transition-transform duration-200"
+                            style={{
+                              transform: `scale(${zoomLevel})`,
+                              transformOrigin: 'center center'
+                            }}
+                            onClick={(e) => openMediaViewer(e, index)}
+                          />
+                          {/* Zoom Controls Overlay */}
+                          <div className="absolute top-1 right-1 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-6 w-6 p-0 bg-black/50 hover:bg-black/70 text-white"
+                              onClick={handleZoomIn}
+                              disabled={zoomLevel >= 3}
+                            >
+                              <ZoomIn className="h-3 w-3" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-6 w-6 p-0 bg-black/50 hover:bg-black/70 text-white"
+                              onClick={handleZoomOut}
+                              disabled={zoomLevel <= 0.5}
+                            >
+                              <ZoomOut className="h-3 w-3" />
+                            </Button>
+                            {zoomLevel !== 1 && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-6 w-6 p-0 bg-black/50 hover:bg-black/70 text-white"
+                                onClick={handleResetZoom}
+                              >
+                                <RotateCcw className="h-3 w-3" />
+                              </Button>
+                            )}
+                          </div>
+                          {/* Full View Button */}
+                          <div className="absolute bottom-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-6 w-6 p-0 bg-black/50 hover:bg-black/70 text-white"
+                              onClick={(e) => openMediaViewer(e, index)}
+                            >
+                              <Eye className="h-3 w-3" />
+                            </Button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="w-full h-20 flex items-center justify-center bg-gray-200 dark:bg-gray-700 cursor-pointer"
+                             onClick={(e) => openMediaViewer(e, index)}>
+                          <div className="text-center">
+                            <div className="text-2xl mb-1">🎥</div>
+                            <div className="text-xs text-gray-600 dark:text-gray-300">Video</div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                {moment.mediaFiles.length > 4 && (
+                  <div className="text-xs text-gray-500 mt-1">
+                    +{moment.mediaFiles.length - 4} more files
+                  </div>
+                )}
+              </div>
+            )}
             
-            {/* Only show tags for regular moments, not conflicts or intimacy */}
-            {getMomentType(moment) === null && moment.tags && moment.tags.length > 0 && (
+            {/* Show tags for regular moments and intimacy moments, but not conflicts */}
+            {getMomentType(moment) !== 'Conflict' && moment.tags && moment.tags.length > 0 && (
               <div className="flex flex-wrap gap-1 mb-3">
                 {moment.tags
                   .filter(tag => !['Positive', 'Negative', 'Neutral'].includes(tag))
@@ -141,6 +254,8 @@ export function MomentCard({ moment, connection, onAddReflection, onViewDetail, 
                   ))}
               </div>
             )}
+
+
             
             {/* Action buttons based on moment type */}
             {getMomentType(moment) === 'Conflict' ? (
@@ -195,6 +310,21 @@ export function MomentCard({ moment, connection, onAddReflection, onViewDetail, 
           </div>
         </div>
       </CardContent>
+
+      {/* Media Viewer Modal */}
+      {moment.mediaFiles && moment.mediaFiles.length > 0 && (
+        <MediaViewerModal
+          isOpen={mediaViewerOpen}
+          onClose={() => setMediaViewerOpen(false)}
+          mediaFiles={moment.mediaFiles.map(file => ({
+            id: file.id,
+            type: file.type as 'photo' | 'video',
+            url: file.url,
+            filename: file.filename
+          }))}
+          initialIndex={selectedMediaIndex}
+        />
+      )}
     </Card>
   );
 }

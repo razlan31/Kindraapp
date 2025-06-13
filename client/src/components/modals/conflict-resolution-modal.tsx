@@ -47,7 +47,7 @@ export function ConflictResolutionModal({ isOpen, onClose, moment }: ConflictRes
         resolvedAt: resolvedDate ? resolvedDate.toISOString() : null,
       };
 
-      await apiRequest('PATCH', `/api/moments/${moment.id}`, updateData);
+      await apiRequest(`/api/moments/${moment.id}`, 'PATCH', updateData);
 
       // Invalidate queries to refresh the data
       queryClient.invalidateQueries({ queryKey: ['/api/moments'] });

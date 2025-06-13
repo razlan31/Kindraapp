@@ -10,6 +10,7 @@ import { Connection } from "@shared/schema";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { EmojiPicker } from "@/components/ui/emoji-picker";
+import { MediaUpload, type MediaFile } from "@/components/ui/media-upload";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -23,6 +24,9 @@ export function MomentModal() {
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  // Debug modal state
+  console.log("MomentModal render - momentModalOpen:", momentModalOpen, "activityType:", activityType);
 
   // Preset tag options organized by category
   const presetTags = {
@@ -42,6 +46,8 @@ export function MomentModal() {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [customTag, setCustomTag] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [mediaFiles, setMediaFiles] = useState<MediaFile[]>([]);
+  const [isIntimate, setIsIntimate] = useState<boolean>(false);
   
   // Milestone-specific state
   const [isMilestone, setIsMilestone] = useState<boolean>(false);
@@ -75,6 +81,7 @@ export function MomentModal() {
       setLocalSelectedDate(new Date(editingMoment.createdAt || new Date()));
       setSelectedTags(editingMoment.tags || []);
       setReflection(editingMoment.reflection || "");
+      setMediaFiles(editingMoment.mediaFiles || []);
       
       // Initialize conflict-specific fields
       setIsResolved(editingMoment.isResolved || false);
@@ -103,13 +110,26 @@ export function MomentModal() {
       setContent("");
       setLocalSelectedDate(selectedDate || new Date());
       setMomentType('positive');
-      setSelectedTags([]);
+      
+      // Automatically set Sex tag and intimate flag for intimacy tab
+      if (activityType === 'intimacy') {
+        setSelectedTags(['Sex']);
+        setIsIntimate(true);
+      } else if (activityType === 'conflict') {
+        setSelectedTags(['Conflict']);
+        setIsIntimate(false);
+      } else {
+        setSelectedTags([]);
+        setIsIntimate(false);
+      }
+      
       setCustomTag("");
       setReflection("");
+      setMediaFiles([]);
       setIsResolved(false);
       setResolutionNotes("");
       setResolvedDate(new Date());
-      setIntimacyRating(5);
+      setIntimacyRating("5");
     }
   }, [editingMoment, selectedConnectionId, activityType, selectedDate]);
 
@@ -157,7 +177,7 @@ export function MomentModal() {
   const [resolvedDate, setResolvedDate] = useState<Date>(new Date());
   
   // Intimacy fields
-  const [intimacyRating, setIntimacyRating] = useState<number>(5);
+  const [intimacyRating, setIntimacyRating] = useState<string>("5");
   
   // Reflection field
   const [reflection, setReflection] = useState('');
@@ -196,7 +216,7 @@ export function MomentModal() {
       setLocalSelectedDate(new Date());
       setMomentType("positive");
       setEmoji("😊");
-      setIntimacyRating(5);
+      setIntimacyRating("5");
     }
     
     closeMomentModal();
@@ -215,7 +235,7 @@ export function MomentModal() {
     setIsSubmitting(false);
   };
 
-  // Create moment mutation
+  // Create moment mutation with optimistic updates
   const { mutate: createMoment } = useMutation({
     mutationFn: async (data: any) => {
       console.log("🔥 FORM SUBMISSION - Data being sent to API:", data);
@@ -232,6 +252,28 @@ export function MomentModal() {
       console.log("🔥 FORM SUBMISSION - API response:", result);
       console.log("🔥 FORM SUBMISSION - result.createdAt:", result.createdAt);
       return result;
+    },
+    onMutate: async (newMoment) => {
+      // Cancel outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ['/api/moments'] });
+
+      // Snapshot previous value
+      const previousMoments = queryClient.getQueryData(['/api/moments']);
+
+      // Optimistically update with temporary data
+      const optimisticMoment = {
+        ...newMoment,
+        id: Date.now(),
+        userId: user?.id,
+        createdAt: newMoment.createdAt,
+      };
+
+      queryClient.setQueryData(['/api/moments'], (old: any) => {
+        if (!old) return [optimisticMoment];
+        return [optimisticMoment, ...old];
+      });
+
+      return { previousMoments };
     },
     onSuccess: (data) => {
       // Check if any new badges were earned
@@ -251,28 +293,18 @@ export function MomentModal() {
         description: "Your entry has been recorded.",
       });
       
-      // Force immediate cache invalidation and refetch - comprehensive approach
+      // Optimized cache invalidation - single invalidation
       queryClient.invalidateQueries({ queryKey: ['/api/moments'] });
-      queryClient.refetchQueries({ queryKey: ['/api/moments'] });
-      
-      // Also invalidate connections in case they were affected
-      queryClient.invalidateQueries({ queryKey: ['/api/connections'] });
-      
-      // Trigger custom event to notify other components
-      window.dispatchEvent(new CustomEvent('momentCreated'));
-      
-      // Force a hard refresh with a slight delay
-      setTimeout(() => {
-        queryClient.invalidateQueries({ queryKey: ['/api/moments'] });
-        queryClient.refetchQueries({ queryKey: ['/api/moments'] });
-      }, 50);
       
       handleSuccess();
-      
-      // Invalidate cache to trigger re-fetch without page refresh
-      queryClient.invalidateQueries({ queryKey: ['/api/moments'] });
     },
-    onError: (error: any) => handleError(error),
+    onError: (error: any, newMoment, context) => {
+      // Rollback optimistic update if mutation fails
+      if (context?.previousMoments) {
+        queryClient.setQueryData(['/api/moments'], context.previousMoments);
+      }
+      handleError(error);
+    },
   });
 
   // Update moment mutation
@@ -356,7 +388,7 @@ export function MomentModal() {
       if (activityType === 'conflict') {
         tags = ['Conflict'];
       } else if (activityType === 'intimacy') {
-        tags = ['Intimacy'];
+        tags = ['Sex'];
         isIntimate = true;
       }
       // For regular moments (activityType === 'moment'), don't add any default tags
@@ -449,6 +481,8 @@ export function MomentModal() {
       intimacyRating: isIntimate ? "high" : null,
       relatedToMenstrualCycle: false,
       createdAt: localSelectedDate.toISOString(),
+      // Media files
+      mediaFiles: mediaFiles.length > 0 ? mediaFiles : null,
       // Conflict resolution fields
       isResolved: activityType === 'conflict' ? isResolved : false,
       resolvedAt: (activityType === 'conflict' && isResolved) ? resolvedDate.toISOString() : null,
@@ -546,6 +580,17 @@ export function MomentModal() {
               value={content}
               onChange={(e) => setContent(e.target.value)}
               className="min-h-[100px]"
+            />
+          </div>
+
+          {/* Media Upload */}
+          <div className="space-y-2">
+            <MediaUpload
+              value={mediaFiles}
+              onChange={setMediaFiles}
+              maxFiles={5}
+              acceptedTypes={['image/*', 'video/*']}
+              maxSize={50}
             />
           </div>
 

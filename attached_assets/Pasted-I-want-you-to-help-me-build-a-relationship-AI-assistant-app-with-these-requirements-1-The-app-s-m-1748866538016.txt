@@ -1,0 +1,33 @@
+I want you to help me build a relationship AI assistant app with these requirements:
+
+1. The app’s main feature is a conversational AI relationship coach that provides personalized, empathetic advice based on user relationship tracking data.
+
+2. The AI assistant should:
+- Greet users warmly and respond in a supportive, encouraging tone.
+- Answer relationship questions using both general best practices and the user’s specific tracked data.
+- Use relationship data including emotional moments (positive/negative), connection health score (0–100), love language, milestones, and relationship stage as context.
+- Provide practical, actionable suggestions and avoid vague or generic answers.
+- If the user’s input is unclear, ask for clarification.
+- Avoid medical, legal, or psychological diagnoses.
+
+3. The relationship tracking system will:
+- Collect emotional moments with emojis and tags.
+- Track connection health scores and milestones.
+- Record love language and relationship stage.
+- Provide a concise summary of recent data to feed the AI assistant.
+
+4. The AI assistant’s backend should:
+- Receive the user’s question plus a natural language summary of recent relationship tracking data.
+- Use OpenAI’s GPT-4 or GPT-3.5-turbo API to generate empathetic and personalized answers.
+- Maintain conversational context in chat sessions.
+- Log new emotional moments if users report them in conversation.
+
+5. The frontend UI should:
+- Open directly to the AI chat interface.
+- Allow users to ask free-form questions.
+- Support quick conversational entry of relationship moments.
+- Display AI responses clearly and warmly.
+
+Please generate the code structure, backend logic with example OpenAI API calls, and sample prompt templates needed to build this AI-first relationship coaching assistant app. Include explanations where necessary for how to connect the relationship tracker data with the AI assistant.
+
+Focus on making the AI assistant the central feature, with relationship tracking data as contextual support.

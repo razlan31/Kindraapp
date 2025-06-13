@@ -25,11 +25,65 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { SimpleConnectionForm } from "@/components/modals/simple-connection-form";
+import { apiRequest } from "@/lib/queryClient";
 
 export function BottomNavigation() {
   const [location, setLocation] = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { openMomentModal, openPlanModal, openConnectionModal } = useModal();
+  const { openMomentModal, openPlanModal } = useModal();
+  
+  // Local connection modal state
+  const [connectionModalOpen, setConnectionModalOpen] = useState(false);
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  // Handle image upload
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setUploadedImage(event.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Create connection mutation
+  const createConnectionMutation = useMutation({
+    mutationFn: async (formData: FormData) => {
+      // Convert FormData to object for JSON request
+      const connectionData: any = {};
+      const entries = Array.from(formData.entries());
+      for (const [key, value] of entries) {
+        connectionData[key] = value;
+      }
+      return await apiRequest("/api/connections", "POST", connectionData);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/connections"] });
+      toast({
+        title: "Success",
+        description: "Connection created successfully!",
+      });
+      setConnectionModalOpen(false);
+      setUploadedImage(null);
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: "Failed to create connection. Please try again.",
+        variant: "destructive",
+      });
+    }
+  });
+
+  const handleConnectionSubmit = async (formData: FormData) => {
+    await createConnectionMutation.mutateAsync(formData);
+  };
 
   const handleActionClick = (action: () => void) => {
     action();
@@ -46,7 +100,7 @@ export function BottomNavigation() {
         {isMenuOpen && (
           <div className="absolute bottom-16 right-0 flex flex-col items-end gap-2 animate-in slide-in-from-bottom-2 duration-200">
             <button 
-              onClick={() => handleActionClick(() => openConnectionModal())}
+              onClick={() => handleActionClick(() => setConnectionModalOpen(true))}
               className="bg-blue-500 text-white rounded-full h-12 w-12 flex items-center justify-center shadow-lg hover:shadow-xl transition-all hover:scale-105 relative group"
             >
               <UserPlus className="h-5 w-5" />
@@ -131,7 +185,14 @@ export function BottomNavigation() {
         </div>
       </nav>
 
-
+      {/* Connection Modal */}
+      <SimpleConnectionForm
+        isOpen={connectionModalOpen}
+        onClose={() => setConnectionModalOpen(false)}
+        onSubmit={handleConnectionSubmit}
+        uploadedImage={uploadedImage}
+        onImageUpload={handleImageUpload}
+      />
     </>
   );
 }

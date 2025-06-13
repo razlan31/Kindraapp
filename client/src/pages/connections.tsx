@@ -1,140 +1,40 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { Header } from "@/components/layout/header";
 import { BottomNavigation } from "@/components/layout/bottom-navigation";
-import { Connection, relationshipStages } from "@shared/schema";
+import { Connection, relationshipStages, Moment } from "@shared/schema";
 import { Button } from "@/components/ui/button";
 import { useModal } from "@/contexts/modal-context";
 import { useRelationshipFocus } from "@/contexts/relationship-focus-context";
+import { useAuth } from "@/contexts/auth-context";
 import { Input } from "@/components/ui/input";
-import { Search, Plus, X, Camera, Heart, Users, Activity, BarChart3, Clock, Calendar } from "lucide-react";
+import { Search, Plus, X, Camera, Heart, Users, Activity, BarChart3, Clock, Calendar, ChevronDown } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
+import { AddConnectionModal } from "@/components/modals/add-connection-modal";
 
 export default function Connections() {
+  const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
+  const [filterStage, setFilterStage] = useState<string | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
-  const { openMomentModal, openConnectionModal } = useModal();
+  const { setSelectedConnection } = useModal();
   const { mainFocusConnection, setMainFocusConnection } = useRelationshipFocus();
   const { toast } = useToast();
 
-  // Fetch connections and moments
+  // Fetch connections
   const { data: connections = [], isLoading } = useQuery<Connection[]>({
-    queryKey: ['/api/connections'],
+    queryKey: ["/api/connections"],
+    enabled: !!user,
   });
 
-  const { data: moments = [] } = useQuery<any[]>({
-    queryKey: ['/api/moments'],
+  // Fetch moments to calculate emoji data and flag counts
+  const { data: moments = [] } = useQuery<Moment[]>({
+    queryKey: ["/api/moments"],
+    enabled: !!user,
   });
-
-  // Smart prioritization algorithm
-  const prioritizeConnections = (connections: Connection[]) => {
-    return connections
-      .filter(connection => connection.name.toLowerCase().includes(searchTerm.toLowerCase()))
-      .map(connection => {
-        const connectionMoments = moments.filter((m: any) => m.connectionId === connection.id);
-        const lastActivity = connectionMoments.length > 0 
-          ? new Date(Math.max(...connectionMoments.map((m: any) => new Date(m.createdAt).getTime())))
-          : new Date(connection.createdAt);
-        
-        const daysSinceActivity = Math.floor((Date.now() - lastActivity.getTime()) / (1000 * 60 * 60 * 24));
-        const activityCount = connectionMoments.length;
-        
-        // Priority score: recent activity + relationship importance + total activity
-        const stageWeights = { 'Married': 5, 'Dating': 4, 'Best Friend': 4, 'Talking': 3, 'Ex': 1 };
-        const stageWeight = stageWeights[connection.relationshipStage as keyof typeof stageWeights] || 2;
-        
-        const priority = (stageWeight * 10) + (activityCount * 2) - Math.min(daysSinceActivity, 30);
-        
-        return { ...connection, priority, daysSinceActivity, activityCount };
-      })
-      .sort((a, b) => b.priority - a.priority);
-  };
-
-  const prioritizedConnections = prioritizeConnections(connections);
-
-  // Handle connection selection for navigation
-  const handleSelectConnection = (connection: Connection) => {
-    window.location.href = `/connections/${connection.id}`;
-  };
-
-  // Get recent emojis for a connection
-  const getConnectionEmojis = (connectionId: number) => {
-    const connectionMoments = moments
-      .filter((m: any) => m.connectionId === connectionId)
-      .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-      .slice(0, 3);
-    
-    const recentEmojis = connectionMoments.map((m: any) => m.emoji);
-    return recentEmojis.length > 0 ? recentEmojis : ["😊", "❤️", "✨"];
-  };
-
-  // Calculate flag counts for each connection
-  const getConnectionFlagCounts = (connectionId: number) => {
-    const connectionMoments = moments.filter((m: any) => m.connectionId === connectionId);
-    
-    return {
-      green: connectionMoments.filter((m: any) => m.tags?.includes('Green Flag')).length,
-      red: connectionMoments.filter((m: any) => m.tags?.includes('Red Flag')).length
-    };
-  };
-
-  // Get connection activity data
-  const getConnectionActivity = (connectionId: number) => {
-    const connectionMoments = moments.filter((m: any) => m.connectionId === connectionId);
-    const now = new Date();
-    const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-    
-    const recentMoments = connectionMoments.filter((m: any) => {
-      const createdAt = m.createdAt ? new Date(m.createdAt) : null;
-      return createdAt && createdAt > weekAgo;
-    });
-    
-    return {
-      total: connectionMoments.length,
-      thisWeek: recentMoments.length,
-      lastActivity: connectionMoments.length > 0 ? 
-        Math.max(...connectionMoments.map((m: any) => {
-          const createdAt = m.createdAt ? new Date(m.createdAt) : null;
-          return createdAt ? createdAt.getTime() : 0;
-        })) : 0
-    };
-  };
-
-  // Organize connections by different perspectives
-  const getConnectionsByPerspective = () => {
-    const baseConnections = filteredConnections;
-    
-    switch (viewMode) {
-      case 'activity':
-        return baseConnections.sort((a, b) => {
-          const aActivity = getConnectionActivity(a.id);
-          const bActivity = getConnectionActivity(b.id);
-          return bActivity.thisWeek - aActivity.thisWeek || bActivity.total - aActivity.total;
-        });
-      
-      case 'stages':
-        return relationshipStages.reduce((acc, stage) => {
-          const stageConnections = baseConnections.filter(c => c.relationshipStage === stage);
-          if (stageConnections.length > 0) {
-            acc[stage] = stageConnections;
-          }
-          return acc;
-        }, {} as Record<string, typeof baseConnections>);
-      
-      case 'timeline':
-        return baseConnections.sort((a, b) => {
-          const aActivity = getConnectionActivity(a.id);
-          const bActivity = getConnectionActivity(b.id);
-          return bActivity.lastActivity - aActivity.lastActivity;
-        });
-      
-      default:
-        return baseConnections;
-    }
-  };
 
   // Create connection mutation
   const { mutate: createConnection, isPending } = useMutation({
@@ -171,6 +71,37 @@ export default function Connections() {
     createConnection(data);
   };
 
+  // Filter connections based on search and stage filter
+  const filteredConnections = connections
+    .filter(connection => {
+      const matchesSearch = connection.name.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesStage = filterStage === null || connection.relationshipStage === filterStage;
+      return matchesSearch && matchesStage;
+    });
+
+  // Handle connection selection for navigation
+  const handleSelectConnection = (connection: Connection) => {
+    window.location.href = `/connections/${connection.id}`;
+  };
+
+  // Get recent emojis for a connection
+  const getConnectionEmojis = (connectionId: number) => {
+    return moments
+      .filter(m => m.connectionId === connectionId)
+      .slice(0, 3)
+      .map(m => m.emoji)
+      .filter(Boolean);
+  };
+
+  // Get flag counts for a connection
+  const getFlagCount = (connectionId: number) => {
+    const connectionMoments = moments.filter(m => m.connectionId === connectionId);
+    return {
+      green: connectionMoments.filter(m => m.tags?.includes('green_flag')).length,
+      red: connectionMoments.filter(m => m.tags?.includes('red_flag')).length,
+    };
+  };
+
   return (
     <div className="max-w-md mx-auto bg-white dark:bg-neutral-900 min-h-screen flex flex-col relative">
       <Header />
@@ -204,7 +135,10 @@ export default function Connections() {
             <Button
               variant="outline"
               size="icon"
-              onClick={() => setShowAddModal(true)}
+              onClick={() => {
+                console.log("🔴 PLUS BUTTON CLICKED - Opening AddConnectionModal");
+                setShowAddModal(true);
+              }}
             >
               <Plus className="h-4 w-4" />
             </Button>
@@ -217,14 +151,14 @@ export default function Connections() {
               size="sm"
               onClick={() => setFilterStage(null)}
             >
-              All Stages
+              All
             </Button>
-            {relationshipStages.map((stage) => (
+            {relationshipStages.map(stage => (
               <Button
                 key={stage}
                 variant={filterStage === stage ? "default" : "outline"}
                 size="sm"
-                onClick={() => setFilterStage(filterStage === stage ? null : stage)}
+                onClick={() => setFilterStage(stage)}
               >
                 {stage}
               </Button>
@@ -233,115 +167,38 @@ export default function Connections() {
         </section>
 
         {/* Connections List */}
-        <section className="px-4 py-3">
+        <section className="px-4 pt-2 space-y-3">
           {isLoading ? (
-            <div className="text-center py-10">
-              <p>Loading connections...</p>
-            </div>
-          ) : (() => {
-            const connectionsData = getConnectionsByPerspective();
-            
-            if (viewMode === 'stages' && typeof connectionsData === 'object' && !Array.isArray(connectionsData)) {
-              // Render grouped by relationship stages
-              return Object.keys(connectionsData).length > 0 ? (
-                <div className="space-y-6">
-                  {Object.entries(connectionsData).map(([stage, stageConnections]) => (
-                    <div key={stage}>
-                      <div className="flex items-center justify-between mb-3">
-                        <h3 className="text-sm font-semibold text-foreground">{stage}</h3>
-                        <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">
-                          {stageConnections.length}
-                        </span>
-                      </div>
-                      <div className="space-y-3">
-                        {stageConnections.map((connection) => (
-                          <ConnectionCard 
-                            key={connection.id}
-                            connection={connection} 
-                            onSelect={handleSelectConnection}
-                            recentEmojis={getConnectionEmojis(connection.id)}
-                            flagCount={getConnectionFlagCounts(connection.id)}
-                            mainFocusConnection={mainFocusConnection}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-8">
-                  <p className="text-neutral-500 dark:text-neutral-400">No connections found</p>
-                </div>
-              );
-            } else {
-              // Render as regular list with activity indicators
-              const connectionsList = Array.isArray(connectionsData) ? connectionsData : [];
-              return connectionsList.length > 0 ? (
-                <div className="space-y-3">
-                  {connectionsList.map((connection) => {
-                    const activity = getConnectionActivity(connection.id);
-                    return (
-                      <div key={connection.id} className="relative">
-                        <ConnectionCard 
-                          connection={connection} 
-                          onSelect={handleSelectConnection}
-                          recentEmojis={getConnectionEmojis(connection.id)}
-                          flagCount={getConnectionFlagCounts(connection.id)}
-                          mainFocusConnection={mainFocusConnection}
-                        />
-                        {(viewMode === 'activity' || viewMode === 'timeline') && (
-                          <div className="absolute bottom-3 left-3 flex gap-1">
-                            {activity.thisWeek > 0 && (
-                              <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
-                                {activity.thisWeek} this week
-                              </span>
-                            )}
-                            {viewMode === 'timeline' && activity.lastActivity > 0 && (
-                              <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
-                                {Math.floor((Date.now() - activity.lastActivity) / (1000 * 60 * 60 * 24))}d ago
-                              </span>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              ) : (
-                <div className="text-center py-8">
-                  <p className="text-neutral-500 dark:text-neutral-400">No connections found</p>
-                </div>
-              );
-            }
-          })()}
-          
-          {!isLoading && filteredConnections.length === 0 && connections.length > 0 && (
             <div className="text-center py-8">
-              <p className="text-neutral-500 dark:text-neutral-400 mb-2">No connections found matching your filters</p>
-              <Button 
-                variant="outline"
-                onClick={() => {
-                  setSearchTerm("");
-                  setFilterStage(null);
-                }}
-              >
-                Clear Filters
-              </Button>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+              <p className="text-sm text-muted-foreground mt-2">Loading connections...</p>
             </div>
-          )}
-          
-          {!isLoading && connections.length === 0 && (
-            <Card className="flex flex-col items-center justify-center py-10 px-4 text-center">
-              <Users className="h-12 w-12 text-neutral-400 mb-4" />
-              <h3 className="text-lg font-semibold mb-2">No connections yet</h3>
-              <p className="text-neutral-500 dark:text-neutral-400 mb-4">
-                Start building your relationship network by adding your first connection.
+          ) : filteredConnections.length === 0 ? (
+            <Card className="p-6 text-center">
+              <Users className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
+              <h3 className="font-semibold mb-2">No connections found</h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                {searchTerm || filterStage ? "Try adjusting your search or filters" : "Start building your network"}
               </p>
-              <Button onClick={() => setShowAddModal(true)}>
+              <Button onClick={() => {
+                console.log("🟡 EMPTY STATE BUTTON CLICKED - Opening AddConnectionModal");
+                setShowAddModal(true);
+              }}>
                 <Plus className="h-4 w-4 mr-2" />
-                Add Your First Connection
+                Add Connection
               </Button>
             </Card>
+          ) : (
+            filteredConnections.map((connection) => (
+              <ConnectionCard
+                key={connection.id}
+                connection={connection}
+                onSelect={handleSelectConnection}
+                recentEmojis={getConnectionEmojis(connection.id)}
+                flagCount={getFlagCount(connection.id)}
+                mainFocusConnection={mainFocusConnection}
+              />
+            ))
           )}
         </section>
       </main>
@@ -418,80 +275,6 @@ function ConnectionCard({ connection, onSelect, recentEmojis, flagCount, mainFoc
           <Heart className="h-4 w-4 text-white fill-white" />
         </div>
       )}
-    </div>
-  );
-}
-
-// Add Connection Modal Component
-interface AddConnectionModalProps {
-  onClose: () => void;
-  onSubmit: (data: FormData) => void;
-  isLoading: boolean;
-}
-
-function AddConnectionModal({ onClose, onSubmit, isLoading }: AddConnectionModalProps) {
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    onSubmit(formData);
-  };
-
-  return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-neutral-800 rounded-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
-        <div className="flex items-center justify-between p-4 border-b">
-          <h2 className="text-lg font-semibold">Add New Connection</h2>
-          <Button variant="ghost" size="sm" onClick={onClose}>
-            <X className="h-4 w-4" />
-          </Button>
-        </div>
-        
-        <form onSubmit={handleSubmit} className="p-4 space-y-4">
-          <div>
-            <label className="block text-sm font-medium mb-1">Profile Image</label>
-            <input 
-              name="profileImage" 
-              type="file" 
-              accept="image/*" 
-              className="w-full p-2 border rounded text-sm file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary/90"
-            />
-            <p className="text-xs text-gray-500 mt-1">Choose a photo from your device</p>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium mb-1">Name *</label>
-            <Input name="name" required />
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium mb-1">Relationship Stage</label>
-            <select name="relationshipStage" className="w-full p-2 border rounded">
-              {relationshipStages.map(stage => (
-                <option key={stage} value={stage}>{stage}</option>
-              ))}
-            </select>
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium mb-1">Start Date</label>
-            <Input name="startDate" type="date" />
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium mb-1">Birthday</label>
-            <Input name="birthday" type="date" />
-          </div>
-          
-          <div className="flex gap-2 pt-4">
-            <Button type="button" variant="outline" onClick={onClose} className="flex-1">
-              Cancel
-            </Button>
-            <Button type="submit" disabled={isLoading} className="flex-1">
-              {isLoading ? "Adding..." : "Add Connection"}
-            </Button>
-          </div>
-        </form>
-      </div>
     </div>
   );
 }

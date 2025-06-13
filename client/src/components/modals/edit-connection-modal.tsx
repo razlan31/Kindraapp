@@ -20,10 +20,27 @@ interface EditConnectionModalProps {
   onEditSuccess?: () => void;
 }
 
+const defaultRelationshipStages = [
+  "Potential",
+  "Talking", 
+  "Situationship",
+  "It's Complicated",
+  "Dating",
+  "Spouse",
+  "FWB",
+  "Ex",
+  "Friend",
+  "Best Friend",
+  "Siblings"
+];
+
 export function EditConnectionModal({ isOpen, onClose, connection, onEditSuccess }: EditConnectionModalProps) {
+  console.log("🔧 EditConnectionModal component is rendering");
   const [editData, setEditData] = useState<Partial<Connection>>({});
   const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [isCustomStage, setIsCustomStage] = useState(false);
+  const [customStageValue, setCustomStageValue] = useState("");
   const { toast } = useToast();
 
   // Initialize editData when connection changes
@@ -32,6 +49,19 @@ export function EditConnectionModal({ isOpen, onClose, connection, onEditSuccess
       setEditData(connection);
       setPreviewImage(null);
       setProfileImageFile(null);
+      
+      // Check if current relationship stage is custom (not in default list)
+      const isCurrentStageCustom = Boolean(
+        connection.relationshipStage && 
+        !defaultRelationshipStages.includes(connection.relationshipStage)
+      );
+      
+      setIsCustomStage(isCurrentStageCustom);
+      if (isCurrentStageCustom) {
+        setCustomStageValue(connection.relationshipStage || "");
+      } else {
+        setCustomStageValue("");
+      }
     }
   }, [connection, isOpen]);
 
@@ -155,6 +185,11 @@ export function EditConnectionModal({ isOpen, onClose, connection, onEditSuccess
   const handleSave = () => {
     let finalData = { ...editData };
     
+    // Handle custom relationship stage
+    if (isCustomStage && customStageValue.trim()) {
+      finalData.relationshipStage = customStageValue.trim();
+    }
+    
     // If there's a preview image, use it as the profile image
     if (previewImage) {
       finalData.profileImage = previewImage;
@@ -270,24 +305,42 @@ export function EditConnectionModal({ isOpen, onClose, connection, onEditSuccess
                 <Label htmlFor="relationshipStage">Relationship Stage</Label>
                 <select
                   id="relationshipStage"
-                  value={editData.relationshipStage || ''}
-                  onChange={(e) => handleEditChange('relationshipStage', e.target.value)}
+                  value={isCustomStage ? 'Custom' : (editData.relationshipStage || '')}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (value === 'Custom') {
+                      setIsCustomStage(true);
+                    } else {
+                      setIsCustomStage(false);
+                      handleEditChange('relationshipStage', value);
+                    }
+                  }}
                   className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   <option value="">Select relationship stage</option>
-                  <option value="Potential">Potential</option>
-                  <option value="Talking">Talking</option>
-                  <option value="Situationship">Situationship</option>
-                  <option value="It's Complicated">It's Complicated</option>
-                  <option value="Dating">Dating</option>
-                  <option value="Spouse">Spouse</option>
-                  <option value="FWB">FWB</option>
-                  <option value="Ex">Ex</option>
-                  <option value="Friend">Friend</option>
-                  <option value="Best Friend">Best Friend</option>
-                  <option value="Siblings">Siblings</option>
+                  {defaultRelationshipStages.map((stage) => (
+                    <option key={stage} value={stage}>{stage}</option>
+                  ))}
+                  <option value="Custom">Custom Relationship Stage</option>
                 </select>
               </div>
+              
+              {/* Custom Stage Input */}
+              {isCustomStage && (
+                <div>
+                  <Label htmlFor="customStage">Custom Stage</Label>
+                  <Input
+                    id="customStage"
+                    value={customStageValue}
+                    onChange={(e) => setCustomStageValue(e.target.value)}
+                    placeholder="Enter custom stage (e.g., Mom, Dad, Sister, Colleague)"
+                    className="mt-1"
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Examples: Mom, Dad, Sister, Colleague, Mentor, etc.
+                  </p>
+                </div>
+              )}
               <div>
                 <Label htmlFor="startDate">Start Date</Label>
                 <Input

@@ -1,0 +1,61 @@
+InsightsNew - user: false user ID: undefined loading: true
+Console.js:61 InsightsNew - moments query: Object
+Console.js:61 MomentModal render - momentModalOpen: false activityType: moment
+Console.js:61 Modal useEffect - selectedDate from context: null
+Console.js:61 Modal useEffect - editingMoment: null
+Console.js:61 Modal useEffect - momentModalOpen: false
+2Console.js:61 Auth: Starting to load user, setting loading to true
+Console.js:61 MomentModal render - momentModalOpen: false activityType: moment
+ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev/api/ai/conversation:1 
+            
+            
+           Failed to load resource: the server responded with a status of 401 (Unauthorized)Understand this error
+Console.js:61 HTTP Error: Object
+Mt.forEach.n.<computed> @ Console.js:61Understand this error
+ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev/api/me:1 
+            
+            
+           Failed to load resource: the server responded with a status of 401 (Unauthorized)Understand this error
+Console.js:61 getCurrentUser failed - response not ok
+Console.js:61 getCurrentUser successful: null
+Console.js:61 Auth context setting user: null
+Console.js:61 Auth: Finally block - setting loading to false
+Console.js:61 InsightsNew - user: false user ID: undefined loading: false
+Console.js:61 InsightsNew - moments query: Object
+Console.js:61 MomentModal render - momentModalOpen: false activityType: moment
+ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev/api/connections:1 
+            
+            
+           Failed to load resource: the server responded with a status of 401 (Unauthorized)Understand this error
+Console.js:61 HTTP Error: Object
+Mt.forEach.n.<computed> @ Console.js:61Understand this error
+Console.js:61 Focus Context Debug: Object
+Console.js:61 Focus Context Debug: Object
+RelationshipRadar:1 Banner not shown: beforeinstallpromptevent.preventDefault() called. The page must call beforeinstallpromptevent.prompt() to show the banner.
+ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev/api/me:1 
+            
+            
+           Failed to load resource: the server responded with a status of 401 (Unauthorized)Understand this error
+Console.js:61 getCurrentUser failed - response not ok
+Console.js:61 getCurrentUser successful: null
+Console.js:61 Auth context setting user: null
+Console.js:61 Auth: Finally block - setting loading to false
+Console.js:61 Auth context: Login successful, user set: Object
+Console.js:61 InsightsNew - user: false user ID: undefined loading: false
+Console.js:61 InsightsNew - moments query: Object
+Console.js:61 MomentModal render - momentModalOpen: false activityType: moment
+Console.js:61 InsightsNew - user: true user ID: 8 loading: false
+Console.js:61 InsightsNew - moments query: Object
+Console.js:61 Prevented JSON parse error from browser extension
+Mt.forEach.n.<computed> @ Console.js:61Understand this warning
+Console.js:61 InsightsNew - user: true user ID: 8 loading: false
+Console.js:61 InsightsNew - moments query: Object
+Console.js:61 MomentModal render - momentModalOpen: false activityType: moment
+Console.js:61 Focus Context Debug: Object
+Console.js:61 Found saved connection: Object
+Console.js:61 InsightsNew - user: true user ID: 8 loading: false
+Console.js:61 InsightsNew - moments query: Object
+Console.js:61 InsightsNew - user: true user ID: 8 loading: false
+Console.js:61 InsightsNew - moments query: Object
+Console.js:61 MomentModal render - momentModalOpen: false activityType: moment
+stallwart.build.js:1 stallwart: failed ping 1

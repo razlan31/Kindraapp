@@ -1,15 +1,29 @@
-import { pgTable, text, serial, integer, boolean, timestamp, json } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, timestamp, json, varchar, index } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
-// Users
+// Session storage table for authentication
+export const sessions = pgTable(
+  "sessions",
+  {
+    sid: varchar("sid").primaryKey(),
+    sess: json("sess").notNull(),
+    expire: timestamp("expire").notNull(),
+  },
+  (table) => [index("IDX_session_expire").on(table.expire)],
+);
+
+// Users with Google auth support
 export const users = pgTable("users", {
-  id: serial("id").primaryKey(),
-  username: text("username").notNull().unique(),
-  password: text("password").notNull(),
-  email: text("email").notNull().unique(),
+  id: varchar("id").primaryKey().notNull(), // Changed to varchar for Google ID
+  email: varchar("email").unique(),
+  firstName: varchar("first_name"),
+  lastName: varchar("last_name"),
+  profileImageUrl: varchar("profile_image_url"),
+  username: text("username").unique(),
+  password: text("password"), // Made optional for OAuth users
   displayName: text("display_name"),
-  profileImage: text("profile_image"),
+  birthday: timestamp("birthday"),
   zodiacSign: text("zodiac_sign"),
   loveLanguage: text("love_language"),
   relationshipGoals: text("relationship_goals"),
@@ -18,11 +32,15 @@ export const users = pgTable("users", {
   personalNotes: text("personal_notes"),
   stripeCustomerId: text("stripe_customer_id"),
   stripeSubscriptionId: text("stripe_subscription_id"),
+  points: integer("points").default(0),
   createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-export const userSchema = createInsertSchema(users).omit({ id: true, createdAt: true });
-export type InsertUser = z.infer<typeof userSchema>;
+export const userSchema = createInsertSchema(users).omit({ id: true, createdAt: true, updatedAt: true });
+export const registrationSchema = userSchema.pick({ username: true, email: true, password: true, displayName: true, zodiacSign: true, loveLanguage: true });
+export type InsertUser = typeof users.$inferInsert;
+export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
 
 // Relationship stages enum
@@ -43,7 +61,7 @@ export const relationshipStages = [
 // Connections (relationships)
 export const connections = pgTable("connections", {
   id: serial("id").primaryKey(),
-  userId: integer("user_id").notNull(),
+  userId: varchar("user_id").notNull(),
   name: text("name").notNull(),
   profileImage: text("profile_image"),
   relationshipStage: text("relationship_stage").notNull(),
@@ -52,6 +70,7 @@ export const connections = pgTable("connections", {
   zodiacSign: text("zodiac_sign"),
   loveLanguage: text("love_language"),
   isPrivate: boolean("is_private").default(false),
+  isArchived: boolean("is_archived").default(false),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -125,7 +144,7 @@ export const momentTags = [
 // Moments (emotional logs)
 export const moments = pgTable("moments", {
   id: serial("id").primaryKey(),
-  userId: integer("user_id").notNull(),
+  userId: varchar("user_id").notNull(),
   connectionId: integer("connection_id").notNull(),
   title: text("title"),
   emoji: text("emoji").notNull(),
@@ -136,6 +155,15 @@ export const moments = pgTable("moments", {
   isIntimate: boolean("is_intimate").default(false),
   intimacyRating: text("intimacy_rating"),
   relatedToMenstrualCycle: boolean("related_to_menstrual_cycle").default(false),
+  // Media attachments
+  mediaFiles: json("media_files").$type<{
+    id: string;
+    type: 'photo' | 'video';
+    url: string;
+    filename: string;
+    size: number;
+    uploadedAt: string;
+  }[]>(),
   // Conflict resolution fields
   isResolved: boolean("is_resolved").default(false),
   resolvedAt: timestamp("resolved_at"),
@@ -145,7 +173,13 @@ export const moments = pgTable("moments", {
 });
 
 export const momentSchema = createInsertSchema(moments).omit({ id: true }).extend({
-  createdAt: z.string().optional(), // Allow createdAt as optional ISO string
+  tags: z.array(z.string()).optional(),
+  isPrivate: z.boolean().optional().default(false),
+  isIntimate: z.boolean().optional().default(false),
+  relatedToMenstrualCycle: z.boolean().optional().default(false),
+  isResolved: z.boolean().optional().default(false),
+  createdAt: z.string().optional(),
+  resolvedAt: z.string().optional().nullable(),
 });
 export type InsertMoment = z.infer<typeof momentSchema>;
 export type Moment = typeof moments.$inferSelect;
@@ -159,23 +193,42 @@ export const badges = pgTable("badges", {
   category: text("category").notNull(),
   unlockCriteria: json("unlock_criteria").notNull(),
   isRepeatable: boolean("is_repeatable").default(false),
+  points: integer("points").default(10),
 });
 
 export const badgeSchema = createInsertSchema(badges).omit({ id: true });
 export type InsertBadge = z.infer<typeof badgeSchema>;
 export type Badge = typeof badges.$inferSelect;
 
-// User Badges (junction table)
+// User Badges (junction table) - supports multiple unlocks of same badge
 export const userBadges = pgTable("user_badges", {
   id: serial("id").primaryKey(),
-  userId: integer("user_id").notNull(),
+  userId: varchar("user_id").notNull(),
   badgeId: integer("badge_id").notNull(),
+  pointsAwarded: integer("points_awarded").default(0),
   unlockedAt: timestamp("unlocked_at").defaultNow(),
 });
 
 export const userBadgeSchema = createInsertSchema(userBadges).omit({ id: true, unlockedAt: true });
 export type InsertUserBadge = z.infer<typeof userBadgeSchema>;
 export type UserBadge = typeof userBadges.$inferSelect;
+
+// Notifications table for badge unlocks and other alerts
+export const notifications = pgTable("notifications", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull(),
+  type: text("type").notNull(), // "badge_unlock", "milestone", "reminder", etc.
+  title: text("title").notNull(),
+  message: text("message").notNull(),
+  badgeId: integer("badge_id"), // For badge unlock notifications
+  pointsAwarded: integer("points_awarded").default(0),
+  isRead: boolean("is_read").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const notificationSchema = createInsertSchema(notifications).omit({ id: true, createdAt: true });
+export type InsertNotification = z.infer<typeof notificationSchema>;
+export type Notification = typeof notifications.$inferSelect;
 
 // Menstrual cycles
 export const menstrualCycles = pgTable("menstrual_cycles", {
@@ -265,3 +318,17 @@ export const planSchema = createInsertSchema(plans).omit({ id: true }).extend({
 });
 export type InsertPlan = z.infer<typeof planSchema>;
 export type Plan = typeof plans.$inferSelect;
+
+// Chat conversations table for AI coach history
+export const chatConversations = pgTable("chat_conversations", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  title: text("title").notNull(),
+  messages: json("messages").notNull(), // Array of ChatMessage objects
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const chatConversationSchema = createInsertSchema(chatConversations).omit({ id: true });
+export type InsertChatConversation = z.infer<typeof chatConversationSchema>;
+export type ChatConversation = typeof chatConversations.$inferSelect;
