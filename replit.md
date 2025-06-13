@@ -111,7 +111,11 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
-- June 13, 2025. Initial setup
+- June 13, 2025: Restored specific features from June 1st working version
+  - Restored colored alphabets/initials for multiple connections on same day
+  - Restored automatic cycle generation when manually setting end dates
+  - Removed unwanted automatic cycle creation during page loads
+  - Maintained June 1st layout and behavior
 
 ## User Preferences
 
