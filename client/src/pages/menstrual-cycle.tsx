@@ -176,7 +176,7 @@ export default function MenstrualCyclePage() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const { user } = useAuth();
-  const { openConnectionModal, closeConnectionModal, connectionModalOpen } = useModal();
+  const [connectionModalOpen, setConnectionModalOpen] = useState(false);
   const queryClient = useQueryClient();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingCycle, setEditingCycle] = useState<MenstrualCycle | null>(null);
@@ -186,6 +186,34 @@ export default function MenstrualCyclePage() {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [viewMode, setViewMode] = useState<'calendar' | 'list'>('calendar');
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+
+  // Handler functions for connection modal
+  const closeConnectionModal = () => setConnectionModalOpen(false);
+  
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) {
+      setUploadedImage(null);
+      return;
+    }
+
+    try {
+      const compressedDataUrl = await compressImage(file);
+      setUploadedImage(compressedDataUrl);
+    } catch (error) {
+      console.error('Error compressing image:', error);
+      // Fallback to uncompressed image
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const result = event.target?.result as string;
+        setUploadedImage(result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Connection handlers
+  const openConnectionModal = () => setConnectionModalOpen(true);
   const startDateRef = useRef<HTMLInputElement>(null);
 
   // Note: Date picker auto-opening is browser behavior that's difficult to prevent consistently
@@ -454,24 +482,8 @@ export default function MenstrualCyclePage() {
     }
   });
 
-  // Create connection mutation
-  const createConnectionMutation = useMutation({
-    mutationFn: async (formData: FormData) => {
-      // Get all selected love languages
-      const selectedLoveLanguages = formData.getAll('loveLanguages');
-      const loveLanguageString = selectedLoveLanguages.length > 0 ? selectedLoveLanguages.join(', ') : null;
-
-      const data: any = {
-        name: formData.get('name'),
-        relationshipStage: formData.get('relationshipStage') || 'Potential',
-        startDate: formData.get('startDate') || null,
-        birthday: formData.get('birthday') || null,
-        zodiacSign: formData.get('zodiacSign') || null,
-        loveLanguage: loveLanguageString,
-        isPrivate: formData.get('isPrivate') === 'on',
-      };
-
-      // Use the uploaded image from state if available
+  // Connection handlers
+  const openConnectionModal = () => setConnectionModalOpen(true);
       if (uploadedImage) {
         data.profileImage = uploadedImage;
       }
@@ -1358,7 +1370,14 @@ export default function MenstrualCyclePage() {
         </Dialog>
 
         {/* Connection Modal */}
-        {connectionModalOpen && (
+        <SimpleConnectionForm
+          isOpen={connectionModalOpen}
+          onClose={closeConnectionModal}
+          onSubmit={handleAddConnection}
+          uploadedImage={uploadedImage}
+          onImageUpload={handleImageUpload}
+        />
+        {false && connectionModalOpen && (
           <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4 pb-24">
             <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg w-full max-w-md max-h-[85vh] overflow-y-auto">
               <div className="flex items-center justify-between p-4 border-b">
