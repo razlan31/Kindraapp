@@ -2256,7 +2256,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let cycles = await storage.getMenstrualCycles(userId);
       console.log("Retrieved cycles:", cycles);
       
-      // Removed automatic cycle generation during data fetch to prevent overlapping cycles
+      // Check for automatic cycle progression
+      cycles = await checkAndCreateAutomaticCycles(userId, cycles);
       
       res.json(cycles);
     } catch (error: any) {
