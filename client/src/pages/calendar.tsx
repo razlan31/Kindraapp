@@ -121,13 +121,13 @@ export default function Calendar() {
   // Filter states for different entry types
   const [filters, setFilters] = useState({
     positive: true,
-    sex: true,
     neutral: true,
     negative: true,
-    conflict: true,
-    plan: true,
-    milestone: true,
-    cycle: true,
+    conflicts: true,
+    intimacy: true,
+    plans: true,
+    milestones: true,
+    menstrualCycle: true,
   });
   
   // Connection filter state
@@ -190,6 +190,11 @@ export default function Calendar() {
     staleTime: 0,
   });
 
+  // Debug cycle data for Amalina
+  console.log('All cycles:', cycles);
+  const amalinaCycles = cycles.filter(cycle => cycle.connectionId === 6);
+  console.log('Amalina cycles (connection 6):', amalinaCycles);
+
   // Menstrual cycle calculation functions
   const getCyclePhaseForDay = (day: Date, connectionId: number | null) => {
     if (!connectionId) return null;
@@ -206,21 +211,44 @@ export default function Calendar() {
         const periodEnd = new Date(cycle.periodEndDate);
         const periodDays = Math.floor((periodEnd.getTime() - cycleStart.getTime()) / (1000 * 60 * 60 * 24)) + 1;
         
-        // Calculate cycle length (use 28 as default if cycle is still active)
-        let cycleLength = 28;
+        // Calculate actual cycle length from the data
+        let cycleLength;
         if (cycle.endDate) {
+          // Use actual cycle length if we have end date
           cycleLength = Math.floor((new Date(cycle.endDate).getTime() - cycleStart.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+        } else {
+          // For active cycles, estimate based on previous cycles for this connection
+          const connectionCycles = relevantCycles.filter(c => c.connectionId === connectionId && c.endDate);
+          if (connectionCycles.length > 0) {
+            const avgLength = connectionCycles.reduce((sum, c) => {
+              const length = Math.floor((new Date(c.endDate!).getTime() - new Date(c.startDate).getTime()) / (1000 * 60 * 60 * 24)) + 1;
+              return sum + length;
+            }, 0) / connectionCycles.length;
+            cycleLength = Math.round(avgLength);
+          } else {
+            cycleLength = 28; // Default only if no historical data
+          }
         }
         
-        // Ovulation occurs 14 days before cycle end
-        const ovulationDay = cycleLength - 14;
+        // For shorter cycles (like Amalina's 4-6 day cycles), ovulation would occur mid-cycle
+        // But for very short cycles, we may not have a traditional ovulation pattern
+        const ovulationDay = cycleLength > 14 ? 14 : Math.round(cycleLength * 0.6);
+        
+        // Debug logging for Amalina's cycles
+        if (connectionId === 6) {
+          console.log(`Amalina cycle debug - Day: ${format(day, 'yyyy-MM-dd')}, dayOfCycle: ${dayOfCycle}, cycleLength: ${cycleLength}, ovulationDay: ${ovulationDay}, periodDays: ${periodDays}`);
+        }
         
         if (dayOfCycle <= periodDays) {
           return { phase: 'menstrual', day: dayOfCycle, cycle };
         } else if (dayOfCycle <= ovulationDay - 3) {
           return { phase: 'follicular', day: dayOfCycle, cycle };
         } else if (dayOfCycle >= ovulationDay - 2 && dayOfCycle <= ovulationDay + 2) {
-          return { phase: 'fertile', day: dayOfCycle, cycle, isOvulation: dayOfCycle === ovulationDay };
+          const isOvulation = dayOfCycle === ovulationDay;
+          if (connectionId === 6 && isOvulation) {
+            console.log(`FOUND OVULATION for Amalina on ${format(day, 'yyyy-MM-dd')} - day ${dayOfCycle} of cycle`);
+          }
+          return { phase: 'fertile', day: dayOfCycle, cycle, isOvulation };
         } else {
           return { phase: 'luteal', day: dayOfCycle, cycle };
         }
@@ -355,19 +383,19 @@ export default function Calendar() {
     const isMilestone = moment.isMilestone || moment.tags?.includes('Milestone') || moment.emoji === '🏆' || (moment as any).isBirthday;
     
     // Type filters
-    if (isConflict && !filters.conflict) {
+    if (isConflict && !filters.conflicts) {
       console.log(`Filtered out moment ${moment.id} - conflict filter off`);
       return false;
     }
-    if (isIntimacy && !filters.sex) {
-      console.log(`Filtered out moment ${moment.id} - sex filter off`);
+    if (isIntimacy && !filters.intimacy) {
+      console.log(`Filtered out moment ${moment.id} - intimacy filter off`);
       return false;
     }
-    if (isPlan && !filters.plan) {
+    if (isPlan && !filters.plans) {
       console.log(`Filtered out moment ${moment.id} - plan filter off`);
       return false;
     }
-    if (isMilestone && !filters.milestone) {
+    if (isMilestone && !filters.milestones) {
       console.log(`Filtered out moment ${moment.id} - milestone filter off`);
       return false;
     }
@@ -852,52 +880,42 @@ export default function Calendar() {
                     <div className="grid grid-cols-1 gap-1.5 text-xs">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <span className="text-sm">🩸</span>
-                          <span>Period</span>
+                          <span className="text-sm">🌸</span>
+                          <span>Show All Cycle Info</span>
                         </div>
                         <Checkbox
-                          id="menstrual"
-                          checked={filters.menstrual}
+                          id="menstrualCycle"
+                          checked={filters.menstrualCycle}
                           onCheckedChange={(checked) => 
-                            setFilters(prev => ({ ...prev, menstrual: !!checked }))
+                            setFilters(prev => ({ ...prev, menstrualCycle: !!checked }))
                           }
                           className="h-3 w-3"
                         />
                       </div>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm">🌱</span>
-                          <span>Follicular</span>
+                      <div className="text-xs text-muted-foreground opacity-75 ml-6 space-y-1">
+                        <div>Includes period, fertile window, ovulation & phases</div>
+                        <div className="grid grid-cols-2 gap-1 mt-2">
+                          <div className="flex items-center gap-1">
+                            <span className="text-sm">🩸</span>
+                            <span>Period</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <span className="text-sm">🌱</span>
+                            <span>Follicular</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <span className="text-sm">💛</span>
+                            <span>Fertile</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <span className="text-sm">🥚</span>
+                            <span>Ovulation</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <span className="text-sm">🌙</span>
+                            <span>Luteal</span>
+                          </div>
                         </div>
-                        <span className="text-xs text-muted-foreground opacity-50">Info only</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm">💛</span>
-                          <span>Fertile Window</span>
-                        </div>
-                        <Checkbox
-                          id="fertile"
-                          checked={filters.fertile}
-                          onCheckedChange={(checked) => 
-                            setFilters(prev => ({ ...prev, fertile: !!checked }))
-                          }
-                          className="h-3 w-3"
-                        />
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm">🥚</span>
-                          <span>Ovulation</span>
-                        </div>
-                        <span className="text-xs text-muted-foreground opacity-50">Auto</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm">🌙</span>
-                          <span>Luteal</span>
-                        </div>
-                        <span className="text-xs text-muted-foreground opacity-50">Info only</span>
                       </div>
                     </div>
                   </div>
@@ -1064,6 +1082,11 @@ export default function Calendar() {
                   if (phaseInfo) {
                     const connection = connections.find(c => c.id === selectedConnectionIds[0]);
                     cyclePhases.push({ ...phaseInfo, connection });
+                    
+                    // Debug ovulation days for Amalina (connection 6)
+                    if (selectedConnectionIds[0] === 6 && phaseInfo.isOvulation) {
+                      console.log(`Found ovulation day for Amalina on ${format(day, 'yyyy-MM-dd')}:`, phaseInfo);
+                    }
                   }
                 } else {
                   // Multiple connections selected - find cycles from selected connections
@@ -1072,6 +1095,11 @@ export default function Calendar() {
                     if (phaseInfo) {
                       const connection = connections.find(c => c.id === connectionId);
                       cyclePhases.push({ ...phaseInfo, connection });
+                      
+                      // Debug ovulation days for Amalina (connection 6)
+                      if (connectionId === 6 && phaseInfo.isOvulation) {
+                        console.log(`Found ovulation day for Amalina on ${format(day, 'yyyy-MM-dd')}:`, phaseInfo);
+                      }
                     }
                   }
                 }
@@ -1128,7 +1156,7 @@ export default function Calendar() {
                     {/* Moment, Milestone, and Cycle indicators */}
                     <div className={`flex flex-wrap ${viewMode === 'daily' ? 'gap-2' : viewMode === 'weekly' ? 'gap-1' : 'gap-0.5'} items-center`}>
                       {/* Show cycle phase indicator first */}
-                      {cycleDisplay && filters.cycle && (
+                      {cycleDisplay && filters.menstrualCycle && (
                         <div className="flex gap-0.5">
                           {cycleDisplay.isMultiple && cycleDisplay.coloredInitials ? (
                             // Show colored initials for multiple connections
