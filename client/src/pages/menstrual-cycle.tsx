@@ -1067,23 +1067,33 @@ export default function MenstrualCyclePage() {
               <div className="mt-4 space-y-3">
                 <div className="grid grid-cols-1 gap-2 text-xs">
                   <div className="flex items-center gap-2">
-                    <span className="text-sm">🩸</span>
+                    <div className="w-4 h-4 bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-700 rounded flex items-center justify-center">
+                      <span className="text-xs">🩸</span>
+                    </div>
                     <span>Menstrual phase</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm">🌱</span>
+                    <div className="w-4 h-4 bg-green-100 dark:bg-green-900/30 border border-green-300 dark:border-green-700 rounded flex items-center justify-center">
+                      <span className="text-xs">🌱</span>
+                    </div>
                     <span>Follicular phase</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm">💛</span>
+                    <div className="w-4 h-4 bg-yellow-100 dark:bg-yellow-900/30 border border-yellow-300 dark:border-yellow-700 rounded flex items-center justify-center">
+                      <span className="text-xs">💛</span>
+                    </div>
                     <span>Fertile window</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm">🥚</span>
+                    <div className="w-4 h-4 bg-pink-100 dark:bg-pink-900/30 border border-pink-300 dark:border-pink-700 rounded flex items-center justify-center">
+                      <span className="text-xs">🥚</span>
+                    </div>
                     <span>Ovulation day</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm">🌙</span>
+                    <div className="w-4 h-4 bg-purple-100 dark:bg-purple-900/30 border border-purple-300 dark:border-purple-700 rounded flex items-center justify-center">
+                      <span className="text-xs">🌙</span>
+                    </div>
                     <span>Luteal phase</span>
                   </div>
                 </div>
