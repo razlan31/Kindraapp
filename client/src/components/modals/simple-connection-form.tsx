@@ -156,6 +156,36 @@ export function SimpleConnectionForm({
             </div>
           </div>
 
+          {/* Birthday */}
+          <div>
+            <label className="block text-sm font-medium mb-2">Birthday</label>
+            <input
+              name="birthday"
+              type="date"
+              className="w-full p-3 border rounded-lg text-base"
+            />
+          </div>
+
+          {/* Zodiac Sign */}
+          <div>
+            <label className="block text-sm font-medium mb-2">Zodiac Sign</label>
+            <select name="zodiacSign" className="w-full p-3 border rounded-lg text-base">
+              <option value="">Select sign or enter birthday above</option>
+              <option value="Aries">Aries</option>
+              <option value="Taurus">Taurus</option>
+              <option value="Gemini">Gemini</option>
+              <option value="Cancer">Cancer</option>
+              <option value="Leo">Leo</option>
+              <option value="Virgo">Virgo</option>
+              <option value="Libra">Libra</option>
+              <option value="Scorpio">Scorpio</option>
+              <option value="Sagittarius">Sagittarius</option>
+              <option value="Capricorn">Capricorn</option>
+              <option value="Aquarius">Aquarius</option>
+              <option value="Pisces">Pisces</option>
+            </select>
+          </div>
+
           {/* Connection Start Date */}
           <div>
             <label className="block text-sm font-medium mb-2">Connection Start Date</label>

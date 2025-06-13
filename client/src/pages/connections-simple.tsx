@@ -17,6 +17,7 @@ import { compressImage } from "@/lib/image-utils";
 import { ImagePreviewModal } from "@/components/ui/image-preview-modal";
 import { ConnectionDetailedModal } from "@/components/modals/connection-detailed-modal";
 import { InlineConnectionModal } from "@/components/modals/inline-connection-modal";
+import { SimpleConnectionForm } from "@/components/modals/simple-connection-form";
 import { calculateZodiacSign } from "@shared/zodiac-utils";
 
 export default function Connections() {
@@ -324,262 +325,32 @@ export default function Connections() {
         </section>
       </main>
 
-      {/* Add Connection Modal */}
-      {showAddModal && (
-        <div className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center p-4">
-          <div 
-            className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto"
-            onScroll={() => console.log('Connections modal is scrolling!')}
-          >
-            <div className="flex items-center justify-between p-4 border-b">
-              <h2 className="font-heading font-semibold text-lg">Add New Connection</h2>
-              <Button variant="ghost" size="icon" onClick={() => setShowAddModal(false)}>
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
-            
-            <form onSubmit={(e) => {
-              e.preventDefault();
-              const formData = new FormData(e.currentTarget);
-              handleAddConnection(formData);
-            }} className="p-4 space-y-6">
-              <div>
-                <label className="block text-sm font-medium mb-2">
-                  Profile Image
-                </label>
-                <div className="mb-4">
-                  <div className="flex items-center justify-center mb-3">
-                    <Avatar className="h-20 w-20 border-2 border-blue-100 dark:border-blue-900">
-                      {uploadedImage ? (
-                        <AvatarImage src={uploadedImage} alt="Profile preview" />
-                      ) : (
-                        <AvatarFallback className="bg-blue-50 dark:bg-blue-950 text-blue-500">
-                          <Camera className="h-6 w-6" />
-                        </AvatarFallback>
-                      )}
-                    </Avatar>
-                  </div>
-                  
-                  <div>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      id="fileUpload"
-                      name="profileImageFile"
-                      onChange={async (e) => {
-                        const file = e.target.files?.[0];
-                        if (file) {
-                          try {
-                            const compressedImage = await compressImage(file);
-                            setUploadedImage(compressedImage);
-                          } catch (error) {
-                            console.error('Error compressing image:', error);
-                            // Fallback to original file if compression fails
-                            const reader = new FileReader();
-                            reader.onload = (event) => {
-                              const result = event.target?.result as string;
-                              setUploadedImage(result);
-                            };
-                            reader.readAsDataURL(file);
-                          }
-                        }
-                      }}
-                    />
-                    <Button 
-                      type="button" 
-                      variant="outline" 
-                      onClick={() => document.getElementById('fileUpload')?.click()}
-                      className="w-full"
-                    >
-                      <Camera className="h-4 w-4 mr-2" />
-                      Upload Photo from Device
-                    </Button>
-                  </div>
-                  
-                  <p className="text-xs text-neutral-500 mt-1">
-                    Choose a photo from your device to personalize this connection
-                  </p>
-                </div>
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium mb-2">
-                  Name <span className="text-red-500">*</span>
-                </label>
-                <Input
-                  name="name"
-                  required
-                  placeholder="Enter name"
-                  className="w-full"
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium mb-2">
-                  Relationship Stage <span className="text-red-500">*</span>
-                </label>
-                <div className="space-y-2">
-                  {[
-                    ...relationshipStages.map(stage => ({ value: stage, label: stage })),
-                    { value: "Custom", label: "Custom Relationship Stage" }
-                  ].map((stage) => (
-                    <label key={stage.value} className="flex items-center space-x-2 cursor-pointer">
-                      <input
-                        type="radio"
-                        name="relationshipStage"
-                        value={stage.value}
-                        checked={
-                          stage.value === "Custom" 
-                            ? isCustomStage 
-                            : !isCustomStage && relationshipStage === stage.value
-                        }
-                        onChange={() => {
-                          console.log("Radio selected:", stage.value);
-                          if (stage.value === "Custom") {
-                            setIsCustomStage(true);
-                            setRelationshipStage("");
-                          } else {
-                            setIsCustomStage(false);
-                            setRelationshipStage(stage.value);
-                            setCustomStageValue("");
-                          }
-                        }}
-                        className="text-primary"
-                      />
-                      <span className="text-sm">{stage.label}</span>
-                    </label>
-                  ))}
-                </div>
-                
-                {isCustomStage && (
-                  <div className="mt-3">
-                    <Input
-                      placeholder="Enter custom relationship stage"
-                      value={customStageValue}
-                      onChange={(e) => {
-                        console.log("Custom dropdown changed to:", e.target.value);
-                        setCustomStageValue(e.target.value);
-                      }}
-                      className="w-full"
-                    />
-                    <input type="hidden" name="relationshipStage" value={customStageValue} />
-                  </div>
-                )}
-                
-                {!isCustomStage && (
-                  <input type="hidden" name="relationshipStage" value={relationshipStage} />
-                )}
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium mb-2">
-                  When did you start this connection?
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                    <Calendar className="h-4 w-4 text-gray-400" />
-                  </div>
-                  <Input
-                    name="startDate"
-                    type="date"
-                    className="pl-10"
-                  />
-                </div>
-                <p className="text-xs text-neutral-500 mt-1">
-                  Track when you first connected with this person
-                </p>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-2">
-                  Birthday
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                    <Calendar className="h-4 w-4 text-gray-400" />
-                  </div>
-                  <Input
-                    name="birthday"
-                    type="date"
-                    className="pl-10"
-                  />
-                </div>
-                <p className="text-xs text-neutral-500 mt-1">
-                  Remember important dates
-                </p>
-              </div>
-              
-              <div className="space-y-3 bg-neutral-50 dark:bg-neutral-900 p-4 rounded-lg">
-                <h3 className="text-sm font-medium">Optional Details</h3>
-                
-                <div className="space-y-2">
-                  <label className="block text-xs text-neutral-500">Zodiac Sign</label>
-                  <select name="zodiacSign" className="w-full p-2 border rounded-md bg-background text-sm">
-                    <option value="">Select sign or enter birthday above</option>
-                    <option value="Aries">Aries</option>
-                    <option value="Taurus">Taurus</option>
-                    <option value="Gemini">Gemini</option>
-                    <option value="Cancer">Cancer</option>
-                    <option value="Leo">Leo</option>
-                    <option value="Virgo">Virgo</option>
-                    <option value="Libra">Libra</option>
-                    <option value="Scorpio">Scorpio</option>
-                    <option value="Sagittarius">Sagittarius</option>
-                    <option value="Capricorn">Capricorn</option>
-                    <option value="Aquarius">Aquarius</option>
-                    <option value="Pisces">Pisces</option>
-                  </select>
-                </div>
-                
-                <div className="space-y-2">
-                  <label className="block text-xs text-neutral-500">Love Languages</label>
-                  <div className="space-y-2">
-                    {["Words of Affirmation", "Quality Time", "Physical Touch", "Acts of Service", "Receiving Gifts"].map((language) => (
-                      <div key={language} className="flex items-center space-x-2">
-                        <input 
-                          type="checkbox" 
-                          name="loveLanguages" 
-                          value={language}
-                          id={`love-${language.replace(/\s+/g, '-').toLowerCase()}`}
-                          className="rounded"
-                        />
-                        <label 
-                          htmlFor={`love-${language.replace(/\s+/g, '-').toLowerCase()}`}
-                          className="text-sm"
-                        >
-                          {language}
-                        </label>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-              
-              <div className="flex items-start space-x-3 space-y-0 rounded-md border p-4">
-                <input 
-                  type="checkbox" 
-                  name="isPrivate" 
-                  id="private"
-                  className="mt-1"
-                />
-                <div className="space-y-1 leading-none">
-                  <label htmlFor="private" className="text-sm font-medium">Keep this connection private</label>
-                  <p className="text-sm text-gray-500">
-                    Private connections are only visible to you
-                  </p>
-                </div>
-              </div>
-              
-              <div className="pt-2">
-                <Button type="submit" className="w-full bg-primary text-white" disabled={isPending}>
-                  {isPending ? "Adding..." : "Add Connection"}
-                </Button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      {/* Add Connection Modal - Using SimpleConnectionForm */}
+      <SimpleConnectionForm
+        isOpen={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        onSubmit={handleAddConnection}
+        uploadedImage={uploadedImage}
+        onImageUpload={async (e) => {
+          const file = e.target.files?.[0];
+          if (file) {
+            try {
+              const compressedImage = await compressImage(file);
+              setUploadedImage(compressedImage);
+            } catch (error) {
+              console.error('Error compressing image:', error);
+              const reader = new FileReader();
+              reader.onload = (event) => {
+                const result = event.target?.result as string;
+                setUploadedImage(result);
+              };
+              reader.readAsDataURL(file);
+            }
+          }
+        }}
+        customStageValue=""
+        setCustomStageValue={() => {}}
+      />
 
       {/* Image Preview Modal */}
       <ImagePreviewModal
