@@ -201,16 +201,23 @@ export default function Activities() {
     let tabMatches = false;
     switch (activeTab) {
       case 'conflicts':
-        tabMatches = moment.tags?.includes('Conflict') || moment.emoji === '😠';
+        tabMatches = (moment.tags?.includes('Conflict') ?? false) || moment.emoji === '😠';
         break;
       case 'intimacy':
-        tabMatches = moment.isIntimate === true || moment.tags?.includes('Sex');
+        tabMatches = moment.isIntimate === true || Boolean(moment.tags?.includes('Sex'));
         break;
       case 'plans':
-        tabMatches = moment.tags?.includes('Plan');
+        tabMatches = Boolean(moment.tags?.includes('Plan'));
+        break;
+      case 'moments':
+        // Only show regular moments - exclude conflicts, intimacy, and plans
+        tabMatches = !((moment.tags?.includes('Conflict') ?? false) || 
+                      moment.emoji === '😠' ||
+                      moment.isIntimate === true || 
+                      (moment.tags?.includes('Sex') ?? false) ||
+                      (moment.tags?.includes('Plan') ?? false));
         break;
       case 'timeline':
-      case 'moments':
       default:
         tabMatches = true;
         break;
