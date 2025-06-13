@@ -338,7 +338,14 @@ export default function Activities() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" className="w-full justify-between">
-                  <span>Select Connections</span>
+                  <span>
+                    {selectedConnections.length === 0 
+                      ? 'All Connections' 
+                      : selectedConnections.length === 1 
+                        ? connections.find(c => c.id === selectedConnections[0])?.name || 'Unknown'
+                        : `${selectedConnections.length} connections selected`
+                    }
+                  </span>
                   <ChevronDown className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
