@@ -116,3 +116,4 @@ The badges system currently has several issues that need attention:
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
+Development approach: Make precise, targeted fixes only. Do not modify working features when fixing unrelated issues. Avoid scope creep - stick strictly to the requested changes.
