@@ -121,13 +121,13 @@ export default function Calendar() {
   // Filter states for different entry types
   const [filters, setFilters] = useState({
     positive: true,
-    sex: true,
     neutral: true,
     negative: true,
-    conflict: true,
-    plan: true,
-    milestone: true,
-    cycle: true,
+    conflicts: true,
+    intimacy: true,
+    plans: true,
+    milestones: true,
+    menstrualCycle: true,
   });
   
   // Connection filter state
@@ -355,19 +355,19 @@ export default function Calendar() {
     const isMilestone = moment.isMilestone || moment.tags?.includes('Milestone') || moment.emoji === '🏆' || (moment as any).isBirthday;
     
     // Type filters
-    if (isConflict && !filters.conflict) {
+    if (isConflict && !filters.conflicts) {
       console.log(`Filtered out moment ${moment.id} - conflict filter off`);
       return false;
     }
-    if (isIntimacy && !filters.sex) {
-      console.log(`Filtered out moment ${moment.id} - sex filter off`);
+    if (isIntimacy && !filters.intimacy) {
+      console.log(`Filtered out moment ${moment.id} - intimacy filter off`);
       return false;
     }
-    if (isPlan && !filters.plan) {
+    if (isPlan && !filters.plans) {
       console.log(`Filtered out moment ${moment.id} - plan filter off`);
       return false;
     }
-    if (isMilestone && !filters.milestone) {
+    if (isMilestone && !filters.milestones) {
       console.log(`Filtered out moment ${moment.id} - milestone filter off`);
       return false;
     }
@@ -852,52 +852,20 @@ export default function Calendar() {
                     <div className="grid grid-cols-1 gap-1.5 text-xs">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <span className="text-sm">🩸</span>
-                          <span>Period</span>
+                          <span className="text-sm">🌸</span>
+                          <span>Show All Cycle Info</span>
                         </div>
                         <Checkbox
-                          id="menstrual"
-                          checked={filters.menstrual}
+                          id="menstrualCycle"
+                          checked={filters.menstrualCycle}
                           onCheckedChange={(checked) => 
-                            setFilters(prev => ({ ...prev, menstrual: !!checked }))
+                            setFilters(prev => ({ ...prev, menstrualCycle: !!checked }))
                           }
                           className="h-3 w-3"
                         />
                       </div>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm">🌱</span>
-                          <span>Follicular</span>
-                        </div>
-                        <span className="text-xs text-muted-foreground opacity-50">Info only</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm">💛</span>
-                          <span>Fertile Window</span>
-                        </div>
-                        <Checkbox
-                          id="fertile"
-                          checked={filters.fertile}
-                          onCheckedChange={(checked) => 
-                            setFilters(prev => ({ ...prev, fertile: !!checked }))
-                          }
-                          className="h-3 w-3"
-                        />
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm">🥚</span>
-                          <span>Ovulation</span>
-                        </div>
-                        <span className="text-xs text-muted-foreground opacity-50">Auto</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm">🌙</span>
-                          <span>Luteal</span>
-                        </div>
-                        <span className="text-xs text-muted-foreground opacity-50">Info only</span>
+                      <div className="text-xs text-muted-foreground opacity-75 ml-6">
+                        Includes period, fertile window, ovulation & phases
                       </div>
                     </div>
                   </div>
