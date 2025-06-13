@@ -63,6 +63,13 @@ export default function MenstrualCyclePage() {
   // Add view mode state
   const [viewMode, setViewMode] = useState<'calendar' | 'list'>('calendar');
 
+  // Filter cycles based on selected connections
+  const filteredCycles = useMemo(() => {
+    if (!cycles) return [];
+    if (selectedConnectionIds.length === 0) return cycles;
+    return cycles.filter(cycle => selectedConnectionIds.includes(cycle.connectionId));
+  }, [cycles, selectedConnectionIds]);
+
   // Set default selection to main focus connection if it's trackable
   useState(() => {
     if (mainFocusConnection && trackableConnections.some(c => c.id === mainFocusConnection.id)) {
@@ -362,7 +369,7 @@ export default function MenstrualCyclePage() {
         {/* Calendar or List View */}
         <section className="px-4">
           {viewMode === 'calendar' ? (
-          <Card>
+            <Card>
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
@@ -460,6 +467,64 @@ export default function MenstrualCyclePage() {
               </div>
             </CardContent>
           </Card>
+          ) : (
+            // List View
+            <Card>
+              <CardHeader>
+                <CardTitle>Menstrual Cycles - List View</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {filteredCycles.map((cycle: any) => {
+                    const connection = trackableConnections.find(c => c.id === cycle.connectionId);
+                    return (
+                      <div key={cycle.id} className="flex items-center justify-between p-4 border rounded-lg">
+                        <div className="flex items-center gap-3">
+                          <Avatar className="h-8 w-8">
+                            <AvatarImage src={connection?.profileImage || undefined} />
+                            <AvatarFallback>{connection?.name?.charAt(0) || '?'}</AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <p className="font-medium">{connection?.name || 'Unknown'}</p>
+                            <p className="text-sm text-muted-foreground">
+                              {format(new Date(cycle.startDate), 'MMM d, yyyy')} - 
+                              {cycle.endDate ? format(new Date(cycle.endDate), 'MMM d, yyyy') : 'Ongoing'}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Button variant="outline" size="sm" onClick={() => {
+                            setEditingCycle(cycle);
+                            setFormData({
+                              connectionId: cycle.connectionId,
+                              startDate: format(new Date(cycle.startDate), 'yyyy-MM-dd'),
+                              periodEndDate: cycle.periodEndDate ? format(new Date(cycle.periodEndDate), 'yyyy-MM-dd') : '',
+                              endDate: cycle.endDate ? format(new Date(cycle.endDate), 'yyyy-MM-dd') : '',
+                              notes: cycle.notes || '',
+                              mood: cycle.mood || '',
+                              symptoms: cycle.symptoms || [],
+                              flowIntensity: cycle.flowIntensity || ''
+                            });
+                            setIsDialogOpen(true);
+                          }}>
+                            Edit
+                          </Button>
+                          <Button variant="outline" size="sm" onClick={() => deleteCycleMutation.mutate(cycle.id)}>
+                            Delete
+                          </Button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                  {filteredCycles.length === 0 && (
+                    <div className="text-center py-8 text-muted-foreground">
+                      No cycles found for the selected connections.
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </section>
 
         {/* Legend */}
