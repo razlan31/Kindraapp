@@ -2231,7 +2231,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         startDate: newCycleStartDate,
         periodEndDate: newPeriodEndDate,
         endDate: undefined,
-        notes: `Auto-generated cycle following ${cycleLength}-day pattern`,
+        notes: `Auto-generated cycle following ${averageCycleLength}-day pattern`,
         mood: null,
         symptoms: null,
         flowIntensity: null
