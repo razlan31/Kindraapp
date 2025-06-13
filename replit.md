@@ -114,6 +114,7 @@ The badges system currently has several issues that need attention:
 - June 13, 2025: Restored specific features from June 1st working version
   - Restored colored alphabets/initials for multiple connections on same day
   - Restored automatic cycle generation when manually setting end dates
+  - Restored "Begin New Cycle" card in list view
   - Removed unwanted automatic cycle creation during page loads
   - Maintained June 1st layout and behavior
 

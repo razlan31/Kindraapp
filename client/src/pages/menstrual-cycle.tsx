@@ -507,6 +507,16 @@ export default function MenstrualCyclePage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
+                  {/* Begin New Cycle Card */}
+                  <div className="border-2 border-dashed border-primary/30 rounded-lg p-6 text-center bg-primary/5 hover:bg-primary/10 transition-colors cursor-pointer"
+                       onClick={() => setIsDialogOpen(true)}>
+                    <div className="flex flex-col items-center gap-2">
+                      <Plus className="h-8 w-8 text-primary" />
+                      <h3 className="font-medium text-primary">Begin New Cycle</h3>
+                      <p className="text-sm text-muted-foreground">Track a new menstrual cycle</p>
+                    </div>
+                  </div>
+                  
                   {filteredCycles.map((cycle: any) => {
                     const connection = trackableConnections.find(c => c.id === cycle.connectionId);
                     return (
