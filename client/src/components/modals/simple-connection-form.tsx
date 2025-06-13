@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { X } from "lucide-react";
+import { X, Camera } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface SimpleConnectionFormProps {
   isOpen: boolean;
@@ -23,20 +24,16 @@ export function SimpleConnectionForm({
   onClose, 
   onSubmit,
   uploadedImage,
-  onImageUpload,
-  customStageValue,
-  setCustomStageValue
+  onImageUpload
 }: SimpleConnectionFormProps) {
-  
-  const [isCustomStage, setIsCustomStage] = useState(false);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     
-    // Add custom stage value to form data if custom is selected
-    if (isCustomStage) {
-      formData.set('customStage', customStageValue);
+    // Handle image upload
+    if (uploadedImage) {
+      formData.set('profileImage', uploadedImage);
     }
     
     onSubmit(formData);
@@ -55,66 +52,112 @@ export function SimpleConnectionForm({
         </div>
         
         <form onSubmit={handleSubmit} className="p-4 space-y-4">
-          <div>
-            <label className="block text-sm font-medium mb-2">
-              Name <span className="text-red-500">*</span>
-            </label>
-            <Input name="name" required placeholder="Enter name" />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium mb-2">
-              Relationship Stage <span className="text-red-500">*</span>
-            </label>
-            <div className="space-y-2">
-              {defaultRelationshipStages.map((stage) => (
-                <label key={stage} className="flex items-center space-x-2 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="relationshipStage"
-                    value={stage}
-                    defaultChecked={stage === "Dating"}
-                    onChange={() => setIsCustomStage(false)}
-                    className="text-blue-600"
-                  />
-                  <span>{stage}</span>
-                </label>
-              ))}
-              <label className="flex items-center space-x-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name="relationshipStage"
-                  value="Custom"
-                  onChange={() => setIsCustomStage(true)}
-                  className="text-blue-600"
-                />
-                <span>Custom Relationship Stage</span>
-              </label>
-            </div>
-            
-            {isCustomStage && (
-              <div className="mt-2">
-                <Input
-                  value={customStageValue}
-                  onChange={(e) => setCustomStageValue(e.target.value)}
-                  placeholder="Enter custom stage (e.g., Mom, Dad, Sister, Colleague)"
-                  className="w-full"
-                />
+          <div className="grid grid-cols-1 gap-4">
+            {/* Image Upload Section - First */}
+            <div className="flex flex-col items-center space-y-3">
+              <div className="relative">
+                <Avatar className="w-20 h-20">
+                  <AvatarImage src={uploadedImage || undefined} />
+                  <AvatarFallback className="text-lg">
+                    <Camera className="h-8 w-8 text-muted-foreground" />
+                  </AvatarFallback>
+                </Avatar>
               </div>
-            )}
-            
-            <p className="text-xs text-gray-500 mt-1">
-              Examples: Mom, Dad, Sister, Colleague, Mentor, etc.
-            </p>
-          </div>
+              <div className="space-y-2">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={onImageUpload}
+                  className="hidden"
+                  id="image-upload"
+                />
+                <label
+                  htmlFor="image-upload"
+                  className="inline-flex items-center justify-center px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm text-sm font-medium bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer"
+                >
+                  <Camera className="h-4 w-4 mr-2" />
+                  Upload Photo from Device
+                </label>
+                {uploadedImage && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      // Clear the uploaded image by calling the parent component's handler
+                      const event = { target: { files: null } } as any;
+                      onImageUpload(event);
+                    }}
+                    className="w-full"
+                  >
+                    <X className="h-4 w-4 mr-2" />
+                    Remove Photo
+                  </Button>
+                )}
+              </div>
+            </div>
 
-          <div className="space-y-3 bg-neutral-50 dark:bg-neutral-900 p-4 rounded-lg">
-            <h3 className="text-sm font-medium">Optional Details</h3>
-            
-            <div className="space-y-2">
-              <label className="block text-xs text-neutral-500">Zodiac Sign</label>
-              <select name="zodiacSign" className="w-full p-2 border rounded-md bg-background text-sm">
-                <option value="">Select sign or enter birthday above</option>
+            {/* Name Field - Second */}
+            <div>
+              <label className="block text-sm font-medium mb-2">Name *</label>
+              <Input
+                name="name"
+                required
+                placeholder="Enter name"
+                className="w-full"
+              />
+            </div>
+
+            {/* Relationship Stage Dropdown - Third */}
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Relationship Stage
+              </label>
+              <select
+                name="relationshipStage"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md bg-background"
+                defaultValue="Dating"
+              >
+                {defaultRelationshipStages.map((stage) => (
+                  <option key={stage} value={stage}>{stage}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Start Date - Fourth */}
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Start Date
+              </label>
+              <Input
+                type="date"
+                name="startDate"
+                className="w-full"
+              />
+            </div>
+
+            {/* Birthday - Fifth */}
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Birthday
+              </label>
+              <Input
+                type="date"
+                name="birthday"
+                className="w-full"
+              />
+            </div>
+
+            {/* Zodiac Sign - Sixth */}
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Zodiac Sign
+              </label>
+              <select
+                name="zodiacSign"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md bg-background"
+              >
+                <option value="">Select zodiac sign</option>
                 <option value="Aries">Aries</option>
                 <option value="Taurus">Taurus</option>
                 <option value="Gemini">Gemini</option>
@@ -130,26 +173,11 @@ export function SimpleConnectionForm({
               </select>
             </div>
 
-            <div className="space-y-2">
-              <label className="block text-xs text-neutral-500">Birthday</label>
-              <input
-                name="birthday"
-                type="date"
-                className="w-full p-2 border rounded-md bg-background text-sm"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label className="block text-xs text-neutral-500">Connection Start Date</label>
-              <input
-                name="startDate"
-                type="date"
-                className="w-full p-2 border rounded-md bg-background text-sm"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label className="block text-xs text-neutral-500">Love Languages</label>
+            {/* Love Languages - Seventh */}
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Love Languages
+              </label>
               <div className="space-y-2">
                 <label className="flex items-center">
                   <input type="checkbox" name="loveLanguage" value="Words of Affirmation" className="mr-2" />
@@ -172,6 +200,19 @@ export function SimpleConnectionForm({
                   <span className="text-sm">Receiving Gifts</span>
                 </label>
               </div>
+            </div>
+
+            {/* Privacy Setting - Eighth */}
+            <div className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                name="isPrivate"
+                id="isPrivate"
+                className="rounded"
+              />
+              <label htmlFor="isPrivate" className="text-sm">
+                Keep this connection private
+              </label>
             </div>
           </div>
 
