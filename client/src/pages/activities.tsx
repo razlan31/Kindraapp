@@ -416,6 +416,17 @@ export default function Activities() {
           </Card>
         </div>
 
+        {/* Add Activities Button */}
+        <div className="px-3 mb-4">
+          <Button
+            onClick={() => setMomentModalOpen(true)}
+            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Add Activities
+          </Button>
+        </div>
+
         {/* Search Bar */}
         <div className="px-3 mb-4">
           <div className="relative">

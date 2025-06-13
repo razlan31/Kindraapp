@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Camera, X } from 'lucide-react';
@@ -33,9 +34,20 @@ export function SimpleConnectionForm({
   uploadedImage, 
   onImageUpload 
 }: SimpleConnectionFormProps) {
+  const [isCustomStage, setIsCustomStage] = useState(false);
+  const [customStageValue, setCustomStageValue] = useState("");
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
+    
+    // Handle custom relationship stage
+    const relationshipStage = formData.get('relationshipStage') as string;
+    const customStage = formData.get('customStage') as string;
+    
+    if (relationshipStage === 'Custom' && customStage.trim()) {
+      formData.set('relationshipStage', customStage.trim());
+    }
     
     // Handle love languages as array
     const loveLanguages = formData.getAll('loveLanguage');
@@ -122,12 +134,33 @@ export function SimpleConnectionForm({
                 name="relationshipStage"
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md bg-background"
                 defaultValue="Dating"
+                onChange={(e) => setIsCustomStage(e.target.value === 'Custom')}
               >
                 {defaultRelationshipStages.map((stage) => (
                   <option key={stage} value={stage}>{stage}</option>
                 ))}
+                <option value="Custom">Custom Relationship Stage</option>
               </select>
             </div>
+
+            {/* Custom Stage Input */}
+            {isCustomStage && (
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Custom Stage
+                </label>
+                <Input
+                  name="customStage"
+                  value={customStageValue}
+                  onChange={(e) => setCustomStageValue(e.target.value)}
+                  placeholder="Enter custom stage (e.g., Mom, Dad, Sister, Colleague)"
+                  className="w-full"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  Examples: Mom, Dad, Sister, Colleague, Mentor, etc.
+                </p>
+              </div>
+            )}
 
             {/* Start Date */}
             <div>
