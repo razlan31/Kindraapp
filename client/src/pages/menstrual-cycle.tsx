@@ -57,8 +57,11 @@ export default function MenstrualCyclePage() {
     enabled: !!user,
   });
 
-  // Filter connections to only show trackable ones (Self relationship stage)
-  const trackableConnections = connections.filter(c => c.relationshipStage === 'Self');
+  // Show all connections, not just "Self" - users want to track cycles for all their connections
+  const trackableConnections = connections;
+  
+  // Add view mode state
+  const [viewMode, setViewMode] = useState<'calendar' | 'list'>('calendar');
 
   // Set default selection to main focus connection if it's trackable
   useState(() => {
@@ -142,14 +145,14 @@ export default function MenstrualCyclePage() {
         };
       case 'ovulation':
         return {
-          color: 'bg-yellow-100 dark:bg-yellow-900/30 border-yellow-300 dark:border-yellow-700',
+          color: 'bg-blue-200 dark:bg-blue-800/40 border-blue-400 dark:border-blue-600',
           indicator: '🥚',
           title: `Ovulation Day ${phaseInfo.day}`,
           description: 'Peak fertility'
         };
       case 'fertile':
         return {
-          color: 'bg-green-100 dark:bg-green-900/30 border-green-300 dark:border-green-700',
+          color: 'bg-blue-100 dark:bg-blue-900/30 border-blue-300 dark:border-blue-700',
           indicator: '🌱',
           title: `Fertile Window Day ${phaseInfo.day}`,
           description: 'High fertility'
@@ -274,10 +277,30 @@ export default function MenstrualCyclePage() {
               <h1 className="text-2xl font-bold tracking-tight">Menstrual Cycle Tracker</h1>
               <p className="text-muted-foreground">Track cycles, phases, and patterns</p>
             </div>
-            <Button onClick={() => setIsDialogOpen(true)} size="sm">
-              <Plus className="h-4 w-4 mr-2" />
-              Add Cycle
-            </Button>
+            <div className="flex items-center gap-2">
+              <div className="flex items-center bg-muted rounded-lg p-1">
+                <Button
+                  variant={viewMode === 'calendar' ? 'default' : 'ghost'}
+                  size="sm"
+                  onClick={() => setViewMode('calendar')}
+                  className="h-8 px-3"
+                >
+                  Calendar
+                </Button>
+                <Button
+                  variant={viewMode === 'list' ? 'default' : 'ghost'}
+                  size="sm"
+                  onClick={() => setViewMode('list')}
+                  className="h-8 px-3"
+                >
+                  List
+                </Button>
+              </div>
+              <Button onClick={() => setIsDialogOpen(true)} size="sm">
+                <Plus className="h-4 w-4 mr-2" />
+                Add Cycle
+              </Button>
+            </div>
           </div>
 
           {/* Connection Filter */}
