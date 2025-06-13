@@ -157,7 +157,7 @@ export default function Connections() {
     },
   });
 
-  const handleAddConnection = (formData: FormData) => {
+  const handleAddConnection = async (formData: FormData) => {
     // Collect multiple love languages
     const loveLanguages = formData.getAll('loveLanguages') as string[];
     
@@ -185,7 +185,12 @@ export default function Connections() {
     };
 
     console.log("Final form data being sent:", data);
-    createConnection(data);
+    await new Promise<void>((resolve, reject) => {
+      createConnection(data, {
+        onSuccess: () => resolve(),
+        onError: (error) => reject(error)
+      });
+    });
   };
 
   return (
@@ -348,8 +353,7 @@ export default function Connections() {
             }
           }
         }}
-        customStageValue=""
-        setCustomStageValue={() => {}}
+
       />
 
       {/* Image Preview Modal */}
