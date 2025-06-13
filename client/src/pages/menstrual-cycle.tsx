@@ -367,18 +367,6 @@ export default function MenstrualCyclePage() {
 
             
             // Check if the day falls within this predicted period (only show during period days, not full cycle)
-            // Debug the comparison for June 9-13
-            if (format(checkDay, 'MM-dd').startsWith('06-') && ['06-09', '06-10', '06-11', '06-12', '06-13'].includes(format(checkDay, 'MM-dd'))) {
-              console.log(`Comparison test for ${format(checkDay, 'MM-dd')}:`, {
-                checkDate,
-                predictedStartDate,
-                predictedPeriodEndDate,
-                test1: checkDate >= predictedStartDate,
-                test2: checkDate <= predictedPeriodEndDate,
-                result: checkDate >= predictedStartDate && checkDate <= predictedPeriodEndDate
-              });
-            }
-            
             if (checkDate >= predictedStartDate && checkDate <= predictedPeriodEndDate) {
               // Create a virtual cycle for prediction
               const virtualCycle = {
