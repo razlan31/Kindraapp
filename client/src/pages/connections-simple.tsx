@@ -516,7 +516,7 @@ export default function Connections() {
                 <div className="space-y-2">
                   <label className="block text-xs text-neutral-500">Zodiac Sign</label>
                   <select name="zodiacSign" className="w-full p-2 border rounded-md bg-background text-sm">
-                    <option value="">Select sign</option>
+                    <option value="">Select sign or enter birthday above</option>
                     <option value="Aries">Aries</option>
                     <option value="Taurus">Taurus</option>
                     <option value="Gemini">Gemini</option>
