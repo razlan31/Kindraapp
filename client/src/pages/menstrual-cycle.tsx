@@ -377,6 +377,26 @@ export default function MenstrualCyclePage() {
                 isPrediction: true
               } as any;
               predictedCycles.push(virtualCycle);
+              
+              // Debug for June 9-13 range
+              if (format(checkDay, 'MM-dd').startsWith('06-')) {
+                console.log(`June prediction for ${format(checkDay, 'MM-dd')}:`, {
+                  predictedStart: predictedStart.toISOString(),
+                  predictedPeriodEnd: predictedPeriodEnd.toISOString(),
+                  checkDay: checkDay.toISOString(),
+                  match: true,
+                  cycleId: -i
+                });
+              }
+            } else if (format(checkDay, 'MM-dd').startsWith('06-')) {
+              console.log(`June NO prediction for ${format(checkDay, 'MM-dd')}:`, {
+                predictedStart: predictedStart.toISOString(),
+                predictedPeriodEnd: predictedPeriodEnd.toISOString(),
+                checkDayStart: checkDayStart.toISOString(),
+                predictedStartDay: predictedStartDay.toISOString(),
+                predictedPeriodEndDay: predictedPeriodEndDay.toISOString(),
+                inRange: checkDayStart >= predictedStartDay && checkDayStart <= predictedPeriodEndDay
+              });
             }
             
             // Update baseDate for next iteration
