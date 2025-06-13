@@ -426,16 +426,47 @@ export default function Activities() {
           </Card>
         </div>
 
-        {/* Add Activities Button */}
-        <div className="px-3 mb-4">
-          <Button
-            onClick={() => openMomentModal('moment')}
-            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            Add Activities
-          </Button>
-        </div>
+        {/* Add Activity Button - Specific to each tab, hidden for timeline */}
+        {activeTab !== 'timeline' && (
+          <div className="px-3 mb-4">
+            {activeTab === 'moments' && (
+              <Button
+                onClick={() => openMomentModal('moment')}
+                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Add Moment
+              </Button>
+            )}
+            {activeTab === 'conflicts' && (
+              <Button
+                onClick={() => openMomentModal('conflict')}
+                className="w-full bg-destructive hover:bg-destructive/90 text-destructive-foreground"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Add Conflict
+              </Button>
+            )}
+            {activeTab === 'intimacy' && (
+              <Button
+                onClick={() => openMomentModal('intimacy')}
+                className="w-full bg-pink-600 hover:bg-pink-700 text-white"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Add Intimacy
+              </Button>
+            )}
+            {activeTab === 'plans' && (
+              <Button
+                onClick={() => openPlanModal()}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Add Plan
+              </Button>
+            )}
+          </div>
+        )}
 
         {/* Search Bar */}
         <div className="px-3 mb-4">
