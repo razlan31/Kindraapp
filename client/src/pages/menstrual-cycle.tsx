@@ -263,17 +263,19 @@ export default function MenstrualCyclePage() {
     // If no cycles exist at all, return empty array
     if (!cycles || cycles.length === 0) return [];
     
-    const actualCycles = selectedPersonIds.length === 0 ? cycles : cycles.filter(cycle => {
+    // First, filter cycles to only selected persons
+    const relevantCycles = selectedPersonIds.length === 0 ? cycles : cycles.filter(cycle => {
       // Check if this cycle belongs to a selected person
-      const belongsToSelectedPerson = selectedPersonIds.some(selectedId => {
+      return selectedPersonIds.some(selectedId => {
         if (selectedId === 0) {
           return cycle.connectionId === null; // User's cycles
         } else {
           return cycle.connectionId === selectedId; // Connection's cycles
         }
       });
-      
-      if (!belongsToSelectedPerson) return false;
+    });
+    
+    const actualCycles = relevantCycles.filter(cycle => {
       
       // Check if the day falls within this cycle
       const start = startOfDay(new Date(cycle.startDate));
@@ -304,8 +306,17 @@ export default function MenstrualCyclePage() {
       const predictedCycles = [];
       
       // For each selected person, generate predicted cycles
-      for (const personId of selectedPersonIds) {
-        const personCycles = cycles.filter(cycle => {
+      // Only process selected persons, skip if no selection
+      const personsToProcess = selectedPersonIds.length === 0 ? [] : selectedPersonIds;
+      
+      const personNames = personsToProcess.map(id => {
+        const person = trackablePersons.find(p => p.id === id);
+        return { id, name: person?.name || 'Unknown' };
+      });
+      console.log('Debug personsToProcess:', { selectedPersonIds, personsToProcess, personNames, checkDay: checkDay.toISOString() });
+      
+      for (const personId of personsToProcess) {
+        const personCycles = relevantCycles.filter(cycle => {
           if (personId === 0) {
             return cycle.connectionId === null;
           } else {
@@ -334,6 +345,8 @@ export default function MenstrualCyclePage() {
           
           console.log('Prediction debug:', {
             personId,
+            selectedPersonIds,
+            shouldProcess: selectedPersonIds.includes(personId),
             lastCycleStart: lastCycleStart.toISOString(),
             lastCycleEnd: lastCycle.endDate,
             baseDate: baseDate.toISOString(),
