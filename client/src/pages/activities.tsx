@@ -197,6 +197,31 @@ export default function Activities() {
       return false;
     }
 
+    // First apply tab filtering
+    let tabMatches = false;
+    switch (activeTab) {
+      case 'conflicts':
+        tabMatches = moment.tags?.includes('Conflict') || moment.emoji === '😠';
+        break;
+      case 'intimacy':
+        tabMatches = moment.isIntimate === true || moment.tags?.includes('Sex');
+        break;
+      case 'plans':
+        tabMatches = moment.tags?.includes('Plan');
+        break;
+      case 'timeline':
+      case 'moments':
+      default:
+        tabMatches = true;
+        break;
+    }
+
+    // If moment doesn't match the tab, exclude it
+    if (!tabMatches) {
+      return false;
+    }
+
+    // Then apply search filtering within the tab results
     if (searchTerm) {
       const searchLower = searchTerm.toLowerCase();
       return (
@@ -205,19 +230,7 @@ export default function Activities() {
       );
     }
 
-    // Tab filtering
-    switch (activeTab) {
-      case 'conflicts':
-        return moment.tags?.includes('Conflict') || moment.emoji === '😠';
-      case 'intimacy':
-        return moment.isIntimate === true || moment.tags?.includes('Sex');
-      case 'plans':
-        return moment.tags?.includes('Plan');
-      case 'timeline':
-      case 'moments':
-      default:
-        return true;
-    }
+    return true;
   });
 
   // Group moments by date
