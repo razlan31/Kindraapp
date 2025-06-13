@@ -30,6 +30,20 @@ function formatDateForDB(date: Date | string | null): string {
   return date.toISOString();
 }
 
+// Helper function to convert string dates to Date objects for Drizzle
+function convertDatesForDB(data: any): any {
+  const result = { ...data };
+  const dateFields = ['startDate', 'birthday', 'createdAt', 'updatedAt', 'resolvedAt'];
+  
+  dateFields.forEach(field => {
+    if (result[field] && typeof result[field] === 'string') {
+      result[field] = new Date(result[field]);
+    }
+  });
+  
+  return result;
+}
+
 // Helper function to safely handle error types
 function getErrorMessage(error: unknown): string {
   if (error instanceof Error) return error.message;
@@ -715,13 +729,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const newStage = req.body.relationshipStage;
       
       // Convert string dates to Date objects for database
-      const updateData = { ...req.body };
-      // Handle date fields properly
-      ['startDate', 'birthday', 'createdAt'].forEach(field => {
-        if (updateData[field] && typeof updateData[field] === 'string') {
-          updateData[field] = new Date(updateData[field]);
-        }
-      });
+      const updateData = convertDatesForDB(req.body);
       
       // Ensure userId is converted to string to match schema
       if (updateData.userId) {
@@ -1067,13 +1075,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log("🚀 ROUTES - momentData.createdAt:", momentData.createdAt);
       console.log("🚀 ROUTES - Using selected date:", momentData.createdAt);
       
-      // Convert string dates to Date objects for database
-      const momentDataWithDate = {
+      // Convert string dates to Date objects for database using helper
+      const momentDataWithDate = convertDatesForDB({
         ...momentData,
-        createdAt: momentData.createdAt ? new Date(momentData.createdAt) : new Date(),
-        resolvedAt: momentData.resolvedAt ? new Date(momentData.resolvedAt) : null,
         userId: userId.toString() // Convert userId to string for schema consistency
-      };
+      });
       
       // Skip connection validation for performance - rely on foreign key constraints
       
