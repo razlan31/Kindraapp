@@ -385,6 +385,35 @@ export default function Activities() {
                     </div>
                     <span className="text-primary">Add Connection</span>
                   </div>
+                  
+                  {/* Clear and Done buttons */}
+                  <div className="border-t border-border mt-2 pt-2 flex gap-2 px-2 pb-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="flex-1"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setSelectedConnections([]);
+                        setHasUserSelectedConnection(true);
+                      }}
+                    >
+                      Clear
+                    </Button>
+                    <Button
+                      size="sm"
+                      className="flex-1"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        // Close dropdown by removing focus
+                        (e.target as HTMLElement).blur();
+                      }}
+                    >
+                      Done
+                    </Button>
+                  </div>
                 </div>
               </DropdownMenuContent>
             </DropdownMenu>
