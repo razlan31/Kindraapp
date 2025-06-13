@@ -1067,23 +1067,23 @@ export default function MenstrualCyclePage() {
               <div className="mt-4 space-y-3">
                 <div className="grid grid-cols-1 gap-2 text-xs">
                   <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded-full bg-red-500 flex items-center justify-center text-white text-xs font-bold">A</div>
+                    <span className="text-sm">🩸</span>
                     <span>Menstrual phase</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded-full bg-green-500 flex items-center justify-center text-white text-xs font-bold">A</div>
+                    <span className="text-sm">🌱</span>
                     <span>Follicular phase</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded-full bg-yellow-500 flex items-center justify-center text-white text-xs font-bold">A</div>
+                    <span className="text-sm">💛</span>
                     <span>Fertile window</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded-full bg-pink-500 flex items-center justify-center text-white text-xs font-bold">A</div>
+                    <span className="text-sm">🥚</span>
                     <span>Ovulation day</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded-full bg-purple-500 flex items-center justify-center text-white text-xs font-bold">A</div>
+                    <span className="text-sm">🌙</span>
                     <span>Luteal phase</span>
                   </div>
                 </div>
