@@ -156,29 +156,39 @@ export default function Activities() {
     }
   }, [mainFocusConnection, focusLoading, hasUserSelectedConnection]);
 
-  // Event handlers
+  // Event handlers - updated to match MomentCard interface
   const handleAddReflection = (momentId: number) => {
     setSelectedMomentForReflection(momentId);
     setReflectionModalOpen(true);
   };
 
-  const handleViewEntryDetail = (moment: Moment) => {
-    setSelectedMomentForDetail(moment);
-    setEntryDetailModalOpen(true);
+  const handleViewEntryDetail = (momentId: number) => {
+    const moment = moments.find(m => m.id === momentId);
+    if (moment) {
+      setSelectedMomentForDetail(moment);
+      setEntryDetailModalOpen(true);
+    }
   };
 
-  const handleResolveConflict = (moment: Moment) => {
-    setSelectedMomentForResolution(moment);
-    setConflictModalOpen(true);
+  const handleResolveConflict = (momentId: number) => {
+    const moment = moments.find(m => m.id === momentId);
+    if (moment) {
+      setSelectedMomentForResolution(moment);
+      setConflictModalOpen(true);
+    }
   };
 
-  const handleViewConnectionDetail = (connection: Connection, event?: React.MouseEvent) => {
+  const handleViewConnectionDetail = (connection: { id: number; name: string; profileImage?: string }, event?: React.MouseEvent) => {
     if (event) {
       event.preventDefault();
       event.stopPropagation();
     }
-    setSelectedConnectionForModal(connection);
-    setConnectionDetailModalOpen(true);
+    // Find the full connection object
+    const fullConnection = connections.find(c => c.id === connection.id);
+    if (fullConnection) {
+      setSelectedConnectionForModal(fullConnection);
+      setConnectionDetailModalOpen(true);
+    }
   };
 
   // Filter moments based on selected connections and active tab
