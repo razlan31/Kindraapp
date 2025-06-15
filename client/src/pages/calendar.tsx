@@ -193,24 +193,7 @@ export default function Calendar() {
     refetchOnWindowFocus: true,
   });
 
-  // Identify cycles affecting May 15th
-  const may15 = new Date('2025-05-15');
-  const cyclesAffectingMay15 = cycles.filter(cycle => {
-    const cycleStart = new Date(cycle.startDate);
-    const cycleEnd = cycle.endDate ? new Date(cycle.endDate) : new Date();
-    return may15 >= cycleStart && may15 <= cycleEnd;
-  });
-  
-  console.log('🔍 ROOT CAUSE ANALYSIS - Cycles affecting May 15th:', cyclesAffectingMay15.map(c => ({
-    id: c.id,
-    connectionId: c.connectionId,
-    startDate: c.startDate,
-    periodEndDate: c.periodEndDate,
-    endDate: c.endDate,
-    notes: c.notes
-  })));
-  
-  // Verify no cycles exist for deleted connections and clear if found
+  // Verify no cycles exist for deleted connections (Amalina - connection 6)
   const amalinaCycles = cycles.filter(cycle => cycle.connectionId === 6);
   
   if (amalinaCycles.length > 0) {
@@ -1147,14 +1130,7 @@ export default function Calendar() {
                   const connectionId = selectedConnectionIds[0];
                   const connectionCycles = cycles.filter(c => c.connectionId === connectionId);
                   
-                  // Debug logging for Amalina (connection 6) - focus on May 15th specifically
-                  if (connectionId === 6 && format(day, 'yyyy-MM-dd') === '2025-05-15') {
-                    console.log(`🔴 MAY 15 DEBUG: Amalina selected - cycles found: ${connectionCycles.length}`);
-                    console.log(`🔴 MAY 15 DEBUG: All cycles:`, cycles.map(c => ({ id: c.id, connectionId: c.connectionId, start: format(new Date(c.startDate), 'yyyy-MM-dd') })));
-                    console.log(`🔴 MAY 15 DEBUG: Filtered cycles for connection 6:`, connectionCycles.map(c => ({ id: c.id, start: format(new Date(c.startDate), 'yyyy-MM-dd') })));
-                    console.log(`🔴 MAY 15 DEBUG: selectedConnectionIds:`, selectedConnectionIds);
-                    console.log(`🔴 MAY 15 DEBUG: Should this day have cycle highlighting?`, connectionCycles.length > 0);
-                  }
+
                   
                   // Only proceed if this specific connection has cycles
                   if (connectionCycles.length > 0) {
