@@ -486,6 +486,34 @@ export default function MenstrualCyclePage() {
     }
   });
 
+  // Delete cycle mutation
+  const deleteCycleMutation = useMutation({
+    mutationFn: (id: number) => apiRequest('DELETE', `/api/menstrual-cycles/${id}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/menstrual-cycles'] });
+      setIsDialogOpen(false);
+      setEditingCycle(null);
+      resetForm();
+      toast({
+        title: "Cycle Deleted",
+        description: "The menstrual cycle has been deleted successfully.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to delete cycle. Please try again.",
+        variant: "destructive",
+      });
+    }
+  });
+
+  const handleDeleteCycle = () => {
+    if (editingCycle && confirm('Are you sure you want to delete this cycle? This action cannot be undone.')) {
+      deleteCycleMutation.mutate(editingCycle.id);
+    }
+  };
+
   // Create connection mutation
   const createConnectionMutation = useMutation({
     mutationFn: async (formData: FormData) => {
@@ -1379,6 +1407,17 @@ export default function MenstrualCyclePage() {
                 >
                   Cancel
                 </Button>
+                {editingCycle && (
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    onClick={handleDeleteCycle}
+                    disabled={deleteCycleMutation.isPending}
+                    className="flex-1"
+                  >
+                    {deleteCycleMutation.isPending ? 'Deleting...' : 'Delete'}
+                  </Button>
+                )}
                 <Button
                   type="submit"
                   disabled={createCycleMutation.isPending || updateCycleMutation.isPending}
