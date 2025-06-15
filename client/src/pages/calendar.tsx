@@ -716,15 +716,10 @@ export default function Calendar() {
                     key={connection.id}
                     checked={selectedConnectionIds.includes(connection.id)}
                     onCheckedChange={(checked) => {
-                      console.log(`Connection selection changed: ${connection.name} (${connection.id}) - checked: ${checked}`);
                       if (checked) {
-                        const newIds = [...selectedConnectionIds, connection.id];
-                        console.log('New selectedConnectionIds:', newIds);
-                        setSelectedConnectionIds(newIds);
+                        setSelectedConnectionIds([...selectedConnectionIds, connection.id]);
                       } else {
-                        const newIds = selectedConnectionIds.filter(id => id !== connection.id);
-                        console.log('New selectedConnectionIds:', newIds);
-                        setSelectedConnectionIds(newIds);
+                        setSelectedConnectionIds(selectedConnectionIds.filter(id => id !== connection.id));
                       }
                       setHasUserSelectedConnection(true);
                     }}
