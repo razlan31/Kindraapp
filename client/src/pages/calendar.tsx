@@ -1140,7 +1140,28 @@ export default function Calendar() {
                 const filteredCycles = cycles.filter(cycle => allowedConnectionIds.has(cycle.connectionId));
 
                 if (format(day, 'yyyy-MM-dd') === '2025-05-15') {
-                  console.log('May 15th Connections to Check:', connectionsToCheck);
+                  console.log('May 15th DEBUG:', {
+                    connectionsToCheck,
+                    selectedConnectionIds,
+                    hasUserSelectedConnection,
+                    mainFocusConnection: mainFocusConnection?.name,
+                    filteredCycles: filteredCycles.length,
+                    allCycles: cycles.length
+                  });
+                }
+                
+                // DEBUG: Show current calendar view and issue location
+                const currentDate = format(day, 'yyyy-MM-dd');
+                if (currentDate === '2025-06-15') {
+                  console.log('CALENDAR DEBUG: You are currently viewing June 2025');
+                  console.log('TO REPRODUCE ISSUE: Navigate to May 2025 and look at May 15th');
+                  console.log('EXPECTED: May 15th should NOT have red highlighting when only Amalina is selected');
+                  console.log('CURRENT STATE: selectedConnectionIds =', selectedConnectionIds, 'focus =', mainFocusConnection?.name);
+                }
+                
+                // CRITICAL DEBUG: Track when we process any May 2025 dates
+                if (currentDate.startsWith('2025-05')) {
+                  console.log('Processing May 2025 date:', currentDate, 'connectionsToCheck:', connectionsToCheck);
                 }
                 
                 // Process each connection that should be checked
