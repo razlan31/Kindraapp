@@ -716,10 +716,15 @@ export default function Calendar() {
                     key={connection.id}
                     checked={selectedConnectionIds.includes(connection.id)}
                     onCheckedChange={(checked) => {
+                      console.log(`Connection selection changed: ${connection.name} (${connection.id}) - checked: ${checked}`);
                       if (checked) {
-                        setSelectedConnectionIds([...selectedConnectionIds, connection.id]);
+                        const newIds = [...selectedConnectionIds, connection.id];
+                        console.log('New selectedConnectionIds:', newIds);
+                        setSelectedConnectionIds(newIds);
                       } else {
-                        setSelectedConnectionIds(selectedConnectionIds.filter(id => id !== connection.id));
+                        const newIds = selectedConnectionIds.filter(id => id !== connection.id);
+                        console.log('New selectedConnectionIds:', newIds);
+                        setSelectedConnectionIds(newIds);
                       }
                       setHasUserSelectedConnection(true);
                     }}
@@ -1081,14 +1086,18 @@ export default function Calendar() {
                 // Determine which connections to check for cycles based on selection
                 let connectionsToCheck = [];
                 
-                if (selectedConnectionIds.length === 0) {
-                  // When no specific connections selected, show cycles from all connections that have cycles
+                // CRITICAL FIX: Always prioritize selectedConnectionIds if it exists
+                // Only show all cycles when truly no selection has been made
+                if (selectedConnectionIds.length === 0 && !hasUserSelectedConnection && !mainFocusConnection) {
+                  // Only when no selection at all, show cycles from all connections
                   connectionsToCheck = [...new Set(cycles.map(c => c.connectionId))];
-                } else {
-                  // CRITICAL FIX: Only check selected connections that actually have cycles
-                  // This prevents showing cycles from unselected connections
+                } else if (selectedConnectionIds.length > 0) {
+                  // When connections are selected, only show cycles from those connections
                   const connectionsWithCycles = new Set(cycles.map(c => c.connectionId));
                   connectionsToCheck = selectedConnectionIds.filter(id => connectionsWithCycles.has(id));
+                } else {
+                  // When focus connection exists but selectedConnectionIds is empty, don't show any cycles
+                  connectionsToCheck = [];
                 }
                 
                 // Process each connection that should be checked
