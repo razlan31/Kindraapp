@@ -190,16 +190,22 @@ export default function Calendar() {
     staleTime: 0,
   });
 
-  // Debug cycle data for Amalina
-  console.log('All cycles:', cycles);
+  // Verify no cycles exist for deleted connections
   const amalinaCycles = cycles.filter(cycle => cycle.connectionId === 6);
-  console.log('Amalina cycles (connection 6):', amalinaCycles);
+  if (amalinaCycles.length > 0) {
+    console.warn('Found unexpected cycles for connection 6 (should be deleted):', amalinaCycles);
+  }
 
   // Menstrual cycle calculation functions
   const getCyclePhaseForDay = (day: Date, connectionId: number | null) => {
     if (!connectionId) return null;
     
     const relevantCycles = cycles.filter(cycle => cycle.connectionId === connectionId);
+    
+    // If no cycles exist for this connection, return null
+    if (relevantCycles.length === 0) {
+      return null;
+    }
     
     // Find the cycle that contains this day
     for (const cycle of relevantCycles) {
@@ -234,10 +240,7 @@ export default function Calendar() {
         // But for very short cycles, we may not have a traditional ovulation pattern
         const ovulationDay = cycleLength > 14 ? 14 : Math.round(cycleLength * 0.6);
         
-        // Debug logging for Amalina's cycles
-        if (connectionId === 6) {
-          console.log(`Amalina cycle debug - Day: ${format(day, 'yyyy-MM-dd')}, dayOfCycle: ${dayOfCycle}, cycleLength: ${cycleLength}, ovulationDay: ${ovulationDay}, periodDays: ${periodDays}`);
-        }
+
         
         if (dayOfCycle <= periodDays) {
           return { phase: 'menstrual', day: dayOfCycle, cycle };

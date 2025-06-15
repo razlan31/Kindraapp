@@ -37,10 +37,12 @@ export const cycleCache = {
     // Clear the entire query cache to ensure no stale data remains
     queryClient.clear();
     
-    // Fetch fresh data immediately
-    await queryClient.prefetchQuery({ queryKey: ['/api/menstrual-cycles'] });
+    // Force a hard refresh of the page to eliminate any remaining frontend state
+    setTimeout(() => {
+      window.location.reload();
+    }, 100);
     
-    console.log('✅ Cache cleared and fresh data fetched');
+    console.log('✅ Cache cleared and page refresh initiated');
   },
 
   /**
