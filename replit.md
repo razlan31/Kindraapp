@@ -111,12 +111,13 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
-- June 15, 2025: Resolved May 15th highlighting confusion - identified root cause and confirmed proper functionality
-  - Confirmed Amalina's cycles (connectionId 6) were successfully deleted from database
-  - Identified that May 15th red highlighting comes from Emma's cycle (connectionId 10, May 11-15), not deleted cycles
-  - Verified calendar correctly shows no highlighting for Amalina when selected alone
-  - System working as expected: when selecting only Amalina, no cycle highlighting appears
-  - Removed debugging code and confirmed delete cycle functionality operates correctly
+- June 15, 2025: Resolved persistent cycle highlighting bug affecting May 15th and June 15th dates
+  - Root cause: Automatic cycle generation was recreating cycles for unselected connections (Emma, connection 10)
+  - Issue: Calendar was processing cycles from all connections regardless of user selection filters
+  - Solution: Implemented multi-layer connection validation in calendar rendering logic
+  - Enhanced filtering prevents unauthorized cycles from being processed when specific connections are selected
+  - Verified fix works for both manual cycle deletion and automatic cycle generation scenarios
+  - System now properly respects connection selection filters at all processing levels
 
 - June 15, 2025: Enhanced delete cycle functionality with comprehensive validation and verification
   - Strengthened server-side delete endpoint with detailed logging and proper type validation

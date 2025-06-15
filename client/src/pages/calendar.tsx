@@ -1137,15 +1137,31 @@ export default function Calendar() {
                 
                 // Process each connection that should be checked
                 for (const connectionId of connectionsToCheck) {
+                  // ENHANCED FILTERING: Multi-layer connection validation
+                  const isConnectionAllowed = (() => {
+                    if (selectedConnectionIds.length > 0) {
+                      // User has explicitly selected connections - only allow those
+                      return selectedConnectionIds.includes(connectionId);
+                    } else if (hasUserSelectedConnection) {
+                      // User made a selection but nothing is currently selected - show nothing
+                      return false;
+                    } else if (mainFocusConnection) {
+                      // Only show focus connection
+                      return connectionId === mainFocusConnection.id;
+                    } else {
+                      // Show all connections
+                      return true;
+                    }
+                  })();
+                  
+                  if (!isConnectionAllowed) {
+                    continue; // Skip this connection entirely
+                  }
+                  
                   const connectionCycles = filteredCycles.filter(c => c.connectionId === connectionId);
                   
                   // Skip if this connection has no cycles
                   if (connectionCycles.length === 0) continue;
-                  
-                  // CRITICAL FIX: Additional check to ensure we only process selected connections
-                  if (selectedConnectionIds.length > 0 && !selectedConnectionIds.includes(connectionId)) {
-                    continue; // Skip unselected connections completely
-                  }
                   
                   // Check if this connection has a cycle phase for this day
                   const phaseInfo = getCyclePhaseForDay(day, connectionId);
@@ -1160,26 +1176,12 @@ export default function Calendar() {
                   }
                 }
                 
-                // DEBUG: Track June 15th cycle display creation
-                if (format(day, 'yyyy-MM-dd') === '2025-06-15') {
-                  console.log('June 15th CYCLE DISPLAY:', {
-                    cyclePhases: cyclePhases.length,
-                    phases: cyclePhases.map(p => ({ 
-                      connectionId: p.connection?.id, 
-                      connectionName: p.connection?.name, 
-                      phase: p.phase 
-                    })),
-                    selectedConnectionIds,
-                    connectionsToCheck
-                  });
-                }
+
                 
                 // Use the first cycle phase for background color, or create multi-connection display
                 if (cyclePhases.length === 1) {
                   cycleDisplay = getCycleDisplayInfo(cyclePhases[0]);
-                  if (format(day, 'yyyy-MM-dd') === '2025-06-15') {
-                    console.log('June 15th: Creating single cycle display:', cycleDisplay?.color);
-                  }
+
                 } else if (cyclePhases.length > 1) {
                   // Multiple connections have cycles on this day - show combined info with colored initials
                   const getConnectionColor = (connectionId: number) => {
