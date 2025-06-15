@@ -208,20 +208,6 @@ export default function Calendar() {
     
     const relevantCycles = cycles.filter(cycle => cycle.connectionId === connectionId);
     
-    // Debug logging for Amalina (connection 6) - check all cycles
-    if (connectionId === 6) {
-      console.log(`DEBUG: All cycles in memory: ${cycles.length}`, cycles.map(c => ({ id: c.id, connectionId: c.connectionId, start: c.startDate, end: c.endDate })));
-      console.log(`DEBUG: Filtered cycles for Amalina (${connectionId}): ${relevantCycles.length}`, relevantCycles.map(c => ({ id: c.id, start: c.startDate, end: c.endDate })));
-      if (relevantCycles.length > 0) {
-        console.log(`🚨 PROBLEM: getCyclePhaseForDay found cycles for Amalina - this should not happen!`);
-        // Force complete cache clear to eliminate stale data
-        const queryClient = useQueryClient();
-        queryClient.removeQueries({ queryKey: ['/api/menstrual-cycles'] });
-        queryClient.invalidateQueries({ queryKey: ['/api/menstrual-cycles'] });
-        return null; // Don't render cycle phases until cache is cleared
-      }
-    }
-    
     // If no cycles exist for this connection, return null
     if (relevantCycles.length === 0) {
       return null;
@@ -1098,64 +1084,30 @@ export default function Calendar() {
                 let cyclePhases = [];
                 let cycleDisplay = null;
                 
+                // Determine which connections to check for cycles
+                let connectionsToCheck = [];
+                
                 if (selectedConnectionIds.length === 0) {
-                  // When no specific connections selected, show cycles from all connections
-                  // Only process connections that actually have cycles in the database
-                  const connectionsWithCycles = new Set(cycles.map(c => c.connectionId));
-                  
-                  for (const cycle of cycles) {
-                    // Double-check this connection has cycles and verify the cycle contains this day
-                    if (!connectionsWithCycles.has(cycle.connectionId)) continue;
-                    
-                    const cycleStart = new Date(cycle.startDate);
-                    const cycleEnd = cycle.endDate ? new Date(cycle.endDate) : new Date();
-                    
-                    // Only check for phase info if this specific cycle contains the day
-                    if (day >= cycleStart && day <= cycleEnd) {
-                      // Additional safety check: ensure this connection still exists and has cycles
-                      const connectionCycles = cycles.filter(c => c.connectionId === cycle.connectionId);
-                      if (connectionCycles.length === 0) continue;
-                      
-                      const phaseInfo = getCyclePhaseForDay(day, cycle.connectionId);
-                      if (phaseInfo) {
-                        const connection = connections.find(c => c.id === cycle.connectionId);
-                        if (connection) {
-                          cyclePhases.push({ ...phaseInfo, connection });
-                        }
-                      }
-                    }
-                  }
-                } else if (selectedConnectionIds.length === 1) {
-                  // Single connection selected - only process if connection has cycles
-                  const connectionId = selectedConnectionIds[0];
+                  // When no specific connections selected, show cycles from all connections that have cycles
+                  connectionsToCheck = [...new Set(cycles.map(c => c.connectionId))];
+                } else {
+                  // Only check selected connections
+                  connectionsToCheck = selectedConnectionIds;
+                }
+                
+                // Process each connection that should be checked
+                for (const connectionId of connectionsToCheck) {
                   const connectionCycles = cycles.filter(c => c.connectionId === connectionId);
                   
-
+                  // Skip if this connection has no cycles
+                  if (connectionCycles.length === 0) continue;
                   
-                  // Only proceed if this specific connection has cycles
-                  if (connectionCycles.length > 0) {
-                    const phaseInfo = getCyclePhaseForDay(day, connectionId);
-                    if (phaseInfo) {
-                      const connection = connections.find(c => c.id === connectionId);
-                      if (connection) {
-                        cyclePhases.push({ ...phaseInfo, connection });
-                      }
-                    }
-                  }
-                } else {
-                  // Multiple connections selected - find cycles from selected connections
-                  for (const connectionId of selectedConnectionIds) {
-                    const connectionCycles = cycles.filter(c => c.connectionId === connectionId);
-                    
-                    // Only proceed if this specific connection has cycles
-                    if (connectionCycles.length > 0) {
-                      const phaseInfo = getCyclePhaseForDay(day, connectionId);
-                      if (phaseInfo) {
-                        const connection = connections.find(c => c.id === connectionId);
-                        if (connection) {
-                          cyclePhases.push({ ...phaseInfo, connection });
-                        }
-                      }
+                  // Check if this connection has a cycle phase for this day
+                  const phaseInfo = getCyclePhaseForDay(day, connectionId);
+                  if (phaseInfo) {
+                    const connection = connections.find(c => c.id === connectionId);
+                    if (connection) {
+                      cyclePhases.push({ ...phaseInfo, connection });
                     }
                   }
                 }
