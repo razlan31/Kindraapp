@@ -1496,15 +1496,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Menstrual cycle not found" });
       }
       
-      console.log('Delete authorization check:', {
-        cycleUserId: cycle.userId,
-        cycleUserIdType: typeof cycle.userId,
-        sessionUserId: userId,
-        sessionUserIdType: typeof userId,
-        comparison: Number(cycle.userId) === userId
-      });
-      
-      if (Number(cycle.userId) !== userId) {
+      if (cycle.userId.toString() !== userId.toString()) {
         return res.status(403).json({ message: "Unauthorized to delete this cycle" });
       }
       
