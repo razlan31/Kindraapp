@@ -65,45 +65,173 @@ const calculateCycleLength = (cycles: MenstrualCycle[]): number => {
   return Math.round(cycleLengths.reduce((sum, length) => sum + length, 0) / cycleLengths.length);
 };
 
-const calculateOvulationDay = (cycleLength: number): number => {
-  // Ovulation occurs 14 days before next period (luteal phase length)
-  const lutealPhaseLength = 14;
-  return cycleLength - lutealPhaseLength + 1; // +1 because we count from day 1
+// Enhanced cycle phase calculation with learning from historical data
+const calculateOvulationDay = (cycleLength: number, historicalCycles: any[] = []): number => {
+  // Learn from historical ovulation patterns if available
+  if (historicalCycles.length >= 3) {
+    const ovulationDays = historicalCycles
+      .filter(c => c.ovulationDay)
+      .map(c => c.ovulationDay);
+    
+    if (ovulationDays.length > 0) {
+      const avgOvulation = ovulationDays.reduce((sum, day) => sum + day, 0) / ovulationDays.length;
+      return Math.round(avgOvulation);
+    }
+  }
+  
+  // Default calculation: 14 days before next period (luteal phase length)
+  const lutealPhaseLength = Math.min(14, Math.floor(cycleLength * 0.5));
+  return Math.max(10, cycleLength - lutealPhaseLength + 1);
 };
 
-const getCyclePhase = (dayInCycle: number, cycleLength: number): { phase: string; color: string; description: string } => {
-  const ovulationDay = calculateOvulationDay(cycleLength);
-  const fertileWindowStart = ovulationDay - 5; // 5 days before ovulation
+// Comprehensive cycle phase system with 8 detailed phases
+const getDetailedCyclePhase = (
+  dayInCycle: number, 
+  cycleLength: number, 
+  periodLength: number = 5,
+  historicalCycles: any[] = [],
+  symptoms: string[] = [],
+  mood: string | null = null
+): { 
+  phase: string; 
+  subPhase: string;
+  color: string; 
+  description: string;
+  emoji: string;
+  dayRange: string;
+  hormonalProfile: string;
+  recommendations: string[];
+} => {
+  const ovulationDay = calculateOvulationDay(cycleLength, historicalCycles);
+  const lutealLength = cycleLength - ovulationDay;
   
-  if (dayInCycle <= 5) {
+  // Menstrual Phase (Days 1-5)
+  if (dayInCycle <= periodLength) {
+    if (dayInCycle <= 2) {
+      return {
+        phase: "menstrual",
+        subPhase: "heavy_flow",
+        color: "bg-red-200 dark:bg-red-900/40 border-red-400 dark:border-red-600",
+        description: "Heavy menstrual flow",
+        emoji: "🩸",
+        dayRange: `Days 1-2`,
+        hormonalProfile: "Low estrogen & progesterone",
+        recommendations: ["Rest and self-care", "Gentle movement", "Warm compress for cramps", "Iron-rich foods"]
+      };
+    } else {
+      return {
+        phase: "menstrual",
+        subPhase: "light_flow",
+        color: "bg-red-100 dark:bg-red-900/30 border-red-300 dark:border-red-500",
+        description: "Light menstrual flow",
+        emoji: "🌊",
+        dayRange: `Days 3-${periodLength}`,
+        hormonalProfile: "Rising estrogen",
+        recommendations: ["Light exercise", "Hydration focus", "Begin energy foods", "Gentle stretching"]
+      };
+    }
+  }
+  
+  // Follicular Phase (Post-period to ovulation)
+  const follicularEnd = ovulationDay - 3;
+  if (dayInCycle <= follicularEnd) {
+    if (dayInCycle <= periodLength + 3) {
+      return {
+        phase: "follicular",
+        subPhase: "early_follicular",
+        color: "bg-green-100 dark:bg-green-900/30 border-green-300 dark:border-green-500",
+        description: "Early follicular phase",
+        emoji: "🌱",
+        dayRange: `Days ${periodLength + 1}-${periodLength + 3}`,
+        hormonalProfile: "Gradually rising estrogen",
+        recommendations: ["Increase activity", "Fresh foods", "Social connections", "Planning ahead"]
+      };
+    } else {
+      return {
+        phase: "follicular",
+        subPhase: "late_follicular",
+        color: "bg-green-200 dark:bg-green-900/40 border-green-400 dark:border-green-600",
+        description: "Late follicular phase",
+        emoji: "🌿",
+        dayRange: `Days ${periodLength + 4}-${follicularEnd}`,
+        hormonalProfile: "High estrogen",
+        recommendations: ["Peak energy activities", "New challenges", "Social events", "Creative projects"]
+      };
+    }
+  }
+  
+  // Pre-ovulation and Ovulation (3 days around ovulation)
+  if (dayInCycle >= ovulationDay - 2 && dayInCycle <= ovulationDay + 2) {
+    if (dayInCycle < ovulationDay) {
+      return {
+        phase: "fertile",
+        subPhase: "pre_ovulation",
+        color: "bg-yellow-100 dark:bg-yellow-900/30 border-yellow-300 dark:border-yellow-500",
+        description: "Pre-ovulation fertile window",
+        emoji: "💛",
+        dayRange: `Days ${ovulationDay - 2}-${ovulationDay - 1}`,
+        hormonalProfile: "Peak estrogen, rising LH",
+        recommendations: ["High fertility", "Intimacy timing", "Energy optimization", "Confidence building"]
+      };
+    } else if (dayInCycle === ovulationDay) {
+      return {
+        phase: "fertile",
+        subPhase: "ovulation",
+        color: "bg-pink-200 dark:bg-pink-900/40 border-pink-400 dark:border-pink-600",
+        description: "Peak ovulation day",
+        emoji: "🥚",
+        dayRange: `Day ${ovulationDay}`,
+        hormonalProfile: "LH surge, peak fertility",
+        recommendations: ["Peak fertility window", "Optimal intimacy timing", "High energy activities", "Important conversations"]
+      };
+    } else {
+      return {
+        phase: "fertile",
+        subPhase: "post_ovulation",
+        color: "bg-yellow-200 dark:bg-yellow-900/40 border-yellow-400 dark:border-yellow-600",
+        description: "Post-ovulation fertile window",
+        emoji: "🌟",
+        dayRange: `Days ${ovulationDay + 1}-${ovulationDay + 2}`,
+        hormonalProfile: "Rising progesterone",
+        recommendations: ["Last fertile days", "Conception window", "Maintain energy", "Positive mindset"]
+      };
+    }
+  }
+  
+  // Luteal Phase (Post-ovulation to cycle end)
+  const midLuteal = ovulationDay + Math.floor(lutealLength / 2);
+  if (dayInCycle <= midLuteal) {
     return {
-      phase: "Menstrual",
-      color: "bg-pink-500",
-      description: "Period days"
+      phase: "luteal",
+      subPhase: "early_luteal",
+      color: "bg-purple-100 dark:bg-purple-900/30 border-purple-300 dark:border-purple-500",
+      description: "Early luteal phase",
+      emoji: "🌙",
+      dayRange: `Days ${ovulationDay + 3}-${midLuteal}`,
+      hormonalProfile: "Rising progesterone",
+      recommendations: ["Stable energy", "Routine activities", "Nesting behaviors", "Comfort foods"]
     };
-  } else if (dayInCycle === ovulationDay) {
+  } else if (dayInCycle <= cycleLength - 3) {
     return {
-      phase: "Ovulation",
-      color: "bg-blue-600",
-      description: "Ovulation day"
-    };
-  } else if (dayInCycle >= fertileWindowStart && dayInCycle < ovulationDay) {
-    return {
-      phase: "Fertile",
-      color: "bg-blue-300",
-      description: "Fertile window"
-    };
-  } else if (dayInCycle > ovulationDay) {
-    return {
-      phase: "Luteal",
-      color: "bg-purple-500",
-      description: "Luteal phase"
+      phase: "luteal",
+      subPhase: "mid_luteal",
+      color: "bg-purple-200 dark:bg-purple-900/40 border-purple-400 dark:border-purple-600",
+      description: "Mid luteal phase",
+      emoji: "🌕",
+      dayRange: `Days ${midLuteal + 1}-${cycleLength - 3}`,
+      hormonalProfile: "Peak progesterone",
+      recommendations: ["Peak nesting phase", "Comfort priorities", "Self-care focus", "Gentle activities"]
     };
   } else {
     return {
-      phase: "Follicular",
-      color: "bg-gray-300",
-      description: "Follicular phase"
+      phase: "luteal",
+      subPhase: "pre_menstrual",
+      color: "bg-orange-200 dark:bg-orange-900/40 border-orange-400 dark:border-orange-600",
+      description: "Pre-menstrual phase",
+      emoji: "🌅",
+      dayRange: `Days ${cycleLength - 2}-${cycleLength}`,
+      hormonalProfile: "Dropping progesterone & estrogen",
+      recommendations: ["PMS management", "Emotional support", "Stress reduction", "Preparation for period"]
     };
   }
 };
@@ -258,7 +386,7 @@ export default function MenstrualCyclePage() {
     return name.charAt(0).toUpperCase();
   };
 
-  // Get cycle phase for a specific day and connection
+  // Enhanced cycle phase detection with detailed sub-phases
   const getCyclePhaseForDay = (day: Date, connectionId: number) => {
     const connectionCycles = cycles.filter(c => c.connectionId === connectionId);
     if (connectionCycles.length === 0) return null;
@@ -284,23 +412,32 @@ export default function MenstrualCyclePage() {
         const dayInCycle = differenceInDays(day, cycleStart) + 1;
         const periodEnd = cycle.periodEndDate ? new Date(cycle.periodEndDate) : addDays(cycleStart, 4);
         
-        // Calculate cycle length for ovulation timing
+        // Calculate cycle length for detailed phase analysis
         const cycleLength = cycle.endDate ? 
           differenceInDays(new Date(cycle.endDate), cycleStart) + 1 : 
           (calculateCycleLength(connectionCycles) || 28);
         
-        const ovulationDay = Math.max(10, cycleLength - 14); // Ovulation ~14 days before cycle end
+        const periodLength = cycle.periodEndDate ? 
+          differenceInDays(new Date(cycle.periodEndDate), cycleStart) + 1 : 5;
         
-        if (day <= periodEnd) {
-          return { phase: 'menstrual', day: dayInCycle, cycle, isOvulation: false };
-        } else if (dayInCycle >= ovulationDay - 2 && dayInCycle <= ovulationDay + 2) {
-          const isOvulation = dayInCycle === ovulationDay;
-          return { phase: 'fertile', day: dayInCycle, cycle, isOvulation };
-        } else if (dayInCycle < ovulationDay - 2) {
-          return { phase: 'follicular', day: dayInCycle, cycle, isOvulation: false };
-        } else {
-          return { phase: 'luteal', day: dayInCycle, cycle, isOvulation: false };
-        }
+        // Get detailed phase information
+        const detailedPhase = getDetailedCyclePhase(
+          dayInCycle, 
+          cycleLength, 
+          periodLength,
+          connectionCycles,
+          [], // symptoms - could be added later
+          cycle.mood
+        );
+        
+        return { 
+          phase: detailedPhase.phase,
+          subPhase: detailedPhase.subPhase,
+          day: dayInCycle, 
+          cycle,
+          isOvulation: detailedPhase.subPhase === 'ovulation',
+          detailedInfo: detailedPhase
+        };
       }
     }
 
@@ -716,10 +853,12 @@ export default function MenstrualCyclePage() {
       }
     }
     
-    // For regular cycles, use existing logic
+    // For regular cycles, use detailed phase logic
     const daysSinceStart = differenceInDays(day, cycleStart) + 1;
     const cycleLength = getCycleLength(cycle) || 28;
-    const phase = getCyclePhase(daysSinceStart, cycleLength);
+    const periodLength = cycle.periodEndDate ? 
+      differenceInDays(new Date(cycle.periodEndDate), cycleStart) + 1 : 5;
+    const phase = getDetailedCyclePhase(daysSinceStart, cycleLength, periodLength);
     
     return phase.phase.toLowerCase();
   };
@@ -911,29 +1050,35 @@ export default function MenstrualCyclePage() {
               });
               const avgCycleLength = calculateCycleLength(personCycles);
               const currentDay = currentCycle ? differenceInDays(new Date(), new Date(currentCycle.startDate)) + 1 : 0;
-              const currentPhase = currentCycle ? getCyclePhase(currentDay, avgCycleLength) : null;
+              const periodLength = currentCycle?.periodEndDate ? 
+                differenceInDays(new Date(currentCycle.periodEndDate), new Date(currentCycle.startDate)) + 1 : 5;
+              const currentPhase = currentCycle ? getDetailedCyclePhase(currentDay, avgCycleLength, periodLength) : null;
               
-              // Get phase-based colors
+              // Get phase-based colors using new detailed phase system
               const phaseColors = currentPhase ? {
-                bg: currentPhase.phase === 'Menstrual' ? 'bg-red-50 dark:bg-red-950/20' :
-                    currentPhase.phase === 'Ovulation' ? 'bg-blue-50 dark:bg-blue-950/20' :
-                    currentPhase.phase === 'Fertile' ? 'bg-green-50 dark:bg-green-950/20' :
-                    currentPhase.phase === 'Luteal' ? 'bg-purple-50 dark:bg-purple-950/20' :
+                bg: currentPhase.phase === 'menstrual' ? 'bg-red-50 dark:bg-red-950/20' :
+                    currentPhase.subPhase === 'ovulation' ? 'bg-pink-50 dark:bg-pink-950/20' :
+                    currentPhase.phase === 'fertile' ? 'bg-yellow-50 dark:bg-yellow-950/20' :
+                    currentPhase.phase === 'follicular' ? 'bg-green-50 dark:bg-green-950/20' :
+                    currentPhase.phase === 'luteal' ? 'bg-purple-50 dark:bg-purple-950/20' :
                     'bg-gray-50 dark:bg-gray-950/20',
-                border: currentPhase.phase === 'Menstrual' ? 'border-red-200 dark:border-red-800' :
-                        currentPhase.phase === 'Ovulation' ? 'border-blue-200 dark:border-blue-800' :
-                        currentPhase.phase === 'Fertile' ? 'border-green-200 dark:border-green-800' :
-                        currentPhase.phase === 'Luteal' ? 'border-purple-200 dark:border-purple-800' :
+                border: currentPhase.phase === 'menstrual' ? 'border-red-200 dark:border-red-800' :
+                        currentPhase.subPhase === 'ovulation' ? 'border-pink-200 dark:border-pink-800' :
+                        currentPhase.phase === 'fertile' ? 'border-yellow-200 dark:border-yellow-800' :
+                        currentPhase.phase === 'follicular' ? 'border-green-200 dark:border-green-800' :
+                        currentPhase.phase === 'luteal' ? 'border-purple-200 dark:border-purple-800' :
                         'border-gray-200 dark:border-gray-800',
-                accent: currentPhase.phase === 'Menstrual' ? 'bg-red-500' :
-                        currentPhase.phase === 'Ovulation' ? 'bg-blue-600' :
-                        currentPhase.phase === 'Fertile' ? 'bg-green-500' :
-                        currentPhase.phase === 'Luteal' ? 'bg-purple-500' :
+                accent: currentPhase.phase === 'menstrual' ? 'bg-red-500' :
+                        currentPhase.subPhase === 'ovulation' ? 'bg-pink-600' :
+                        currentPhase.phase === 'fertile' ? 'bg-yellow-500' :
+                        currentPhase.phase === 'follicular' ? 'bg-green-500' :
+                        currentPhase.phase === 'luteal' ? 'bg-purple-500' :
                         'bg-gray-500',
-                text: currentPhase.phase === 'Menstrual' ? 'text-red-800 dark:text-red-200' :
-                      currentPhase.phase === 'Ovulation' ? 'text-blue-800 dark:text-blue-200' :
-                      currentPhase.phase === 'Fertile' ? 'text-green-800 dark:text-green-200' :
-                      currentPhase.phase === 'Luteal' ? 'text-purple-800 dark:text-purple-200' :
+                text: currentPhase.phase === 'menstrual' ? 'text-red-800 dark:text-red-200' :
+                      currentPhase.subPhase === 'ovulation' ? 'text-pink-800 dark:text-pink-200' :
+                      currentPhase.phase === 'fertile' ? 'text-yellow-800 dark:text-yellow-200' :
+                      currentPhase.phase === 'follicular' ? 'text-green-800 dark:text-green-200' :
+                      currentPhase.phase === 'luteal' ? 'text-purple-800 dark:text-purple-200' :
                       'text-gray-800 dark:text-gray-200'
               } : {
                 bg: 'bg-pink-50 dark:bg-pink-950/20',
