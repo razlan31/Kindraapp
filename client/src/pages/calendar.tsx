@@ -1084,15 +1084,17 @@ export default function Calendar() {
                 let cyclePhases = [];
                 let cycleDisplay = null;
                 
-                // Determine which connections to check for cycles
+                // Determine which connections to check for cycles based on selection
                 let connectionsToCheck = [];
                 
                 if (selectedConnectionIds.length === 0) {
                   // When no specific connections selected, show cycles from all connections that have cycles
                   connectionsToCheck = [...new Set(cycles.map(c => c.connectionId))];
                 } else {
-                  // Only check selected connections
-                  connectionsToCheck = selectedConnectionIds;
+                  // CRITICAL FIX: Only check selected connections that actually have cycles
+                  // This prevents showing cycles from unselected connections
+                  const connectionsWithCycles = new Set(cycles.map(c => c.connectionId));
+                  connectionsToCheck = selectedConnectionIds.filter(id => connectionsWithCycles.has(id));
                 }
                 
                 // Process each connection that should be checked
