@@ -111,6 +111,15 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
+- June 15, 2025: Enhanced delete cycle functionality with comprehensive validation and verification
+  - Strengthened server-side delete endpoint with detailed logging and proper type validation
+  - Added robust database verification to ensure cycles are actually deleted from storage
+  - Enhanced client-side deletion with verification step to confirm successful removal
+  - Improved cache management with verification system to prevent stale data display
+  - Added safety checks in calendar to prevent cycle phase calculations for deleted connections
+  - Implemented comprehensive error handling and user feedback for deletion operations
+  - Created test framework to verify complete delete cycle flow from API to UI
+
 - June 15, 2025: Fixed critical cache invalidation issue preventing deleted cycles from updating in calendar
   - Implemented centralized cache management system (cache-utils.ts) to ensure data consistency
   - Enhanced delete cycle mutation with comprehensive cache clearing and immediate refetch

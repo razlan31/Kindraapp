@@ -185,8 +185,48 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deleteMenstrualCycle(id: number): Promise<boolean> {
-    const result = await db.delete(menstrualCycles).where(eq(menstrualCycles.id, id));
-    return (result.rowCount || 0) > 0;
+    console.log(`🗑️ Database: Attempting to delete cycle ${id}`);
+    
+    try {
+      // First verify the cycle exists
+      const existingCycle = await db.select().from(menstrualCycles).where(eq(menstrualCycles.id, id));
+      
+      if (existingCycle.length === 0) {
+        console.log(`❌ Database: Cycle ${id} not found for deletion`);
+        return false;
+      }
+      
+      console.log(`📋 Database: Found cycle ${id} to delete:`, {
+        id: existingCycle[0].id,
+        userId: existingCycle[0].userId,
+        connectionId: existingCycle[0].connectionId,
+        startDate: existingCycle[0].startDate
+      });
+      
+      // Perform the deletion
+      const result = await db.delete(menstrualCycles).where(eq(menstrualCycles.id, id));
+      const deleted = (result.rowCount || 0) > 0;
+      
+      if (deleted) {
+        console.log(`✅ Database: Successfully deleted cycle ${id}, affected rows: ${result.rowCount}`);
+        
+        // Verify deletion by checking if it still exists
+        const verifyDeleted = await db.select().from(menstrualCycles).where(eq(menstrualCycles.id, id));
+        if (verifyDeleted.length === 0) {
+          console.log(`✅ Database: Verified cycle ${id} no longer exists`);
+        } else {
+          console.log(`⚠️ Database: Warning - cycle ${id} still exists after deletion attempt`);
+          return false;
+        }
+      } else {
+        console.log(`❌ Database: Failed to delete cycle ${id}, no rows affected`);
+      }
+      
+      return deleted;
+    } catch (error) {
+      console.error(`❌ Database: Error deleting cycle ${id}:`, error);
+      throw error;
+    }
   }
 
   // Milestone operations

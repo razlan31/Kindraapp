@@ -628,29 +628,57 @@ export default function MenstrualCyclePage() {
 
   // Delete cycle mutation
   const deleteCycleMutation = useMutation({
-    mutationFn: (id: number) => apiRequest(`/api/menstrual-cycles/${id}`, 'DELETE'),
-    onSuccess: async (_, deletedId) => {
+    mutationFn: async (id: number) => {
+      console.log(`🗑️ Client: Attempting to delete cycle ${id}`);
+      const response = await apiRequest(`/api/menstrual-cycles/${id}`, 'DELETE');
+      console.log(`✅ Client: Delete response received:`, response);
+      return response;
+    },
+    onSuccess: async (response, deletedId) => {
+      console.log(`🎉 Client: Delete successful for cycle ${deletedId}`);
+      
       // Use centralized cache management to ensure all pages update
       const { cycleCache } = await import('@/lib/cache-utils');
       
       // First optimistically update the cache to remove the deleted cycle
       cycleCache.updateCacheAfterMutation({ id: deletedId }, 'delete');
       
-      // Then clear and refetch to ensure consistency across all pages
+      // Clear and refetch to ensure consistency across all pages
       await cycleCache.clearAndRefetch();
+      
+      // Verify deletion was successful
+      const deletionVerified = await cycleCache.verifyDeletion(deletedId);
+      
+      if (!deletionVerified) {
+        // If verification fails, show warning and force another cache clear
+        console.log(`⚠️ Client: Deletion verification failed for cycle ${deletedId}, forcing additional cache clear`);
+        await cycleCache.clearAndRefetch();
+        
+        toast({
+          title: "Deletion Warning", 
+          description: "Cycle deleted but verification failed. Please refresh if data still appears.",
+          variant: "destructive",
+        });
+      } else {
+        console.log(`✅ Client: Deletion verified for cycle ${deletedId}`);
+        toast({
+          title: "Cycle Deleted",
+          description: "The menstrual cycle has been deleted successfully.",
+        });
+      }
       
       setIsDialogOpen(false);
       setEditingCycle(null);
       resetForm();
-      toast({
-        title: "Cycle Deleted",
-        description: "The menstrual cycle has been deleted successfully.",
-      });
     },
-    onError: () => {
+    onError: (error: any, deletedId) => {
+      console.error(`❌ Client: Delete failed for cycle ${deletedId}:`, error);
+      
+      const errorMessage = error?.message || "Failed to delete cycle. Please try again.";
+      
       toast({
-        title: "Error",
-        description: "Failed to delete cycle. Please try again.",
+        title: "Delete Failed",
+        description: errorMessage,
         variant: "destructive",
       });
     }

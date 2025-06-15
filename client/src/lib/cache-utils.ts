@@ -34,15 +34,41 @@ export const cycleCache = {
     queryClient.removeQueries({ queryKey: ['cycles'] });
     queryClient.removeQueries({ queryKey: ['menstrual-cycles'] });
     
-    // Clear the entire query cache to ensure no stale data remains
-    queryClient.clear();
+    // Invalidate and refetch to ensure fresh data
+    await queryClient.invalidateQueries({ queryKey: ['/api/menstrual-cycles'] });
+    await queryClient.refetchQueries({ queryKey: ['/api/menstrual-cycles'] });
     
-    // Force a hard refresh of the page to eliminate any remaining frontend state
-    setTimeout(() => {
-      window.location.reload();
-    }, 100);
-    
-    console.log('✅ Cache cleared and page refresh initiated');
+    console.log('✅ Cache cleared and data refetched');
+  },
+
+  /**
+   * Verifies deletion was successful by checking if cycle still exists
+   * Use after delete operations to ensure data consistency
+   */
+  verifyDeletion: async (cycleId: number): Promise<boolean> => {
+    try {
+      console.log(`🔍 Verifying deletion of cycle ${cycleId}`);
+      
+      // Force a fresh fetch from server
+      await queryClient.invalidateQueries({ queryKey: ['/api/menstrual-cycles'] });
+      const cycles = await queryClient.fetchQuery({
+        queryKey: ['/api/menstrual-cycles'],
+        queryFn: () => fetch('/api/menstrual-cycles').then(res => res.json())
+      });
+      
+      const stillExists = cycles.some((cycle: any) => cycle.id === cycleId);
+      
+      if (stillExists) {
+        console.log(`❌ Verification failed: Cycle ${cycleId} still exists`);
+        return false;
+      } else {
+        console.log(`✅ Verification passed: Cycle ${cycleId} successfully deleted`);
+        return true;
+      }
+    } catch (error) {
+      console.error(`❌ Error verifying deletion of cycle ${cycleId}:`, error);
+      return false;
+    }
   },
 
   /**

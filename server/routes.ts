@@ -1485,26 +1485,52 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = (req.session as any).userId as number;
       const cycleId = parseInt(req.params.id);
       
-      if (isNaN(cycleId)) {
+      console.log(`🗑️ Delete cycle request - User: ${userId}, Cycle: ${cycleId}`);
+      
+      if (isNaN(cycleId) || cycleId <= 0) {
+        console.log(`❌ Invalid cycle ID: ${req.params.id}`);
         return res.status(400).json({ message: "Invalid cycle ID" });
       }
       
+      // Fetch cycles and verify ownership
       const cycles = await storage.getMenstrualCycles(userId);
       const cycle = cycles.find(c => c.id === cycleId);
       
       if (!cycle) {
+        console.log(`❌ Cycle not found: ${cycleId} for user ${userId}`);
         return res.status(404).json({ message: "Menstrual cycle not found" });
       }
       
-      if (cycle.userId.toString() !== userId.toString()) {
+      // Ensure proper authorization check with type conversion
+      const cycleUserId = parseInt(cycle.userId.toString());
+      if (cycleUserId !== userId) {
+        console.log(`❌ Unauthorized delete attempt - Cycle owner: ${cycleUserId}, Request user: ${userId}`);
         return res.status(403).json({ message: "Unauthorized to delete this cycle" });
       }
       
-      await storage.deleteMenstrualCycle(cycleId);
+      console.log(`🔍 Attempting to delete cycle ${cycleId} for connection ${cycle.connectionId}`);
       
-      res.status(200).json({ message: "Menstrual cycle deleted successfully" });
+      // Perform deletion with verification
+      const deletionSuccess = await storage.deleteMenstrualCycle(cycleId);
+      
+      if (!deletionSuccess) {
+        console.log(`❌ Failed to delete cycle ${cycleId} from database`);
+        return res.status(500).json({ message: "Failed to delete cycle from database" });
+      }
+      
+      console.log(`✅ Successfully deleted cycle ${cycleId}`);
+      
+      // Return success with cycle info for client-side cache updates
+      res.status(200).json({ 
+        message: "Menstrual cycle deleted successfully",
+        deletedCycle: {
+          id: cycleId,
+          connectionId: cycle.connectionId,
+          userId: userId
+        }
+      });
     } catch (error) {
-      console.error('Error deleting menstrual cycle:', error);
+      console.error('❌ Error deleting menstrual cycle:', error);
       res.status(500).json({ message: "Server error deleting menstrual cycle" });
     }
   });
