@@ -212,6 +212,15 @@ export default function Calendar() {
     
     const relevantCycles = cycles.filter(cycle => cycle.connectionId === connectionId);
     
+    // Debug logging for Amalina (connection 6) - check all cycles
+    if (connectionId === 6) {
+      console.log(`DEBUG: All cycles in memory: ${cycles.length}`, cycles.map(c => ({ id: c.id, connectionId: c.connectionId, start: c.startDate, end: c.endDate })));
+      console.log(`DEBUG: Filtered cycles for Amalina (${connectionId}): ${relevantCycles.length}`, relevantCycles.map(c => ({ id: c.id, start: c.startDate, end: c.endDate })));
+      if (relevantCycles.length > 0) {
+        console.log(`🚨 PROBLEM: getCyclePhaseForDay found cycles for Amalina - this should not happen!`);
+      }
+    }
+    
     // If no cycles exist for this connection, return null
     if (relevantCycles.length === 0) {
       return null;
