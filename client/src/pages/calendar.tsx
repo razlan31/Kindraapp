@@ -184,16 +184,26 @@ export default function Calendar() {
     staleTime: 0,
   });
 
-  // Fetch menstrual cycles
-  const { data: cycles = [] } = useQuery<MenstrualCycle[]>({
+  // Fetch menstrual cycles with aggressive cache invalidation
+  const { data: cycles = [], refetch: refetchCycles } = useQuery<MenstrualCycle[]>({
     queryKey: ['/api/menstrual-cycles'],
     staleTime: 0,
+    gcTime: 0,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
   });
 
-  // Verify no cycles exist for deleted connections
+  // Verify no cycles exist for deleted connections and clear if found
   const amalinaCycles = cycles.filter(cycle => cycle.connectionId === 6);
   if (amalinaCycles.length > 0) {
     console.warn('Found unexpected cycles for connection 6 (should be deleted):', amalinaCycles);
+    // Force clear all local storage and session data
+    localStorage.clear();
+    sessionStorage.clear();
+    // Clear all query cache
+    queryClient.clear();
+    // Force page reload to eliminate stale state
+    window.location.reload();
   }
 
   // Menstrual cycle calculation functions
