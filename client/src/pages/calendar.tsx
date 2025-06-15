@@ -197,12 +197,7 @@ export default function Calendar() {
   const amalinaCycles = cycles.filter(cycle => cycle.connectionId === 6);
   if (amalinaCycles.length > 0) {
     console.warn('Found unexpected cycles for connection 6 (should be deleted):', amalinaCycles);
-    // Force clear all local storage and session data
-    localStorage.clear();
-    sessionStorage.clear();
-    // Clear all query cache
-    queryClient.clear();
-    // Force page reload to eliminate stale state
+    // Force immediate cache clear and reload
     window.location.reload();
   }
 
@@ -218,6 +213,11 @@ export default function Calendar() {
       console.log(`DEBUG: Filtered cycles for Amalina (${connectionId}): ${relevantCycles.length}`, relevantCycles.map(c => ({ id: c.id, start: c.startDate, end: c.endDate })));
       if (relevantCycles.length > 0) {
         console.log(`🚨 PROBLEM: getCyclePhaseForDay found cycles for Amalina - this should not happen!`);
+        // Force complete cache clear to eliminate stale data
+        const queryClient = useQueryClient();
+        queryClient.removeQueries({ queryKey: ['/api/menstrual-cycles'] });
+        queryClient.invalidateQueries({ queryKey: ['/api/menstrual-cycles'] });
+        return null; // Don't render cycle phases until cache is cleared
       }
     }
     
@@ -1130,9 +1130,11 @@ export default function Calendar() {
                   const connectionId = selectedConnectionIds[0];
                   const connectionCycles = cycles.filter(c => c.connectionId === connectionId);
                   
-                  // Debug logging for Amalina (connection 6)
-                  if (connectionId === 6) {
-                    console.log(`Calendar Debug: Amalina selected - cycles found: ${connectionCycles.length} for day ${format(day, 'yyyy-MM-dd')}`);
+                  // Debug logging for Amalina (connection 6) - focus on May dates
+                  if (connectionId === 6 && format(day, 'yyyy-MM').includes('2025-05')) {
+                    console.log(`MAY DEBUG: Amalina selected - cycles found: ${connectionCycles.length} for day ${format(day, 'yyyy-MM-dd')}`);
+                    console.log(`MAY DEBUG: All cycles:`, cycles.map(c => ({ id: c.id, connectionId: c.connectionId, start: format(new Date(c.startDate), 'yyyy-MM-dd') })));
+                    console.log(`MAY DEBUG: Filtered cycles for connection 6:`, connectionCycles.map(c => ({ id: c.id, start: format(new Date(c.startDate), 'yyyy-MM-dd') })));
                   }
                   
                   // Only proceed if this specific connection has cycles
