@@ -1480,6 +1480,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.delete("/api/menstrual-cycles/:id", isAuthenticated, async (req, res) => {
+    try {
+      const userId = (req.session as any).userId as number;
+      const cycleId = parseInt(req.params.id);
+      
+      if (isNaN(cycleId)) {
+        return res.status(400).json({ message: "Invalid cycle ID" });
+      }
+      
+      const cycles = await storage.getMenstrualCycles(userId);
+      const cycle = cycles.find(c => c.id === cycleId);
+      
+      if (!cycle) {
+        return res.status(404).json({ message: "Menstrual cycle not found" });
+      }
+      
+      if (cycle.userId !== userId) {
+        return res.status(403).json({ message: "Unauthorized to delete this cycle" });
+      }
+      
+      await storage.deleteMenstrualCycle(cycleId);
+      
+      res.status(200).json({ message: "Menstrual cycle deleted successfully" });
+    } catch (error) {
+      console.error('Error deleting menstrual cycle:', error);
+      res.status(500).json({ message: "Server error deleting menstrual cycle" });
+    }
+  });
+
   // Helper function to generate next cycle automatically
   async function generateNextCycle(userId: number, completedCycle: any) {
     try {
