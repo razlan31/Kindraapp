@@ -1102,12 +1102,34 @@ export default function Calendar() {
                   // Skip if this connection has no cycles
                   if (connectionCycles.length === 0) continue;
                   
+                  // Debug logging for specific connections and dates
+                  if (connectionId === 6 && format(day, 'yyyy-MM-dd') === '2025-05-15') {
+                    console.log(`DEBUG May 15th - Checking Amalina (${connectionId}):`, {
+                      cycles: connectionCycles.length,
+                      selectedConnections: selectedConnectionIds,
+                      shouldProcess: selectedConnectionIds.length === 0 || selectedConnectionIds.includes(connectionId)
+                    });
+                  }
+                  
+                  if (connectionId === 10 && format(day, 'yyyy-MM-dd') === '2025-05-15') {
+                    console.log(`DEBUG May 15th - Checking Emma (${connectionId}):`, {
+                      cycles: connectionCycles.length,
+                      selectedConnections: selectedConnectionIds,
+                      shouldProcess: selectedConnectionIds.length === 0 || selectedConnectionIds.includes(connectionId)
+                    });
+                  }
+                  
                   // Check if this connection has a cycle phase for this day
                   const phaseInfo = getCyclePhaseForDay(day, connectionId);
                   if (phaseInfo) {
                     const connection = connections.find(c => c.id === connectionId);
                     if (connection) {
                       cyclePhases.push({ ...phaseInfo, connection });
+                      
+                      // Debug logging for cycle phases found
+                      if (format(day, 'yyyy-MM-dd') === '2025-05-15') {
+                        console.log(`DEBUG May 15th - Found cycle phase for ${connection.name} (${connectionId}):`, phaseInfo.phase);
+                      }
                     }
                   }
                 }
