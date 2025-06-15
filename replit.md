@@ -111,6 +111,13 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
+- June 15, 2025: Completed cycle management functionality
+  - Added missing getCyclePhaseForDay function to menstrual-cycle.tsx for proper phase display
+  - Implemented complete delete cycle functionality with DELETE endpoint
+  - Fixed authorization bug causing delete failures (string/number type mismatch)
+  - Added delete button to cycle edit modal with confirmation dialog
+  - Verified Martinez's May cycle phases now display correctly on calendar
+
 - June 13, 2025: Restored specific features from June 1st working version
   - Restored colored alphabets/initials for multiple connections on same day
   - Restored automatic cycle generation when manually setting end dates
