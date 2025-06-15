@@ -1081,18 +1081,33 @@ export default function Calendar() {
                 // Determine which connections to check for cycles based on selection
                 let connectionsToCheck = [];
                 
-                // CRITICAL FIX: Always prioritize selectedConnectionIds if it exists
-                // Only show all cycles when truly no selection has been made
-                if (selectedConnectionIds.length === 0 && !hasUserSelectedConnection && !mainFocusConnection) {
-                  // Only when no selection at all, show cycles from all connections
-                  connectionsToCheck = [...new Set(cycles.map(c => c.connectionId))];
-                } else if (selectedConnectionIds.length > 0) {
-                  // When connections are selected, only show cycles from those connections
-                  const connectionsWithCycles = new Set(cycles.map(c => c.connectionId));
-                  connectionsToCheck = selectedConnectionIds.filter(id => connectionsWithCycles.has(id));
-                } else {
-                  // When focus connection exists but selectedConnectionIds is empty, don't show any cycles
+                // DEBUG for May 15th issue
+                if (format(day, 'yyyy-MM-dd') === '2025-05-15') {
+                  console.log('May 15th State Debug:', {
+                    selectedConnectionIds,
+                    hasUserSelectedConnection,
+                    mainFocusConnection: mainFocusConnection?.id,
+                    allCycleConnections: cycles.map(c => ({ id: c.connectionId, periodEnd: c.periodEndDate }))
+                  });
+                }
+
+                // CRITICAL FIX: Completely rewrite connection filtering logic
+                if (selectedConnectionIds.length > 0) {
+                  // When connections are explicitly selected, ONLY show those connections' cycles
+                  connectionsToCheck = selectedConnectionIds;
+                } else if (hasUserSelectedConnection) {
+                  // User has made a selection but no connections are currently selected = show none
                   connectionsToCheck = [];
+                } else if (mainFocusConnection) {
+                  // Focus connection exists but no user selection = show focus connection only
+                  connectionsToCheck = [mainFocusConnection.id];
+                } else {
+                  // No selection at all = show all connections
+                  connectionsToCheck = [...new Set(cycles.map(c => c.connectionId))];
+                }
+
+                if (format(day, 'yyyy-MM-dd') === '2025-05-15') {
+                  console.log('May 15th Connections to Check:', connectionsToCheck);
                 }
                 
                 // Process each connection that should be checked
@@ -1113,6 +1128,9 @@ export default function Calendar() {
                     const connection = connections.find(c => c.id === connectionId);
                     if (connection) {
                       cyclePhases.push({ ...phaseInfo, connection });
+                      if (format(day, 'yyyy-MM-dd') === '2025-05-15') {
+                        console.log(`May 15th: Added cycle phase for ${connection.name} (${connectionId}):`, phaseInfo.phase);
+                      }
                     }
                   }
                 }
