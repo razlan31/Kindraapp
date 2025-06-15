@@ -1095,17 +1095,24 @@ export default function Calendar() {
                   const connectionsWithCycles = new Set(cycles.map(c => c.connectionId));
                   
                   for (const cycle of cycles) {
-                    // Double-check this connection has cycles
+                    // Double-check this connection has cycles and verify the cycle contains this day
                     if (!connectionsWithCycles.has(cycle.connectionId)) continue;
                     
                     const cycleStart = new Date(cycle.startDate);
                     const cycleEnd = cycle.endDate ? new Date(cycle.endDate) : new Date();
                     
+                    // Only check for phase info if this specific cycle contains the day
                     if (day >= cycleStart && day <= cycleEnd) {
+                      // Additional safety check: ensure this connection still exists and has cycles
+                      const connectionCycles = cycles.filter(c => c.connectionId === cycle.connectionId);
+                      if (connectionCycles.length === 0) continue;
+                      
                       const phaseInfo = getCyclePhaseForDay(day, cycle.connectionId);
                       if (phaseInfo) {
                         const connection = connections.find(c => c.id === cycle.connectionId);
-                        cyclePhases.push({ ...phaseInfo, connection });
+                        if (connection) {
+                          cyclePhases.push({ ...phaseInfo, connection });
+                        }
                       }
                     }
                   }
