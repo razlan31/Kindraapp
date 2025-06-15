@@ -149,6 +149,7 @@ export default function Calendar() {
       const connectionId = parseInt(navigationConnectionId);
       console.log("Setting calendar connection from navigation:", connectionId);
       setSelectedConnectionId(connectionId);
+      setSelectedConnectionIds([connectionId]); // CRITICAL FIX: Sync both state variables
       setHasUserSelectedConnection(true);
       // Clear the navigation state after using it
       localStorage.removeItem('navigationConnectionId');
@@ -193,14 +194,7 @@ export default function Calendar() {
     refetchOnWindowFocus: true,
   });
 
-  // Verify no cycles exist for deleted connections (Amalina - connection 6)
-  const amalinaCycles = cycles.filter(cycle => cycle.connectionId === 6);
-  
-  if (amalinaCycles.length > 0) {
-    console.warn('Found unexpected cycles for connection 6 (should be deleted):', amalinaCycles);
-    // Force immediate cache clear and reload
-    window.location.reload();
-  }
+
 
   // Menstrual cycle calculation functions
   const getCyclePhaseForDay = (day: Date, connectionId: number | null) => {
@@ -1104,21 +1098,9 @@ export default function Calendar() {
                   // Skip if this connection has no cycles
                   if (connectionCycles.length === 0) continue;
                   
-                  // Debug logging for specific connections and dates
-                  if (connectionId === 6 && format(day, 'yyyy-MM-dd') === '2025-05-15') {
-                    console.log(`DEBUG May 15th - Checking Amalina (${connectionId}):`, {
-                      cycles: connectionCycles.length,
-                      selectedConnections: selectedConnectionIds,
-                      shouldProcess: selectedConnectionIds.length === 0 || selectedConnectionIds.includes(connectionId)
-                    });
-                  }
-                  
-                  if (connectionId === 10 && format(day, 'yyyy-MM-dd') === '2025-05-15') {
-                    console.log(`DEBUG May 15th - Checking Emma (${connectionId}):`, {
-                      cycles: connectionCycles.length,
-                      selectedConnections: selectedConnectionIds,
-                      shouldProcess: selectedConnectionIds.length === 0 || selectedConnectionIds.includes(connectionId)
-                    });
+                  // CRITICAL FIX: Additional check to ensure we only process selected connections
+                  if (selectedConnectionIds.length > 0 && !selectedConnectionIds.includes(connectionId)) {
+                    continue; // Skip unselected connections completely
                   }
                   
                   // Check if this connection has a cycle phase for this day
@@ -1127,11 +1109,6 @@ export default function Calendar() {
                     const connection = connections.find(c => c.id === connectionId);
                     if (connection) {
                       cyclePhases.push({ ...phaseInfo, connection });
-                      
-                      // Debug logging for cycle phases found
-                      if (format(day, 'yyyy-MM-dd') === '2025-05-15') {
-                        console.log(`DEBUG May 15th - Found cycle phase for ${connection.name} (${connectionId}):`, phaseInfo.phase);
-                      }
                     }
                   }
                 }
