@@ -629,8 +629,11 @@ export default function MenstrualCyclePage() {
   // Delete cycle mutation
   const deleteCycleMutation = useMutation({
     mutationFn: (id: number) => apiRequest(`/api/menstrual-cycles/${id}`, 'DELETE'),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/menstrual-cycles'] });
+    onSuccess: async (_, deletedId) => {
+      // Use centralized cache management to ensure all pages update
+      const { cycleCache } = await import('@/lib/cache-utils');
+      await cycleCache.clearAndRefetch();
+      
       setIsDialogOpen(false);
       setEditingCycle(null);
       resetForm();
