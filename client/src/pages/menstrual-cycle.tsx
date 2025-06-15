@@ -632,6 +632,11 @@ export default function MenstrualCyclePage() {
     onSuccess: async (_, deletedId) => {
       // Use centralized cache management to ensure all pages update
       const { cycleCache } = await import('@/lib/cache-utils');
+      
+      // First optimistically update the cache to remove the deleted cycle
+      cycleCache.updateCacheAfterMutation({ id: deletedId }, 'delete');
+      
+      // Then clear and refetch to ensure consistency across all pages
       await cycleCache.clearAndRefetch();
       
       setIsDialogOpen(false);

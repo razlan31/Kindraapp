@@ -10,7 +10,7 @@ export const cycleCache = {
    * Call this after any cycle mutation (create, update, delete)
    */
   invalidateAll: async () => {
-    // Clear all menstrual cycle queries
+    // Clear all menstrual cycle queries with different patterns
     await queryClient.invalidateQueries({ queryKey: ['/api/menstrual-cycles'] });
     await queryClient.invalidateQueries({ queryKey: ['cycles'] });
     await queryClient.invalidateQueries({ queryKey: ['menstrual-cycles'] });
@@ -18,7 +18,7 @@ export const cycleCache = {
     // Force immediate refetch to update UI
     await queryClient.refetchQueries({ queryKey: ['/api/menstrual-cycles'] });
     
-    // Also clear any stale data
+    // Clear stale data
     queryClient.removeQueries({ queryKey: ['/api/menstrual-cycles'], stale: true });
   },
 
@@ -27,13 +27,20 @@ export const cycleCache = {
    * Use this for critical updates where stale data must be eliminated
    */
   clearAndRefetch: async () => {
-    // Remove all cycle queries from cache
+    console.log('🔄 Clearing all cycle cache data');
+    
+    // Remove all cycle queries from cache completely
     queryClient.removeQueries({ queryKey: ['/api/menstrual-cycles'] });
     queryClient.removeQueries({ queryKey: ['cycles'] });
     queryClient.removeQueries({ queryKey: ['menstrual-cycles'] });
     
-    // Fetch fresh data
+    // Clear the entire query cache to ensure no stale data remains
+    queryClient.clear();
+    
+    // Fetch fresh data immediately
     await queryClient.prefetchQuery({ queryKey: ['/api/menstrual-cycles'] });
+    
+    console.log('✅ Cache cleared and fresh data fetched');
   },
 
   /**
@@ -41,6 +48,8 @@ export const cycleCache = {
    * Optimistically updates the cache without waiting for server refetch
    */
   updateCacheAfterMutation: (updatedCycle: any, action: 'create' | 'update' | 'delete') => {
+    console.log(`📝 Updating cache after ${action} mutation for cycle:`, updatedCycle);
+    
     queryClient.setQueryData(['/api/menstrual-cycles'], (oldData: any) => {
       if (!oldData) return oldData;
       
@@ -52,7 +61,9 @@ export const cycleCache = {
             cycle.id === updatedCycle.id ? updatedCycle : cycle
           );
         case 'delete':
-          return oldData.filter((cycle: any) => cycle.id !== updatedCycle.id);
+          const newData = oldData.filter((cycle: any) => cycle.id !== updatedCycle.id);
+          console.log(`🗑️ Removed cycle ${updatedCycle.id} from cache, ${oldData.length} -> ${newData.length} cycles`);
+          return newData;
         default:
           return oldData;
       }

@@ -111,6 +111,13 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
+- June 15, 2025: Fixed critical cache invalidation issue preventing deleted cycles from updating in calendar
+  - Implemented centralized cache management system (cache-utils.ts) to ensure data consistency
+  - Enhanced delete cycle mutation with comprehensive cache clearing and immediate refetch
+  - Fixed issue where deleted cycles remained visible in calendar due to stale cached data
+  - Added logging for cache operations to track deletion success
+  - Verified cycle deletion now properly removes data from both database and all UI views
+
 - June 15, 2025: Completed cycle management functionality
   - Added missing getCyclePhaseForDay function to menstrual-cycle.tsx for proper phase display
   - Implemented complete delete cycle functionality with DELETE endpoint
