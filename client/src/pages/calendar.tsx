@@ -1091,7 +1091,13 @@ export default function Calendar() {
                 
                 if (selectedConnectionIds.length === 0) {
                   // When no specific connections selected, show cycles from all connections
+                  // Only process connections that actually have cycles in the database
+                  const connectionsWithCycles = new Set(cycles.map(c => c.connectionId));
+                  
                   for (const cycle of cycles) {
+                    // Double-check this connection has cycles
+                    if (!connectionsWithCycles.has(cycle.connectionId)) continue;
+                    
                     const cycleStart = new Date(cycle.startDate);
                     const cycleEnd = cycle.endDate ? new Date(cycle.endDate) : new Date();
                     
@@ -1104,28 +1110,27 @@ export default function Calendar() {
                     }
                   }
                 } else if (selectedConnectionIds.length === 1) {
-                  // Single connection selected
-                  const phaseInfo = getCyclePhaseForDay(day, selectedConnectionIds[0]);
-                  if (phaseInfo) {
-                    const connection = connections.find(c => c.id === selectedConnectionIds[0]);
-                    cyclePhases.push({ ...phaseInfo, connection });
-                    
-                    // Debug ovulation days for Amalina (connection 6)
-                    if (selectedConnectionIds[0] === 6 && phaseInfo.isOvulation) {
-                      console.log(`Found ovulation day for Amalina on ${format(day, 'yyyy-MM-dd')}:`, phaseInfo);
+                  // Single connection selected - only process if connection has cycles
+                  const connectionId = selectedConnectionIds[0];
+                  const hasActiveCycles = cycles.some(c => c.connectionId === connectionId);
+                  
+                  if (hasActiveCycles) {
+                    const phaseInfo = getCyclePhaseForDay(day, connectionId);
+                    if (phaseInfo) {
+                      const connection = connections.find(c => c.id === connectionId);
+                      cyclePhases.push({ ...phaseInfo, connection });
                     }
                   }
                 } else {
                   // Multiple connections selected - find cycles from selected connections
                   for (const connectionId of selectedConnectionIds) {
-                    const phaseInfo = getCyclePhaseForDay(day, connectionId);
-                    if (phaseInfo) {
-                      const connection = connections.find(c => c.id === connectionId);
-                      cyclePhases.push({ ...phaseInfo, connection });
-                      
-                      // Debug ovulation days for Amalina (connection 6)
-                      if (connectionId === 6 && phaseInfo.isOvulation) {
-                        console.log(`Found ovulation day for Amalina on ${format(day, 'yyyy-MM-dd')}:`, phaseInfo);
+                    const hasActiveCycles = cycles.some(c => c.connectionId === connectionId);
+                    
+                    if (hasActiveCycles) {
+                      const phaseInfo = getCyclePhaseForDay(day, connectionId);
+                      if (phaseInfo) {
+                        const connection = connections.find(c => c.id === connectionId);
+                        cyclePhases.push({ ...phaseInfo, connection });
                       }
                     }
                   }
