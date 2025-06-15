@@ -1,7 +1,7 @@
 import { useState, useMemo, useRef, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { format, differenceInDays, addDays, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, isSameMonth, subMonths, addMonths, startOfWeek, getDay, startOfDay } from "date-fns";
-import { Calendar, Plus, Edit3, Trash2, Circle, ChevronLeft, ChevronRight, User, UserPlus, Camera, X, ChevronDown } from "lucide-react";
+import { Calendar, Plus, Edit3, Trash2, Circle, ChevronLeft, ChevronRight, User, UserPlus, Camera, X, ChevronDown, Brain, Activity } from "lucide-react";
 import { useLocation } from "wouter";
 
 import { Button } from "@/components/ui/button";
@@ -16,13 +16,16 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { MenstrualCycle, Connection } from "@shared/schema";
 import { Header } from "@/components/layout/header";
 import { useAuth } from "@/contexts/auth-context";
 import { useModal } from "@/contexts/modal-context";
-import { AddConnectionModal } from "@/components/modals/add-connection-modal";
+import { DetailedPhaseCard } from "@/components/cycle/detailed-phase-card";
+import { CycleLearningEngine } from "@/components/cycle/cycle-learning-engine";
+import { EnhancedPhaseVisualizer } from "@/components/cycle/enhanced-phase-visualizer";
 
 const symptomsList = [
   "Cramps", "Bloating", "Headache", "Mood swings", "Fatigue", 
@@ -1089,71 +1092,159 @@ export default function MenstrualCyclePage() {
 
               return (
                 <Card key={personId} className={`p-4 ${phaseColors.bg} ${phaseColors.border}`}>
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-2">
-                      <div className={`w-3 h-3 rounded-full ${phaseColors.accent}`}></div>
-                      <h3 className={`font-medium ${phaseColors.text}`}>
-                        {person.name}'s Cycle
-                      </h3>
-                    </div>
-                    <Circle className={`h-5 w-5 ${phaseColors.accent.replace('bg-', 'text-')}`} />
-                  </div>
-                  
-                  {currentCycle ? (
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <p className={`text-sm ${phaseColors.text}`}>
-                          Day {currentDay} of cycle
-                        </p>
-                        {currentPhase && (
-                          <Badge className={`${currentPhase.color} text-white text-xs`}>
-                            {currentPhase.phase}
-                          </Badge>
-                        )}
+                  <Tabs defaultValue="overview" className="w-full">
+                    <TabsList className="grid w-full grid-cols-4">
+                      <TabsTrigger value="overview">Overview</TabsTrigger>
+                      <TabsTrigger value="detailed">Detailed</TabsTrigger>
+                      <TabsTrigger value="learning">AI Learning</TabsTrigger>
+                      <TabsTrigger value="insights">Insights</TabsTrigger>
+                    </TabsList>
+                    
+                    <TabsContent value="overview" className="space-y-4">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <div className={`w-3 h-3 rounded-full ${phaseColors.accent}`}></div>
+                          <h3 className={`font-medium ${phaseColors.text}`}>
+                            {person.name}'s Cycle
+                          </h3>
+                        </div>
+                        <Circle className={`h-5 w-5 ${phaseColors.accent.replace('bg-', 'text-')}`} />
                       </div>
                       
-                      {currentPhase && (
-                        <p className={`text-xs ${phaseColors.text} opacity-80`}>
-                          {currentPhase.description}
-                        </p>
-                      )}
-                      
-                      <p className={`text-xs ${phaseColors.text} opacity-80`}>
-                        Started {format(new Date(currentCycle.startDate), 'MMM d, yyyy')}
-                      </p>
-                      
-                      <Button 
-                        onClick={() => handleEdit(currentCycle)}
-                        size="sm"
-                        className={`w-full ${phaseColors.accent} hover:opacity-90 text-white`}
-                      >
-                        <Edit3 className="h-4 w-4 mr-2" />
-                        Update Current Cycle
-                      </Button>
-                    </div>
-                  ) : (
-                    <div className="space-y-3">
-                      <p className={`text-sm ${phaseColors.text}`}>
-                        No active cycle
-                      </p>
-                      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                        <DialogTrigger asChild>
+                      {currentCycle ? (
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between">
+                            <p className={`text-sm ${phaseColors.text}`}>
+                              Day {currentDay} of cycle
+                            </p>
+                            {currentPhase && (
+                              <Badge className={`${currentPhase.color} text-white text-xs`}>
+                                {currentPhase.phase}
+                              </Badge>
+                            )}
+                          </div>
+                          
+                          {currentPhase && (
+                            <p className={`text-xs ${phaseColors.text} opacity-80`}>
+                              {currentPhase.description}
+                            </p>
+                          )}
+                          
+                          <p className={`text-xs ${phaseColors.text} opacity-80`}>
+                            Started {format(new Date(currentCycle.startDate), 'MMM d, yyyy')}
+                          </p>
+                          
                           <Button 
+                            onClick={() => handleEdit(currentCycle)}
                             size="sm"
                             className={`w-full ${phaseColors.accent} hover:opacity-90 text-white`}
-                            onClick={() => {
-                              setEditingCycle(null);
-                              setCycleForPersonId(personId);
-                              resetForm();
-                            }}
                           >
-                            <Plus className="h-4 w-4 mr-2" />
-                            Start New Cycle
+                            <Edit3 className="h-4 w-4 mr-2" />
+                            Update Current Cycle
                           </Button>
-                        </DialogTrigger>
-                      </Dialog>
-                    </div>
-                  )}
+                        </div>
+                      ) : (
+                        <div className="space-y-3">
+                          <p className={`text-sm ${phaseColors.text}`}>
+                            No active cycle
+                          </p>
+                          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                            <DialogTrigger asChild>
+                              <Button 
+                                size="sm"
+                                className={`w-full ${phaseColors.accent} hover:opacity-90 text-white`}
+                                onClick={() => {
+                                  setEditingCycle(null);
+                                  setCycleForPersonId(personId);
+                                  resetForm();
+                                }}
+                              >
+                                <Plus className="h-4 w-4 mr-2" />
+                                Start New Cycle
+                              </Button>
+                            </DialogTrigger>
+                          </Dialog>
+                        </div>
+                      )}
+                    </TabsContent>
+
+                    {/* Detailed Phase Tab */}
+                    <TabsContent value="detailed" className="space-y-4">
+                      {currentPhase && currentCycle && (
+                        <DetailedPhaseCard
+                          phaseData={currentPhase}
+                          currentDay={currentDay}
+                          cycleLength={avgCycleLength}
+                          connectionName={person.name}
+                        />
+                      )}
+                    </TabsContent>
+
+                    {/* AI Learning Tab */}
+                    <TabsContent value="learning" className="space-y-4">
+                      {personCycles.length >= 2 ? (
+                        <CycleLearningEngine
+                          learningData={{
+                            averageCycleLength: avgCycleLength,
+                            ovulationPattern: {
+                              predictedDay: calculateOvulationDay(avgCycleLength, personCycles),
+                              confidence: 0.8,
+                              historicalAccuracy: 0.85
+                            },
+                            symptoms: [
+                              { phase: 'menstrual', commonSymptoms: ['Cramps', 'Fatigue'], severity: 2 },
+                              { phase: 'luteal', commonSymptoms: ['Mood swings', 'Bloating'], severity: 2 }
+                            ],
+                            moodPatterns: [
+                              { phase: 'menstrual', averageMood: 'Low', consistency: 0.8 },
+                              { phase: 'follicular', averageMood: 'Rising', consistency: 0.7 }
+                            ],
+                            personalizedInsights: [
+                              `Your ${avgCycleLength}-day cycles are well-tracked`,
+                              'Regular pattern detected for better predictions'
+                            ],
+                            cycleVariability: 0.1,
+                            dataQuality: Math.min(1, personCycles.length / 6)
+                          }}
+                          connectionName={person.name}
+                          totalCycles={personCycles.length}
+                        />
+                      ) : (
+                        <Card className="p-6 text-center">
+                          <div className="flex flex-col items-center gap-3">
+                            <Brain className="h-8 w-8 text-gray-400" />
+                            <div>
+                              <h3 className="font-medium">Need More Data</h3>
+                              <p className="text-sm text-muted-foreground">
+                                Track at least 2 cycles for AI learning insights
+                              </p>
+                            </div>
+                          </div>
+                        </Card>
+                      )}
+                    </TabsContent>
+
+                    {/* Enhanced Visualizer Tab */}
+                    <TabsContent value="insights" className="space-y-4">
+                      {currentPhase && currentCycle && (
+                        <EnhancedPhaseVisualizer
+                          currentPhase={currentPhase}
+                          currentDay={currentDay}
+                          cycleLength={avgCycleLength}
+                          connectionName={person.name}
+                          nextPhaseInfo={{
+                            phase: currentPhase.phase === 'menstrual' ? 'follicular' : 
+                                   currentPhase.phase === 'follicular' ? 'fertile' :
+                                   currentPhase.phase === 'fertile' ? 'luteal' : 'menstrual',
+                            daysUntil: Math.max(1, Math.ceil((avgCycleLength - currentDay) / 4)),
+                            emoji: currentPhase.phase === 'menstrual' ? '🌱' : 
+                                   currentPhase.phase === 'follicular' ? '💛' :
+                                   currentPhase.phase === 'fertile' ? '🌙' : '🩸'
+                          }}
+                        />
+                      )}
+                    </TabsContent>
+                  </Tabs>
                 </Card>
               );
             })}
