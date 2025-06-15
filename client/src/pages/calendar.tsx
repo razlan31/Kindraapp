@@ -224,9 +224,19 @@ export default function Calendar() {
     // If this connection is not allowed, return null immediately
     if (!allowedConnectionIds.has(connectionId)) {
       if (connectionId === 10 && format(day, 'yyyy-MM-dd') === '2025-05-15') {
-        console.log('Emma cycle BLOCKED by connection filtering - returning null');
+        console.log('SUCCESS: Emma cycle BLOCKED by connection filtering - returning null');
+        console.log('allowedConnectionIds:', Array.from(allowedConnectionIds));
       }
       return null;
+    }
+    
+    // If we get here and it's Emma's cycle on May 15th, something is wrong
+    if (connectionId === 10 && format(day, 'yyyy-MM-dd') === '2025-05-15') {
+      console.log('ERROR: Emma cycle NOT blocked - this should not happen!');
+      console.log('allowedConnectionIds:', Array.from(allowedConnectionIds));
+      console.log('selectedConnectionIds:', selectedConnectionIds);
+      console.log('hasUserSelectedConnection:', hasUserSelectedConnection);
+      console.log('mainFocusConnection:', mainFocusConnection?.name);
     }
     
     const relevantCycles = cycles.filter(cycle => cycle.connectionId === connectionId);
@@ -1189,9 +1199,26 @@ export default function Calendar() {
                   }
                 }
                 
+                // CRITICAL: Only create cycleDisplay if we have valid, authorized cycle phases
+                if (format(day, 'yyyy-MM-dd') === '2025-05-15') {
+                  console.log(`May 15th CYCLE DISPLAY DEBUG:`, {
+                    cyclePhases: cyclePhases.length,
+                    phases: cyclePhases.map(p => ({ 
+                      connectionId: p.connection?.id, 
+                      connectionName: p.connection?.name, 
+                      phase: p.phase 
+                    })),
+                    selectedConnectionIds,
+                    shouldHaveDisplay: cyclePhases.length > 0
+                  });
+                }
+                
                 // Use the first cycle phase for background color, or create multi-connection display
                 if (cyclePhases.length === 1) {
                   cycleDisplay = getCycleDisplayInfo(cyclePhases[0]);
+                  if (format(day, 'yyyy-MM-dd') === '2025-05-15') {
+                    console.log(`May 15th: Creating single cycle display for ${cyclePhases[0].connection?.name}:`, cycleDisplay?.color);
+                  }
                 } else if (cyclePhases.length > 1) {
                   // Multiple connections have cycles on this day - show combined info with colored initials
                   const getConnectionColor = (connectionId: number) => {
