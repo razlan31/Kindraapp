@@ -204,13 +204,23 @@ export default function Calendar() {
     
 
     
-    // CRITICAL: Apply connection filtering at the source
+    // ENHANCED FILTERING: Determine exactly which connections should show cycles
     const allowedConnectionIds = new Set();
     
     if (selectedConnectionIds.length > 0) {
+      // User has explicitly selected specific connections
       selectedConnectionIds.forEach(id => allowedConnectionIds.add(id));
+      
+      // Debug logging for May 15th
+      if (format(day, 'yyyy-MM-dd') === '2025-05-15') {
+        console.log(`🔍 May 15th getCyclePhaseForDay: selectedConnectionIds=${JSON.stringify(selectedConnectionIds)}, checking connectionId=${connectionId}`);
+      }
     } else if (hasUserSelectedConnection) {
-      // User has made a selection but no connections are currently selected = show none
+      // User made a selection but nothing is currently selected = show nothing
+      if (format(day, 'yyyy-MM-dd') === '2025-05-15') {
+        console.log('May 15th getCyclePhaseForDay: hasUserSelectedConnection=true but no connections selected, returning null');
+      }
+      return null;
     } else if (mainFocusConnection) {
       allowedConnectionIds.add(mainFocusConnection.id);
     } else {
@@ -218,8 +228,11 @@ export default function Calendar() {
       cycles.forEach(cycle => allowedConnectionIds.add(cycle.connectionId));
     }
     
-    // If this connection is not allowed, return null immediately
+    // CRITICAL CHECK: If this connection is not allowed, return null immediately
     if (!allowedConnectionIds.has(connectionId)) {
+      if (format(day, 'yyyy-MM-dd') === '2025-05-15') {
+        console.log(`May 15th getCyclePhaseForDay: Connection ${connectionId} not in allowed list ${Array.from(allowedConnectionIds)}, returning null`);
+      }
       return null;
     }
     
@@ -233,9 +246,36 @@ export default function Calendar() {
     // Find the cycle that contains this day
     for (const cycle of relevantCycles) {
       const cycleStart = new Date(cycle.startDate);
-      const cycleEnd = cycle.endDate ? new Date(cycle.endDate) : new Date();
+      
+      // CRITICAL FIX: When connections are specifically selected, be more restrictive about cycle extension
+      let cycleEnd;
+      if (selectedConnectionIds.length > 0) {
+        // When specific connections are selected, only show cycles within their actual period + a few days buffer
+        const periodEnd = new Date(cycle.periodEndDate);
+        if (cycle.endDate) {
+          cycleEnd = new Date(cycle.endDate);
+        } else {
+          // For active cycles with selection, limit extension to 3 days after period end
+          cycleEnd = new Date(periodEnd.getTime() + (3 * 24 * 60 * 60 * 1000));
+        }
+      } else {
+        // Default behavior for when no specific selection
+        cycleEnd = cycle.endDate ? new Date(cycle.endDate) : new Date();
+      }
       
       if (day >= cycleStart && day <= cycleEnd) {
+        // Debug logging for May 15th
+        if (format(day, 'yyyy-MM-dd') === '2025-05-15') {
+          console.log(`🔍 May 15th cycle match found:`, {
+            connectionId: cycle.connectionId,
+            cycleStart: format(cycleStart, 'yyyy-MM-dd'),
+            cycleEnd: format(cycleEnd, 'yyyy-MM-dd'),
+            periodEnd: format(new Date(cycle.periodEndDate), 'yyyy-MM-dd'),
+            actualEndDate: cycle.endDate ? format(new Date(cycle.endDate), 'yyyy-MM-dd') : 'null',
+            selectedConnectionIds
+          });
+        }
+        
         const dayOfCycle = Math.floor((day.getTime() - cycleStart.getTime()) / (1000 * 60 * 60 * 24)) + 1;
         const periodEnd = new Date(cycle.periodEndDate);
         const periodDays = Math.floor((periodEnd.getTime() - cycleStart.getTime()) / (1000 * 60 * 60 * 24)) + 1;
@@ -1106,11 +1146,12 @@ export default function Calendar() {
                 
                 // DEBUG for May 15th issue
                 if (format(day, 'yyyy-MM-dd') === '2025-05-15') {
-                  console.log('May 15th State Debug:', {
+                  console.log('🔍 May 15th State Debug:', {
                     selectedConnectionIds,
                     hasUserSelectedConnection,
                     mainFocusConnection: mainFocusConnection?.id,
-                    allCycleConnections: cycles.map(c => ({ id: c.connectionId, periodEnd: c.periodEndDate }))
+                    allCycleConnections: cycles.map(c => ({ id: c.connectionId, periodEnd: c.periodEndDate })),
+                    connectionsToCheck
                   });
                 }
 
