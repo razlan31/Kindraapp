@@ -202,6 +202,8 @@ export default function Calendar() {
     
 
     
+
+    
     // CRITICAL: Apply connection filtering at the source
     const allowedConnectionIds = new Set();
     
@@ -1158,9 +1160,26 @@ export default function Calendar() {
                   }
                 }
                 
+                // DEBUG: Track June 15th cycle display creation
+                if (format(day, 'yyyy-MM-dd') === '2025-06-15') {
+                  console.log('June 15th CYCLE DISPLAY:', {
+                    cyclePhases: cyclePhases.length,
+                    phases: cyclePhases.map(p => ({ 
+                      connectionId: p.connection?.id, 
+                      connectionName: p.connection?.name, 
+                      phase: p.phase 
+                    })),
+                    selectedConnectionIds,
+                    connectionsToCheck
+                  });
+                }
+                
                 // Use the first cycle phase for background color, or create multi-connection display
                 if (cyclePhases.length === 1) {
                   cycleDisplay = getCycleDisplayInfo(cyclePhases[0]);
+                  if (format(day, 'yyyy-MM-dd') === '2025-06-15') {
+                    console.log('June 15th: Creating single cycle display:', cycleDisplay?.color);
+                  }
                 } else if (cyclePhases.length > 1) {
                   // Multiple connections have cycles on this day - show combined info with colored initials
                   const getConnectionColor = (connectionId: number) => {
