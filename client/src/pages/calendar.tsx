@@ -261,6 +261,20 @@ export default function Calendar() {
   const getCycleDisplayInfo = (phaseInfo: any) => {
     if (!phaseInfo) return null;
     
+    // Use detailed phase info if available
+    const detailedInfo = phaseInfo.detailedInfo;
+    if (detailedInfo) {
+      return {
+        color: detailedInfo.color,
+        indicator: detailedInfo.emoji,
+        title: `${detailedInfo.description} - Day ${phaseInfo.day}`,
+        description: `${detailedInfo.subPhase.replace('_', ' ')} (${detailedInfo.dayRange})`,
+        hormonalProfile: detailedInfo.hormonalProfile,
+        recommendations: detailedInfo.recommendations
+      };
+    }
+    
+    // Fallback to basic phase display
     switch (phaseInfo.phase) {
       case 'menstrual':
         return {
