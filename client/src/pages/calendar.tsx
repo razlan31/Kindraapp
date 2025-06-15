@@ -1119,25 +1119,36 @@ export default function Calendar() {
                 } else if (selectedConnectionIds.length === 1) {
                   // Single connection selected - only process if connection has cycles
                   const connectionId = selectedConnectionIds[0];
-                  const hasActiveCycles = cycles.some(c => c.connectionId === connectionId);
+                  const connectionCycles = cycles.filter(c => c.connectionId === connectionId);
                   
-                  if (hasActiveCycles) {
+                  // Debug logging for Amalina (connection 6)
+                  if (connectionId === 6) {
+                    console.log(`Calendar Debug: Amalina selected - cycles found: ${connectionCycles.length} for day ${format(day, 'yyyy-MM-dd')}`);
+                  }
+                  
+                  // Only proceed if this specific connection has cycles
+                  if (connectionCycles.length > 0) {
                     const phaseInfo = getCyclePhaseForDay(day, connectionId);
                     if (phaseInfo) {
                       const connection = connections.find(c => c.id === connectionId);
-                      cyclePhases.push({ ...phaseInfo, connection });
+                      if (connection) {
+                        cyclePhases.push({ ...phaseInfo, connection });
+                      }
                     }
                   }
                 } else {
                   // Multiple connections selected - find cycles from selected connections
                   for (const connectionId of selectedConnectionIds) {
-                    const hasActiveCycles = cycles.some(c => c.connectionId === connectionId);
+                    const connectionCycles = cycles.filter(c => c.connectionId === connectionId);
                     
-                    if (hasActiveCycles) {
+                    // Only proceed if this specific connection has cycles
+                    if (connectionCycles.length > 0) {
                       const phaseInfo = getCyclePhaseForDay(day, connectionId);
                       if (phaseInfo) {
                         const connection = connections.find(c => c.id === connectionId);
-                        cyclePhases.push({ ...phaseInfo, connection });
+                        if (connection) {
+                          cyclePhases.push({ ...phaseInfo, connection });
+                        }
                       }
                     }
                   }
