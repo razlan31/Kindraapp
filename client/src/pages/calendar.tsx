@@ -200,6 +200,35 @@ export default function Calendar() {
   const getCyclePhaseForDay = (day: Date, connectionId: number | null) => {
     if (!connectionId) return null;
     
+    // DEBUG: Track Emma's cycle processing specifically
+    if (connectionId === 10 && format(day, 'yyyy-MM-dd') === '2025-05-15') {
+      console.log('WARNING: Emma cycle (10) being processed for May 15th when it should be filtered out');
+      console.log('Current selectedConnectionIds:', selectedConnectionIds);
+      console.log('Current hasUserSelectedConnection:', hasUserSelectedConnection);
+    }
+    
+    // CRITICAL: Apply connection filtering at the source
+    const allowedConnectionIds = new Set();
+    
+    if (selectedConnectionIds.length > 0) {
+      selectedConnectionIds.forEach(id => allowedConnectionIds.add(id));
+    } else if (hasUserSelectedConnection) {
+      // User has made a selection but no connections are currently selected = show none
+    } else if (mainFocusConnection) {
+      allowedConnectionIds.add(mainFocusConnection.id);
+    } else {
+      // No selection at all = show all connections
+      cycles.forEach(cycle => allowedConnectionIds.add(cycle.connectionId));
+    }
+    
+    // If this connection is not allowed, return null immediately
+    if (!allowedConnectionIds.has(connectionId)) {
+      if (connectionId === 10 && format(day, 'yyyy-MM-dd') === '2025-05-15') {
+        console.log('Emma cycle BLOCKED by connection filtering - returning null');
+      }
+      return null;
+    }
+    
     const relevantCycles = cycles.filter(cycle => cycle.connectionId === connectionId);
     
     // If no cycles exist for this connection, return null
@@ -1091,7 +1120,7 @@ export default function Calendar() {
                   });
                 }
 
-                // CRITICAL FIX: Completely rewrite connection filtering logic
+                // ULTIMATE FIX: Ensure cycle highlighting respects connection selection
                 if (selectedConnectionIds.length > 0) {
                   // When connections are explicitly selected, ONLY show those connections' cycles
                   connectionsToCheck = selectedConnectionIds;
@@ -1105,6 +1134,10 @@ export default function Calendar() {
                   // No selection at all = show all connections
                   connectionsToCheck = [...new Set(cycles.map(c => c.connectionId))];
                 }
+                
+                // ADDITIONAL SAFETY: Filter out any cycles that shouldn't be visible
+                const allowedConnectionIds = new Set(connectionsToCheck);
+                const filteredCycles = cycles.filter(cycle => allowedConnectionIds.has(cycle.connectionId));
 
                 if (format(day, 'yyyy-MM-dd') === '2025-05-15') {
                   console.log('May 15th Connections to Check:', connectionsToCheck);
@@ -1112,7 +1145,7 @@ export default function Calendar() {
                 
                 // Process each connection that should be checked
                 for (const connectionId of connectionsToCheck) {
-                  const connectionCycles = cycles.filter(c => c.connectionId === connectionId);
+                  const connectionCycles = filteredCycles.filter(c => c.connectionId === connectionId);
                   
                   // Skip if this connection has no cycles
                   if (connectionCycles.length === 0) continue;
