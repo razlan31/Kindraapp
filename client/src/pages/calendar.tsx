@@ -200,12 +200,7 @@ export default function Calendar() {
   const getCyclePhaseForDay = (day: Date, connectionId: number | null) => {
     if (!connectionId) return null;
     
-    // DEBUG: Track Emma's cycle processing specifically
-    if (connectionId === 10 && format(day, 'yyyy-MM-dd') === '2025-05-15') {
-      console.log('WARNING: Emma cycle (10) being processed for May 15th when it should be filtered out');
-      console.log('Current selectedConnectionIds:', selectedConnectionIds);
-      console.log('Current hasUserSelectedConnection:', hasUserSelectedConnection);
-    }
+
     
     // CRITICAL: Apply connection filtering at the source
     const allowedConnectionIds = new Set();
@@ -223,20 +218,7 @@ export default function Calendar() {
     
     // If this connection is not allowed, return null immediately
     if (!allowedConnectionIds.has(connectionId)) {
-      if (connectionId === 10 && format(day, 'yyyy-MM-dd') === '2025-05-15') {
-        console.log('SUCCESS: Emma cycle BLOCKED by connection filtering - returning null');
-        console.log('allowedConnectionIds:', Array.from(allowedConnectionIds));
-      }
       return null;
-    }
-    
-    // If we get here and it's Emma's cycle on May 15th, something is wrong
-    if (connectionId === 10 && format(day, 'yyyy-MM-dd') === '2025-05-15') {
-      console.log('ERROR: Emma cycle NOT blocked - this should not happen!');
-      console.log('allowedConnectionIds:', Array.from(allowedConnectionIds));
-      console.log('selectedConnectionIds:', selectedConnectionIds);
-      console.log('hasUserSelectedConnection:', hasUserSelectedConnection);
-      console.log('mainFocusConnection:', mainFocusConnection?.name);
     }
     
     const relevantCycles = cycles.filter(cycle => cycle.connectionId === connectionId);
@@ -1149,30 +1131,7 @@ export default function Calendar() {
                 const allowedConnectionIds = new Set(connectionsToCheck);
                 const filteredCycles = cycles.filter(cycle => allowedConnectionIds.has(cycle.connectionId));
 
-                if (format(day, 'yyyy-MM-dd') === '2025-05-15') {
-                  console.log('May 15th DEBUG:', {
-                    connectionsToCheck,
-                    selectedConnectionIds,
-                    hasUserSelectedConnection,
-                    mainFocusConnection: mainFocusConnection?.name,
-                    filteredCycles: filteredCycles.length,
-                    allCycles: cycles.length
-                  });
-                }
-                
-                // DEBUG: Show current calendar view and issue location
-                const currentDate = format(day, 'yyyy-MM-dd');
-                if (currentDate === '2025-06-15') {
-                  console.log('CALENDAR DEBUG: You are currently viewing June 2025');
-                  console.log('TO REPRODUCE ISSUE: Navigate to May 2025 and look at May 15th');
-                  console.log('EXPECTED: May 15th should NOT have red highlighting when only Amalina is selected');
-                  console.log('CURRENT STATE: selectedConnectionIds =', selectedConnectionIds, 'focus =', mainFocusConnection?.name);
-                }
-                
-                // CRITICAL DEBUG: Track when we process any May 2025 dates
-                if (currentDate.startsWith('2025-05')) {
-                  console.log('Processing May 2025 date:', currentDate, 'connectionsToCheck:', connectionsToCheck);
-                }
+
                 
                 // Process each connection that should be checked
                 for (const connectionId of connectionsToCheck) {
@@ -1199,26 +1158,9 @@ export default function Calendar() {
                   }
                 }
                 
-                // CRITICAL: Only create cycleDisplay if we have valid, authorized cycle phases
-                if (format(day, 'yyyy-MM-dd') === '2025-05-15') {
-                  console.log(`May 15th CYCLE DISPLAY DEBUG:`, {
-                    cyclePhases: cyclePhases.length,
-                    phases: cyclePhases.map(p => ({ 
-                      connectionId: p.connection?.id, 
-                      connectionName: p.connection?.name, 
-                      phase: p.phase 
-                    })),
-                    selectedConnectionIds,
-                    shouldHaveDisplay: cyclePhases.length > 0
-                  });
-                }
-                
                 // Use the first cycle phase for background color, or create multi-connection display
                 if (cyclePhases.length === 1) {
                   cycleDisplay = getCycleDisplayInfo(cyclePhases[0]);
-                  if (format(day, 'yyyy-MM-dd') === '2025-05-15') {
-                    console.log(`May 15th: Creating single cycle display for ${cyclePhases[0].connection?.name}:`, cycleDisplay?.color);
-                  }
                 } else if (cyclePhases.length > 1) {
                   // Multiple connections have cycles on this day - show combined info with colored initials
                   const getConnectionColor = (connectionId: number) => {
