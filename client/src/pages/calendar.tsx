@@ -1297,9 +1297,14 @@ export default function Calendar() {
                 
 
                 
-                // Debug logging for June 16th
+                // Debug logging for June 16th and 26th
                 if (format(day, 'yyyy-MM-dd') === '2025-06-16') {
                   console.log(`🔍 June 16th: cyclePhases.length = ${cyclePhases.length}`, cyclePhases);
+                }
+                if (format(day, 'yyyy-MM-dd') === '2025-06-26') {
+                  console.log(`🔍 June 26th: cyclePhases.length = ${cyclePhases.length}`, cyclePhases);
+                  console.log(`🔍 June 26th: cycles.length = ${cycles?.length || 0}`);
+                  console.log(`🔍 June 26th: cycleDisplay =`, cycleDisplay);
                 }
                 
                 // CRITICAL SAFETY CHECK: Ensure no cycle display when cycles are empty
