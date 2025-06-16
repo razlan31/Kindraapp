@@ -365,7 +365,16 @@ export default function Calendar() {
         // Calculate ovulation day: typically 14 days before cycle end
         const ovulationDay = Math.max(12, cycleLength - 14);
         
-
+        // Debug ovulation calculation for May cycle
+        if (connectionId === 6 && (format(day, 'yyyy-MM-dd') === '2025-05-16' || format(day, 'yyyy-MM-dd') === '2025-05-15' || format(day, 'yyyy-MM-dd') === '2025-05-17')) {
+          console.log(`🥚 OVULATION DEBUG for ${format(day, 'yyyy-MM-dd')}:`, {
+            cycleLength,
+            ovulationDay,
+            dayOfCycle,
+            isInFertileWindow: dayOfCycle >= ovulationDay - 2 && dayOfCycle <= ovulationDay + 2,
+            isOvulationDay: dayOfCycle === ovulationDay
+          });
+        }
         
         if (dayOfCycle <= periodDays) {
           return { phase: 'menstrual', day: dayOfCycle, cycle };
@@ -373,8 +382,8 @@ export default function Calendar() {
           return { phase: 'follicular', day: dayOfCycle, cycle };
         } else if (dayOfCycle >= ovulationDay - 2 && dayOfCycle <= ovulationDay + 2) {
           const isOvulation = dayOfCycle === ovulationDay;
-          if (connectionId === 6 && isOvulation) {
-            console.log(`FOUND OVULATION for Amalina on ${format(day, 'yyyy-MM-dd')} - day ${dayOfCycle} of cycle`);
+          if (connectionId === 6 && (format(day, 'yyyy-MM-dd') === '2025-05-16' || isOvulation)) {
+            console.log(`🥚 FOUND FERTILE/OVULATION for Amalina on ${format(day, 'yyyy-MM-dd')} - day ${dayOfCycle}, ovulation: ${isOvulation}`);
           }
           return { phase: 'fertile', day: dayOfCycle, cycle, isOvulation };
         } else {
