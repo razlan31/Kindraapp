@@ -1360,7 +1360,7 @@ export default function Calendar() {
                       ${viewMode === 'daily' ? 'min-h-20 p-4 flex-col items-start justify-start text-left' : viewMode === 'weekly' ? 'h-24 p-2' : 'h-16 p-1'} 
                       border rounded-lg transition-colors hover:bg-accent/50
                       ${isToday ? 'border-primary/30' : 'border-border/20'}
-                      ${cycleDisplay ? `${cycleDisplay.color} border-2` : (isToday ? 'bg-primary/10' : 'bg-background/50')}
+                      ${(!cycles || cycles.length === 0) ? (isToday ? 'bg-primary/10' : 'bg-background/50') : (cycleDisplay ? `${cycleDisplay.color} border-2` : (isToday ? 'bg-primary/10' : 'bg-background/50'))}
                       ${!isSameMonth(day, currentDate) ? 'opacity-30' : ''}
                       ${viewMode === 'daily' ? 'flex' : 'block'}
                     `}
