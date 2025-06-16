@@ -1298,9 +1298,9 @@ export default function Calendar() {
                     // Check if this connection has a cycle phase for this day
                     const phaseInfo = getCyclePhaseForDay(day, connectionId);
                     
-                    // Debug for May 16th ovulation
-                    if (format(day, 'yyyy-MM-dd') === '2025-05-16' && connectionId === 6) {
-                      console.log(`🥚 May 16th DEBUG - getCyclePhaseForDay result:`, phaseInfo);
+                    // Debug for May dates to see if function is being called
+                    if (format(day, 'yyyy-MM-dd').startsWith('2025-05') && connectionId === 6) {
+                      console.log(`🥚 MAY PROCESSING ${format(day, 'yyyy-MM-dd')} - getCyclePhaseForDay result:`, phaseInfo);
                     }
                     
                     if (phaseInfo) {
