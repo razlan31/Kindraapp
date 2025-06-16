@@ -716,7 +716,7 @@ export default function MenstrualCyclePage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/connections'] });
-      closeConnectionModal();
+      // Connection modal functionality removed
       toast({
         title: "Connection Added",
         description: "Your new connection has been saved successfully.",
@@ -1025,7 +1025,7 @@ export default function MenstrualCyclePage() {
                 })}
                 <Separator className="my-1" />
                 <DropdownMenuItem 
-                  onClick={() => openConnectionModal()}
+                  onClick={() => {/* Connection modal functionality removed */}}
                   className="py-3 px-4"
                 >
                   <div className="flex items-center gap-2 text-blue-600">
@@ -1709,13 +1709,13 @@ export default function MenstrualCyclePage() {
           </DialogContent>
         </Dialog>
 
-        {/* Connection Modal */}
-        {connectionModalOpen && (
+        {/* Connection Modal - Functionality temporarily removed */}
+        {false && (
           <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
             <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
               <div className="flex items-center justify-between p-4 border-b">
                 <h2 className="font-heading font-semibold text-lg">Add New Connection</h2>
-                <Button variant="ghost" size="icon" onClick={closeConnectionModal}>
+                <Button variant="ghost" size="icon" onClick={() => {}}>
                   <X className="h-4 w-4" />
                 </Button>
               </div>
@@ -1733,7 +1733,7 @@ export default function MenstrualCyclePage() {
                     <div className="flex items-center justify-center mb-3">
                       <Avatar className="h-20 w-20 border-2 border-blue-100 dark:border-blue-900">
                         {uploadedImage ? (
-                          <AvatarImage src={uploadedImage} alt="Profile preview" />
+                          <AvatarImage src={uploadedImage || undefined} alt="Profile preview" />
                         ) : (
                           <AvatarFallback className="bg-blue-50 dark:bg-blue-950 text-blue-500">
                             <Camera className="h-6 w-6" />
@@ -1952,7 +1952,7 @@ export default function MenstrualCyclePage() {
                   <Button
                     type="button"
                     variant="outline"
-                    onClick={closeConnectionModal}
+                    onClick={() => {}}
                     className="flex-1"
                   >
                     Cancel
