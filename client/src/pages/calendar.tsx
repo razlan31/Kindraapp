@@ -1242,6 +1242,11 @@ export default function Calendar() {
                   connectionsToCheck = [...new Set(cycles.map(c => c.connectionId))];
                 }
                 
+                // DEBUG: Log connections being checked for May 16th
+                if (format(day, 'yyyy-MM-dd') === '2025-05-16') {
+                  console.log(`🔵 May 16th: connectionsToCheck=${JSON.stringify(connectionsToCheck)}, cycles.length=${cycles.length}, mainFocusConnection=${mainFocusConnection?.id}`);
+                }
+                
                 const allowedConnectionIds = new Set(connectionsToCheck);
                 const filteredCycles = cycles.filter(cycle => allowedConnectionIds.has(cycle.connectionId));
 
