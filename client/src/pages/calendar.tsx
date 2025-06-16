@@ -257,6 +257,7 @@ export default function Calendar() {
         start: format(new Date(c.periodStartDate), 'yyyy-MM-dd'),
         end: c.cycleEndDate ? format(new Date(c.cycleEndDate), 'yyyy-MM-dd') : 'null'
       })));
+      console.log(`🔍 MAY 16th relevantCycles for connection ${connectionId}:`, cycles.filter(c => c.connectionId === connectionId));
     }
     
     if (!connectionId) {
@@ -1212,6 +1213,15 @@ export default function Calendar() {
                     console.log(`🔍 MAY ${format(day, 'dd')}: FORCING connection 6 check for debugging`);
                     connectionsToCheck.push(6);
                   }
+                }
+                
+                // Special debug for May 16th processing
+                if (format(day, 'yyyy-MM-dd') === '2025-05-16') {
+                  console.log(`🔍 MAY 16th PROCESSING START:`, {
+                    connectionsToCheck,
+                    cyclesLength: cycles.length,
+                    directOverrideApplied: dayStr === '2025-05-16'
+                  });
                 }
                 
 
