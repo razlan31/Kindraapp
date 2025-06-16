@@ -301,6 +301,7 @@ export default function Calendar() {
       const periodLength = periodEnd ? Math.floor((periodEnd.getTime() - cycleStart.getTime()) / (1000 * 60 * 60 * 24)) + 1 : 5;
       
       // Ovulation is 14 days before cycle end
+      // For May 1-30 cycle (30 days), ovulation should be day 16
       const ovulationDay = cycleLength - 14;
       
       // Debug for May 16th and June 16th
@@ -317,10 +318,11 @@ export default function Calendar() {
         });
       }
       
-      // Simple phase calculation
+      // Simple phase calculation with ovulation priority
       if (dayOfCycle <= periodLength) {
         return { phase: 'menstrual', day: dayOfCycle, cycle };
       } else if (dayOfCycle === ovulationDay) {
+        // PRIORITY: Ovulation day takes precedence over fertile window
         return { phase: 'ovulation', day: dayOfCycle, cycle };
       } else if (dayOfCycle >= ovulationDay - 2 && dayOfCycle <= ovulationDay + 2) {
         return { phase: 'fertile', day: dayOfCycle, cycle };

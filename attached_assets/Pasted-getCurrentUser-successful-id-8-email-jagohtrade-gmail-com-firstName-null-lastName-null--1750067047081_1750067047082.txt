@@ -1,0 +1,76 @@
+getCurrentUser successful: {id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+Console.js:61 getCurrentUser successful: {id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+Console.js:61 Auth context setting user: {id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+Console.js:61 Auth: Finally block - setting loading to false
+Console.js:61 🔍 Calendar cycles data loaded: {cyclesLength: 1, cycles: Array(1), timestamp: '2025-06-16T09:43:46.575Z'}
+Console.js:61 🔍 Today is June 16th - cycle data check: {cyclesLength: 1, hasAnyDatabaseCycles: true, allCycleIds: Array(1), allConnectionIds: Array(1)}
+Console.js:61 Filtered out moment 69 - connection not selected 11 [6]
+Console.js:61 Filtered out moment 63 - connection not selected 9 [6]
+Console.js:61 Filtered out moment 110 - connection not selected 16 [6]
+Console.js:61 Filtered out moment 109 - connection not selected 29 [6]
+Console.js:61 Filtered out moment 108 - connection not selected 16 [6]
+Console.js:61 Filtered out moment 107 - connection not selected 16 [6]
+Console.js:61 Filtered out moment 106 - connection not selected 16 [6]
+Console.js:61 Filtered out moment 103 - connection not selected 12 [6]
+Console.js:61 Filtered out moment 102 - connection not selected 11 [6]
+Console.js:61 Filtered out moment 101 - connection not selected 9 [6]
+Console.js:61 Filtered out moment 51 - connection not selected 8 [6]
+Console.js:61 Filtered out moment 50 - connection not selected 8 [6]
+Console.js:61 Filtered out moment 80 - connection not selected 9 [6]
+Console.js:61 Filtered out moment 79 - connection not selected 9 [6]
+Console.js:61 Filtered out moment 78 - connection not selected 9 [6]
+Console.js:61 Filtered out moment 77 - connection not selected 9 [6]
+Console.js:61 Filtered out moment 76 - connection not selected 9 [6]
+Console.js:61 Filtered out moment 75 - connection not selected 9 [6]
+Console.js:61 Filtered out moment 90 - connection not selected 10 [6]
+Console.js:61 Filtered out moment 100 - connection not selected 11 [6]
+Console.js:61 Filtered out moment 74 - connection not selected 9 [6]
+Console.js:61 Filtered out moment 89 - connection not selected 10 [6]
+Console.js:61 Filtered out moment 73 - connection not selected 9 [6]
+Console.js:61 Filtered out moment 99 - connection not selected 11 [6]
+Console.js:61 Filtered out moment 88 - connection not selected 10 [6]
+Console.js:61 Filtered out moment 72 - connection not selected 9 [6]
+Console.js:61 Filtered out moment 87 - connection not selected 10 [6]
+Console.js:61 Filtered out moment 71 - connection not selected 9 [6]
+Console.js:61 Filtered out moment 98 - connection not selected 11 [6]
+Console.js:61 Filtered out moment 86 - connection not selected 10 [6]
+Console.js:61 Filtered out moment 70 - connection not selected 9 [6]
+Console.js:61 Filtered out moment 83 - connection not selected 10 [6]
+Console.js:61 Filtered out moment 62 - connection not selected 9 [6]
+Console.js:61 Filtered out moment 61 - connection not selected 9 [6]
+Console.js:61 Filtered out moment 85 - connection not selected 10 [6]
+Console.js:61 Filtered out moment 97 - connection not selected 11 [6]
+Console.js:61 Filtered out moment 82 - connection not selected 10 [6]
+Console.js:61 Filtered out moment 96 - connection not selected 11 [6]
+Console.js:61 Filtered out moment 81 - connection not selected 10 [6]
+Console.js:61 Filtered out moment 84 - connection not selected 10 [6]
+Console.js:61 Filtered out moment 95 - connection not selected 11 [6]
+Console.js:61 Filtered out moment 65 - connection not selected 10 [6]
+Console.js:61 Filtered out moment 64 - connection not selected 10 [6]
+Console.js:61 Filtered out moment 94 - connection not selected 11 [6]
+Console.js:61 Filtered out moment 93 - connection not selected 11 [6]
+Console.js:61 Filtered out moment 92 - connection not selected 11 [6]
+Console.js:61 Filtered out moment 91 - connection not selected 11 [6]
+Console.js:61 Filtered out moment 68 - connection not selected 11 [6]
+Console.js:61 Filtered out moment 67 - connection not selected 11 [6]
+Console.js:61 Filtered out moment 66 - connection not selected 10 [6]
+Console.js:61 🗓️ Calendar State: {currentDate: '2025-06-16', viewMode: 'monthly', viewStart: '2025-06-01', viewEnd: '2025-06-30', calendarDaysCount: 35, …}
+Console.js:61 Calendar Debug - Total moments: 16 (16) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+Console.js:61 Today 2025-06-16 - Moment 105: 2025-06-13 - Match: false {id: 105, userId: '8', connectionId: 6, title: '', emoji: '💕', …}
+Console.js:61 Today 2025-06-16 - Moment 104: 2025-06-13 - Match: false {id: 104, userId: '8', connectionId: 6, title: 'date', emoji: '📅', …}
+Console.js:61 Today 2025-06-16 - Moment 46: 2025-06-13 - Match: false {id: 46, userId: '8', connectionId: 6, title: 'Birthday', emoji: '🎂', …}
+Console.js:61 Today 2025-06-16 - Moment 60: 2025-06-08 - Match: false {id: 60, userId: '8', connectionId: 6, title: '', emoji: '⚡', …}
+Console.js:61 Today 2025-06-16 - Moment 59: 2025-06-08 - Match: false {id: 59, userId: '8', connectionId: 6, title: '', emoji: '⚡', …}
+Console.js:61 Today 2025-06-16 - Moment 58: 2025-06-08 - Match: false {id: 58, userId: '8', connectionId: 6, title: '', emoji: '💕', …}
+Console.js:61 Today 2025-06-16 - Moment 57: 2025-06-08 - Match: false {id: 57, userId: '8', connectionId: 6, title: '', emoji: '💕', …}
+Console.js:61 Today 2025-06-16 - Moment 56: 2025-06-08 - Match: false {id: 56, userId: '8', connectionId: 6, title: '', emoji: '⚡', …}
+Console.js:61 Today 2025-06-16 - Moment 55: 2025-06-08 - Match: false {id: 55, userId: '8', connectionId: 6, title: '', emoji: '⚡', …}
+Console.js:61 Today 2025-06-16 - Moment 54: 2025-06-08 - Match: false {id: 54, userId: '8', connectionId: 6, title: '', emoji: '💕', …}
+Console.js:61 Today 2025-06-16 - Moment 53: 2025-06-08 - Match: false {id: 53, userId: '8', connectionId: 6, title: '', emoji: '💕', …}
+Console.js:61 Today 2025-06-16 - Moment 52: 2025-06-08 - Match: false {id: 52, userId: '8', connectionId: 6, title: '', emoji: '⚡', …}
+Console.js:61 Today 2025-06-16 - Moment 49: 2025-06-07 - Match: false {id: 49, userId: '8', connectionId: 6, title: null, emoji: '✅', …}
+Console.js:61 Today 2025-06-16 - Moment 47: 2025-06-04 - Match: false {id: 47, userId: '8', connectionId: 6, title: 'lobesafsa', emoji: '😊', …}
+Console.js:61 Today 2025-06-16 - Moment 45: 2025-05-16 - Match: false {id: 45, userId: '8', connectionId: 6, title: 'Started Dating', emoji: '💕', …}
+Console.js:61 Today 2025-06-16 - Moment 44: 2025-05-16 - Match: false {id: 44, userId: '8', connectionId: 6, title: 'Connection Started', emoji: '💫', …}
+Console.js:61 🔍 June 16th final styling: {isToday: true, cycleDisplay: null, cycleDisplayColor: undefined, cyclesLength: 1, finalClassName: 'h-16 p-1 border rounded-lg transition-colors hover…-accent/50 border-primary/30 bg-primary/10  block', …}
+Console.js:61 MomentModal render - momentModalOpen: false
