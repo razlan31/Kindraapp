@@ -1502,9 +1502,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Ensure proper authorization check with type conversion
-      const cycleUserId = parseInt(cycle.userId.toString());
-      if (cycleUserId !== userId) {
-        console.log(`❌ Unauthorized delete attempt - Cycle owner: ${cycleUserId}, Request user: ${userId}`);
+      const cycleUserId = typeof cycle.userId === 'string' ? cycle.userId : cycle.userId.toString();
+      const requestUserId = userId.toString();
+      if (cycleUserId !== requestUserId) {
+        console.log(`❌ Unauthorized delete attempt - Cycle owner: ${cycleUserId}, Request user: ${requestUserId}`);
         return res.status(403).json({ message: "Unauthorized to delete this cycle" });
       }
       
