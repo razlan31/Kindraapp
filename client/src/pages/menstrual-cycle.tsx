@@ -246,7 +246,7 @@ const predictNextCycles = (lastCycle: MenstrualCycle, avgCycleLength: number, nu
   isNext: boolean;
 }> => {
   const predictions = [];
-  const lastStartDate = new Date(lastCycle.startDate!);
+  const lastStartDate = new Date(lastCycle.periodStartDate!);
   
   for (let i = 1; i <= numberOfCycles; i++) {
     const nextStartDate = addDays(lastStartDate, avgCycleLength * i);
@@ -307,7 +307,7 @@ export default function MenstrualCyclePage() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const { user } = useAuth();
-  const { openConnectionModal, closeConnectionModal, connectionModalOpen } = useModal();
+  // Modal context not needed for this page
   const queryClient = useQueryClient();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingCycle, setEditingCycle] = useState<MenstrualCycle | null>(null);
@@ -469,12 +469,12 @@ export default function MenstrualCyclePage() {
     const actualCycles = relevantCycles.filter(cycle => {
       
       // Check if the day falls within this cycle
-      const start = startOfDay(new Date(cycle.startDate));
+      const start = startOfDay(new Date(cycle.periodStartDate));
       const checkDay = startOfDay(day);
       
-      if (cycle.endDate) {
+      if (cycle.cycleEndDate) {
         // Completed cycle - check if day is between start and end
-        const end = startOfDay(new Date(cycle.endDate));
+        const end = startOfDay(new Date(cycle.cycleEndDate));
         return checkDay >= start && checkDay <= end;
       } else {
         // Ongoing cycle - calculate expected cycle length and check if day is within reasonable range
@@ -1078,19 +1078,19 @@ export default function MenstrualCyclePage() {
               
               // Find active cycle - either no end date, or current date is within the cycle period
               const currentCycle = personCycles.find(cycle => {
-                if (!cycle.endDate) return true; // No end date means actively ongoing
+                if (!cycle.cycleEndDate) return true; // No end date means actively ongoing
                 
                 const today = new Date();
-                const startDate = new Date(cycle.startDate);
-                const endDate = new Date(cycle.endDate);
+                const startDate = new Date(cycle.periodStartDate);
+                const endDate = new Date(cycle.cycleEndDate);
                 
                 // Check if today is within the cycle period
                 return today >= startDate && today <= endDate;
               });
               const avgCycleLength = calculateCycleLength(personCycles);
-              const currentDay = currentCycle ? differenceInDays(new Date(), new Date(currentCycle.startDate)) + 1 : 0;
+              const currentDay = currentCycle ? differenceInDays(new Date(), new Date(currentCycle.periodStartDate)) + 1 : 0;
               const periodLength = currentCycle?.periodEndDate ? 
-                differenceInDays(new Date(currentCycle.periodEndDate), new Date(currentCycle.startDate)) + 1 : 5;
+                differenceInDays(new Date(currentCycle.periodEndDate), new Date(currentCycle.periodStartDate)) + 1 : 5;
               const currentPhase = currentCycle ? getDetailedCyclePhase(currentDay, avgCycleLength, periodLength) : null;
               
               // Get phase-based colors using new detailed phase system
@@ -1167,7 +1167,7 @@ export default function MenstrualCyclePage() {
                           )}
                           
                           <p className={`text-xs ${phaseColors.text} opacity-80`}>
-                            Started {format(new Date(currentCycle.startDate), 'MMM d, yyyy')}
+                            Started {format(new Date(currentCycle.periodStartDate), 'MMM d, yyyy')}
                           </p>
                           
                           <Button 
@@ -1530,7 +1530,7 @@ export default function MenstrualCyclePage() {
                           {cycle.connectionId === null ? "You" : connections.find(c => c.id === cycle.connectionId)?.name || "Unknown"}
                         </span>
                         <span className="font-medium">
-                          {format(new Date(cycle.startDate), 'MMM d')} - {cycle.endDate ? format(new Date(cycle.endDate), 'MMM d') : 'Ongoing'}
+                          {format(new Date(cycle.periodStartDate), 'MMM d')} - {cycle.cycleEndDate ? format(new Date(cycle.cycleEndDate), 'MMM d') : 'Ongoing'}
                         </span>
                         {cycle.flowIntensity && (
                           <Badge variant="outline" className="text-xs">
