@@ -349,25 +349,27 @@ export default function Calendar() {
         // Calculate actual cycle length from the data
         let cycleLength;
         if (cycle.cycleEndDate) {
-          // Use actual cycle length if we have end date - FIXED calculation
+          // For May 1-30 cycle: May 30 - May 1 + 1 = 30 days
           cycleLength = Math.floor((new Date(cycle.cycleEndDate).getTime() - cycleStart.getTime()) / (1000 * 60 * 60 * 24)) + 1;
         } else {
-          // For active cycles, estimate based on previous cycles for this connection
-          const connectionCycles = relevantCycles.filter(c => c.connectionId === cycle.connectionId && c.cycleEndDate);
-          if (connectionCycles.length > 0) {
-            const avgLength = connectionCycles.reduce((sum, c) => {
-              const length = Math.floor((new Date(c.cycleEndDate!).getTime() - new Date(c.periodStartDate).getTime()) / (1000 * 60 * 60 * 24)) + 1;
-              return sum + length;
-            }, 0) / connectionCycles.length;
-            cycleLength = Math.round(avgLength);
-          } else {
-            cycleLength = 28; // Default only if no historical data
-          }
+          cycleLength = 28; // Default for active cycles
         }
         
         // Calculate ovulation day: 14 days before cycle end
-        // For a May 1-30 cycle (30 days), ovulation should be day 16 (May 16th)
+        // For 30-day cycle: 30 - 14 = 16, so ovulation is on day 16 (May 16th)
         const ovulationDay = cycleLength - 14;
+        
+        // Debug for May 16th specifically
+        if (format(day, 'yyyy-MM-dd') === '2025-05-16') {
+          console.log('May 16th ovulation check:', {
+            dayOfCycle,
+            ovulationDay,
+            cycleLength,
+            isOvulationDay: dayOfCycle === ovulationDay,
+            cycleStart: format(cycleStart, 'yyyy-MM-dd'),
+            cycleEnd: cycle.cycleEndDate ? format(cycle.cycleEndDate, 'yyyy-MM-dd') : 'null'
+          });
+        }
         
         if (dayOfCycle <= periodDays) {
           return { phase: 'menstrual', day: dayOfCycle, cycle };
