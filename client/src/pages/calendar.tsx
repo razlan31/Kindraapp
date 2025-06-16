@@ -366,24 +366,19 @@ export default function Calendar() {
         // For a May 1-30 cycle (30 days), ovulation should be day 17 (May 17th)
         const ovulationDay = cycleLength - 14;
         
-        // Check for ovulation day first - May 16th should be ovulation for May 1-30 cycle
-        if (dayOfCycle === ovulationDay) {
-          return {
-            phase: 'ovulation',
-            emoji: '🔵', // Blue circle as shown in legend
-            color: 'bg-blue-200 dark:bg-blue-900/40 border-blue-400 dark:border-blue-600'
-          };
-        }
-        
-
-        
         if (dayOfCycle <= periodDays) {
           return { phase: 'menstrual', day: dayOfCycle, cycle };
         } else if (dayOfCycle <= ovulationDay - 3) {
           return { phase: 'follicular', day: dayOfCycle, cycle };
         } else if (dayOfCycle >= ovulationDay - 2 && dayOfCycle <= ovulationDay + 2) {
-          // Ovulation day should have been caught earlier, so this is just fertile window
-          return { phase: 'fertile', day: dayOfCycle, cycle };
+          // Fertile window includes ovulation day
+          const isOvulation = dayOfCycle === ovulationDay;
+          return { 
+            phase: 'fertile', 
+            day: dayOfCycle, 
+            cycle,
+            isOvulation: isOvulation
+          };
         } else {
           return { phase: 'luteal', day: dayOfCycle, cycle };
         }
@@ -444,10 +439,12 @@ export default function Calendar() {
         };
       case 'fertile':
         return {
-          color: 'bg-purple-100 dark:bg-purple-900/30 border-purple-300 dark:border-purple-700',
-          indicator: '💜',
-          title: `Fertile Day ${phaseInfo.day}`,
-          description: 'Fertile window'
+          color: phaseInfo.isOvulation 
+            ? 'bg-blue-100 dark:bg-blue-900/30 border-blue-300 dark:border-blue-700'
+            : 'bg-purple-100 dark:bg-purple-900/30 border-purple-300 dark:border-purple-700',
+          indicator: phaseInfo.isOvulation ? '🔵' : '💜',
+          title: phaseInfo.isOvulation ? `Ovulation Day ${phaseInfo.day}` : `Fertile Day ${phaseInfo.day}`,
+          description: phaseInfo.isOvulation ? 'Ovulation' : 'Fertile window'
         };
       case 'luteal':
         return {
