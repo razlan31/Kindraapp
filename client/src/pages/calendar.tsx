@@ -302,7 +302,7 @@ export default function Calendar() {
       
       if (cycleEnd && day >= cycleStart && day <= cycleEnd) {
         // Debug logging for problematic dates
-        if (format(day, 'yyyy-MM-dd') === '2025-06-16' || format(day, 'yyyy-MM-dd') === '2025-05-15') {
+        if (format(day, 'yyyy-MM-dd') === '2025-06-16' || format(day, 'yyyy-MM-dd') === '2025-05-15' || format(day, 'yyyy-MM-dd') === '2025-05-16') {
           console.log(`🔍 ${format(day, 'yyyy-MM-dd')} cycle match found:`, {
             connectionId: cycle.connectionId,
             cycleStart: format(cycleStart, 'yyyy-MM-dd'),
