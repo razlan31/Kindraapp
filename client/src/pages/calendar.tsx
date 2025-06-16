@@ -363,7 +363,7 @@ export default function Calendar() {
         }
         
         // Calculate ovulation day: 14 days before cycle end
-        // For a May 1-30 cycle (30 days), ovulation should be day 17 (May 17th)
+        // For a May 1-30 cycle (30 days), ovulation should be day 16 (May 16th)
         const ovulationDay = cycleLength - 14;
         
         if (dayOfCycle <= periodDays) {
@@ -374,13 +374,15 @@ export default function Calendar() {
           // Fertile window includes ovulation day
           const isOvulation = dayOfCycle === ovulationDay;
           
-          // Debug log for any May date
+          // Debug log for any May date in fertile window
           if (format(day, 'yyyy-MM') === '2025-05') {
-            console.log(`🔵 MAY ${format(day, 'dd')} DEBUG:`, {
+            console.log(`🔵 MAY ${format(day, 'dd')} FERTILE DEBUG:`, {
               dayOfCycle,
               ovulationDay,
               isOvulation,
               cycleLength,
+              cycleStart: format(cycleStart, 'yyyy-MM-dd'),
+              cycleEnd: cycle.cycleEndDate ? format(cycle.cycleEndDate, 'yyyy-MM-dd') : 'null',
               returning: { phase: 'fertile', isOvulation }
             });
           }
