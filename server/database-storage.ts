@@ -167,7 +167,7 @@ export class DatabaseStorage implements IStorage {
 
   // Menstrual Cycle operations
   async getMenstrualCycles(userId: number): Promise<MenstrualCycle[]> {
-    return db.select().from(menstrualCycles).where(eq(menstrualCycles.userId, userId)).orderBy(desc(menstrualCycles.startDate));
+    return db.select().from(menstrualCycles).where(eq(menstrualCycles.userId, userId)).orderBy(desc(menstrualCycles.periodStartDate));
   }
 
   async createMenstrualCycle(cycle: InsertMenstrualCycle): Promise<MenstrualCycle> {
@@ -200,7 +200,7 @@ export class DatabaseStorage implements IStorage {
         id: existingCycle[0].id,
         userId: existingCycle[0].userId,
         connectionId: existingCycle[0].connectionId,
-        startDate: existingCycle[0].startDate
+        periodStartDate: existingCycle[0].periodStartDate
       });
       
       // Perform the deletion
