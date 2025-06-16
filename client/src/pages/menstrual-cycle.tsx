@@ -516,21 +516,21 @@ export default function MenstrualCyclePage() {
         if (personCycles.length > 0) {
           // Get the most recent cycle for this person
           const sortedCycles = personCycles.sort((a, b) => 
-            new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
+            new Date(b.periodStartDate).getTime() - new Date(a.periodStartDate).getTime()
           );
           const lastCycle = sortedCycles[0];
           const avgCycleLength = calculateCycleLength(personCycles);
           
           // Generate predictions for up to 6 future cycles
-          const lastCycleStart = new Date(lastCycle.startDate);
+          const lastCycleStart = new Date(lastCycle.periodStartDate);
           
           // Calculate when the current cycle ends
-          const currentCycleEnd = lastCycle.endDate ? 
-            new Date(lastCycle.endDate) : 
+          const currentCycleEnd = lastCycle.cycleEndDate ? 
+            new Date(lastCycle.cycleEndDate) : 
             addDays(lastCycleStart, avgCycleLength - 1);
           
           // Track the base cycle for proper spacing
-          let baseDate = lastCycle.endDate ? new Date(lastCycle.endDate) : addDays(lastCycleStart, avgCycleLength - 1);
+          let baseDate = lastCycle.cycleEndDate ? new Date(lastCycle.cycleEndDate) : addDays(lastCycleStart, avgCycleLength - 1);
           
 
           
@@ -539,8 +539,8 @@ export default function MenstrualCyclePage() {
             const predictedStart = addDays(baseDate, 1);
             
             // Use the same period duration as the last recorded cycle (period length, not full cycle)
-            const periodLength = lastCycle.periodEndDate && lastCycle.startDate ? 
-              differenceInDays(new Date(lastCycle.periodEndDate), new Date(lastCycle.startDate)) + 1 :
+            const periodLength = lastCycle.periodEndDate && lastCycle.periodStartDate ? 
+              differenceInDays(new Date(lastCycle.periodEndDate), new Date(lastCycle.periodStartDate)) + 1 :
               5; // Default 5-day period based on your latest cycle
               
             const predictedPeriodEnd = addDays(predictedStart, periodLength - 1); // -1 because we count inclusive
@@ -794,9 +794,9 @@ export default function MenstrualCyclePage() {
   const handleEdit = (cycle: MenstrualCycle) => {
     setEditingCycle(cycle);
     setFormData({
-      startDate: format(new Date(cycle.startDate), 'yyyy-MM-dd'),
+      startDate: format(new Date(cycle.periodStartDate), 'yyyy-MM-dd'),
       periodEndDate: cycle.periodEndDate ? format(new Date(cycle.periodEndDate), 'yyyy-MM-dd') : '',
-      endDate: cycle.endDate ? format(new Date(cycle.endDate), 'yyyy-MM-dd') : '',
+      endDate: cycle.cycleEndDate ? format(new Date(cycle.cycleEndDate), 'yyyy-MM-dd') : '',
       flowIntensity: cycle.flowIntensity || '',
       mood: cycle.mood || '',
       symptoms: Array.isArray(cycle.symptoms) ? cycle.symptoms : [],
@@ -837,8 +837,8 @@ export default function MenstrualCyclePage() {
     .sort((a, b) => new Date(b.periodStartDate).getTime() - new Date(a.periodStartDate).getTime());
 
   const getCycleLength = (cycle: MenstrualCycle) => {
-    if (!cycle.endDate) return null;
-    return differenceInDays(new Date(cycle.endDate), new Date(cycle.startDate)) + 1;
+    if (!cycle.cycleEndDate) return null;
+    return differenceInDays(new Date(cycle.cycleEndDate), new Date(cycle.periodStartDate)) + 1;
   };
 
   const getAverageCycleLength = () => {
@@ -857,11 +857,11 @@ export default function MenstrualCyclePage() {
     const avgLength = getAverageCycleLength();
     const lastCycle = getPastCycles()[0];
     
-    if (!avgLength || !lastCycle?.endDate) return null;
+    if (!avgLength || !lastCycle?.cycleEndDate) return null;
     
     // Predict next cycle start (average cycle is ~28 days from start to start)
     const avgCycleLength = avgLength + 21; // Assuming ~21 day luteal phase
-    return addDays(new Date(lastCycle.startDate), avgCycleLength);
+    return addDays(new Date(lastCycle.periodStartDate), avgCycleLength);
   };
 
   // Calendar helpers
@@ -871,8 +871,8 @@ export default function MenstrualCyclePage() {
 
   const getCycleForDay = (day: Date) => {
     return filteredCycles.find(cycle => {
-      const start = startOfDay(new Date(cycle.startDate));
-      const end = cycle.endDate ? startOfDay(new Date(cycle.endDate)) : new Date();
+      const start = startOfDay(new Date(cycle.periodStartDate));
+      const end = cycle.cycleEndDate ? startOfDay(new Date(cycle.cycleEndDate)) : new Date();
       const checkDay = startOfDay(day);
       return checkDay >= start && checkDay <= end;
     });
@@ -880,11 +880,11 @@ export default function MenstrualCyclePage() {
 
   const getCycleStage = (day: Date, cycle: MenstrualCycle) => {
     const checkDay = startOfDay(day);
-    const cycleStart = startOfDay(new Date(cycle.startDate));
+    const cycleStart = startOfDay(new Date(cycle.periodStartDate));
     
     // For predicted cycles, check if we're in the predicted period
     if ((cycle as any).isPrediction && cycle.periodEndDate) {
-      const periodStart = startOfDay(new Date(cycle.startDate));
+      const periodStart = startOfDay(new Date(cycle.periodStartDate));
       const periodEnd = startOfDay(new Date(cycle.periodEndDate));
       
       if (checkDay >= periodStart && checkDay <= periodEnd) {
