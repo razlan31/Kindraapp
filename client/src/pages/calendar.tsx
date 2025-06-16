@@ -377,15 +377,23 @@ export default function Calendar() {
           // Fertile window includes ovulation day
           const isOvulation = dayOfCycle === ovulationDay;
           
-          // DIRECT FIX: Force May 16th to be ovulation for testing
-          const isMay16th = format(day, 'yyyy-MM-dd') === '2025-05-16';
-          
-          return { 
-            phase: 'fertile', 
-            day: dayOfCycle, 
-            cycle,
-            isOvulation: isOvulation || isMay16th
-          };
+          if (isOvulation) {
+            // Return ovulation as separate phase for proper display
+            return { 
+              phase: 'ovulation', 
+              day: dayOfCycle, 
+              cycle,
+              isOvulation: true
+            };
+          } else {
+            // Regular fertile window
+            return { 
+              phase: 'fertile', 
+              day: dayOfCycle, 
+              cycle,
+              isOvulation: false
+            };
+          }
         } else {
           return { phase: 'luteal', day: dayOfCycle, cycle };
         }
@@ -397,12 +405,6 @@ export default function Calendar() {
 
   const getCycleDisplayInfo = (phaseInfo: any) => {
     if (!phaseInfo) return null;
-    
-    // CRITICAL DEBUG: Log when cycle display is being calculated
-    const dayStr = format(new Date(), 'yyyy-MM-dd');
-    if (dayStr === '2025-06-16') {
-      console.log('🔍 June 16th getCycleDisplayInfo called with:', phaseInfo);
-    }
     
     // Use detailed phase info if available
     const detailedInfo = phaseInfo.detailedInfo;
@@ -420,10 +422,6 @@ export default function Calendar() {
     // Fallback to basic phase display
     switch (phaseInfo.phase) {
       case 'menstrual':
-        // CRITICAL DEBUG: Log menstrual phase detection
-        if (dayStr === '2025-06-16') {
-          console.log('🔍 June 16th: MENSTRUAL PHASE DETECTED - applying red background!');
-        }
         return {
           color: 'bg-red-100 dark:bg-red-900/30 border-red-300 dark:border-red-700',
           indicator: '🩸',
@@ -439,9 +437,9 @@ export default function Calendar() {
         };
       case 'ovulation':
         return {
-          color: phaseInfo.color || 'bg-blue-100 dark:bg-blue-900/30 border-blue-300 dark:border-blue-700',
-          indicator: phaseInfo.emoji || '🔵',
-          title: `Ovulation Day`,
+          color: 'bg-blue-100 dark:bg-blue-900/30 border-blue-300 dark:border-blue-700',
+          indicator: '🔵',
+          title: `Ovulation Day ${phaseInfo.day}`,
           description: 'Ovulation'
         };
       case 'fertile':
@@ -530,8 +528,7 @@ export default function Calendar() {
     }
   });
 
-  // Debug logging for allMoments
-  console.log("All moments from query:", allMoments);
+
 
   // Use only real moments from the database
   const allCalendarEntries = allMoments;
@@ -597,8 +594,7 @@ export default function Calendar() {
     return true;
   });
 
-  // Debug logging after moments is defined
-  console.log("Calendar Debug - Total moments:", moments.length, moments);
+
 
   // Simple event listeners for cache invalidation only
   useEffect(() => {
@@ -1242,10 +1238,7 @@ export default function Calendar() {
                   connectionsToCheck = [...new Set(cycles.map(c => c.connectionId))];
                 }
                 
-                // DEBUG: Log connections being checked for May 16th
-                if (format(day, 'yyyy-MM-dd') === '2025-05-16') {
-                  console.log(`🔵 May 16th: connectionsToCheck=${JSON.stringify(connectionsToCheck)}, cycles.length=${cycles.length}, mainFocusConnection=${mainFocusConnection?.id}`);
-                }
+
                 
                 const allowedConnectionIds = new Set(connectionsToCheck);
                 const filteredCycles = cycles.filter(cycle => allowedConnectionIds.has(cycle.connectionId));
@@ -1290,18 +1283,10 @@ export default function Calendar() {
                     // Check if this connection has a cycle phase for this day
                     const phaseInfo = getCyclePhaseForDay(day, connectionId);
                     
-                    // Debug log for May 16th specifically
-                    if (format(day, 'yyyy-MM-dd') === '2025-05-16' && connectionId === 6) {
-                      console.log(`🔵 May 16th DEBUG - phaseInfo:`, phaseInfo);
-                    }
-                    
                     if (phaseInfo) {
                       const connection = connections.find(c => c.id === connectionId);
                       if (connection) {
                         cyclePhases.push({ ...phaseInfo, connection });
-                        if (format(day, 'yyyy-MM-dd') === '2025-05-16' && connectionId === 6) {
-                          console.log(`🔵 May 16th: Added cycle phase for ${connection.name}:`, phaseInfo);
-                        }
                       }
                     }
                   }
