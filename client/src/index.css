@@ -5,6 +5,13 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Force override for cycle backgrounds when no cycles exist */
+.force-no-cycle-bg {
+  background-color: transparent !important;
+  background-image: none !important;
+  background: none !important;
+}
+
 /* Custom animations */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }

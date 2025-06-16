@@ -1,0 +1,58 @@
+Filtered out moment 77 - connection not selected 9 Array(1)
+Console.js:61 Filtered out moment 76 - connection not selected 9 Array(1)
+Console.js:61 Filtered out moment 75 - connection not selected 9 Array(1)
+Console.js:61 Filtered out moment 90 - connection not selected 10 Array(1)
+Console.js:61 Filtered out moment 100 - connection not selected 11 Array(1)
+Console.js:61 Filtered out moment 74 - connection not selected 9 Array(1)
+Console.js:61 Filtered out moment 89 - connection not selected 10 Array(1)
+Console.js:61 Filtered out moment 73 - connection not selected 9 Array(1)
+Console.js:61 Filtered out moment 99 - connection not selected 11 Array(1)
+Console.js:61 Filtered out moment 88 - connection not selected 10 Array(1)
+Console.js:61 Filtered out moment 72 - connection not selected 9 Array(1)
+Console.js:61 Filtered out moment 87 - connection not selected 10 Array(1)
+Console.js:61 Filtered out moment 71 - connection not selected 9 Array(1)
+Console.js:61 Filtered out moment 98 - connection not selected 11 Array(1)
+Console.js:61 Filtered out moment 86 - connection not selected 10 Array(1)
+Console.js:61 Filtered out moment 70 - connection not selected 9 Array(1)
+Console.js:61 Filtered out moment 83 - connection not selected 10 Array(1)
+Console.js:61 Filtered out moment 62 - connection not selected 9 Array(1)
+Console.js:61 Filtered out moment 61 - connection not selected 9 Array(1)
+Console.js:61 Filtered out moment 85 - connection not selected 10 Array(1)
+Console.js:61 Filtered out moment 97 - connection not selected 11 Array(1)
+Console.js:61 Filtered out moment 82 - connection not selected 10 Array(1)
+Console.js:61 Filtered out moment 96 - connection not selected 11 Array(1)
+Console.js:61 Filtered out moment 81 - connection not selected 10 Array(1)
+Console.js:61 Filtered out moment 84 - connection not selected 10 Array(1)
+Console.js:61 Filtered out moment 95 - connection not selected 11 Array(1)
+Console.js:61 Filtered out moment 65 - connection not selected 10 Array(1)
+Console.js:61 Filtered out moment 64 - connection not selected 10 Array(1)
+Console.js:61 Filtered out moment 94 - connection not selected 11 Array(1)
+Console.js:61 Filtered out moment 93 - connection not selected 11 Array(1)
+Console.js:61 Filtered out moment 92 - connection not selected 11 Array(1)
+Console.js:61 Filtered out moment 91 - connection not selected 11 Array(1)
+Console.js:61 Filtered out moment 68 - connection not selected 11 Array(1)
+Console.js:61 Filtered out moment 67 - connection not selected 11 Array(1)
+Console.js:61 Filtered out moment 66 - connection not selected 10 Array(1)
+Console.js:61 Calendar Debug - Total moments: 16 Array(16)
+Console.js:61 Calendar Debug - Total moments: 16 Array(16)
+Console.js:61 Today 2025-06-16 - Moment 105: 2025-06-13 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 104: 2025-06-13 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 46: 2025-06-13 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 60: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 59: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 58: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 57: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 56: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 55: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 54: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 53: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 52: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 49: 2025-06-07 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 47: 2025-06-04 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 45: 2025-05-16 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 44: 2025-05-16 - Match: false Object
+Console.js:61 🔍 June 16th: NUCLEAR OPTION - No cycles exist, skipping all cycle processing
+Console.js:61 🔍 June 16th: cyclePhases.length = 0 Array(0)
+Console.js:61 🔍 June 16th: SAFETY CHECK - forced cycleDisplay to null because no cycles exist
+Console.js:61 🔍 June 16th final styling: Object
+Console.js:61 MomentModal render - momentModalOpen: false
