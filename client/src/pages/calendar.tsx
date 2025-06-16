@@ -1188,6 +1188,7 @@ export default function Calendar() {
                 // DIRECT FIX: Override May 16th to show ovulation
                 const dayStr = format(day, 'yyyy-MM-dd');
                 if (dayStr === '2025-05-16') {
+                  console.log(`🔵 DIRECT OVERRIDE: May 16th forcing ovulation display`);
                   const mayCycle = cycles.find(c => c.connectionId === 6);
                   if (mayCycle) {
                     cycleDisplay = {
@@ -1196,6 +1197,9 @@ export default function Calendar() {
                       title: 'Ovulation Day 16',
                       description: 'Ovulation'
                     };
+                    console.log(`🔵 DIRECT OVERRIDE: Applied blue ovulation display for May 16th`);
+                  } else {
+                    console.log(`🔵 DIRECT OVERRIDE: No May cycle found for connection 6`);
                   }
                 }
                 
