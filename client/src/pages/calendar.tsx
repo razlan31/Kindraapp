@@ -1171,17 +1171,18 @@ export default function Calendar() {
                   );
                 }
                 
-                // Debug for May 16th
-                if (format(day, 'yyyy-MM-dd') === '2025-05-16') {
-                  console.log('🔍 May 16th: Connection check:', {
+                // Debug for ANY day in May 2025
+                if (format(day, 'yyyy-MM') === '2025-05') {
+                  console.log(`🔍 MAY ${format(day, 'dd')}: Connection check:`, {
+                    date: format(day, 'yyyy-MM-dd'),
                     cyclesLength: cycles.length,
                     selectedConnectionIds,
                     connectionsToCheck,
                     allCycles: cycles.map(c => ({ id: c.id, connectionId: c.connectionId, start: c.periodStartDate, end: c.cycleEndDate }))
                   });
-                  // Force check connection 6 for May 16th debugging
+                  // Force check connection 6 for May debugging
                   if (!connectionsToCheck.includes(6)) {
-                    console.log('🔍 May 16th: FORCING connection 6 check for debugging');
+                    console.log(`🔍 MAY ${format(day, 'dd')}: FORCING connection 6 check for debugging`);
                     connectionsToCheck.push(6);
                   }
                 }
