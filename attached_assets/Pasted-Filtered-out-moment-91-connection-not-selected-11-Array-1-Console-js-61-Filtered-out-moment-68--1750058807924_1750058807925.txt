@@ -1,0 +1,63 @@
+Filtered out moment 91 - connection not selected 11 Array(1)
+Console.js:61 Filtered out moment 68 - connection not selected 11 Array(1)
+Console.js:61 Filtered out moment 67 - connection not selected 11 Array(1)
+Console.js:61 Filtered out moment 66 - connection not selected 10 Array(1)
+Console.js:61 Calendar Debug - Total moments: 16 Array(16)
+Console.js:61 Calendar Debug - Total moments: 16 Array(16)
+Console.js:61 Today 2025-06-16 - Moment 105: 2025-06-13 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 104: 2025-06-13 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 46: 2025-06-13 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 60: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 59: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 58: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 57: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 56: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 55: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 54: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 53: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 52: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 49: 2025-06-07 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 47: 2025-06-04 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 45: 2025-05-16 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 44: 2025-05-16 - Match: false Object
+Console.js:61 🔍 June 16th getCyclePhaseForDay called with connectionId: 6, cycles.length: 1
+Console.js:61 🔍 2025-06-16 getCyclePhaseForDay: selectedConnectionIds=[6], checking connectionId=6
+Console.js:61 🔍 June 16th final styling: Object
+Console.js:61 MomentModal render - momentModalOpen: false
+stallwart.build.js:1 stallwart: failed ping 1
+stallwart.build.js:1 stallwart: failed ping 2
+stallwart.build.js:1 stallwart: failed ping 3
+2605-c502dc3c5a681125.js:1 WebSocket is already in CLOSING or CLOSED state.
+send @ 2605-c502dc3c5a681125.js:1Understand this error
+2605-c502dc3c5a681125.js:1 WebSocket is already in CLOSING or CLOSED state.
+send @ 2605-c502dc3c5a681125.js:1Understand this error
+frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.Understand this error
+2605-c502dc3c5a681125.js:1 WebSocket is already in CLOSING or CLOSED state.
+send @ 2605-c502dc3c5a681125.js:1
+A @ 2605-c502dc3c5a681125.js:1
+send @ 2605-c502dc3c5a681125.js:1
+(anonymous) @ 2605-c502dc3c5a681125.js:1
+writeCb @ 2605-c502dc3c5a681125.js:1
+write @ 2605-c502dc3c5a681125.js:1
+onResizeTerminal @ 5376-11727a41210dc2ae.js:1
+(anonymous) @ 5376-11727a41210dc2ae.js:1
+fire @ 1c7fb644.1c9b179f11b5336e.js:3
+(anonymous) @ 1c7fb644.1c9b179f11b5336e.js:3
+fire @ 1c7fb644.1c9b179f11b5336e.js:3
+resize @ 1c7fb644.1c9b179f11b5336e.js:3
+resize @ 1c7fb644.1c9b179f11b5336e.js:3
+resize @ 1c7fb644.1c9b179f11b5336e.js:3
+resize @ 1c7fb644.1c9b179f11b5336e.js:3
+fit @ 1669.7f9d5aca7eea7cdd.js:1
+fit @ 5376-11727a41210dc2ae.js:1
+B.type @ 5376-11727a41210dc2ae.js:1
+(anonymous) @ _app-8124422cda9db17a.js:11
+b @ _app-8124422cda9db17a.js:26
+S @ _app-8124422cda9db17a.js:26
+E @ _app-8124422cda9db17a.js:26
+r @ _app-8124422cda9db17a.js:38
+setTimeout
+(anonymous) @ _app-8124422cda9db17a.js:38
+w @ _app-8124422cda9db17a.js:26
+(anonymous) @ _app-8124422cda9db17a.js:11
+r @ _app-8124422cda9db17a.js:38Understand this error

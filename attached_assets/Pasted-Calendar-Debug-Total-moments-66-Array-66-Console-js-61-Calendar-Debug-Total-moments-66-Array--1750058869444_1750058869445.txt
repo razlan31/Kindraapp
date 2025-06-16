@@ -1,0 +1,418 @@
+Calendar Debug - Total moments: 66 Array(66)
+Console.js:61 Calendar Debug - Total moments: 66 Array(66)
+Console.js:61 Today 2025-06-16 - Moment 69: 2025-11-10 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 63: 2025-08-15 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 110: 2025-06-13 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 109: 2025-06-13 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 108: 2025-06-13 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 107: 2025-06-13 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 106: 2025-06-13 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 105: 2025-06-13 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 104: 2025-06-13 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 103: 2025-06-13 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 102: 2025-06-13 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 101: 2025-06-13 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 46: 2025-06-13 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 60: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 59: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 58: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 57: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 56: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 55: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 54: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 53: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 52: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 49: 2025-06-07 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 51: 2025-06-07 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 50: 2025-06-07 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 80: 2025-06-05 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 47: 2025-06-04 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 79: 2025-06-02 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 78: 2025-05-31 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 77: 2025-05-29 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 76: 2025-05-26 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 75: 2025-05-22 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 90: 2025-05-21 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 100: 2025-05-19 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 74: 2025-05-19 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 45: 2025-05-16 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 44: 2025-05-16 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 89: 2025-05-16 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 73: 2025-05-15 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 99: 2025-05-13 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 88: 2025-05-12 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 72: 2025-05-10 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 87: 2025-05-09 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 71: 2025-05-07 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 98: 2025-05-06 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 86: 2025-05-05 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 70: 2025-05-04 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 83: 2025-05-03 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 62: 2025-05-01 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 61: 2025-05-01 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 85: 2025-04-28 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 97: 2025-04-28 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 82: 2025-04-26 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 96: 2025-04-22 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 81: 2025-04-21 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 84: 2025-04-19 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 95: 2025-04-15 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 65: 2025-04-15 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 64: 2025-04-15 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 94: 2025-04-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 93: 2025-04-03 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 92: 2025-03-29 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 91: 2025-03-25 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 68: 2025-03-20 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 67: 2025-03-20 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 66: 2025-02-28 - Match: false Object
+Console.js:61 🔍 June 16th getCyclePhaseForDay called with connectionId: 6, cycles.length: 1
+Console.js:61 🔍 June 16th final styling: Object
+Console.js:61 MomentModal render - momentModalOpen: false
+Console.js:61 MomentModal render - momentModalOpen: false activityType: moment
+Console.js:61 🔍 Calendar cycles data loaded: Object
+Console.js:61 🔍 Today is June 16th - cycle data check: Object
+Console.js:61 All moments from query: Array(66)
+Console.js:61 Calendar Debug - Total moments: 66 Array(66)
+Console.js:61 Calendar Debug - Total moments: 66 Array(66)
+Console.js:61 Today 2025-06-16 - Moment 69: 2025-11-10 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 63: 2025-08-15 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 110: 2025-06-13 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 109: 2025-06-13 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 108: 2025-06-13 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 107: 2025-06-13 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 106: 2025-06-13 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 105: 2025-06-13 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 104: 2025-06-13 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 103: 2025-06-13 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 102: 2025-06-13 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 101: 2025-06-13 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 46: 2025-06-13 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 60: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 59: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 58: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 57: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 56: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 55: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 54: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 53: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 52: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 49: 2025-06-07 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 51: 2025-06-07 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 50: 2025-06-07 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 80: 2025-06-05 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 47: 2025-06-04 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 79: 2025-06-02 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 78: 2025-05-31 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 77: 2025-05-29 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 76: 2025-05-26 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 75: 2025-05-22 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 90: 2025-05-21 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 100: 2025-05-19 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 74: 2025-05-19 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 45: 2025-05-16 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 44: 2025-05-16 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 89: 2025-05-16 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 73: 2025-05-15 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 99: 2025-05-13 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 88: 2025-05-12 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 72: 2025-05-10 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 87: 2025-05-09 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 71: 2025-05-07 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 98: 2025-05-06 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 86: 2025-05-05 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 70: 2025-05-04 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 83: 2025-05-03 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 62: 2025-05-01 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 61: 2025-05-01 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 85: 2025-04-28 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 97: 2025-04-28 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 82: 2025-04-26 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 96: 2025-04-22 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 81: 2025-04-21 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 84: 2025-04-19 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 95: 2025-04-15 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 65: 2025-04-15 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 64: 2025-04-15 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 94: 2025-04-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 93: 2025-04-03 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 92: 2025-03-29 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 91: 2025-03-25 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 68: 2025-03-20 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 67: 2025-03-20 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 66: 2025-02-28 - Match: false Object
+Console.js:61 🔍 June 16th getCyclePhaseForDay called with connectionId: 6, cycles.length: 1
+Console.js:61 🔍 June 16th final styling: Object
+Console.js:61 MomentModal render - momentModalOpen: false
+Console.js:61 MomentModal render - momentModalOpen: false activityType: moment
+Console.js:61 Focus Context Debug: Object
+Console.js:61 Found saved connection: Object
+Console.js:61 🔍 Calendar cycles data loaded: Object
+Console.js:61 🔍 Today is June 16th - cycle data check: Object
+Console.js:61 All moments from query: Array(66)
+Console.js:61 Calendar Debug - Total moments: 66 Array(66)
+Console.js:61 Calendar Debug - Total moments: 66 Array(66)
+Console.js:61 Today 2025-06-16 - Moment 69: 2025-11-10 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 63: 2025-08-15 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 110: 2025-06-13 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 109: 2025-06-13 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 108: 2025-06-13 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 107: 2025-06-13 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 106: 2025-06-13 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 105: 2025-06-13 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 104: 2025-06-13 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 103: 2025-06-13 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 102: 2025-06-13 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 101: 2025-06-13 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 46: 2025-06-13 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 60: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 59: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 58: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 57: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 56: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 55: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 54: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 53: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 52: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 49: 2025-06-07 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 51: 2025-06-07 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 50: 2025-06-07 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 80: 2025-06-05 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 47: 2025-06-04 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 79: 2025-06-02 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 78: 2025-05-31 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 77: 2025-05-29 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 76: 2025-05-26 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 75: 2025-05-22 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 90: 2025-05-21 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 100: 2025-05-19 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 74: 2025-05-19 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 45: 2025-05-16 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 44: 2025-05-16 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 89: 2025-05-16 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 73: 2025-05-15 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 99: 2025-05-13 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 88: 2025-05-12 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 72: 2025-05-10 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 87: 2025-05-09 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 71: 2025-05-07 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 98: 2025-05-06 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 86: 2025-05-05 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 70: 2025-05-04 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 83: 2025-05-03 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 62: 2025-05-01 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 61: 2025-05-01 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 85: 2025-04-28 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 97: 2025-04-28 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 82: 2025-04-26 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 96: 2025-04-22 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 81: 2025-04-21 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 84: 2025-04-19 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 95: 2025-04-15 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 65: 2025-04-15 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 64: 2025-04-15 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 94: 2025-04-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 93: 2025-04-03 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 92: 2025-03-29 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 91: 2025-03-25 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 68: 2025-03-20 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 67: 2025-03-20 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 66: 2025-02-28 - Match: false Object
+Console.js:61 🔍 June 16th getCyclePhaseForDay called with connectionId: 6, cycles.length: 1
+Console.js:61 🔍 June 16th final styling: Object
+Console.js:61 MomentModal render - momentModalOpen: false
+Console.js:61 Prevented JSON parse error from browser extension
+Mt.forEach.n.<computed> @ Console.js:61Understand this warning
+Console.js:61 Calendar navigation check: Object
+Console.js:61 Setting calendar to focus connection: Amalina
+Console.js:61 🔍 Calendar cycles data loaded: Object
+Console.js:61 🔍 Today is June 16th - cycle data check: Object
+Console.js:61 All moments from query: Array(66)
+Console.js:61 Filtered out moment 69 - connection not selected 11 Array(1)
+Console.js:61 Filtered out moment 63 - connection not selected 9 Array(1)
+Console.js:61 Filtered out moment 110 - connection not selected 16 Array(1)
+Console.js:61 Filtered out moment 109 - connection not selected 29 Array(1)
+Console.js:61 Filtered out moment 108 - connection not selected 16 Array(1)
+Console.js:61 Filtered out moment 107 - connection not selected 16 Array(1)
+Console.js:61 Filtered out moment 106 - connection not selected 16 Array(1)
+Console.js:61 Filtered out moment 103 - connection not selected 12 Array(1)
+Console.js:61 Filtered out moment 102 - connection not selected 11 Array(1)
+Console.js:61 Filtered out moment 101 - connection not selected 9 Array(1)
+Console.js:61 Filtered out moment 51 - connection not selected 8 Array(1)
+Console.js:61 Filtered out moment 50 - connection not selected 8 Array(1)
+Console.js:61 Filtered out moment 80 - connection not selected 9 Array(1)
+Console.js:61 Filtered out moment 79 - connection not selected 9 Array(1)
+Console.js:61 Filtered out moment 78 - connection not selected 9 Array(1)
+Console.js:61 Filtered out moment 77 - connection not selected 9 Array(1)
+Console.js:61 Filtered out moment 76 - connection not selected 9 Array(1)
+Console.js:61 Filtered out moment 75 - connection not selected 9 Array(1)
+Console.js:61 Filtered out moment 90 - connection not selected 10 Array(1)
+Console.js:61 Filtered out moment 100 - connection not selected 11 Array(1)
+Console.js:61 Filtered out moment 74 - connection not selected 9 Array(1)
+Console.js:61 Filtered out moment 89 - connection not selected 10 Array(1)
+Console.js:61 Filtered out moment 73 - connection not selected 9 Array(1)
+Console.js:61 Filtered out moment 99 - connection not selected 11 Array(1)
+Console.js:61 Filtered out moment 88 - connection not selected 10 Array(1)
+Console.js:61 Filtered out moment 72 - connection not selected 9 Array(1)
+Console.js:61 Filtered out moment 87 - connection not selected 10 Array(1)
+Console.js:61 Filtered out moment 71 - connection not selected 9 Array(1)
+Console.js:61 Filtered out moment 98 - connection not selected 11 Array(1)
+Console.js:61 Filtered out moment 86 - connection not selected 10 Array(1)
+Console.js:61 Filtered out moment 70 - connection not selected 9 Array(1)
+Console.js:61 Filtered out moment 83 - connection not selected 10 Array(1)
+Console.js:61 Filtered out moment 62 - connection not selected 9 Array(1)
+Console.js:61 Filtered out moment 61 - connection not selected 9 Array(1)
+Console.js:61 Filtered out moment 85 - connection not selected 10 Array(1)
+Console.js:61 Filtered out moment 97 - connection not selected 11 Array(1)
+Console.js:61 Filtered out moment 82 - connection not selected 10 Array(1)
+Console.js:61 Filtered out moment 96 - connection not selected 11 Array(1)
+Console.js:61 Filtered out moment 81 - connection not selected 10 Array(1)
+Console.js:61 Filtered out moment 84 - connection not selected 10 Array(1)
+Console.js:61 Filtered out moment 95 - connection not selected 11 Array(1)
+Console.js:61 Filtered out moment 65 - connection not selected 10 Array(1)
+Console.js:61 Filtered out moment 64 - connection not selected 10 Array(1)
+Console.js:61 Filtered out moment 94 - connection not selected 11 Array(1)
+Console.js:61 Filtered out moment 93 - connection not selected 11 Array(1)
+Console.js:61 Filtered out moment 92 - connection not selected 11 Array(1)
+Console.js:61 Filtered out moment 91 - connection not selected 11 Array(1)
+Console.js:61 Filtered out moment 68 - connection not selected 11 Array(1)
+Console.js:61 Filtered out moment 67 - connection not selected 11 Array(1)
+Console.js:61 Filtered out moment 66 - connection not selected 10 Array(1)
+Console.js:61 Calendar Debug - Total moments: 16 Array(16)
+Console.js:61 Calendar Debug - Total moments: 16 Array(16)
+Console.js:61 Today 2025-06-16 - Moment 105: 2025-06-13 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 104: 2025-06-13 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 46: 2025-06-13 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 60: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 59: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 58: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 57: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 56: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 55: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 54: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 53: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 52: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 49: 2025-06-07 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 47: 2025-06-04 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 45: 2025-05-16 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 44: 2025-05-16 - Match: false Object
+Console.js:61 🔍 June 16th getCyclePhaseForDay called with connectionId: 6, cycles.length: 1
+Console.js:61 🔍 2025-06-16 getCyclePhaseForDay: selectedConnectionIds=[6], checking connectionId=6
+Console.js:61 🔍 June 16th final styling: Object
+Console.js:61 MomentModal render - momentModalOpen: false
+Console.js:61 getCurrentUser successful: Object
+Console.js:61 getCurrentUser successful: Object
+Console.js:61 Auth context setting user: Object
+Console.js:61 Auth: Finally block - setting loading to false
+Console.js:61 🔍 Calendar cycles data loaded: Object
+Console.js:61 🔍 Today is June 16th - cycle data check: Object
+Console.js:61 All moments from query: Array(66)
+Console.js:61 Filtered out moment 69 - connection not selected 11 Array(1)
+Console.js:61 Filtered out moment 63 - connection not selected 9 Array(1)
+Console.js:61 Filtered out moment 110 - connection not selected 16 Array(1)
+Console.js:61 Filtered out moment 109 - connection not selected 29 Array(1)
+Console.js:61 Filtered out moment 108 - connection not selected 16 Array(1)
+Console.js:61 Filtered out moment 107 - connection not selected 16 Array(1)
+Console.js:61 Filtered out moment 106 - connection not selected 16 Array(1)
+Console.js:61 Filtered out moment 103 - connection not selected 12 Array(1)
+Console.js:61 Filtered out moment 102 - connection not selected 11 Array(1)
+Console.js:61 Filtered out moment 101 - connection not selected 9 Array(1)
+Console.js:61 Filtered out moment 51 - connection not selected 8 Array(1)
+Console.js:61 Filtered out moment 50 - connection not selected 8 Array(1)
+Console.js:61 Filtered out moment 80 - connection not selected 9 Array(1)
+Console.js:61 Filtered out moment 79 - connection not selected 9 Array(1)
+Console.js:61 Filtered out moment 78 - connection not selected 9 Array(1)
+Console.js:61 Filtered out moment 77 - connection not selected 9 Array(1)
+Console.js:61 Filtered out moment 76 - connection not selected 9 Array(1)
+Console.js:61 Filtered out moment 75 - connection not selected 9 Array(1)
+Console.js:61 Filtered out moment 90 - connection not selected 10 Array(1)
+Console.js:61 Filtered out moment 100 - connection not selected 11 Array(1)
+Console.js:61 Filtered out moment 74 - connection not selected 9 Array(1)
+Console.js:61 Filtered out moment 89 - connection not selected 10 Array(1)
+Console.js:61 Filtered out moment 73 - connection not selected 9 Array(1)
+Console.js:61 Filtered out moment 99 - connection not selected 11 Array(1)
+Console.js:61 Filtered out moment 88 - connection not selected 10 Array(1)
+Console.js:61 Filtered out moment 72 - connection not selected 9 Array(1)
+Console.js:61 Filtered out moment 87 - connection not selected 10 Array(1)
+Console.js:61 Filtered out moment 71 - connection not selected 9 Array(1)
+Console.js:61 Filtered out moment 98 - connection not selected 11 Array(1)
+Console.js:61 Filtered out moment 86 - connection not selected 10 Array(1)
+Console.js:61 Filtered out moment 70 - connection not selected 9 Array(1)
+Console.js:61 Filtered out moment 83 - connection not selected 10 Array(1)
+Console.js:61 Filtered out moment 62 - connection not selected 9 Array(1)
+Console.js:61 Filtered out moment 61 - connection not selected 9 Array(1)
+Console.js:61 Filtered out moment 85 - connection not selected 10 Array(1)
+Console.js:61 Filtered out moment 97 - connection not selected 11 Array(1)
+Console.js:61 Filtered out moment 82 - connection not selected 10 Array(1)
+Console.js:61 Filtered out moment 96 - connection not selected 11 Array(1)
+Console.js:61 Filtered out moment 81 - connection not selected 10 Array(1)
+Console.js:61 Filtered out moment 84 - connection not selected 10 Array(1)
+Console.js:61 Filtered out moment 95 - connection not selected 11 Array(1)
+Console.js:61 Filtered out moment 65 - connection not selected 10 Array(1)
+Console.js:61 Filtered out moment 64 - connection not selected 10 Array(1)
+Console.js:61 Filtered out moment 94 - connection not selected 11 Array(1)
+Console.js:61 Filtered out moment 93 - connection not selected 11 Array(1)
+Console.js:61 Filtered out moment 92 - connection not selected 11 Array(1)
+Console.js:61 Filtered out moment 91 - connection not selected 11 Array(1)
+Console.js:61 Filtered out moment 68 - connection not selected 11 Array(1)
+Console.js:61 Filtered out moment 67 - connection not selected 11 Array(1)
+Console.js:61 Filtered out moment 66 - connection not selected 10 Array(1)
+Console.js:61 Calendar Debug - Total moments: 16 Array(16)
+Console.js:61 Calendar Debug - Total moments: 16 Array(16)
+Console.js:61 Today 2025-06-16 - Moment 105: 2025-06-13 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 104: 2025-06-13 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 46: 2025-06-13 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 60: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 59: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 58: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 57: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 56: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 55: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 54: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 53: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 52: 2025-06-08 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 49: 2025-06-07 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 47: 2025-06-04 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 45: 2025-05-16 - Match: false Object
+Console.js:61 Today 2025-06-16 - Moment 44: 2025-05-16 - Match: false Object
+Console.js:61 🔍 June 16th getCyclePhaseForDay called with connectionId: 6, cycles.length: 1
+Console.js:61 🔍 2025-06-16 getCyclePhaseForDay: selectedConnectionIds=[6], checking connectionId=6
+Console.js:61 🔍 June 16th final styling: Object
+Console.js:61 MomentModal render - momentModalOpen: false
+stallwart.build.js:1 stallwart: failed ping 1
+stallwart.build.js:1 stallwart: failed ping 2
+stallwart.build.js:1 stallwart: failed ping 3
+2605-c502dc3c5a681125.js:1 WebSocket is already in CLOSING or CLOSED state.
+send @ 2605-c502dc3c5a681125.js:1Understand this error
+2605-c502dc3c5a681125.js:1 WebSocket is already in CLOSING or CLOSED state.
+send @ 2605-c502dc3c5a681125.js:1Understand this error
+frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.Understand this error
+2605-c502dc3c5a681125.js:1 WebSocket is already in CLOSING or CLOSED state.
+send @ 2605-c502dc3c5a681125.js:1
+A @ 2605-c502dc3c5a681125.js:1
+send @ 2605-c502dc3c5a681125.js:1
+(anonymous) @ 2605-c502dc3c5a681125.js:1
+writeCb @ 2605-c502dc3c5a681125.js:1
+write @ 2605-c502dc3c5a681125.js:1
+onResizeTerminal @ 5376-11727a41210dc2ae.js:1
+(anonymous) @ 5376-11727a41210dc2ae.js:1
+fire @ 1c7fb644.1c9b179f11b5336e.js:3
+(anonymous) @ 1c7fb644.1c9b179f11b5336e.js:3
+fire @ 1c7fb644.1c9b179f11b5336e.js:3
+resize @ 1c7fb644.1c9b179f11b5336e.js:3
+resize @ 1c7fb644.1c9b179f11b5336e.js:3
+resize @ 1c7fb644.1c9b179f11b5336e.js:3
+resize @ 1c7fb644.1c9b179f11b5336e.js:3
+fit @ 1669.7f9d5aca7eea7cdd.js:1
+fit @ 5376-11727a41210dc2ae.js:1
+B.type @ 5376-11727a41210dc2ae.js:1
+(anonymous) @ _app-8124422cda9db17a.js:11
+b @ _app-8124422cda9db17a.js:26
+S @ _app-8124422cda9db17a.js:26
+E @ _app-8124422cda9db17a.js:26
+r @ _app-8124422cda9db17a.js:38
+setTimeout
+(anonymous) @ _app-8124422cda9db17a.js:38
+w @ _app-8124422cda9db17a.js:26
+(anonymous) @ _app-8124422cda9db17a.js:11
+r @ _app-8124422cda9db17a.js:38Understand this error

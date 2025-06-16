@@ -374,9 +374,9 @@ export default function Calendar() {
           // Fertile window includes ovulation day
           const isOvulation = dayOfCycle === ovulationDay;
           
-          // Debug log for May 16th specifically
-          if (format(day, 'yyyy-MM-dd') === '2025-05-16') {
-            console.log('🔵 MAY 16TH DEBUG:', {
+          // Debug log for any May date
+          if (format(day, 'yyyy-MM') === '2025-05') {
+            console.log(`🔵 MAY ${format(day, 'dd')} DEBUG:`, {
               dayOfCycle,
               ovulationDay,
               isOvulation,
