@@ -362,24 +362,10 @@ export default function Calendar() {
           }
         }
         
-        // Calculate ovulation day: typically 14 days before cycle end
-        const ovulationDay = Math.max(12, cycleLength - 14);
+        // Calculate ovulation day: 14 days before cycle end
+        const ovulationDay = cycleLength - 14;
         
-        // Debug ovulation calculation for May cycle
-        if (connectionId === 6 && format(day, 'yyyy-MM-dd').startsWith('2025-05')) {
-          console.log(`🥚 MAY DEBUG for ${format(day, 'yyyy-MM-dd')}:`, {
-            cycleLength,
-            ovulationDay,
-            dayOfCycle,
-            cycleStart: format(cycleStart, 'yyyy-MM-dd'),
-            cycleEnd: cycle.cycleEndDate ? format(cycle.cycleEndDate, 'yyyy-MM-dd') : 'null',
-            isInFertileWindow: dayOfCycle >= ovulationDay - 2 && dayOfCycle <= ovulationDay + 2,
-            isOvulationDay: dayOfCycle === ovulationDay,
-            phaseWillReturn: dayOfCycle <= periodDays ? 'menstrual' : 
-                           dayOfCycle <= ovulationDay - 3 ? 'follicular' :
-                           dayOfCycle >= ovulationDay - 2 && dayOfCycle <= ovulationDay + 2 ? 'fertile' : 'luteal'
-          });
-        }
+
         
         if (dayOfCycle <= periodDays) {
           return { phase: 'menstrual', day: dayOfCycle, cycle };
@@ -1230,34 +1216,16 @@ export default function Calendar() {
                 
                 // Determine which connections to check for cycles based on selection
                 let connectionsToCheck = [];
-                
-                // DEBUG for May 15th issue
-                if (format(day, 'yyyy-MM-dd') === '2025-05-15') {
-                  console.log('🔍 May 15th State Debug:', {
-                    selectedConnectionIds,
-                    hasUserSelectedConnection,
-                    mainFocusConnection: mainFocusConnection?.id,
-                    allCycleConnections: cycles.map(c => ({ id: c.connectionId, periodEnd: c.periodEndDate })),
-                    connectionsToCheck
-                  });
-                }
 
-                // ULTIMATE FIX: Ensure cycle highlighting respects connection selection
+                // SIMPLIFIED FIX: Always show cycles for focus connection or all connections
                 if (selectedConnectionIds.length > 0) {
-                  // When connections are explicitly selected, ONLY show those connections' cycles
                   connectionsToCheck = selectedConnectionIds;
-                } else if (hasUserSelectedConnection) {
-                  // User has made a selection but no connections are currently selected = show none
-                  connectionsToCheck = [];
                 } else if (mainFocusConnection) {
-                  // Focus connection exists but no user selection = show focus connection only
                   connectionsToCheck = [mainFocusConnection.id];
                 } else {
-                  // No selection at all = show all connections
                   connectionsToCheck = [...new Set(cycles.map(c => c.connectionId))];
                 }
                 
-                // ADDITIONAL SAFETY: Filter out any cycles that shouldn't be visible
                 const allowedConnectionIds = new Set(connectionsToCheck);
                 const filteredCycles = cycles.filter(cycle => allowedConnectionIds.has(cycle.connectionId));
 
@@ -1301,10 +1269,7 @@ export default function Calendar() {
                     // Check if this connection has a cycle phase for this day
                     const phaseInfo = getCyclePhaseForDay(day, connectionId);
                     
-                    // Debug for May dates to see if function is being called
-                    if (format(day, 'yyyy-MM-dd').startsWith('2025-05') && connectionId === 6) {
-                      console.log(`🥚 MAY PROCESSING ${format(day, 'yyyy-MM-dd')} - getCyclePhaseForDay result:`, phaseInfo);
-                    }
+
                     
                     if (phaseInfo) {
                       const connection = connections.find(c => c.id === connectionId);
