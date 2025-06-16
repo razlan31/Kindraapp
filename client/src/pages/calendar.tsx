@@ -346,7 +346,7 @@ export default function Calendar() {
         // Calculate actual cycle length from the data
         let cycleLength;
         if (cycle.cycleEndDate) {
-          // Use actual cycle length if we have end date
+          // Use actual cycle length if we have end date - FIXED calculation
           cycleLength = Math.floor((new Date(cycle.cycleEndDate).getTime() - cycleStart.getTime()) / (1000 * 60 * 60 * 24)) + 1;
         } else {
           // For active cycles, estimate based on previous cycles for this connection
@@ -364,6 +364,18 @@ export default function Calendar() {
         
         // Calculate ovulation day: 14 days before cycle end
         const ovulationDay = cycleLength - 14;
+        
+        // Debug May cycle calculation
+        if (format(day, 'yyyy-MM-dd').startsWith('2025-05') && connectionId === 6) {
+          console.log(`MAY CALC for ${format(day, 'yyyy-MM-dd')}:`, {
+            cycleStart: format(cycleStart, 'yyyy-MM-dd'),
+            cycleEnd: cycle.cycleEndDate ? format(cycle.cycleEndDate, 'yyyy-MM-dd') : 'null',
+            cycleLength,
+            ovulationDay,
+            dayOfCycle,
+            isOvulation: dayOfCycle === ovulationDay
+          });
+        }
         
 
         
