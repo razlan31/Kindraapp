@@ -366,6 +366,18 @@ export default function Calendar() {
         // For a May 1-30 cycle (30 days), ovulation should be day 16 (May 16th)
         const ovulationDay = cycleLength - 13;
         
+        // Debug for May dates only
+        if (format(day, 'yyyy-MM').startsWith('2025-05')) {
+          console.log(`OVULATION DEBUG ${format(day, 'MMM dd')}:`, {
+            cycleLength,
+            ovulationDay,
+            dayOfCycle,
+            isOvulation: dayOfCycle === ovulationDay,
+            cycleStart: format(cycleStart, 'MMM dd'),
+            cycleEnd: cycle.cycleEndDate ? format(cycle.cycleEndDate, 'MMM dd') : 'none'
+          });
+        }
+        
 
         
         if (dayOfCycle <= periodDays) {
