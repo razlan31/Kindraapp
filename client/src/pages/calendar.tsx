@@ -198,7 +198,19 @@ export default function Calendar() {
 
   // Menstrual cycle calculation functions
   const getCyclePhaseForDay = (day: Date, connectionId: number | null) => {
-    if (!connectionId) return null;
+    const dayStr = format(day, 'yyyy-MM-dd');
+    
+    // Debug logging for June 16th
+    if (dayStr === '2025-06-16') {
+      console.log(`🔍 June 16th getCyclePhaseForDay called with connectionId: ${connectionId}`);
+    }
+    
+    if (!connectionId) {
+      if (dayStr === '2025-06-16') {
+        console.log(`🔍 June 16th returning null - no connectionId`);
+      }
+      return null;
+    }
     
 
     
@@ -211,9 +223,9 @@ export default function Calendar() {
       // User has explicitly selected specific connections
       selectedConnectionIds.forEach(id => allowedConnectionIds.add(id));
       
-      // Debug logging for May 15th
-      if (format(day, 'yyyy-MM-dd') === '2025-05-15') {
-        console.log(`🔍 May 15th getCyclePhaseForDay: selectedConnectionIds=${JSON.stringify(selectedConnectionIds)}, checking connectionId=${connectionId}`);
+      // Debug logging for problematic dates
+      if (format(day, 'yyyy-MM-dd') === '2025-06-16' || format(day, 'yyyy-MM-dd') === '2025-05-15') {
+        console.log(`🔍 ${format(day, 'yyyy-MM-dd')} getCyclePhaseForDay: selectedConnectionIds=${JSON.stringify(selectedConnectionIds)}, checking connectionId=${connectionId}`);
       }
     } else if (hasUserSelectedConnection) {
       // User made a selection but nothing is currently selected = show nothing
@@ -264,9 +276,9 @@ export default function Calendar() {
       }
       
       if (day >= cycleStart && day <= cycleEnd) {
-        // Debug logging for May 15th
-        if (format(day, 'yyyy-MM-dd') === '2025-05-15') {
-          console.log(`🔍 May 15th cycle match found:`, {
+        // Debug logging for problematic dates
+        if (format(day, 'yyyy-MM-dd') === '2025-06-16' || format(day, 'yyyy-MM-dd') === '2025-05-15') {
+          console.log(`🔍 ${format(day, 'yyyy-MM-dd')} cycle match found:`, {
             connectionId: cycle.connectionId,
             cycleStart: format(cycleStart, 'yyyy-MM-dd'),
             cycleEnd: format(cycleEnd, 'yyyy-MM-dd'),
@@ -1219,9 +1231,17 @@ export default function Calendar() {
                 
 
                 
+                // Debug logging for June 16th
+                if (format(day, 'yyyy-MM-dd') === '2025-06-16') {
+                  console.log(`🔍 June 16th: cyclePhases.length = ${cyclePhases.length}`, cyclePhases);
+                }
+                
                 // Use the first cycle phase for background color, or create multi-connection display
                 if (cyclePhases.length === 1) {
                   cycleDisplay = getCycleDisplayInfo(cyclePhases[0]);
+                  if (format(day, 'yyyy-MM-dd') === '2025-06-16') {
+                    console.log(`🔍 June 16th: single cycle display set:`, cycleDisplay);
+                  }
 
                 } else if (cyclePhases.length > 1) {
                   // Multiple connections have cycles on this day - show combined info with colored initials
