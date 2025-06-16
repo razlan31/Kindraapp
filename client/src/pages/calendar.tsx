@@ -1271,6 +1271,16 @@ export default function Calendar() {
                 
                 const isToday = isSameDay(day, new Date());
                 
+                // Debug June 16th styling
+                if (format(day, 'yyyy-MM-dd') === '2025-06-16') {
+                  console.log(`🔍 June 16th styling:`, {
+                    isToday,
+                    cycleDisplay: !!cycleDisplay,
+                    cycleColor: cycleDisplay?.color,
+                    finalClassName: cycleDisplay ? `${cycleDisplay.color} border-2` : (isToday ? 'bg-primary/10' : 'bg-background/50')
+                  });
+                }
+                
                 return (
                   <button
                     key={day.toISOString()}
