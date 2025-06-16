@@ -194,15 +194,58 @@ export default function Calendar() {
     refetchOnWindowFocus: true,
   });
 
+  // DEBUG: Comprehensive cycle debugging
+  console.log('🔍 Calendar cycles data loaded:', {
+    cyclesLength: cycles.length,
+    cycles: cycles,
+    timestamp: new Date().toISOString()
+  });
+
+  // FORCE CLEAR ANY CACHED CYCLES - ensure empty state
+  useEffect(() => {
+    if (cycles.length === 0) {
+      // Clear any potential localStorage cycle data
+      localStorage.removeItem('menstrual-cycles');
+      localStorage.removeItem('cycle-cache');
+      localStorage.removeItem('cycles');
+      
+      // Force invalidate React Query cache for cycles
+      queryClient.invalidateQueries({ queryKey: ['/api/menstrual-cycles'] });
+      queryClient.removeQueries({ queryKey: ['/api/menstrual-cycles'] });
+      
+      console.log('🔍 Cleared localStorage and React Query cache for cycles');
+    }
+  }, [cycles, queryClient]);
+
+  // Additional debug for June 16th specifically
+  const today = new Date();
+  const june16 = new Date('2025-06-16');
+  if (format(today, 'yyyy-MM-dd') === '2025-06-16') {
+    console.log('🔍 Today is June 16th - cycle data check:', {
+      cyclesLength: cycles.length,
+      hasAnyDatabaseCycles: cycles.length > 0,
+      allCycleIds: cycles.map(c => c.id),
+      allConnectionIds: cycles.map(c => c.connectionId)
+    });
+  }
+
 
 
   // Menstrual cycle calculation functions
   const getCyclePhaseForDay = (day: Date, connectionId: number | null) => {
     const dayStr = format(day, 'yyyy-MM-dd');
     
+    // CRITICAL FIX: If no cycles exist at all, return null immediately
+    if (!cycles || cycles.length === 0) {
+      if (dayStr === '2025-06-16') {
+        console.log(`🔍 June 16th returning null - no cycles exist (cycles.length: ${cycles.length})`);
+      }
+      return null;
+    }
+    
     // Debug logging for June 16th
     if (dayStr === '2025-06-16') {
-      console.log(`🔍 June 16th getCyclePhaseForDay called with connectionId: ${connectionId}`);
+      console.log(`🔍 June 16th getCyclePhaseForDay called with connectionId: ${connectionId}, cycles.length: ${cycles.length}`);
     }
     
     if (!connectionId) {
