@@ -300,6 +300,18 @@ export default function Calendar() {
       // Ovulation is 14 days before cycle end
       const ovulationDay = cycleLength - 14;
       
+      // Debug for May 16th
+      if (format(day, 'yyyy-MM-dd') === '2025-05-16') {
+        console.log('🔍 May 16th calculation:', {
+          dayOfCycle,
+          ovulationDay,
+          cycleLength,
+          periodLength,
+          isOvulation: dayOfCycle === ovulationDay,
+          phase: dayOfCycle === ovulationDay ? 'ovulation' : 'other'
+        });
+      }
+      
       // Simple phase calculation
       if (dayOfCycle <= periodLength) {
         return { phase: 'menstrual', day: dayOfCycle, cycle };
