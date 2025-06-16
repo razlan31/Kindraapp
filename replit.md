@@ -111,6 +111,14 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
+- June 16, 2025: Resolved red highlighting issue through proper root cause analysis and fix
+  - Identified that forced CSS overrides were masking the real issue and creating styling inconsistencies
+  - Removed all "nuclear option" CSS classes and forced styling overrides from calendar components
+  - Root cause: Previous forced overrides (force-no-cycle-bg class) were interfering with normal styling
+  - Calendar now displays consistently with proper styling logic - no cycles exist so no cycle styling applied
+  - Verified through comprehensive debug logging that all cycle-related logic works correctly
+  - System now follows proper styling hierarchy without forced interventions
+
 - June 15, 2025: Resolved persistent cycle highlighting bug by disabling automatic cycle generation
   - Root cause: `checkAndCreateAutomaticCycles()` function was running every time calendar fetched cycles, automatically creating new cycles
   - Issue: Calendar showed red highlighting on days like May 15th/16th and June 16th due to automatic cycle generation

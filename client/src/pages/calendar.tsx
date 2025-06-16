@@ -1297,13 +1297,7 @@ export default function Calendar() {
                 
 
                 
-                // Debug for June 16th to check actual cycle creation source
-                if (format(day, 'yyyy-MM-dd') === '2025-06-16') {
-                  console.log(`🔍 June 16th - Raw cycles from server:`, cycles);
-                  console.log(`🔍 June 16th - Computed cyclePhases:`, cyclePhases);
-                  console.log(`🔍 June 16th - Final cycleDisplay:`, cycleDisplay);
-                  console.log(`🔍 June 16th - getCyclePhaseForDay result:`, getCyclePhaseForDay(day, selectedConnectionId));
-                }
+
                 
                 // CRITICAL SAFETY CHECK: Ensure no cycle display when cycles are empty
                 if (!cycles || cycles.length === 0) {
