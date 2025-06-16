@@ -280,97 +280,37 @@ export default function Calendar() {
     // Find the cycle that contains this day
     for (const cycle of relevantCycles) {
       const cycleStart = new Date(cycle.periodStartDate);
+      const cycleEnd = cycle.cycleEndDate ? new Date(cycle.cycleEndDate) : null;
       
-      // CRITICAL FIX: When connections are specifically selected, be more restrictive about cycle extension
-      let cycleEnd;
-      if (selectedConnectionIds.length > 0) {
-        // When specific connections are selected, only show cycles within their actual period + a few days buffer
-        const periodEnd = cycle.periodEndDate ? new Date(cycle.periodEndDate) : null;
-        if (cycle.cycleEndDate) {
-          cycleEnd = new Date(cycle.cycleEndDate);
-        } else if (periodEnd) {
-          // For active cycles with selection, limit extension to 3 days after period end
-          cycleEnd = new Date(periodEnd.getTime() + (3 * 24 * 60 * 60 * 1000));
-        } else {
-          // If no period end date, skip this cycle
-          continue;
-        }
-      } else {
-        // Default behavior for when no specific selection
-        cycleEnd = cycle.cycleEndDate ? new Date(cycle.cycleEndDate) : new Date();
+      // Only process cycles with complete data
+      if (!cycleEnd || day < cycleStart || day > cycleEnd) {
+        continue;
       }
       
-      if (cycleEnd && day >= cycleStart && day <= cycleEnd) {
-        // Debug logging for problematic dates
-        if (format(day, 'yyyy-MM-dd') === '2025-06-16' || format(day, 'yyyy-MM-dd') === '2025-05-15' || format(day, 'yyyy-MM-dd') === '2025-05-16') {
-          console.log(`🔍 ${format(day, 'yyyy-MM-dd')} cycle match found:`, {
-            connectionId: cycle.connectionId,
-            cycleStart: format(cycleStart, 'yyyy-MM-dd'),
-            cycleEnd: format(cycleEnd, 'yyyy-MM-dd'),
-            periodEnd: cycle.periodEndDate ? format(cycle.periodEndDate, 'yyyy-MM-dd') : 'null',
-            actualEndDate: cycle.cycleEndDate ? format(cycle.cycleEndDate, 'yyyy-MM-dd') : 'null',
-            selectedConnectionIds
-          });
-        }
-        
-        const dayOfCycle = Math.floor((day.getTime() - cycleStart.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-        const periodEnd = cycle.periodEndDate ? new Date(cycle.periodEndDate) : null;
-        const periodDays = periodEnd ? Math.floor((periodEnd.getTime() - cycleStart.getTime()) / (1000 * 60 * 60 * 24)) + 1 : 0;
-        
-        // Calculate actual cycle length from the data
-        let cycleLength;
-        if (cycle.cycleEndDate) {
-          // For May 1-30 cycle: May 30 - May 1 + 1 = 30 days
-          cycleLength = Math.floor((new Date(cycle.cycleEndDate).getTime() - cycleStart.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-        } else {
-          cycleLength = 28; // Default for active cycles
-        }
-        
-        // Calculate ovulation day: 14 days before cycle end
-        // For 30-day cycle: 30 - 14 = 16, so ovulation is on day 16 (May 16th)
-        const ovulationDay = cycleLength - 14;
-        
-        // Debug for May 16th specifically
-        if (format(day, 'yyyy-MM-dd') === '2025-05-16') {
-          console.log('✅ May 16th ovulation check:', {
-            dayOfCycle,
-            ovulationDay,
-            cycleLength,
-            isOvulationDay: dayOfCycle === ovulationDay,
-            cycleStart: format(cycleStart, 'yyyy-MM-dd'),
-            cycleEnd: cycle.cycleEndDate ? format(cycle.cycleEndDate, 'yyyy-MM-dd') : 'null',
-            phase: dayOfCycle === ovulationDay ? 'OVULATION' : 'other'
-          });
-        }
-        
-        if (dayOfCycle <= periodDays) {
-          return { phase: 'menstrual', day: dayOfCycle, cycle };
-        } else if (dayOfCycle <= ovulationDay - 3) {
-          return { phase: 'follicular', day: dayOfCycle, cycle };
-        } else if (dayOfCycle >= ovulationDay - 2 && dayOfCycle <= ovulationDay + 2) {
-          // Fertile window includes ovulation day
-          const isOvulation = dayOfCycle === ovulationDay;
-          
-          if (isOvulation) {
-            // Return ovulation as separate phase for proper display
-            return { 
-              phase: 'ovulation', 
-              day: dayOfCycle, 
-              cycle,
-              isOvulation: true
-            };
-          } else {
-            // Regular fertile window
-            return { 
-              phase: 'fertile', 
-              day: dayOfCycle, 
-              cycle,
-              isOvulation: false
-            };
-          }
-        } else {
-          return { phase: 'luteal', day: dayOfCycle, cycle };
-        }
+      // Calculate day of cycle (1-based)
+      const dayOfCycle = Math.floor((day.getTime() - cycleStart.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+      
+      // Calculate cycle length
+      const cycleLength = Math.floor((cycleEnd.getTime() - cycleStart.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+      
+      // Calculate period length 
+      const periodEnd = cycle.periodEndDate ? new Date(cycle.periodEndDate) : null;
+      const periodLength = periodEnd ? Math.floor((periodEnd.getTime() - cycleStart.getTime()) / (1000 * 60 * 60 * 24)) + 1 : 5;
+      
+      // Ovulation is 14 days before cycle end
+      const ovulationDay = cycleLength - 14;
+      
+      // Simple phase calculation
+      if (dayOfCycle <= periodLength) {
+        return { phase: 'menstrual', day: dayOfCycle, cycle };
+      } else if (dayOfCycle === ovulationDay) {
+        return { phase: 'ovulation', day: dayOfCycle, cycle };
+      } else if (dayOfCycle >= ovulationDay - 2 && dayOfCycle <= ovulationDay + 2) {
+        return { phase: 'fertile', day: dayOfCycle, cycle };
+      } else if (dayOfCycle < ovulationDay) {
+        return { phase: 'follicular', day: dayOfCycle, cycle };
+      } else {
+        return { phase: 'luteal', day: dayOfCycle, cycle };
       }
     }
     
