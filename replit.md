@@ -111,13 +111,14 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
-- June 16, 2025: Resolved red highlighting issue through proper root cause analysis and fix
-  - Identified that forced CSS overrides were masking the real issue and creating styling inconsistencies
-  - Removed all "nuclear option" CSS classes and forced styling overrides from calendar components
-  - Root cause: Previous forced overrides (force-no-cycle-bg class) were interfering with normal styling
-  - Calendar now displays consistently with proper styling logic - no cycles exist so no cycle styling applied
-  - Verified through comprehensive debug logging that all cycle-related logic works correctly
-  - System now follows proper styling hierarchy without forced interventions
+- June 16, 2025: RESOLVED red highlighting issue - proper root cause identified and fixed
+  - Issue was NOT cycle-related but CSS primary color configuration
+  - Root cause: Primary CSS color was set to red (#FF6B6B), making today's date highlights appear red
+  - Fixed by changing primary color from red to blue (#3B82F6) in CSS variables
+  - Today's highlights now show proper blue color that doesn't conflict with menstrual cycle indicators
+  - Removed all unnecessary forced CSS overrides and debug code that were masking the real issue
+  - Calendar now displays correctly with blue highlighting for current date, matching app theme
+  - Verified fix works across both main calendar and cycle tracker pages
 
 - June 15, 2025: Resolved persistent cycle highlighting bug by disabling automatic cycle generation
   - Root cause: `checkAndCreateAutomaticCycles()` function was running every time calendar fetched cycles, automatically creating new cycles

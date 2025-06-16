@@ -1,0 +1,123 @@
+getCurrentUser successful: {id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+eruda.js:2 getCurrentUser successful: {id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+eruda.js:2 Auth context setting user: {id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+eruda.js:2 Auth: Finally block - setting loading to false
+eruda.js:2 [vite] server connection lost. Polling for restart...
+frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.
+t @ frame_ant.js:2
+s @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ _app-8124422cda9db17a.js:38
+(anonymous) @ _app-8124422cda9db17a.js:25
+e @ _app-8124422cda9db17a.js:14
+t.subscribe @ _app-8124422cda9db17a.js:14
+e.consumeQueue @ _app-8124422cda9db17a.js:25
+(anonymous) @ _app-8124422cda9db17a.js:25
+r @ _app-8124422cda9db17a.js:38
+setTimeout
+(anonymous) @ _app-8124422cda9db17a.js:38
+e.scheduleQueueConsumption @ _app-8124422cda9db17a.js:25
+(anonymous) @ _app-8124422cda9db17a.js:25
+e @ _app-8124422cda9db17a.js:14
+t.subscribe @ _app-8124422cda9db17a.js:14
+(anonymous) @ _app-8124422cda9db17a.js:25
+e @ _app-8124422cda9db17a.js:14
+t.subscribe @ _app-8124422cda9db17a.js:14
+e.try @ _app-8124422cda9db17a.js:25
+e.start @ _app-8124422cda9db17a.js:25
+t.request @ _app-8124422cda9db17a.js:25
+(anonymous) @ _app-8124422cda9db17a.js:14
+(anonymous) @ _app-8124422cda9db17a.js:14
+(anonymous) @ _app-8124422cda9db17a.js:25
+(anonymous) @ _app-8124422cda9db17a.js:14
+e.execute @ _app-8124422cda9db17a.js:14
+e.getObservableFromLink @ _app-8124422cda9db17a.js:11
+(anonymous) @ _app-8124422cda9db17a.js:11
+(anonymous) @ _app-8124422cda9db17a.js:11
+(anonymous) @ _app-8124422cda9db17a.js:11
+(anonymous) @ _app-8124422cda9db17a.js:11
+s @ _app-8124422cda9db17a.js:11
+e.mutate @ _app-8124422cda9db17a.js:11
+e.mutate @ _app-8124422cda9db17a.js:11
+(anonymous) @ _app-8124422cda9db17a.js:14
+(anonymous) @ 5376-11727a41210dc2ae.js:1
+(anonymous) @ main-2ef5568eaa1ab313.js:1
+n @ main-2ef5568eaa1ab313.js:1
+u @ main-2ef5568eaa1ab313.js:1
+(anonymous) @ main-2ef5568eaa1ab313.js:1
+(anonymous) @ main-2ef5568eaa1ab313.js:1
+(anonymous) @ 5376-11727a41210dc2ae.js:1
+oO @ framework-2ea3b55f392bfb46.js:1
+uB @ framework-2ea3b55f392bfb46.js:1
+u_ @ framework-2ea3b55f392bfb46.js:1
+r6 @ framework-2ea3b55f392bfb46.js:1
+(anonymous) @ framework-2ea3b55f392bfb46.js:1
+uO @ framework-2ea3b55f392bfb46.js:1
+uS @ framework-2ea3b55f392bfb46.js:1
+C @ framework-2ea3b55f392bfb46.js:1
+z @ framework-2ea3b55f392bfb46.js:1Understand this error
+Console.js:61 MomentModal render - momentModalOpen: false activityType: moment
+Console.js:61 Modal useEffect - selectedDate from context: null
+Console.js:61 Modal useEffect - editingMoment: null
+Console.js:61 Modal useEffect - momentModalOpen: false
+Console.js:61 Auth: Starting to load user, setting loading to true
+Console.js:61 Auth: Starting to load user, setting loading to true
+Console.js:61 MomentModal render - momentModalOpen: false activityType: moment
+Console.js:61 MomentModal render - momentModalOpen: false activityType: moment
+Console.js:61 MomentModal render - momentModalOpen: false activityType: moment
+Console.js:61 Focus Context Debug: {savedId: '6', connectionsLength: 19, connections: Array(19)}
+Console.js:61 Found saved connection: {id: 6, userId: '8', name: 'Amalina', profileImage: 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD…NBFVYa55AsNvqfMiHlz7DuXzATnACjbxt4OfvzgRwvR3Kj//Z', relationshipStage: 'Dating', …}
+Console.js:61 getCurrentUser successful: {id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+Console.js:61 getCurrentUser successful: {id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+Console.js:61 Auth context setting user: {id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+Console.js:61 Auth: Finally block - setting loading to false
+Console.js:61 MomentModal render - momentModalOpen: false activityType: moment
+Console.js:61 Prevented JSON parse error from browser extension
+Mt.forEach.n.<computed> @ Console.js:61
+JSON.parse @ main.tsx:17
+(anonymous) @ frame_ant.js:2
+p @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+u @ frame_ant.js:2
+window.fetch @ frame_ant.js:2
+window.fetch @ Network.js:219
+getCurrentUser @ auth.ts:28
+loadUser @ auth-context.tsx:47
+(anonymous) @ auth-context.tsx:81
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=f5502327:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=f5502327:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=f5502327:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=f5502327:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=f5502327:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=f5502327:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=f5502327:19447
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=f5502327:18868
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=f5502327:9119
+commitRootImpl @ chunk-RPCDYKBN.js?v=f5502327:19432
+commitRoot @ chunk-RPCDYKBN.js?v=f5502327:19277
+finishConcurrentRender @ chunk-RPCDYKBN.js?v=f5502327:18805
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=f5502327:18718
+workLoop @ chunk-RPCDYKBN.js?v=f5502327:197
+flushWork @ chunk-RPCDYKBN.js?v=f5502327:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=f5502327:384Understand this warning
+Console.js:61 getCurrentUser successful: {id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+Console.js:61 getCurrentUser successful: {id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+Console.js:61 Auth context setting user: {id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+Console.js:61 Auth: Finally block - setting loading to false
