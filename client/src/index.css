@@ -5,12 +5,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Force override for cycle backgrounds when no cycles exist */
-.force-no-cycle-bg {
-  background-color: transparent !important;
-  background-image: none !important;
-  background: none !important;
-}
+
 
 /* Custom animations */
 @keyframes fadeIn {
@@ -97,7 +92,7 @@
   --card-foreground: 20 14.3% 4.1%;
   --border: 20 5.9% 90%;
   --input: 20 5.9% 90%;
-  --primary: 354 100% 70%; /* #FF6B6B */
+  --primary: 221 83% 53%; /* #3B82F6 - Blue instead of red */
   --primary-foreground: 0 0% 100%;
   --secondary: 174 65% 59%; /* #4ECDC4 */
   --secondary-foreground: 0 0% 100%;

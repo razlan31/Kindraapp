@@ -1338,16 +1338,7 @@ export default function MenstrualCyclePage() {
                   const cyclesOnDay = getCyclesForDay(day);
                   const isToday = isSameDay(day, new Date());
                   
-                  // Debug June 16th specifically
-                  if (format(day, 'yyyy-MM-dd') === '2025-06-16') {
-                    console.log(`🔍 CYCLE TRACKER June 16th:`, {
-                      totalCycles: cycles?.length || 0,
-                      cyclesOnDay: cyclesOnDay.length,
-                      cyclesOnDayData: cyclesOnDay,
-                      selectedPersonIds,
-                      isToday
-                    });
-                  }
+
                   
 
 
