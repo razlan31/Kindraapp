@@ -325,7 +325,7 @@ export default function Calendar() {
         // PRIORITY: Ovulation day takes precedence over fertile window
         return { phase: 'ovulation', day: dayOfCycle, cycle };
       } else if (dayOfCycle >= ovulationDay - 2 && dayOfCycle <= ovulationDay + 2) {
-        return { phase: 'fertile', day: dayOfCycle, cycle };
+        return { phase: 'fertile', day: dayOfCycle, cycle, isOvulation: false };
       } else if (dayOfCycle < ovulationDay) {
         return { phase: 'follicular', day: dayOfCycle, cycle };
       } else {
