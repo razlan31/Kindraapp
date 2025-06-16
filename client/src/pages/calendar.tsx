@@ -373,6 +373,18 @@ export default function Calendar() {
         } else if (dayOfCycle >= ovulationDay - 2 && dayOfCycle <= ovulationDay + 2) {
           // Fertile window includes ovulation day
           const isOvulation = dayOfCycle === ovulationDay;
+          
+          // Debug log for May 16th specifically
+          if (format(day, 'yyyy-MM-dd') === '2025-05-16') {
+            console.log('🔵 MAY 16TH DEBUG:', {
+              dayOfCycle,
+              ovulationDay,
+              isOvulation,
+              cycleLength,
+              returning: { phase: 'fertile', isOvulation }
+            });
+          }
+          
           return { 
             phase: 'fertile', 
             day: dayOfCycle, 
