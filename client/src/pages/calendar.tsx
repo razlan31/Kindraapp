@@ -1179,6 +1179,11 @@ export default function Calendar() {
                     connectionsToCheck,
                     allCycles: cycles.map(c => ({ id: c.id, connectionId: c.connectionId, start: c.periodStartDate, end: c.cycleEndDate }))
                   });
+                  // Force check connection 6 for May 16th debugging
+                  if (!connectionsToCheck.includes(6)) {
+                    console.log('🔍 May 16th: FORCING connection 6 check for debugging');
+                    connectionsToCheck.push(6);
+                  }
                 }
                 
 
