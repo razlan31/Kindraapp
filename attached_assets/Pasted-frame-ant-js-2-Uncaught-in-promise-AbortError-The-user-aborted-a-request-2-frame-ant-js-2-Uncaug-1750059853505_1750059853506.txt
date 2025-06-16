@@ -1,0 +1,40 @@
+frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.
+2
+frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.
+frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.
+2
+frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.
+frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.
+frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.
+frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.
+Console.js:61 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+2605-c502dc3c5a681125.js:1 WebSocket is already in CLOSING or CLOSED state.
+Console.js:61 🗑️ Client: Attempting to delete cycle 77
+Console.js:61 ✅ Client: Delete response received: 
+Response {type: 'basic', url: 'https://ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1t…lvpbxeuft.worf.replit.dev/api/menstrual-cycles/77', redirected: false, status: 200, ok: true, …}
+Console.js:61 🎉 Client: Delete successful for cycle 77
+Console.js:61 📝 Updating cache after delete mutation for cycle: 
+{id: 77}
+Console.js:61 🗑️ Removed cycle 77 from cache, 1 -> 0 cycles
+Console.js:61 🔄 Clearing all cycle cache data
+Console.js:61 ✅ Cache cleared and data refetched
+Console.js:61 🔍 Verifying deletion of cycle 77
+Console.js:61 Prevented JSON parse error from browser extension
+Console.js:61 ✅ Verification passed: Cycle 77 successfully deleted
+Console.js:61 ✅ Client: Deletion verified for cycle 77
+Console.js:61 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+Console.js:61 MomentModal render - momentModalOpen: false activityType: moment
+2605-c502dc3c5a681125.js:1 WebSocket is already in CLOSING or CLOSED state.
+Console.js:61 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+2605-c502dc3c5a681125.js:1 WebSocket is already in CLOSING or CLOSED state.
+Console.js:61 MomentModal render - momentModalOpen: false activityType: moment
+2605-c502dc3c5a681125.js:1 WebSocket is already in CLOSING or CLOSED state.
+Console.js:61 Submit data being sent: 
+{startDate: '2025-05-01', periodEndDate: '2025-05-05', endDate: '2025-05-30', flowIntensity: null, mood: null, …}
+2605-c502dc3c5a681125.js:1 WebSocket is already in CLOSING or CLOSED state.
+Console.js:61 MomentModal render - momentModalOpen: false activityType: moment
+2605-c502dc3c5a681125.js:1 WebSocket is already in CLOSING or CLOSED state.
+Console.js:61 MomentModal render - momentModalOpen: false activityType: moment
+2605-c502dc3c5a681125.js:1 WebSocket is already in CLOSING or CLOSED state.
+﻿
+

@@ -248,9 +248,12 @@ export default function Calendar() {
       return null;
     }
     
-    // Debug logging for June 16th
+    // Debug logging for June 16th and May dates
     if (dayStr === '2025-06-16') {
       console.log(`🔍 June 16th getCyclePhaseForDay called with connectionId: ${connectionId}, cycles.length: ${cycles.length}`);
+    }
+    if (format(day, 'yyyy-MM') === '2025-05') {
+      console.log(`🔍 MAY ${format(day, 'dd')} getCyclePhaseForDay called with connectionId: ${connectionId}, cycles.length: ${cycles.length}`);
     }
     
     if (!connectionId) {
