@@ -1,0 +1,727 @@
+🔍 June 16th final styling: {isToday: true, cycleDisplay: null, cycleDisplayColor: undefined, cyclesLength: 1, finalClassName: 'h-16 p-1 border rounded-lg transition-colors hover…-accent/50 border-primary/30 bg-primary/10  block', …}
+Console.js:61 MomentModal render - momentModalOpen: false
+frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.
+t @ frame_ant.js:2
+s @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ _app-8124422cda9db17a.js:38
+(anonymous) @ _app-8124422cda9db17a.js:25
+e @ _app-8124422cda9db17a.js:14
+t.subscribe @ _app-8124422cda9db17a.js:14
+e.consumeQueue @ _app-8124422cda9db17a.js:25
+(anonymous) @ _app-8124422cda9db17a.js:25
+r @ _app-8124422cda9db17a.js:38
+setTimeout
+(anonymous) @ _app-8124422cda9db17a.js:38
+e.scheduleQueueConsumption @ _app-8124422cda9db17a.js:25
+(anonymous) @ _app-8124422cda9db17a.js:25
+e @ _app-8124422cda9db17a.js:14
+t.subscribe @ _app-8124422cda9db17a.js:14
+(anonymous) @ _app-8124422cda9db17a.js:25
+e @ _app-8124422cda9db17a.js:14
+t.subscribe @ _app-8124422cda9db17a.js:14
+e.try @ _app-8124422cda9db17a.js:25
+e.start @ _app-8124422cda9db17a.js:25
+t.request @ _app-8124422cda9db17a.js:25
+(anonymous) @ _app-8124422cda9db17a.js:14
+(anonymous) @ _app-8124422cda9db17a.js:14
+(anonymous) @ _app-8124422cda9db17a.js:25
+(anonymous) @ _app-8124422cda9db17a.js:14
+e.execute @ _app-8124422cda9db17a.js:14
+e.getObservableFromLink @ _app-8124422cda9db17a.js:11
+(anonymous) @ _app-8124422cda9db17a.js:11
+(anonymous) @ _app-8124422cda9db17a.js:11
+(anonymous) @ _app-8124422cda9db17a.js:11
+(anonymous) @ _app-8124422cda9db17a.js:11
+s @ _app-8124422cda9db17a.js:11
+e.mutate @ _app-8124422cda9db17a.js:11
+e.mutate @ _app-8124422cda9db17a.js:11
+(anonymous) @ _app-8124422cda9db17a.js:14
+e.wait @ 5376-11727a41210dc2ae.js:1
+u @ 2259-2b6071cdf7d9180b.js:1
+(anonymous) @ 2259-2b6071cdf7d9180b.js:1
+r @ _app-8124422cda9db17a.js:38
+setTimeout
+(anonymous) @ _app-8124422cda9db17a.js:38
+Object.assign.isScheduled @ 2259-2b6071cdf7d9180b.js:1
+(anonymous) @ 5376-11727a41210dc2ae.js:1
+(anonymous) @ 692-bc0da94a7e4153f6.js:1
+(anonymous) @ 692-bc0da94a7e4153f6.js:1
+(anonymous) @ main-2ef5568eaa1ab313.js:1
+n @ main-2ef5568eaa1ab313.js:1
+u @ main-2ef5568eaa1ab313.js:1
+(anonymous) @ main-2ef5568eaa1ab313.js:1
+(anonymous) @ main-2ef5568eaa1ab313.js:1
+G @ 692-bc0da94a7e4153f6.js:1
+(anonymous) @ 692-bc0da94a7e4153f6.js:1
+(anonymous) @ main-2ef5568eaa1ab313.js:1
+n @ main-2ef5568eaa1ab313.js:1
+u @ main-2ef5568eaa1ab313.js:1
+Promise.then
+n @ main-2ef5568eaa1ab313.js:1
+u @ main-2ef5568eaa1ab313.js:1
+(anonymous) @ main-2ef5568eaa1ab313.js:1
+(anonymous) @ main-2ef5568eaa1ab313.js:1
+Z @ 692-bc0da94a7e4153f6.js:1
+(anonymous) @ 692-bc0da94a7e4153f6.js:1
+(anonymous) @ 1424-d616e46e79962657.js:1
+handleCommand @ 1424-d616e46e79962657.js:1
+onSocketMessage @ 1424-d616e46e79962657.js:1Understand this error
+2frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.
+t @ frame_ant.js:2
+s @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ _app-8124422cda9db17a.js:38
+(anonymous) @ _app-8124422cda9db17a.js:25
+e @ _app-8124422cda9db17a.js:14
+t.subscribe @ _app-8124422cda9db17a.js:14
+e.consumeQueue @ _app-8124422cda9db17a.js:25
+(anonymous) @ _app-8124422cda9db17a.js:25
+r @ _app-8124422cda9db17a.js:38
+setTimeout
+(anonymous) @ _app-8124422cda9db17a.js:38
+e.scheduleQueueConsumption @ _app-8124422cda9db17a.js:25
+(anonymous) @ _app-8124422cda9db17a.js:25
+e @ _app-8124422cda9db17a.js:14
+t.subscribe @ _app-8124422cda9db17a.js:14
+(anonymous) @ _app-8124422cda9db17a.js:25
+e @ _app-8124422cda9db17a.js:14
+t.subscribe @ _app-8124422cda9db17a.js:14
+e.try @ _app-8124422cda9db17a.js:25
+e.start @ _app-8124422cda9db17a.js:25
+t.request @ _app-8124422cda9db17a.js:25
+(anonymous) @ _app-8124422cda9db17a.js:14
+(anonymous) @ _app-8124422cda9db17a.js:14
+(anonymous) @ _app-8124422cda9db17a.js:25
+(anonymous) @ _app-8124422cda9db17a.js:14
+e.execute @ _app-8124422cda9db17a.js:14
+e.getObservableFromLink @ _app-8124422cda9db17a.js:11
+e.getResultsFromLink @ _app-8124422cda9db17a.js:11
+b @ _app-8124422cda9db17a.js:11
+e.fetchQueryByPolicy @ _app-8124422cda9db17a.js:11
+b @ _app-8124422cda9db17a.js:11
+e.fetchConcastWithInfo @ _app-8124422cda9db17a.js:11
+t.fetch @ _app-8124422cda9db17a.js:14
+t.reobserveAsConcast @ _app-8124422cda9db17a.js:14
+e.executeQuery @ _app-8124422cda9db17a.js:26
+(anonymous) @ _app-8124422cda9db17a.js:14
+(anonymous) @ _app-8124422cda9db17a.js:40
+(anonymous) @ main-2ef5568eaa1ab313.js:1
+n @ main-2ef5568eaa1ab313.js:1
+u @ main-2ef5568eaa1ab313.js:1
+(anonymous) @ main-2ef5568eaa1ab313.js:1
+(anonymous) @ main-2ef5568eaa1ab313.js:1
+r @ _app-8124422cda9db17a.js:38Understand this error
+frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.
+t @ frame_ant.js:2
+s @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ _app-8124422cda9db17a.js:38
+(anonymous) @ _app-8124422cda9db17a.js:25
+e @ _app-8124422cda9db17a.js:14
+t.subscribe @ _app-8124422cda9db17a.js:14
+e.consumeQueue @ _app-8124422cda9db17a.js:25
+(anonymous) @ _app-8124422cda9db17a.js:25
+r @ _app-8124422cda9db17a.js:38
+setTimeout
+(anonymous) @ _app-8124422cda9db17a.js:38
+e.scheduleQueueConsumption @ _app-8124422cda9db17a.js:25
+(anonymous) @ _app-8124422cda9db17a.js:25
+e @ _app-8124422cda9db17a.js:14
+t.subscribe @ _app-8124422cda9db17a.js:14
+(anonymous) @ _app-8124422cda9db17a.js:25
+e @ _app-8124422cda9db17a.js:14
+t.subscribe @ _app-8124422cda9db17a.js:14
+e.try @ _app-8124422cda9db17a.js:25
+e.start @ _app-8124422cda9db17a.js:25
+t.request @ _app-8124422cda9db17a.js:25
+(anonymous) @ _app-8124422cda9db17a.js:14
+(anonymous) @ _app-8124422cda9db17a.js:14
+(anonymous) @ _app-8124422cda9db17a.js:25
+(anonymous) @ _app-8124422cda9db17a.js:14
+e.execute @ _app-8124422cda9db17a.js:14
+e.getObservableFromLink @ _app-8124422cda9db17a.js:11
+(anonymous) @ _app-8124422cda9db17a.js:11
+(anonymous) @ _app-8124422cda9db17a.js:11
+(anonymous) @ _app-8124422cda9db17a.js:11
+(anonymous) @ _app-8124422cda9db17a.js:11
+s @ _app-8124422cda9db17a.js:11
+e.mutate @ _app-8124422cda9db17a.js:11
+e.mutate @ _app-8124422cda9db17a.js:11
+(anonymous) @ _app-8124422cda9db17a.js:14
+(anonymous) @ _app-8124422cda9db17a.js:40
+(anonymous) @ main-2ef5568eaa1ab313.js:1
+n @ main-2ef5568eaa1ab313.js:1
+u @ main-2ef5568eaa1ab313.js:1
+(anonymous) @ main-2ef5568eaa1ab313.js:1
+(anonymous) @ main-2ef5568eaa1ab313.js:1
+(anonymous) @ _app-8124422cda9db17a.js:40
+b @ _app-8124422cda9db17a.js:14
+S @ _app-8124422cda9db17a.js:14
+E @ _app-8124422cda9db17a.js:14
+r @ _app-8124422cda9db17a.js:38
+setTimeout
+(anonymous) @ _app-8124422cda9db17a.js:38
+w @ _app-8124422cda9db17a.js:14
+r @ _app-8124422cda9db17a.js:38Understand this error
+Console.js:61 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+Mt.forEach.n.<computed> @ Console.js:61
+(anonymous) @ @radix-ui_react-dialog.js?v=f5502327:342
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=f5502327:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=f5502327:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=f5502327:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=f5502327:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=f5502327:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=f5502327:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=f5502327:19447
+commitRootImpl @ chunk-RPCDYKBN.js?v=f5502327:19416
+commitRoot @ chunk-RPCDYKBN.js?v=f5502327:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=f5502327:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=f5502327:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=f5502327:18627Understand this warning
+Console.js:61 🗑️ Client: Attempting to delete cycle 78
+Console.js:61 ✅ Client: Delete response received: Response {type: 'basic', url: 'https://ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1t…lvpbxeuft.worf.replit.dev/api/menstrual-cycles/78', redirected: false, status: 200, ok: true, …}
+Console.js:61 🎉 Client: Delete successful for cycle 78
+Console.js:61 📝 Updating cache after delete mutation for cycle: {id: 78}
+Console.js:61 🗑️ Removed cycle 78 from cache, 1 -> 0 cycles
+Console.js:61 🔄 Clearing all cycle cache data
+Console.js:61 ✅ Cache cleared and data refetched
+Console.js:61 🔍 Verifying deletion of cycle 78
+Console.js:61 Prevented JSON parse error from browser extension
+Mt.forEach.n.<computed> @ Console.js:61
+JSON.parse @ main.tsx:17
+(anonymous) @ frame_ant.js:2
+p @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+u @ frame_ant.js:2
+window.fetch @ frame_ant.js:2
+window.fetch @ Network.js:219
+queryFn @ cache-utils.ts:56
+fetchFn @ @tanstack_react-query.js?v=f5502327:840
+run @ @tanstack_react-query.js?v=f5502327:494
+start @ @tanstack_react-query.js?v=f5502327:536
+fetch @ @tanstack_react-query.js?v=f5502327:926
+fetchQuery @ @tanstack_react-query.js?v=f5502327:1743
+verifyDeletion @ cache-utils.ts:54
+await in verifyDeletion
+onSuccess @ menstrual-cycle.tsx:650
+await in onSuccess
+execute @ @tanstack_react-query.js?v=f5502327:1233
+await in execute
+mutate @ @tanstack_react-query.js?v=f5502327:2630
+(anonymous) @ @tanstack_react-query.js?v=f5502327:3295
+handleDeleteCycle @ menstrual-cycle.tsx:689
+callCallback2 @ chunk-RPCDYKBN.js?v=f5502327:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=f5502327:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=f5502327:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-RPCDYKBN.js?v=f5502327:3736
+executeDispatch @ chunk-RPCDYKBN.js?v=f5502327:7014
+processDispatchQueueItemsInOrder @ chunk-RPCDYKBN.js?v=f5502327:7034
+processDispatchQueue @ chunk-RPCDYKBN.js?v=f5502327:7043
+dispatchEventsForPlugins @ chunk-RPCDYKBN.js?v=f5502327:7051
+(anonymous) @ chunk-RPCDYKBN.js?v=f5502327:7174
+batchedUpdates$1 @ chunk-RPCDYKBN.js?v=f5502327:18913
+batchedUpdates @ chunk-RPCDYKBN.js?v=f5502327:3579
+dispatchEventForPluginEventSystem @ chunk-RPCDYKBN.js?v=f5502327:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-RPCDYKBN.js?v=f5502327:5478
+dispatchEvent @ chunk-RPCDYKBN.js?v=f5502327:5472
+dispatchDiscreteEvent @ chunk-RPCDYKBN.js?v=f5502327:5449Understand this warning
+Console.js:61 ✅ Verification passed: Cycle 78 successfully deleted
+Console.js:61 ✅ Client: Deletion verified for cycle 78
+Console.js:61 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+Mt.forEach.n.<computed> @ Console.js:61
+(anonymous) @ @radix-ui_react-dialog.js?v=f5502327:342
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=f5502327:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=f5502327:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=f5502327:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=f5502327:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=f5502327:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=f5502327:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=f5502327:19447
+commitRootImpl @ chunk-RPCDYKBN.js?v=f5502327:19416
+commitRoot @ chunk-RPCDYKBN.js?v=f5502327:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=f5502327:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=f5502327:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=f5502327:18627
+setTimeout
+scheduleFn @ @tanstack_react-query.js?v=f5502327:555
+flush @ @tanstack_react-query.js?v=f5502327:569
+batch @ @tanstack_react-query.js?v=f5502327:587
+dispatch_fn @ @tanstack_react-query.js?v=f5502327:996
+setData @ @tanstack_react-query.js?v=f5502327:696
+onSuccess @ @tanstack_react-query.js?v=f5502327:897
+resolve @ @tanstack_react-query.js?v=f5502327:456
+Promise.then
+run @ @tanstack_react-query.js?v=f5502327:498
+start @ @tanstack_react-query.js?v=f5502327:536
+fetch @ @tanstack_react-query.js?v=f5502327:926
+fetchQuery @ @tanstack_react-query.js?v=f5502327:1743
+verifyDeletion @ cache-utils.ts:54
+await in verifyDeletion
+onSuccess @ menstrual-cycle.tsx:650
+await in onSuccess
+execute @ @tanstack_react-query.js?v=f5502327:1233
+await in execute
+mutate @ @tanstack_react-query.js?v=f5502327:2630
+(anonymous) @ @tanstack_react-query.js?v=f5502327:3295
+handleDeleteCycle @ menstrual-cycle.tsx:689
+callCallback2 @ chunk-RPCDYKBN.js?v=f5502327:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=f5502327:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=f5502327:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-RPCDYKBN.js?v=f5502327:3736
+executeDispatch @ chunk-RPCDYKBN.js?v=f5502327:7014
+processDispatchQueueItemsInOrder @ chunk-RPCDYKBN.js?v=f5502327:7034
+processDispatchQueue @ chunk-RPCDYKBN.js?v=f5502327:7043
+dispatchEventsForPlugins @ chunk-RPCDYKBN.js?v=f5502327:7051
+(anonymous) @ chunk-RPCDYKBN.js?v=f5502327:7174
+batchedUpdates$1 @ chunk-RPCDYKBN.js?v=f5502327:18913
+batchedUpdates @ chunk-RPCDYKBN.js?v=f5502327:3579
+dispatchEventForPluginEventSystem @ chunk-RPCDYKBN.js?v=f5502327:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-RPCDYKBN.js?v=f5502327:5478
+dispatchEvent @ chunk-RPCDYKBN.js?v=f5502327:5472
+dispatchDiscreteEvent @ chunk-RPCDYKBN.js?v=f5502327:5449Understand this warning
+Console.js:61 MomentModal render - momentModalOpen: false activityType: moment
+Console.js:61 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+Mt.forEach.n.<computed> @ Console.js:61
+(anonymous) @ @radix-ui_react-dialog.js?v=f5502327:342
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=f5502327:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=f5502327:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=f5502327:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=f5502327:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=f5502327:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=f5502327:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=f5502327:19447
+commitRootImpl @ chunk-RPCDYKBN.js?v=f5502327:19416
+commitRoot @ chunk-RPCDYKBN.js?v=f5502327:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=f5502327:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=f5502327:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=f5502327:18627Understand this warning
+Console.js:61 MomentModal render - momentModalOpen: false activityType: moment
+Console.js:61 Submit data being sent: {startDate: '2025-05-01', periodEndDate: '2025-05-05', endDate: '2025-05-30', flowIntensity: null, mood: null, …}
+2Console.js:61 MomentModal render - momentModalOpen: false activityType: moment
+frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.
+t @ frame_ant.js:2
+s @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ _app-8124422cda9db17a.js:38
+(anonymous) @ _app-8124422cda9db17a.js:25
+e @ _app-8124422cda9db17a.js:14
+t.subscribe @ _app-8124422cda9db17a.js:14
+e.consumeQueue @ _app-8124422cda9db17a.js:25
+(anonymous) @ _app-8124422cda9db17a.js:25
+r @ _app-8124422cda9db17a.js:38
+setTimeout
+(anonymous) @ _app-8124422cda9db17a.js:38
+e.scheduleQueueConsumption @ _app-8124422cda9db17a.js:25
+(anonymous) @ _app-8124422cda9db17a.js:25
+e @ _app-8124422cda9db17a.js:14
+t.subscribe @ _app-8124422cda9db17a.js:14
+(anonymous) @ _app-8124422cda9db17a.js:25
+e @ _app-8124422cda9db17a.js:14
+t.subscribe @ _app-8124422cda9db17a.js:14
+e.try @ _app-8124422cda9db17a.js:25
+e.start @ _app-8124422cda9db17a.js:25
+t.request @ _app-8124422cda9db17a.js:25
+(anonymous) @ _app-8124422cda9db17a.js:14
+(anonymous) @ _app-8124422cda9db17a.js:14
+(anonymous) @ _app-8124422cda9db17a.js:25
+(anonymous) @ _app-8124422cda9db17a.js:14
+e.execute @ _app-8124422cda9db17a.js:14
+e.getObservableFromLink @ _app-8124422cda9db17a.js:11
+e.getResultsFromLink @ _app-8124422cda9db17a.js:11
+b @ _app-8124422cda9db17a.js:11
+e.fetchQueryByPolicy @ _app-8124422cda9db17a.js:11
+b @ _app-8124422cda9db17a.js:11
+e.fetchConcastWithInfo @ _app-8124422cda9db17a.js:11
+t.fetch @ _app-8124422cda9db17a.js:14
+t.reobserveAsConcast @ _app-8124422cda9db17a.js:14
+e.executeQuery @ _app-8124422cda9db17a.js:26
+(anonymous) @ _app-8124422cda9db17a.js:14
+(anonymous) @ _app-8124422cda9db17a.js:40
+(anonymous) @ main-2ef5568eaa1ab313.js:1
+n @ main-2ef5568eaa1ab313.js:1
+u @ main-2ef5568eaa1ab313.js:1
+(anonymous) @ main-2ef5568eaa1ab313.js:1
+(anonymous) @ main-2ef5568eaa1ab313.js:1
+(anonymous) @ _app-8124422cda9db17a.js:40
+(anonymous) @ _app-8124422cda9db17a.js:40
+(anonymous) @ main-2ef5568eaa1ab313.js:1
+n @ main-2ef5568eaa1ab313.js:1
+u @ main-2ef5568eaa1ab313.js:1
+(anonymous) @ main-2ef5568eaa1ab313.js:1
+(anonymous) @ main-2ef5568eaa1ab313.js:1
+r @ _app-8124422cda9db17a.js:38Understand this error
+frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.
+t @ frame_ant.js:2
+s @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ _app-8124422cda9db17a.js:38
+(anonymous) @ _app-8124422cda9db17a.js:25
+e @ _app-8124422cda9db17a.js:14
+t.subscribe @ _app-8124422cda9db17a.js:14
+e.consumeQueue @ _app-8124422cda9db17a.js:25
+(anonymous) @ _app-8124422cda9db17a.js:25
+r @ _app-8124422cda9db17a.js:38
+setTimeout
+(anonymous) @ _app-8124422cda9db17a.js:38
+e.scheduleQueueConsumption @ _app-8124422cda9db17a.js:25
+(anonymous) @ _app-8124422cda9db17a.js:25
+e @ _app-8124422cda9db17a.js:14
+t.subscribe @ _app-8124422cda9db17a.js:14
+(anonymous) @ _app-8124422cda9db17a.js:25
+e @ _app-8124422cda9db17a.js:14
+t.subscribe @ _app-8124422cda9db17a.js:14
+e.try @ _app-8124422cda9db17a.js:25
+e.start @ _app-8124422cda9db17a.js:25
+t.request @ _app-8124422cda9db17a.js:25
+(anonymous) @ _app-8124422cda9db17a.js:14
+(anonymous) @ _app-8124422cda9db17a.js:14
+(anonymous) @ _app-8124422cda9db17a.js:25
+(anonymous) @ _app-8124422cda9db17a.js:14
+e.execute @ _app-8124422cda9db17a.js:14
+e.getObservableFromLink @ _app-8124422cda9db17a.js:11
+(anonymous) @ _app-8124422cda9db17a.js:11
+(anonymous) @ _app-8124422cda9db17a.js:11
+(anonymous) @ _app-8124422cda9db17a.js:11
+(anonymous) @ _app-8124422cda9db17a.js:11
+s @ _app-8124422cda9db17a.js:11
+e.mutate @ _app-8124422cda9db17a.js:11
+e.mutate @ _app-8124422cda9db17a.js:11
+(anonymous) @ _app-8124422cda9db17a.js:14
+(anonymous) @ _app-8124422cda9db17a.js:40
+(anonymous) @ main-2ef5568eaa1ab313.js:1
+n @ main-2ef5568eaa1ab313.js:1
+u @ main-2ef5568eaa1ab313.js:1
+(anonymous) @ main-2ef5568eaa1ab313.js:1
+(anonymous) @ main-2ef5568eaa1ab313.js:1
+r @ _app-8124422cda9db17a.js:38Understand this error
+Console.js:61 MomentModal render - momentModalOpen: false activityType: moment
+Console.js:61 Modal useEffect - selectedDate from context: null
+Console.js:61 Modal useEffect - editingMoment: null
+Console.js:61 Modal useEffect - momentModalOpen: false
+Console.js:61 Focus Context Debug: {savedId: '6', connectionsLength: 19, connections: Array(19)}
+Console.js:61 Found saved connection: {id: 6, userId: '8', name: 'Amalina', profileImage: 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD…NBFVYa55AsNvqfMiHlz7DuXzATnACjbxt4OfvzgRwvR3Kj//Z', relationshipStage: 'Dating', …}
+Console.js:61 Auth: Starting to load user, setting loading to true
+Console.js:61 MomentModal render - momentModalOpen: false activityType: moment
+Console.js:61 Prevented JSON parse error from browser extension
+Mt.forEach.n.<computed> @ Console.js:61
+JSON.parse @ main.tsx:17
+(anonymous) @ frame_ant.js:2
+p @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+u @ frame_ant.js:2
+window.fetch @ frame_ant.js:2
+window.fetch @ Network.js:219
+getCurrentUser @ auth.ts:28
+loadUser @ auth-context.tsx:47
+(anonymous) @ auth-context.tsx:81
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=f5502327:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=f5502327:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=f5502327:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=f5502327:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=f5502327:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=f5502327:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=f5502327:19447
+commitRootImpl @ chunk-RPCDYKBN.js?v=f5502327:19416
+commitRoot @ chunk-RPCDYKBN.js?v=f5502327:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=f5502327:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=f5502327:9119
+flushSync @ chunk-RPCDYKBN.js?v=f5502327:18959
+scheduleRefresh @ chunk-RPCDYKBN.js?v=f5502327:20004
+(anonymous) @ @react-refresh:267
+performReactRefresh @ @react-refresh:256
+(anonymous) @ @react-refresh:677
+setTimeout
+(anonymous) @ @react-refresh:666
+validateRefreshBoundaryAndEnqueueUpdate @ @react-refresh:728
+(anonymous) @ calendar.tsx:3075
+(anonymous) @ client:34
+(anonymous) @ client:218
+(anonymous) @ client:193
+queueUpdate @ client:193
+await in queueUpdate
+(anonymous) @ client:642
+handleMessage @ client:640
+(anonymous) @ client:550Understand this warning
+Console.js:61 getCurrentUser successful: {id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+Console.js:61 getCurrentUser successful: {id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+Console.js:61 Auth context setting user: {id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+Console.js:61 Auth: Finally block - setting loading to false
+frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.
+t @ frame_ant.js:2
+s @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ _app-8124422cda9db17a.js:38
+(anonymous) @ _app-8124422cda9db17a.js:25
+e @ _app-8124422cda9db17a.js:14
+t.subscribe @ _app-8124422cda9db17a.js:14
+e.consumeQueue @ _app-8124422cda9db17a.js:25
+(anonymous) @ _app-8124422cda9db17a.js:25
+r @ _app-8124422cda9db17a.js:38
+setTimeout
+(anonymous) @ _app-8124422cda9db17a.js:38
+e.scheduleQueueConsumption @ _app-8124422cda9db17a.js:25
+(anonymous) @ _app-8124422cda9db17a.js:25
+e @ _app-8124422cda9db17a.js:14
+t.subscribe @ _app-8124422cda9db17a.js:14
+(anonymous) @ _app-8124422cda9db17a.js:25
+e @ _app-8124422cda9db17a.js:14
+t.subscribe @ _app-8124422cda9db17a.js:14
+e.try @ _app-8124422cda9db17a.js:25
+e.start @ _app-8124422cda9db17a.js:25
+t.request @ _app-8124422cda9db17a.js:25
+(anonymous) @ _app-8124422cda9db17a.js:14
+(anonymous) @ _app-8124422cda9db17a.js:14
+(anonymous) @ _app-8124422cda9db17a.js:25
+(anonymous) @ _app-8124422cda9db17a.js:14
+e.execute @ _app-8124422cda9db17a.js:14
+e.getObservableFromLink @ _app-8124422cda9db17a.js:11
+e.getResultsFromLink @ _app-8124422cda9db17a.js:11
+b @ _app-8124422cda9db17a.js:11
+e.fetchQueryByPolicy @ _app-8124422cda9db17a.js:11
+b @ _app-8124422cda9db17a.js:11
+e.fetchConcastWithInfo @ _app-8124422cda9db17a.js:11
+t.fetch @ _app-8124422cda9db17a.js:14
+t.reobserveAsConcast @ _app-8124422cda9db17a.js:14
+e.executeQuery @ _app-8124422cda9db17a.js:26
+(anonymous) @ _app-8124422cda9db17a.js:14
+(anonymous) @ 5376-11727a41210dc2ae.js:1
+(anonymous) @ 7227-43a7eabbc4b39fcf.js:1
+t.trigger @ _app-8124422cda9db17a.js:6
+(anonymous) @ _app-8124422cda9db17a.js:6
+(anonymous) @ main-2ef5568eaa1ab313.js:1
+n @ main-2ef5568eaa1ab313.js:1
+u @ main-2ef5568eaa1ab313.js:1
+Promise.then
+n @ main-2ef5568eaa1ab313.js:1
+u @ main-2ef5568eaa1ab313.js:1
+Promise.then
+n @ main-2ef5568eaa1ab313.js:1
+u @ main-2ef5568eaa1ab313.js:1
+Promise.then
+n @ main-2ef5568eaa1ab313.js:1
+u @ main-2ef5568eaa1ab313.js:1
+Promise.then
+n @ main-2ef5568eaa1ab313.js:1
+u @ main-2ef5568eaa1ab313.js:1
+Promise.then
+n @ main-2ef5568eaa1ab313.js:1
+u @ main-2ef5568eaa1ab313.js:1
+Promise.then
+n @ main-2ef5568eaa1ab313.js:1
+u @ main-2ef5568eaa1ab313.js:1
+Promise.then
+n @ main-2ef5568eaa1ab313.js:1
+u @ main-2ef5568eaa1ab313.js:1
+Promise.then
+n @ main-2ef5568eaa1ab313.js:1
+u @ main-2ef5568eaa1ab313.js:1
+Promise.then
+n @ main-2ef5568eaa1ab313.js:1
+u @ main-2ef5568eaa1ab313.js:1
+Promise.then
+n @ main-2ef5568eaa1ab313.js:1
+u @ main-2ef5568eaa1ab313.js:1
+Promise.then
+n @ main-2ef5568eaa1ab313.js:1
+u @ main-2ef5568eaa1ab313.js:1
+Promise.then
+n @ main-2ef5568eaa1ab313.js:1
+u @ main-2ef5568eaa1ab313.js:1
+Promise.then
+n @ main-2ef5568eaa1ab313.js:1
+u @ main-2ef5568eaa1ab313.js:1
+Promise.then
+n @ main-2ef5568eaa1ab313.js:1
+u @ main-2ef5568eaa1ab313.js:1
+Promise.then
+n @ main-2ef5568eaa1ab313.js:1
+u @ main-2ef5568eaa1ab313.js:1
+Promise.then
+n @ main-2ef5568eaa1ab313.js:1
+u @ main-2ef5568eaa1ab313.js:1
+Promise.then
+n @ main-2ef5568eaa1ab313.js:1
+u @ main-2ef5568eaa1ab313.js:1
+Promise.then
+n @ main-2ef5568eaa1ab313.js:1
+u @ main-2ef5568eaa1ab313.js:1
+Promise.then
+n @ main-2ef5568eaa1ab313.js:1
+u @ main-2ef5568eaa1ab313.js:1
+Promise.then
+n @ main-2ef5568eaa1ab313.js:1
+u @ main-2ef5568eaa1ab313.js:1
+Promise.then
+n @ main-2ef5568eaa1ab313.js:1
+u @ main-2ef5568eaa1ab313.js:1
+Promise.then
+n @ main-2ef5568eaa1ab313.js:1
+u @ main-2ef5568eaa1ab313.js:1
+Promise.then
+n @ main-2ef5568eaa1ab313.js:1
+u @ main-2ef5568eaa1ab313.js:1
+Promise.then
+n @ main-2ef5568eaa1ab313.js:1
+u @ main-2ef5568eaa1ab313.js:1
+Promise.then
+n @ main-2ef5568eaa1ab313.js:1
+u @ main-2ef5568eaa1ab313.js:1
+Promise.then
+n @ main-2ef5568eaa1ab313.js:1
+u @ main-2ef5568eaa1ab313.js:1
+Promise.then
+n @ main-2ef5568eaa1ab313.js:1
+u @ main-2ef5568eaa1ab313.js:1
+Promise.then
+n @ main-2ef5568eaa1ab313.js:1
+u @ main-2ef5568eaa1ab313.js:1
+Promise.then
+n @ main-2ef5568eaa1ab313.js:1
+u @ main-2ef5568eaa1ab313.js:1Understand this error
+frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.
+t @ frame_ant.js:2
+s @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ _app-8124422cda9db17a.js:38
+(anonymous) @ _app-8124422cda9db17a.js:25
+e @ _app-8124422cda9db17a.js:14
+t.subscribe @ _app-8124422cda9db17a.js:14
+e.consumeQueue @ _app-8124422cda9db17a.js:25
+(anonymous) @ _app-8124422cda9db17a.js:25
+r @ _app-8124422cda9db17a.js:38
+setTimeout
+(anonymous) @ _app-8124422cda9db17a.js:38
+e.scheduleQueueConsumption @ _app-8124422cda9db17a.js:25
+(anonymous) @ _app-8124422cda9db17a.js:25
+e @ _app-8124422cda9db17a.js:14
+t.subscribe @ _app-8124422cda9db17a.js:14
+(anonymous) @ _app-8124422cda9db17a.js:25
+e @ _app-8124422cda9db17a.js:14
+t.subscribe @ _app-8124422cda9db17a.js:14
+e.try @ _app-8124422cda9db17a.js:25
+e.start @ _app-8124422cda9db17a.js:25
+t.request @ _app-8124422cda9db17a.js:25
+(anonymous) @ _app-8124422cda9db17a.js:14
+(anonymous) @ _app-8124422cda9db17a.js:14
+(anonymous) @ _app-8124422cda9db17a.js:25
+(anonymous) @ _app-8124422cda9db17a.js:14
+e.execute @ _app-8124422cda9db17a.js:14
+e.getObservableFromLink @ _app-8124422cda9db17a.js:11
+(anonymous) @ _app-8124422cda9db17a.js:11
+(anonymous) @ _app-8124422cda9db17a.js:11
+(anonymous) @ _app-8124422cda9db17a.js:11
+(anonymous) @ _app-8124422cda9db17a.js:11
+s @ _app-8124422cda9db17a.js:11
+e.mutate @ _app-8124422cda9db17a.js:11
+e.mutate @ _app-8124422cda9db17a.js:11
+(anonymous) @ _app-8124422cda9db17a.js:14
+e.wait @ 5376-11727a41210dc2ae.js:1
+u @ 2259-2b6071cdf7d9180b.js:1
+(anonymous) @ 2259-2b6071cdf7d9180b.js:1
+r @ _app-8124422cda9db17a.js:38
+setTimeout
+(anonymous) @ _app-8124422cda9db17a.js:38
+Object.assign.isScheduled @ 2259-2b6071cdf7d9180b.js:1
+(anonymous) @ 5376-11727a41210dc2ae.js:1
+(anonymous) @ 692-bc0da94a7e4153f6.js:1
+(anonymous) @ 692-bc0da94a7e4153f6.js:1
+(anonymous) @ main-2ef5568eaa1ab313.js:1
+n @ main-2ef5568eaa1ab313.js:1
+u @ main-2ef5568eaa1ab313.js:1
+(anonymous) @ main-2ef5568eaa1ab313.js:1
+(anonymous) @ main-2ef5568eaa1ab313.js:1
+G @ 692-bc0da94a7e4153f6.js:1
+(anonymous) @ 692-bc0da94a7e4153f6.js:1
+(anonymous) @ main-2ef5568eaa1ab313.js:1
+n @ main-2ef5568eaa1ab313.js:1
+u @ main-2ef5568eaa1ab313.js:1
+Promise.then
+n @ main-2ef5568eaa1ab313.js:1
+u @ main-2ef5568eaa1ab313.js:1
+(anonymous) @ main-2ef5568eaa1ab313.js:1
+(anonymous) @ main-2ef5568eaa1ab313.js:1
+Z @ 692-bc0da94a7e4153f6.js:1
+(anonymous) @ 692-bc0da94a7e4153f6.js:1
+(anonymous) @ 1424-d616e46e79962657.js:1
+handleCommand @ 1424-d616e46e79962657.js:1
+onSocketMessage @ 1424-d616e46e79962657.js:1Understand this error

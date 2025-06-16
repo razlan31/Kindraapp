@@ -1158,6 +1158,16 @@ export default function Calendar() {
                 // FIXED: Always check all connections that have cycles
                 connectionsToCheck = [...new Set(cycles.map(c => c.connectionId).filter(id => id !== null))];
                 
+                // Debug for May 16th
+                if (format(day, 'yyyy-MM-dd') === '2025-05-16') {
+                  console.log('🔍 May 16th: Connection check:', {
+                    cyclesLength: cycles.length,
+                    connectionsToCheck,
+                    selectedConnectionIds,
+                    allCycles: cycles.map(c => ({ id: c.id, connectionId: c.connectionId, start: c.periodStartDate, end: c.cycleEndDate }))
+                  });
+                }
+                
 
                 
                 const allowedConnectionIds = new Set(connectionsToCheck);
@@ -1176,6 +1186,11 @@ export default function Calendar() {
                   for (const connectionId of connectionsToCheck) {
                     // Check if this connection has a cycle phase for this day
                     const phaseInfo = getCyclePhaseForDay(day, connectionId);
+                    
+                    // Debug for May 16th
+                    if (format(day, 'yyyy-MM-dd') === '2025-05-16') {
+                      console.log(`🔍 May 16th: Checking connection ${connectionId}, phaseInfo:`, phaseInfo);
+                    }
                     
                     if (phaseInfo) {
                       const connection = connections.find(c => c.id === connectionId);
