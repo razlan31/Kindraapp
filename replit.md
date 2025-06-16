@@ -111,14 +111,14 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
-- June 16, 2025: RESOLVED red highlighting issue - proper root cause identified and fixed
-  - Issue was NOT cycle-related but CSS primary color configuration
-  - Root cause: Primary CSS color was set to red (#FF6B6B), making today's date highlights appear red
-  - Fixed by changing primary color from red to blue (#3B82F6) in CSS variables
-  - Today's highlights now show proper blue color that doesn't conflict with menstrual cycle indicators
-  - Removed all unnecessary forced CSS overrides and debug code that were masking the real issue
-  - Calendar now displays correctly with blue highlighting for current date, matching app theme
-  - Verified fix works across both main calendar and cycle tracker pages
+- June 16, 2025: RESOLVED red highlighting issue - permanent fix implemented
+  - Root cause: Cycle tracker was applying today's date highlighting logic even when no cycles exist
+  - Issue will not recur because today detection is now conditional on cycles existing
+  - Fixed by modifying isToday logic to only activate when cycles.length > 0
+  - Restored original Kindra red color for branding consistency
+  - Completely removed today highlighting from cycle tracker when no cycles present
+  - Calendar displays with no special highlighting when no cycle data exists
+  - Permanent solution prevents highlighting from reappearing on future dates
 
 - June 15, 2025: Resolved persistent cycle highlighting bug by disabling automatic cycle generation
   - Root cause: `checkAndCreateAutomaticCycles()` function was running every time calendar fetched cycles, automatically creating new cycles

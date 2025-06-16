@@ -1336,7 +1336,8 @@ export default function MenstrualCyclePage() {
                 {/* Month days */}
                 {monthDays.map(day => {
                   const cyclesOnDay = getCyclesForDay(day);
-                  const isToday = isSameDay(day, new Date());
+                  // Only check for today if there are actual cycles to display
+                  const isToday = cycles && cycles.length > 0 ? isSameDay(day, new Date()) : false;
                   
 
                   
