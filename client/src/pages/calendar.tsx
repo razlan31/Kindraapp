@@ -1155,15 +1155,23 @@ export default function Calendar() {
                 // Determine which connections to check for cycles based on selection
                 let connectionsToCheck = [];
 
-                // FIXED: Always check all connections that have cycles
-                connectionsToCheck = [...new Set(cycles.map(c => c.connectionId).filter(id => id !== null))];
+                // FIXED: Check cycles for selected connections, or all if none selected
+                if (selectedConnectionIds.length === 0) {
+                  // No specific selection - check all connections with cycles
+                  connectionsToCheck = [...new Set(cycles.map(c => c.connectionId).filter(id => id !== null))];
+                } else {
+                  // Specific connections selected - only check those that have cycles
+                  connectionsToCheck = selectedConnectionIds.filter(id => 
+                    cycles.some(c => c.connectionId === id)
+                  );
+                }
                 
                 // Debug for May 16th
                 if (format(day, 'yyyy-MM-dd') === '2025-05-16') {
                   console.log('🔍 May 16th: Connection check:', {
                     cyclesLength: cycles.length,
-                    connectionsToCheck,
                     selectedConnectionIds,
+                    connectionsToCheck,
                     allCycles: cycles.map(c => ({ id: c.id, connectionId: c.connectionId, start: c.periodStartDate, end: c.cycleEndDate }))
                   });
                 }
