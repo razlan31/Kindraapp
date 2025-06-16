@@ -1305,6 +1305,9 @@ export default function Calendar() {
                   console.log(`🔍 June 26th: cyclePhases.length = ${cyclePhases.length}`, cyclePhases);
                   console.log(`🔍 June 26th: cycles.length = ${cycles?.length || 0}`);
                   console.log(`🔍 June 26th: cycleDisplay =`, cycleDisplay);
+                  console.log(`🔍 June 26th: isToday = ${isToday}`);
+                  console.log(`🔍 June 26th: dayMoments.length = ${dayMoments.length}`);
+                  console.log(`🔍 June 26th: dayMilestones.length = ${dayMilestones.length}`);
                 }
                 
                 // CRITICAL SAFETY CHECK: Ensure no cycle display when cycles are empty
