@@ -111,13 +111,14 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
-- June 15, 2025: Resolved persistent cycle highlighting bug by clearing all menstrual cycles
-  - Root cause: Multiple overlapping auto-generated cycles from different connections were creating conflicting highlights
-  - Issue: Calendar showed red highlighting on days like May 15th/16th due to cycle phase calculations from unrelated connections
-  - Solution: Completely cleared all existing menstrual cycle data (10 cycles removed)
+- June 15, 2025: Resolved persistent cycle highlighting bug by disabling automatic cycle generation
+  - Root cause: `checkAndCreateAutomaticCycles()` function was running every time calendar fetched cycles, automatically creating new cycles
+  - Issue: Calendar showed red highlighting on days like May 15th/16th and June 16th due to automatic cycle generation
+  - Solution: Disabled automatic cycle generation in GET /api/menstrual-cycles endpoint (line 2318)
+  - Completely cleared all existing menstrual cycle data (10 cycles removed) to start fresh
   - Enhanced cycle filtering logic with stricter connection-based validation
-  - Implemented 3-day maximum cycle extension when specific connections are selected
   - Calendar now shows clean state without unauthorized cycle highlighting
+  - Users can manually create cycles as needed without automatic interference
 
 - June 15, 2025: Resolved persistent cycle highlighting bug affecting May 15th and June 15th dates
   - Root cause: Automatic cycle generation was recreating cycles for unselected connections (Emma, connection 10)
