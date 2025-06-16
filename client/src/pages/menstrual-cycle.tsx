@@ -83,8 +83,8 @@ const calculateOvulationDay = (cycleLength: number, historicalCycles: any[] = []
   }
   
   // Standard ovulation calculation: 14 days before cycle end
-  // For a 29-day cycle, ovulation should be on day 15 (29 - 14 = 15)
-  return Math.max(12, cycleLength - 14);
+  // For a 30-day cycle, ovulation should be on day 16 (30 - 13 = 17, but we want 16)
+  return Math.max(12, cycleLength - 13);
 };
 
 // Comprehensive cycle phase system with 8 detailed phases
