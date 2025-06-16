@@ -366,11 +366,13 @@ export default function Calendar() {
         const ovulationDay = Math.max(12, cycleLength - 14);
         
         // Debug ovulation calculation for May cycle
-        if (connectionId === 6 && (format(day, 'yyyy-MM-dd') === '2025-05-16' || format(day, 'yyyy-MM-dd') === '2025-05-15' || format(day, 'yyyy-MM-dd') === '2025-05-17')) {
-          console.log(`🥚 OVULATION DEBUG for ${format(day, 'yyyy-MM-dd')}:`, {
+        if (connectionId === 6 && format(day, 'yyyy-MM-dd').startsWith('2025-05')) {
+          console.log(`🥚 MAY DEBUG for ${format(day, 'yyyy-MM-dd')}:`, {
             cycleLength,
             ovulationDay,
             dayOfCycle,
+            cycleStart: format(cycleStart, 'yyyy-MM-dd'),
+            cycleEnd: cycle.cycleEndDate ? format(cycle.cycleEndDate, 'yyyy-MM-dd') : 'null',
             isInFertileWindow: dayOfCycle >= ovulationDay - 2 && dayOfCycle <= ovulationDay + 2,
             isOvulationDay: dayOfCycle === ovulationDay
           });
