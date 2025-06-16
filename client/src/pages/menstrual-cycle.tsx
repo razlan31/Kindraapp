@@ -82,9 +82,9 @@ const calculateOvulationDay = (cycleLength: number, historicalCycles: any[] = []
     }
   }
   
-  // Default calculation: 14 days before next period (luteal phase length)
-  const lutealPhaseLength = Math.min(14, Math.floor(cycleLength * 0.5));
-  return Math.max(10, cycleLength - lutealPhaseLength + 1);
+  // Standard ovulation calculation: 14 days before cycle end
+  // For a 29-day cycle, ovulation should be on day 15 (29 - 14 = 15)
+  return Math.max(12, cycleLength - 14);
 };
 
 // Comprehensive cycle phase system with 8 detailed phases

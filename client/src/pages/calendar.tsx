@@ -362,8 +362,8 @@ export default function Calendar() {
           }
         }
         
-        // Calculate ovulation day based on cycle length
-        const ovulationDay = cycleLength > 14 ? 14 : Math.round(cycleLength * 0.6);
+        // Calculate ovulation day: typically 14 days before cycle end
+        const ovulationDay = Math.max(12, cycleLength - 14);
         
 
         
