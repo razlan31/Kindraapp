@@ -111,6 +111,14 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
+- June 16, 2025: Fixed critical cycle calculation issues in menstrual tracking system
+  - Root cause: Ovulation calculation was using incorrect formula (cycleLength * 0.6 instead of cycleLength - 14)
+  - Issue: For 29-day cycle, ovulation calculated as day 17 instead of correct day 15
+  - Solution: Updated both frontend (menstrual-cycle.tsx) and calendar (calendar.tsx) to use standard "14 days before cycle end" formula
+  - Fixed backend automatic cycle generation using old database column names (startDate/endDate vs periodStartDate/cycleEndDate)
+  - Ovulation now correctly displays on calendar for existing cycles
+  - Next cycle timing now calculates properly based on learned patterns
+
 - June 16, 2025: RESOLVED red highlighting issue - permanent fix implemented
   - Root cause: Cycle tracker was applying today's date highlighting logic even when no cycles exist
   - Issue will not recur because today detection is now conditional on cycles existing
