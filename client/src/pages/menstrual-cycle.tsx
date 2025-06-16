@@ -1347,28 +1347,23 @@ export default function MenstrualCyclePage() {
                       className={`
                         relative p-1 h-10 w-10 flex flex-col items-center justify-center text-xs border rounded-lg transition-colors hover:bg-accent/50
                         ${isToday ? 'border-primary/30' : 'border-border/20'}
-                        ${(!cycles || cycles.length === 0) ? 'force-no-cycle-bg' : 
-                          (cyclesOnDay.length > 0 ? 
-                            // Apply cycle background styling to match calendar page
-                            cyclesOnDay.length === 1 ? 
-                              getCycleStage(day, cyclesOnDay[0]) === 'menstrual' ? 'bg-red-100 dark:bg-red-900/30 border-red-300 dark:border-red-700 border-2' :
-                              getCycleStage(day, cyclesOnDay[0]) === 'ovulation' ? 'bg-blue-700 dark:bg-blue-800 border-blue-800 dark:border-blue-900 border-2' :
-                              getCycleStage(day, cyclesOnDay[0]) === 'fertile' ? 'bg-blue-100 dark:bg-blue-900/30 border-blue-300 dark:border-blue-700 border-2' :
-                              getCycleStage(day, cyclesOnDay[0]) === 'follicular' ? 'bg-green-100 dark:bg-green-900/30 border-green-300 dark:border-green-700 border-2' :
-                              getCycleStage(day, cyclesOnDay[0]) === 'luteal' ? 'bg-yellow-100 dark:bg-yellow-900/30 border-yellow-300 dark:border-yellow-700 border-2' :
-                              (isToday ? 'bg-primary/10' : 'bg-background/50')
-                            :
-                            // Multiple cycles - use gradient background like calendar page
-                            'bg-gradient-to-br from-pink-50 to-purple-50 dark:from-pink-900/20 dark:to-purple-900/20 border-pink-200 dark:border-pink-700 border-2'
+                        ${cyclesOnDay.length > 0 ? 
+                          // Apply cycle background styling to match calendar page
+                          cyclesOnDay.length === 1 ? 
+                            getCycleStage(day, cyclesOnDay[0]) === 'menstrual' ? 'bg-red-100 dark:bg-red-900/30 border-red-300 dark:border-red-700 border-2' :
+                            getCycleStage(day, cyclesOnDay[0]) === 'ovulation' ? 'bg-blue-700 dark:bg-blue-800 border-blue-800 dark:border-blue-900 border-2' :
+                            getCycleStage(day, cyclesOnDay[0]) === 'fertile' ? 'bg-blue-100 dark:bg-blue-900/30 border-blue-300 dark:border-blue-700 border-2' :
+                            getCycleStage(day, cyclesOnDay[0]) === 'follicular' ? 'bg-green-100 dark:bg-green-900/30 border-green-300 dark:border-green-700 border-2' :
+                            getCycleStage(day, cyclesOnDay[0]) === 'luteal' ? 'bg-yellow-100 dark:bg-yellow-900/30 border-yellow-300 dark:border-yellow-700 border-2' :
+                            (isToday ? 'bg-primary/10' : 'bg-background/50')
                           :
-                          (isToday ? 'bg-primary/10' : 'bg-background/50'))
+                          // Multiple cycles - use gradient background like calendar page
+                          'bg-gradient-to-br from-pink-50 to-purple-50 dark:from-pink-900/20 dark:to-purple-900/20 border-pink-200 dark:border-pink-700 border-2'
+                        :
+                        (isToday ? 'bg-primary/10' : 'bg-background/50')
                         }
-                        ${(!cycles || cycles.length === 0) ? (isToday ? '!bg-primary/10' : '!bg-background/50') : ''}
                       `}
-                      style={(!cycles || cycles.length === 0) ? {
-                        backgroundColor: isToday ? 'rgb(var(--primary) / 0.1)' : 'rgb(var(--background) / 0.5)',
-                        borderColor: isToday ? 'rgb(var(--primary) / 0.3)' : 'rgb(var(--border) / 0.2)'
-                      } : undefined}
+
                     >
                       {cyclesOnDay.length > 0 ? (
                         // Multiple cycles - show colored initials like calendar page

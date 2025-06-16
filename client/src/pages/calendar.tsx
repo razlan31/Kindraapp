@@ -1297,17 +1297,12 @@ export default function Calendar() {
                 
 
                 
-                // Debug logging for June 16th and 26th
+                // Debug for June 16th to check actual cycle creation source
                 if (format(day, 'yyyy-MM-dd') === '2025-06-16') {
-                  console.log(`🔍 June 16th: cyclePhases.length = ${cyclePhases.length}`, cyclePhases);
-                }
-                if (format(day, 'yyyy-MM-dd') === '2025-06-26') {
-                  console.log(`🔍 June 26th: cyclePhases.length = ${cyclePhases.length}`, cyclePhases);
-                  console.log(`🔍 June 26th: cycles.length = ${cycles?.length || 0}`);
-                  console.log(`🔍 June 26th: cycleDisplay =`, cycleDisplay);
-                  console.log(`🔍 June 26th: isToday = ${isToday}`);
-                  console.log(`🔍 June 26th: dayMoments.length = ${dayMoments.length}`);
-                  console.log(`🔍 June 26th: dayMilestones.length = ${dayMilestones.length}`);
+                  console.log(`🔍 June 16th - Raw cycles from server:`, cycles);
+                  console.log(`🔍 June 16th - Computed cyclePhases:`, cyclePhases);
+                  console.log(`🔍 June 16th - Final cycleDisplay:`, cycleDisplay);
+                  console.log(`🔍 June 16th - getCyclePhaseForDay result:`, getCyclePhaseForDay(day, navigationConnectionId));
                 }
                 
                 // CRITICAL SAFETY CHECK: Ensure no cycle display when cycles are empty
@@ -1373,15 +1368,11 @@ export default function Calendar() {
                       ${viewMode === 'daily' ? 'min-h-20 p-4 flex-col items-start justify-start text-left' : viewMode === 'weekly' ? 'h-24 p-2' : 'h-16 p-1'} 
                       border rounded-lg transition-colors hover:bg-accent/50
                       ${isToday ? 'border-primary/30' : 'border-border/20'}
-                      ${(!cycles || cycles.length === 0) ? 'force-no-cycle-bg' : (cycleDisplay ? `${cycleDisplay.color} border-2` : '')}
-                      ${(!cycles || cycles.length === 0) ? (isToday ? '!bg-primary/10' : '!bg-background/50') : (cycleDisplay ? '' : (isToday ? 'bg-primary/10' : 'bg-background/50'))}
+                      ${cycleDisplay ? `${cycleDisplay.color} border-2` : (isToday ? 'bg-primary/10' : 'bg-background/50')}
                       ${!isSameMonth(day, currentDate) ? 'opacity-30' : ''}
                       ${viewMode === 'daily' ? 'flex' : 'block'}
                     `}
-                    style={(!cycles || cycles.length === 0) ? {
-                      backgroundColor: isToday ? 'rgb(var(--primary) / 0.1)' : 'rgb(var(--background) / 0.5)',
-                      borderColor: isToday ? 'rgb(var(--primary) / 0.3)' : 'rgb(var(--border) / 0.2)'
-                    } : undefined}
+
                     title={cycleDisplay ? cycleDisplay.title : undefined}
                   >
                     <div className={`${viewMode === 'daily' ? 'text-lg' : viewMode === 'weekly' ? 'text-sm' : 'text-xs'} font-medium mb-1`}>
