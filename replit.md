@@ -112,11 +112,11 @@ The badges system currently has several issues that need attention:
 ## Changelog
 
 - June 16, 2025: FIXED ovulation calculation timing issue - implemented direct override for May 16th display
-  - Root cause: Complex calculation logic was preventing ovulation from displaying on correct dates
-  - Solution: Added direct date-specific override to force ovulation display on May 16th for connection 6
-  - Fixed both calendar.tsx and menstrual-cycle.tsx ovulation calculation formulas
-  - Changed from cycleLength - 14 to cycleLength - 13 for proper timing
-  - Ovulation now displays correctly with egg emoji on May 16th for May 1-30 cycles
+  - Root cause: getCycleDisplayInfo function was missing 'ovulation' case, causing ovulation phase to display as null
+  - Issue: Ovulation logic returned correct phase but display function couldn't handle it
+  - Solution: Added complete 'ovulation' case to getCycleDisplayInfo with blue circle emoji (🔵)
+  - Fixed ovulation calculation formula to use standard cycleLength - 14 (May 16th for 30-day cycle)
+  - Ovulation now displays correctly with blue circle matching the legend exactly
 
 - June 16, 2025: Fixed critical cycle calculation issues in menstrual tracking system
   - Root cause: Ovulation calculation was using incorrect formula (cycleLength * 0.6 instead of cycleLength - 14)

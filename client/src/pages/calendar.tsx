@@ -382,11 +382,8 @@ export default function Calendar() {
         } else if (dayOfCycle <= ovulationDay - 3) {
           return { phase: 'follicular', day: dayOfCycle, cycle };
         } else if (dayOfCycle >= ovulationDay - 2 && dayOfCycle <= ovulationDay + 2) {
-          const isOvulation = dayOfCycle === ovulationDay;
-          if (connectionId === 6 && (format(day, 'yyyy-MM-dd') === '2025-05-16' || isOvulation)) {
-            console.log(`🥚 FOUND FERTILE/OVULATION for Amalina on ${format(day, 'yyyy-MM-dd')} - day ${dayOfCycle}, ovulation: ${isOvulation}`);
-          }
-          return { phase: 'fertile', day: dayOfCycle, cycle, isOvulation };
+          // Ovulation day should have been caught earlier, so this is just fertile window
+          return { phase: 'fertile', day: dayOfCycle, cycle };
         } else {
           return { phase: 'luteal', day: dayOfCycle, cycle };
         }
@@ -438,14 +435,19 @@ export default function Calendar() {
           title: `Cycle Day ${phaseInfo.day}`,
           description: 'Follicular phase'
         };
+      case 'ovulation':
+        return {
+          color: phaseInfo.color || 'bg-blue-100 dark:bg-blue-900/30 border-blue-300 dark:border-blue-700',
+          indicator: phaseInfo.emoji || '🔵',
+          title: `Ovulation Day`,
+          description: 'Ovulation'
+        };
       case 'fertile':
         return {
-          color: phaseInfo.isOvulation 
-            ? 'bg-pink-100 dark:bg-pink-900/30 border-pink-300 dark:border-pink-700'
-            : 'bg-yellow-100 dark:bg-yellow-900/30 border-yellow-300 dark:border-yellow-700',
-          indicator: phaseInfo.isOvulation ? '🥚' : '💛',
-          title: phaseInfo.isOvulation ? `Ovulation Day ${phaseInfo.day}` : `Fertile Day ${phaseInfo.day}`,
-          description: phaseInfo.isOvulation ? 'Ovulation' : 'Fertile window'
+          color: 'bg-purple-100 dark:bg-purple-900/30 border-purple-300 dark:border-purple-700',
+          indicator: '💜',
+          title: `Fertile Day ${phaseInfo.day}`,
+          description: 'Fertile window'
         };
       case 'luteal':
         return {
