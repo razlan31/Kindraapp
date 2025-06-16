@@ -626,6 +626,17 @@ export default function Calendar() {
 
   // Generate calendar days based on view mode
   const { days: calendarDays, start: viewStart, end: viewEnd } = getDateRange();
+  
+  // Debug current calendar state
+  console.log('🗓️ Calendar State:', {
+    currentDate: format(currentDate, 'yyyy-MM-dd'),
+    viewMode,
+    viewStart: format(viewStart, 'yyyy-MM-dd'),
+    viewEnd: format(viewEnd, 'yyyy-MM-dd'),
+    calendarDaysCount: calendarDays.length,
+    firstDay: calendarDays[0] ? format(calendarDays[0], 'yyyy-MM-dd') : 'none',
+    lastDay: calendarDays[calendarDays.length - 1] ? format(calendarDays[calendarDays.length - 1], 'yyyy-MM-dd') : 'none'
+  });
 
   // Get moments for a specific day
   const getMomentsForDay = (day: Date) => {
