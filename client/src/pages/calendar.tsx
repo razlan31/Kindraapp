@@ -332,13 +332,14 @@ export default function Calendar() {
         
         // Debug for May 16th specifically
         if (format(day, 'yyyy-MM-dd') === '2025-05-16') {
-          console.log('May 16th ovulation check:', {
+          console.log('✅ May 16th ovulation check:', {
             dayOfCycle,
             ovulationDay,
             cycleLength,
             isOvulationDay: dayOfCycle === ovulationDay,
             cycleStart: format(cycleStart, 'yyyy-MM-dd'),
-            cycleEnd: cycle.cycleEndDate ? format(cycle.cycleEndDate, 'yyyy-MM-dd') : 'null'
+            cycleEnd: cycle.cycleEndDate ? format(cycle.cycleEndDate, 'yyyy-MM-dd') : 'null',
+            phase: dayOfCycle === ovulationDay ? 'OVULATION' : 'other'
           });
         }
         
