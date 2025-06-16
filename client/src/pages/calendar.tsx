@@ -203,19 +203,24 @@ export default function Calendar() {
 
   // FORCE CLEAR ANY CACHED CYCLES - ensure empty state
   useEffect(() => {
-    if (cycles.length === 0) {
-      // Clear any potential localStorage cycle data
-      localStorage.removeItem('menstrual-cycles');
-      localStorage.removeItem('cycle-cache');
-      localStorage.removeItem('cycles');
-      
-      // Force invalidate React Query cache for cycles
-      queryClient.invalidateQueries({ queryKey: ['/api/menstrual-cycles'] });
-      queryClient.removeQueries({ queryKey: ['/api/menstrual-cycles'] });
-      
-      console.log('🔍 Cleared localStorage and React Query cache for cycles');
-    }
-  }, [cycles, queryClient]);
+    // Clear any potential localStorage cycle data regardless of cycles.length
+    localStorage.removeItem('menstrual-cycles');
+    localStorage.removeItem('cycle-cache');
+    localStorage.removeItem('cycles');
+    localStorage.removeItem('cyclePhases');
+    localStorage.removeItem('cycleDisplay');
+    
+    // Also clear any potential session storage
+    sessionStorage.removeItem('menstrual-cycles');
+    sessionStorage.removeItem('cycle-cache');
+    sessionStorage.removeItem('cycles');
+    
+    // Force invalidate React Query cache for cycles
+    queryClient.invalidateQueries({ queryKey: ['/api/menstrual-cycles'] });
+    queryClient.removeQueries({ queryKey: ['/api/menstrual-cycles'] });
+    
+    console.log('🔍 AGGRESSIVE CACHE CLEAR: Cleared all cycle-related storage');
+  }, []); // Run only once on mount
 
   // Additional debug for June 16th specifically
   const today = new Date();
@@ -381,6 +386,12 @@ export default function Calendar() {
   const getCycleDisplayInfo = (phaseInfo: any) => {
     if (!phaseInfo) return null;
     
+    // CRITICAL DEBUG: Log when cycle display is being calculated
+    const dayStr = format(new Date(), 'yyyy-MM-dd');
+    if (dayStr === '2025-06-16') {
+      console.log('🔍 June 16th getCycleDisplayInfo called with:', phaseInfo);
+    }
+    
     // Use detailed phase info if available
     const detailedInfo = phaseInfo.detailedInfo;
     if (detailedInfo) {
@@ -397,6 +408,10 @@ export default function Calendar() {
     // Fallback to basic phase display
     switch (phaseInfo.phase) {
       case 'menstrual':
+        // CRITICAL DEBUG: Log menstrual phase detection
+        if (dayStr === '2025-06-16') {
+          console.log('🔍 June 16th: MENSTRUAL PHASE DETECTED - applying red background!');
+        }
         return {
           color: 'bg-red-100 dark:bg-red-900/30 border-red-300 dark:border-red-700',
           indicator: '🩸',
@@ -1231,42 +1246,50 @@ export default function Calendar() {
 
 
                 
-                // Process each connection that should be checked
-                for (const connectionId of connectionsToCheck) {
-                  // ENHANCED FILTERING: Multi-layer connection validation
-                  const isConnectionAllowed = (() => {
-                    if (selectedConnectionIds.length > 0) {
-                      // User has explicitly selected connections - only allow those
-                      return selectedConnectionIds.includes(connectionId);
-                    } else if (hasUserSelectedConnection) {
-                      // User made a selection but nothing is currently selected - show nothing
-                      return false;
-                    } else if (mainFocusConnection) {
-                      // Only show focus connection
-                      return connectionId === mainFocusConnection.id;
-                    } else {
-                      // Show all connections
-                      return true;
-                    }
-                  })();
-                  
-                  if (!isConnectionAllowed) {
-                    continue; // Skip this connection entirely
+                // NUCLEAR OPTION: If no cycles exist at all, skip all cycle processing
+                if (!cycles || cycles.length === 0) {
+                  if (format(day, 'yyyy-MM-dd') === '2025-06-16') {
+                    console.log('🔍 June 16th: NUCLEAR OPTION - No cycles exist, skipping all cycle processing');
                   }
-                  
-                  const connectionCycles = filteredCycles.filter(c => c.connectionId === connectionId);
-                  
-                  // Skip if this connection has no cycles
-                  if (connectionCycles.length === 0) continue;
-                  
-                  // Check if this connection has a cycle phase for this day
-                  const phaseInfo = getCyclePhaseForDay(day, connectionId);
-                  if (phaseInfo) {
-                    const connection = connections.find(c => c.id === connectionId);
-                    if (connection) {
-                      cyclePhases.push({ ...phaseInfo, connection });
-                      if (format(day, 'yyyy-MM-dd') === '2025-05-15') {
-                        console.log(`May 15th: Added cycle phase for ${connection.name} (${connectionId}):`, phaseInfo.phase);
+                  // Don't process any cycle phases at all
+                } else {
+                  // Process each connection that should be checked
+                  for (const connectionId of connectionsToCheck) {
+                    // ENHANCED FILTERING: Multi-layer connection validation
+                    const isConnectionAllowed = (() => {
+                      if (selectedConnectionIds.length > 0) {
+                        // User has explicitly selected connections - only allow those
+                        return selectedConnectionIds.includes(connectionId);
+                      } else if (hasUserSelectedConnection) {
+                        // User made a selection but nothing is currently selected - show nothing
+                        return false;
+                      } else if (mainFocusConnection) {
+                        // Only show focus connection
+                        return connectionId === mainFocusConnection.id;
+                      } else {
+                        // Show all connections
+                        return true;
+                      }
+                    })();
+                    
+                    if (!isConnectionAllowed) {
+                      continue; // Skip this connection entirely
+                    }
+                    
+                    const connectionCycles = filteredCycles.filter(c => c.connectionId === connectionId);
+                    
+                    // Skip if this connection has no cycles
+                    if (connectionCycles.length === 0) continue;
+                    
+                    // Check if this connection has a cycle phase for this day
+                    const phaseInfo = getCyclePhaseForDay(day, connectionId);
+                    if (phaseInfo) {
+                      const connection = connections.find(c => c.id === connectionId);
+                      if (connection) {
+                        cyclePhases.push({ ...phaseInfo, connection });
+                        if (format(day, 'yyyy-MM-dd') === '2025-05-15') {
+                          console.log(`May 15th: Added cycle phase for ${connection.name} (${connectionId}):`, phaseInfo.phase);
+                        }
                       }
                     }
                   }
@@ -1279,8 +1302,13 @@ export default function Calendar() {
                   console.log(`🔍 June 16th: cyclePhases.length = ${cyclePhases.length}`, cyclePhases);
                 }
                 
-                // Use the first cycle phase for background color, or create multi-connection display
-                if (cyclePhases.length === 1) {
+                // CRITICAL SAFETY CHECK: Ensure no cycle display when cycles are empty
+                if (!cycles || cycles.length === 0) {
+                  cycleDisplay = null;
+                  if (format(day, 'yyyy-MM-dd') === '2025-06-16') {
+                    console.log(`🔍 June 16th: SAFETY CHECK - forced cycleDisplay to null because no cycles exist`);
+                  }
+                } else if (cyclePhases.length === 1) {
                   cycleDisplay = getCycleDisplayInfo(cyclePhases[0]);
                   if (format(day, 'yyyy-MM-dd') === '2025-06-16') {
                     console.log(`🔍 June 16th: single cycle display set:`, cycleDisplay);
