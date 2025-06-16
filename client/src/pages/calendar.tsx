@@ -1202,14 +1202,8 @@ export default function Calendar() {
                 // Determine which connections to check for cycles based on selection
                 let connectionsToCheck = [];
 
-                // SIMPLIFIED FIX: Always show cycles for focus connection or all connections
-                if (selectedConnectionIds.length > 0) {
-                  connectionsToCheck = selectedConnectionIds;
-                } else if (mainFocusConnection) {
-                  connectionsToCheck = [mainFocusConnection.id];
-                } else {
-                  connectionsToCheck = [...new Set(cycles.map(c => c.connectionId))];
-                }
+                // FIXED: Always check all connections that have cycles
+                connectionsToCheck = [...new Set(cycles.map(c => c.connectionId).filter(id => id !== null))];
                 
 
                 
@@ -1225,34 +1219,8 @@ export default function Calendar() {
                   }
                   // Don't process any cycle phases at all
                 } else {
-                  // Process each connection that should be checked
+                  // Process each connection that has cycles
                   for (const connectionId of connectionsToCheck) {
-                    // ENHANCED FILTERING: Multi-layer connection validation
-                    const isConnectionAllowed = (() => {
-                      if (selectedConnectionIds.length > 0) {
-                        // User has explicitly selected connections - only allow those
-                        return selectedConnectionIds.includes(connectionId);
-                      } else if (hasUserSelectedConnection) {
-                        // User made a selection but nothing is currently selected - show nothing
-                        return false;
-                      } else if (mainFocusConnection) {
-                        // Only show focus connection
-                        return connectionId === mainFocusConnection.id;
-                      } else {
-                        // Show all connections
-                        return true;
-                      }
-                    })();
-                    
-                    if (!isConnectionAllowed) {
-                      continue; // Skip this connection entirely
-                    }
-                    
-                    const connectionCycles = filteredCycles.filter(c => c.connectionId === connectionId);
-                    
-                    // Skip if this connection has no cycles
-                    if (connectionCycles.length === 0) continue;
-                    
                     // Check if this connection has a cycle phase for this day
                     const phaseInfo = getCyclePhaseForDay(day, connectionId);
                     
