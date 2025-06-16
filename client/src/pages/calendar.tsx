@@ -363,19 +363,8 @@ export default function Calendar() {
         }
         
         // Calculate ovulation day: 14 days before cycle end
-        const ovulationDay = cycleLength - 14;
-        
-        // Debug May cycle calculation
-        if (format(day, 'yyyy-MM-dd').startsWith('2025-05') && connectionId === 6) {
-          console.log(`MAY CALC for ${format(day, 'yyyy-MM-dd')}:`, {
-            cycleStart: format(cycleStart, 'yyyy-MM-dd'),
-            cycleEnd: cycle.cycleEndDate ? format(cycle.cycleEndDate, 'yyyy-MM-dd') : 'null',
-            cycleLength,
-            ovulationDay,
-            dayOfCycle,
-            isOvulation: dayOfCycle === ovulationDay
-          });
-        }
+        // For a May 1-30 cycle (30 days), ovulation should be day 16 (May 16th)
+        const ovulationDay = cycleLength - 13;
         
 
         
