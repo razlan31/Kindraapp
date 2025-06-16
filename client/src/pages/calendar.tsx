@@ -374,7 +374,10 @@ export default function Calendar() {
             cycleStart: format(cycleStart, 'yyyy-MM-dd'),
             cycleEnd: cycle.cycleEndDate ? format(cycle.cycleEndDate, 'yyyy-MM-dd') : 'null',
             isInFertileWindow: dayOfCycle >= ovulationDay - 2 && dayOfCycle <= ovulationDay + 2,
-            isOvulationDay: dayOfCycle === ovulationDay
+            isOvulationDay: dayOfCycle === ovulationDay,
+            phaseWillReturn: dayOfCycle <= periodDays ? 'menstrual' : 
+                           dayOfCycle <= ovulationDay - 3 ? 'follicular' :
+                           dayOfCycle >= ovulationDay - 2 && dayOfCycle <= ovulationDay + 2 ? 'fertile' : 'luteal'
           });
         }
         
