@@ -1302,7 +1302,7 @@ export default function Calendar() {
                   console.log(`🔍 June 16th - Raw cycles from server:`, cycles);
                   console.log(`🔍 June 16th - Computed cyclePhases:`, cyclePhases);
                   console.log(`🔍 June 16th - Final cycleDisplay:`, cycleDisplay);
-                  console.log(`🔍 June 16th - getCyclePhaseForDay result:`, getCyclePhaseForDay(day, navigationConnectionId));
+                  console.log(`🔍 June 16th - getCyclePhaseForDay result:`, getCyclePhaseForDay(day, selectedConnectionId));
                 }
                 
                 // CRITICAL SAFETY CHECK: Ensure no cycle display when cycles are empty
