@@ -2344,9 +2344,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const cycleData = {
         userId,
         connectionId: connectionId || null,
-        startDate: new Date(startDate),
+        periodStartDate: new Date(startDate),
         periodEndDate: periodEndDate ? new Date(periodEndDate) : undefined,
-        endDate: endDate ? new Date(endDate) : undefined,
+        cycleEndDate: endDate ? new Date(endDate) : undefined,
         flowIntensity: flowIntensity || null,
         mood: mood || null,
         symptoms: symptoms || null,
@@ -2384,9 +2384,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const cycleId = parseInt(req.params.id);
       const updates = req.body;
       
-      if (updates.startDate) updates.startDate = new Date(updates.startDate);
+      // Map frontend column names to database column names
+      if (updates.startDate) {
+        updates.periodStartDate = new Date(updates.startDate);
+        delete updates.startDate;
+      }
+      if (updates.endDate) {
+        updates.cycleEndDate = new Date(updates.endDate);
+        delete updates.endDate;
+      }
       if (updates.periodEndDate) updates.periodEndDate = new Date(updates.periodEndDate);
-      if (updates.endDate) updates.endDate = new Date(updates.endDate);
       
       const cycle = await storage.updateMenstrualCycle(cycleId, updates);
       
@@ -2395,7 +2402,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // If the updated cycle now has an end date, handle automatic progression
-      if (cycle.endDate && updates.endDate) {
+      if (cycle.cycleEndDate && updates.cycleEndDate) {
         try {
           console.log("Cycle updated with end date, handling automatic progression");
           
