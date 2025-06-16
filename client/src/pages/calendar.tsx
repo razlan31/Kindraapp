@@ -347,13 +347,13 @@ export default function Calendar() {
         let cycleLength;
         if (cycle.cycleEndDate) {
           // Use actual cycle length if we have end date
-          cycleLength = Math.floor((new Date(cycle.endDate).getTime() - cycleStart.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+          cycleLength = Math.floor((new Date(cycle.cycleEndDate).getTime() - cycleStart.getTime()) / (1000 * 60 * 60 * 24)) + 1;
         } else {
           // For active cycles, estimate based on previous cycles for this connection
-          const connectionCycles = relevantCycles.filter(c => c.connectionId === connectionId && c.endDate);
+          const connectionCycles = relevantCycles.filter(c => c.connectionId === cycle.connectionId && c.cycleEndDate);
           if (connectionCycles.length > 0) {
             const avgLength = connectionCycles.reduce((sum, c) => {
-              const length = Math.floor((new Date(c.endDate!).getTime() - new Date(c.startDate).getTime()) / (1000 * 60 * 60 * 24)) + 1;
+              const length = Math.floor((new Date(c.cycleEndDate!).getTime() - new Date(c.periodStartDate).getTime()) / (1000 * 60 * 60 * 24)) + 1;
               return sum + length;
             }, 0) / connectionCycles.length;
             cycleLength = Math.round(avgLength);
