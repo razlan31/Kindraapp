@@ -31,7 +31,7 @@ function MenstrualCycleTracker() {
   });
 
   const getCurrentCycle = () => {
-    return cycles.find(cycle => !cycle.endDate);
+    return cycles.find(cycle => !cycle.cycleEndDate);
   };
 
   const getDaysSinceStart = (startDate: string) => {
@@ -67,10 +67,10 @@ function MenstrualCycleTracker() {
           <div className="space-y-3">
             <div>
               <p className="text-sm text-pink-600 dark:text-pink-300">
-                Day {getDaysSinceStart(currentCycle.startDate) + 1} of current cycle
+                Day {getDaysSinceStart(currentCycle.periodStartDate.toString()) + 1} of current cycle
               </p>
               <p className="text-xs text-pink-500 dark:text-pink-400">
-                Started {format(new Date(currentCycle.startDate), 'MMM d')}
+                Started {format(currentCycle.periodStartDate, 'MMM d')}
               </p>
             </div>
             <Button 
@@ -305,44 +305,47 @@ export default function Calendar() {
     
     // Find the cycle that contains this day
     for (const cycle of relevantCycles) {
-      const cycleStart = new Date(cycle.startDate);
+      const cycleStart = new Date(cycle.periodStartDate);
       
       // CRITICAL FIX: When connections are specifically selected, be more restrictive about cycle extension
       let cycleEnd;
       if (selectedConnectionIds.length > 0) {
         // When specific connections are selected, only show cycles within their actual period + a few days buffer
-        const periodEnd = new Date(cycle.periodEndDate);
-        if (cycle.endDate) {
-          cycleEnd = new Date(cycle.endDate);
-        } else {
+        const periodEnd = cycle.periodEndDate ? new Date(cycle.periodEndDate) : null;
+        if (cycle.cycleEndDate) {
+          cycleEnd = new Date(cycle.cycleEndDate);
+        } else if (periodEnd) {
           // For active cycles with selection, limit extension to 3 days after period end
           cycleEnd = new Date(periodEnd.getTime() + (3 * 24 * 60 * 60 * 1000));
+        } else {
+          // If no period end date, skip this cycle
+          continue;
         }
       } else {
         // Default behavior for when no specific selection
-        cycleEnd = cycle.endDate ? new Date(cycle.endDate) : new Date();
+        cycleEnd = cycle.cycleEndDate ? new Date(cycle.cycleEndDate) : new Date();
       }
       
-      if (day >= cycleStart && day <= cycleEnd) {
+      if (cycleEnd && day >= cycleStart && day <= cycleEnd) {
         // Debug logging for problematic dates
         if (format(day, 'yyyy-MM-dd') === '2025-06-16' || format(day, 'yyyy-MM-dd') === '2025-05-15') {
           console.log(`🔍 ${format(day, 'yyyy-MM-dd')} cycle match found:`, {
             connectionId: cycle.connectionId,
             cycleStart: format(cycleStart, 'yyyy-MM-dd'),
             cycleEnd: format(cycleEnd, 'yyyy-MM-dd'),
-            periodEnd: format(new Date(cycle.periodEndDate), 'yyyy-MM-dd'),
-            actualEndDate: cycle.endDate ? format(new Date(cycle.endDate), 'yyyy-MM-dd') : 'null',
+            periodEnd: cycle.periodEndDate ? format(cycle.periodEndDate, 'yyyy-MM-dd') : 'null',
+            actualEndDate: cycle.cycleEndDate ? format(cycle.cycleEndDate, 'yyyy-MM-dd') : 'null',
             selectedConnectionIds
           });
         }
         
         const dayOfCycle = Math.floor((day.getTime() - cycleStart.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-        const periodEnd = new Date(cycle.periodEndDate);
-        const periodDays = Math.floor((periodEnd.getTime() - cycleStart.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+        const periodEnd = cycle.periodEndDate ? new Date(cycle.periodEndDate) : null;
+        const periodDays = periodEnd ? Math.floor((periodEnd.getTime() - cycleStart.getTime()) / (1000 * 60 * 60 * 24)) + 1 : 0;
         
         // Calculate actual cycle length from the data
         let cycleLength;
-        if (cycle.endDate) {
+        if (cycle.cycleEndDate) {
           // Use actual cycle length if we have end date
           cycleLength = Math.floor((new Date(cycle.endDate).getTime() - cycleStart.getTime()) / (1000 * 60 * 60 * 24)) + 1;
         } else {

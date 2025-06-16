@@ -47,15 +47,15 @@ const calculateCycleLength = (cycles: MenstrualCycle[]): number => {
   if (cycles.length < 2) return 28; // Default cycle length
   
   const sortedCycles = cycles
-    .filter(cycle => cycle.startDate)
-    .sort((a, b) => new Date(a.startDate!).getTime() - new Date(b.startDate!).getTime());
+    .filter(cycle => cycle.periodStartDate)
+    .sort((a, b) => new Date(a.periodStartDate!).getTime() - new Date(b.periodStartDate!).getTime());
   
   if (sortedCycles.length < 2) return 28;
   
   const cycleLengths = [];
   for (let i = 1; i < sortedCycles.length; i++) {
-    const previousStart = new Date(sortedCycles[i - 1].startDate!);
-    const currentStart = new Date(sortedCycles[i].startDate!);
+    const previousStart = new Date(sortedCycles[i - 1].periodStartDate!);
+    const currentStart = new Date(sortedCycles[i].periodStartDate!);
     const length = differenceInDays(currentStart, previousStart);
     if (length > 0 && length <= 45) { // Valid cycle length range
       cycleLengths.push(length);
