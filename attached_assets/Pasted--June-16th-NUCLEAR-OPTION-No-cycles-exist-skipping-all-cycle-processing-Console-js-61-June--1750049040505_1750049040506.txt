@@ -1,0 +1,123 @@
+🔍 June 16th: NUCLEAR OPTION - No cycles exist, skipping all cycle processing
+Console.js:61 🔍 June 16th - Raw cycles from server: Array(0)
+Console.js:61 🔍 June 16th - Computed cyclePhases: Array(0)
+Console.js:61 🔍 June 16th - Final cycleDisplay: null
+Console.js:61 🔍 June 16th returning null - no cycles exist (cycles.length: 0)
+Console.js:61 🔍 June 16th - getCyclePhaseForDay result: null
+Console.js:61 🔍 June 16th: SAFETY CHECK - forced cycleDisplay to null because no cycles exist
+Console.js:61 🔍 June 16th final styling: Object
+Console.js:61 MomentModal render - momentModalOpen: false
+Console.js:61 MomentModal render - momentModalOpen: false activityType: moment
+Console.js:61 Modal useEffect - selectedDate from context: null
+Console.js:61 Modal useEffect - editingMoment: null
+Console.js:61 Modal useEffect - momentModalOpen: false
+Console.js:61 Focus Context Debug: {savedId: '6', connectionsLength: 19, connections: Array(19)}
+Console.js:61 Found saved connection: {id: 6, userId: '8', name: 'Amalina', profileImage: 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD…NBFVYa55AsNvqfMiHlz7DuXzATnACjbxt4OfvzgRwvR3Kj//Z', relationshipStage: 'Dating', …}
+Console.js:61 Auth: Starting to load user, setting loading to true
+Console.js:61 MomentModal render - momentModalOpen: false activityType: moment
+Console.js:61 Prevented JSON parse error from browser extension
+Mt.forEach.n.<computed> @ Console.js:61
+JSON.parse @ main.tsx:17
+(anonymous) @ frame_ant.js:2
+p @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+u @ frame_ant.js:2
+window.fetch @ frame_ant.js:2
+window.fetch @ Network.js:219
+getCurrentUser @ auth.ts:28
+loadUser @ auth-context.tsx:47
+(anonymous) @ auth-context.tsx:81
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=f5502327:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=f5502327:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=f5502327:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=f5502327:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=f5502327:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=f5502327:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=f5502327:19447
+commitRootImpl @ chunk-RPCDYKBN.js?v=f5502327:19416
+commitRoot @ chunk-RPCDYKBN.js?v=f5502327:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=f5502327:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=f5502327:9119
+flushSync @ chunk-RPCDYKBN.js?v=f5502327:18959
+scheduleRefresh @ chunk-RPCDYKBN.js?v=f5502327:20004
+(anonymous) @ @react-refresh:267
+performReactRefresh @ @react-refresh:256
+(anonymous) @ @react-refresh:677
+setTimeout
+(anonymous) @ @react-refresh:666
+validateRefreshBoundaryAndEnqueueUpdate @ @react-refresh:728
+(anonymous) @ calendar.tsx:3173
+(anonymous) @ client:34
+(anonymous) @ client:218
+(anonymous) @ client:193
+queueUpdate @ client:193
+await in queueUpdate
+(anonymous) @ client:642
+handleMessage @ client:640
+(anonymous) @ client:550Understand this warning
+Console.js:61 getCurrentUser successful: {id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+Console.js:61 getCurrentUser successful: {id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+Console.js:61 Auth context setting user: {id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+Console.js:61 Auth: Finally block - setting loading to false
+frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.
+t @ frame_ant.js:2
+s @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ _app-8124422cda9db17a.js:38
+(anonymous) @ _app-8124422cda9db17a.js:25
+e @ _app-8124422cda9db17a.js:14
+t.subscribe @ _app-8124422cda9db17a.js:14
+e.consumeQueue @ _app-8124422cda9db17a.js:25
+(anonymous) @ _app-8124422cda9db17a.js:25
+r @ _app-8124422cda9db17a.js:38
+setTimeout
+(anonymous) @ _app-8124422cda9db17a.js:38
+e.scheduleQueueConsumption @ _app-8124422cda9db17a.js:25
+(anonymous) @ _app-8124422cda9db17a.js:25
+e @ _app-8124422cda9db17a.js:14
+t.subscribe @ _app-8124422cda9db17a.js:14
+(anonymous) @ _app-8124422cda9db17a.js:25
+e @ _app-8124422cda9db17a.js:14
+t.subscribe @ _app-8124422cda9db17a.js:14
+e.try @ _app-8124422cda9db17a.js:25
+e.start @ _app-8124422cda9db17a.js:25
+t.request @ _app-8124422cda9db17a.js:25
+(anonymous) @ _app-8124422cda9db17a.js:14
+(anonymous) @ _app-8124422cda9db17a.js:14
+(anonymous) @ _app-8124422cda9db17a.js:25
+(anonymous) @ _app-8124422cda9db17a.js:14
+e.execute @ _app-8124422cda9db17a.js:14
+e.getObservableFromLink @ _app-8124422cda9db17a.js:11
+(anonymous) @ _app-8124422cda9db17a.js:11
+(anonymous) @ _app-8124422cda9db17a.js:11
+(anonymous) @ _app-8124422cda9db17a.js:11
+(anonymous) @ _app-8124422cda9db17a.js:11
+s @ _app-8124422cda9db17a.js:11
+e.mutate @ _app-8124422cda9db17a.js:11
+e.mutate @ _app-8124422cda9db17a.js:11
+(anonymous) @ _app-8124422cda9db17a.js:14
+(anonymous) @ _app-8124422cda9db17a.js:40
+(anonymous) @ main-2ef5568eaa1ab313.js:1
+n @ main-2ef5568eaa1ab313.js:1
+u @ main-2ef5568eaa1ab313.js:1
+(anonymous) @ main-2ef5568eaa1ab313.js:1
+(anonymous) @ main-2ef5568eaa1ab313.js:1
+r @ _app-8124422cda9db17a.js:38Understand this error
+frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.
