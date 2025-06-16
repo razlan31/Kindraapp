@@ -395,16 +395,16 @@ export default function MenstrualCyclePage() {
     if (connectionCycles.length === 0) return null;
 
     const sortedCycles = [...connectionCycles].sort((a, b) => 
-      new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
+      new Date(a.periodStartDate).getTime() - new Date(b.periodStartDate).getTime()
     );
 
     // Find the cycle that this day belongs to
     for (const cycle of sortedCycles) {
-      const cycleStart = new Date(cycle.startDate);
+      const cycleStart = new Date(cycle.periodStartDate);
       let cycleEnd: Date;
       
-      if (cycle.endDate) {
-        cycleEnd = new Date(cycle.endDate);
+      if (cycle.cycleEndDate) {
+        cycleEnd = new Date(cycle.cycleEndDate);
       } else {
         // For active cycles, calculate expected end based on average cycle length
         const avgCycleLength = calculateCycleLength(connectionCycles) || 28;
@@ -416,8 +416,8 @@ export default function MenstrualCyclePage() {
         const periodEnd = cycle.periodEndDate ? new Date(cycle.periodEndDate) : addDays(cycleStart, 4);
         
         // Calculate cycle length for detailed phase analysis
-        const cycleLength = cycle.endDate ? 
-          differenceInDays(new Date(cycle.endDate), cycleStart) + 1 : 
+        const cycleLength = cycle.cycleEndDate ? 
+          differenceInDays(new Date(cycle.cycleEndDate), cycleStart) + 1 : 
           (calculateCycleLength(connectionCycles) || 28);
         
         const periodLength = cycle.periodEndDate ? 
@@ -583,7 +583,7 @@ export default function MenstrualCyclePage() {
 
   // Create cycle mutation
   const createCycleMutation = useMutation({
-    mutationFn: (data: any) => apiRequest('POST', '/api/menstrual-cycles', data),
+    mutationFn: (data: any) => apiRequest('/api/menstrual-cycles', 'POST', data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/menstrual-cycles'] });
       setIsDialogOpen(false);
@@ -606,7 +606,7 @@ export default function MenstrualCyclePage() {
   // Update cycle mutation
   const updateCycleMutation = useMutation({
     mutationFn: ({ id, ...data }: { id: number } & any) => 
-      apiRequest('PATCH', `/api/menstrual-cycles/${id}`, data),
+      apiRequest(`/api/menstrual-cycles/${id}`, 'PATCH', data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/menstrual-cycles'] });
       setIsDialogOpen(false);
@@ -831,10 +831,10 @@ export default function MenstrualCyclePage() {
     });
   }, [cycles, selectedPersonIds]);
 
-  const getCurrentCycle = () => filteredCycles.find(cycle => !cycle.endDate);
+  const getCurrentCycle = () => filteredCycles.find(cycle => !cycle.cycleEndDate);
   const getPastCycles = () => filteredCycles
-    .filter(cycle => cycle.endDate)
-    .sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime());
+    .filter(cycle => cycle.cycleEndDate)
+    .sort((a, b) => new Date(b.periodStartDate).getTime() - new Date(a.periodStartDate).getTime());
 
   const getCycleLength = (cycle: MenstrualCycle) => {
     if (!cycle.endDate) return null;
