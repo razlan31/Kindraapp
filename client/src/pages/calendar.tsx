@@ -363,15 +363,15 @@ export default function Calendar() {
         }
         
         // Calculate ovulation day: 14 days before cycle end
-        // For a May 1-30 cycle (30 days), ovulation should be day 16 (May 16th)
-        const ovulationDay = cycleLength - 13;
+        // For a May 1-30 cycle (30 days), ovulation should be day 17 (May 17th)
+        const ovulationDay = cycleLength - 14;
         
-        // Force ovulation to show on May 16th for May 1-30 cycle
-        if (format(day, 'yyyy-MM-dd') === '2025-05-16' && connectionId === 6) {
+        // Check for ovulation day first - May 16th should be ovulation for May 1-30 cycle
+        if (dayOfCycle === ovulationDay) {
           return {
             phase: 'ovulation',
-            emoji: '🥚',
-            color: 'bg-pink-200 dark:bg-pink-900/40 border-pink-400 dark:border-pink-600'
+            emoji: '🔵', // Blue circle as shown in legend
+            color: 'bg-blue-200 dark:bg-blue-900/40 border-blue-400 dark:border-blue-600'
           };
         }
         
