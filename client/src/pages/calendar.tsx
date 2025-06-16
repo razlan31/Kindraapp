@@ -1295,12 +1295,18 @@ export default function Calendar() {
                     
                     // Check if this connection has a cycle phase for this day
                     const phaseInfo = getCyclePhaseForDay(day, connectionId);
+                    
+                    // Debug for May 16th ovulation
+                    if (format(day, 'yyyy-MM-dd') === '2025-05-16' && connectionId === 6) {
+                      console.log(`🥚 May 16th DEBUG - getCyclePhaseForDay result:`, phaseInfo);
+                    }
+                    
                     if (phaseInfo) {
                       const connection = connections.find(c => c.id === connectionId);
                       if (connection) {
                         cyclePhases.push({ ...phaseInfo, connection });
-                        if (format(day, 'yyyy-MM-dd') === '2025-05-15') {
-                          console.log(`May 15th: Added cycle phase for ${connection.name} (${connectionId}):`, phaseInfo.phase);
+                        if (format(day, 'yyyy-MM-dd') === '2025-05-16' && connectionId === 6) {
+                          console.log(`🥚 May 16th: Added cycle phase for ${connection.name}:`, phaseInfo);
                         }
                       }
                     }
