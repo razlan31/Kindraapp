@@ -267,37 +267,8 @@ export default function Calendar() {
     
 
     
-    // ENHANCED FILTERING: Determine exactly which connections should show cycles
-    const allowedConnectionIds = new Set();
-    
-    if (selectedConnectionIds.length > 0) {
-      // User has explicitly selected specific connections
-      selectedConnectionIds.forEach(id => allowedConnectionIds.add(id));
-      
-      // Debug logging for problematic dates
-      if (format(day, 'yyyy-MM-dd') === '2025-06-16' || format(day, 'yyyy-MM-dd') === '2025-05-15') {
-        console.log(`🔍 ${format(day, 'yyyy-MM-dd')} getCyclePhaseForDay: selectedConnectionIds=${JSON.stringify(selectedConnectionIds)}, checking connectionId=${connectionId}`);
-      }
-    } else if (hasUserSelectedConnection) {
-      // User made a selection but nothing is currently selected = show nothing
-      if (format(day, 'yyyy-MM-dd') === '2025-05-15') {
-        console.log('May 15th getCyclePhaseForDay: hasUserSelectedConnection=true but no connections selected, returning null');
-      }
-      return null;
-    } else if (mainFocusConnection) {
-      allowedConnectionIds.add(mainFocusConnection.id);
-    } else {
-      // No selection at all = show all connections
-      cycles.forEach(cycle => allowedConnectionIds.add(cycle.connectionId));
-    }
-    
-    // CRITICAL CHECK: If this connection is not allowed, return null immediately
-    if (!allowedConnectionIds.has(connectionId)) {
-      if (format(day, 'yyyy-MM-dd') === '2025-05-15') {
-        console.log(`May 15th getCyclePhaseForDay: Connection ${connectionId} not in allowed list ${Array.from(allowedConnectionIds)}, returning null`);
-      }
-      return null;
-    }
+    // SIMPLIFIED FILTERING: Always show cycles for all connections, filtering happens at display level
+    // This ensures cycle calculations work properly
     
     const relevantCycles = cycles.filter(cycle => cycle.connectionId === connectionId);
     
