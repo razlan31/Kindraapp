@@ -230,22 +230,70 @@ export const notificationSchema = createInsertSchema(notifications).omit({ id: t
 export type InsertNotification = z.infer<typeof notificationSchema>;
 export type Notification = typeof notifications.$inferSelect;
 
-// Menstrual cycles
+// Menstrual cycles with pattern learning
 export const menstrualCycles = pgTable("menstrual_cycles", {
   id: serial("id").primaryKey(),
-  userId: integer("user_id").notNull(),
+  userId: varchar("user_id").notNull(),
   connectionId: integer("connection_id"), // null means tracking for user themselves
-  startDate: timestamp("start_date").notNull(), // Period start date
-  periodEndDate: timestamp("period_end_date"), // Period end date (menstruation ends)
-  endDate: timestamp("end_date"), // Full cycle end date (optional, for completed cycles)
+  
+  // Core cycle dates
+  periodStartDate: timestamp("period_start_date").notNull(), // When period begins
+  periodEndDate: timestamp("period_end_date"), // When period ends
+  cycleEndDate: timestamp("cycle_end_date"), // When full cycle ends (before next period)
+  
+  // Cycle metadata
+  cycleLength: integer("cycle_length"), // Total days in cycle (calculated)
+  periodLength: integer("period_length"), // Days of menstruation (calculated)
+  
+  // Cycle status and prediction
+  isActive: boolean("is_active").default(false), // Currently ongoing cycle
+  isPredicted: boolean("is_predicted").default(false), // Auto-generated prediction
+  isCompleted: boolean("is_completed").default(false), // Manually completed by user
+  
+  // Pattern data for learning
+  patternVersion: integer("pattern_version").default(1), // Tracks pattern changes
+  
+  // User data
   notes: text("notes"),
   mood: text("mood"),
   symptoms: json("symptoms").$type<string[]>(),
   flowIntensity: text("flow_intensity"),
+  
+  // Timestamps
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-export const menstrualCycleSchema = createInsertSchema(menstrualCycles).omit({ id: true }).extend({
-  startDate: z.string().or(z.date()).transform((val) => {
+// Cycle patterns for learning and prediction
+export const cyclePatterns = pgTable("cycle_patterns", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull(),
+  connectionId: integer("connection_id"), // null means user's own pattern
+  
+  // Pattern statistics
+  averageCycleLength: integer("average_cycle_length").notNull(),
+  averagePeriodLength: integer("average_period_length").notNull(),
+  
+  // Pattern confidence (based on number of cycles used to calculate)
+  sampleSize: integer("sample_size").notNull(),
+  confidenceScore: integer("confidence_score").notNull(), // 1-100
+  
+  // Pattern validity
+  isActive: boolean("is_active").default(true), // Current active pattern
+  
+  // Timestamps
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const menstrualCycleSchema = createInsertSchema(menstrualCycles).omit({ 
+  id: true, 
+  createdAt: true, 
+  updatedAt: true,
+  cycleLength: true,
+  periodLength: true
+}).extend({
+  periodStartDate: z.string().or(z.date()).transform((val) => {
     if (typeof val === 'string') {
       return new Date(val);
     }
@@ -257,15 +305,24 @@ export const menstrualCycleSchema = createInsertSchema(menstrualCycles).omit({ i
     }
     return val;
   }),
-  endDate: z.string().or(z.date()).optional().transform((val) => {
+  cycleEndDate: z.string().or(z.date()).optional().transform((val) => {
     if (typeof val === 'string') {
       return new Date(val);
     }
     return val;
   }),
 });
+
+export const cyclePatternSchema = createInsertSchema(cyclePatterns).omit({ 
+  id: true, 
+  createdAt: true, 
+  updatedAt: true 
+});
+
 export type InsertMenstrualCycle = z.infer<typeof menstrualCycleSchema>;
 export type MenstrualCycle = typeof menstrualCycles.$inferSelect;
+export type InsertCyclePattern = z.infer<typeof cyclePatternSchema>;
+export type CyclePattern = typeof cyclePatterns.$inferSelect;
 
 // Relationship Milestones
 export const milestones = pgTable("milestones", {
