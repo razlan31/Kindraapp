@@ -1226,34 +1226,41 @@ export default function Calendar() {
                   console.log(`🔍 MAY 16th PROCESSING START:`, {
                     connectionsToCheck,
                     cyclesLength: cycles.length,
-                    directOverrideApplied: dayStr === '2025-05-16'
+                    willSkipNormalProcessing: dayStr === '2025-05-16',
+                    availableCycles: cycles.map(c => ({ id: c.id, connectionId: c.connectionId }))
                   });
                 }
                 
 
                 
-                // Skip normal cycle processing for May 16th since we have direct override
-                if (dayStr !== '2025-05-16') {
-                  const allowedConnectionIds = new Set(connectionsToCheck);
-                  const filteredCycles = cycles.filter(cycle => allowedConnectionIds.has(cycle.connectionId));
+                // Process cycles normally - no skipping
+                const allowedConnectionIds = new Set(connectionsToCheck);
+                const filteredCycles = cycles.filter(cycle => allowedConnectionIds.has(cycle.connectionId));
 
-                  // NUCLEAR OPTION: If no cycles exist at all, skip all cycle processing
-                  if (!cycles || cycles.length === 0) {
-                    if (format(day, 'yyyy-MM-dd') === '2025-06-16') {
-                      console.log('🔍 June 16th: NUCLEAR OPTION - No cycles exist, skipping all cycle processing');
+                // NUCLEAR OPTION: If no cycles exist at all, skip all cycle processing
+                if (!cycles || cycles.length === 0) {
+                  if (format(day, 'yyyy-MM-dd') === '2025-06-16') {
+                    console.log('🔍 June 16th: NUCLEAR OPTION - No cycles exist, skipping all cycle processing');
+                  }
+                  // Don't process any cycle phases at all
+                } else {
+                  // Process each connection that has cycles
+                  for (const connectionId of connectionsToCheck) {
+                    if (format(day, 'yyyy-MM-dd') === '2025-05-16') {
+                      console.log(`🔍 MAY 16th: About to call getCyclePhaseForDay with connectionId ${connectionId}`);
                     }
-                    // Don't process any cycle phases at all
-                  } else {
-                    // Process each connection that has cycles
-                    for (const connectionId of connectionsToCheck) {
-                      // Check if this connection has a cycle phase for this day
-                      const phaseInfo = getCyclePhaseForDay(day, connectionId);
-                      
-                      if (phaseInfo) {
-                        const connection = connections.find(c => c.id === connectionId);
-                        if (connection) {
-                          cyclePhases.push({ ...phaseInfo, connection });
-                        }
+                    
+                    // Check if this connection has a cycle phase for this day
+                    const phaseInfo = getCyclePhaseForDay(day, connectionId);
+                    
+                    if (format(day, 'yyyy-MM-dd') === '2025-05-16') {
+                      console.log(`🔍 MAY 16th: getCyclePhaseForDay returned:`, phaseInfo);
+                    }
+                    
+                    if (phaseInfo) {
+                      const connection = connections.find(c => c.id === connectionId);
+                      if (connection) {
+                        cyclePhases.push({ ...phaseInfo, connection });
                       }
                     }
                   }
