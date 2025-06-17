@@ -2239,43 +2239,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const connectionIdNum = parseInt(connectionId);
       const cycles = cyclesData as any[];
       const sortedCycles = cycles.sort((a: any, b: any) => 
-        new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
+        new Date(b.periodStartDate).getTime() - new Date(a.periodStartDate).getTime()
       );
 
-      // Check if there's an active cycle for this connection
-      const activeCycle = sortedCycles.find((cycle: any) => !cycle.endDate);
+      // Check if there's an active cycle for this connection (no cycleEndDate means active)
+      const activeCycle = sortedCycles.find((cycle: any) => !cycle.cycleEndDate);
 
       if (activeCycle) {
         continue; // Skip to next connection - already has active cycle
       }
 
       // Check for cycles that ended and need automatic progression for this connection
-      const completedCycles = sortedCycles.filter((cycle: any) => cycle.endDate);
+      const completedCycles = sortedCycles.filter((cycle: any) => cycle.cycleEndDate);
       
       if (completedCycles.length === 0) {
         continue; // No completed cycles to base pattern on for this connection
       }
 
-      // Find the most recently ended cycle (sort by end date, not start date)
+      // Find the most recently ended cycle (sort by cycle end date)
       const lastCompletedCycle = completedCycles.sort((a: any, b: any) => 
-        new Date(b.endDate).getTime() - new Date(a.endDate).getTime()
+        new Date(b.cycleEndDate).getTime() - new Date(a.cycleEndDate).getTime()
       )[0];
       
       // Calculate cycle patterns from the last cycle
-      const lastStartDate = new Date(lastCompletedCycle.startDate);
-      const lastEndDate = new Date(lastCompletedCycle.endDate);
+      const lastStartDate = new Date(lastCompletedCycle.periodStartDate);
+      const lastCycleEndDate = new Date(lastCompletedCycle.cycleEndDate);
       const lastPeriodEndDate = lastCompletedCycle.periodEndDate ? 
         new Date(lastCompletedCycle.periodEndDate) : null;
       
-      // Calculate full cycle length (start to start, typically 28-30 days)
-      const fullCycleLength = Math.ceil((lastEndDate.getTime() - lastStartDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+      // Calculate full cycle length (period start to cycle end, typically 28-30 days)
+      const fullCycleLength = Math.ceil((lastCycleEndDate.getTime() - lastStartDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
       const averageCycleLength = fullCycleLength > 35 ? 30 : (fullCycleLength < 21 ? 28 : fullCycleLength); // Reasonable cycle length
       const periodLength = lastPeriodEndDate ? 
         Math.ceil((lastPeriodEndDate.getTime() - lastStartDate.getTime()) / (1000 * 60 * 60 * 24)) + 1 : 5; // Default to 5 days
 
-      // Calculate next cycle start date based on average cycle length from last start date
-      const nextCycleStartDate = new Date(lastStartDate);
-      nextCycleStartDate.setDate(nextCycleStartDate.getDate() + averageCycleLength);
+      // Calculate next cycle start date: 1 day after the last cycle ended
+      const nextCycleStartDate = new Date(lastCycleEndDate);
+      nextCycleStartDate.setDate(nextCycleStartDate.getDate() + 1);
 
       // Only create new cycle if the next cycle start date is today or in the past
       if (nextCycleStartDate > today) {
@@ -2289,11 +2289,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Create the new automatic cycle for this connection
       const newCycleData = {
-        userId,
+        userId: userId.toString(),
         connectionId: connectionIdNum,
-        startDate: newCycleStartDate,
+        periodStartDate: newCycleStartDate,
         periodEndDate: newPeriodEndDate,
-        endDate: undefined,
+        cycleEndDate: undefined, // Will be set when cycle is manually ended
         notes: `Auto-generated cycle following ${averageCycleLength}-day pattern`,
         mood: null,
         symptoms: null,
@@ -2322,8 +2322,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let cycles = await storage.getMenstrualCycles(userId);
       console.log("Retrieved cycles:", cycles);
       
-      // DISABLED: Check for automatic cycle progression
-      // cycles = await checkAndCreateAutomaticCycles(userId, cycles);
+      // Check if any cycles need automatic progression
+      cycles = await checkAndCreateAutomaticCycles(userId, cycles);
       
       res.json(cycles);
     } catch (error: any) {
