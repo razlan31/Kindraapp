@@ -903,6 +903,11 @@ export default function MenstrualCyclePage() {
       differenceInDays(new Date(cycle.periodEndDate), cycleStart) + 1 : 5;
     const phase = getDetailedCyclePhase(daysSinceStart, cycleLength, periodLength);
     
+    // CRITICAL FIX: Check subPhase for ovulation detection
+    if (phase.subPhase === 'ovulation') {
+      return 'ovulation';
+    }
+    
     return phase.phase.toLowerCase();
   };
 
