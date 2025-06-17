@@ -82,9 +82,9 @@ const calculateOvulationDay = (cycleLength: number, historicalCycles: any[] = []
     }
   }
   
-  // Standard ovulation calculation: 14 days before cycle end
-  // For a 30-day cycle, ovulation should be on day 16 (30 - 13 = 17, but we want 16)
-  return Math.max(12, cycleLength - 13);
+  // FIXED: Use same calculation as calendar - 14 days before cycle end
+  // For a 30-day cycle, ovulation should be on day 16 (30 - 14 = 16)
+  return Math.max(12, cycleLength - 14);
 };
 
 // Comprehensive cycle phase system with 8 detailed phases
@@ -412,7 +412,11 @@ export default function MenstrualCyclePage() {
       }
       
       if (day >= cycleStart && day <= cycleEnd) {
-        const dayInCycle = differenceInDays(day, cycleStart) + 1;
+        // CRITICAL FIX: Normalize dates to start of day to avoid timezone issues (same as calendar.tsx)
+        const normalizedDay = startOfDay(day);
+        const normalizedCycleStart = startOfDay(cycleStart);
+        
+        const dayInCycle = differenceInDays(normalizedDay, normalizedCycleStart) + 1;
         const periodEnd = cycle.periodEndDate ? new Date(cycle.periodEndDate) : addDays(cycleStart, 4);
         
         // Calculate cycle length for detailed phase analysis
