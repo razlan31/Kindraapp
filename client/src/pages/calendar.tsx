@@ -348,7 +348,7 @@ export default function Calendar() {
         };
       case 'follicular':
         return {
-          color: 'bg-green-100 dark:bg-green-900/30 border-green-300 dark:border-green-700',
+          color: 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-600 opacity-60',
           indicator: '🌱',
           title: `Cycle Day ${phaseInfo.day}`,
           description: 'Follicular phase'
@@ -371,7 +371,7 @@ export default function Calendar() {
         };
       case 'luteal':
         return {
-          color: 'bg-purple-100 dark:bg-purple-900/30 border-purple-300 dark:border-purple-700',
+          color: 'bg-purple-50 dark:bg-purple-900/20 border-purple-200 dark:border-purple-600 opacity-60',
           indicator: '🌙',
           title: `Cycle Day ${phaseInfo.day}`,
           description: 'Luteal phase'
