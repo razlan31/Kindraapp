@@ -314,8 +314,16 @@ export default function Calendar() {
           periodLength,
           'dayOfCycle === ovulationDay': dayOfCycle === ovulationDay,
           'dayOfCycle <= periodLength': dayOfCycle <= periodLength,
+          'EXACT ovulation check': `${dayOfCycle} === ${ovulationDay} = ${dayOfCycle === ovulationDay}`,
           'fertile window check': `${ovulationDay - 2} <= ${dayOfCycle} <= ${ovulationDay + 2}`,
           'is in fertile window': dayOfCycle >= ovulationDay - 2 && dayOfCycle <= ovulationDay + 2,
+          'WHICH CONDITION WILL MATCH?': {
+            menstrual: dayOfCycle <= periodLength,
+            exactOvulation: dayOfCycle === ovulationDay,
+            fertileWindow: dayOfCycle >= ovulationDay - 2 && dayOfCycle <= ovulationDay + 2,
+            follicular: dayOfCycle < ovulationDay,
+            luteal: dayOfCycle > ovulationDay
+          },
           cycleStart: format(cycleStart, 'yyyy-MM-dd'),
           cycleEnd: cycleEnd ? format(cycleEnd, 'yyyy-MM-dd') : 'null',
           periodStart: format(new Date(cycle.periodStartDate), 'yyyy-MM-dd'),
