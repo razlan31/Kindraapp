@@ -417,8 +417,8 @@ function analyzeCyclePhaseCorrelations(moments: Moment[], cycles: MenstrualCycle
     
     const momentDate = new Date(moment.createdAt);
     const cycle = cycles.find(c => {
-      const cycleStart = new Date(c.startDate);
-      const cycleEnd = c.endDate ? new Date(c.endDate) : new Date(cycleStart.getTime() + 28 * 24 * 60 * 60 * 1000);
+      const cycleStart = new Date(c.periodStartDate);
+      const cycleEnd = c.cycleEndDate ? new Date(c.cycleEndDate) : new Date(cycleStart.getTime() + 28 * 24 * 60 * 60 * 1000);
       return momentDate >= cycleStart && momentDate <= cycleEnd;
     });
 
@@ -588,13 +588,13 @@ function predictNextOptimalTiming(cycles: MenstrualCycle[], optimalPhase: string
   if (cycles.length === 0) return null;
   
   const latestCycle = cycles.sort((a, b) => 
-    new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
+    new Date(b.periodStartDate).getTime() - new Date(a.periodStartDate).getTime()
   )[0];
   
   // FIXED: Use cycle end date + 1 for next cycle start
   const nextCycleStart = latestCycle.cycleEndDate ? 
     new Date(new Date(latestCycle.cycleEndDate).getTime() + 24 * 60 * 60 * 1000) : // Add 1 day
-    new Date(latestCycle.startDate);
+    new Date(latestCycle.periodStartDate);
   
   const phaseOffsets = { menstrual: 0, follicular: 6, ovulation: 14, luteal: 17 };
   const nextOptimalDate = new Date(nextCycleStart);
@@ -672,8 +672,8 @@ function calculateAverageCycleLength(cycles: MenstrualCycle[]): number {
   
   const lengths = [];
   for (let i = 1; i < cycles.length; i++) {
-    const current = new Date(cycles[i-1].startDate);
-    const previous = new Date(cycles[i].startDate);
+    const current = new Date(cycles[i-1].periodStartDate);
+    const previous = new Date(cycles[i].periodStartDate);
     const length = Math.floor((current.getTime() - previous.getTime()) / (1000 * 60 * 60 * 24));
     lengths.push(length);
   }
