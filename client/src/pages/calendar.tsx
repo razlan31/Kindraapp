@@ -25,17 +25,147 @@ import { PlanModal } from "@/components/modals/plan-modal";
 import { MomentModal } from "@/components/modals/moment-modal";
 import { apiRequest } from "@/lib/queryClient";
 
+// Helper function to calculate cycle phase for a specific day (copied from cycle tracker)
+const getCyclePhaseForDay = (day: Date, connectionId: number, cycles: MenstrualCycle[]) => {
+  const connectionCycles = cycles.filter(c => c.connectionId === connectionId);
+  if (connectionCycles.length === 0) return null;
+
+  const sortedCycles = [...connectionCycles].sort((a, b) => 
+    new Date(a.periodStartDate).getTime() - new Date(b.periodStartDate).getTime()
+  );
+
+  // Find the cycle that this day belongs to
+  for (const cycle of sortedCycles) {
+    const cycleStart = new Date(cycle.periodStartDate);
+    let cycleEnd: Date;
+    
+    if (cycle.cycleEndDate) {
+      cycleEnd = new Date(cycle.cycleEndDate);
+    } else {
+      // For active cycles, calculate expected end based on average cycle length
+      const avgCycleLength = 28; // Default to 28 days
+      cycleEnd = addDays(cycleStart, avgCycleLength - 1);
+    }
+    
+    if (day >= cycleStart && day <= cycleEnd) {
+      const normalizedDay = startOfDay(day);
+      const normalizedCycleStart = startOfDay(cycleStart);
+      
+      const dayInCycle = differenceInDays(normalizedDay, normalizedCycleStart) + 1;
+      const periodEnd = cycle.periodEndDate ? new Date(cycle.periodEndDate) : addDays(cycleStart, 4);
+      
+      // Calculate cycle length for detailed phase analysis
+      const cycleLength = cycle.cycleEndDate ? 
+        differenceInDays(new Date(cycle.cycleEndDate), cycleStart) + 1 : 28;
+      
+      const periodLength = cycle.periodEndDate ? 
+        differenceInDays(new Date(cycle.periodEndDate), cycleStart) + 1 : 5;
+      
+      // Determine phase based on day in cycle
+      let phase = 'follicular';
+      if (dayInCycle <= periodLength) {
+        phase = 'menstrual';
+      } else if (dayInCycle >= cycleLength - 14 - 2 && dayInCycle <= cycleLength - 14 + 2) {
+        phase = 'fertile';
+        if (dayInCycle === cycleLength - 14) {
+          phase = 'ovulation';
+        }
+      } else if (dayInCycle > cycleLength - 14 + 2) {
+        phase = 'luteal';
+      }
+      
+      return { 
+        phase,
+        day: dayInCycle, 
+        cycle,
+        isOvulation: phase === 'ovulation'
+      };
+    }
+  }
+
+  return null;
+};
+
+// Helper function to get cycle display info (copied from cycle tracker)
+const getCycleDisplayInfo = (phaseInfo: any) => {
+  if (!phaseInfo) return null;
+  
+  switch (phaseInfo.phase) {
+    case 'menstrual':
+      return {
+        color: 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-600',
+        indicator: '🩸',
+        title: `Day ${phaseInfo.day} - Menstrual Phase`,
+        description: 'Menstrual phase'
+      };
+    case 'follicular':
+      return {
+        color: 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-600 opacity-50',
+        indicator: '🌱',
+        title: `Day ${phaseInfo.day} - Follicular Phase`,
+        description: 'Follicular phase'
+      };
+    case 'fertile':
+      return {
+        color: 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-600',
+        indicator: '💛',
+        title: `Day ${phaseInfo.day} - Fertile Window`,
+        description: 'Fertile window'
+      };
+    case 'ovulation':
+      return {
+        color: 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-600',
+        indicator: '🔵',
+        title: `Day ${phaseInfo.day} - Ovulation`,
+        description: 'Ovulation day'
+      };
+    case 'luteal':
+      return {
+        color: 'bg-purple-50 dark:bg-purple-900/20 border-purple-200 dark:border-purple-600 opacity-50',
+        indicator: '🌙',
+        title: `Day ${phaseInfo.day} - Luteal Phase`,
+        description: 'Luteal phase'
+      };
+    default:
+      return null;
+  }
+};
+
 function MenstrualCycleTracker() {
   const { data: cycles = [], isLoading } = useQuery<MenstrualCycle[]>({
     queryKey: ['/api/menstrual-cycles'],
   });
 
   const getCurrentCycle = () => {
-    return cycles.find(cycle => !cycle.cycleEndDate);
+    if (!cycles.length) return null;
+    
+    const today = new Date();
+    const todayStart = startOfDay(today);
+    
+    // Find the cycle that today falls within
+    for (const cycle of cycles) {
+      const cycleStart = startOfDay(new Date(cycle.periodStartDate));
+      let cycleEnd: Date;
+      
+      if (cycle.cycleEndDate) {
+        cycleEnd = startOfDay(new Date(cycle.cycleEndDate));
+      } else {
+        // For cycles without end date, assume 28-day cycle
+        cycleEnd = addDays(cycleStart, 27); // 28 days total (0-27)
+      }
+      
+      if (todayStart >= cycleStart && todayStart <= cycleEnd) {
+        return cycle;
+      }
+    }
+    
+    return null;
   };
 
   const getDaysSinceStart = (startDate: string) => {
-    return Math.floor((Date.now() - new Date(startDate).getTime()) / (1000 * 60 * 60 * 24));
+    const today = startOfDay(new Date());
+    const start = startOfDay(new Date(startDate));
+    return differenceInDays(today, start);
   };
 
   const [, setLocation] = useLocation();
@@ -1239,7 +1369,7 @@ export default function Calendar() {
                       }
                       
                       // Check if this connection has a cycle phase for this day
-                      const phaseInfo = getCyclePhaseForDay(day, connectionId);
+                      const phaseInfo = getCyclePhaseForDay(day, connectionId, cycles);
                       
                       if (format(day, 'yyyy-MM-dd') === '2025-05-16') {
                         console.log(`🔍 MAY 16th: getCyclePhaseForDay returned:`, phaseInfo);
