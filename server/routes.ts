@@ -2242,30 +2242,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
         new Date(b.periodStartDate).getTime() - new Date(a.periodStartDate).getTime()
       );
 
-      // Check if there's an active cycle for this connection (no cycleEndDate means active)
-      const activeCycle = sortedCycles.find((cycle: any) => !cycle.cycleEndDate);
-
-      if (activeCycle) {
-        continue; // Skip to next connection - already has active cycle
+      // Find the most recent cycle (whether active or completed)
+      const mostRecentCycle = sortedCycles[0];
+      
+      if (!mostRecentCycle) {
+        continue; // No cycles exist for this connection
       }
 
-      // Check for cycles that ended and need automatic progression for this connection
-      const completedCycles = sortedCycles.filter((cycle: any) => cycle.cycleEndDate);
+      // Use the most recent cycle to determine patterns, regardless of completion status
+      const baseCycle = mostRecentCycle;
       
-      if (completedCycles.length === 0) {
-        continue; // No completed cycles to base pattern on for this connection
+      // Calculate cycle patterns from the base cycle
+      const lastStartDate = new Date(baseCycle.periodStartDate);
+      const lastPeriodEndDate = baseCycle.periodEndDate ? 
+        new Date(baseCycle.periodEndDate) : null;
+      
+      // For cycle end date, use existing end date or estimate based on period start + typical cycle length
+      let lastCycleEndDate;
+      if (baseCycle.cycleEndDate) {
+        lastCycleEndDate = new Date(baseCycle.cycleEndDate);
+      } else {
+        // Estimate cycle end date as period start + 30 days (typical cycle)
+        lastCycleEndDate = new Date(lastStartDate);
+        lastCycleEndDate.setDate(lastCycleEndDate.getDate() + 29); // 30-day cycle
       }
-
-      // Find the most recently ended cycle (sort by cycle end date)
-      const lastCompletedCycle = completedCycles.sort((a: any, b: any) => 
-        new Date(b.cycleEndDate).getTime() - new Date(a.cycleEndDate).getTime()
-      )[0];
-      
-      // Calculate cycle patterns from the last cycle
-      const lastStartDate = new Date(lastCompletedCycle.periodStartDate);
-      const lastCycleEndDate = new Date(lastCompletedCycle.cycleEndDate);
-      const lastPeriodEndDate = lastCompletedCycle.periodEndDate ? 
-        new Date(lastCompletedCycle.periodEndDate) : null;
       
       // Calculate full cycle length (period start to cycle end, typically 28-30 days)
       const fullCycleLength = Math.ceil((lastCycleEndDate.getTime() - lastStartDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
@@ -2277,37 +2277,67 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const nextCycleStartDate = new Date(lastCycleEndDate);
       nextCycleStartDate.setDate(nextCycleStartDate.getDate() + 1);
 
-      // Only create new cycle if the next cycle start date is today or in the past
-      if (nextCycleStartDate > today) {
-        continue;
-      }
-
-      // Calculate new cycle dates
-      const newCycleStartDate = new Date(nextCycleStartDate);
-      const newPeriodEndDate = new Date(newCycleStartDate);
-      newPeriodEndDate.setDate(newPeriodEndDate.getDate() + periodLength - 1);
+      // Generate future cycles based on the most recent cycle
+      // Start generating cycles after the current cycle ends
+      let cycleGenerationCount = 0;
+      let currentGenerationDate = new Date(nextCycleStartDate);
       
-      // Create the new automatic cycle for this connection
-      const newCycleData = {
-        userId: userId.toString(),
-        connectionId: connectionIdNum,
-        periodStartDate: newCycleStartDate,
-        periodEndDate: newPeriodEndDate,
-        cycleEndDate: undefined, // Will be set when cycle is manually ended
-        notes: `Auto-generated cycle following ${averageCycleLength}-day pattern`,
-        mood: null,
-        symptoms: null,
-        flowIntensity: null
-      };
+      console.log(`Generating future cycles for connection ${connectionIdNum} starting from ${currentGenerationDate.toISOString()}`);
+      
+      while (cycleGenerationCount < 3) {
+        // Only create cycle if the generation date is within 90 days from today
+        const daysDifference = Math.ceil((currentGenerationDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+        if (daysDifference > 90) {
+          console.log(`Stopping cycle generation - too far in future (${daysDifference} days)`);
+          break;
+        }
 
-      console.log(`Creating automatic cycle progression for connection ${connectionIdNum}:`, newCycleData);
+        // Check if this cycle already exists (within 1 day tolerance)
+        const existingCycle = allCycles.find(cycle => 
+          cycle.connectionId === connectionIdNum && 
+          cycle.periodStartDate && 
+          Math.abs(new Date(cycle.periodStartDate).getTime() - currentGenerationDate.getTime()) < 24 * 60 * 60 * 1000
+        );
 
-      try {
-        const newCycle = await storage.createMenstrualCycle(newCycleData);
-        console.log("Created automatic cycle:", newCycle);
-        allCycles.push(newCycle);
-      } catch (error) {
-        console.error("Error creating automatic cycle:", error);
+        if (!existingCycle) {
+          // Calculate new cycle dates
+          const newCycleStartDate = new Date(currentGenerationDate);
+          const newPeriodEndDate = new Date(newCycleStartDate);
+          newPeriodEndDate.setDate(newPeriodEndDate.getDate() + periodLength - 1);
+          
+          // Create the new automatic cycle for this connection
+          const newCycleData = {
+            userId: userId.toString(),
+            connectionId: connectionIdNum,
+            periodStartDate: newCycleStartDate,
+            periodEndDate: newPeriodEndDate,
+            cycleEndDate: undefined, // Will be set when cycle is manually ended
+            notes: `Auto-generated cycle ${cycleGenerationCount + 1} following ${averageCycleLength}-day pattern`,
+            mood: null,
+            symptoms: null,
+            flowIntensity: null
+          };
+
+          console.log(`Creating automatic cycle ${cycleGenerationCount + 1} for connection ${connectionIdNum}:`, {
+            startDate: newCycleStartDate.toISOString(),
+            endDate: newPeriodEndDate.toISOString(),
+            pattern: `${averageCycleLength}-day cycle`
+          });
+
+          try {
+            const newCycle = await storage.createMenstrualCycle(newCycleData);
+            console.log("✅ Created automatic cycle:", newCycle.id);
+            allCycles.push(newCycle);
+          } catch (error) {
+            console.error("❌ Error creating automatic cycle:", error);
+          }
+        } else {
+          console.log(`Cycle already exists for ${currentGenerationDate.toISOString()}, skipping`);
+        }
+
+        // Move to next cycle date
+        currentGenerationDate.setDate(currentGenerationDate.getDate() + averageCycleLength);
+        cycleGenerationCount++;
       }
     }
 
