@@ -1240,7 +1240,6 @@ export default function Calendar() {
                     connectionsToCheck,
                     cyclesLength: cycles.length,
                     cyclesLoading,
-                    willSkipNormalProcessing: dayStr === '2025-05-16',
                     availableCycles: cycles.map(c => ({ id: c.id, connectionId: c.connectionId }))
                   });
                   
