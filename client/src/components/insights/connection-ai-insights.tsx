@@ -651,8 +651,8 @@ function calculateCycleVariability(cycles: MenstrualCycle[]) {
   
   const lengths = [];
   for (let i = 1; i < cycles.length; i++) {
-    const current = new Date(cycles[i-1].startDate);
-    const previous = new Date(cycles[i].startDate);
+    const current = new Date(cycles[i-1].periodStartDate);
+    const previous = new Date(cycles[i].periodStartDate);
     const length = Math.floor((current.getTime() - previous.getTime()) / (1000 * 60 * 60 * 24));
     lengths.push(length);
   }
@@ -683,7 +683,7 @@ function calculateAverageCycleLength(cycles: MenstrualCycle[]): number {
 
 // Helper function to determine cycle phase
 function getCyclePhase(date: Date, cycle: MenstrualCycle): string {
-  const cycleStart = new Date(cycle.startDate);
+  const cycleStart = new Date(cycle.periodStartDate);
   const daysSinceStart = Math.floor((date.getTime() - cycleStart.getTime()) / (1000 * 60 * 60 * 24));
   
   if (daysSinceStart < 0) return 'luteal'; // Before this cycle
