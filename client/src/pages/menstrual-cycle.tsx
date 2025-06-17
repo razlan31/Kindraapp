@@ -1895,6 +1895,7 @@ export default function MenstrualCyclePage() {
           </div>
         )}
       </main>
+      <BottomNavigation />
     </div>
   );
 }
