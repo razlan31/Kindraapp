@@ -123,12 +123,12 @@ export default function MenstrualCyclePage() {
   const getCycleInfoForDay = (day: Date) => {
     const dayStr = format(day, 'yyyy-MM-dd');
     const activeCycles = filteredCycles.filter(cycle => {
-      const cycleStart = new Date(cycle.startDate);
+      const cycleStart = new Date(cycle.periodStartDate);
       const connection = trackableConnections.find(c => c.id === cycle.connectionId);
       if (!connection) return false;
 
-      const avgCycleLength = 28; // Default
-      const cycleEnd = cycle.endDate ? new Date(cycle.endDate) : addDays(cycleStart, avgCycleLength);
+      const avgCycleLength = 30; // Use 30-day default to match our test cycle
+      const cycleEnd = cycle.cycleEndDate ? new Date(cycle.cycleEndDate) : addDays(cycleStart, avgCycleLength - 1);
       
       return day >= cycleStart && day <= cycleEnd;
     });
