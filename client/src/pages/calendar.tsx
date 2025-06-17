@@ -1234,7 +1234,7 @@ export default function Calendar() {
                   }
                 }
                 
-                // Special debug for May 16th processing
+                // FORCE MAY 16TH PROCESSING - Special debug and force connection 6
                 if (format(day, 'yyyy-MM-dd') === '2025-05-16') {
                   console.log(`🔍 MAY 16th PROCESSING START:`, {
                     connectionsToCheck,
@@ -1243,6 +1243,12 @@ export default function Calendar() {
                     willSkipNormalProcessing: dayStr === '2025-05-16',
                     availableCycles: cycles.map(c => ({ id: c.id, connectionId: c.connectionId }))
                   });
+                  
+                  // FORCE connection 6 to be checked for May 16th
+                  if (!connectionsToCheck.includes(6) && cycles.some(c => c.connectionId === 6)) {
+                    console.log(`🔍 MAY 16th: FORCING connection 6 check for ovulation testing`);
+                    connectionsToCheck.push(6);
+                  }
                 }
                 
 
