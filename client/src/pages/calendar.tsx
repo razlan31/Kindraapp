@@ -1174,6 +1174,11 @@ export default function Calendar() {
               {calendarDays.map(day => {
                 const dayMoments = getMomentsForDay(day);
                 
+                // CRITICAL DEBUG: Track May 16th processing
+                if (format(day, 'yyyy-MM-dd') === '2025-05-16') {
+                  console.log(`🔍 MAY 16th: CALENDAR DAY PROCESSING START`);
+                }
+                
                 // Get milestones for this day
                 const dayMilestones = (milestones as any[])?.filter((milestone: any) => {
                   const milestoneDate = new Date(milestone.date);
