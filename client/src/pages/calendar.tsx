@@ -236,128 +236,80 @@ export default function Calendar() {
 
 
 
-  // Menstrual cycle calculation functions
+  // Menstrual cycle calculation functions - REWRITTEN FOR ACCURACY
   const getCyclePhaseForDay = (day: Date, connectionId: number | null) => {
     const dayStr = format(day, 'yyyy-MM-dd');
     
-    // CRITICAL FIX: If no cycles exist at all, return null immediately
-    if (!cycles || cycles.length === 0) {
-      if (dayStr === '2025-06-16') {
-        console.log(`🔍 June 16th returning null - no cycles exist (cycles.length: ${cycles.length})`);
-      }
+    // Early validation
+    if (!cycles || cycles.length === 0 || !connectionId) {
       return null;
     }
-    
-    // Debug logging for May 16th specifically
-    if (dayStr === '2025-05-16') {
-      console.log(`🔍 MAY 16th getCyclePhaseForDay called with connectionId: ${connectionId}, cycles.length: ${cycles.length}`);
-      console.log(`🔍 MAY 16th cycles data:`, cycles.map(c => ({
-        id: c.id,
-        connectionId: c.connectionId, 
-        start: format(new Date(c.periodStartDate), 'yyyy-MM-dd'),
-        end: c.cycleEndDate ? format(new Date(c.cycleEndDate), 'yyyy-MM-dd') : 'null'
-      })));
-      console.log(`🔍 MAY 16th relevantCycles for connection ${connectionId}:`, cycles.filter(c => c.connectionId === connectionId));
-    }
-    
-    if (!connectionId) {
-      if (dayStr === '2025-06-16') {
-        console.log(`🔍 June 16th returning null - no connectionId`);
-      }
-      return null;
-    }
-    
-
-    
-
-    
-    // SIMPLIFIED FILTERING: Always show cycles for all connections, filtering happens at display level
-    // This ensures cycle calculations work properly
     
     const relevantCycles = cycles.filter(cycle => cycle.connectionId === connectionId);
-    
-    // If no cycles exist for this connection, return null
     if (relevantCycles.length === 0) {
       return null;
     }
     
     // Find the cycle that contains this day
     for (const cycle of relevantCycles) {
-      const cycleStart = new Date(cycle.periodStartDate);
+      const periodStart = new Date(cycle.periodStartDate);
       const cycleEnd = cycle.cycleEndDate ? new Date(cycle.cycleEndDate) : null;
       
-      // Only process cycles with complete data
-      if (!cycleEnd || day < cycleStart || day > cycleEnd) {
+      if (!cycleEnd) continue;
+      
+      // Check if day is within this cycle using proper date comparison
+      if (day < periodStart || day > cycleEnd) {
         continue;
       }
       
-      // Calculate day of cycle (1-based)
-      const dayOfCycle = Math.floor((day.getTime() - cycleStart.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+      // Use differenceInDays for consistent calculation (like menstrual-cycle.tsx)
+      const dayOfCycle = differenceInDays(day, periodStart) + 1;
+      const totalCycleDays = differenceInDays(cycleEnd, periodStart) + 1;
       
-      // Calculate cycle length
-      const cycleLength = Math.floor((cycleEnd.getTime() - cycleStart.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-      
-      // Calculate period length 
+      // Period length calculation
       const periodEnd = cycle.periodEndDate ? new Date(cycle.periodEndDate) : null;
-      const periodLength = periodEnd ? Math.floor((periodEnd.getTime() - cycleStart.getTime()) / (1000 * 60 * 60 * 24)) + 1 : 5;
+      const periodDays = periodEnd ? differenceInDays(periodEnd, periodStart) + 1 : 5;
       
-      // Ovulation is 14 days before cycle end
-      // For May 1-30 cycle (30 days), ovulation should be day 16
-      const ovulationDay = cycleLength - 14;
+      // Standard ovulation: 14 days before cycle end
+      const ovulationDay = totalCycleDays - 14;
       
-      // Debug for May 16th specifically 
-      if (format(day, 'yyyy-MM-dd') === '2025-05-16') {
-        console.log(`🔍 MAY 16th DETAILED CALCULATION:`, {
+      // Debug logging for May 16th
+      if (dayStr === '2025-05-16') {
+        console.log(`🔍 MAY 16th FIXED CALCULATION:`, {
           dayOfCycle,
+          totalCycleDays,
+          periodDays,
           ovulationDay,
-          cycleLength,
-          periodLength,
-          'dayOfCycle === ovulationDay': dayOfCycle === ovulationDay,
-          'dayOfCycle <= periodLength': dayOfCycle <= periodLength,
-          'EXACT ovulation check': `${dayOfCycle} === ${ovulationDay} = ${dayOfCycle === ovulationDay}`,
-          'fertile window check': `${ovulationDay - 2} <= ${dayOfCycle} <= ${ovulationDay + 2}`,
-          'is in fertile window': dayOfCycle >= ovulationDay - 2 && dayOfCycle <= ovulationDay + 2,
-          'WHICH CONDITION WILL MATCH?': {
-            menstrual: dayOfCycle <= periodLength,
+          'Is EXACT ovulation?': dayOfCycle === ovulationDay,
+          'Is period?': dayOfCycle <= periodDays,
+          'All conditions': {
             exactOvulation: dayOfCycle === ovulationDay,
+            menstrual: dayOfCycle <= periodDays,
             fertileWindow: dayOfCycle >= ovulationDay - 2 && dayOfCycle <= ovulationDay + 2,
             follicular: dayOfCycle < ovulationDay,
             luteal: dayOfCycle > ovulationDay
           },
-          cycleStart: format(cycleStart, 'yyyy-MM-dd'),
-          cycleEnd: cycleEnd ? format(cycleEnd, 'yyyy-MM-dd') : 'null',
-          periodStart: format(new Date(cycle.periodStartDate), 'yyyy-MM-dd'),
-          periodEnd: cycle.periodEndDate ? format(new Date(cycle.periodEndDate), 'yyyy-MM-dd') : 'null'
+          dates: {
+            periodStart: format(periodStart, 'MM-dd'),
+            cycleEnd: format(cycleEnd, 'MM-dd'),
+            periodEnd: periodEnd ? format(periodEnd, 'MM-dd') : 'none'
+          }
         });
       }
       
-      // OVULATION-FIRST phase calculation - check exact ovulation day FIRST
-      if (dayOfCycle <= periodLength) {
-        if (format(day, 'yyyy-MM-dd') === '2025-05-16') {
-          console.log(`🩸 MAY 16th: MENSTRUAL phase (dayOfCycle ${dayOfCycle} <= periodLength ${periodLength})`);
-        }
-        return { phase: 'menstrual', day: dayOfCycle, cycle };
-      } else if (dayOfCycle === ovulationDay) {
-        // EXACT OVULATION DAY - highest priority
-        if (format(day, 'yyyy-MM-dd') === '2025-05-16') {
-          console.log(`🔵 MAY 16th: EXACT OVULATION phase (dayOfCycle ${dayOfCycle} === ovulationDay ${ovulationDay})`);
+      // CORRECTED LOGIC: Exact ovulation takes priority over all other phases
+      if (dayOfCycle === ovulationDay) {
+        if (dayStr === '2025-05-16') {
+          console.log(`🔵 MAY 16th: OVULATION CONFIRMED (day ${dayOfCycle} = ovulation day ${ovulationDay})`);
         }
         return { phase: 'ovulation', day: dayOfCycle, cycle, isOvulation: true };
+      } else if (dayOfCycle <= periodDays) {
+        return { phase: 'menstrual', day: dayOfCycle, cycle };
       } else if (dayOfCycle >= ovulationDay - 2 && dayOfCycle <= ovulationDay + 2) {
-        // FERTILE WINDOW (but not exact ovulation day)
-        if (format(day, 'yyyy-MM-dd') === '2025-05-16') {
-          console.log(`💜 MAY 16th: FERTILE phase (${ovulationDay - 2} <= ${dayOfCycle} <= ${ovulationDay + 2}) - NOT ovulation day`);
-        }
         return { phase: 'fertile', day: dayOfCycle, cycle, isOvulation: false };
       } else if (dayOfCycle < ovulationDay) {
-        if (format(day, 'yyyy-MM-dd') === '2025-05-16') {
-          console.log(`🌱 MAY 16th: FOLLICULAR phase (dayOfCycle ${dayOfCycle} < ovulationDay ${ovulationDay})`);
-        }
         return { phase: 'follicular', day: dayOfCycle, cycle };
       } else {
-        if (format(day, 'yyyy-MM-dd') === '2025-05-16') {
-          console.log(`🌙 MAY 16th: LUTEAL phase (dayOfCycle ${dayOfCycle} > ovulationDay ${ovulationDay})`);
-        }
         return { phase: 'luteal', day: dayOfCycle, cycle };
       }
     }
