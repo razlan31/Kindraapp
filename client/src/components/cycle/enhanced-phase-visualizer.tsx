@@ -25,6 +25,42 @@ interface PhaseVisualizerProps {
   };
 }
 
+// Helper function for relationship-focused dynamics
+const getRelationshipDynamics = (phase: string, connectionName: string): string[] => {
+  switch (phase) {
+    case 'menstrual':
+      return [
+        `${connectionName} values emotional intimacy and gentle support during this sensitive time`,
+        "Perfect opportunity for deeper conversations and quality time together",
+        "She may appreciate thoughtful gestures more than grand romantic displays"
+      ];
+    case 'follicular':
+      return [
+        `${connectionName} is open to new relationship experiences and adventures`,
+        "Ideal time for planning future activities and discussing relationship goals",
+        "Her increasing energy makes this perfect for meaningful connections"
+      ];
+    case 'fertile':
+      return [
+        `${connectionName} feels most confident and socially connected during this phase`,
+        "Natural time for romance, intimacy, and expressing feelings openly",
+        "Communication flows easily - perfect for important relationship talks"
+      ];
+    case 'luteal':
+      return [
+        `${connectionName} may need extra patience but also craves understanding`,
+        "Focus on consistent support rather than trying to 'fix' her mood",
+        "Small acts of kindness and reliability mean more than usual"
+      ];
+    default:
+      return [
+        `${connectionName} experiences unique emotional patterns throughout her cycle`,
+        "Staying attentive to her needs strengthens your connection",
+        "Open communication helps navigate all phases together"
+      ];
+  }
+};
+
 export function EnhancedPhaseVisualizer({ 
   currentPhase, 
   currentDay, 
@@ -110,16 +146,16 @@ export function EnhancedPhaseVisualizer({
               </div>
             </div>
 
-            {/* Top Recommendations */}
+            {/* Relationship Dynamics */}
             <div className="flex items-start gap-2">
               <Heart className="h-4 w-4 mt-0.5 flex-shrink-0" />
               <div className="flex-1">
-                <div className="font-medium text-sm mb-2">Personalized Recommendations</div>
+                <div className="font-medium text-sm mb-2">Relationship Dynamics</div>
                 <div className="grid gap-2">
-                  {currentPhase.recommendations.slice(0, 3).map((rec, index) => (
+                  {getRelationshipDynamics(currentPhase.phase, connectionName).slice(0, 3).map((dynamic, index) => (
                     <div key={index} className="text-xs bg-white/30 dark:bg-black/30 rounded-md px-3 py-2 flex items-center gap-2">
                       <div className="w-1.5 h-1.5 bg-current rounded-full opacity-70" />
-                      {rec}
+                      {dynamic}
                     </div>
                   ))}
                 </div>

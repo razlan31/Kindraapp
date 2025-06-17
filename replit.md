@@ -111,6 +111,13 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
+- June 17, 2025: Enhanced detailed/AI learning/insights functions to focus on relationship dynamics and emotional understanding
+  - Enhanced DetailedPhaseCard with relationship-focused insights including "How She Might Feel", "Relationship Impact", and "How to Approach & Support"
+  - Updated CycleLearningEngine to emphasize emotional pattern intelligence and relationship intelligence over technical metrics
+  - Enhanced EnhancedPhaseVisualizer to highlight relationship dynamics and connection strategies for each cycle phase
+  - All three components now provide phase-specific guidance on emotional support, timing for conversations, and approach strategies
+  - Shifted focus from purely medical/technical insights to practical relationship intelligence and emotional understanding
+
 - June 17, 2025: Enhanced visual hierarchy in cycle tracking displays by reducing opacity for less critical phases
   - Reduced follicular and luteal phases to 50% opacity across both cycle tracker and calendar views
   - Applied opacity to all visual elements: backgrounds, borders, text, and accent colors
