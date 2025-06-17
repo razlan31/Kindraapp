@@ -186,7 +186,7 @@ export default function Calendar() {
   });
 
   // Fetch menstrual cycles with aggressive cache invalidation
-  const { data: cycles = [], refetch: refetchCycles } = useQuery<MenstrualCycle[]>({
+  const { data: cycles = [], refetch: refetchCycles, isLoading: cyclesLoading } = useQuery<MenstrualCycle[]>({
     queryKey: ['/api/menstrual-cycles'],
     staleTime: 0,
     gcTime: 0,
@@ -1244,12 +1244,13 @@ export default function Calendar() {
                 
 
                 
-                // Process cycles normally - no skipping
-                const allowedConnectionIds = new Set(connectionsToCheck);
-                const filteredCycles = cycles.filter(cycle => allowedConnectionIds.has(cycle.connectionId));
-
-                // NUCLEAR OPTION: If no cycles exist at all, skip all cycle processing
-                if (!cycles || cycles.length === 0) {
+                // CRITICAL FIX: Don't process cycles while still loading
+                if (cyclesLoading) {
+                  if (format(day, 'yyyy-MM-dd') === '2025-05-16') {
+                    console.log(`🔍 MAY 16th: SKIPPING - cycles still loading`);
+                  }
+                  // Skip all cycle processing while loading
+                } else if (!cycles || cycles.length === 0) {
                   if (format(day, 'yyyy-MM-dd') === '2025-06-16') {
                     console.log('🔍 June 16th: NUCLEAR OPTION - No cycles exist, skipping all cycle processing');
                   }
