@@ -305,31 +305,49 @@ export default function Calendar() {
       // For May 1-30 cycle (30 days), ovulation should be day 16
       const ovulationDay = cycleLength - 14;
       
-      // Debug for May 16th and June 16th
-      if (format(day, 'yyyy-MM-dd') === '2025-05-16' || format(day, 'yyyy-MM-dd') === '2025-06-16') {
-        console.log(`🔍 ${format(day, 'yyyy-MM-dd')} calculation:`, {
+      // Debug for May 16th specifically 
+      if (format(day, 'yyyy-MM-dd') === '2025-05-16') {
+        console.log(`🔍 MAY 16th DETAILED CALCULATION:`, {
           dayOfCycle,
           ovulationDay,
           cycleLength,
           periodLength,
-          isOvulation: dayOfCycle === ovulationDay,
-          phase: dayOfCycle === ovulationDay ? 'ovulation' : 'other',
+          'dayOfCycle === ovulationDay': dayOfCycle === ovulationDay,
+          'dayOfCycle <= periodLength': dayOfCycle <= periodLength,
+          'fertile window check': `${ovulationDay - 2} <= ${dayOfCycle} <= ${ovulationDay + 2}`,
+          'is in fertile window': dayOfCycle >= ovulationDay - 2 && dayOfCycle <= ovulationDay + 2,
           cycleStart: format(cycleStart, 'yyyy-MM-dd'),
-          cycleEnd: cycleEnd ? format(cycleEnd, 'yyyy-MM-dd') : 'null'
+          cycleEnd: cycleEnd ? format(cycleEnd, 'yyyy-MM-dd') : 'null',
+          periodStart: format(new Date(cycle.periodStartDate), 'yyyy-MM-dd'),
+          periodEnd: cycle.periodEndDate ? format(new Date(cycle.periodEndDate), 'yyyy-MM-dd') : 'null'
         });
       }
       
       // Simple phase calculation with ovulation priority
       if (dayOfCycle <= periodLength) {
+        if (format(day, 'yyyy-MM-dd') === '2025-05-16') {
+          console.log(`🩸 MAY 16th: MENSTRUAL phase (dayOfCycle ${dayOfCycle} <= periodLength ${periodLength})`);
+        }
         return { phase: 'menstrual', day: dayOfCycle, cycle };
       } else if (dayOfCycle === ovulationDay) {
-        // PRIORITY: Ovulation day takes precedence over fertile window
+        if (format(day, 'yyyy-MM-dd') === '2025-05-16') {
+          console.log(`🔵 MAY 16th: OVULATION phase (dayOfCycle ${dayOfCycle} === ovulationDay ${ovulationDay})`);
+        }
         return { phase: 'ovulation', day: dayOfCycle, cycle };
       } else if (dayOfCycle >= ovulationDay - 2 && dayOfCycle <= ovulationDay + 2) {
+        if (format(day, 'yyyy-MM-dd') === '2025-05-16') {
+          console.log(`💜 MAY 16th: FERTILE phase (${ovulationDay - 2} <= ${dayOfCycle} <= ${ovulationDay + 2})`);
+        }
         return { phase: 'fertile', day: dayOfCycle, cycle, isOvulation: false };
       } else if (dayOfCycle < ovulationDay) {
+        if (format(day, 'yyyy-MM-dd') === '2025-05-16') {
+          console.log(`🌱 MAY 16th: FOLLICULAR phase (dayOfCycle ${dayOfCycle} < ovulationDay ${ovulationDay})`);
+        }
         return { phase: 'follicular', day: dayOfCycle, cycle };
       } else {
+        if (format(day, 'yyyy-MM-dd') === '2025-05-16') {
+          console.log(`🌙 MAY 16th: LUTEAL phase (dayOfCycle ${dayOfCycle} > ovulationDay ${ovulationDay})`);
+        }
         return { phase: 'luteal', day: dayOfCycle, cycle };
       }
     }
@@ -1185,23 +1203,7 @@ export default function Calendar() {
                   );
                 }
                 
-                // DIRECT FIX: Override May 16th to show ovulation
                 const dayStr = format(day, 'yyyy-MM-dd');
-                if (dayStr === '2025-05-16') {
-                  console.log(`🔵 DIRECT OVERRIDE: May 16th forcing ovulation display`);
-                  const mayCycle = cycles.find(c => c.connectionId === 6);
-                  if (mayCycle) {
-                    cycleDisplay = {
-                      color: 'bg-blue-100 dark:bg-blue-900/30 border-blue-300 dark:border-blue-700',
-                      indicator: '🔵',
-                      title: 'Ovulation Day 16',
-                      description: 'Ovulation'
-                    };
-                    console.log(`🔵 DIRECT OVERRIDE: Applied blue ovulation display for May 16th`);
-                  } else {
-                    console.log(`🔵 DIRECT OVERRIDE: No May cycle found for connection 6`);
-                  }
-                }
                 
                 // Debug for ANY day in May 2025
                 if (format(day, 'yyyy-MM') === '2025-05') {
