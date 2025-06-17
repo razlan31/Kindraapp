@@ -18,7 +18,7 @@ import { ChevronLeft, ChevronRight, Heart, Calendar as CalendarIcon, Plus, Eye, 
 import { useAuth } from "@/contexts/auth-context";
 import { useModal } from "@/contexts/modal-context";
 import { useRelationshipFocus } from "@/contexts/relationship-focus-context";
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, getDay, startOfWeek, endOfWeek, addDays, startOfDay, endOfDay } from "date-fns";
+import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, getDay, startOfWeek, endOfWeek, addDays, startOfDay, endOfDay, differenceInDays } from "date-fns";
 import type { Moment, Connection, MenstrualCycle } from "@shared/schema";
 import { EntryDetailModal } from "@/components/modals/entry-detail-modal";
 import { PlanModal } from "@/components/modals/plan-modal";
