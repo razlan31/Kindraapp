@@ -111,6 +111,12 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
+- June 17, 2025: Enhanced visual hierarchy in cycle tracking displays by reducing opacity for less critical phases
+  - Reduced follicular and luteal phases to 50% opacity across both cycle tracker and calendar views
+  - Applied opacity to all visual elements: backgrounds, borders, text, and accent colors
+  - Maintained full visibility for important phases (menstrual, fertile, ovulation) to emphasize user-critical information
+  - Created consistent visual hierarchy that guides user attention to the most relevant cycle phases
+
 - June 17, 2025: MAJOR FEATURE CHANGE - Implemented dynamic pattern inheritance system with perpetual cycle creation
   - Completely removed all prediction code from frontend (menstrual-cycle.tsx)
   - Replaced prediction system with intelligent pattern inheritance system
