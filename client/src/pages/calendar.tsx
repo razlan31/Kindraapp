@@ -137,29 +137,19 @@ function MenstrualCycleTracker() {
   });
 
   const getCurrentCycle = () => {
-    if (!cycles.length) return null;
+    // Filter cycles based on selected connections (using calendar's variable)
+    const filteredCycles = selectedConnectionIds.length === 0 ? cycles : cycles.filter(cycle => {
+      return selectedConnectionIds.some(selectedId => {
+        if (selectedId === 0) {
+          return cycle.connectionId === null; // User's cycles
+        } else {
+          return cycle.connectionId === selectedId; // Connection's cycles
+        }
+      });
+    });
     
-    const today = new Date();
-    const todayStart = startOfDay(today);
-    
-    // Find the cycle that today falls within
-    for (const cycle of cycles) {
-      const cycleStart = startOfDay(new Date(cycle.periodStartDate));
-      let cycleEnd: Date;
-      
-      if (cycle.cycleEndDate) {
-        cycleEnd = startOfDay(new Date(cycle.cycleEndDate));
-      } else {
-        // For cycles without end date, assume 28-day cycle
-        cycleEnd = addDays(cycleStart, 27); // 28 days total (0-27)
-      }
-      
-      if (todayStart >= cycleStart && todayStart <= cycleEnd) {
-        return cycle;
-      }
-    }
-    
-    return null;
+    // Find the current cycle (one without end date) - same logic as cycle tracker
+    return filteredCycles.find(cycle => !cycle.cycleEndDate);
   };
 
   const getDaysSinceStart = (startDate: string) => {
