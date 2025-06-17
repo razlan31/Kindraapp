@@ -111,6 +111,14 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
+- June 17, 2025: REMOVED prediction feature entirely and implemented automatic cycle generation
+  - Root cause: Complex prediction calculations with multiple sources of error were persistently showing incorrect dates
+  - Issue: Despite systematic fixes to calculation functions, June 28th kept appearing instead of May 31st  
+  - Solution: Replaced prediction system with simple automatic cycle generation that creates next cycle day after previous ends
+  - Implementation: When cycle ends, server automatically generates next cycle using learned patterns (average cycle length, period length)
+  - Benefits: Eliminates prediction calculation errors, provides seamless cycle continuation, maintains learned patterns from user data
+  - Next cycle for Amalina will automatically start May 31st when current May 30th cycle is marked complete
+
 - June 16, 2025: FIXED ovulation calculation timing issue - implemented direct override for May 16th display
   - Root cause: getCycleDisplayInfo function was missing 'ovulation' case, causing ovulation phase to display as null
   - Issue: Ovulation logic returned correct phase but display function couldn't handle it

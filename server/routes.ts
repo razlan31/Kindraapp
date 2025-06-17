@@ -1464,10 +1464,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const updatedCycle = await storage.updateMenstrualCycle(cycleId, req.body);
       
-      // Auto-generate next cycle if end date is set and this is a newly completed cycle
-      if (req.body.endDate && !cycle.endDate) {
+      // Auto-generate next cycle if cycle end date is set and this is a newly completed cycle
+      if (req.body.cycleEndDate && !cycle.cycleEndDate) {
         try {
-          await generateNextCycle(userId, updatedCycle);
+          await createAutomaticNextCycle(userId, updatedCycle);
         } catch (error) {
           console.error('Error generating next cycle:', error);
           // Don't fail the update if next cycle generation fails
@@ -3414,6 +3414,76 @@ Format as a brief analysis (2-3 sentences) focusing on what their data actually 
       res.status(500).json({ message: "Server error deleting conversation" });
     }
   });
+
+  // Function to automatically create next cycle when previous cycle ends
+  async function createAutomaticNextCycle(userId: string, completedCycle: any) {
+    console.log(`🔄 Auto-generating next cycle for user ${userId} after cycle ${completedCycle.id}`);
+    
+    // Get all cycles for this connection to calculate patterns
+    const allCycles = await storage.getMenstrualCycles(userId);
+    const connectionCycles = allCycles.filter(c => c.connectionId === completedCycle.connectionId);
+    
+    if (connectionCycles.length === 0) return;
+    
+    // Calculate average cycle length from previous cycles
+    const completeCycles = connectionCycles.filter(c => c.cycleEndDate && c.periodStartDate);
+    let avgCycleLength = 30; // Default
+    
+    if (completeCycles.length > 0) {
+      const cycleLengths = completeCycles.map(cycle => {
+        const start = new Date(cycle.periodStartDate);
+        const end = new Date(cycle.cycleEndDate!);
+        return Math.floor((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+      });
+      avgCycleLength = Math.round(cycleLengths.reduce((a, b) => a + b, 0) / cycleLengths.length);
+    }
+    
+    // Calculate average period length
+    let avgPeriodLength = 5; // Default
+    const cyclesWithPeriod = connectionCycles.filter(c => c.periodEndDate && c.periodStartDate);
+    if (cyclesWithPeriod.length > 0) {
+      const periodLengths = cyclesWithPeriod.map(cycle => {
+        const start = new Date(cycle.periodStartDate);
+        const end = new Date(cycle.periodEndDate!);
+        return Math.floor((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+      });
+      avgPeriodLength = Math.round(periodLengths.reduce((a, b) => a + b, 0) / periodLengths.length);
+    }
+    
+    // Next cycle starts the day after the previous cycle ends
+    const cycleEndDate = new Date(completedCycle.cycleEndDate);
+    const nextCycleStart = new Date(cycleEndDate);
+    nextCycleStart.setDate(nextCycleStart.getDate() + 1);
+    
+    // Calculate next cycle's period end and cycle end
+    const nextPeriodEnd = new Date(nextCycleStart);
+    nextPeriodEnd.setDate(nextPeriodEnd.getDate() + avgPeriodLength - 1);
+    
+    const nextCycleEnd = new Date(nextCycleStart);
+    nextCycleEnd.setDate(nextCycleEnd.getDate() + avgCycleLength - 1);
+    
+    // Create the next cycle
+    const nextCycleData = {
+      userId: userId,
+      connectionId: completedCycle.connectionId,
+      periodStartDate: nextCycleStart,
+      periodEndDate: nextPeriodEnd,
+      cycleEndDate: nextCycleEnd,
+      isActive: true,
+      isPredicted: false,
+      notes: `Auto-generated based on ${avgCycleLength}-day cycle pattern`,
+      patternVersion: 1
+    };
+    
+    try {
+      const newCycle = await storage.createMenstrualCycle(nextCycleData);
+      console.log(`✅ Auto-generated next cycle: ${newCycle.id} starting ${nextCycleStart.toISOString().split('T')[0]}`);
+      return newCycle;
+    } catch (error) {
+      console.error('Failed to create automatic next cycle:', error);
+      throw error;
+    }
+  }
 
   const httpServer = createServer(app);
   // Advanced cycle learning and analysis endpoint
