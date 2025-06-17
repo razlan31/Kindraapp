@@ -32,6 +32,36 @@ interface CycleLearningEngineProps {
   totalCycles: number;
 }
 
+// Helper function for relationship-focused AI insights
+const getRelationshipInsights = (data: CycleLearningData, connectionName: string): string[] => {
+  const insights = [];
+  
+  // Cycle regularity insight for relationship planning
+  if (data.cycleVariability < 0.1) {
+    insights.push(`${connectionName}'s highly regular cycles make it easier to plan special moments and anticipate her emotional needs with confidence.`);
+  } else if (data.cycleVariability > 0.3) {
+    insights.push(`${connectionName}'s cycles vary significantly - staying flexible and responsive to her changing needs will strengthen your connection.`);
+  }
+  
+  // Emotional pattern insights
+  const moodConsistency = data.moodPatterns.reduce((avg, mood) => avg + mood.consistency, 0) / data.moodPatterns.length;
+  if (moodConsistency > 0.7) {
+    insights.push(`${connectionName} shows consistent emotional patterns - you can reliably anticipate when she might need extra support or feel most energetic.`);
+  } else {
+    insights.push(`${connectionName}'s emotional patterns vary - focusing on daily check-ins and open communication will help you stay connected.`);
+  }
+  
+  // Relationship timing insights
+  insights.push(`Based on her ${data.averageCycleLength}-day cycles, plan intimate conversations and important decisions during her follicular and ovulation phases for best reception.`);
+  
+  // Support strategy insight
+  if (data.dataQuality > 0.8) {
+    insights.push(`With ${Math.round(data.dataQuality * 100)}% data quality, you have reliable insights to support ${connectionName} more effectively throughout her cycle.`);
+  }
+  
+  return insights.slice(0, 3); // Return top 3 insights
+};
+
 export function CycleLearningEngine({ learningData, connectionName, totalCycles }: CycleLearningEngineProps) {
   const getConfidenceColor = (confidence: number) => {
     if (confidence >= 0.8) return 'text-green-600 bg-green-50';
@@ -104,33 +134,35 @@ export function CycleLearningEngine({ learningData, connectionName, totalCycles 
           />
         </div>
 
-        {/* Symptom Patterns */}
+        {/* Emotional Pattern Intelligence */}
         <div className="space-y-3">
           <h4 className="font-medium flex items-center gap-2">
             <Activity className="h-4 w-4" />
-            Symptom Intelligence
+            Emotional Pattern Intelligence
           </h4>
           <div className="space-y-2">
-            {learningData.symptoms.slice(0, 2).map((symptomData, index) => (
+            {learningData.moodPatterns.map((moodData, index) => (
               <div key={index} className="flex justify-between items-center text-sm">
-                <span className="capitalize">{symptomData.phase} Phase</span>
-                <div className="flex gap-1">
-                  {symptomData.commonSymptoms.slice(0, 2).map((symptom, i) => (
-                    <Badge key={i} variant="secondary" className="text-xs">
-                      {symptom}
-                    </Badge>
-                  ))}
+                <span className="capitalize">{moodData.phase} Phase</span>
+                <div className="flex items-center gap-2">
+                  <Badge variant="secondary" className="text-xs">
+                    {moodData.averageMood} energy
+                  </Badge>
+                  <div className="flex items-center gap-1">
+                    <div className="w-2 h-2 rounded-full bg-green-500" style={{ opacity: moodData.consistency }}></div>
+                    <span className="text-xs text-muted-foreground">{Math.round(moodData.consistency * 100)}%</span>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Personalized Insights */}
+        {/* Relationship Intelligence */}
         <div className="space-y-3">
-          <h4 className="font-medium">AI Insights</h4>
+          <h4 className="font-medium">Relationship Intelligence</h4>
           <div className="space-y-2">
-            {learningData.personalizedInsights.slice(0, 2).map((insight, index) => (
+            {getRelationshipInsights(learningData, connectionName).map((insight, index) => (
               <div key={index} className="text-sm bg-white/50 dark:bg-black/50 rounded p-2 border-l-2 border-purple-400">
                 {insight}
               </div>

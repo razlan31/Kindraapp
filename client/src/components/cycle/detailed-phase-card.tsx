@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Lightbulb, Heart, Activity, Calendar } from 'lucide-react';
+import { Lightbulb, Heart, Activity, Calendar, Users } from 'lucide-react';
 
 interface DetailedPhaseCardProps {
   phaseData: {
@@ -19,6 +19,72 @@ interface DetailedPhaseCardProps {
   cycleLength: number;
   connectionName?: string;
 }
+
+// Helper functions for relationship-focused insights
+const getEmotionalState = (phase: string, connectionName?: string): string => {
+  const name = connectionName || "She";
+  switch (phase) {
+    case 'menstrual':
+      return `${name} may feel emotionally sensitive and need extra comfort. Physical discomfort might make her prefer quiet, intimate moments and gentle support.`;
+    case 'follicular':
+      return `${name} is likely feeling renewed energy and optimism. Her mood is generally lifting, and she may be more open to new experiences and deeper conversations.`;
+    case 'fertile':
+      return `${name} is at her peak energy and confidence. She may feel more social, attractive, and emotionally connected. This is often when she feels most herself.`;
+    case 'luteal':
+      return `${name} may experience mood fluctuations and increased sensitivity. She might feel more introspective and need space to process emotions while craving understanding.`;
+    default:
+      return `${name} is experiencing her natural cycle rhythms with unique emotional patterns.`;
+  }
+};
+
+const getRelationshipImpact = (phase: string): string => {
+  switch (phase) {
+    case 'menstrual':
+      return "This is a time for deeper emotional connection. She may crave reassurance and understanding rather than high-energy activities or social events.";
+    case 'follicular':
+      return "This is an excellent time for planning activities together, having important conversations, and exploring new aspects of your relationship.";
+    case 'fertile':
+      return "Communication flows easily, and she may be more receptive to romance and intimacy. This is an ideal time for deeper connection and important relationship discussions.";
+    case 'luteal':
+      return "She may be more critical of herself and the relationship, but this often comes from caring deeply. Small irritations might feel bigger than usual.";
+    default:
+      return "Every phase brings opportunities for deeper connection and understanding through attentive support.";
+  }
+};
+
+const getApproachStrategies = (phase: string): string[] => {
+  switch (phase) {
+    case 'menstrual':
+      return [
+        "Be extra attentive and patient with her needs",
+        "Offer comfort items like favorite foods or warm blankets",
+        "Listen actively and validate feelings without trying to 'fix'"
+      ];
+    case 'follicular':
+      return [
+        "Take advantage of her increased energy for fun activities",
+        "Plan new experiences and adventures together",
+        "Engage in meaningful conversations about your future"
+      ];
+    case 'fertile':
+      return [
+        "Embrace spontaneous romantic moments together",
+        "Plan special date nights or meaningful occasions",
+        "Express appreciation and desire openly"
+      ];
+    case 'luteal':
+      return [
+        "Practice extra patience and avoid taking things personally",
+        "Provide consistent, reliable support without overwhelming",
+        "Focus on gentle affection and understanding"
+      ];
+    default:
+      return [
+        "Stay attentive to her changing needs",
+        "Communicate openly and with empathy"
+      ];
+  }
+};
 
 export function DetailedPhaseCard({ phaseData, currentDay, cycleLength, connectionName }: DetailedPhaseCardProps) {
   const progressPercentage = (currentDay / cycleLength) * 100;
@@ -89,24 +155,33 @@ export function DetailedPhaseCard({ phaseData, currentDay, cycleLength, connecti
           </div>
         </div>
 
-        {/* Hormonal Profile */}
+        {/* How She Might Feel */}
         <div className="flex items-start gap-2">
-          <Activity className="h-4 w-4 mt-0.5 flex-shrink-0" />
+          <Heart className="h-4 w-4 mt-0.5 flex-shrink-0" />
           <div>
-            <div className="font-medium text-sm">Hormonal Profile</div>
-            <div className="text-sm opacity-75">{phaseData.hormonalProfile}</div>
+            <div className="font-medium text-sm">How {connectionName} Might Feel</div>
+            <div className="text-sm opacity-75">{getEmotionalState(phaseData.phase, connectionName)}</div>
           </div>
         </div>
 
-        {/* Phase-specific Recommendations */}
+        {/* Relationship Impact */}
+        <div className="flex items-start gap-2">
+          <Users className="h-4 w-4 mt-0.5 flex-shrink-0" />
+          <div>
+            <div className="font-medium text-sm">Relationship Impact</div>
+            <div className="text-sm opacity-75">{getRelationshipImpact(phaseData.phase)}</div>
+          </div>
+        </div>
+
+        {/* How to Approach & Support */}
         <div className="flex items-start gap-2">
           <Lightbulb className="h-4 w-4 mt-0.5 flex-shrink-0" />
           <div className="space-y-1">
-            <div className="font-medium text-sm">Recommendations</div>
+            <div className="font-medium text-sm">How to Approach & Support</div>
             <div className="grid grid-cols-1 gap-1">
-              {phaseData.recommendations.slice(0, 2).map((rec, index) => (
+              {getApproachStrategies(phaseData.phase).map((strategy, index) => (
                 <div key={index} className="text-xs bg-white/30 dark:bg-black/30 rounded px-2 py-1">
-                  {rec}
+                  {strategy}
                 </div>
               ))}
             </div>
