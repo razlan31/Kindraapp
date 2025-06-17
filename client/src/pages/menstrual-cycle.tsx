@@ -1002,14 +1002,26 @@ export default function MenstrualCyclePage() {
               
               // Find active cycle - either no end date, or current date is within the cycle period
               const currentCycle = personCycles.find(cycle => {
-                if (!cycle.cycleEndDate) return true; // No end date means actively ongoing
-                
                 const today = new Date();
                 const startDate = new Date(cycle.periodStartDate);
-                const endDate = new Date(cycle.cycleEndDate);
                 
-                // Check if today is within the cycle period
-                return today >= startDate && today <= endDate;
+                console.log(`🔍 Checking cycle ${cycle.id}:`, {
+                  startDate: startDate.toISOString(),
+                  cycleEndDate: cycle.cycleEndDate,
+                  today: today.toISOString(),
+                  hasEndDate: !!cycle.cycleEndDate
+                });
+                
+                if (!cycle.cycleEndDate) {
+                  console.log(`✅ Cycle ${cycle.id} active (no end date)`);
+                  return true; // No end date means actively ongoing
+                }
+                
+                const endDate = new Date(cycle.cycleEndDate);
+                const isWithinRange = today >= startDate && today <= endDate;
+                console.log(`🔍 Cycle ${cycle.id} range check:`, { isWithinRange });
+                
+                return isWithinRange;
               });
               const avgCycleLength = calculateCycleLength(personCycles);
               const currentDay = currentCycle ? differenceInDays(new Date(), new Date(currentCycle.periodStartDate)) + 1 : 0;
