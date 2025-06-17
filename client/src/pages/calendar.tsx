@@ -154,7 +154,7 @@ export default function MenstrualCyclePage() {
 
       return {
         color: phaseColors[phaseInfo.phase as keyof typeof phaseColors] || '',
-        indicator: phaseInfo.isOvulation ? '🥚' : (phaseInfo.phase === 'menstrual' ? '🔴' : ''),
+        indicator: phaseInfo.isOvulation ? '🔵' : (phaseInfo.phase === 'menstrual' ? '🔴' : ''),
         title: `${connection.name}`,
         description: `${phaseInfo.phase} (Day ${phaseInfo.day})`
       };
