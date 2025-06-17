@@ -1247,32 +1247,42 @@ export default function Calendar() {
                 // CRITICAL FIX: Don't process cycles while still loading
                 if (cyclesLoading) {
                   if (format(day, 'yyyy-MM-dd') === '2025-05-16') {
-                    console.log(`🔍 MAY 16th: SKIPPING - cycles still loading`);
+                    console.log(`🔍 MAY 16th: SKIPPING - cycles still loading (cyclesLoading: ${cyclesLoading})`);
                   }
                   // Skip all cycle processing while loading
-                } else if (!cycles || cycles.length === 0) {
-                  if (format(day, 'yyyy-MM-dd') === '2025-06-16') {
-                    console.log('🔍 June 16th: NUCLEAR OPTION - No cycles exist, skipping all cycle processing');
-                  }
-                  // Don't process any cycle phases at all
                 } else {
-                  // Process each connection that has cycles
-                  for (const connectionId of connectionsToCheck) {
-                    if (format(day, 'yyyy-MM-dd') === '2025-05-16') {
-                      console.log(`🔍 MAY 16th: About to call getCyclePhaseForDay with connectionId ${connectionId}`);
+                  // Process cycles normally - loading is complete
+                  if (format(day, 'yyyy-MM-dd') === '2025-05-16') {
+                    console.log(`🔍 MAY 16th: PROCESSING - cycles loaded (cyclesLoading: ${cyclesLoading}, cycles.length: ${cycles.length})`);
+                  }
+
+                  const allowedConnectionIds = new Set(connectionsToCheck);
+                  const filteredCycles = cycles.filter(cycle => allowedConnectionIds.has(cycle.connectionId));
+
+                  if (!cycles || cycles.length === 0) {
+                    if (format(day, 'yyyy-MM-dd') === '2025-06-16') {
+                      console.log('🔍 June 16th: NUCLEAR OPTION - No cycles exist, skipping all cycle processing');
                     }
-                    
-                    // Check if this connection has a cycle phase for this day
-                    const phaseInfo = getCyclePhaseForDay(day, connectionId);
-                    
-                    if (format(day, 'yyyy-MM-dd') === '2025-05-16') {
-                      console.log(`🔍 MAY 16th: getCyclePhaseForDay returned:`, phaseInfo);
-                    }
-                    
-                    if (phaseInfo) {
-                      const connection = connections.find(c => c.id === connectionId);
-                      if (connection) {
-                        cyclePhases.push({ ...phaseInfo, connection });
+                    // Don't process any cycle phases at all
+                  } else {
+                    // Process each connection that has cycles
+                    for (const connectionId of connectionsToCheck) {
+                      if (format(day, 'yyyy-MM-dd') === '2025-05-16') {
+                        console.log(`🔍 MAY 16th: About to call getCyclePhaseForDay with connectionId ${connectionId}`);
+                      }
+                      
+                      // Check if this connection has a cycle phase for this day
+                      const phaseInfo = getCyclePhaseForDay(day, connectionId);
+                      
+                      if (format(day, 'yyyy-MM-dd') === '2025-05-16') {
+                        console.log(`🔍 MAY 16th: getCyclePhaseForDay returned:`, phaseInfo);
+                      }
+                      
+                      if (phaseInfo) {
+                        const connection = connections.find(c => c.id === connectionId);
+                        if (connection) {
+                          cyclePhases.push({ ...phaseInfo, connection });
+                        }
                       }
                     }
                   }
