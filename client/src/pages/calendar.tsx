@@ -131,7 +131,7 @@ const getCycleDisplayInfo = (phaseInfo: any) => {
   }
 };
 
-function MenstrualCycleTracker() {
+function MenstrualCycleTracker({ selectedConnectionIds }: { selectedConnectionIds: number[] }) {
   const { data: cycles = [], isLoading } = useQuery<MenstrualCycle[]>({
     queryKey: ['/api/menstrual-cycles'],
   });
@@ -1627,7 +1627,7 @@ export default function Calendar() {
 
         {/* Menstrual Cycle Tracker */}
         <section className="px-3 mb-2">
-          <MenstrualCycleTracker />
+          <MenstrualCycleTracker selectedConnectionIds={selectedConnectionIds} />
         </section>
       </main>
 
