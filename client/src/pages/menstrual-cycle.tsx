@@ -858,14 +858,12 @@ export default function MenstrualCyclePage() {
   };
 
   const getNextPredictedDate = () => {
-    const avgLength = getAverageCycleLength();
     const lastCycle = getPastCycles()[0];
     
-    if (!avgLength || !lastCycle?.cycleEndDate) return null;
+    if (!lastCycle?.cycleEndDate) return null;
     
-    // Predict next cycle start (average cycle is ~28 days from start to start)
-    const avgCycleLength = avgLength + 21; // Assuming ~21 day luteal phase
-    return addDays(new Date(lastCycle.periodStartDate), avgCycleLength);
+    // FIXED: Next cycle starts 1 day after the last cycle ends
+    return addDays(new Date(lastCycle.cycleEndDate), 1);
   };
 
   // Calendar helpers
