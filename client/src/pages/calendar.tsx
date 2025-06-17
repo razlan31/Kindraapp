@@ -90,7 +90,7 @@ export default function MenstrualCyclePage() {
 
     const avgCycleLength = cycleLengths.length > 0 
       ? Math.round(cycleLengths.reduce((a, b) => a + b, 0) / cycleLengths.length)
-      : 30; // Use 30-day default to match our test cycle
+      : 30; // Default to 30 to match test cycle
 
     // Find the cycle that this day belongs to
     for (const cycle of sortedCycles) {
@@ -127,7 +127,7 @@ export default function MenstrualCyclePage() {
       const connection = trackableConnections.find(c => c.id === cycle.connectionId);
       if (!connection) return false;
 
-      const avgCycleLength = 30; // Use 30-day default to match our test cycle
+      const avgCycleLength = 30; // Default to match test cycle
       const cycleEnd = cycle.cycleEndDate ? new Date(cycle.cycleEndDate) : addDays(cycleStart, avgCycleLength - 1);
       
       return day >= cycleStart && day <= cycleEnd;
