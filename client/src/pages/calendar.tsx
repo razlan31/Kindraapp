@@ -262,9 +262,14 @@ export default function Calendar() {
         continue;
       }
       
+      // CRITICAL FIX: Normalize dates to start of day to avoid timezone issues
+      const normalizedDay = startOfDay(day);
+      const normalizedPeriodStart = startOfDay(periodStart);
+      const normalizedCycleEnd = startOfDay(cycleEnd);
+      
       // Use differenceInDays for consistent calculation (like menstrual-cycle.tsx)
-      const dayOfCycle = differenceInDays(day, periodStart) + 1;
-      const totalCycleDays = differenceInDays(cycleEnd, periodStart) + 1;
+      const dayOfCycle = differenceInDays(normalizedDay, normalizedPeriodStart) + 1;
+      const totalCycleDays = differenceInDays(normalizedCycleEnd, normalizedPeriodStart) + 1;
       
       // Period length calculation
       const periodEnd = cycle.periodEndDate ? new Date(cycle.periodEndDate) : null;
