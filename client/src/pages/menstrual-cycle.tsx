@@ -142,7 +142,7 @@ const getDetailedCyclePhase = (
       return {
         phase: "follicular",
         subPhase: "early_follicular",
-        color: "bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-600 opacity-75",
+        color: "bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-600 opacity-50",
         description: "Early follicular phase",
         emoji: "🌱",
         dayRange: `Days ${periodLength + 1}-${periodLength + 3}`,
@@ -153,7 +153,7 @@ const getDetailedCyclePhase = (
       return {
         phase: "follicular",
         subPhase: "late_follicular",
-        color: "bg-green-100 dark:bg-green-900/30 border-green-300 dark:border-green-600 opacity-75",
+        color: "bg-green-100 dark:bg-green-900/30 border-green-300 dark:border-green-600 opacity-50",
         description: "Late follicular phase",
         emoji: "🌿",
         dayRange: `Days ${periodLength + 4}-${follicularEnd}`,
@@ -207,7 +207,7 @@ const getDetailedCyclePhase = (
     return {
       phase: "luteal",
       subPhase: "early_luteal",
-      color: "bg-purple-50 dark:bg-purple-900/20 border-purple-200 dark:border-purple-600 opacity-75",
+      color: "bg-purple-50 dark:bg-purple-900/20 border-purple-200 dark:border-purple-600 opacity-50",
       description: "Early luteal phase",
       emoji: "🌙",
       dayRange: `Days ${ovulationDay + 3}-${midLuteal}`,
@@ -218,7 +218,7 @@ const getDetailedCyclePhase = (
     return {
       phase: "luteal",
       subPhase: "mid_luteal",
-      color: "bg-purple-100 dark:bg-purple-900/30 border-purple-300 dark:border-purple-600 opacity-60",
+      color: "bg-purple-100 dark:bg-purple-900/30 border-purple-300 dark:border-purple-600 opacity-50",
       description: "Mid luteal phase",
       emoji: "🌕",
       dayRange: `Days ${midLuteal + 1}-${cycleLength - 3}`,
