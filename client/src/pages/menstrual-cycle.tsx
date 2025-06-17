@@ -246,10 +246,13 @@ const predictNextCycles = (lastCycle: MenstrualCycle, avgCycleLength: number, nu
   isNext: boolean;
 }> => {
   const predictions = [];
-  const lastStartDate = new Date(lastCycle.periodStartDate!);
+  
+  // FIXED: Start from the cycle end date, not the start date
+  let baseDate = lastCycle.cycleEndDate ? new Date(lastCycle.cycleEndDate) : new Date(lastCycle.periodStartDate!);
   
   for (let i = 1; i <= numberOfCycles; i++) {
-    const nextStartDate = addDays(lastStartDate, avgCycleLength * i);
+    // FIXED: Next cycle starts 1 day after the previous cycle ends
+    const nextStartDate = addDays(baseDate, 1);
     const ovulationDate = addDays(nextStartDate, calculateOvulationDay(avgCycleLength) - 1);
     
     predictions.push({
@@ -258,6 +261,9 @@ const predictNextCycles = (lastCycle: MenstrualCycle, avgCycleLength: number, nu
       phase: i === 1 ? "Next Period" : `Period in ${i} cycles`,
       isNext: i === 1
     });
+    
+    // Update base date for next iteration (cycle end = start + cycle length - 1)
+    baseDate = addDays(nextStartDate, avgCycleLength - 1);
   }
   
   return predictions;
