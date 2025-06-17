@@ -204,67 +204,7 @@ export default function MenstrualCyclePage() {
     return name.charAt(0).toUpperCase();
   };
 
-  // Enhanced cycle phase detection with detailed sub-phases
-  const getCyclePhaseForDay = (day: Date, connectionId: number) => {
-    const connectionCycles = cycles.filter(c => c.connectionId === connectionId);
-    if (connectionCycles.length === 0) return null;
 
-    const sortedCycles = [...connectionCycles].sort((a, b) => 
-      new Date(a.periodStartDate).getTime() - new Date(b.periodStartDate).getTime()
-    );
-
-    // Find the cycle that this day belongs to
-    for (const cycle of sortedCycles) {
-      const cycleStart = new Date(cycle.periodStartDate);
-      let cycleEnd: Date;
-      
-      if (cycle.cycleEndDate) {
-        cycleEnd = new Date(cycle.cycleEndDate);
-      } else {
-        // For active cycles, calculate expected end based on average cycle length
-        const avgCycleLength = calculateCycleLength(connectionCycles) || 28;
-        cycleEnd = addDays(cycleStart, avgCycleLength - 1);
-      }
-      
-      if (day >= cycleStart && day <= cycleEnd) {
-        // CRITICAL FIX: Normalize dates to start of day to avoid timezone issues (same as calendar.tsx)
-        const normalizedDay = startOfDay(day);
-        const normalizedCycleStart = startOfDay(cycleStart);
-        
-        const dayInCycle = differenceInDays(normalizedDay, normalizedCycleStart) + 1;
-        const periodEnd = cycle.periodEndDate ? new Date(cycle.periodEndDate) : addDays(cycleStart, 4);
-        
-        // Calculate cycle length for detailed phase analysis
-        const cycleLength = cycle.cycleEndDate ? 
-          differenceInDays(new Date(cycle.cycleEndDate), cycleStart) + 1 : 
-          (calculateCycleLength(connectionCycles) || 28);
-        
-        const periodLength = cycle.periodEndDate ? 
-          differenceInDays(new Date(cycle.periodEndDate), cycleStart) + 1 : 5;
-        
-        // Get detailed phase information
-        const detailedPhase = getDetailedCyclePhase(
-          dayInCycle, 
-          cycleLength, 
-          periodLength,
-          connectionCycles,
-          [], // symptoms - could be added later
-          cycle.mood
-        );
-        
-        return { 
-          phase: detailedPhase.phase,
-          subPhase: detailedPhase.subPhase,
-          day: dayInCycle, 
-          cycle,
-          isOvulation: detailedPhase.subPhase === 'ovulation',
-          detailedInfo: detailedPhase
-        };
-      }
-    }
-
-    return null;
-  };
 
   // Get all cycles for a specific day (for multi-person view)
   const getCyclesForDay = (day: Date) => {
