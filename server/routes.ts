@@ -2252,26 +2252,67 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Use the most recent cycle to determine patterns, regardless of completion status
       const baseCycle = mostRecentCycle;
       
-      // Calculate cycle patterns from the base cycle
-      const lastStartDate = new Date(baseCycle.periodStartDate);
-      const lastPeriodEndDate = baseCycle.periodEndDate ? 
-        new Date(baseCycle.periodEndDate) : null;
+      // Dynamic Pattern Inheritance System
+      // Find the most recent manually edited cycle (has notes indicating manual edit)
+      // or use the most recent cycle with complete data
+      const manuallyEditedCycles = sortedCycles.filter((cycle: any) => 
+        cycle.notes && !cycle.notes.includes('Auto-generated')
+      );
       
-      // For cycle end date, use existing end date or estimate based on period start + typical cycle length
+      // Determine the pattern source: most recent manual edit or most recent cycle
+      const patternSourceCycle = manuallyEditedCycles.length > 0 ? manuallyEditedCycles[0] : baseCycle;
+      
+      console.log(`Pattern inheritance for connection ${connectionIdNum}:`, {
+        totalCycles: sortedCycles.length,
+        manualEdits: manuallyEditedCycles.length,
+        usingPattern: patternSourceCycle.notes || 'most recent cycle',
+        patternCycleId: patternSourceCycle.id
+      });
+
+      // Calculate cycle patterns from the pattern source cycle
+      const patternStartDate = new Date(patternSourceCycle.periodStartDate);
+      const patternPeriodEndDate = patternSourceCycle.periodEndDate ? 
+        new Date(patternSourceCycle.periodEndDate) : null;
+      
+      // For cycle end date, use existing end date or estimate based on pattern
+      let patternCycleEndDate;
+      if (patternSourceCycle.cycleEndDate) {
+        patternCycleEndDate = new Date(patternSourceCycle.cycleEndDate);
+      } else {
+        // For active cycles, estimate based on previous patterns or default to 30 days
+        const completedCycles = sortedCycles.filter((cycle: any) => cycle.cycleEndDate);
+        if (completedCycles.length > 0) {
+          // Use average from completed cycles
+          const avgLength = completedCycles.reduce((sum: number, cycle: any) => {
+            const start = new Date(cycle.periodStartDate);
+            const end = new Date(cycle.cycleEndDate);
+            return sum + Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+          }, 0) / completedCycles.length;
+          patternCycleEndDate = new Date(patternStartDate);
+          patternCycleEndDate.setDate(patternCycleEndDate.getDate() + Math.round(avgLength) - 1);
+        } else {
+          // Default to 30-day cycle
+          patternCycleEndDate = new Date(patternStartDate);
+          patternCycleEndDate.setDate(patternCycleEndDate.getDate() + 29);
+        }
+      }
+      
+      // Calculate inherited pattern details
+      const inheritedCycleLength = Math.ceil((patternCycleEndDate.getTime() - patternStartDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+      const averageCycleLength = inheritedCycleLength > 35 ? 30 : (inheritedCycleLength < 21 ? 28 : inheritedCycleLength);
+      const periodLength = patternPeriodEndDate ? 
+        Math.ceil((patternPeriodEndDate.getTime() - patternStartDate.getTime()) / (1000 * 60 * 60 * 24)) + 1 : 5;
+
+      // Calculate next cycle start date based on the most recent cycle's end
+      const lastStartDate = new Date(baseCycle.periodStartDate);
       let lastCycleEndDate;
       if (baseCycle.cycleEndDate) {
         lastCycleEndDate = new Date(baseCycle.cycleEndDate);
       } else {
-        // Estimate cycle end date as period start + 30 days (typical cycle)
+        // Estimate end date for current active cycle
         lastCycleEndDate = new Date(lastStartDate);
-        lastCycleEndDate.setDate(lastCycleEndDate.getDate() + 29); // 30-day cycle
+        lastCycleEndDate.setDate(lastCycleEndDate.getDate() + averageCycleLength - 1);
       }
-      
-      // Calculate full cycle length (period start to cycle end, typically 28-30 days)
-      const fullCycleLength = Math.ceil((lastCycleEndDate.getTime() - lastStartDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-      const averageCycleLength = fullCycleLength > 35 ? 30 : (fullCycleLength < 21 ? 28 : fullCycleLength); // Reasonable cycle length
-      const periodLength = lastPeriodEndDate ? 
-        Math.ceil((lastPeriodEndDate.getTime() - lastStartDate.getTime()) / (1000 * 60 * 60 * 24)) + 1 : 5; // Default to 5 days
 
       // Calculate next cycle start date: 1 day after the last cycle ended
       const nextCycleStartDate = new Date(lastCycleEndDate);
@@ -2312,7 +2353,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
             periodStartDate: newCycleStartDate,
             periodEndDate: newPeriodEndDate,
             cycleEndDate: undefined, // Will be set when cycle is manually ended
-            notes: `Auto-generated cycle ${cycleGenerationCount + 1} following ${averageCycleLength}-day pattern`,
+            notes: patternSourceCycle.notes && !patternSourceCycle.notes.includes('Auto-generated') 
+              ? `Following edited pattern from ${patternSourceCycle.periodStartDate.toISOString().split('T')[0]} (${averageCycleLength}-day cycle, ${periodLength}-day period)`
+              : `Auto-generated cycle ${cycleGenerationCount + 1} following ${averageCycleLength}-day pattern`,
             mood: null,
             symptoms: null,
             flowIntensity: null
@@ -2439,41 +2482,68 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ error: "Cycle not found" });
       }
       
-      // If the updated cycle now has an end date, handle automatic progression
-      if (cycle.cycleEndDate && updates.cycleEndDate) {
-        try {
+      // Handle pattern inheritance when cycle is manually edited
+      try {
+        console.log("Cycle manually edited, checking for pattern inheritance impact");
+        
+        // Get all cycles for this user
+        const allCycles = await storage.getMenstrualCycles(userId);
+        const connectionId = cycle.connectionId;
+        
+        // Mark this cycle as manually edited (clear auto-generated notes)
+        if (cycle.notes && cycle.notes.includes('Auto-generated')) {
+          await storage.updateMenstrualCycle(cycleId, {
+            notes: `Manually edited cycle - new pattern established`
+          });
+        }
+        
+        // Find and remove future auto-generated cycles for this connection
+        // They need to be regenerated with the new pattern
+        const futureAutoCycles = allCycles.filter((c: any) => 
+          c.connectionId === connectionId && 
+          c.periodStartDate > cycle.periodStartDate &&
+          c.notes && c.notes.includes('Auto-generated')
+        );
+        
+        console.log(`Found ${futureAutoCycles.length} future auto-generated cycles to regenerate`);
+        
+        // Remove future auto-generated cycles
+        for (const futureCycle of futureAutoCycles) {
+          console.log(`Removing future auto-cycle ${futureCycle.id} to regenerate with new pattern`);
+          await storage.deleteMenstrualCycle(futureCycle.id);
+        }
+        
+        // Refresh cycles data and trigger new pattern inheritance
+        const refreshedCycles = await storage.getMenstrualCycles(userId);
+        const updatedCycles = await checkAndCreateAutomaticCycles(userId, refreshedCycles);
+        
+        console.log("Completed pattern inheritance regeneration after manual edit");
+        
+        // If the updated cycle now has an end date, handle automatic progression
+        if (cycle.cycleEndDate && updates.cycleEndDate) {
           console.log("Cycle updated with end date, handling automatic progression");
           
-          // Get all cycles for this user
-          const allCycles = await storage.getMenstrualCycles(userId);
-          
           // Find any existing active cycles for this connection that need to be removed
-          const connectionId = cycle.connectionId;
-          const existingActiveCycles = allCycles.filter((c: any) => 
+          const existingActiveCycles = updatedCycles.filter((c: any) => 
             c.connectionId === connectionId && 
-            !c.endDate && 
+            !c.cycleEndDate && 
             c.id !== cycle.id
           );
           
           // Remove existing active cycles for this connection
           for (const activeCycle of existingActiveCycles) {
             console.log(`Removing existing active cycle ${activeCycle.id} for connection ${connectionId}`);
-            // Delete the cycle
-            const cycleIndex = allCycles.findIndex((c: any) => c.id === activeCycle.id);
-            if (cycleIndex !== -1) {
-              allCycles.splice(cycleIndex, 1);
-            }
-            // Remove from storage
             await storage.deleteMenstrualCycle(activeCycle.id);
           }
           
-          // Now trigger automatic progression
-          const updatedCycles = await checkAndCreateAutomaticCycles(userId, allCycles);
-          console.log("Completed automatic cycle progression after cycle update");
-        } catch (error) {
-          console.error("Error handling automatic cycle progression:", error);
-          // Don't fail the request if automatic progression fails
+          // Trigger final automatic progression
+          const finalCycles = await storage.getMenstrualCycles(userId);
+          await checkAndCreateAutomaticCycles(userId, finalCycles);
         }
+        
+      } catch (error) {
+        console.error("Error handling pattern inheritance:", error);
+        // Don't fail the request if pattern inheritance fails
       }
       
       res.json(cycle);

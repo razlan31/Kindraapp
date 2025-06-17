@@ -111,13 +111,16 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
-- June 17, 2025: MAJOR FEATURE CHANGE - Removed prediction system and implemented perpetual automatic cycle creation
+- June 17, 2025: MAJOR FEATURE CHANGE - Implemented dynamic pattern inheritance system with perpetual cycle creation
   - Completely removed all prediction code from frontend (menstrual-cycle.tsx)
-  - Replaced prediction system with perpetual automatic cycle creation system
-  - Server now automatically creates up to 3 future cycles using established patterns from previous cycles
-  - New cycles start 1 day after the previous cycle ends (e.g., if cycle ends May 30th, new cycle starts May 31st)
-  - Uses same period length and calculates cycle length from historical data
-  - Automatic cycles marked with "Auto-generated cycle X following Y-day pattern" notes
+  - Replaced prediction system with intelligent pattern inheritance system
+  - **Dynamic Pattern Logic**: Cycles automatically follow the previous month's pattern by default
+  - **Pattern Override**: When a specific month is manually edited, it creates a new pattern for that month
+  - **Pattern Propagation**: Future months automatically inherit the newly edited pattern perpetually
+  - **Chain Reaction**: This continues until another manual edit creates a new pattern baseline
+  - Server automatically creates up to 3 future cycles using established patterns from previous cycles
+  - System detects manual edits and regenerates all future cycles with the new inherited pattern
+  - Automatic cycles marked with pattern source information for traceability
   - System generates cycles up to 90 days in advance to ensure perpetual continuation
   - Prevents duplicate cycle creation with existence checking
   - System activated whenever menstrual cycles API is called, ensuring seamless continuation
