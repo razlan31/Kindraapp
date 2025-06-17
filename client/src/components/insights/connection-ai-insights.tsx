@@ -591,9 +591,10 @@ function predictNextOptimalTiming(cycles: MenstrualCycle[], optimalPhase: string
     new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
   )[0];
   
-  const avgCycleLength = calculateAverageCycleLength(cycles);
-  const nextCycleStart = new Date(latestCycle.startDate);
-  nextCycleStart.setDate(nextCycleStart.getDate() + avgCycleLength);
+  // FIXED: Use cycle end date + 1 for next cycle start
+  const nextCycleStart = latestCycle.cycleEndDate ? 
+    new Date(new Date(latestCycle.cycleEndDate).getTime() + 24 * 60 * 60 * 1000) : // Add 1 day
+    new Date(latestCycle.startDate);
   
   const phaseOffsets = { menstrual: 0, follicular: 6, ovulation: 14, luteal: 17 };
   const nextOptimalDate = new Date(nextCycleStart);
