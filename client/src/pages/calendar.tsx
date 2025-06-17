@@ -601,33 +601,39 @@ export default function Calendar() {
 
   // Navigate based on view mode
   const navigatePrevious = () => {
+    let newDate;
     switch (viewMode) {
       case 'daily':
-        setCurrentDate(addDays(currentDate, -1));
+        newDate = addDays(currentDate, -1);
         break;
       case 'weekly':
-        setCurrentDate(addDays(currentDate, -7));
+        newDate = addDays(currentDate, -7);
         break;
       case 'monthly':
       default:
-        setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1));
+        newDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1);
         break;
     }
+    console.log(`📅 NAVIGATION: Moving from ${format(currentDate, 'yyyy-MM-dd')} to ${format(newDate, 'yyyy-MM-dd')}`);
+    setCurrentDate(newDate);
   };
 
   const navigateNext = () => {
+    let newDate;
     switch (viewMode) {
       case 'daily':
-        setCurrentDate(addDays(currentDate, 1));
+        newDate = addDays(currentDate, 1);
         break;
       case 'weekly':
-        setCurrentDate(addDays(currentDate, 7));
+        newDate = addDays(currentDate, 7);
         break;
       case 'monthly':
       default:
-        setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1));
+        newDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1);
         break;
     }
+    console.log(`📅 NAVIGATION: Moving from ${format(currentDate, 'yyyy-MM-dd')} to ${format(newDate, 'yyyy-MM-dd')}`);
+    setCurrentDate(newDate);
   };
 
   // Get title based on view mode

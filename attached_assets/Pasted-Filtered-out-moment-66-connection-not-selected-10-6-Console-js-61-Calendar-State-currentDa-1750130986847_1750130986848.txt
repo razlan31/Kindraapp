@@ -1,0 +1,215 @@
+Filtered out moment 66 - connection not selected 10 [6]
+Console.js:61 🗓️ Calendar State: {currentDate: '2025-06-17', viewMode: 'monthly', viewStart: '2025-06-01', viewEnd: '2025-06-30', calendarDaysCount: 35, …}
+Console.js:61 Calendar Debug - Total moments: 16 (16) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+Console.js:61 🔍 June 16th final styling: {isToday: false, cycleDisplay: null, cycleDisplayColor: undefined, cyclesLength: 1, finalClassName: 'h-16 p-1 border rounded-lg transition-colors hover…ccent/50 border-border/20 bg-background/50  block', …}
+Console.js:61 Today 2025-06-17 - Moment 105: 2025-06-13 - Match: false {id: 105, userId: '8', connectionId: 6, title: '', emoji: '💕', …}
+Console.js:61 Today 2025-06-17 - Moment 104: 2025-06-13 - Match: false {id: 104, userId: '8', connectionId: 6, title: 'date', emoji: '📅', …}
+Console.js:61 Today 2025-06-17 - Moment 46: 2025-06-13 - Match: false {id: 46, userId: '8', connectionId: 6, title: 'Birthday', emoji: '🎂', …}
+Console.js:61 Today 2025-06-17 - Moment 60: 2025-06-08 - Match: false {id: 60, userId: '8', connectionId: 6, title: '', emoji: '⚡', …}
+Console.js:61 Today 2025-06-17 - Moment 59: 2025-06-08 - Match: false {id: 59, userId: '8', connectionId: 6, title: '', emoji: '⚡', …}
+Console.js:61 Today 2025-06-17 - Moment 58: 2025-06-08 - Match: false {id: 58, userId: '8', connectionId: 6, title: '', emoji: '💕', …}
+Console.js:61 Today 2025-06-17 - Moment 57: 2025-06-08 - Match: false {id: 57, userId: '8', connectionId: 6, title: '', emoji: '💕', …}
+Console.js:61 Today 2025-06-17 - Moment 56: 2025-06-08 - Match: false {id: 56, userId: '8', connectionId: 6, title: '', emoji: '⚡', …}
+Console.js:61 Today 2025-06-17 - Moment 55: 2025-06-08 - Match: false {id: 55, userId: '8', connectionId: 6, title: '', emoji: '⚡', …}
+Console.js:61 Today 2025-06-17 - Moment 54: 2025-06-08 - Match: false {id: 54, userId: '8', connectionId: 6, title: '', emoji: '💕', …}
+Console.js:61 Today 2025-06-17 - Moment 53: 2025-06-08 - Match: false {id: 53, userId: '8', connectionId: 6, title: '', emoji: '💕', …}
+Console.js:61 Today 2025-06-17 - Moment 52: 2025-06-08 - Match: false {id: 52, userId: '8', connectionId: 6, title: '', emoji: '⚡', …}
+Console.js:61 Today 2025-06-17 - Moment 49: 2025-06-07 - Match: false {id: 49, userId: '8', connectionId: 6, title: null, emoji: '✅', …}
+Console.js:61 Today 2025-06-17 - Moment 47: 2025-06-04 - Match: false {id: 47, userId: '8', connectionId: 6, title: 'lobesafsa', emoji: '😊', …}
+Console.js:61 Today 2025-06-17 - Moment 45: 2025-05-16 - Match: false {id: 45, userId: '8', connectionId: 6, title: 'Started Dating', emoji: '💕', …}
+Console.js:61 Today 2025-06-17 - Moment 44: 2025-05-16 - Match: false {id: 44, userId: '8', connectionId: 6, title: 'Connection Started', emoji: '💫', …}
+Console.js:61 MomentModal render - momentModalOpen: false
+frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.
+t @ frame_ant.js:2
+s @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ _app-9e1eb76f170fd6ab.js:38
+(anonymous) @ _app-9e1eb76f170fd6ab.js:25
+e @ _app-9e1eb76f170fd6ab.js:14
+t.subscribe @ _app-9e1eb76f170fd6ab.js:14
+e.consumeQueue @ _app-9e1eb76f170fd6ab.js:25
+(anonymous) @ _app-9e1eb76f170fd6ab.js:25
+n @ _app-9e1eb76f170fd6ab.js:38
+setTimeout
+(anonymous) @ _app-9e1eb76f170fd6ab.js:38
+e.scheduleQueueConsumption @ _app-9e1eb76f170fd6ab.js:25
+(anonymous) @ _app-9e1eb76f170fd6ab.js:25
+e @ _app-9e1eb76f170fd6ab.js:14
+t.subscribe @ _app-9e1eb76f170fd6ab.js:14
+(anonymous) @ _app-9e1eb76f170fd6ab.js:25
+e @ _app-9e1eb76f170fd6ab.js:14
+t.subscribe @ _app-9e1eb76f170fd6ab.js:14
+e.try @ _app-9e1eb76f170fd6ab.js:25
+e.start @ _app-9e1eb76f170fd6ab.js:25
+t.request @ _app-9e1eb76f170fd6ab.js:25
+(anonymous) @ _app-9e1eb76f170fd6ab.js:14
+(anonymous) @ _app-9e1eb76f170fd6ab.js:14
+(anonymous) @ _app-9e1eb76f170fd6ab.js:25
+(anonymous) @ _app-9e1eb76f170fd6ab.js:14
+e.execute @ _app-9e1eb76f170fd6ab.js:14
+e.getObservableFromLink @ _app-9e1eb76f170fd6ab.js:11
+e.getResultsFromLink @ _app-9e1eb76f170fd6ab.js:11
+v @ _app-9e1eb76f170fd6ab.js:11
+e.fetchQueryByPolicy @ _app-9e1eb76f170fd6ab.js:11
+v @ _app-9e1eb76f170fd6ab.js:11
+e.fetchConcastWithInfo @ _app-9e1eb76f170fd6ab.js:11
+t.fetch @ _app-9e1eb76f170fd6ab.js:14
+t.reobserveAsConcast @ _app-9e1eb76f170fd6ab.js:14
+e.executeQuery @ _app-9e1eb76f170fd6ab.js:26
+(anonymous) @ _app-9e1eb76f170fd6ab.js:14
+(anonymous) @ 7292-042da6db7000cdbc.js:1
+(anonymous) @ 4333-8017c6349b396686.js:1
+t.trigger @ 4333-8017c6349b396686.js:1
+(anonymous) @ 4333-8017c6349b396686.js:1
+(anonymous) @ main-1e2320c2dea5f301.js:1
+n @ main-1e2320c2dea5f301.js:1
+u @ main-1e2320c2dea5f301.js:1
+Promise.then
+n @ main-1e2320c2dea5f301.js:1
+u @ main-1e2320c2dea5f301.js:1
+Promise.then
+n @ main-1e2320c2dea5f301.js:1
+u @ main-1e2320c2dea5f301.js:1
+Promise.then
+n @ main-1e2320c2dea5f301.js:1
+u @ main-1e2320c2dea5f301.js:1
+Promise.then
+n @ main-1e2320c2dea5f301.js:1
+u @ main-1e2320c2dea5f301.js:1
+Promise.then
+n @ main-1e2320c2dea5f301.js:1
+u @ main-1e2320c2dea5f301.js:1
+Promise.then
+n @ main-1e2320c2dea5f301.js:1
+u @ main-1e2320c2dea5f301.js:1
+Promise.then
+n @ main-1e2320c2dea5f301.js:1
+u @ main-1e2320c2dea5f301.js:1
+Promise.then
+n @ main-1e2320c2dea5f301.js:1
+u @ main-1e2320c2dea5f301.js:1
+Promise.then
+n @ main-1e2320c2dea5f301.js:1
+u @ main-1e2320c2dea5f301.js:1
+Promise.then
+n @ main-1e2320c2dea5f301.js:1
+u @ main-1e2320c2dea5f301.js:1
+Promise.then
+n @ main-1e2320c2dea5f301.js:1
+u @ main-1e2320c2dea5f301.js:1
+Promise.then
+n @ main-1e2320c2dea5f301.js:1
+u @ main-1e2320c2dea5f301.js:1
+Promise.then
+n @ main-1e2320c2dea5f301.js:1
+u @ main-1e2320c2dea5f301.js:1
+Promise.then
+n @ main-1e2320c2dea5f301.js:1
+u @ main-1e2320c2dea5f301.js:1
+Promise.then
+n @ main-1e2320c2dea5f301.js:1
+u @ main-1e2320c2dea5f301.js:1
+Promise.then
+n @ main-1e2320c2dea5f301.js:1
+u @ main-1e2320c2dea5f301.js:1
+Promise.then
+n @ main-1e2320c2dea5f301.js:1
+u @ main-1e2320c2dea5f301.js:1
+Promise.then
+n @ main-1e2320c2dea5f301.js:1
+u @ main-1e2320c2dea5f301.js:1
+Promise.then
+n @ main-1e2320c2dea5f301.js:1
+u @ main-1e2320c2dea5f301.js:1
+Promise.then
+n @ main-1e2320c2dea5f301.js:1
+u @ main-1e2320c2dea5f301.js:1
+Promise.then
+n @ main-1e2320c2dea5f301.js:1
+u @ main-1e2320c2dea5f301.js:1
+Promise.then
+n @ main-1e2320c2dea5f301.js:1
+u @ main-1e2320c2dea5f301.js:1
+Promise.then
+n @ main-1e2320c2dea5f301.js:1
+u @ main-1e2320c2dea5f301.js:1
+Promise.then
+n @ main-1e2320c2dea5f301.js:1
+u @ main-1e2320c2dea5f301.js:1
+Promise.then
+n @ main-1e2320c2dea5f301.js:1
+u @ main-1e2320c2dea5f301.js:1
+Promise.then
+n @ main-1e2320c2dea5f301.js:1
+u @ main-1e2320c2dea5f301.js:1
+Promise.then
+n @ main-1e2320c2dea5f301.js:1
+u @ main-1e2320c2dea5f301.js:1
+Promise.then
+n @ main-1e2320c2dea5f301.js:1
+u @ main-1e2320c2dea5f301.js:1
+Promise.then
+n @ main-1e2320c2dea5f301.js:1
+u @ main-1e2320c2dea5f301.js:1Understand this error
+frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.
+t @ frame_ant.js:2
+s @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ _app-9e1eb76f170fd6ab.js:38
+(anonymous) @ _app-9e1eb76f170fd6ab.js:25
+e @ _app-9e1eb76f170fd6ab.js:14
+t.subscribe @ _app-9e1eb76f170fd6ab.js:14
+e.consumeQueue @ _app-9e1eb76f170fd6ab.js:25
+(anonymous) @ _app-9e1eb76f170fd6ab.js:25
+n @ _app-9e1eb76f170fd6ab.js:38
+setTimeout
+(anonymous) @ _app-9e1eb76f170fd6ab.js:38
+e.scheduleQueueConsumption @ _app-9e1eb76f170fd6ab.js:25
+(anonymous) @ _app-9e1eb76f170fd6ab.js:25
+e @ _app-9e1eb76f170fd6ab.js:14
+t.subscribe @ _app-9e1eb76f170fd6ab.js:14
+(anonymous) @ _app-9e1eb76f170fd6ab.js:25
+e @ _app-9e1eb76f170fd6ab.js:14
+t.subscribe @ _app-9e1eb76f170fd6ab.js:14
+e.try @ _app-9e1eb76f170fd6ab.js:25
+e.start @ _app-9e1eb76f170fd6ab.js:25
+t.request @ _app-9e1eb76f170fd6ab.js:25
+(anonymous) @ _app-9e1eb76f170fd6ab.js:14
+(anonymous) @ _app-9e1eb76f170fd6ab.js:14
+(anonymous) @ _app-9e1eb76f170fd6ab.js:25
+(anonymous) @ _app-9e1eb76f170fd6ab.js:14
+e.execute @ _app-9e1eb76f170fd6ab.js:14
+e.getObservableFromLink @ _app-9e1eb76f170fd6ab.js:11
+(anonymous) @ _app-9e1eb76f170fd6ab.js:11
+(anonymous) @ _app-9e1eb76f170fd6ab.js:11
+(anonymous) @ _app-9e1eb76f170fd6ab.js:11
+(anonymous) @ _app-9e1eb76f170fd6ab.js:11
+s @ _app-9e1eb76f170fd6ab.js:11
+e.mutate @ _app-9e1eb76f170fd6ab.js:11
+e.mutate @ _app-9e1eb76f170fd6ab.js:11
+(anonymous) @ _app-9e1eb76f170fd6ab.js:14
+(anonymous) @ _app-9e1eb76f170fd6ab.js:40
+(anonymous) @ main-1e2320c2dea5f301.js:1
+n @ main-1e2320c2dea5f301.js:1
+u @ main-1e2320c2dea5f301.js:1
+(anonymous) @ main-1e2320c2dea5f301.js:1
+(anonymous) @ main-1e2320c2dea5f301.js:1
+n @ _app-9e1eb76f170fd6ab.js:38Understand this error
