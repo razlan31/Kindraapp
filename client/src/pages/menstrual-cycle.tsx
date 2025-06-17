@@ -25,6 +25,8 @@ import { BottomNavigation } from "@/components/layout/bottom-navigation";
 import { useAuth } from "@/contexts/auth-context";
 import { useRelationshipFocus } from "@/contexts/relationship-focus-context";
 
+// Removed prediction feature - cycles are now automatically generated when previous cycle ends
+
 export default function MenstrualCyclePage() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
@@ -48,144 +50,261 @@ export default function MenstrualCyclePage() {
   });
 
   // Fetch data
-  const { data: cycles = [], isLoading: cyclesLoading } = useQuery<MenstrualCycle[]>({
-    queryKey: ["/api/menstrual-cycles"],
-    enabled: !!user,
+  const { data: cycles = [], isLoading } = useQuery<MenstrualCycle[]>({
+    queryKey: ['/api/menstrual-cycles'],
   });
 
-  const { data: connections = [], isLoading: connectionsLoading } = useQuery<Connection[]>({
-    queryKey: ["/api/connections"],
-    enabled: !!user,
+  const { data: connections = [] } = useQuery<Connection[]>({
+    queryKey: ['/api/connections'],
   });
 
-  const trackableConnections = connections;
-  const [viewMode, setViewMode] = useState<'calendar' | 'list'>('calendar');
-
-  // Filter cycles based on selected connections
+  // Filter cycles by selected connections
   const filteredCycles = useMemo(() => {
-    if (!cycles) return [];
     if (selectedConnectionIds.length === 0) return cycles;
-    return cycles.filter(cycle => cycle.connectionId && selectedConnectionIds.includes(cycle.connectionId));
+    return cycles.filter(cycle => 
+      cycle.connectionId && selectedConnectionIds.includes(cycle.connectionId)
+    );
   }, [cycles, selectedConnectionIds]);
 
-  // Calculate cycle phases for a specific day and connection
+  // Calculate cycle phase for a given day
   const getCyclePhaseForDay = (day: Date, connectionId: number) => {
-    const connectionCycles = cycles.filter(c => c.connectionId === connectionId);
-    if (connectionCycles.length === 0) return null;
-
-    const sortedCycles = [...connectionCycles].sort((a, b) => 
-      new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
-    );
-
-    // Calculate actual cycle lengths for this connection
-    const cycleLengths: number[] = [];
-    for (let i = 1; i < sortedCycles.length; i++) {
-      const prevCycle = sortedCycles[i - 1];
-      const currentCycle = sortedCycles[i];
-      const length = differenceInDays(new Date(currentCycle.startDate), new Date(prevCycle.startDate));
-      if (length > 0 && length <= 60) {
-        cycleLengths.push(length);
-      }
-    }
-
-    const avgCycleLength = cycleLengths.length > 0 
-      ? Math.round(cycleLengths.reduce((a, b) => a + b, 0) / cycleLengths.length)
-      : 28;
-
-    // Find the cycle that this day belongs to
-    for (const cycle of sortedCycles) {
-      const cycleStart = new Date(cycle.startDate);
-      const cycleEnd = cycle.endDate ? new Date(cycle.endDate) : addDays(cycleStart, avgCycleLength);
+    const cycle = filteredCycles.find(cycle => {
+      if (cycle.connectionId !== connectionId) return false;
       
-      if (day >= cycleStart && day <= cycleEnd) {
-        const dayInCycle = differenceInDays(day, cycleStart) + 1;
-        const periodEnd = cycle.periodEndDate ? new Date(cycle.periodEndDate) : addDays(cycleStart, 5);
-        
-        if (day <= periodEnd) {
-          return { phase: 'menstrual', day: dayInCycle, cycle, isOvulation: false };
-        } else {
-          const ovulationDay = Math.round(avgCycleLength / 2);
-          const isOvulation = Math.abs(dayInCycle - ovulationDay) <= 1;
-          
-          if (dayInCycle <= ovulationDay + 2) {
-            return { phase: 'follicular', day: dayInCycle, cycle, isOvulation };
-          } else {
-            return { phase: 'luteal', day: dayInCycle, cycle, isOvulation };
-          }
+      const start = startOfDay(new Date(cycle.periodStartDate));
+      const end = cycle.cycleEndDate ? startOfDay(new Date(cycle.cycleEndDate)) : new Date();
+      const checkDay = startOfDay(day);
+      return checkDay >= start && checkDay <= end;
+    });
+
+    if (!cycle) return null;
+
+    const checkDay = startOfDay(day);
+    const cycleStart = startOfDay(new Date(cycle.periodStartDate));
+    const daysSinceStart = differenceInDays(checkDay, cycleStart) + 1;
+    
+    // Use actual cycle data for phase calculation
+    const cycleLength = cycle.cycleEndDate ? 
+      differenceInDays(new Date(cycle.cycleEndDate), cycleStart) + 1 : 30;
+    const periodLength = cycle.periodEndDate ? 
+      differenceInDays(new Date(cycle.periodEndDate), cycleStart) + 1 : 5;
+
+    // Calculate phases
+    if (daysSinceStart <= periodLength) {
+      return 'menstrual';
+    } else if (daysSinceStart <= 13) {
+      return 'follicular';
+    } else if (daysSinceStart >= 14 && daysSinceStart <= 16) {
+      return 'ovulation';
+    } else if (daysSinceStart <= (cycleLength - 14)) {
+      return 'luteal';
+    } else {
+      return 'premenstrual';
+    }
+  };
+
+  // Calculate cycle info for display
+  const getCycleInfoForDay = (day: Date) => {
+    const cycleData = [];
+    const processedConnections = new Set();
+
+    for (const cycle of filteredCycles) {
+      if (!cycle.connectionId || processedConnections.has(cycle.connectionId)) continue;
+      
+      const phase = getCyclePhaseForDay(day, cycle.connectionId);
+      if (phase) {
+        const connection = connections.find(c => c.id === cycle.connectionId);
+        if (connection) {
+          cycleData.push({
+            connectionId: cycle.connectionId,
+            connectionName: connection.name,
+            phase,
+            initial: connection.name.charAt(0).toUpperCase()
+          });
+          processedConnections.add(cycle.connectionId);
         }
       }
     }
-
-    return null;
+    return cycleData;
   };
 
-  // Get cycle information for a specific day - support multiple connections
-  const getCycleInfoForDay = (day: Date) => {
-    const dayStr = format(day, 'yyyy-MM-dd');
-    const activeCycles = filteredCycles.filter(cycle => {
-      const cycleStart = new Date(cycle.startDate);
-      const connection = trackableConnections.find(c => c.id === cycle.connectionId);
-      if (!connection) return false;
+  // Calendar navigation
+  const monthStart = startOfMonth(currentDate);
+  const monthEnd = endOfMonth(currentDate);
+  const monthDays = eachDayOfInterval({ start: monthStart, end: monthEnd });
 
-      const avgCycleLength = 28; // Default
-      const cycleEnd = cycle.endDate ? new Date(cycle.endDate) : addDays(cycleStart, avgCycleLength);
-      
-      return day >= cycleStart && day <= cycleEnd;
+  const getCycleForDay = (day: Date) => {
+    return filteredCycles.find(cycle => {
+      const start = startOfDay(new Date(cycle.periodStartDate));
+      const end = cycle.cycleEndDate ? startOfDay(new Date(cycle.cycleEndDate)) : new Date();
+      const checkDay = startOfDay(day);
+      return checkDay >= start && checkDay <= end;
     });
+  };
 
-    if (activeCycles.length === 0) {
-      return { color: '', indicator: '', title: '', description: '' };
+  const getCycleStage = (day: Date, cycle: MenstrualCycle) => {
+    const checkDay = startOfDay(day);
+    const cycleStart = startOfDay(new Date(cycle.periodStartDate));
+    
+    const daysSinceStart = differenceInDays(day, cycleStart) + 1;
+    const cycleLength = getCycleLength(cycle) || 28;
+    const periodLength = cycle.periodEndDate ? 
+      differenceInDays(new Date(cycle.periodEndDate), cycleStart) + 1 : 5;
+
+    if (daysSinceStart <= periodLength) {
+      return 'menstrual';
+    } else if (daysSinceStart <= 13) {
+      return 'follicular';
+    } else if (daysSinceStart >= 14 && daysSinceStart <= 16) {
+      return 'ovulation';
+    } else if (daysSinceStart <= (cycleLength - 14)) {
+      return 'luteal';
+    } else {
+      return 'premenstrual';
     }
+  };
 
-    if (activeCycles.length === 1) {
-      const cycle = activeCycles[0];
-      const phaseInfo = getCyclePhaseForDay(day, cycle.connectionId!);
-      const connection = trackableConnections.find(c => c.id === cycle.connectionId);
-      
-      if (!phaseInfo || !connection) {
-        return { color: '', indicator: '', title: '', description: '' };
-      }
-
-      const phaseColors = {
-        menstrual: 'bg-red-100 dark:bg-red-900 border-red-300 dark:border-red-700',
-        follicular: 'bg-green-100 dark:bg-green-900 border-green-300 dark:border-green-700',
-        luteal: 'bg-yellow-100 dark:bg-yellow-900 border-yellow-300 dark:border-yellow-700'
-      };
-
-      return {
-        color: phaseColors[phaseInfo.phase as keyof typeof phaseColors] || '',
-        indicator: phaseInfo.isOvulation ? '🥚' : (phaseInfo.phase === 'menstrual' ? '🔴' : ''),
-        title: `${connection.name}`,
-        description: `${phaseInfo.phase} (Day ${phaseInfo.day})`
-      };
+  const getStageColor = (stage: string) => {
+    switch (stage) {
+      case 'menstrual': return 'bg-red-100 text-red-800';
+      case 'follicular': return 'bg-green-100 text-green-800';
+      case 'ovulation': return 'bg-pink-100 text-pink-800';
+      case 'luteal': return 'bg-yellow-100 text-yellow-800';
+      case 'premenstrual': return 'bg-purple-100 text-purple-800';
+      default: return 'bg-gray-100 text-gray-800';
     }
+  };
 
-    // Multiple connections - create colored initials display
-    const phases = activeCycles.map(cycle => {
-      const phaseInfo = getCyclePhaseForDay(day, cycle.connectionId!);
-      const connection = trackableConnections.find(c => c.id === cycle.connectionId);
-      return { connection, phase: phaseInfo?.phase || 'unknown', day: phaseInfo?.day || 0, cycle, isOvulation: phaseInfo?.isOvulation };
-    }).filter(p => p.connection);
+  const getStageEmoji = (stage: string) => {
+    switch (stage) {
+      case 'menstrual': return '🩸';
+      case 'follicular': return '🌱';
+      case 'ovulation': return '🥚';
+      case 'luteal': return '💛';
+      case 'premenstrual': return '🌙';
+      default: return '⭕';
+    }
+  };
 
-    // Generate colored initials for each connection
-    const colors = ['bg-pink-500', 'bg-blue-500', 'bg-green-500', 'bg-purple-500', 'bg-orange-500', 'bg-indigo-500'];
-    const coloredInitials = phases.map((phase, index) => ({
-      initial: phase.connection!.name.charAt(0).toUpperCase(),
-      color: colors[index % colors.length],
-      connection: phase.connection!.name,
-      phase: phase.phase,
-      day: phase.day
-    }));
+  // Create cycle mutation
+  const createCycleMutation = useMutation({
+    mutationFn: (data: any) => apiRequest('/api/menstrual-cycles', 'POST', data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/menstrual-cycles'] });
+      setIsDialogOpen(false);
+      resetForm();
+      toast({
+        title: "Cycle Added",
+        description: "Your menstrual cycle has been recorded successfully.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to add cycle. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
 
-    return {
-      color: 'bg-gradient-to-r from-pink-100 to-purple-100 dark:from-pink-900 dark:to-purple-900 border-pink-300 dark:border-pink-700',
-      indicator: '',
-      title: `${activeCycles.length} Connections`,
-      description: `Multiple active cycles`,
-      isMultiple: true,
-      phases,
-      coloredInitials
+  // Update cycle mutation
+  const updateCycleMutation = useMutation({
+    mutationFn: ({ id, data }: { id: number; data: any }) => 
+      apiRequest(`/api/menstrual-cycles/${id}`, 'PUT', data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/menstrual-cycles'] });
+      setIsDialogOpen(false);
+      setEditingCycle(null);
+      resetForm();
+      toast({
+        title: "Cycle Updated",
+        description: "Your menstrual cycle has been updated successfully.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to update cycle. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Delete cycle mutation
+  const deleteCycleMutation = useMutation({
+    mutationFn: (id: number) => apiRequest(`/api/menstrual-cycles/${id}`, 'DELETE'),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/menstrual-cycles'] });
+      setIsDialogOpen(false);
+      setEditingCycle(null);
+      resetForm();
+      toast({
+        title: "Cycle Deleted",
+        description: "The menstrual cycle has been deleted.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to delete cycle. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    const cycleData = {
+      periodStartDate: new Date(formData.startDate),
+      periodEndDate: formData.periodEndDate ? new Date(formData.periodEndDate) : null,
+      cycleEndDate: formData.endDate ? new Date(formData.endDate) : null,
+      connectionId: formData.connectionId,
+      flowIntensity: formData.flowIntensity || null,
+      mood: formData.mood || null,
+      symptoms: formData.symptoms.length > 0 ? formData.symptoms : null,
+      notes: formData.notes || null,
     };
+
+    if (editingCycle) {
+      updateCycleMutation.mutate({ id: editingCycle.id, data: cycleData });
+    } else {
+      createCycleMutation.mutate(cycleData);
+    }
+  };
+
+  const handleEdit = (cycle: MenstrualCycle) => {
+    setEditingCycle(cycle);
+    setFormData({
+      startDate: format(new Date(cycle.periodStartDate), 'yyyy-MM-dd'),
+      periodEndDate: cycle.periodEndDate ? format(new Date(cycle.periodEndDate), 'yyyy-MM-dd') : '',
+      endDate: cycle.cycleEndDate ? format(new Date(cycle.cycleEndDate), 'yyyy-MM-dd') : '',
+      flowIntensity: cycle.flowIntensity || '',
+      mood: cycle.mood || '',
+      symptoms: cycle.symptoms || [],
+      notes: cycle.notes || '',
+      connectionId: cycle.connectionId
+    });
+    setIsDialogOpen(true);
+  };
+
+  const handleDelete = (cycle: MenstrualCycle) => {
+    if (confirm('Are you sure you want to delete this cycle?')) {
+      deleteCycleMutation.mutate(cycle.id);
+    }
+  };
+
+  const resetForm = () => {
+    setFormData({
+      startDate: format(new Date(), 'yyyy-MM-dd'),
+      periodEndDate: '',
+      endDate: '',
+      flowIntensity: '',
+      mood: '',
+      symptoms: [],
+      notes: '',
+      connectionId: null
+    });
   };
 
   const handleDayClick = (day: Date) => {
@@ -196,154 +315,201 @@ export default function MenstrualCyclePage() {
     setIsDialogOpen(true);
   };
 
+  const getCycleLength = (cycle: MenstrualCycle) => {
+    if (cycle.cycleLength) return cycle.cycleLength;
+    if (cycle.cycleEndDate) {
+      return differenceInDays(new Date(cycle.cycleEndDate), new Date(cycle.periodStartDate)) + 1;
+    }
+    return 28; // Default
+  };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 dark:from-gray-900 dark:via-purple-900 dark:to-gray-800">
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50">
       <Header />
       
-      <main className="container mx-auto px-4 py-8 pb-20">
-        <div className="flex flex-col lg:flex-row gap-6">
-          {/* Calendar View */}
-          {viewMode === 'calendar' && (
-            <div className="lg:flex-1">
-              <Card className="border-0 shadow-xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
-                <CardHeader className="pb-4">
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
-                      Cycle Calendar
-                    </CardTitle>
-                    <div className="flex items-center gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setCurrentDate(subMonths(currentDate, 1))}
-                      >
-                        <ChevronLeft className="h-4 w-4" />
-                      </Button>
-                      <span className="text-lg font-semibold min-w-[120px] text-center">
-                        {format(currentDate, 'MMMM yyyy')}
-                      </span>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setCurrentDate(addMonths(currentDate, 1))}
-                      >
-                        <ChevronRight className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                </CardHeader>
-                
-                <CardContent>
-                  {/* Calendar Grid */}
-                  <div className="grid grid-cols-7 gap-1 mb-4">
-                    {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                      <div key={day} className="p-2 text-center text-sm font-medium text-gray-500 dark:text-gray-400">
-                        {day}
-                      </div>
-                    ))}
-                    
-                    {eachDayOfInterval({
-                      start: startOfWeek(startOfMonth(currentDate)),
-                      end: addDays(startOfWeek(endOfMonth(currentDate)), 41)
-                    }).map(day => {
-                      const cycleInfo = getCycleInfoForDay(day);
-                      const isCurrentMonth = isSameMonth(day, currentDate);
-                      const isToday = isSameDay(day, new Date());
-                      
-                      return (
-                        <div
-                          key={day.toISOString()}
-                          className={`
-                            relative p-1 h-16 cursor-pointer rounded-lg border transition-all duration-200 hover:shadow-md
-                            ${isCurrentMonth ? 'opacity-100' : 'opacity-40'}
-                            ${isToday ? 'ring-2 ring-blue-500 dark:ring-blue-400' : ''}
-                            ${cycleInfo.color || 'bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'}
-                          `}
-                          onClick={() => handleDayClick(day)}
-                        >
-                          <div className="text-xs font-medium text-gray-700 dark:text-gray-300">
-                            {format(day, 'd')}
-                          </div>
-                          
-                          {cycleInfo.indicator && (
-                            <div className="absolute top-1 right-1 text-xs">
-                              {cycleInfo.indicator}
-                            </div>
-                          )}
-                          
-                          {cycleInfo.isMultiple && cycleInfo.coloredInitials && (
-                            <div className="absolute bottom-1 left-1 flex gap-0.5">
-                              {cycleInfo.coloredInitials.map((item: any, index: number) => (
-                                <div
-                                  key={index}
-                                  className={`w-4 h-4 rounded-full text-[8px] text-white flex items-center justify-center font-bold ${item.color}`}
-                                  title={`${item.connection} - ${item.phase} (Day ${item.day})`}
-                                >
-                                  {item.initial}
-                                </div>
-                              ))}
-                            </div>
-                          )}
-                          
-                          {cycleInfo.title && !cycleInfo.isMultiple && (
-                            <div className="absolute bottom-1 left-1 text-[10px] font-medium text-gray-600 dark:text-gray-400 truncate max-w-full">
-                              {cycleInfo.title}
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
-                </CardContent>
-              </Card>
+      <main className="container mx-auto px-4 py-6 pb-20">
+        <div className="flex flex-col space-y-6">
+          <div className="flex items-center justify-between">
+            <h1 className="text-2xl font-bold text-gray-900">Menstrual Cycle Tracker</h1>
+            <div className="flex items-center space-x-2">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm">
+                    <User className="h-4 w-4 mr-2" />
+                    Filter ({selectedConnectionIds.length})
+                    <ChevronDown className="h-4 w-4 ml-2" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  {connections.map((connection) => (
+                    <DropdownMenuCheckboxItem
+                      key={connection.id}
+                      checked={selectedConnectionIds.includes(connection.id)}
+                      onCheckedChange={(checked) => {
+                        if (checked) {
+                          setSelectedConnectionIds(prev => [...prev, connection.id]);
+                        } else {
+                          setSelectedConnectionIds(prev => prev.filter(id => id !== connection.id));
+                        }
+                      }}
+                    >
+                      {connection.name}
+                    </DropdownMenuCheckboxItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <Button onClick={() => setIsDialogOpen(true)}>
+                <Plus className="h-4 w-4 mr-2" />
+                Add Cycle
+              </Button>
             </div>
-          )}
-          
-          {/* List View */}
-          {viewMode === 'list' && (
-            <div className="lg:flex-1">
-              <Card className="border-0 shadow-xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
-                <CardHeader>
-                  <CardTitle>Menstrual Cycles - List View</CardTitle>
-                </CardHeader>
-                <CardContent>
+          </div>
+
+          {/* Calendar */}
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="flex items-center">
+                  <Calendar className="h-5 w-5 mr-2" />
+                  {format(currentDate, 'MMMM yyyy')}
+                </CardTitle>
+                <div className="flex items-center space-x-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentDate(subMonths(currentDate, 1))}
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentDate(addMonths(currentDate, 1))}
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-7 gap-1 mb-4">
+                {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+                  <div key={day} className="p-2 text-center text-sm font-medium text-gray-500">
+                    {day}
+                  </div>
+                ))}
+              </div>
+              <div className="grid grid-cols-7 gap-1">
+                {monthDays.map((day) => {
+                  const cycleInfo = getCycleInfoForDay(day);
+                  const isToday = isSameDay(day, new Date());
+                  
+                  return (
+                    <div
+                      key={day.toISOString()}
+                      className={`
+                        p-2 min-h-[60px] border rounded cursor-pointer transition-colors
+                        ${isToday ? 'bg-blue-100 border-blue-300' : 'border-gray-200 hover:bg-gray-50'}
+                        ${!isSameMonth(day, currentDate) ? 'opacity-50' : ''}
+                      `}
+                      onClick={() => handleDayClick(day)}
+                    >
+                      <div className="text-sm font-medium mb-1">
+                        {format(day, 'd')}
+                      </div>
+                      {cycleInfo.length > 0 && (
+                        <div className="flex flex-wrap gap-1">
+                          {cycleInfo.map((info, index) => (
+                            <div
+                              key={`${info.connectionId}-${index}`}
+                              className={`text-xs px-1 py-0.5 rounded ${getStageColor(info.phase)}`}
+                              title={`${info.connectionName} - ${info.phase}`}
+                            >
+                              {getStageEmoji(info.phase)}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+              
+              {/* Legend */}
+              <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+                <h4 className="font-medium mb-2">Cycle Phases</h4>
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-2 text-sm">
+                  <div className="flex items-center">
+                    <span className="mr-2">🩸</span>
+                    Menstrual
+                  </div>
+                  <div className="flex items-center">
+                    <span className="mr-2">🌱</span>
+                    Follicular
+                  </div>
+                  <div className="flex items-center">
+                    <span className="mr-2">🥚</span>
+                    Ovulation
+                  </div>
+                  <div className="flex items-center">
+                    <span className="mr-2">💛</span>
+                    Luteal
+                  </div>
+                  <div className="flex items-center">
+                    <span className="mr-2">🌙</span>
+                    Premenstrual
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Recent Cycles */}
+          {filteredCycles.length > 0 && (
+            <div>
+              <h2 className="text-xl font-semibold mb-4">Recent Cycles</h2>
+              <Card>
+                <CardContent className="p-4">
                   <div className="space-y-4">
-                    {filteredCycles.map((cycle: any) => {
-                      const connection = trackableConnections.find(c => c.id === cycle.connectionId);
+                    {filteredCycles.slice(0, 5).map((cycle) => {
+                      const connection = connections.find(c => c.id === cycle.connectionId);
                       return (
                         <div key={cycle.id} className="flex items-center justify-between p-4 border rounded-lg">
-                          <div className="flex items-center gap-3">
+                          <div className="flex items-center space-x-4">
                             <Avatar className="h-10 w-10">
-                              <AvatarFallback>{connection?.name?.charAt(0) || 'U'}</AvatarFallback>
+                              <AvatarImage src={connection?.profileImage || undefined} />
+                              <AvatarFallback>
+                                {connection?.name.charAt(0).toUpperCase() || 'U'}
+                              </AvatarFallback>
                             </Avatar>
                             <div>
                               <p className="font-medium">{connection?.name || 'Unknown'}</p>
                               <p className="text-sm text-gray-500">
-                                {format(new Date(cycle.startDate), 'MMM d, yyyy')}
-                                {cycle.endDate && ` - ${format(new Date(cycle.endDate), 'MMM d, yyyy')}`}
+                                {format(new Date(cycle.periodStartDate), 'MMM dd, yyyy')} - 
+                                {cycle.cycleEndDate ? format(new Date(cycle.cycleEndDate), 'MMM dd, yyyy') : 'Ongoing'}
                               </p>
+                              {cycle.mood && <Badge variant="secondary" className="mt-1">{cycle.mood}</Badge>}
                             </div>
                           </div>
-                          <div className="flex gap-2">
+                          <div className="flex items-center space-x-2">
                             <Button
-                              variant="outline"
+                              variant="ghost"
                               size="sm"
-                              onClick={() => {
-                                setEditingCycle(cycle);
-                                setFormData({
-                                  startDate: format(new Date(cycle.startDate), 'yyyy-MM-dd'),
-                                  periodEndDate: cycle.periodEndDate ? format(new Date(cycle.periodEndDate), 'yyyy-MM-dd') : '',
-                                  endDate: cycle.endDate ? format(new Date(cycle.endDate), 'yyyy-MM-dd') : '',
-                                  flowIntensity: cycle.flowIntensity || '',
-                                  mood: cycle.mood || '',
-                                  symptoms: cycle.symptoms || [],
-                                  notes: cycle.notes || '',
-                                  connectionId: cycle.connectionId
-                                });
-                                setIsDialogOpen(true);
-                              }}
+                              onClick={() => handleEdit(cycle)}
                             >
                               <Edit3 className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleDelete(cycle)}
+                              className="text-red-600 hover:text-red-800"
+                            >
+                              <Trash2 className="h-4 w-4" />
                             </Button>
                           </div>
                         </div>
@@ -356,6 +522,119 @@ export default function MenstrualCyclePage() {
           )}
         </div>
       </main>
+
+      {/* Add/Edit Cycle Dialog */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{editingCycle ? 'Edit Cycle' : 'Add New Cycle'}</DialogTitle>
+          </DialogHeader>
+          
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <Label htmlFor="connection">Connection</Label>
+              <Select
+                value={formData.connectionId?.toString() || ''}
+                onValueChange={(value) => setFormData(prev => ({ ...prev, connectionId: parseInt(value) }))}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select connection" />
+                </SelectTrigger>
+                <SelectContent>
+                  {connections.map((connection) => (
+                    <SelectItem key={connection.id} value={connection.id.toString()}>
+                      {connection.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label htmlFor="startDate">Period Start Date</Label>
+              <Input
+                id="startDate"
+                type="date"
+                value={formData.startDate}
+                onChange={(e) => setFormData(prev => ({ ...prev, startDate: e.target.value }))}
+                required
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="periodEndDate">Period End Date</Label>
+              <Input
+                id="periodEndDate"
+                type="date"
+                value={formData.periodEndDate}
+                onChange={(e) => setFormData(prev => ({ ...prev, periodEndDate: e.target.value }))}
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="endDate">Cycle End Date</Label>
+              <Input
+                id="endDate"
+                type="date"
+                value={formData.endDate}
+                onChange={(e) => setFormData(prev => ({ ...prev, endDate: e.target.value }))}
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="flowIntensity">Flow Intensity</Label>
+              <Select value={formData.flowIntensity} onValueChange={(value) => setFormData(prev => ({ ...prev, flowIntensity: value }))}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select intensity" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="light">Light</SelectItem>
+                  <SelectItem value="medium">Medium</SelectItem>
+                  <SelectItem value="heavy">Heavy</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label htmlFor="mood">Mood</Label>
+              <Input
+                id="mood"
+                value={formData.mood}
+                onChange={(e) => setFormData(prev => ({ ...prev, mood: e.target.value }))}
+                placeholder="How are you feeling?"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="notes">Notes</Label>
+              <Textarea
+                id="notes"
+                value={formData.notes}
+                onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
+                placeholder="Any additional notes..."
+                rows={3}
+              />
+            </div>
+
+            <div className="flex justify-end space-x-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  setIsDialogOpen(false);
+                  setEditingCycle(null);
+                  resetForm();
+                }}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" disabled={createCycleMutation.isPending || updateCycleMutation.isPending}>
+                {editingCycle ? 'Update' : 'Create'} Cycle
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
 
       <BottomNavigation />
     </div>
