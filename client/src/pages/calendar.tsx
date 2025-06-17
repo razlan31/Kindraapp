@@ -333,12 +333,19 @@ export default function Calendar() {
         if (format(day, 'yyyy-MM-dd') === '2025-05-16') {
           console.log(`🔵 MAY 16th: OVULATION phase (dayOfCycle ${dayOfCycle} === ovulationDay ${ovulationDay})`);
         }
-        return { phase: 'ovulation', day: dayOfCycle, cycle };
+        return { phase: 'ovulation', day: dayOfCycle, cycle, isOvulation: true };
       } else if (dayOfCycle >= ovulationDay - 2 && dayOfCycle <= ovulationDay + 2) {
         if (format(day, 'yyyy-MM-dd') === '2025-05-16') {
-          console.log(`💜 MAY 16th: FERTILE phase (${ovulationDay - 2} <= ${dayOfCycle} <= ${ovulationDay + 2})`);
+          console.log(`💜 MAY 16th: FERTILE phase (${ovulationDay - 2} <= ${dayOfCycle} <= ${ovulationDay + 2}) - checking for ovulation`);
         }
-        return { phase: 'fertile', day: dayOfCycle, cycle, isOvulation: false };
+        // Check if this is actually ovulation day within fertile window
+        const isOvulationDay = dayOfCycle === ovulationDay;
+        return { 
+          phase: isOvulationDay ? 'ovulation' : 'fertile', 
+          day: dayOfCycle, 
+          cycle, 
+          isOvulation: isOvulationDay 
+        };
       } else if (dayOfCycle < ovulationDay) {
         if (format(day, 'yyyy-MM-dd') === '2025-05-16') {
           console.log(`🌱 MAY 16th: FOLLICULAR phase (dayOfCycle ${dayOfCycle} < ovulationDay ${ovulationDay})`);
