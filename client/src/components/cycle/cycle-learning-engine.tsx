@@ -35,28 +35,44 @@ interface CycleLearningEngineProps {
 // Helper function for relationship-focused AI insights
 const getRelationshipInsights = (data: CycleLearningData, connectionName: string): string[] => {
   const insights = [];
+  const isSelf = !connectionName || connectionName.toLowerCase() === 'you' || connectionName.toLowerCase() === 'self';
+  const pronoun = isSelf ? 'Your' : `${connectionName}'s`;
+  const reflexive = isSelf ? 'yourself' : 'her';
+  const possessive = isSelf ? 'your' : 'her';
   
   // Cycle regularity insight for relationship planning
   if (data.cycleVariability < 0.1) {
-    insights.push(`${connectionName}'s highly regular cycles make it easier to plan special moments and anticipate her emotional needs with confidence.`);
+    insights.push(isSelf 
+      ? `Your highly regular cycles make it easier to plan special moments and anticipate your emotional needs with confidence.`
+      : `${connectionName}'s highly regular cycles make it easier to plan special moments and anticipate her emotional needs with confidence.`);
   } else if (data.cycleVariability > 0.3) {
-    insights.push(`${connectionName}'s cycles vary significantly - staying flexible and responsive to her changing needs will strengthen your connection.`);
+    insights.push(isSelf
+      ? `Your cycles vary significantly - staying flexible and responsive to your changing needs will strengthen your self-awareness.`
+      : `${connectionName}'s cycles vary significantly - staying flexible and responsive to her changing needs will strengthen your connection.`);
   }
   
   // Emotional pattern insights
   const moodConsistency = data.moodPatterns.reduce((avg, mood) => avg + mood.consistency, 0) / data.moodPatterns.length;
   if (moodConsistency > 0.7) {
-    insights.push(`${connectionName} shows consistent emotional patterns - you can reliably anticipate when she might need extra support or feel most energetic.`);
+    insights.push(isSelf
+      ? `You show consistent emotional patterns - you can reliably anticipate when you might need extra support or feel most energetic.`
+      : `${connectionName} shows consistent emotional patterns - you can reliably anticipate when she might need extra support or feel most energetic.`);
   } else {
-    insights.push(`${connectionName}'s emotional patterns vary - focusing on daily check-ins and open communication will help you stay connected.`);
+    insights.push(isSelf
+      ? `Your emotional patterns vary - focusing on daily self-check-ins and mindful awareness will help you stay connected to yourself.`
+      : `${connectionName}'s emotional patterns vary - focusing on daily check-ins and open communication will help you stay connected.`);
   }
   
   // Relationship timing insights
-  insights.push(`Based on her ${data.averageCycleLength}-day cycles, plan intimate conversations and important decisions during her follicular and ovulation phases for best reception.`);
+  insights.push(isSelf
+    ? `Based on your ${data.averageCycleLength}-day cycles, plan important conversations and decisions during your follicular and ovulation phases for best outcomes.`
+    : `Based on her ${data.averageCycleLength}-day cycles, plan intimate conversations and important decisions during her follicular and ovulation phases for best reception.`);
   
   // Support strategy insight
   if (data.dataQuality > 0.8) {
-    insights.push(`With ${Math.round(data.dataQuality * 100)}% data quality, you have reliable insights to support ${connectionName} more effectively throughout her cycle.`);
+    insights.push(isSelf
+      ? `With ${Math.round(data.dataQuality * 100)}% data quality, you have reliable insights to support yourself more effectively throughout your cycle.`
+      : `With ${Math.round(data.dataQuality * 100)}% data quality, you have reliable insights to support ${connectionName} more effectively throughout her cycle.`);
   }
   
   return insights.slice(0, 3); // Return top 3 insights

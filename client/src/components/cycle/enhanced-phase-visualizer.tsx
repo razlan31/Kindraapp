@@ -27,33 +27,55 @@ interface PhaseVisualizerProps {
 
 // Helper function for relationship-focused dynamics
 const getRelationshipDynamics = (phase: string, connectionName: string): string[] => {
+  const isSelf = !connectionName || connectionName.toLowerCase() === 'you' || connectionName.toLowerCase() === 'self';
+  
   switch (phase) {
     case 'menstrual':
-      return [
+      return isSelf ? [
+        "You value emotional intimacy and gentle self-care during this sensitive time",
+        "Perfect opportunity for deeper self-reflection and quality alone time",
+        "You may appreciate thoughtful self-gestures more than social activities"
+      ] : [
         `${connectionName} values emotional intimacy and gentle support during this sensitive time`,
         "Perfect opportunity for deeper conversations and quality time together",
         "She may appreciate thoughtful gestures more than grand romantic displays"
       ];
     case 'follicular':
-      return [
+      return isSelf ? [
+        "You're open to new experiences and personal growth adventures",
+        "Ideal time for planning future activities and discussing your goals",
+        "Your increasing energy makes this perfect for meaningful connections"
+      ] : [
         `${connectionName} is open to new relationship experiences and adventures`,
         "Ideal time for planning future activities and discussing relationship goals",
         "Her increasing energy makes this perfect for meaningful connections"
       ];
     case 'fertile':
-      return [
+      return isSelf ? [
+        "You feel most confident and socially connected during this phase",
+        "Natural time for romance, intimacy, and expressing feelings openly",
+        "Communication flows easily - perfect for important conversations"
+      ] : [
         `${connectionName} feels most confident and socially connected during this phase`,
         "Natural time for romance, intimacy, and expressing feelings openly",
         "Communication flows easily - perfect for important relationship talks"
       ];
     case 'luteal':
-      return [
+      return isSelf ? [
+        "You may need extra self-patience and understanding during mood changes",
+        "Focus on consistent self-care routines rather than judging yourself",
+        "Small acts of self-kindness and stability mean more than usual"
+      ] : [
         `${connectionName} may need extra patience but also craves understanding`,
         "Focus on consistent support rather than trying to 'fix' her mood",
         "Small acts of kindness and reliability mean more than usual"
       ];
     default:
-      return [
+      return isSelf ? [
+        "You experience unique emotional patterns throughout your cycle",
+        "Staying mindful of your needs strengthens self-awareness",
+        "Open self-communication helps navigate all phases"
+      ] : [
         `${connectionName} experiences unique emotional patterns throughout her cycle`,
         "Staying attentive to her needs strengthens your connection",
         "Open communication helps navigate all phases together"
