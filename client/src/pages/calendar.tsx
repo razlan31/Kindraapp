@@ -323,29 +323,24 @@ export default function Calendar() {
         });
       }
       
-      // Simple phase calculation with ovulation priority
+      // OVULATION-FIRST phase calculation - check exact ovulation day FIRST
       if (dayOfCycle <= periodLength) {
         if (format(day, 'yyyy-MM-dd') === '2025-05-16') {
           console.log(`🩸 MAY 16th: MENSTRUAL phase (dayOfCycle ${dayOfCycle} <= periodLength ${periodLength})`);
         }
         return { phase: 'menstrual', day: dayOfCycle, cycle };
       } else if (dayOfCycle === ovulationDay) {
+        // EXACT OVULATION DAY - highest priority
         if (format(day, 'yyyy-MM-dd') === '2025-05-16') {
-          console.log(`🔵 MAY 16th: OVULATION phase (dayOfCycle ${dayOfCycle} === ovulationDay ${ovulationDay})`);
+          console.log(`🔵 MAY 16th: EXACT OVULATION phase (dayOfCycle ${dayOfCycle} === ovulationDay ${ovulationDay})`);
         }
         return { phase: 'ovulation', day: dayOfCycle, cycle, isOvulation: true };
       } else if (dayOfCycle >= ovulationDay - 2 && dayOfCycle <= ovulationDay + 2) {
+        // FERTILE WINDOW (but not exact ovulation day)
         if (format(day, 'yyyy-MM-dd') === '2025-05-16') {
-          console.log(`💜 MAY 16th: FERTILE phase (${ovulationDay - 2} <= ${dayOfCycle} <= ${ovulationDay + 2}) - checking for ovulation`);
+          console.log(`💜 MAY 16th: FERTILE phase (${ovulationDay - 2} <= ${dayOfCycle} <= ${ovulationDay + 2}) - NOT ovulation day`);
         }
-        // Check if this is actually ovulation day within fertile window
-        const isOvulationDay = dayOfCycle === ovulationDay;
-        return { 
-          phase: isOvulationDay ? 'ovulation' : 'fertile', 
-          day: dayOfCycle, 
-          cycle, 
-          isOvulation: isOvulationDay 
-        };
+        return { phase: 'fertile', day: dayOfCycle, cycle, isOvulation: false };
       } else if (dayOfCycle < ovulationDay) {
         if (format(day, 'yyyy-MM-dd') === '2025-05-16') {
           console.log(`🌱 MAY 16th: FOLLICULAR phase (dayOfCycle ${dayOfCycle} < ovulationDay ${ovulationDay})`);
