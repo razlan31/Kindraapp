@@ -1,0 +1,708 @@
+🗓️ Calendar State: {currentDate: '2025-06-17', viewMode: 'monthly', viewStart: '2025-06-01', viewEnd: '2025-06-30', calendarDaysCount: 35, …}
+eruda.js:2 Calendar Debug - Total moments: 16 (16) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+eruda.js:2 🔍 June 16th final styling: {isToday: false, cycleDisplay: null, cycleDisplayColor: undefined, cyclesLength: 1, finalClassName: 'h-16 p-1 border rounded-lg transition-colors hover…ccent/50 border-border/20 bg-background/50  block', …}
+eruda.js:2 Today 2025-06-17 - Moment 105: 2025-06-13 - Match: false {id: 105, userId: '8', connectionId: 6, title: '', emoji: '💕', …}
+eruda.js:2 Today 2025-06-17 - Moment 104: 2025-06-13 - Match: false {id: 104, userId: '8', connectionId: 6, title: 'date', emoji: '📅', …}
+eruda.js:2 Today 2025-06-17 - Moment 46: 2025-06-13 - Match: false {id: 46, userId: '8', connectionId: 6, title: 'Birthday', emoji: '🎂', …}
+eruda.js:2 Today 2025-06-17 - Moment 60: 2025-06-08 - Match: false {id: 60, userId: '8', connectionId: 6, title: '', emoji: '⚡', …}
+eruda.js:2 Today 2025-06-17 - Moment 59: 2025-06-08 - Match: false {id: 59, userId: '8', connectionId: 6, title: '', emoji: '⚡', …}
+eruda.js:2 Today 2025-06-17 - Moment 58: 2025-06-08 - Match: false {id: 58, userId: '8', connectionId: 6, title: '', emoji: '💕', …}
+eruda.js:2 Today 2025-06-17 - Moment 57: 2025-06-08 - Match: false {id: 57, userId: '8', connectionId: 6, title: '', emoji: '💕', …}
+eruda.js:2 Today 2025-06-17 - Moment 56: 2025-06-08 - Match: false {id: 56, userId: '8', connectionId: 6, title: '', emoji: '⚡', …}
+eruda.js:2 Today 2025-06-17 - Moment 55: 2025-06-08 - Match: false {id: 55, userId: '8', connectionId: 6, title: '', emoji: '⚡', …}
+eruda.js:2 Today 2025-06-17 - Moment 54: 2025-06-08 - Match: false {id: 54, userId: '8', connectionId: 6, title: '', emoji: '💕', …}
+eruda.js:2 Today 2025-06-17 - Moment 53: 2025-06-08 - Match: false {id: 53, userId: '8', connectionId: 6, title: '', emoji: '💕', …}
+eruda.js:2 Today 2025-06-17 - Moment 52: 2025-06-08 - Match: false {id: 52, userId: '8', connectionId: 6, title: '', emoji: '⚡', …}
+eruda.js:2 Today 2025-06-17 - Moment 49: 2025-06-07 - Match: false {id: 49, userId: '8', connectionId: 6, title: null, emoji: '✅', …}
+eruda.js:2 Today 2025-06-17 - Moment 47: 2025-06-04 - Match: false {id: 47, userId: '8', connectionId: 6, title: 'lobesafsa', emoji: '😊', …}
+eruda.js:2 Today 2025-06-17 - Moment 45: 2025-05-16 - Match: false {id: 45, userId: '8', connectionId: 6, title: 'Started Dating', emoji: '💕', …}
+eruda.js:2 Today 2025-06-17 - Moment 44: 2025-05-16 - Match: false {id: 44, userId: '8', connectionId: 6, title: 'Connection Started', emoji: '💫', …}
+eruda.js:2 MomentModal render - momentModalOpen: false
+frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.
+t @ frame_ant.js:2
+s @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ _app-9e1eb76f170fd6ab.js:38
+(anonymous) @ _app-9e1eb76f170fd6ab.js:25
+e @ _app-9e1eb76f170fd6ab.js:14
+t.subscribe @ _app-9e1eb76f170fd6ab.js:14
+e.consumeQueue @ _app-9e1eb76f170fd6ab.js:25
+(anonymous) @ _app-9e1eb76f170fd6ab.js:25
+n @ _app-9e1eb76f170fd6ab.js:38
+setTimeout
+(anonymous) @ _app-9e1eb76f170fd6ab.js:38
+e.scheduleQueueConsumption @ _app-9e1eb76f170fd6ab.js:25
+(anonymous) @ _app-9e1eb76f170fd6ab.js:25
+e @ _app-9e1eb76f170fd6ab.js:14
+t.subscribe @ _app-9e1eb76f170fd6ab.js:14
+(anonymous) @ _app-9e1eb76f170fd6ab.js:25
+e @ _app-9e1eb76f170fd6ab.js:14
+t.subscribe @ _app-9e1eb76f170fd6ab.js:14
+e.try @ _app-9e1eb76f170fd6ab.js:25
+e.start @ _app-9e1eb76f170fd6ab.js:25
+t.request @ _app-9e1eb76f170fd6ab.js:25
+(anonymous) @ _app-9e1eb76f170fd6ab.js:14
+(anonymous) @ _app-9e1eb76f170fd6ab.js:14
+(anonymous) @ _app-9e1eb76f170fd6ab.js:25
+(anonymous) @ _app-9e1eb76f170fd6ab.js:14
+e.execute @ _app-9e1eb76f170fd6ab.js:14
+e.getObservableFromLink @ _app-9e1eb76f170fd6ab.js:11
+e.getResultsFromLink @ _app-9e1eb76f170fd6ab.js:11
+v @ _app-9e1eb76f170fd6ab.js:11
+e.fetchQueryByPolicy @ _app-9e1eb76f170fd6ab.js:11
+v @ _app-9e1eb76f170fd6ab.js:11
+e.fetchConcastWithInfo @ _app-9e1eb76f170fd6ab.js:11
+t.fetch @ _app-9e1eb76f170fd6ab.js:14
+t.reobserveAsConcast @ _app-9e1eb76f170fd6ab.js:14
+e.executeQuery @ _app-9e1eb76f170fd6ab.js:26
+(anonymous) @ _app-9e1eb76f170fd6ab.js:14
+(anonymous) @ 7292-042da6db7000cdbc.js:1
+(anonymous) @ 4333-8017c6349b396686.js:1
+t.trigger @ 4333-8017c6349b396686.js:1
+(anonymous) @ 4333-8017c6349b396686.js:1
+(anonymous) @ main-1e2320c2dea5f301.js:1
+n @ main-1e2320c2dea5f301.js:1
+u @ main-1e2320c2dea5f301.js:1
+Promise.then
+n @ main-1e2320c2dea5f301.js:1
+u @ main-1e2320c2dea5f301.js:1
+Promise.then
+n @ main-1e2320c2dea5f301.js:1
+u @ main-1e2320c2dea5f301.js:1
+Promise.then
+n @ main-1e2320c2dea5f301.js:1
+u @ main-1e2320c2dea5f301.js:1
+Promise.then
+n @ main-1e2320c2dea5f301.js:1
+u @ main-1e2320c2dea5f301.js:1
+Promise.then
+n @ main-1e2320c2dea5f301.js:1
+u @ main-1e2320c2dea5f301.js:1
+Promise.then
+n @ main-1e2320c2dea5f301.js:1
+u @ main-1e2320c2dea5f301.js:1
+Promise.then
+n @ main-1e2320c2dea5f301.js:1
+u @ main-1e2320c2dea5f301.js:1
+Promise.then
+n @ main-1e2320c2dea5f301.js:1
+u @ main-1e2320c2dea5f301.js:1
+Promise.then
+n @ main-1e2320c2dea5f301.js:1
+u @ main-1e2320c2dea5f301.js:1Understand this error
+frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.
+t @ frame_ant.js:2
+s @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ _app-9e1eb76f170fd6ab.js:38
+(anonymous) @ _app-9e1eb76f170fd6ab.js:25
+e @ _app-9e1eb76f170fd6ab.js:14
+t.subscribe @ _app-9e1eb76f170fd6ab.js:14
+e.consumeQueue @ _app-9e1eb76f170fd6ab.js:25
+(anonymous) @ _app-9e1eb76f170fd6ab.js:25
+n @ _app-9e1eb76f170fd6ab.js:38
+setTimeout
+(anonymous) @ _app-9e1eb76f170fd6ab.js:38
+e.scheduleQueueConsumption @ _app-9e1eb76f170fd6ab.js:25
+(anonymous) @ _app-9e1eb76f170fd6ab.js:25
+e @ _app-9e1eb76f170fd6ab.js:14
+t.subscribe @ _app-9e1eb76f170fd6ab.js:14
+(anonymous) @ _app-9e1eb76f170fd6ab.js:25
+e @ _app-9e1eb76f170fd6ab.js:14
+t.subscribe @ _app-9e1eb76f170fd6ab.js:14
+e.try @ _app-9e1eb76f170fd6ab.js:25
+e.start @ _app-9e1eb76f170fd6ab.js:25
+t.request @ _app-9e1eb76f170fd6ab.js:25
+(anonymous) @ _app-9e1eb76f170fd6ab.js:14
+(anonymous) @ _app-9e1eb76f170fd6ab.js:14
+(anonymous) @ _app-9e1eb76f170fd6ab.js:25
+(anonymous) @ _app-9e1eb76f170fd6ab.js:14
+e.execute @ _app-9e1eb76f170fd6ab.js:14
+e.getObservableFromLink @ _app-9e1eb76f170fd6ab.js:11
+(anonymous) @ _app-9e1eb76f170fd6ab.js:11
+(anonymous) @ _app-9e1eb76f170fd6ab.js:11
+(anonymous) @ _app-9e1eb76f170fd6ab.js:11
+(anonymous) @ _app-9e1eb76f170fd6ab.js:11
+s @ _app-9e1eb76f170fd6ab.js:11
+e.mutate @ _app-9e1eb76f170fd6ab.js:11
+e.mutate @ _app-9e1eb76f170fd6ab.js:11
+(anonymous) @ _app-9e1eb76f170fd6ab.js:14
+(anonymous) @ _app-9e1eb76f170fd6ab.js:40
+(anonymous) @ main-1e2320c2dea5f301.js:1
+n @ main-1e2320c2dea5f301.js:1
+u @ main-1e2320c2dea5f301.js:1
+(anonymous) @ main-1e2320c2dea5f301.js:1
+(anonymous) @ main-1e2320c2dea5f301.js:1
+n @ _app-9e1eb76f170fd6ab.js:38Understand this error
+frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.
+t @ frame_ant.js:2
+s @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ _app-9e1eb76f170fd6ab.js:38
+(anonymous) @ _app-9e1eb76f170fd6ab.js:25
+e @ _app-9e1eb76f170fd6ab.js:14
+t.subscribe @ _app-9e1eb76f170fd6ab.js:14
+e.consumeQueue @ _app-9e1eb76f170fd6ab.js:25
+(anonymous) @ _app-9e1eb76f170fd6ab.js:25
+n @ _app-9e1eb76f170fd6ab.js:38
+setTimeout
+(anonymous) @ _app-9e1eb76f170fd6ab.js:38
+e.scheduleQueueConsumption @ _app-9e1eb76f170fd6ab.js:25
+(anonymous) @ _app-9e1eb76f170fd6ab.js:25
+e @ _app-9e1eb76f170fd6ab.js:14
+t.subscribe @ _app-9e1eb76f170fd6ab.js:14
+(anonymous) @ _app-9e1eb76f170fd6ab.js:25
+e @ _app-9e1eb76f170fd6ab.js:14
+t.subscribe @ _app-9e1eb76f170fd6ab.js:14
+e.try @ _app-9e1eb76f170fd6ab.js:25
+e.start @ _app-9e1eb76f170fd6ab.js:25
+t.request @ _app-9e1eb76f170fd6ab.js:25
+(anonymous) @ _app-9e1eb76f170fd6ab.js:14
+(anonymous) @ _app-9e1eb76f170fd6ab.js:14
+(anonymous) @ _app-9e1eb76f170fd6ab.js:25
+(anonymous) @ _app-9e1eb76f170fd6ab.js:14
+e.execute @ _app-9e1eb76f170fd6ab.js:14
+e.getObservableFromLink @ _app-9e1eb76f170fd6ab.js:11
+e.getResultsFromLink @ _app-9e1eb76f170fd6ab.js:11
+v @ _app-9e1eb76f170fd6ab.js:11
+e.fetchQueryByPolicy @ _app-9e1eb76f170fd6ab.js:11
+v @ _app-9e1eb76f170fd6ab.js:11
+e.fetchConcastWithInfo @ _app-9e1eb76f170fd6ab.js:11
+t.fetch @ _app-9e1eb76f170fd6ab.js:14
+t.reobserveAsConcast @ _app-9e1eb76f170fd6ab.js:14
+e.executeQuery @ _app-9e1eb76f170fd6ab.js:26
+(anonymous) @ _app-9e1eb76f170fd6ab.js:14
+(anonymous) @ _app-9e1eb76f170fd6ab.js:40
+(anonymous) @ main-1e2320c2dea5f301.js:1
+n @ main-1e2320c2dea5f301.js:1
+u @ main-1e2320c2dea5f301.js:1
+(anonymous) @ main-1e2320c2dea5f301.js:1
+(anonymous) @ main-1e2320c2dea5f301.js:1
+(anonymous) @ _app-9e1eb76f170fd6ab.js:40
+(anonymous) @ _app-9e1eb76f170fd6ab.js:40
+(anonymous) @ main-1e2320c2dea5f301.js:1
+n @ main-1e2320c2dea5f301.js:1
+u @ main-1e2320c2dea5f301.js:1
+(anonymous) @ main-1e2320c2dea5f301.js:1
+(anonymous) @ main-1e2320c2dea5f301.js:1
+n @ _app-9e1eb76f170fd6ab.js:38Understand this error
+frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.
+t @ frame_ant.js:2
+s @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ _app-9e1eb76f170fd6ab.js:38
+(anonymous) @ _app-9e1eb76f170fd6ab.js:25
+e @ _app-9e1eb76f170fd6ab.js:14
+t.subscribe @ _app-9e1eb76f170fd6ab.js:14
+e.consumeQueue @ _app-9e1eb76f170fd6ab.js:25
+(anonymous) @ _app-9e1eb76f170fd6ab.js:25
+n @ _app-9e1eb76f170fd6ab.js:38
+setTimeout
+(anonymous) @ _app-9e1eb76f170fd6ab.js:38
+e.scheduleQueueConsumption @ _app-9e1eb76f170fd6ab.js:25
+(anonymous) @ _app-9e1eb76f170fd6ab.js:25
+e @ _app-9e1eb76f170fd6ab.js:14
+t.subscribe @ _app-9e1eb76f170fd6ab.js:14
+(anonymous) @ _app-9e1eb76f170fd6ab.js:25
+e @ _app-9e1eb76f170fd6ab.js:14
+t.subscribe @ _app-9e1eb76f170fd6ab.js:14
+e.try @ _app-9e1eb76f170fd6ab.js:25
+e.start @ _app-9e1eb76f170fd6ab.js:25
+t.request @ _app-9e1eb76f170fd6ab.js:25
+(anonymous) @ _app-9e1eb76f170fd6ab.js:14
+(anonymous) @ _app-9e1eb76f170fd6ab.js:14
+(anonymous) @ _app-9e1eb76f170fd6ab.js:25
+(anonymous) @ _app-9e1eb76f170fd6ab.js:14
+e.execute @ _app-9e1eb76f170fd6ab.js:14
+e.getObservableFromLink @ _app-9e1eb76f170fd6ab.js:11
+(anonymous) @ _app-9e1eb76f170fd6ab.js:11
+(anonymous) @ _app-9e1eb76f170fd6ab.js:11
+(anonymous) @ _app-9e1eb76f170fd6ab.js:11
+(anonymous) @ _app-9e1eb76f170fd6ab.js:11
+s @ _app-9e1eb76f170fd6ab.js:11
+e.mutate @ _app-9e1eb76f170fd6ab.js:11
+e.mutate @ _app-9e1eb76f170fd6ab.js:11
+(anonymous) @ _app-9e1eb76f170fd6ab.js:14
+e.wait @ 7292-042da6db7000cdbc.js:1
+u @ 2259-2f2c7ecfd2d9e63c.js:1
+(anonymous) @ 2259-2f2c7ecfd2d9e63c.js:1
+n @ _app-9e1eb76f170fd6ab.js:38Understand this error
+eruda.js:2 [vite] server connection lost. Polling for restart...
+frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.
+t @ frame_ant.js:2
+s @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ _app-9e1eb76f170fd6ab.js:38
+(anonymous) @ _app-9e1eb76f170fd6ab.js:25
+e @ _app-9e1eb76f170fd6ab.js:14
+t.subscribe @ _app-9e1eb76f170fd6ab.js:14
+e.consumeQueue @ _app-9e1eb76f170fd6ab.js:25
+(anonymous) @ _app-9e1eb76f170fd6ab.js:25
+n @ _app-9e1eb76f170fd6ab.js:38
+setTimeout
+(anonymous) @ _app-9e1eb76f170fd6ab.js:38
+e.scheduleQueueConsumption @ _app-9e1eb76f170fd6ab.js:25
+(anonymous) @ _app-9e1eb76f170fd6ab.js:25
+e @ _app-9e1eb76f170fd6ab.js:14
+t.subscribe @ _app-9e1eb76f170fd6ab.js:14
+(anonymous) @ _app-9e1eb76f170fd6ab.js:25
+e @ _app-9e1eb76f170fd6ab.js:14
+t.subscribe @ _app-9e1eb76f170fd6ab.js:14
+e.try @ _app-9e1eb76f170fd6ab.js:25
+e.start @ _app-9e1eb76f170fd6ab.js:25
+t.request @ _app-9e1eb76f170fd6ab.js:25
+(anonymous) @ _app-9e1eb76f170fd6ab.js:14
+(anonymous) @ _app-9e1eb76f170fd6ab.js:14
+(anonymous) @ _app-9e1eb76f170fd6ab.js:25
+(anonymous) @ _app-9e1eb76f170fd6ab.js:14
+e.execute @ _app-9e1eb76f170fd6ab.js:14
+e.getObservableFromLink @ _app-9e1eb76f170fd6ab.js:11
+(anonymous) @ _app-9e1eb76f170fd6ab.js:11
+(anonymous) @ _app-9e1eb76f170fd6ab.js:11
+(anonymous) @ _app-9e1eb76f170fd6ab.js:11
+(anonymous) @ _app-9e1eb76f170fd6ab.js:11
+s @ _app-9e1eb76f170fd6ab.js:11
+e.mutate @ _app-9e1eb76f170fd6ab.js:11
+e.mutate @ _app-9e1eb76f170fd6ab.js:11
+(anonymous) @ _app-9e1eb76f170fd6ab.js:14
+(anonymous) @ 7292-042da6db7000cdbc.js:1
+(anonymous) @ main-1e2320c2dea5f301.js:1
+n @ main-1e2320c2dea5f301.js:1
+u @ main-1e2320c2dea5f301.js:1
+(anonymous) @ main-1e2320c2dea5f301.js:1
+(anonymous) @ main-1e2320c2dea5f301.js:1
+(anonymous) @ 7292-042da6db7000cdbc.js:1
+oO @ framework-0003c7982be561e5.js:1
+uB @ framework-0003c7982be561e5.js:1
+u_ @ framework-0003c7982be561e5.js:1
+r6 @ framework-0003c7982be561e5.js:1
+(anonymous) @ framework-0003c7982be561e5.js:1
+uO @ framework-0003c7982be561e5.js:1
+uS @ framework-0003c7982be561e5.js:1
+C @ framework-0003c7982be561e5.js:1
+z @ framework-0003c7982be561e5.js:1Understand this error
+frame_ant.js:2 
+            
+            
+           POST https://logs.browser-intake-us5-datadoghq.com/api/v2/logs?ddsource=browser&ddtags=sdk_version%3A4.46.0%2Capi%3Afetch%2Cenv%3Aproduction%2Cservice%3Awebsite%2Cversion%3A7ee6cf40&dd-api-key=pub31a5047a3a4692afb84a423db984dc57&dd-evp-origin-version=4.46.0&dd-evp-origin=browser&dd-request-id=6c591a59-a8a4-40b6-a65c-ffffb3bace90 net::ERR_NETWORK_CHANGED
+(anonymous) @ frame_ant.js:2
+(anonymous) @ _app-9e1eb76f170fd6ab.js:38
+a @ _app-9e1eb76f170fd6ab.js:26
+m @ _app-9e1eb76f170fd6ab.js:26
+g @ _app-9e1eb76f170fd6ab.js:26
+send @ _app-9e1eb76f170fd6ab.js:26
+e.flush @ _app-9e1eb76f170fd6ab.js:11
+(anonymous) @ _app-9e1eb76f170fd6ab.js:11
+(anonymous) @ _app-9e1eb76f170fd6ab.js:11
+e.notify @ _app-9e1eb76f170fd6ab.js:11
+f @ _app-9e1eb76f170fd6ab.js:11
+(anonymous) @ _app-9e1eb76f170fd6ab.js:11
+(anonymous) @ _app-9e1eb76f170fd6ab.js:11
+e.notify @ _app-9e1eb76f170fd6ab.js:11
+T @ _app-9e1eb76f170fd6ab.js:26
+O @ _app-9e1eb76f170fd6ab.js:26
+(anonymous) @ _app-9e1eb76f170fd6ab.js:26
+d @ _app-9e1eb76f170fd6ab.js:6
+(anonymous) @ _app-9e1eb76f170fd6ab.js:6Understand this error
+frame_ant.js:2 
+            
+            
+           Uncaught (in promise) TypeError: Failed to fetch
+    at frame_ant.js:2:11940
+    at _app-9e1eb76f170fd6ab.js:38:9046
+    at a (_app-9e1eb76f170fd6ab.js:26:171567)
+    at m (_app-9e1eb76f170fd6ab.js:26:169939)
+    at g (_app-9e1eb76f170fd6ab.js:26:169426)
+    at Object.send (_app-9e1eb76f170fd6ab.js:26:171827)
+    at e.flush (_app-9e1eb76f170fd6ab.js:11:79000)
+    at _app-9e1eb76f170fd6ab.js:11:78611
+    at _app-9e1eb76f170fd6ab.js:11:90029
+    at Array.forEach (<anonymous>)
+    at e.notify (_app-9e1eb76f170fd6ab.js:11:90002)
+    at f (_app-9e1eb76f170fd6ab.js:11:25809)
+    at _app-9e1eb76f170fd6ab.js:11:25725
+    at _app-9e1eb76f170fd6ab.js:11:90029
+    at Array.forEach (<anonymous>)
+    at e.notify (_app-9e1eb76f170fd6ab.js:11:90002)
+    at Object.T [as after] (_app-9e1eb76f170fd6ab.js:26:54623)
+    at O (_app-9e1eb76f170fd6ab.js:26:53241)
+    at _app-9e1eb76f170fd6ab.js:26:54460
+    at d (_app-9e1eb76f170fd6ab.js:6:184926)
+    at _app-9e1eb76f170fd6ab.js:6:184874
+(anonymous) @ frame_ant.js:2
+(anonymous) @ _app-9e1eb76f170fd6ab.js:38
+a @ _app-9e1eb76f170fd6ab.js:26
+m @ _app-9e1eb76f170fd6ab.js:26
+g @ _app-9e1eb76f170fd6ab.js:26
+send @ _app-9e1eb76f170fd6ab.js:26
+e.flush @ _app-9e1eb76f170fd6ab.js:11
+(anonymous) @ _app-9e1eb76f170fd6ab.js:11
+(anonymous) @ _app-9e1eb76f170fd6ab.js:11
+e.notify @ _app-9e1eb76f170fd6ab.js:11
+f @ _app-9e1eb76f170fd6ab.js:11
+(anonymous) @ _app-9e1eb76f170fd6ab.js:11
+(anonymous) @ _app-9e1eb76f170fd6ab.js:11
+e.notify @ _app-9e1eb76f170fd6ab.js:11
+T @ _app-9e1eb76f170fd6ab.js:26
+O @ _app-9e1eb76f170fd6ab.js:26
+(anonymous) @ _app-9e1eb76f170fd6ab.js:26
+d @ _app-9e1eb76f170fd6ab.js:6
+(anonymous) @ _app-9e1eb76f170fd6ab.js:6Understand this error
+frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.
+t @ frame_ant.js:2
+s @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ _app-9e1eb76f170fd6ab.js:38
+(anonymous) @ _app-9e1eb76f170fd6ab.js:25
+e @ _app-9e1eb76f170fd6ab.js:14
+t.subscribe @ _app-9e1eb76f170fd6ab.js:14
+e.consumeQueue @ _app-9e1eb76f170fd6ab.js:25
+(anonymous) @ _app-9e1eb76f170fd6ab.js:25
+n @ _app-9e1eb76f170fd6ab.js:38
+setTimeout
+(anonymous) @ _app-9e1eb76f170fd6ab.js:38
+e.scheduleQueueConsumption @ _app-9e1eb76f170fd6ab.js:25
+(anonymous) @ _app-9e1eb76f170fd6ab.js:25
+e @ _app-9e1eb76f170fd6ab.js:14
+t.subscribe @ _app-9e1eb76f170fd6ab.js:14
+(anonymous) @ _app-9e1eb76f170fd6ab.js:25
+e @ _app-9e1eb76f170fd6ab.js:14
+t.subscribe @ _app-9e1eb76f170fd6ab.js:14
+e.try @ _app-9e1eb76f170fd6ab.js:25
+e.start @ _app-9e1eb76f170fd6ab.js:25
+t.request @ _app-9e1eb76f170fd6ab.js:25
+(anonymous) @ _app-9e1eb76f170fd6ab.js:14
+(anonymous) @ _app-9e1eb76f170fd6ab.js:14
+(anonymous) @ _app-9e1eb76f170fd6ab.js:25
+(anonymous) @ _app-9e1eb76f170fd6ab.js:14
+e.execute @ _app-9e1eb76f170fd6ab.js:14
+e.getObservableFromLink @ _app-9e1eb76f170fd6ab.js:11
+(anonymous) @ _app-9e1eb76f170fd6ab.js:11
+(anonymous) @ _app-9e1eb76f170fd6ab.js:11
+(anonymous) @ _app-9e1eb76f170fd6ab.js:11
+(anonymous) @ _app-9e1eb76f170fd6ab.js:11
+s @ _app-9e1eb76f170fd6ab.js:11
+e.mutate @ _app-9e1eb76f170fd6ab.js:11
+e.mutate @ _app-9e1eb76f170fd6ab.js:11
+(anonymous) @ _app-9e1eb76f170fd6ab.js:14
+(anonymous) @ _app-9e1eb76f170fd6ab.js:40
+(anonymous) @ main-1e2320c2dea5f301.js:1
+n @ main-1e2320c2dea5f301.js:1
+u @ main-1e2320c2dea5f301.js:1
+(anonymous) @ main-1e2320c2dea5f301.js:1
+(anonymous) @ main-1e2320c2dea5f301.js:1
+n @ _app-9e1eb76f170fd6ab.js:38Understand this error
+frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.
+t @ frame_ant.js:2
+s @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ _app-9e1eb76f170fd6ab.js:38
+(anonymous) @ _app-9e1eb76f170fd6ab.js:25
+e @ _app-9e1eb76f170fd6ab.js:14
+t.subscribe @ _app-9e1eb76f170fd6ab.js:14
+e.consumeQueue @ _app-9e1eb76f170fd6ab.js:25
+(anonymous) @ _app-9e1eb76f170fd6ab.js:25
+n @ _app-9e1eb76f170fd6ab.js:38
+setTimeout
+(anonymous) @ _app-9e1eb76f170fd6ab.js:38
+e.scheduleQueueConsumption @ _app-9e1eb76f170fd6ab.js:25
+(anonymous) @ _app-9e1eb76f170fd6ab.js:25
+e @ _app-9e1eb76f170fd6ab.js:14
+t.subscribe @ _app-9e1eb76f170fd6ab.js:14
+(anonymous) @ _app-9e1eb76f170fd6ab.js:25
+e @ _app-9e1eb76f170fd6ab.js:14
+t.subscribe @ _app-9e1eb76f170fd6ab.js:14
+e.try @ _app-9e1eb76f170fd6ab.js:25
+e.start @ _app-9e1eb76f170fd6ab.js:25
+t.request @ _app-9e1eb76f170fd6ab.js:25
+(anonymous) @ _app-9e1eb76f170fd6ab.js:14
+(anonymous) @ _app-9e1eb76f170fd6ab.js:14
+(anonymous) @ _app-9e1eb76f170fd6ab.js:25
+(anonymous) @ _app-9e1eb76f170fd6ab.js:14
+e.execute @ _app-9e1eb76f170fd6ab.js:14
+e.getObservableFromLink @ _app-9e1eb76f170fd6ab.js:11
+(anonymous) @ _app-9e1eb76f170fd6ab.js:11
+(anonymous) @ _app-9e1eb76f170fd6ab.js:11
+(anonymous) @ _app-9e1eb76f170fd6ab.js:11
+(anonymous) @ _app-9e1eb76f170fd6ab.js:11
+s @ _app-9e1eb76f170fd6ab.js:11
+e.mutate @ _app-9e1eb76f170fd6ab.js:11
+e.mutate @ _app-9e1eb76f170fd6ab.js:11
+(anonymous) @ _app-9e1eb76f170fd6ab.js:14
+(anonymous) @ _app-9e1eb76f170fd6ab.js:40
+(anonymous) @ main-1e2320c2dea5f301.js:1
+n @ main-1e2320c2dea5f301.js:1
+u @ main-1e2320c2dea5f301.js:1
+(anonymous) @ main-1e2320c2dea5f301.js:1
+(anonymous) @ main-1e2320c2dea5f301.js:1
+(anonymous) @ _app-9e1eb76f170fd6ab.js:40
+v @ _app-9e1eb76f170fd6ab.js:14
+S @ _app-9e1eb76f170fd6ab.js:14
+E @ _app-9e1eb76f170fd6ab.js:14
+n @ _app-9e1eb76f170fd6ab.js:38Understand this error
+frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.
+t @ frame_ant.js:2
+s @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+Promise.then
+t @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ _app-9e1eb76f170fd6ab.js:38
+(anonymous) @ _app-9e1eb76f170fd6ab.js:25
+e @ _app-9e1eb76f170fd6ab.js:14
+t.subscribe @ _app-9e1eb76f170fd6ab.js:14
+e.consumeQueue @ _app-9e1eb76f170fd6ab.js:25
+(anonymous) @ _app-9e1eb76f170fd6ab.js:25
+n @ _app-9e1eb76f170fd6ab.js:38
+setTimeout
+(anonymous) @ _app-9e1eb76f170fd6ab.js:38
+e.scheduleQueueConsumption @ _app-9e1eb76f170fd6ab.js:25
+(anonymous) @ _app-9e1eb76f170fd6ab.js:25
+e @ _app-9e1eb76f170fd6ab.js:14
+t.subscribe @ _app-9e1eb76f170fd6ab.js:14
+(anonymous) @ _app-9e1eb76f170fd6ab.js:25
+e @ _app-9e1eb76f170fd6ab.js:14
+t.subscribe @ _app-9e1eb76f170fd6ab.js:14
+e.try @ _app-9e1eb76f170fd6ab.js:25
+e.start @ _app-9e1eb76f170fd6ab.js:25
+t.request @ _app-9e1eb76f170fd6ab.js:25
+(anonymous) @ _app-9e1eb76f170fd6ab.js:14
+(anonymous) @ _app-9e1eb76f170fd6ab.js:14
+(anonymous) @ _app-9e1eb76f170fd6ab.js:25
+(anonymous) @ _app-9e1eb76f170fd6ab.js:14
+e.execute @ _app-9e1eb76f170fd6ab.js:14
+e.getObservableFromLink @ _app-9e1eb76f170fd6ab.js:11
+(anonymous) @ _app-9e1eb76f170fd6ab.js:11
+(anonymous) @ _app-9e1eb76f170fd6ab.js:11
+(anonymous) @ _app-9e1eb76f170fd6ab.js:11
+(anonymous) @ _app-9e1eb76f170fd6ab.js:11
+s @ _app-9e1eb76f170fd6ab.js:11
+e.mutate @ _app-9e1eb76f170fd6ab.js:11
+e.mutate @ _app-9e1eb76f170fd6ab.js:11
+(anonymous) @ _app-9e1eb76f170fd6ab.js:14
+(anonymous) @ 7292-042da6db7000cdbc.js:1
+(anonymous) @ main-1e2320c2dea5f301.js:1
+n @ main-1e2320c2dea5f301.js:1
+u @ main-1e2320c2dea5f301.js:1
+(anonymous) @ main-1e2320c2dea5f301.js:1
+(anonymous) @ main-1e2320c2dea5f301.js:1
+(anonymous) @ 7292-042da6db7000cdbc.js:1
+oO @ framework-0003c7982be561e5.js:1
+uB @ framework-0003c7982be561e5.js:1
+u_ @ framework-0003c7982be561e5.js:1
+r6 @ framework-0003c7982be561e5.js:1
+(anonymous) @ framework-0003c7982be561e5.js:1
+uO @ framework-0003c7982be561e5.js:1
+uS @ framework-0003c7982be561e5.js:1
+C @ framework-0003c7982be561e5.js:1
+z @ framework-0003c7982be561e5.js:1Understand this error
+Console.js:61 🔍 Calendar cycles data loaded: {cyclesLength: 0, cycles: Array(0), timestamp: '2025-06-17T03:49:01.022Z'}
+Console.js:61 🗓️ Calendar State: {currentDate: '2025-06-17', viewMode: 'monthly', viewStart: '2025-06-01', viewEnd: '2025-06-30', calendarDaysCount: 35, …}
+Console.js:61 Calendar Debug - Total moments: 0 []
+Console.js:61 🔍 June 16th: NUCLEAR OPTION - No cycles exist, skipping all cycle processing
+Console.js:61 🔍 June 16th: SAFETY CHECK - forced cycleDisplay to null because no cycles exist
+Console.js:61 🔍 June 16th final styling: {isToday: false, cycleDisplay: null, cycleDisplayColor: undefined, cyclesLength: 0, finalClassName: 'h-16 p-1 border rounded-lg transition-colors hover…cent/50 border-border/20 !bg-background/50  block', …}
+Console.js:61 MomentModal render - momentModalOpen: false
+Console.js:61 MomentModal render - momentModalOpen: false activityType: moment
+Console.js:61 Selected connection ID changed: null
+Console.js:61 Calendar navigation check: {navigationConnectionId: null}
+Console.js:61 🔍 AGGRESSIVE CACHE CLEAR: Cleared all cycle-related storage
+Console.js:61 Modal useEffect - selectedDate from context: null
+Console.js:61 Modal useEffect - editingMoment: null
+Console.js:61 Modal useEffect - momentModalOpen: false
+Console.js:61 Auth: Starting to load user, setting loading to true
+Console.js:61 Auth: Starting to load user, setting loading to true
+Console.js:61 MomentModal render - momentModalOpen: false activityType: moment
+Console.js:61 MomentModal render - momentModalOpen: false activityType: moment
+Console.js:61 🔍 Calendar cycles data loaded: {cyclesLength: 0, cycles: Array(0), timestamp: '2025-06-17T03:49:01.654Z'}
+Console.js:61 🗓️ Calendar State: {currentDate: '2025-06-17', viewMode: 'monthly', viewStart: '2025-06-01', viewEnd: '2025-06-30', calendarDaysCount: 35, …}
+Console.js:61 Calendar Debug - Total moments: 0 []
+Console.js:61 🔍 June 16th: NUCLEAR OPTION - No cycles exist, skipping all cycle processing
+Console.js:61 🔍 June 16th: SAFETY CHECK - forced cycleDisplay to null because no cycles exist
+Console.js:61 🔍 June 16th final styling: {isToday: false, cycleDisplay: null, cycleDisplayColor: undefined, cyclesLength: 0, finalClassName: 'h-16 p-1 border rounded-lg transition-colors hover…cent/50 border-border/20 !bg-background/50  block', …}
+Console.js:61 MomentModal render - momentModalOpen: false
+Console.js:61 MomentModal render - momentModalOpen: false activityType: moment
+Console.js:61 Focus Context Debug: {savedId: '6', connectionsLength: 19, connections: Array(19)}
+Console.js:61 Found saved connection: {id: 6, userId: '8', name: 'Amalina', profileImage: 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD…NBFVYa55AsNvqfMiHlz7DuXzATnACjbxt4OfvzgRwvR3Kj//Z', relationshipStage: 'Dating', …}
+Console.js:61 🔍 Calendar cycles data loaded: {cyclesLength: 0, cycles: Array(0), timestamp: '2025-06-17T03:49:01.663Z'}
+Console.js:61 🗓️ Calendar State: {currentDate: '2025-06-17', viewMode: 'monthly', viewStart: '2025-06-01', viewEnd: '2025-06-30', calendarDaysCount: 35, …}
+Console.js:61 Calendar Debug - Total moments: 0 []
+Console.js:61 🔍 June 16th: NUCLEAR OPTION - No cycles exist, skipping all cycle processing
+Console.js:61 🔍 June 16th: SAFETY CHECK - forced cycleDisplay to null because no cycles exist
+Console.js:61 🔍 June 16th final styling: {isToday: false, cycleDisplay: null, cycleDisplayColor: undefined, cyclesLength: 0, finalClassName: 'h-16 p-1 border rounded-lg transition-colors hover…cent/50 border-border/20 !bg-background/50  block', …}
+Console.js:61 MomentModal render - momentModalOpen: false
+Console.js:61 Calendar navigation check: {navigationConnectionId: null}
+Console.js:61 Setting calendar to focus connection: Amalina
+Console.js:61 🔍 Calendar cycles data loaded: {cyclesLength: 0, cycles: Array(0), timestamp: '2025-06-17T03:49:01.668Z'}
+Console.js:61 🗓️ Calendar State: {currentDate: '2025-06-17', viewMode: 'monthly', viewStart: '2025-06-01', viewEnd: '2025-06-30', calendarDaysCount: 35, …}
+Console.js:61 Calendar Debug - Total moments: 0 []
+Console.js:61 🔍 June 16th: NUCLEAR OPTION - No cycles exist, skipping all cycle processing
+Console.js:61 🔍 June 16th: SAFETY CHECK - forced cycleDisplay to null because no cycles exist
+Console.js:61 🔍 June 16th final styling: {isToday: false, cycleDisplay: null, cycleDisplayColor: undefined, cyclesLength: 0, finalClassName: 'h-16 p-1 border rounded-lg transition-colors hover…cent/50 border-border/20 !bg-background/50  block', …}
+Console.js:61 MomentModal render - momentModalOpen: false
+Console.js:61 getCurrentUser successful: {id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+Console.js:61 getCurrentUser successful: {id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+Console.js:61 Auth context setting user: {id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+Console.js:61 Auth: Finally block - setting loading to false
+Console.js:61 🔍 Calendar cycles data loaded: {cyclesLength: 0, cycles: Array(0), timestamp: '2025-06-17T03:49:01.926Z'}
+Console.js:61 🗓️ Calendar State: {currentDate: '2025-06-17', viewMode: 'monthly', viewStart: '2025-06-01', viewEnd: '2025-06-30', calendarDaysCount: 35, …}
+Console.js:61 Calendar Debug - Total moments: 0 []
+Console.js:61 🔍 June 16th: NUCLEAR OPTION - No cycles exist, skipping all cycle processing
+Console.js:61 🔍 June 16th: SAFETY CHECK - forced cycleDisplay to null because no cycles exist
+Console.js:61 🔍 June 16th final styling: {isToday: false, cycleDisplay: null, cycleDisplayColor: undefined, cyclesLength: 0, finalClassName: 'h-16 p-1 border rounded-lg transition-colors hover…cent/50 border-border/20 !bg-background/50  block', …}
+Console.js:61 MomentModal render - momentModalOpen: false
+Console.js:61 MomentModal render - momentModalOpen: false activityType: moment
+Console.js:61 🔍 Calendar cycles data loaded: {cyclesLength: 1, cycles: Array(1), timestamp: '2025-06-17T03:49:02.030Z'}
+Console.js:61 🗓️ Calendar State: {currentDate: '2025-06-17', viewMode: 'monthly', viewStart: '2025-06-01', viewEnd: '2025-06-30', calendarDaysCount: 35, …}
+Console.js:61 Calendar Debug - Total moments: 0 []
+Console.js:61 🔍 June 16th final styling: {isToday: false, cycleDisplay: null, cycleDisplayColor: undefined, cyclesLength: 1, finalClassName: 'h-16 p-1 border rounded-lg transition-colors hover…ccent/50 border-border/20 bg-background/50  block', …}
+Console.js:61 MomentModal render - momentModalOpen: false
+Console.js:61 🔍 Calendar cycles data loaded: {cyclesLength: 1, cycles: Array(1), timestamp: '2025-06-17T03:49:02.036Z'}
+Console.js:61 🗓️ Calendar State: {currentDate: '2025-06-17', viewMode: 'monthly', viewStart: '2025-06-01', viewEnd: '2025-06-30', calendarDaysCount: 35, …}
+Console.js:61 Calendar Debug - Total moments: 0 []
+Console.js:61 🔍 June 16th final styling: {isToday: false, cycleDisplay: null, cycleDisplayColor: undefined, cyclesLength: 1, finalClassName: 'h-16 p-1 border rounded-lg transition-colors hover…ccent/50 border-border/20 bg-background/50  block', …}
+Console.js:61 MomentModal render - momentModalOpen: false
+Console.js:61 getCurrentUser successful: {id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+Console.js:61 getCurrentUser successful: {id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+Console.js:61 Auth context setting user: {id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+Console.js:61 Auth: Finally block - setting loading to false
+Console.js:61 🔍 Calendar cycles data loaded: {cyclesLength: 1, cycles: Array(1), timestamp: '2025-06-17T03:49:02.795Z'}
+Console.js:61 Filtered out moment 69 - connection not selected 11 [6]
+Console.js:61 Filtered out moment 63 - connection not selected 9 [6]
+Console.js:61 Filtered out moment 110 - connection not selected 16 [6]
+Console.js:61 Filtered out moment 109 - connection not selected 29 [6]
+Console.js:61 Filtered out moment 108 - connection not selected 16 [6]
+Console.js:61 Filtered out moment 107 - connection not selected 16 [6]
+Console.js:61 Filtered out moment 106 - connection not selected 16 [6]
+Console.js:61 Filtered out moment 103 - connection not selected 12 [6]
+Console.js:61 Filtered out moment 102 - connection not selected 11 [6]
+Console.js:61 Filtered out moment 101 - connection not selected 9 [6]
+Console.js:61 Filtered out moment 51 - connection not selected 8 [6]
+Console.js:61 Filtered out moment 50 - connection not selected 8 [6]
+Console.js:61 Filtered out moment 80 - connection not selected 9 [6]
+Console.js:61 Filtered out moment 79 - connection not selected 9 [6]
+Console.js:61 Filtered out moment 78 - connection not selected 9 [6]
+Console.js:61 Filtered out moment 77 - connection not selected 9 [6]
+Console.js:61 Filtered out moment 76 - connection not selected 9 [6]
+Console.js:61 Filtered out moment 75 - connection not selected 9 [6]
+Console.js:61 Filtered out moment 90 - connection not selected 10 [6]
+Console.js:61 Filtered out moment 100 - connection not selected 11 [6]
+Console.js:61 Filtered out moment 74 - connection not selected 9 [6]
+Console.js:61 Filtered out moment 89 - connection not selected 10 [6]
+Console.js:61 Filtered out moment 73 - connection not selected 9 [6]
+Console.js:61 Filtered out moment 99 - connection not selected 11 [6]
+Console.js:61 Filtered out moment 88 - connection not selected 10 [6]
+Console.js:61 Filtered out moment 72 - connection not selected 9 [6]
+Console.js:61 Filtered out moment 87 - connection not selected 10 [6]
+Console.js:61 Filtered out moment 71 - connection not selected 9 [6]
+Console.js:61 Filtered out moment 98 - connection not selected 11 [6]
+Console.js:61 Filtered out moment 86 - connection not selected 10 [6]
+Console.js:61 Filtered out moment 70 - connection not selected 9 [6]
+Console.js:61 Filtered out moment 83 - connection not selected 10 [6]
+Console.js:61 Filtered out moment 62 - connection not selected 9 [6]
+Console.js:61 Filtered out moment 61 - connection not selected 9 [6]
+Console.js:61 Filtered out moment 85 - connection not selected 10 [6]
+Console.js:61 Filtered out moment 97 - connection not selected 11 [6]
+Console.js:61 Filtered out moment 82 - connection not selected 10 [6]
+Console.js:61 Filtered out moment 96 - connection not selected 11 [6]
+Console.js:61 Filtered out moment 81 - connection not selected 10 [6]
+Console.js:61 Filtered out moment 84 - connection not selected 10 [6]
+Console.js:61 Filtered out moment 95 - connection not selected 11 [6]
+Console.js:61 Filtered out moment 65 - connection not selected 10 [6]
+Console.js:61 Filtered out moment 64 - connection not selected 10 [6]
+Console.js:61 Filtered out moment 94 - connection not selected 11 [6]
+Console.js:61 Filtered out moment 93 - connection not selected 11 [6]
+Console.js:61 Filtered out moment 92 - connection not selected 11 [6]
+Console.js:61 Filtered out moment 91 - connection not selected 11 [6]
+Console.js:61 Filtered out moment 68 - connection not selected 11 [6]
+Console.js:61 Filtered out moment 67 - connection not selected 11 [6]
+Console.js:61 Filtered out moment 66 - connection not selected 10 [6]
+Console.js:61 🗓️ Calendar State: {currentDate: '2025-06-17', viewMode: 'monthly', viewStart: '2025-06-01', viewEnd: '2025-06-30', calendarDaysCount: 35, …}
+Console.js:61 Calendar Debug - Total moments: 16 (16) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+Console.js:61 🔍 June 16th final styling: {isToday: false, cycleDisplay: null, cycleDisplayColor: undefined, cyclesLength: 1, finalClassName: 'h-16 p-1 border rounded-lg transition-colors hover…ccent/50 border-border/20 bg-background/50  block', …}
+Console.js:61 Today 2025-06-17 - Moment 105: 2025-06-13 - Match: false {id: 105, userId: '8', connectionId: 6, title: '', emoji: '💕', …}
+Console.js:61 Today 2025-06-17 - Moment 104: 2025-06-13 - Match: false {id: 104, userId: '8', connectionId: 6, title: 'date', emoji: '📅', …}
+Console.js:61 Today 2025-06-17 - Moment 46: 2025-06-13 - Match: false {id: 46, userId: '8', connectionId: 6, title: 'Birthday', emoji: '🎂', …}
+Console.js:61 Today 2025-06-17 - Moment 60: 2025-06-08 - Match: false {id: 60, userId: '8', connectionId: 6, title: '', emoji: '⚡', …}
+Console.js:61 Today 2025-06-17 - Moment 59: 2025-06-08 - Match: false {id: 59, userId: '8', connectionId: 6, title: '', emoji: '⚡', …}
+Console.js:61 Today 2025-06-17 - Moment 58: 2025-06-08 - Match: false {id: 58, userId: '8', connectionId: 6, title: '', emoji: '💕', …}
+Console.js:61 Today 2025-06-17 - Moment 57: 2025-06-08 - Match: false {id: 57, userId: '8', connectionId: 6, title: '', emoji: '💕', …}
+Console.js:61 Today 2025-06-17 - Moment 56: 2025-06-08 - Match: false {id: 56, userId: '8', connectionId: 6, title: '', emoji: '⚡', …}
+Console.js:61 Today 2025-06-17 - Moment 55: 2025-06-08 - Match: false {id: 55, userId: '8', connectionId: 6, title: '', emoji: '⚡', …}
+Console.js:61 Today 2025-06-17 - Moment 54: 2025-06-08 - Match: false {id: 54, userId: '8', connectionId: 6, title: '', emoji: '💕', …}
+Console.js:61 Today 2025-06-17 - Moment 53: 2025-06-08 - Match: false {id: 53, userId: '8', connectionId: 6, title: '', emoji: '💕', …}
+Console.js:61 Today 2025-06-17 - Moment 52: 2025-06-08 - Match: false {id: 52, userId: '8', connectionId: 6, title: '', emoji: '⚡', …}
+Console.js:61 Today 2025-06-17 - Moment 49: 2025-06-07 - Match: false {id: 49, userId: '8', connectionId: 6, title: null, emoji: '✅', …}
+Console.js:61 Today 2025-06-17 - Moment 47: 2025-06-04 - Match: false {id: 47, userId: '8', connectionId: 6, title: 'lobesafsa', emoji: '😊', …}
+Console.js:61 Today 2025-06-17 - Moment 45: 2025-05-16 - Match: false {id: 45, userId: '8', connectionId: 6, title: 'Started Dating', emoji: '💕', …}
+Console.js:61 Today 2025-06-17 - Moment 44: 2025-05-16 - Match: false {id: 44, userId: '8', connectionId: 6, title: 'Connection Started', emoji: '💫', …}
+Console.js:61 MomentModal render - momentModalOpen: false

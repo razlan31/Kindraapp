@@ -106,7 +106,7 @@ export default function Calendar() {
   const { mainFocusConnection, loading: focusLoading } = useRelationshipFocus();
   const queryClient = useQueryClient();
   const [location] = useLocation();
-  const [currentDate, setCurrentDate] = useState(new Date());
+  const [currentDate, setCurrentDate] = useState(new Date(2025, 4, 16)); // Force May 16, 2025 to test ovulation
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
   const [dayDetailOpen, setDayDetailOpen] = useState(false);
   const [viewMode, setViewMode] = useState<'daily' | 'weekly' | 'monthly'>('monthly');
