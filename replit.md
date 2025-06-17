@@ -111,6 +111,15 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
+- June 17, 2025: MAJOR FEATURE CHANGE - Removed prediction system and implemented automatic cycle creation
+  - Completely removed all prediction code from frontend (menstrual-cycle.tsx)
+  - Replaced prediction system with automatic cycle creation when last cycle ends
+  - Server now automatically creates new cycles using established patterns from previous cycles
+  - New cycles start 1 day after the previous cycle ends (e.g., if cycle ends May 30th, new cycle starts May 31st)
+  - Uses same period length and calculates cycle length from historical data
+  - Automatic cycles marked with "Auto-generated cycle following X-day pattern" notes
+  - System activated whenever menstrual cycles API is called, ensuring seamless continuation
+
 - June 16, 2025: FIXED ovulation calculation timing issue - implemented direct override for May 16th display
   - Root cause: getCycleDisplayInfo function was missing 'ovulation' case, causing ovulation phase to display as null
   - Issue: Ovulation logic returned correct phase but display function couldn't handle it
