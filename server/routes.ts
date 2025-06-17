@@ -2421,6 +2421,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
         symptoms,
         notes
       });
+
+      // Before creating the new cycle, automatically stop any active cycles for this connection
+      try {
+        const existingCycles = await storage.getMenstrualCycles(userId);
+        const targetConnectionId = connectionId || null;
+        
+        // Find active cycles for this connection (cycles without end dates)
+        const activeCycles = existingCycles.filter((cycle: any) => 
+          cycle.connectionId === targetConnectionId && 
+          !cycle.cycleEndDate
+        );
+        
+        if (activeCycles.length > 0) {
+          console.log(`Found ${activeCycles.length} active cycles to auto-complete for connection ${targetConnectionId}`);
+          
+          const newCycleStartDate = new Date(startDate);
+          
+          // Auto-complete each active cycle by setting its end date to 1 day before the new cycle starts
+          for (const activeCycle of activeCycles) {
+            const autoEndDate = new Date(newCycleStartDate);
+            autoEndDate.setDate(autoEndDate.getDate() - 1);
+            
+            console.log(`Auto-completing cycle ${activeCycle.id} with end date ${autoEndDate.toISOString().split('T')[0]}`);
+            
+            await storage.updateMenstrualCycle(activeCycle.id, {
+              cycleEndDate: autoEndDate,
+              notes: activeCycle.notes ? 
+                `${activeCycle.notes} (Auto-completed when new cycle started)` : 
+                'Auto-completed when new cycle started'
+            });
+          }
+        }
+        
+      } catch (error) {
+        console.error("Error auto-completing previous cycles:", error);
+        // Don't fail the request if auto-completion fails
+      }
       
       const cycleData = {
         userId,
@@ -2440,16 +2477,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       console.log("Created cycle result:", cycle);
       
-      // If the created cycle has an end date, check if we need to create the next active cycle
-      if (cycle.endDate) {
-        try {
-          const allCycles = await storage.getMenstrualCycles(userId);
-          const updatedCycles = await checkAndCreateAutomaticCycles(userId, allCycles);
-          console.log("Checked for automatic cycle progression after cycle creation");
-        } catch (error) {
-          console.error("Error checking for automatic cycle progression:", error);
-          // Don't fail the request if automatic progression fails
+      // Handle pattern inheritance - the new manually added cycle becomes the new pattern source
+      try {
+        console.log("New cycle manually added, updating pattern inheritance");
+        
+        // Get all cycles after the new cycle is created
+        const allCycles = await storage.getMenstrualCycles(userId);
+        const targetConnectionId = connectionId || null;
+        
+        // Find and remove any future auto-generated cycles for this connection
+        // They need to be regenerated based on the new manually added pattern
+        const futureAutoCycles = allCycles.filter((c: any) => 
+          c.connectionId === targetConnectionId && 
+          c.periodStartDate > cycle.periodStartDate &&
+          c.notes && c.notes.includes('Auto-generated')
+        );
+        
+        if (futureAutoCycles.length > 0) {
+          console.log(`Found ${futureAutoCycles.length} future auto-generated cycles to regenerate with new pattern`);
+          
+          // Remove future auto-generated cycles
+          for (const futureCycle of futureAutoCycles) {
+            console.log(`Removing future auto-cycle ${futureCycle.id} to regenerate with new pattern`);
+            await storage.deleteMenstrualCycle(futureCycle.id);
+          }
         }
+        
+        // Regenerate cycles with the new pattern from the manually added cycle
+        const refreshedCycles = await storage.getMenstrualCycles(userId);
+        await checkAndCreateAutomaticCycles(userId, refreshedCycles);
+        
+        console.log("Completed pattern inheritance update for manually added cycle");
+        
+      } catch (error) {
+        console.error("Error handling pattern inheritance for new cycle:", error);
+        // Don't fail the request if pattern inheritance fails
       }
       
       res.json(cycle);

@@ -111,6 +111,13 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
+- June 17, 2025: Implemented automatic cycle stopping and pattern inheritance system
+  - When user manually adds a new cycle, any active cycles for the same connection automatically complete with end date set to 1 day before new cycle starts
+  - Previous cycle preserves all user data (notes, symptoms, mood) and gets marked as auto-completed
+  - System removes any future auto-generated cycles and regenerates them using the newly added cycle as the pattern source
+  - Ensures clean cycle management without overlapping periods and proper pattern inheritance chain
+  - All operations wrapped in error handling to prevent request failures if automatic operations encounter issues
+
 - June 17, 2025: Enhanced detailed/AI learning/insights functions to focus on relationship dynamics and emotional understanding
   - Enhanced DetailedPhaseCard with relationship-focused insights including "How She Might Feel", "Relationship Impact", and "How to Approach & Support"
   - Updated CycleLearningEngine to emphasize emotional pattern intelligence and relationship intelligence over technical metrics
