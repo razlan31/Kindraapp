@@ -275,24 +275,23 @@ export default function Calendar() {
       
       // Debug logging for May 16th
       if (dayStr === '2025-05-16') {
-        console.log(`🔍 MAY 16th FIXED CALCULATION:`, {
-          dayOfCycle,
+        console.log(`🔍 MAY 16th DATE INVESTIGATION:`, {
+          'Input day': format(day, 'yyyy-MM-dd HH:mm'),
+          'Period start': format(periodStart, 'yyyy-MM-dd HH:mm'),
+          'Raw differenceInDays': differenceInDays(day, periodStart),
+          'Calculated dayOfCycle': dayOfCycle,
+          'CORRECT dayOfCycle should be': 16,
           totalCycleDays,
           periodDays,
           ovulationDay,
           'Is EXACT ovulation?': dayOfCycle === ovulationDay,
-          'Is period?': dayOfCycle <= periodDays,
+          'SHOULD BE ovulation?': dayOfCycle === 16 || (dayOfCycle + 1) === 16,
           'All conditions': {
             exactOvulation: dayOfCycle === ovulationDay,
             menstrual: dayOfCycle <= periodDays,
             fertileWindow: dayOfCycle >= ovulationDay - 2 && dayOfCycle <= ovulationDay + 2,
             follicular: dayOfCycle < ovulationDay,
             luteal: dayOfCycle > ovulationDay
-          },
-          dates: {
-            periodStart: format(periodStart, 'MM-dd'),
-            cycleEnd: format(cycleEnd, 'MM-dd'),
-            periodEnd: periodEnd ? format(periodEnd, 'MM-dd') : 'none'
           }
         });
       }
