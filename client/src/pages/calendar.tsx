@@ -1523,6 +1523,60 @@ export default function Calendar() {
           </div>
           
           <div className="space-y-4 max-h-96 overflow-y-auto">
+            {/* Cycle Information Cards */}
+            {selectedDay && selectedConnectionIds.length > 0 && selectedConnectionIds.map(connectionId => {
+              const connection = connections?.find(c => c.id === connectionId);
+              if (!connection) return null;
+              
+              const cycleInfo = getCyclePhaseForDay(selectedDay, connectionId);
+              if (!cycleInfo || cycleInfo.phase === 'none') return null;
+              
+              return (
+                <Card key={`cycle-${connectionId}`} className="p-4 bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-950/20 dark:to-purple-950/20 border-pink-200 dark:border-pink-800">
+                  <div className="flex items-start gap-3">
+                    <div className="text-2xl">{cycleInfo.detailedInfo?.emoji || '🌸'}</div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="font-medium text-sm text-pink-800 dark:text-pink-200">
+                          {connection.name}'s Cycle
+                        </span>
+                        <span className="text-xs text-pink-600 dark:text-pink-400">
+                          Day {cycleInfo.day}
+                        </span>
+                      </div>
+                      
+                      <p className="text-sm mb-2 text-pink-700 dark:text-pink-300">
+                        <span className="font-medium">{cycleInfo.detailedInfo?.description || cycleInfo.phase}</span>
+                        {cycleInfo.detailedInfo?.dayRange && (
+                          <span className="text-xs ml-2 opacity-75">({cycleInfo.detailedInfo.dayRange})</span>
+                        )}
+                      </p>
+
+                      {cycleInfo.detailedInfo?.hormonalProfile && (
+                        <p className="text-xs text-pink-600 dark:text-pink-400 mb-2">
+                          {cycleInfo.detailedInfo.hormonalProfile}
+                        </p>
+                      )}
+                      
+                      {cycleInfo.detailedInfo?.recommendations && cycleInfo.detailedInfo.recommendations.length > 0 && (
+                        <div className="flex flex-wrap gap-1">
+                          {cycleInfo.detailedInfo.recommendations.slice(0, 2).map((rec, index) => (
+                            <span
+                              key={index}
+                              className="text-xs px-2 py-1 rounded-full bg-pink-100 text-pink-700 dark:bg-pink-900/50 dark:text-pink-300"
+                            >
+                              {rec}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </Card>
+              );
+            })}
+            
+            {/* Activity Cards */}
             {selectedDay && getMomentsForDay(selectedDay).map((moment) => {
               const connection = connections.find(c => c.id === moment.connectionId);
               return (

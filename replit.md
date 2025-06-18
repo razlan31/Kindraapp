@@ -111,6 +111,14 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
+- June 18, 2025: CYCLE INFO IN DATE CLICKS - Enhanced calendar date click functionality with comprehensive cycle information display
+  - Added cycle information cards to day detail modal alongside existing activity cards
+  - Cycle cards show connection name, current cycle day, phase description, day range, hormonal profile, and recommendations
+  - Distinctive pink gradient design differentiates cycle cards from activity cards
+  - Cards appear for each selected connection with active cycle data for the clicked date
+  - Provides same detailed cycle insights as dedicated cycle tracker but in convenient date-click format
+  - Enhanced user experience with comprehensive cycle context when exploring specific calendar dates
+
 - June 18, 2025: PRIORITY DISPLAY SYSTEM - Implemented intelligent priority-based display for calendar day indicators
   - Priority 1: Activity emojis (moments/milestones) always displayed first with maximum space allocation
   - Priority 2: Connection alphabet letters with phase-based colors (show only when sufficient space available)  
