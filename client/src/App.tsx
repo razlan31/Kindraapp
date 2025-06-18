@@ -34,6 +34,7 @@ import { useModal } from "./contexts/modal-context";
 import { RelationshipFocusProvider } from "./contexts/relationship-focus-context";
 import { ModalProvider } from "./contexts/modal-context";
 import { ThemeProvider } from "./contexts/theme-context";
+import { SyncProvider } from "./contexts/sync-context";
 import { MomentModal } from "./components/modals/simplified-moment-modal";
 
 import { MoodTrackerModal } from "./components/modals/mood-tracker-modal";

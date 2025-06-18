@@ -16,6 +16,7 @@ import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useModal } from "@/contexts/modal-context";
+import { useSync } from "@/contexts/sync-context";
 import { z } from "zod";
 import { 
   DropdownMenu, 

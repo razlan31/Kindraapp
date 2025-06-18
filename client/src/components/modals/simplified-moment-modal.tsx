@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { useModal } from "@/contexts/modal-context";
 import { useAuth } from "@/contexts/auth-context";
+import { useSync } from "@/contexts/sync-context";
 import { Connection } from "@shared/schema";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
@@ -22,6 +23,7 @@ import { cn } from "@/lib/utils";
 export function MomentModal() {
   const { momentModalOpen, closeMomentModal, selectedConnectionId, activityType, editingMoment, selectedDate, setSelectedConnection } = useModal();
   const { user } = useAuth();
+  const { triggerConnectionSync } = useSync();
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
