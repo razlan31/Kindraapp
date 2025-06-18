@@ -1238,46 +1238,9 @@ export default function Calendar() {
                       {format(day, 'd')}
                     </div>
                     
-                    {/* Moment, Milestone, and Cycle indicators */}
-                    <div className={`flex flex-wrap ${viewMode === 'daily' ? 'gap-2' : viewMode === 'weekly' ? 'gap-1' : 'gap-0.5'} items-center`}>
-                      {/* Show cycle phase indicator first */}
-                      {cycleDisplay && filters.menstrualCycle && (
-                        <div className="flex gap-0.5">
-                          {cycleDisplay.isMultiple && cycleDisplay.coloredInitials ? (
-                            // Show enhanced phase-based styling for multiple connections
-                            <div className={`flex flex-wrap ${viewMode === 'daily' ? 'gap-1' : 'gap-0.5'} max-w-full`}>
-                              {cycleDisplay.coloredInitials.map((item: any, index: number) => (
-                                <div
-                                  key={index}
-                                  className={`inline-flex items-center justify-center ${item.color} rounded-full border ${viewMode === 'daily' ? 'w-8 h-8 text-xs' : viewMode === 'weekly' ? 'w-6 h-6 text-xs' : 'w-5 h-5 text-xs'} font-bold flex-shrink-0`}
-                                  title={`${item.connectionName}: ${item.phase} phase`}
-                                >
-                                  {/* Show emoji for prominent phases, initial for others */}
-                                  {item.isProminent && item.emoji ? (
-                                    <span className={`${viewMode === 'daily' ? 'text-sm' : 'text-xs'}`}>
-                                      {item.emoji}
-                                    </span>
-                                  ) : (
-                                    <span className={`${viewMode === 'daily' ? 'text-xs' : 'text-xs'} font-bold`}>
-                                      {item.initial}
-                                    </span>
-                                  )}
-                                </div>
-                              ))}
-                            </div>
-                          ) : (
-                            // Show regular cycle indicator for single connection
-                            <span
-                              className={`${viewMode === 'daily' ? 'text-2xl' : viewMode === 'weekly' ? 'text-base' : 'text-xs'}`}
-                              title={cycleDisplay.description}
-                            >
-                              {cycleDisplay.indicator}
-                            </span>
-                          )}
-                        </div>
-                      )}
-                      
-                      {/* Show milestones */}
+                    {/* Moment, Milestone, and Cycle indicators - Priority: Activity emojis, Alphabet letters, Menstrual emojis */}
+                    <div className={`flex flex-wrap ${viewMode === 'daily' ? 'gap-2' : viewMode === 'weekly' ? 'gap-1' : 'gap-0.5'} items-center overflow-hidden`}>
+                      {/* Priority 1: Show milestones first */}
                       {dayMilestones.map((milestone) => {
                         const getIcon = () => {
                           switch (milestone.icon) {
@@ -1304,7 +1267,7 @@ export default function Calendar() {
                         );
                       })}
                       
-                      {/* Show moments */}
+                      {/* Priority 2: Show moments */}
                       {dayMoments.slice(0, viewMode === 'daily' ? 6 : viewMode === 'weekly' ? 4 : (dayMilestones.length > 0 ? 2 : 3)).map((moment, index) => {
                         const displayInfo = getMomentDisplayInfo(moment);
                         return displayInfo.type === 'emoji' ? (
@@ -1325,8 +1288,63 @@ export default function Calendar() {
                           />
                         );
                       })}
+
+                      {/* Priority 3: Show connection alphabet letters (only when no activities or sufficient space) */}
+                      {cycleDisplay && filters.menstrualCycle && (dayMoments.length + dayMilestones.length) < (viewMode === 'daily' ? 4 : viewMode === 'weekly' ? 3 : 2) && (
+                        <div className="flex gap-0.5">
+                          {cycleDisplay.isMultiple && cycleDisplay.coloredInitials ? (
+                            // Show alphabet letters for multiple connections
+                            <div className={`flex flex-wrap ${viewMode === 'daily' ? 'gap-1' : 'gap-0.5'} max-w-full`}>
+                              {cycleDisplay.coloredInitials.slice(0, viewMode === 'daily' ? 3 : 2).map((item: any, index: number) => (
+                                <div
+                                  key={index}
+                                  className={`inline-flex items-center justify-center ${item.color} rounded-full border ${viewMode === 'daily' ? 'w-6 h-6 text-xs' : viewMode === 'weekly' ? 'w-5 h-5 text-xs' : 'w-4 h-4 text-xs'} font-bold flex-shrink-0`}
+                                  title={`${item.connectionName}: ${item.phase} phase`}
+                                >
+                                  <span className="font-bold">
+                                    {item.initial}
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            // Show single connection alphabet
+                            <div className={`inline-flex items-center justify-center rounded-full border ${viewMode === 'daily' ? 'w-6 h-6 text-xs' : viewMode === 'weekly' ? 'w-5 h-5 text-xs' : 'w-4 h-4 text-xs'} font-bold bg-gray-100 text-gray-700`}>
+                              <span className="font-bold">
+                                {connections.find(c => selectedConnectionIds.length === 1 && c.id === selectedConnectionIds[0])?.name?.[0]?.toUpperCase() || '?'}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Priority 4: Show menstrual cycle emojis (lowest priority, only when plenty of space) */}
+                      {cycleDisplay && filters.menstrualCycle && (dayMoments.length + dayMilestones.length) < (viewMode === 'daily' ? 2 : 1) && (
+                        <div className="flex gap-0.5">
+                          {cycleDisplay.isMultiple && cycleDisplay.coloredInitials ? (
+                            // Show menstrual emojis for multiple connections (only prominent phases)
+                            cycleDisplay.coloredInitials.filter((item: any) => item.isProminent && item.emoji).slice(0, 2).map((item: any, index: number) => (
+                              <span
+                                key={index}
+                                className={`${viewMode === 'daily' ? 'text-lg' : viewMode === 'weekly' ? 'text-sm' : 'text-xs'}`}
+                                title={`${item.connectionName}: ${item.phase} phase`}
+                              >
+                                {item.emoji}
+                              </span>
+                            ))
+                          ) : (
+                            // Show single cycle indicator
+                            <span
+                              className={`${viewMode === 'daily' ? 'text-lg' : viewMode === 'weekly' ? 'text-base' : 'text-xs'}`}
+                              title={cycleDisplay.description}
+                            >
+                              {cycleDisplay.indicator}
+                            </span>
+                          )}
+                        </div>
+                      )}
                       
-                      {(dayMoments.length + dayMilestones.length) > 3 && (
+                      {(dayMoments.length + dayMilestones.length) > (viewMode === 'daily' ? 6 : viewMode === 'weekly' ? 4 : 3) && (
                         <div className="w-2 h-2 rounded-full bg-gray-300 text-[6px] flex items-center justify-center font-bold">
                           +
                         </div>

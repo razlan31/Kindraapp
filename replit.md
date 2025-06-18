@@ -111,6 +111,14 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
+- June 18, 2025: PRIORITY DISPLAY SYSTEM - Implemented intelligent priority-based display for calendar day indicators
+  - Priority 1: Activity emojis (moments/milestones) always displayed first with maximum space allocation
+  - Priority 2: Connection alphabet letters with phase-based colors (show only when sufficient space available)  
+  - Priority 3: Menstrual cycle emojis (lowest priority, only prominent phases, only when plenty of space)
+  - Space-based truncation prevents overflow: daily (6/3/2), weekly (4/2/1), monthly (3/2/1) max indicators per priority
+  - Enhanced conditional filtering: menstrual cycle colors only appear when filter is enabled
+  - Fixed alignment issues with contained circular indicators and proper flex wrapping
+
 - June 18, 2025: VISUAL HIERARCHY UPDATE - Enhanced visual hierarchy in cycle tracking displays with prominent fertility indicators
   - Made fertility window (💗) and ovulation day (🥚) highly prominent with stronger colors, thicker borders, and bold font weight
   - Reduced follicular and luteal phases to 50% opacity to keep them subtle
