@@ -1092,7 +1092,7 @@ export default function MenstrualCyclePage() {
                       <div className="flex flex-wrap gap-0.5 items-center overflow-hidden max-w-full">
                         {/* Priority 1: Activity emojis (moments/milestones) - not applicable to cycle tracker */}
                         
-                        {/* Show cycle indicators using same logic as calendar */}
+                        {/* Cycle tracker priority system: 1) Alphabet letters for multiple connections, 2) Menstrual emojis */}
                         {(() => {
                           // Get cycles for selected connections only
                           const dayActiveCycles = cycles.filter(cycle => {
@@ -1108,8 +1108,8 @@ export default function MenstrualCyclePage() {
                           
                           if (dayActiveCycles.length === 0) return null;
                           
-                          // For multiple connections, show alphabet letters
-                          if (selectedPersonIds.length > 1 && dayActiveCycles.length > 1) {
+                          // Priority 1: Multiple connections selected - show alphabet letters
+                          if (selectedPersonIds.length > 1) {
                             return (
                               <div className="flex gap-0.5">
                                 {dayActiveCycles.slice(0, 2).map((cycle, index) => {
@@ -1118,8 +1118,9 @@ export default function MenstrualCyclePage() {
                                   
                                   if (!connection || !phaseInfo) return null;
                                   
-                                  const getPhaseColor = (phase: string) => {
+                                  const getPhaseColor = (phase: string, subPhase?: string) => {
                                     if (phase === 'menstrual') return 'bg-red-100 text-red-800 border-red-300';
+                                    if (phase === 'fertile' && subPhase === 'ovulation') return 'bg-blue-100 text-blue-800 border-blue-300';
                                     if (phase === 'fertile') return 'bg-yellow-100 text-yellow-800 border-yellow-300';
                                     if (phase === 'follicular') return 'bg-green-100 text-green-800 border-green-300';
                                     if (phase === 'luteal') return 'bg-purple-100 text-purple-800 border-purple-300';
@@ -1129,7 +1130,7 @@ export default function MenstrualCyclePage() {
                                   return (
                                     <div
                                       key={cycle.id}
-                                      className={`inline-flex items-center justify-center rounded-full border w-4 h-4 text-xs font-bold ${getPhaseColor(phaseInfo.phase)}`}
+                                      className={`inline-flex items-center justify-center rounded-full border w-4 h-4 text-xs font-bold ${getPhaseColor(phaseInfo.phase, phaseInfo.subPhase)}`}
                                       title={`${connection.name}: ${phaseInfo.phase} phase`}
                                     >
                                       <span className="font-bold text-[8px]">
@@ -1142,28 +1143,29 @@ export default function MenstrualCyclePage() {
                             );
                           }
                           
-                          // For single connection, show just emoji
+                          // Priority 2: Single connection - show accurate menstrual emoji according to legend
                           const cycle = dayActiveCycles[0];
                           const phaseInfo = cycle.connectionId ? getCyclePhaseForDay(day, cycle.connectionId, cycles) : null;
                           
                           if (!phaseInfo) return null;
                           
-                          const getPhaseEmoji = (phase: string, subPhase?: string) => {
+                          const getAccuratePhaseEmoji = (phase: string, subPhase?: string) => {
+                            // Use exact emojis from legend
                             if (phase === 'menstrual') return '🩸';
+                            if (phase === 'follicular') return '🌱';
                             if (phase === 'fertile' && subPhase === 'ovulation') return '🥚';
                             if (phase === 'fertile') return '💗';
-                            if (phase === 'follicular') return '🌱';
                             if (phase === 'luteal') return '🌙';
                             return '';
                           };
                           
-                          const emoji = getPhaseEmoji(phaseInfo.phase, phaseInfo.subPhase);
+                          const emoji = getAccuratePhaseEmoji(phaseInfo.phase, phaseInfo.subPhase);
                           if (!emoji) return null;
                           
                           return (
                             <span 
-                              className="text-xs opacity-90"
-                              title={`${phaseInfo.phase} phase`}
+                              className="text-xs"
+                              title={`${phaseInfo.phase}${phaseInfo.subPhase ? ` (${phaseInfo.subPhase})` : ''} phase`}
                             >
                               {emoji}
                             </span>
