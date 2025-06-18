@@ -49,6 +49,15 @@ export function MomentModal() {
   const [localSelectedDate, setLocalSelectedDate] = useState<Date>(new Date());
   const [momentType, setMomentType] = useState<string>("positive");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // Debug state changes
+  useEffect(() => {
+    console.log("🔥 STATE DEBUG - isSubmitting changed:", isSubmitting);
+  }, [isSubmitting]);
+  
+  useEffect(() => {
+    console.log("🔥 STATE DEBUG - connectionId changed:", connectionId, "selectedConnectionId:", selectedConnectionId);
+  }, [connectionId, selectedConnectionId]);
   const [mediaFiles, setMediaFiles] = useState<MediaFile[]>([]);
   const [isIntimate, setIsIntimate] = useState<boolean>(false);
   const [reflection, setReflection] = useState('');
@@ -1077,9 +1086,20 @@ export function MomentModal() {
                 Cancel
               </Button>
               <Button 
-                onClick={handleSubmit} 
+                onClick={(e) => {
+                  console.log("🔥 BUTTON CLICK - Save button clicked", {
+                    isSubmitting,
+                    connectionId,
+                    selectedConnectionId,
+                    disabled: isSubmitting,
+                    event: e
+                  });
+                  handleSubmit();
+                }} 
                 disabled={isSubmitting}
                 className={isSubmitting ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}
+                onMouseDown={() => console.log("🔥 BUTTON CLICK - Mouse down on save button")}
+                onMouseUp={() => console.log("🔥 BUTTON CLICK - Mouse up on save button")}
               >
                 {isSubmitting ? "Saving..." : "Save"}
               </Button>
