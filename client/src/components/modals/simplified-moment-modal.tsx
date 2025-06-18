@@ -236,9 +236,12 @@ export function MomentModal() {
       const syncConnectionId = selectedConnectionId || connectionId;
       console.log("🔄 SYNC CONTEXT - About to trigger sync:", syncConnectionId, activityType, "selectedConnectionId:", selectedConnectionId, "formConnectionId:", connectionId);
       
-      if (syncConnectionId) {
-        triggerConnectionSync(syncConnectionId, activityType || 'moment');
-        console.log("🔄 SYNC CONTEXT - Sync triggered for connection:", syncConnectionId);
+      // Always try to trigger sync even without explicit connectionId by using form connectionId
+      const finalConnectionId = syncConnectionId || connectionId;
+      if (finalConnectionId) {
+        console.log("🔄 SYNC CONTEXT - Triggering sync with connectionId:", finalConnectionId);
+        triggerConnectionSync(finalConnectionId, activityType || 'moment');
+        console.log("🔄 SYNC CONTEXT - Sync triggered for connection:", finalConnectionId);
       } else {
         console.log("🔄 SYNC CONTEXT - No connectionId available for sync");
       }
@@ -352,9 +355,12 @@ export function MomentModal() {
       const syncConnectionId = selectedConnectionId || connectionId;
       console.log("🔄 SYNC CONTEXT - About to trigger sync:", syncConnectionId, activityType, "selectedConnectionId:", selectedConnectionId, "formConnectionId:", connectionId);
       
-      if (syncConnectionId) {
-        triggerConnectionSync(syncConnectionId, activityType || 'moment');
-        console.log("🔄 SYNC CONTEXT - Sync triggered for connection:", syncConnectionId);
+      // Always try to trigger sync even without explicit connectionId by using form connectionId
+      const finalConnectionId = syncConnectionId || connectionId;
+      if (finalConnectionId) {
+        console.log("🔄 SYNC CONTEXT - Triggering sync with connectionId:", finalConnectionId);
+        triggerConnectionSync(finalConnectionId, activityType || 'moment');
+        console.log("🔄 SYNC CONTEXT - Sync triggered for connection:", finalConnectionId);
       } else {
         console.log("🔄 SYNC CONTEXT - No connectionId available for sync");
       }

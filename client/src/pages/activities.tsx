@@ -103,6 +103,8 @@ export default function Activities() {
 
   // Register sync handler for connection activity updates
   useEffect(() => {
+    console.log("🔄 SYNC CONTEXT - Activities page effect running, registering sync handler");
+    
     const handleConnectionActivity = (connectionId: number, activityType: string) => {
       console.log("🔄 SYNC CONTEXT - Activities page received sync:", connectionId, activityType);
       
@@ -125,8 +127,9 @@ export default function Activities() {
       queryClient.invalidateQueries({ queryKey: ['/api/plans'] });
     };
 
-    console.log("🔄 SYNC CONTEXT - Activities page registering sync handler");
+    console.log("🔄 SYNC CONTEXT - About to register handler");
     registerSyncHandler(handleConnectionActivity);
+    console.log("🔄 SYNC CONTEXT - Handler registered successfully");
     
     // Cleanup handler on unmount
     return () => {
