@@ -866,7 +866,7 @@ export default function Calendar() {
                           className="h-3 w-3"
                         />
                       </div>
-                      <div className="text-xs text-muted-foreground ml-6 space-y-1">
+                      <div className="text-xs text-foreground ml-6 space-y-1">
                         <div>Includes period, fertile window, ovulation & phases</div>
                         <div className="grid grid-cols-2 gap-1 mt-2">
                           <div className="flex items-center gap-1.5">
