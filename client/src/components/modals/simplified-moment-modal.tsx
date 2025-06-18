@@ -553,7 +553,22 @@ export function MomentModal() {
         // Invalidate milestone queries to refresh the data
         queryClient.invalidateQueries({ queryKey: ['/api/milestones'] });
         
-        handleSuccess();
+        // Clear form and close modal
+        if (!editingMoment) {
+          setTitle("");
+          setContent("");
+          setSelectedTags([]);
+          setCustomTag("");
+          setEmoji("😊");
+          setMediaFiles([]);
+          setReflection("");
+          setMomentType("positive");
+          setIsIntimate(false);
+          setIsResolved(false);
+          setResolvedDate(null);
+          setResolutionNotes("");
+        }
+        closeMomentModal();
       })
       .catch((error) => handleError(error));
       
@@ -575,7 +590,7 @@ export function MomentModal() {
       mediaFiles: mediaFiles.length > 0 ? mediaFiles : null,
       // Conflict resolution fields
       isResolved: activityType === 'conflict' ? isResolved : false,
-      resolvedAt: (activityType === 'conflict' && isResolved) ? resolvedDate.toISOString() : null,
+      resolvedAt: (activityType === 'conflict' && isResolved && resolvedDate) ? resolvedDate.toISOString() : null,
       resolutionNotes: (activityType === 'conflict' && isResolved) ? resolutionNotes : null,
       // Reflection field
       reflection: reflection.trim() || null,
@@ -841,7 +856,7 @@ export function MomentModal() {
                       <PopoverContent className="w-auto p-0">
                         <Calendar
                           mode="single"
-                          selected={resolvedDate}
+                          selected={resolvedDate || undefined}
                           onSelect={(date) => {
                             if (date) {
                               setResolvedDate(date);

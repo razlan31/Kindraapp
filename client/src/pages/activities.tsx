@@ -106,6 +106,7 @@ export default function Activities() {
     const handleConnectionActivity = (connectionId: number, activityType: string) => {
       console.log("🔄 SYNC CONTEXT - Activities page received sync:", connectionId, activityType);
       
+      // Update connection filters to include the connection that had activity
       setSelectedConnections(prev => {
         console.log("🔄 SYNC CONTEXT - Processing connection:", connectionId, "current filters:", prev);
         
@@ -113,15 +114,25 @@ export default function Activities() {
           console.log("🔄 SYNC CONTEXT - Adding connection to filter:", connectionId);
           const updated = [...prev, connectionId];
           console.log("🔄 SYNC CONTEXT - Updated filters:", updated);
+          setHasUserSelectedConnection(true); // Mark as user-selected to maintain filter
           return updated;
         }
         return prev;
       });
+      
+      // Also invalidate queries to refresh data
+      queryClient.invalidateQueries({ queryKey: ['/api/moments'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/plans'] });
     };
 
     console.log("🔄 SYNC CONTEXT - Activities page registering sync handler");
     registerSyncHandler(handleConnectionActivity);
-  }, [registerSyncHandler]);
+    
+    // Cleanup handler on unmount
+    return () => {
+      console.log("🔄 SYNC CONTEXT - Activities page unregistering sync handler");
+    };
+  }, [registerSyncHandler, queryClient]);
 
   // Handle connection creation
   const handleAddConnection = async (formData: FormData) => {
