@@ -27,6 +27,31 @@ export function MomentModal() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
+  // Form state
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [emoji, setEmoji] = useState("😊");
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [customTag, setCustomTag] = useState("");
+  const [isPrivate, setIsPrivate] = useState(false);
+  const [localSelectedDate, setLocalSelectedDate] = useState<Date>(new Date());
+  const [momentType, setMomentType] = useState<string>("positive");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [mediaFiles, setMediaFiles] = useState<MediaFile[]>([]);
+  const [reflection, setReflection] = useState('');
+  const [isResolved, setIsResolved] = useState(false);
+  const [resolvedDate, setResolvedDate] = useState<Date | null>(null);
+  const [resolutionNotes, setResolutionNotes] = useState("");
+  const [isMilestone, setIsMilestone] = useState(false);
+  const [milestoneIcon, setMilestoneIcon] = useState("");
+  const [milestoneColor, setMilestoneColor] = useState("");
+  const [isAnniversary, setIsAnniversary] = useState(false);
+  const [isRecurring, setIsRecurring] = useState(false);
+  const [intimacyRating, setIntimacyRating] = useState<string>("5");
+  const [datePickerOpen, setDatePickerOpen] = useState(false);
+  const [isTagsCollapsed, setIsTagsCollapsed] = useState(true);
+  const [isReflectionCollapsed, setIsReflectionCollapsed] = useState(true);
+
   // Debug modal state
   console.log("MomentModal render - momentModalOpen:", momentModalOpen, "activityType:", activityType);
 
@@ -38,25 +63,9 @@ export function MomentModal() {
     general: ["Milestone", "Life Goals", "Future Planning", "Career", "Family", "Friends", "Travel", "Hobbies"]
   };
   
-  // Form state
+  // Additional form state
   const [connectionId, setConnectionId] = useState<number>(2);
-  const [title, setTitle] = useState<string>("");
-  const [emoji, setEmoji] = useState<string>("😊");
-  const [content, setContent] = useState<string>("");
-  const [localSelectedDate, setLocalSelectedDate] = useState<Date>(new Date());
-  const [momentType, setMomentType] = useState<string>("positive");
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [customTag, setCustomTag] = useState<string>("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [mediaFiles, setMediaFiles] = useState<MediaFile[]>([]);
   const [isIntimate, setIsIntimate] = useState<boolean>(false);
-  
-  // Milestone-specific state
-  const [isMilestone, setIsMilestone] = useState<boolean>(false);
-  const [milestoneColor, setMilestoneColor] = useState<string>("");
-  const [milestoneIcon, setMilestoneIcon] = useState<string>("");
-  const [isAnniversary, setIsAnniversary] = useState<boolean>(false);
-  const [isRecurring, setIsRecurring] = useState<boolean>(false);
 
   // Initialize form with existing data when editing
   useEffect(() => {
@@ -197,44 +206,91 @@ export function MomentModal() {
     enabled: momentModalOpen,
   });
   
-  // This effect is removed as form initialization is handled in the main useEffect above
-  
-  // Success and error handlers - now optimized for instant updates
-  const handleSuccess = (result?: any) => {
-    console.log("🔄 SYNC CONTEXT - handleSuccess called with result:", result);
-    
-    // Trigger connection sync for activities page if a connection was used
-    const connectionId = selectedConnectionId;
-    if (connectionId) {
-      console.log("🔄 SYNC CONTEXT - Triggering sync for connection:", connectionId);
-      triggerConnectionSync(connectionId, activityType);
-    }
-    
-    // Only clear form if creating new entry (not editing)
-    if (!editingMoment) {
-      setTitle("");
-      setContent("");
-      setSelectedTags([]);
-      setCustomTag("");
-      setReflection("");
-      setResolutionNotes("");
-      setIsResolved(false);
-      setIsMilestone(false);
-      setMilestoneColor("");
-      setMilestoneIcon("");
-      setIsAnniversary(false);
-      setIsRecurring(false);
-      setLocalSelectedDate(new Date());
-      setMomentType("positive");
-      setEmoji("😊");
-      setIntimacyRating("5");
-    }
-    
-    closeMomentModal();
-    setIsSubmitting(false);
-    // Invalidate cache to trigger immediate refetch
-    queryClient.invalidateQueries({ queryKey: ['/api/moments'] });
-  };
+  // Mutation for creating/updating moments
+  const { mutate: createMoment } = useMutation({
+    mutationFn: async (momentData: any) => {
+      return apiRequest(`/api/moments${editingMoment ? `/${editingMoment.id}` : ''}`, {
+        method: editingMoment ? 'PATCH' : 'POST',
+        body: JSON.stringify(momentData),
+      });
+    },
+    onMutate: async (newMoment) => {
+      await queryClient.cancelQueries({ queryKey: ['/api/moments'] });
+      const previousMoments = queryClient.getQueryData(['/api/moments']);
+      const optimisticMoment = {
+        ...newMoment,
+        id: Date.now(),
+        userId: user?.id,
+        createdAt: newMoment.createdAt,
+      };
+      queryClient.setQueryData(['/api/moments'], (old: any) => {
+        if (!old) return [optimisticMoment];
+        return [optimisticMoment, ...old];
+      });
+      return { previousMoments };
+    },
+    onSuccess: (data) => {
+      if (data.newBadges && data.newBadges.length > 0) {
+        data.newBadges.forEach((badge: any) => {
+          toast({
+            title: "🎉 New Badge Unlocked!",
+            description: `${badge.icon} ${badge.name} - ${badge.description}`,
+            duration: 5000,
+          });
+        });
+      }
+      
+      toast({
+        title: `${activityType === 'conflict' ? 'Conflict' : activityType === 'intimacy' ? 'Intimacy' : 'Moment'} logged successfully`,
+        description: "Your entry has been recorded.",
+      });
+      
+      queryClient.invalidateQueries({ queryKey: ['/api/moments'] });
+      
+      // Trigger connection sync for activities page
+      const connectionId = selectedConnectionId;
+      console.log("🔄 SYNC CONTEXT - About to trigger sync:", connectionId, activityType);
+      
+      if (connectionId) {
+        triggerConnectionSync(connectionId, activityType);
+        console.log("🔄 SYNC CONTEXT - Sync triggered for connection:", connectionId);
+      } else {
+        console.log("🔄 SYNC CONTEXT - No connectionId available for sync");
+      }
+      
+      // Clear form and close modal
+      if (!editingMoment) {
+        setTitle("");
+        setContent("");
+        setSelectedTags([]);
+        setCustomTag("");
+        setReflection("");
+        setResolutionNotes("");
+        setIsResolved(false);
+        setIsMilestone(false);
+        setMilestoneColor("");
+        setMilestoneIcon("");
+        setIsAnniversary(false);
+        setIsRecurring(false);
+        setLocalSelectedDate(new Date());
+        setMomentType("positive");
+        setEmoji("😊");
+        setIntimacyRating("5");
+      }
+      
+      closeMomentModal();
+    },
+    onError: (error: any, newMoment, context) => {
+      if (context?.previousMoments) {
+        queryClient.setQueryData(['/api/moments'], context.previousMoments);
+      }
+      toast({
+        title: "Error",
+        description: error?.message || "Failed to save entry. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
 
   const handleError = (error: any) => {
     console.error("Error with moment:", error);
@@ -317,13 +373,28 @@ export function MomentModal() {
       } else {
         console.log("🔄 SYNC CONTEXT - No connectionId available for sync");
       }
-      console.log("Moment saved - triggering connection sync:", selectedConnectionId);
-      if (selectedConnectionId) {
-        const selectedConnection = connections.find(c => c.id === selectedConnectionId);
-        setSelectedConnection(selectedConnectionId, selectedConnection);
+      
+      // Clear form and close modal (removed duplicate handleSuccess call)
+      if (!editingMoment) {
+        setTitle("");
+        setContent("");
+        setSelectedTags([]);
+        setCustomTag("");
+        setReflection("");
+        setResolutionNotes("");
+        setIsResolved(false);
+        setIsMilestone(false);
+        setMilestoneColor("");
+        setMilestoneIcon("");
+        setIsAnniversary(false);
+        setIsRecurring(false);
+        setLocalSelectedDate(new Date());
+        setMomentType("positive");
+        setEmoji("😊");
+        setIntimacyRating("5");
       }
       
-      handleSuccess();
+      closeMomentModal();
     },
     onError: (error: any, newMoment, context) => {
       // Rollback optimistic update if mutation fails
