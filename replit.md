@@ -111,6 +111,15 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
+- June 18, 2025: FIXED calendar cycle pattern synchronization issue with cycle tracker
+  - Root cause: Data loading race condition prevented cycle data from reaching calendar component  
+  - Solution: Enhanced data loading logic to properly wait for cycle data before rendering patterns
+  - Calendar now displays identical cycle patterns to cycle tracker (source of truth maintained)
+  - Fixed May cycle patterns (menstrual, follicular, fertile, ovulation, luteal) displaying correctly
+  - June cycle patterns now show properly with ongoing cycle logic
+  - Centralized getCyclePhaseForDay function working correctly for both components
+  - Calendar and cycle tracker now perfectly synchronized for Amalina's cycle data
+
 - June 18, 2025: Fixed calendar cycle pattern synchronization with cycle tracker
   - Resolved issue where calendar was not displaying cycle phases correctly
   - Calendar now uses the centralized getCyclePhaseForDay function from cycle-utils

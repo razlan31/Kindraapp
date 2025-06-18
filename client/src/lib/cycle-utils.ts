@@ -202,19 +202,7 @@ export const getCyclePhaseForDay = (day: Date, connectionId: number, cycles: Men
     new Date(a.periodStartDate).getTime() - new Date(b.periodStartDate).getTime()
   );
 
-  // Debug logging for Amalina to see all cycles being processed
-  const dayStr = format(day, 'yyyy-MM-dd');
-  if (connectionId === 6) {
-    console.log(`🔍 PROCESSING ${dayStr} for Amalina:`, {
-      totalCycles: sortedCycles.length,
-      cycleIds: sortedCycles.map(c => c.id),
-      cycles: sortedCycles.map(c => ({
-        id: c.id,
-        start: format(new Date(c.periodStartDate), 'yyyy-MM-dd'),
-        end: c.cycleEndDate ? format(new Date(c.cycleEndDate), 'yyyy-MM-dd') : 'ongoing'
-      }))
-    });
-  }
+  // Removed debug logging - calendar cycle patterns now working correctly
 
   // Find the cycle that this day belongs to
   for (const cycle of sortedCycles) {
@@ -234,19 +222,7 @@ export const getCyclePhaseForDay = (day: Date, connectionId: number, cycles: Men
     const normalizedCycleStart = startOfDay(cycleStart);
     const normalizedCycleEnd = startOfDay(cycleEnd);
     
-    // Debug logging for connection 6 (Amalina)
-    const dayStr = format(day, 'yyyy-MM-dd');
-    if (connectionId === 6) {
-      console.log(`🔍 CYCLE MATCHING - ${dayStr}:`, {
-        dayStr,
-        cycleId: cycle.id,
-        periodStart: format(cycleStart, 'yyyy-MM-dd'),
-        periodEnd: cycle.periodEndDate ? format(new Date(cycle.periodEndDate), 'yyyy-MM-dd') : 'no end date',
-        cycleEnd: format(cycleEnd, 'yyyy-MM-dd'),
-        hasCycleEndDate: !!cycle.cycleEndDate,
-        dayWithinRange: day >= cycleStart && day <= cycleEnd
-      });
-    }
+    // Clean cycle matching logic without debug output
     
     if (normalizedDay >= normalizedCycleStart && normalizedDay <= normalizedCycleEnd) {
       
@@ -258,32 +234,12 @@ export const getCyclePhaseForDay = (day: Date, connectionId: number, cycles: Men
         differenceInDays(new Date(cycle.cycleEndDate), cycleStart) + 1 : 
         (calculateCycleLength(connectionCycles) || 28);
       
-      // Debug June ovulation calculation
-      if (connectionId === 6 && dayStr.startsWith('2025-06')) {
-        console.log(`🔍 JUNE OVULATION DEBUG - ${dayStr}:`, {
-          cycleLength,
-          avgCycleLength: calculateCycleLength(connectionCycles),
-          ovulationDay: calculateOvulationDay(cycleLength, connectionCycles),
-          dayInCycle,
-          cycleId: cycle.id
-        });
-      }
+      // Calculate ovulation timing for cycle phase determination
       
       const periodLength = cycle.periodEndDate ? 
         differenceInDays(new Date(cycle.periodEndDate), cycleStart) + 1 : 5;
       
-      // Debug for May period days
-      if (connectionId === 6 && (dayStr === '2025-05-01' || dayStr === '2025-05-02' || dayStr === '2025-05-03' || dayStr === '2025-05-04')) {
-        console.log(`🔍 PERIOD CALCULATION - ${dayStr}:`, {
-          dayInCycle,
-          periodLength,
-          cycleLength,
-          dayInCycleCalc: `${dayStr} - ${format(new Date(cycle.periodStartDate), 'yyyy-MM-dd')} = ${dayInCycle}`,
-          periodLengthCalc: cycle.periodEndDate ? `${format(new Date(cycle.periodEndDate), 'yyyy-MM-dd')} - ${format(new Date(cycle.periodStartDate), 'yyyy-MM-dd')} + 1 = ${periodLength}` : 'no period end, using 5',
-          isMenstrualPhase: dayInCycle <= periodLength,
-          willReturnPhase: dayInCycle <= periodLength ? 'menstrual' : 'other'
-        });
-      }
+      // Phase calculation complete
       
       // Get detailed phase information
       const detailedPhase = getDetailedCyclePhase(
