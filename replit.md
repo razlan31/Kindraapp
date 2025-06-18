@@ -111,6 +111,14 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
+- June 18, 2025: FOUR QUOTE STYLES SYSTEM - Added fourth quote style "soft positive affirmating" with even distribution
+  - Expanded quote system from 3 to 4 distinct styles: beautiful, simple, edgy, and soft
+  - Soft style provides gentle, positive affirmations focusing on self-worth and healing
+  - Enhanced AI prompts for soft style to be encouraging, supportive, and nurturing
+  - Added comprehensive fallback quotes for soft style category
+  - All four styles now distributed evenly (25% each) through random selection
+  - System provides full spectrum from direct advice to brutal honesty to gentle affirmations
+
 - June 18, 2025: CYCLE INFO IN DATE CLICKS - Enhanced calendar date click functionality with comprehensive cycle information display
   - Added cycle information cards to day detail modal alongside existing activity cards
   - Cycle cards show connection name, current cycle day, phase description, day range, hormonal profile, and recommendations

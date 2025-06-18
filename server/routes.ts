@@ -2976,8 +2976,8 @@ Format as a brief analysis (2-3 sentences) focusing on what their data actually 
         const shouldPersonalize = hasConnections && hasMoments && Math.random() > 0.3;
         
         // Add quote style variety - use randomness for immediate variety
-        const quoteStyles = ['beautiful', 'simple', 'edgy'];
-        const selectedStyle = quoteStyles[Math.floor(Math.random() * 3)];
+        const quoteStyles = ['beautiful', 'simple', 'edgy', 'soft'];
+        const selectedStyle = quoteStyles[Math.floor(Math.random() * 4)];
         
         let prompt = "";
         let quoteType: 'personalized' | 'general' = 'general';
@@ -3007,6 +3007,8 @@ Format as a brief analysis (2-3 sentences) focusing on what their data actually 
             prompt = `Generate a short, punchy relationship advice (5-8 words max) for someone who ${context}. Be direct, memorable, and actionable. No fluff. Examples: "Show up consistently" or "Listen without fixing" or "Trust actions over words."`;
           } else if (selectedStyle === 'edgy') {
             prompt = `Generate a brutally honest, wake-up-call relationship truth (1-2 sentences) for someone who ${context}. Be blunt about dating reality. Examples: "You're not confused - you're just not their priority" or "Stop romanticizing someone who's giving you the bare minimum."`;
+          } else if (selectedStyle === 'soft') {
+            prompt = `Generate a gentle, positive affirmation about relationships (1-2 sentences) for someone who ${context}. Be encouraging, supportive, and nurturing. Focus on self-worth and healing. Examples: "You deserve love that feels peaceful and secure" or "Your heart's capacity to love is your greatest strength."`;
           } else {
             prompt = `Generate an elegant, inspiring relationship wisdom (1-2 sentences) for someone who ${context}. Focus on hope, growth, and deeper connection. Avoid clichés starting with "In the...". Be fresh and meaningful.`;
           }
@@ -3016,6 +3018,8 @@ Format as a brief analysis (2-3 sentences) focusing on what their data actually 
             prompt = `Generate short, memorable relationship advice (3-6 words). Be direct and actionable. Examples: "Choose growth together" or "Communicate before assuming" or "Actions reveal intentions."`;
           } else if (selectedStyle === 'edgy') {
             prompt = `Generate a harsh but necessary relationship reality check (1-2 sentences). Call out toxic patterns directly. Examples: "Stop chasing people who run from commitment" or "Your potential means nothing if they're not investing effort."`;
+          } else if (selectedStyle === 'soft') {
+            prompt = `Generate a gentle, positive affirmation about relationships (1-2 sentences). Be encouraging and nurturing. Focus on self-worth and healing. Examples: "You are worthy of love that celebrates who you are" or "Your kind heart deserves gentle, patient love in return."`;
           } else {
             prompt = `Generate fresh, uplifting relationship wisdom (1-2 sentences). Focus on authentic connection and personal growth. Avoid overused phrases like "In the garden of..." or "dance of hearts." Be original and meaningful.`;
           }
@@ -3031,6 +3035,9 @@ Format as a brief analysis (2-3 sentences) focusing on what their data actually 
         } else if (selectedStyle === 'edgy') {
           systemMessage = "You are a brutally honest relationship coach who delivers harsh truths. Be blunt about dating reality. Call out toxic patterns and self-deception directly.";
           temperature = 0.6;
+        } else if (selectedStyle === 'soft') {
+          systemMessage = "You are a gentle, nurturing relationship counselor who provides warm, positive affirmations. Focus on healing, self-worth, and encouragement. Be supportive and kind.";
+          temperature = 0.7;
         } else {
           systemMessage = "You are an inspiring relationship counselor who provides fresh, meaningful wisdom. Avoid clichéd phrases. Be original and uplifting without being cheesy.";
           temperature = 0.8;
@@ -3048,7 +3055,7 @@ Format as a brief analysis (2-3 sentences) focusing on what their data actually 
               content: prompt
             }
           ],
-          max_tokens: selectedStyle === 'simple' ? 30 : selectedStyle === 'edgy' ? 100 : 120,
+          max_tokens: selectedStyle === 'simple' ? 30 : selectedStyle === 'edgy' ? 100 : selectedStyle === 'soft' ? 120 : 120,
           temperature,
         });
 
@@ -3094,6 +3101,16 @@ Format as a brief analysis (2-3 sentences) focusing on what their data actually 
             "You deserve effort, not excuses.",
             "Stop settling for crumbs when you deserve the whole meal.",
             "Mixed signals mean they're not that interested."
+          ],
+          soft: [
+            "You are worthy of love that celebrates who you are.",
+            "Your kind heart deserves gentle, patient love in return.",
+            "You deserve love that feels peaceful and secure.",
+            "Your heart's capacity to love is your greatest strength.",
+            "The right person will cherish your sensitive soul.",
+            "You are enough, exactly as you are right now.",
+            "Your vulnerability is a gift to the right person.",
+            "Trust that your loving nature will attract genuine love."
           ]
         };
 
