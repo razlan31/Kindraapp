@@ -878,7 +878,7 @@ export default function Calendar() {
                             <span>Follicular</span>
                           </div>
                           <div className="flex items-center gap-1">
-                            <span className="text-sm">💛</span>
+                            <span className="text-sm">🌸</span>
                             <span>Fertile</span>
                           </div>
                           <div className="flex items-center gap-1">

@@ -970,7 +970,7 @@ export default function MenstrualCyclePage() {
                                    currentPhase.phase === 'fertile' ? 'luteal' : 'menstrual',
                             daysUntil: Math.max(1, Math.ceil((avgCycleLength - currentDay) / 4)),
                             emoji: currentPhase.phase === 'menstrual' ? '🌱' : 
-                                   currentPhase.phase === 'follicular' ? '💛' :
+                                   currentPhase.phase === 'follicular' ? '🌱' :
                                    currentPhase.phase === 'fertile' ? '🌙' : '🩸'
                           }}
                         />

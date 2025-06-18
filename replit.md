@@ -132,7 +132,7 @@ The badges system currently has several issues that need attention:
   - Updated intimacy emoji from 💕 to 💗 throughout the app (calendar filters, moment displays, server routes, insights, analytics)
   - Final cycle phase emoji system: 🩸 menstrual, 🌱 follicular, 🌸 fertile, 🥚 ovulation, 🌙 luteal
   - Applied changes to all components: calendar, cycle tracker, server routes, insights, advanced analytics, enhanced phase visualizer
-  - Fixed final 4 emoji inconsistencies in calendar.tsx where fertile phase still showed 💗
+  - Fixed final inconsistencies: 4 💗 emojis in calendar.tsx and 1 💛 emoji in calendar legend
   - Achieved perfect emoji consistency between calendar and cycle tracker with new standardized system
   - Completed comprehensive emoji standardization across all frontend and backend systems
 
