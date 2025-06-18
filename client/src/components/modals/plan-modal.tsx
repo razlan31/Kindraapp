@@ -174,10 +174,12 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
       title: "",
       description: "",
       scheduledDate: selectedDate || new Date(),
+      scheduledTime: "",
       connectionId: localSelectedConnection?.id || selectedConnection?.id,
-
       notes: "",
-      isCompleted: false
+      isCompleted: false,
+      hasReminder: false,
+      reminderMinutes: 15
     });
     setLocalSelectedConnection(selectedConnection);
     

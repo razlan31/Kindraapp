@@ -55,6 +55,7 @@ export default function Activities() {
   // Register listener for connection changes from modals
   useEffect(() => {
     registerConnectionChangeListener((connectionId: number | null) => {
+      console.log("Activity page received connection change:", connectionId);
       if (connectionId) {
         // Update activity page filter to match modal selection
         setSelectedConnections([connectionId]);

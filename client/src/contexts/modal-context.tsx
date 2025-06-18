@@ -130,12 +130,16 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const setSelectedConnection = (connectionId: number | null, connection?: Connection | null) => {
+    console.log("Modal context setSelectedConnection called:", { connectionId, connection: connection?.name });
     setSelectedConnectionId(connectionId);
     setSelectedConnectionObject(connection || null);
     
     // Notify the activity page about connection change
     if (connectionChangeListener) {
+      console.log("Calling connection change listener with:", connectionId);
       connectionChangeListener(connectionId);
+    } else {
+      console.log("No connection change listener registered");
     }
   };
 

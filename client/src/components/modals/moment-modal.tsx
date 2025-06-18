@@ -188,9 +188,11 @@ export function MomentModal() {
                       field.onChange(connectionId);
                       // Update modal context to sync with activity page
                       const selectedConnection = connections.find(c => c.id === connectionId);
-                      setSelectedConnection(connectionId, selectedConnection);
+                      if (selectedConnection) {
+                        setSelectedConnection(connectionId, selectedConnection);
+                      }
                     }}
-                    defaultValue={field.value.toString()}
+                    value={field.value.toString()}
                   >
                     <FormControl>
                       <SelectTrigger>
