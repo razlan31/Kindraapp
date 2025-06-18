@@ -85,7 +85,7 @@ export const getDetailedCyclePhase = (
         subPhase: "light_flow",
         color: "bg-red-100 dark:bg-red-900/30 border-red-300 dark:border-red-500",
         description: "Light menstrual flow",
-        emoji: "🌊",
+        emoji: "🩸",
         dayRange: `Days 3-${periodLength}`,
         hormonalProfile: "Rising estrogen",
         recommendations: ["Light exercise", "Hydration focus", "Begin energy foods", "Gentle stretching"]
@@ -111,9 +111,9 @@ export const getDetailedCyclePhase = (
       return {
         phase: "follicular",
         subPhase: "late_follicular",
-        color: "bg-green-100 dark:bg-green-900/30 border-green-300 dark:border-green-500 opacity-50",
+        color: "bg-green-100 dark:bg-green-900/30 border-green-300 dark:border-green-500",
         description: "Late follicular phase",
-        emoji: "🌿",
+        emoji: "🌱",
         dayRange: `Days ${periodLength + 4}-${follicularEnd}`,
         hormonalProfile: "High estrogen, rising energy",
         recommendations: ["Peak performance time", "Important decisions", "Physical challenges", "New initiatives"]
@@ -131,7 +131,7 @@ export const getDetailedCyclePhase = (
         subPhase: "ovulation",
         color: "bg-blue-100 dark:bg-blue-900/30 border-blue-300 dark:border-blue-500",
         description: "Ovulation day",
-        emoji: "🔵",
+        emoji: "🥚",
         dayRange: `Day ${ovulationDay}`,
         hormonalProfile: "LH surge, peak fertility",
         recommendations: ["Peak intimacy window", "High energy activities", "Social connections", "Important conversations"]
@@ -142,7 +142,7 @@ export const getDetailedCyclePhase = (
         subPhase: "fertile_window",
         color: "bg-yellow-100 dark:bg-yellow-900/30 border-yellow-300 dark:border-yellow-500",
         description: "Fertile window",
-        emoji: "💛",
+        emoji: "💗",
         dayRange: `Days ${fertileStart}-${fertileEnd}`,
         hormonalProfile: "High estrogen, approaching ovulation",
         recommendations: ["Fertility awareness", "Communication focus", "Relationship building", "Self-confidence peak"]
