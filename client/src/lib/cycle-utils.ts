@@ -100,7 +100,7 @@ export const getDetailedCyclePhase = (
       return {
         phase: "follicular",
         subPhase: "early_follicular",
-        color: "bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-600 opacity-50",
+        color: "bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-600",
         description: "Early follicular phase",
         emoji: "🌱",
         dayRange: `Days ${periodLength + 1}-${periodLength + 3}`,

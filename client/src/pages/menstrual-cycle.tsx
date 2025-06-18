@@ -792,26 +792,26 @@ export default function MenstrualCyclePage() {
                 bg: currentPhase.phase === 'menstrual' ? 'bg-red-50 dark:bg-red-950/20' :
                     currentPhase.subPhase === 'ovulation' ? 'bg-pink-50 dark:bg-pink-950/20' :
                     currentPhase.phase === 'fertile' ? 'bg-yellow-50 dark:bg-yellow-950/20' :
-                    currentPhase.phase === 'follicular' ? 'bg-green-50 dark:bg-green-950/20 opacity-50' :
-                    currentPhase.phase === 'luteal' ? 'bg-purple-50 dark:bg-purple-950/20 opacity-50' :
+                    currentPhase.phase === 'follicular' ? 'bg-green-50 dark:bg-green-950/20' :
+                    currentPhase.phase === 'luteal' ? 'bg-purple-50 dark:bg-purple-950/20' :
                     'bg-gray-50 dark:bg-gray-950/20',
                 border: currentPhase.phase === 'menstrual' ? 'border-red-200 dark:border-red-800' :
                         currentPhase.subPhase === 'ovulation' ? 'border-pink-200 dark:border-pink-800' :
                         currentPhase.phase === 'fertile' ? 'border-yellow-200 dark:border-yellow-800' :
-                        currentPhase.phase === 'follicular' ? 'border-green-200 dark:border-green-800 opacity-50' :
-                        currentPhase.phase === 'luteal' ? 'border-purple-200 dark:border-purple-800 opacity-50' :
+                        currentPhase.phase === 'follicular' ? 'border-green-200 dark:border-green-800' :
+                        currentPhase.phase === 'luteal' ? 'border-purple-200 dark:border-purple-800' :
                         'border-gray-200 dark:border-gray-800',
                 accent: currentPhase.phase === 'menstrual' ? 'bg-red-500' :
                         currentPhase.subPhase === 'ovulation' ? 'bg-pink-600' :
                         currentPhase.phase === 'fertile' ? 'bg-yellow-500' :
-                        currentPhase.phase === 'follicular' ? 'bg-green-500 opacity-50' :
-                        currentPhase.phase === 'luteal' ? 'bg-purple-500 opacity-50' :
+                        currentPhase.phase === 'follicular' ? 'bg-green-500' :
+                        currentPhase.phase === 'luteal' ? 'bg-purple-500' :
                         'bg-gray-500',
                 text: currentPhase.phase === 'menstrual' ? 'text-red-800 dark:text-red-200' :
                       currentPhase.subPhase === 'ovulation' ? 'text-pink-800 dark:text-pink-200' :
                       currentPhase.phase === 'fertile' ? 'text-yellow-800 dark:text-yellow-200' :
-                      currentPhase.phase === 'follicular' ? 'text-green-800 dark:text-green-200 opacity-50' :
-                      currentPhase.phase === 'luteal' ? 'text-purple-800 dark:text-purple-200 opacity-50' :
+                      currentPhase.phase === 'follicular' ? 'text-green-800 dark:text-green-200' :
+                      currentPhase.phase === 'luteal' ? 'text-purple-800 dark:text-purple-200' :
                       'text-gray-800 dark:text-gray-200'
               } : {
                 bg: 'bg-pink-50 dark:bg-pink-950/20',
