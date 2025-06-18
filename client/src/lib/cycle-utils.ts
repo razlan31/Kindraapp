@@ -255,49 +255,17 @@ export const getCyclePhaseForDay = (day: Date, connectionId: number, cycles: Men
   return null;
 };
 
-// Helper function to get cycle display info for calendar
+// Helper function to get cycle display info for calendar - matches cycle tracker exactly
 export const getCycleDisplayInfo = (phaseInfo: any) => {
   if (!phaseInfo) return null;
   
-  switch (phaseInfo.phase) {
-    case 'menstrual':
-      return {
-        color: 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-600',
-        indicator: '🩸',
-        title: `Day ${phaseInfo.day} - Menstrual Phase`,
-        description: 'Menstrual phase'
-      };
-    case 'follicular':
-      return {
-        color: 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-600 opacity-50',
-        indicator: '🌱',
-        title: `Day ${phaseInfo.day} - Follicular Phase`,
-        description: 'Follicular phase'
-      };
-    case 'fertile':
-      if (phaseInfo.subPhase === 'ovulation') {
-        return {
-          color: 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-600',
-          indicator: '🔵',
-          title: `Day ${phaseInfo.day} - Ovulation`,
-          description: 'Ovulation day'
-        };
-      } else {
-        return {
-          color: 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-600',
-          indicator: '💛',
-          title: `Day ${phaseInfo.day} - Fertile Window`,
-          description: 'Fertile window'
-        };
-      }
-    case 'luteal':
-      return {
-        color: 'bg-purple-50 dark:bg-purple-900/20 border-purple-200 dark:border-purple-600 opacity-50',
-        indicator: '🌙',
-        title: `Day ${phaseInfo.day} - Luteal Phase`,
-        description: 'Luteal phase'
-      };
-    default:
-      return null;
-  }
+  // Use the exact same styling as the cycle tracker
+  return {
+    color: phaseInfo.detailedInfo.color,
+    indicator: phaseInfo.detailedInfo.emoji,
+    title: `Day ${phaseInfo.day} - ${phaseInfo.detailedInfo.description}`,
+    description: phaseInfo.detailedInfo.description,
+    hormonalProfile: phaseInfo.detailedInfo.hormonalProfile,
+    recommendations: phaseInfo.detailedInfo.recommendations
+  };
 };
