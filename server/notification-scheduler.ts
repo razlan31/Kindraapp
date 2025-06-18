@@ -336,7 +336,28 @@ export class NotificationScheduler {
       };
     }
 
-    // Default: Encourage pattern recognition
+    // Default: Mix of gentle reminders and pattern recognition (30% reminder, 70% insights)
+    const shouldShowReminder = Math.random() < 0.3;
+    
+    if (shouldShowReminder) {
+      // Gentle logging reminder - less frequent but still present
+      const daysSinceLastMoment = allMoments.length > 0 ? 
+        this.getDaysBetween(new Date(allMoments[0].createdAt!), new Date()) : 999;
+      
+      if (daysSinceLastMoment > 7) {
+        return {
+          title: "Gentle Reminder",
+          message: "How have your relationships been lately? Even small moments are worth capturing."
+        };
+      } else {
+        return {
+          title: "Moment Check-in",
+          message: "Any meaningful interactions today? Capturing moments helps build awareness over time."
+        };
+      }
+    }
+    
+    // Default insight-focused approach (70% of the time)
     return {
       title: "Relationship Intelligence",
       message: "Notice any patterns in your recent interactions? Small observations can lead to big insights."
@@ -529,6 +550,15 @@ export class NotificationScheduler {
       return {
         title: "Fresh Start Energy",
         message: "New cycle, fresh perspective. Your optimism and openness create opportunities for deeper connections."
+      };
+    }
+    
+    // Add gentle cycle tracking reminders (20% of the time)
+    const shouldShowCycleReminder = Math.random() < 0.2;
+    if (shouldShowCycleReminder && !activeCycle) {
+      return {
+        title: "Cycle Awareness",
+        message: "How are you feeling today? Tracking your cycle can help you understand your relationship patterns better."
       };
     }
   }

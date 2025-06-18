@@ -111,14 +111,14 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
-- June 18, 2025: VALUE-DRIVEN NOTIFICATION SYSTEM - Transformed notifications from simple logging reminders to actionable relationship intelligence
-  - Replaced "log something" prompts with pattern analysis and behavioral insights
-  - Moment reminders now provide weekend/weekday patterns, communication effectiveness, emotional intelligence scores
-  - AI insights deliver timing patterns, attention distribution analysis, conflict resolution success rates
-  - Cycle reminders offer phase-specific relationship strategies and body-mind connection guidance
-  - All notifications now educate and guide rather than nag, maintaining engagement through genuine value delivery
-  - Smart frequency management with cooldown periods and weekly limits prevents notification fatigue
-  - Priority-based selection ensures most valuable insights are delivered first
+- June 18, 2025: BALANCED NOTIFICATION SYSTEM - Created optimal mix of value-driven insights and gentle reminders
+  - 70% value-driven insights: Pattern analysis, behavioral insights, emotional intelligence scores
+  - 30% gentle reminders: Soft prompts for moment logging when patterns detected
+  - Moment reminders provide weekend/weekday patterns, communication effectiveness analysis
+  - AI insights deliver timing patterns, attention distribution analysis, conflict resolution success rates  
+  - Cycle reminders offer phase-specific relationship strategies with 20% gentle tracking prompts
+  - Smart frequency management maintains engagement without overwhelming users
+  - System balances education/guidance with necessary data collection prompts
 
 - June 18, 2025: REDUCED ZODIAC REFERENCES & ELIMINATED REPLACEMENT LANGUAGE - Fine-tuned quote generation system based on user feedback
   - Reduced zodiac sign context usage from 50% to 25% probability to minimize astrology references
