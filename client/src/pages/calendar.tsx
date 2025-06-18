@@ -1137,7 +1137,7 @@ export default function Calendar() {
                   const getPhaseEmoji = (phase: string, subPhase?: string) => {
                     if (phase === 'menstrual') return '🩸';
                     if (phase === 'fertile' && subPhase === 'ovulation') return '🥚';
-                    if (phase === 'fertile') return '💗';
+                    if (phase === 'fertile') return '🌸';
                     if (phase === 'follicular') return '🌱';
                     if (phase === 'luteal') return '🌙';
                     return '';
