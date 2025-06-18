@@ -2975,12 +2975,9 @@ Format as a brief analysis (2-3 sentences) focusing on what their data actually 
         // Determine quote type and style for variety
         const shouldPersonalize = hasConnections && hasMoments && Math.random() > 0.3;
         
-        // Add quote style variety - cycle through different styles
-        const today = new Date().toISOString().split('T')[0];
-        const dayHash = today.split('-').reduce((a, b) => parseInt(a) + parseInt(b), 0);
-        const styleIndex = dayHash % 3;
+        // Add quote style variety - use randomness for immediate variety
         const quoteStyles = ['beautiful', 'simple', 'edgy'];
-        const selectedStyle = quoteStyles[styleIndex];
+        const selectedStyle = quoteStyles[Math.floor(Math.random() * 3)];
         
         let prompt = "";
         let quoteType: 'personalized' | 'general' = 'general';
