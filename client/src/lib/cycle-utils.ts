@@ -202,6 +202,20 @@ export const getCyclePhaseForDay = (day: Date, connectionId: number, cycles: Men
     new Date(a.periodStartDate).getTime() - new Date(b.periodStartDate).getTime()
   );
 
+  // Debug logging for Amalina to see all cycles being processed
+  const dayStr = format(day, 'yyyy-MM-dd');
+  if (connectionId === 6) {
+    console.log(`🔍 PROCESSING ${dayStr} for Amalina:`, {
+      totalCycles: sortedCycles.length,
+      cycleIds: sortedCycles.map(c => c.id),
+      cycles: sortedCycles.map(c => ({
+        id: c.id,
+        start: format(new Date(c.periodStartDate), 'yyyy-MM-dd'),
+        end: c.cycleEndDate ? format(new Date(c.cycleEndDate), 'yyyy-MM-dd') : 'ongoing'
+      }))
+    });
+  }
+
   // Find the cycle that this day belongs to
   for (const cycle of sortedCycles) {
     const cycleStart = new Date(cycle.periodStartDate);
@@ -215,27 +229,24 @@ export const getCyclePhaseForDay = (day: Date, connectionId: number, cycles: Men
       cycleEnd = addDays(cycleStart, avgCycleLength - 1);
     }
     
-    // Debug logging for May dates and connection 6 (Amalina)
+    // Normalize dates to start of day BEFORE comparison to avoid timezone issues
+    const normalizedDay = startOfDay(day);
+    const normalizedCycleStart = startOfDay(cycleStart);
+    const normalizedCycleEnd = startOfDay(cycleEnd);
+    
+    // Debug logging for connection 6 (Amalina)
     const dayStr = format(day, 'yyyy-MM-dd');
-    if (connectionId === 6 && (dayStr === '2025-05-01' || dayStr === '2025-05-02' || dayStr === '2025-05-03' || dayStr === '2025-05-04')) {
-      console.log(`🔍 AMALINA MAY DEBUG - ${dayStr}:`, {
+    if (connectionId === 6) {
+      console.log(`🔍 CYCLE MATCHING - ${dayStr}:`, {
         dayStr,
         cycleId: cycle.id,
         periodStart: format(cycleStart, 'yyyy-MM-dd'),
         periodEnd: cycle.periodEndDate ? format(new Date(cycle.periodEndDate), 'yyyy-MM-dd') : 'no end date',
         cycleEnd: format(cycleEnd, 'yyyy-MM-dd'),
-        dayWithinRange: day >= cycleStart && day <= cycleEnd,
-        dayAsDate: day,
-        cycleStartAsDate: cycleStart,
-        periodStartDate: cycle.periodStartDate,
-        periodEndDate: cycle.periodEndDate
+        hasCycleEndDate: !!cycle.cycleEndDate,
+        dayWithinRange: day >= cycleStart && day <= cycleEnd
       });
     }
-    
-    // Normalize dates to start of day BEFORE comparison to avoid timezone issues
-    const normalizedDay = startOfDay(day);
-    const normalizedCycleStart = startOfDay(cycleStart);
-    const normalizedCycleEnd = startOfDay(cycleEnd);
     
     if (normalizedDay >= normalizedCycleStart && normalizedDay <= normalizedCycleEnd) {
       
