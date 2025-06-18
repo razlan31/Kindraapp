@@ -1056,32 +1056,9 @@ export default function Calendar() {
                 
                 const dayStr = format(day, 'yyyy-MM-dd');
                 
-                // Debug for ANY day in May 2025
-                if (format(day, 'yyyy-MM') === '2025-05') {
-                  console.log(`🔍 MAY ${format(day, 'dd')}: Connection check:`, {
-                    date: format(day, 'yyyy-MM-dd'),
-                    cyclesLength: cycles.length,
-                    selectedConnectionIds,
-                    connectionsToCheck,
-                    allCycles: cycles.map(c => ({ id: c.id, connectionId: c.connectionId, start: c.periodStartDate, end: c.cycleEndDate }))
-                  });
-                  // Force check connection 6 for May debugging
-                  if (!connectionsToCheck.includes(6)) {
-                    console.log(`🔍 MAY ${format(day, 'dd')}: FORCING connection 6 check for debugging`);
-                    connectionsToCheck.push(6);
-                  }
-                }
+
                 
-                // Special debug for May 16th processing
-                if (format(day, 'yyyy-MM-dd') === '2025-05-16') {
-                  console.log(`🔍 MAY 16th PROCESSING START:`, {
-                    connectionsToCheck,
-                    cyclesLength: cycles.length,
-                    cyclesLoading,
-                    willSkipNormalProcessing: dayStr === '2025-05-16',
-                    availableCycles: cycles.map(c => ({ id: c.id, connectionId: c.connectionId }))
-                  });
-                }
+
                 
 
                 
@@ -1289,60 +1266,85 @@ export default function Calendar() {
                         );
                       })}
 
-                      {/* Priority 3: Show connection alphabet letters (only when no activities or sufficient space) */}
-                      {cycleDisplay && filters.menstrualCycle && (dayMoments.length + dayMilestones.length) < (viewMode === 'daily' ? 4 : viewMode === 'weekly' ? 3 : 2) && (
-                        <div className="flex gap-0.5">
-                          {cycleDisplay.isMultiple && cycleDisplay.coloredInitials ? (
-                            // Show alphabet letters for multiple connections
-                            <div className={`flex flex-wrap ${viewMode === 'daily' ? 'gap-1' : 'gap-0.5'} max-w-full`}>
-                              {cycleDisplay.coloredInitials.slice(0, viewMode === 'daily' ? 3 : 2).map((item: any, index: number) => (
-                                <div
-                                  key={index}
-                                  className={`inline-flex items-center justify-center ${item.color} rounded-full border ${viewMode === 'daily' ? 'w-6 h-6 text-xs' : viewMode === 'weekly' ? 'w-5 h-5 text-xs' : 'w-4 h-4 text-xs'} font-bold flex-shrink-0`}
-                                  title={`${item.connectionName}: ${item.phase} phase`}
-                                >
-                                  <span className="font-bold">
-                                    {item.initial}
-                                  </span>
-                                </div>
-                              ))}
+                      {/* Priority 3: Show cycle indicators (alphabet letters for multiple, emojis for single) */}
+                      {(() => {
+                        if (!filters.menstrualCycle || (dayMoments.length + dayMilestones.length) >= (viewMode === 'daily' ? 3 : 2)) return null;
+                        
+                        // Get cycles for this day
+                        const dayActiveCycles = cycles.filter(cycle => {
+                          if (!cycle.connectionId || !selectedConnectionIds.includes(cycle.connectionId)) return false;
+                          
+                          const cycleStart = new Date(cycle.periodStartDate);
+                          const cycleEnd = cycle.cycleEndDate ? new Date(cycle.cycleEndDate) : null;
+                          
+                          if (!cycleEnd) return false;
+                          
+                          return day >= cycleStart && day <= cycleEnd;
+                        });
+                        
+                        if (dayActiveCycles.length === 0) return null;
+                        
+                        // Multiple connections selected AND multiple cycles on this day - show alphabet letters
+                        if (selectedConnectionIds.length > 1 && dayActiveCycles.length > 1) {
+                          return (
+                            <div className="flex gap-0.5">
+                              {dayActiveCycles.slice(0, 2).map((cycle, index) => {
+                                const connection = connections.find(c => c.id === cycle.connectionId);
+                                const phaseInfo = cycle.connectionId ? getCyclePhaseForDay(day, cycle.connectionId) : null;
+                                
+                                if (!connection || !phaseInfo) return null;
+                                
+                                const getPhaseColor = (phase: string) => {
+                                  if (phase === 'menstrual') return 'bg-red-100 text-red-800 border-red-300';
+                                  if (phase === 'fertile') return 'bg-yellow-100 text-yellow-800 border-yellow-300';
+                                  if (phase === 'follicular') return 'bg-green-100 text-green-800 border-green-300';
+                                  if (phase === 'luteal') return 'bg-purple-100 text-purple-800 border-purple-300';
+                                  return 'bg-blue-100 text-blue-800 border-blue-300';
+                                };
+                                
+                                return (
+                                  <div
+                                    key={cycle.id}
+                                    className={`inline-flex items-center justify-center rounded-full border ${viewMode === 'daily' ? 'w-6 h-6 text-xs' : viewMode === 'weekly' ? 'w-5 h-5 text-xs' : 'w-4 h-4 text-xs'} font-bold ${getPhaseColor(phaseInfo.phase)}`}
+                                    title={`${connection.name}: ${phaseInfo.phase} phase`}
+                                  >
+                                    <span className="font-bold">
+                                      {connection.name[0].toUpperCase()}
+                                    </span>
+                                  </div>
+                                );
+                              })}
                             </div>
-                          ) : (
-                            // Show single connection alphabet
-                            <div className={`inline-flex items-center justify-center rounded-full border ${viewMode === 'daily' ? 'w-6 h-6 text-xs' : viewMode === 'weekly' ? 'w-5 h-5 text-xs' : 'w-4 h-4 text-xs'} font-bold bg-gray-100 text-gray-700`}>
-                              <span className="font-bold">
-                                {connections.find(c => selectedConnectionIds.length === 1 && c.id === selectedConnectionIds[0])?.name?.[0]?.toUpperCase() || '?'}
-                              </span>
-                            </div>
-                          )}
-                        </div>
-                      )}
-
-                      {/* Priority 4: Show menstrual cycle emojis (lowest priority, only when plenty of space) */}
-                      {cycleDisplay && filters.menstrualCycle && (dayMoments.length + dayMilestones.length) < (viewMode === 'daily' ? 2 : 1) && (
-                        <div className="flex gap-0.5">
-                          {cycleDisplay.isMultiple && cycleDisplay.coloredInitials ? (
-                            // Show menstrual emojis for multiple connections (only prominent phases)
-                            cycleDisplay.coloredInitials.filter((item: any) => item.isProminent && item.emoji).slice(0, 2).map((item: any, index: number) => (
-                              <span
-                                key={index}
-                                className={`${viewMode === 'daily' ? 'text-lg' : viewMode === 'weekly' ? 'text-sm' : 'text-xs'}`}
-                                title={`${item.connectionName}: ${item.phase} phase`}
-                              >
-                                {item.emoji}
-                              </span>
-                            ))
-                          ) : (
-                            // Show single cycle indicator
-                            <span
-                              className={`${viewMode === 'daily' ? 'text-lg' : viewMode === 'weekly' ? 'text-base' : 'text-xs'}`}
-                              title={cycleDisplay.description}
-                            >
-                              {cycleDisplay.indicator}
-                            </span>
-                          )}
-                        </div>
-                      )}
+                          );
+                        }
+                        
+                        // Single connection or single cycle - show emoji
+                        const cycle = dayActiveCycles[0];
+                        const phaseInfo = cycle.connectionId ? getCyclePhaseForDay(day, cycle.connectionId) : null;
+                        
+                        if (!phaseInfo) return null;
+                        
+                        const getPhaseEmoji = (phase: string, subPhase?: string) => {
+                          if (phase === 'menstrual') return '🩸';
+                          if (phase === 'fertile' && subPhase === 'ovulation') return '🥚';
+                          if (phase === 'fertile') return '💗';
+                          if (phase === 'follicular') return '🌱';
+                          if (phase === 'luteal') return '🌙';
+                          return '';
+                        };
+                        
+                        const emoji = getPhaseEmoji(phaseInfo.phase, phaseInfo.subPhase);
+                        if (!emoji) return null;
+                        
+                        return (
+                          <span
+                            className={`${viewMode === 'daily' ? 'text-lg' : viewMode === 'weekly' ? 'text-base' : 'text-xs'}`}
+                            title={`${phaseInfo.phase} phase`}
+                          >
+                            {emoji}
+                          </span>
+                        );
+                      })()}
                       
                       {(dayMoments.length + dayMilestones.length) > (viewMode === 'daily' ? 6 : viewMode === 'weekly' ? 4 : 3) && (
                         <div className="w-2 h-2 rounded-full bg-gray-300 text-[6px] flex items-center justify-center font-bold">

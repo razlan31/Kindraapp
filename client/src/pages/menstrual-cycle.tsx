@@ -1092,21 +1092,61 @@ export default function MenstrualCyclePage() {
                       <div className="flex flex-wrap gap-0.5 items-center overflow-hidden max-w-full">
                         {/* Priority 1: Activity emojis (moments/milestones) - not applicable to cycle tracker */}
                         
-                        {/* Get cycle phases for this day - simplified logic */}
+                        {/* Show cycle indicators using same logic as calendar */}
                         {(() => {
-                          // Simple approach: show emoji for single connection, alphabet letters only for multiple overlapping cycles
-                          if (selectedPersonIds.length !== 1) {
-                            // Multiple or no selection - don't show anything for cycle tracker
-                            return null;
+                          // Get cycles for selected connections only
+                          const dayActiveCycles = cycles.filter(cycle => {
+                            if (!cycle.connectionId || !selectedPersonIds.includes(cycle.connectionId)) return false;
+                            
+                            const cycleStart = new Date(cycle.periodStartDate);
+                            const cycleEnd = cycle.cycleEndDate ? new Date(cycle.cycleEndDate) : null;
+                            
+                            if (!cycleEnd) return false;
+                            
+                            return day >= cycleStart && day <= cycleEnd;
+                          });
+                          
+                          if (dayActiveCycles.length === 0) return null;
+                          
+                          // For multiple connections, show alphabet letters
+                          if (selectedPersonIds.length > 1 && dayActiveCycles.length > 1) {
+                            return (
+                              <div className="flex gap-0.5">
+                                {dayActiveCycles.slice(0, 2).map((cycle, index) => {
+                                  const connection = connections.find(c => c.id === cycle.connectionId);
+                                  const phaseInfo = cycle.connectionId ? getCyclePhaseForDay(day, cycle.connectionId, cycles) : null;
+                                  
+                                  if (!connection || !phaseInfo) return null;
+                                  
+                                  const getPhaseColor = (phase: string) => {
+                                    if (phase === 'menstrual') return 'bg-red-100 text-red-800 border-red-300';
+                                    if (phase === 'fertile') return 'bg-yellow-100 text-yellow-800 border-yellow-300';
+                                    if (phase === 'follicular') return 'bg-green-100 text-green-800 border-green-300';
+                                    if (phase === 'luteal') return 'bg-purple-100 text-purple-800 border-purple-300';
+                                    return 'bg-gray-100 text-gray-800 border-gray-300';
+                                  };
+                                  
+                                  return (
+                                    <div
+                                      key={cycle.id}
+                                      className={`inline-flex items-center justify-center rounded-full border w-4 h-4 text-xs font-bold ${getPhaseColor(phaseInfo.phase)}`}
+                                      title={`${connection.name}: ${phaseInfo.phase} phase`}
+                                    >
+                                      <span className="font-bold text-[8px]">
+                                        {connection.name[0].toUpperCase()}
+                                      </span>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            );
                           }
                           
-                          // Single connection selected - show just the emoji
-                          const connectionId = selectedPersonIds[0];
-                          const phaseInfo = getCyclePhaseForDay(day, connectionId, cycles);
+                          // For single connection, show just emoji
+                          const cycle = dayActiveCycles[0];
+                          const phaseInfo = cycle.connectionId ? getCyclePhaseForDay(day, cycle.connectionId, cycles) : null;
                           
-                          if (!phaseInfo) {
-                            return null;
-                          }
+                          if (!phaseInfo) return null;
                           
                           const getPhaseEmoji = (phase: string, subPhase?: string) => {
                             if (phase === 'menstrual') return '🩸';
@@ -1120,7 +1160,6 @@ export default function MenstrualCyclePage() {
                           const emoji = getPhaseEmoji(phaseInfo.phase, phaseInfo.subPhase);
                           if (!emoji) return null;
                           
-                          // Return just the emoji for single connection
                           return (
                             <span 
                               className="text-xs opacity-90"
