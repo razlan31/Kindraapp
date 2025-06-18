@@ -80,6 +80,10 @@ export function MomentModal() {
     console.log("Modal useEffect - editingMoment:", editingMoment);
     console.log("Modal useEffect - momentModalOpen:", momentModalOpen);
     
+    // Reset submitting state when modal opens
+    console.log("🔥 MODAL OPEN - Resetting isSubmitting to false");
+    setIsSubmitting(false);
+    
     // For new entries, FORCE default to May 25th for testing
     if (!editingMoment && momentModalOpen) {
       if (selectedDate) {
@@ -280,6 +284,9 @@ export function MomentModal() {
       closeMomentModal();
     },
     onError: (error: any, newMoment, context) => {
+      console.log("🔥 MUTATION ERROR - Resetting isSubmitting to false");
+      setIsSubmitting(false); // Reset submitting state on error
+      
       if (context?.previousMoments) {
         queryClient.setQueryData(['/api/moments'], context.previousMoments);
       }
@@ -293,12 +300,13 @@ export function MomentModal() {
 
   const handleError = (error: any) => {
     console.error("Error with moment:", error);
+    console.log("🔥 HANDLE ERROR - Resetting isSubmitting to false");
+    setIsSubmitting(false);
     toast({
       title: "Error",
       description: error?.message || "Failed to save entry. Please try again.",
       variant: "destructive",
     });
-    setIsSubmitting(false);
   };
 
   // Create moment mutation with optimistic updates
@@ -342,6 +350,9 @@ export function MomentModal() {
       return { previousMoments };
     },
     onSuccess: (data) => {
+      console.log("🔥 MUTATION SUCCESS - Resetting isSubmitting to false");
+      setIsSubmitting(false); // Reset submitting state
+      
       // Check if any new badges were earned
       if (data.newBadges && data.newBadges.length > 0) {
         // Show celebratory toast for each new badge
@@ -571,6 +582,9 @@ export function MomentModal() {
         return response.json();
       })
       .then(() => {
+        console.log("🔥 MILESTONE SUCCESS - Resetting isSubmitting to false");
+        setIsSubmitting(false); // Reset submitting state
+        
         toast({
           title: "Milestone created successfully",
           description: "Your milestone has been recorded.",
@@ -596,7 +610,11 @@ export function MomentModal() {
         }
         closeMomentModal();
       })
-      .catch((error) => handleError(error));
+      .catch((error) => {
+        console.log("🔥 MILESTONE ERROR - Resetting isSubmitting to false");
+        setIsSubmitting(false); // Reset submitting state on error
+        handleError(error);
+      });
       
       return;
     }
