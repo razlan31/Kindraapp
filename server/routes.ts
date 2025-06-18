@@ -3004,20 +3004,20 @@ Format as a brief analysis (2-3 sentences) focusing on what their data actually 
           
           // Style-specific prompts for personalized quotes
           if (selectedStyle === 'simple') {
-            prompt = `Generate a simple, direct relationship advice (max 10 words) for someone who ${context}. Be concise and actionable. Examples: "Listen more. Judge less." or "Actions speak louder than promises."`;
+            prompt = `Generate a short, punchy relationship advice (5-8 words max) for someone who ${context}. Be direct, memorable, and actionable. No fluff. Examples: "Show up consistently" or "Listen without fixing" or "Trust actions over words."`;
           } else if (selectedStyle === 'edgy') {
-            prompt = `Generate a brutally honest, no-nonsense relationship truth (1-2 sentences) for someone who ${context}. Be direct and call out common relationship mistakes. Examples: "If they wanted to, they would" or "Stop making excuses for people who don't prioritize you."`;
+            prompt = `Generate a brutally honest, wake-up-call relationship truth (1-2 sentences) for someone who ${context}. Be blunt about dating reality. Examples: "You're not confused - you're just not their priority" or "Stop romanticizing someone who's giving you the bare minimum."`;
           } else {
-            prompt = `Generate a thoughtful, beautifully worded relationship quote (1-2 sentences) for someone who ${context}. Make it inspirational and poetic about love, growth, and connection.`;
+            prompt = `Generate an elegant, inspiring relationship wisdom (1-2 sentences) for someone who ${context}. Focus on hope, growth, and deeper connection. Avoid clichés starting with "In the...". Be fresh and meaningful.`;
           }
         } else {
           // Style-specific prompts for general quotes
           if (selectedStyle === 'simple') {
-            prompt = `Generate a simple, direct relationship advice (max 10 words). Be concise and actionable. Focus on universal relationship truths. Examples: "Good relationships need trust and effort" or "Be honest. Be kind. Show up."`;
+            prompt = `Generate short, memorable relationship advice (3-6 words). Be direct and actionable. Examples: "Choose growth together" or "Communicate before assuming" or "Actions reveal intentions."`;
           } else if (selectedStyle === 'edgy') {
-            prompt = `Generate a brutally honest, no-nonsense relationship truth (1-2 sentences). Be direct about common relationship mistakes and red flags. Examples: "You can't love someone into loving you back" or "Red flags look normal through rose-colored glasses."`;
+            prompt = `Generate a harsh but necessary relationship reality check (1-2 sentences). Call out toxic patterns directly. Examples: "Stop chasing people who run from commitment" or "Your potential means nothing if they're not investing effort."`;
           } else {
-            prompt = `Generate an inspirational, beautifully worded relationship quote (1-2 sentences). Focus on universal relationship wisdom about love, communication, growth, and building strong connections. Make it poetic and meaningful.`;
+            prompt = `Generate fresh, uplifting relationship wisdom (1-2 sentences). Focus on authentic connection and personal growth. Avoid overused phrases like "In the garden of..." or "dance of hearts." Be original and meaningful.`;
           }
         }
 
@@ -3026,14 +3026,14 @@ Format as a brief analysis (2-3 sentences) focusing on what their data actually 
         let temperature = 0.8;
         
         if (selectedStyle === 'simple') {
-          systemMessage = "You are a direct, no-fluff relationship advisor. Keep advice concise and actionable.";
-          temperature = 0.6;
+          systemMessage = "You are a direct, no-nonsense relationship advisor. Keep advice extremely short and punchy. Maximum 8 words. Be memorable and actionable.";
+          temperature = 0.5;
         } else if (selectedStyle === 'edgy') {
-          systemMessage = "You are a brutally honest relationship coach who tells hard truths. Be direct and call out toxic patterns.";
-          temperature = 0.7;
+          systemMessage = "You are a brutally honest relationship coach who delivers harsh truths. Be blunt about dating reality. Call out toxic patterns and self-deception directly.";
+          temperature = 0.6;
         } else {
-          systemMessage = "You are a wise, poetic relationship counselor who provides beautiful, inspiring wisdom.";
-          temperature = 0.9;
+          systemMessage = "You are an inspiring relationship counselor who provides fresh, meaningful wisdom. Avoid clichéd phrases. Be original and uplifting without being cheesy.";
+          temperature = 0.8;
         }
 
         const response = await openai.chat.completions.create({
@@ -3048,7 +3048,7 @@ Format as a brief analysis (2-3 sentences) focusing on what their data actually 
               content: prompt
             }
           ],
-          max_tokens: selectedStyle === 'simple' ? 50 : 150,
+          max_tokens: selectedStyle === 'simple' ? 30 : selectedStyle === 'edgy' ? 100 : 120,
           temperature,
         });
 
@@ -3068,26 +3068,32 @@ Format as a brief analysis (2-3 sentences) focusing on what their data actually 
         // Fallback quotes with variety - organize by style
         const fallbackQuotes = {
           beautiful: [
-            "The greatest relationships are built on understanding, patience, and genuine care for each other's growth.",
-            "Love is not about finding someone perfect, but about seeing someone perfectly despite their imperfections.",
-            "Strong relationships require daily effort, open communication, and the courage to be vulnerable with each other.",
-            "Quality time isn't measured in hours spent together, but in the depth of connection shared in those moments."
+            "True love grows when two people choose each other every single day.",
+            "The best relationships are built on friendship, respect, and genuine admiration.",
+            "Love isn't about perfection - it's about accepting imperfections and growing together.",
+            "Healthy relationships create space for both togetherness and individual growth.",
+            "Real connection happens when both people feel safe to be completely themselves.",
+            "The strongest bonds are forged through weathering life's storms together."
           ],
           simple: [
-            "Listen more. Judge less.",
-            "Actions speak louder than promises.",
-            "Be honest. Be kind. Show up.",
-            "Good relationships need trust and effort.",
-            "Communication fixes most problems.",
-            "Respect differences. Celebrate similarities."
+            "Show up consistently.",
+            "Listen without fixing.",
+            "Trust actions over words.",
+            "Choose growth together.",
+            "Communicate before assuming.",
+            "Actions reveal intentions.",
+            "Be present, not perfect.",
+            "Consistency builds trust."
           ],
           edgy: [
-            "If they wanted to, they would.",
-            "Stop making excuses for people who don't prioritize you.",
-            "You can't love someone into loving you back.",
-            "Red flags look normal through rose-colored glasses.",
-            "Your standards aren't too high, their effort is too low.",
-            "Don't set yourself on fire to keep someone else warm."
+            "Stop chasing people who run from commitment.",
+            "Your potential means nothing if they're not investing effort.",
+            "You're not confused - you're just not their priority.",
+            "Stop romanticizing someone who's giving you the bare minimum.",
+            "If they're 'not ready for a relationship,' believe them.",
+            "You deserve effort, not excuses.",
+            "Stop settling for crumbs when you deserve the whole meal.",
+            "Mixed signals mean they're not that interested."
           ]
         };
 
