@@ -1226,7 +1226,7 @@ export default function Calendar() {
                           ) : (
                             // Show regular cycle indicator for single connection
                             <span
-                              className={`${viewMode === 'daily' ? 'text-2xl' : viewMode === 'weekly' ? 'text-base' : 'text-xs'} opacity-70`}
+                              className={`${viewMode === 'daily' ? 'text-2xl' : viewMode === 'weekly' ? 'text-base' : 'text-xs'}`}
                               title={cycleDisplay.description}
                             >
                               {cycleDisplay.indicator}
