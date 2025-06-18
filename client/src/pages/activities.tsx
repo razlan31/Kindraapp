@@ -247,6 +247,21 @@ export default function Activities() {
       return false;
     }
 
+    // For timeline view, apply date range filtering (only show events within 1 month in the future)
+    if (activeTab === 'timeline') {
+      const momentDate = new Date(moment.createdAt);
+      const now = new Date();
+      const oneMonthFromNow = new Date();
+      oneMonthFromNow.setMonth(now.getMonth() + 1);
+      
+      // Only show events that are:
+      // 1. In the past or today
+      // 2. In the future but within 1 month
+      if (momentDate > oneMonthFromNow) {
+        return false;
+      }
+    }
+
     // First apply tab filtering
     let tabMatches = false;
     switch (activeTab) {

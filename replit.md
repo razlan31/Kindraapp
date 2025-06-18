@@ -111,6 +111,19 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
+- June 18, 2025: TIMELINE DATE FILTERING - Limited timeline view to show upcoming events only within 1 month
+  - Added date range filtering for timeline tab to prevent showing events too far in the future
+  - Timeline now shows all past events plus upcoming events within 1 month from current date
+  - Other activity tabs (moments, plans, conflicts, intimacy) remain unaffected by date filtering
+  - Improves timeline relevance by focusing on actionable timeframe
+
+- June 18, 2025: FLOATING PLAN BUTTON FIX - Fixed missing PlanModal component rendering in App.tsx
+  - Added PlanModal import and rendering to ModalsContainer component
+  - Connected plan modal state (planModalOpen, closePlanModal) to app-level modal management
+  - Enhanced debugging in modal context to track plan modal state changes
+  - Fixed floating "Add Plan" button that was calling openPlanModal but modal wasn't rendered
+  - Both activities page plan button and floating menu plan button now work correctly
+
 - June 18, 2025: REACT CONTEXT SYNC SOLUTION - Replaced unreliable DOM events with React Context for bidirectional synchronization
   - Created SyncProvider context with triggerConnectionSync and registerSyncHandler functions
   - Replaced CustomEvent system with direct function calls through React Context
