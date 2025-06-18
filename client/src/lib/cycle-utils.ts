@@ -129,7 +129,7 @@ export const getDetailedCyclePhase = (
       return {
         phase: "fertile",
         subPhase: "ovulation",
-        color: "bg-blue-100 dark:bg-blue-900/30 border-blue-300 dark:border-blue-500 opacity-50",
+        color: "bg-blue-100 dark:bg-blue-900/30 border-blue-300 dark:border-blue-500",
         description: "Ovulation day",
         emoji: "🥚",
         dayRange: `Day ${ovulationDay}`,
@@ -140,7 +140,7 @@ export const getDetailedCyclePhase = (
       return {
         phase: "fertile",
         subPhase: "fertile_window",
-        color: "bg-yellow-100 dark:bg-yellow-900/30 border-yellow-300 dark:border-yellow-500 opacity-50",
+        color: "bg-yellow-100 dark:bg-yellow-900/30 border-yellow-300 dark:border-yellow-500",
         description: "Fertile window",
         emoji: "💗",
         dayRange: `Days ${fertileStart}-${fertileEnd}`,
