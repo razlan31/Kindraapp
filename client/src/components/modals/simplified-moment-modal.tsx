@@ -201,15 +201,13 @@ export function MomentModal() {
   
   // Success and error handlers - now optimized for instant updates
   const handleSuccess = (result?: any) => {
-    console.log("🔄 SYNC - handleSuccess called with result:", result);
+    console.log("🔄 SYNC CONTEXT - handleSuccess called with result:", result);
     
     // Trigger connection sync for activities page if a connection was used
     const connectionId = selectedConnectionId;
-    if (connectionId && window.dispatchEvent) {
-      console.log("🔄 SYNC - Dispatching connectionActivity event for connection:", connectionId);
-      window.dispatchEvent(new CustomEvent('connectionActivity', { 
-        detail: { connectionId, activityType } 
-      }));
+    if (connectionId) {
+      console.log("🔄 SYNC CONTEXT - Triggering sync for connection:", connectionId);
+      triggerConnectionSync(connectionId, activityType);
     }
     
     // Only clear form if creating new entry (not editing)

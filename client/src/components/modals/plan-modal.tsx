@@ -50,6 +50,7 @@ type PlanFormData = z.infer<typeof planSchema>;
 
 export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, showConnectionPicker = true, editingMoment }: PlanModalProps) {
   const { toast } = useToast();
+  const { triggerConnectionSync } = useSync();
   const { selectedDate: contextSelectedDate, setSelectedConnection } = useModal();
   const queryClient = useQueryClient();
   

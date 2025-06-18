@@ -98,14 +98,16 @@ function App() {
       <AuthProvider>
         <ThemeProvider>
           <RelationshipFocusProvider>
-            <ModalProvider>
-              <TooltipProvider>
-                <Toaster />
-                <BadgeNotificationMonitor />
-                <Router />
-                <ModalsContainer />
-              </TooltipProvider>
-            </ModalProvider>
+            <SyncProvider>
+              <ModalProvider>
+                <TooltipProvider>
+                  <Toaster />
+                  <BadgeNotificationMonitor />
+                  <Router />
+                  <ModalsContainer />
+                </TooltipProvider>
+              </ModalProvider>
+            </SyncProvider>
           </RelationshipFocusProvider>
         </ThemeProvider>
       </AuthProvider>
