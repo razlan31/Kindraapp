@@ -309,11 +309,18 @@ export function MomentModal() {
       
       // Trigger connection sync for activities page
       const connectionId = selectedConnectionId;
-      if (connectionId && window.dispatchEvent) {
-        console.log("🔄 SYNC - Dispatching connectionActivity event for connection:", connectionId);
-        window.dispatchEvent(new CustomEvent('connectionActivity', { 
+      console.log("🔄 SYNC - About to dispatch event - connectionId:", connectionId, "activityType:", activityType);
+      
+      if (connectionId) {
+        const event = new CustomEvent('connectionActivity', { 
           detail: { connectionId, activityType } 
-        }));
+        });
+        console.log("🔄 SYNC - Created event:", event, "detail:", event.detail);
+        
+        const dispatched = window.dispatchEvent(event);
+        console.log("🔄 SYNC - Event dispatched successfully:", dispatched);
+      } else {
+        console.log("🔄 SYNC - No connectionId available for sync");
       }
       console.log("Moment saved - triggering connection sync:", selectedConnectionId);
       if (selectedConnectionId) {

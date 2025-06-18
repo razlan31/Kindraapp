@@ -102,17 +102,30 @@ export default function Activities() {
   // Listen for connection activity events to update filters
   useEffect(() => {
     const handleConnectionActivity = (event: CustomEvent) => {
+      console.log("🔄 SYNC - Activities page received connectionActivity event:", event, "detail:", event.detail);
       const { connectionId } = event.detail;
-      console.log("🔄 SYNC - Activities page received connectionActivity event for:", connectionId);
+      console.log("🔄 SYNC - Connection ID from event:", connectionId, "type:", typeof connectionId);
+      console.log("🔄 SYNC - Current selectedConnections:", selectedConnections);
       
       if (connectionId && !selectedConnections.includes(connectionId)) {
         console.log("🔄 SYNC - Adding connection to filter:", connectionId);
-        setSelectedConnections(prev => [...prev, connectionId]);
+        setSelectedConnections(prev => {
+          const newConnections = [...prev, connectionId];
+          console.log("🔄 SYNC - New connections array:", newConnections);
+          return newConnections;
+        });
+      } else {
+        console.log("🔄 SYNC - Connection already in filter or invalid connectionId");
       }
     };
 
+    console.log("🔄 SYNC - Setting up event listener for connectionActivity");
     window.addEventListener('connectionActivity', handleConnectionActivity as EventListener);
-    return () => window.removeEventListener('connectionActivity', handleConnectionActivity as EventListener);
+    
+    return () => {
+      console.log("🔄 SYNC - Removing event listener for connectionActivity");
+      window.removeEventListener('connectionActivity', handleConnectionActivity as EventListener);
+    };
   }, [selectedConnections]);
 
   // Handle connection creation
