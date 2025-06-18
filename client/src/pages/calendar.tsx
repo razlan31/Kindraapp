@@ -336,6 +336,7 @@ export default function Calendar() {
     // Check different moment types
     const isConflict = moment.tags?.includes('Conflict') || moment.emoji === '⚡';
     const isIntimacy = moment.tags?.includes('Sex') || moment.isIntimate || moment.emoji === '💗';
+    const isDating = moment.tags?.includes('Dating') || moment.tags?.includes('Relationship Stage') || moment.emoji === '💕';
     const isPlan = moment.tags?.includes('Plan') || moment.emoji === '📅';
     const isMilestone = moment.isMilestone || moment.tags?.includes('Milestone') || moment.emoji === '🏆' || (moment as any).isBirthday;
     
