@@ -502,9 +502,17 @@ export default function MenstrualCyclePage() {
   }, [cycles, selectedPersonIds]);
 
   const getCurrentCycle = () => filteredCycles.find(cycle => !cycle.cycleEndDate);
-  const getPastCycles = () => filteredCycles
-    .filter(cycle => cycle.cycleEndDate)
-    .sort((a, b) => new Date(b.periodStartDate).getTime() - new Date(a.periodStartDate).getTime());
+  const getPastCycles = () => {
+    const today = new Date();
+    return filteredCycles
+      .filter(cycle => {
+        // Only include cycles that have ended AND the end date is in the past
+        if (!cycle.cycleEndDate) return false;
+        const cycleEndDate = new Date(cycle.cycleEndDate);
+        return cycleEndDate < today;
+      })
+      .sort((a, b) => new Date(b.periodStartDate).getTime() - new Date(a.periodStartDate).getTime());
+  };
 
   const getCycleLength = (cycle: MenstrualCycle) => {
     if (!cycle.cycleEndDate) return null;
