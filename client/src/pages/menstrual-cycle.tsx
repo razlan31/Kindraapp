@@ -1114,8 +1114,8 @@ export default function MenstrualCyclePage() {
                             return (
                               <div className="flex gap-0.5">
                                 {selectedConnections.slice(0, 2).map((connection, index) => {
-                                  const connectionCycle = allSelectedCycles.find(c => c.connectionId === connection.id);
-                                  const phaseInfo = connectionCycle ? getCyclePhaseForDay(day, connection.id, cycles) : null;
+                                  // Always try to get phase info for the connection, regardless of whether there's a cycle on this specific day
+                                  const phaseInfo = getCyclePhaseForDay(day, connection.id, cycles);
                                   
                                   // Show alphabet letter even if no cycle data, but with different styling
                                   const hasPhase = !!phaseInfo;
