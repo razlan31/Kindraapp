@@ -280,7 +280,7 @@ function analyzeDayOfWeekPatterns(moments: Moment[]) {
 }
 
 function analyzeEmotionalMomentum(moments: Moment[]) {
-  const positiveEmojis = ['😍', '💕', '❤️', '🎉', '🌅', '✈️', '💝', '📚', '🥰', '😊', '😄'];
+  const positiveEmojis = ['😍', '💗', '❤️', '🎉', '🌅', '✈️', '💝', '📚', '🥰', '😊', '😄'];
   const negativeEmojis = ['😢', '😞', '😕', '💔', '😤', '😠', '🙄', '😣'];
   
   let currentStreak = 0;
