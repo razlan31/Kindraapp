@@ -22,6 +22,8 @@ type ModalContextType = {
   setSelectedConnection: (connectionId: number | null, connection?: Connection | null) => void;
   setMainFocusConnection: (connection: Connection | null) => void;
   setNavigationConnectionId: (connectionId: number | null) => void;
+  onConnectionChanged?: (connectionId: number | null) => void;
+  registerConnectionChangeListener: (callback: (connectionId: number | null) => void) => void;
 };
 
 const ModalContext = createContext<ModalContextType>({
@@ -44,6 +46,8 @@ const ModalContext = createContext<ModalContextType>({
   setSelectedConnection: () => {},
   setMainFocusConnection: () => {},
   setNavigationConnectionId: () => {},
+  onConnectionChanged: undefined,
+  registerConnectionChangeListener: () => {},
 });
 
 export const useModal = () => useContext(ModalContext);
@@ -60,6 +64,7 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [editingMoment, setEditingMoment] = useState<Moment | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [navigationConnectionId, setNavigationConnectionId] = useState<number | null>(null);
+  const [connectionChangeListener, setConnectionChangeListener] = useState<((connectionId: number | null) => void) | null>(null);
 
   const openMomentModal = (activityType: 'moment' | 'conflict' | 'intimacy' | 'plan' = 'moment', moment?: Moment, date?: Date) => {
     console.log("openMomentModal called with:", { activityType, moment: !!moment, date });
@@ -127,10 +132,15 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const setSelectedConnection = (connectionId: number | null, connection?: Connection | null) => {
     setSelectedConnectionId(connectionId);
     setSelectedConnectionObject(connection || null);
-    // Optionally open the moment modal when a connection is selected
-    // if (connectionId !== null) {
-    //   openMomentModal();
-    // }
+    
+    // Notify the activity page about connection change
+    if (connectionChangeListener) {
+      connectionChangeListener(connectionId);
+    }
+  };
+
+  const registerConnectionChangeListener = (callback: (connectionId: number | null) => void) => {
+    setConnectionChangeListener(() => callback);
   };
 
   return (

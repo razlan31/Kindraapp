@@ -35,7 +35,7 @@ import { format } from "date-fns";
 
 export default function Activities() {
   const { user, isAuthenticated, loading } = useAuth();
-  const { openMomentModal, openPlanModal, closePlanModal, planModalOpen, setSelectedConnection: setModalConnection, editingMoment } = useModal();
+  const { openMomentModal, openPlanModal, closePlanModal, planModalOpen, setSelectedConnection: setModalConnection, editingMoment, registerConnectionChangeListener } = useModal();
   const { mainFocusConnection, loading: focusLoading } = useRelationshipFocus();
   const queryClient = useQueryClient();
   const [location] = useLocation();
@@ -51,6 +51,17 @@ export default function Activities() {
   const [connectionModalOpen, setConnectionModalOpen] = useState(false);
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [customStageValue, setCustomStageValue] = useState("");
+
+  // Register listener for connection changes from modals
+  useEffect(() => {
+    registerConnectionChangeListener((connectionId: number | null) => {
+      if (connectionId) {
+        // Update activity page filter to match modal selection
+        setSelectedConnections([connectionId]);
+        setHasUserSelectedConnection(true);
+      }
+    });
+  }, [registerConnectionChangeListener]);
 
   // Modal states
   const [reflectionModalOpen, setReflectionModalOpen] = useState(false);
@@ -458,7 +469,18 @@ export default function Activities() {
           <div className="px-3 mb-4">
             {activeTab === 'moments' && (
               <Button
-                onClick={() => openMomentModal('moment')}
+                onClick={() => {
+                  // Pass the selected connection from activity page filter to moment modal
+                  const selectedConnection = selectedConnections.length === 1 
+                    ? connections.find(c => c.id === selectedConnections[0]) || null
+                    : null;
+                  
+                  if (selectedConnection) {
+                    setModalConnection(selectedConnection.id, selectedConnection);
+                  }
+                  
+                  openMomentModal('moment');
+                }}
                 className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
               >
                 <Plus className="h-4 w-4 mr-2" />
@@ -467,7 +489,18 @@ export default function Activities() {
             )}
             {activeTab === 'conflicts' && (
               <Button
-                onClick={() => openMomentModal('conflict')}
+                onClick={() => {
+                  // Pass the selected connection from activity page filter to conflict modal
+                  const selectedConnection = selectedConnections.length === 1 
+                    ? connections.find(c => c.id === selectedConnections[0]) || null
+                    : null;
+                  
+                  if (selectedConnection) {
+                    setModalConnection(selectedConnection.id, selectedConnection);
+                  }
+                  
+                  openMomentModal('conflict');
+                }}
                 className="w-full bg-destructive hover:bg-destructive/90 text-destructive-foreground"
               >
                 <Plus className="h-4 w-4 mr-2" />
@@ -476,7 +509,18 @@ export default function Activities() {
             )}
             {activeTab === 'intimacy' && (
               <Button
-                onClick={() => openMomentModal('intimacy')}
+                onClick={() => {
+                  // Pass the selected connection from activity page filter to intimacy modal
+                  const selectedConnection = selectedConnections.length === 1 
+                    ? connections.find(c => c.id === selectedConnections[0]) || null
+                    : null;
+                  
+                  if (selectedConnection) {
+                    setModalConnection(selectedConnection.id, selectedConnection);
+                  }
+                  
+                  openMomentModal('intimacy');
+                }}
                 className="w-full bg-pink-600 hover:bg-pink-700 text-white"
               >
                 <Plus className="h-4 w-4 mr-2" />
@@ -485,7 +529,18 @@ export default function Activities() {
             )}
             {activeTab === 'plans' && (
               <Button
-                onClick={() => openPlanModal()}
+                onClick={() => {
+                  // Pass the selected connection from activity page filter to plan modal
+                  const selectedConnection = selectedConnections.length === 1 
+                    ? connections.find(c => c.id === selectedConnections[0]) || null
+                    : null;
+                  
+                  if (selectedConnection) {
+                    setModalConnection(selectedConnection.id, selectedConnection);
+                  }
+                  
+                  openPlanModal(selectedConnection || undefined);
+                }}
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white"
               >
                 <Plus className="h-4 w-4 mr-2" />
