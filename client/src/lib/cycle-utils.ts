@@ -159,7 +159,7 @@ export const getDetailedCyclePhase = (
       return {
         phase: "luteal",
         subPhase: "early_luteal",
-        color: "bg-purple-50 dark:bg-purple-900/20 border-purple-200 dark:border-purple-600 opacity-50",
+        color: "bg-purple-50 dark:bg-purple-900/20 border-purple-200 dark:border-purple-600",
         description: "Early luteal phase",
         emoji: "🌙",
         dayRange: `Days ${ovulationDay + 2}-${ovulationDay + 1 + midLuteal}`,
@@ -170,9 +170,9 @@ export const getDetailedCyclePhase = (
       return {
         phase: "luteal",
         subPhase: "late_luteal",
-        color: "bg-purple-100 dark:bg-purple-900/30 border-purple-300 dark:border-purple-500 opacity-50",
+        color: "bg-purple-100 dark:bg-purple-900/30 border-purple-300 dark:border-purple-500",
         description: "Late luteal phase (PMS)",
-        emoji: "🌚",
+        emoji: "🌙",
         dayRange: `Days ${ovulationDay + 1 + midLuteal + 1}-${cycleLength}`,
         hormonalProfile: "Declining hormones, PMS symptoms",
         recommendations: ["Self-care priority", "Stress management", "Gentle exercise", "Comfort foods in moderation"]

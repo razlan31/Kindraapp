@@ -111,6 +111,12 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
+- June 18, 2025: VISUAL CONSISTENCY UPDATE - Standardized cycle phase emojis and colors between calendar and cycle tracker
+  - Updated all cycle phase emojis to match cycle tracker exactly: 🩸 menstrual, 🌱 follicular, 💗 fertile, 🥚 ovulation, 🌙 luteal
+  - Removed all opacity settings to ensure 100% visibility across all cycle phases
+  - Calendar and cycle tracker now display identical visual styling from centralized cycle-utils.ts
+  - Achieved perfect consistency between calendar view and dedicated cycle tracker interface
+
 - June 18, 2025: COMPREHENSIVE FIX - Calendar synchronization, ovulation timing, and intelligent pattern inheritance
   - Root cause: Data loading race condition prevented cycle data from reaching calendar component  
   - Solution: Enhanced data loading logic to properly wait for cycle data before rendering patterns
