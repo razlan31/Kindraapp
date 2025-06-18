@@ -111,14 +111,14 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
-- June 18, 2025: SMART NOTIFICATION FREQUENCY MANAGEMENT - Implemented intelligent engagement system to maintain value without overwhelming users
-  - Created NotificationScheduler with context-aware cooldown periods and weekly limits
-  - Moment reminders: 48-hour cooldown, max 3/week, only after 2+ days of inactivity
-  - AI insights: 72-hour cooldown, max 2/week, requires minimum data for meaningful content
-  - Quote of the day: 24-hour cooldown, max 4/week with strategic gaps for freshness
-  - Cycle reminders: Priority system during active tracking phases only
-  - Progressive engagement logic adapts to user activity levels and relationship data
-  - Priority-based selection ensures most valuable notifications are sent first
+- June 18, 2025: VALUE-DRIVEN NOTIFICATION SYSTEM - Transformed notifications from simple logging reminders to actionable relationship intelligence
+  - Replaced "log something" prompts with pattern analysis and behavioral insights
+  - Moment reminders now provide weekend/weekday patterns, communication effectiveness, emotional intelligence scores
+  - AI insights deliver timing patterns, attention distribution analysis, conflict resolution success rates
+  - Cycle reminders offer phase-specific relationship strategies and body-mind connection guidance
+  - All notifications now educate and guide rather than nag, maintaining engagement through genuine value delivery
+  - Smart frequency management with cooldown periods and weekly limits prevents notification fatigue
+  - Priority-based selection ensures most valuable insights are delivered first
 
 - June 18, 2025: REDUCED ZODIAC REFERENCES & ELIMINATED REPLACEMENT LANGUAGE - Fine-tuned quote generation system based on user feedback
   - Reduced zodiac sign context usage from 50% to 25% probability to minimize astrology references

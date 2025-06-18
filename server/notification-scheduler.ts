@@ -267,97 +267,268 @@ export class NotificationScheduler {
 
   private async generateMomentReminder(userId: string): Promise<{ title: string; message: string }> {
     const connections = await this.storage.getConnectionsByUserId(userId);
-    const recentMoments = await this.storage.getMomentsByUserId(userId, 5);
+    const allMoments = await this.storage.getMomentsByUserId(userId, 50);
     
-    if (recentMoments.length === 0) {
+    if (allMoments.length === 0) {
       return {
-        title: "Capture Your First Moment",
-        message: "Start your relationship journey by logging your first meaningful interaction!"
+        title: "Welcome to Kindra",
+        message: "Start building awareness by capturing moments that matter in your relationships."
       };
     }
 
-    // Find connection with least recent activity
-    const connectionActivity = connections.map(conn => {
-      const lastMoment = recentMoments.find(m => m.connectionId === conn.id);
-      const daysSince = lastMoment ? 
-        this.getDaysBetween(new Date(lastMoment.createdAt!), new Date()) : 999;
-      return { connection: conn, daysSince };
+    // Analyze patterns to provide valuable insights instead of simple reminders
+    const recentWeek = allMoments.filter(m => 
+      this.getDaysBetween(new Date(m.createdAt!), new Date()) <= 7
+    );
+
+    // Pattern 1: Weekend vs Weekday insights
+    const weekendMoments = recentWeek.filter(m => {
+      const day = new Date(m.createdAt!).getDay();
+      return day === 0 || day === 6; // Sunday or Saturday
     });
 
-    const leastActive = connectionActivity.sort((a, b) => b.daysSince - a.daysSince)[0];
-    
-    if (leastActive.daysSince > 7) {
+    if (weekendMoments.length > recentWeek.length * 0.6) {
       return {
-        title: "Missing Moments",
-        message: `It's been a while since you connected with ${leastActive.connection.name}. How are things going?`
+        title: "Weekend Pattern Spotted",
+        message: "Most of your meaningful moments happen on weekends. Consider scheduling quality time during weekdays too."
       };
     }
 
+    // Pattern 2: Communication style insights
+    const communicationMoments = allMoments.filter(m => 
+      m.tags?.some(tag => ['Communication', 'Deep Talk', 'Conflict'].includes(tag))
+    );
+
+    if (communicationMoments.length >= 5) {
+      const positiveComm = communicationMoments.filter(m => 
+        m.tags?.includes('Deep Talk') || ['😊', '❤️', '🥰', '✨'].includes(m.emoji)
+      );
+      
+      if (positiveComm.length > communicationMoments.length * 0.7) {
+        return {
+          title: "Communication Strength",
+          message: "Your conversations tend to go well! This is a strong foundation for deeper connection."
+        };
+      }
+    }
+
+    // Pattern 3: Emotional intelligence insights
+    const emotionalMoments = allMoments.filter(m => 
+      ['💗', '😔', '🤗', '😍', '🔥'].includes(m.emoji)
+    );
+
+    if (emotionalMoments.length >= 3) {
+      return {
+        title: "Emotional Awareness",
+        message: "You're great at recognizing emotional moments. This self-awareness strengthens relationships."
+      };
+    }
+
+    // Pattern 4: Growth mindset insights for conflicts
+    const resolvedConflicts = allMoments.filter(m => 
+      m.isResolved && m.tags?.includes('Conflict')
+    );
+
+    if (resolvedConflicts.length > 0) {
+      return {
+        title: "Conflict Resolution Success",
+        message: `You've successfully worked through ${resolvedConflicts.length} conflict${resolvedConflicts.length > 1 ? 's' : ''}. This shows healthy relationship skills.`
+      };
+    }
+
+    // Default: Encourage pattern recognition
     return {
-      title: "Reflect & Connect",
-      message: "Any meaningful moments with your relationships today? Even small interactions matter!"
+      title: "Relationship Intelligence",
+      message: "Notice any patterns in your recent interactions? Small observations can lead to big insights."
     };
   }
 
   private async generateAIInsight(userId: string): Promise<{ title: string; message: string }> {
-    const moments = await this.storage.getMomentsByUserId(userId, 20);
-    const recentMoments = moments.filter(m => 
-      this.getDaysBetween(new Date(m.createdAt!), new Date()) <= 7
+    const moments = await this.storage.getMomentsByUserId(userId, 50);
+    const connections = await this.storage.getConnectionsByUserId(userId);
+    
+    // Advanced pattern analysis for valuable insights
+    const intimacyMoments = moments.filter(m => m.isIntimate || m.intimacyRating !== null);
+    const conflictMoments = moments.filter(m => m.tags?.includes('Conflict'));
+    const communicationMoments = moments.filter(m => 
+      m.tags?.some(tag => ['Communication', 'Deep Talk'].includes(tag))
     );
 
-    if (recentMoments.length >= 3) {
+    // Timing pattern analysis
+    const recentWeek = moments.filter(m => 
+      this.getDaysBetween(new Date(m.createdAt!), new Date()) <= 7
+    );
+    
+    const eveningMoments = recentWeek.filter(m => {
+      const hour = new Date(m.createdAt!).getHours();
+      return hour >= 18 && hour <= 23;
+    });
+
+    // Insight 1: Intimacy timing patterns
+    if (intimacyMoments.length >= 5) {
+      const weekendIntimacy = intimacyMoments.filter(m => {
+        const day = new Date(m.createdAt!).getDay();
+        return day === 0 || day === 6;
+      });
+      
+      if (weekendIntimacy.length > intimacyMoments.length * 0.6) {
+        return {
+          title: "Intimacy Pattern Discovery",
+          message: "Your intimate moments tend to happen on weekends. Weekday connection might deepen your bond further."
+        };
+      }
+    }
+
+    // Insight 2: Communication effectiveness
+    if (communicationMoments.length >= 3 && conflictMoments.length >= 2) {
+      const resolvedConflicts = conflictMoments.filter(m => m.isResolved);
+      const ratio = resolvedConflicts.length / conflictMoments.length;
+      
+      if (ratio >= 0.7) {
+        return {
+          title: "Communication Mastery",
+          message: `You resolve ${Math.round(ratio * 100)}% of conflicts positively. This shows excellent relationship skills.`
+        };
+      }
+    }
+
+    // Insight 3: Evening connection patterns
+    if (eveningMoments.length > recentWeek.length * 0.5) {
       return {
-        title: "Pattern Detected",
-        message: "You've been actively nurturing your relationships this week. Check your insights for patterns!"
+        title: "Evening Connection Ritual",
+        message: "You connect most in the evenings. Consider morning check-ins to balance relationship energy throughout the day."
       };
     }
 
-    const positiveEmojis = ['😍', '❤️', '😊', '🥰', '💖', '✨', '🔥', '💕'];
-    const recentPositive = recentMoments.filter(m => positiveEmojis.includes(m.emoji));
+    // Insight 4: Multi-connection analysis
+    if (connections.length > 1 && moments.length >= 10) {
+      const connectionMomentCounts = connections.map(conn => ({
+        name: conn.name,
+        count: moments.filter(m => m.connectionId === conn.id).length
+      }));
+      
+      const mostActive = connectionMomentCounts.sort((a, b) => b.count - a.count)[0];
+      const leastActive = connectionMomentCounts.sort((a, b) => a.count - b.count)[0];
+      
+      if (mostActive.count > leastActive.count * 3) {
+        return {
+          title: "Attention Distribution Insight",
+          message: `${mostActive.name} gets 3x more attention than ${leastActive.name}. Balanced attention strengthens all relationships.`
+        };
+      }
+    }
 
-    if (recentPositive.length > 0) {
+    // Insight 5: Emotional range analysis
+    const emotionalEmojis = ['😍', '❤️', '😊', '🥰', '😔', '😤', '🤗', '✨'];
+    const emotionalMoments = moments.filter(m => emotionalEmojis.includes(m.emoji));
+    
+    if (emotionalMoments.length >= 8) {
+      const positiveEmojis = ['😍', '❤️', '😊', '🥰', '🤗', '✨'];
+      const positiveRatio = emotionalMoments.filter(m => 
+        positiveEmojis.includes(m.emoji)
+      ).length / emotionalMoments.length;
+      
       return {
-        title: "Positive Momentum",
-        message: "Your relationships are thriving! See what's contributing to these positive moments."
+        title: "Emotional Intelligence Score",
+        message: `${Math.round(positiveRatio * 100)}% of your emotional moments are positive. You're building healthy relationship foundations.`
       };
     }
 
+    // Default: Growth-focused insight
     return {
-      title: "Relationship Insights",
-      message: "Ready to discover patterns in your relationships? New insights are available!"
+      title: "Relationship Growth Opportunity",
+      message: "Small consistent actions build stronger connections. Notice what works best in your interactions."
     };
   }
 
   private async generateCycleReminder(userId: string): Promise<{ title: string; message: string }> {
-    const cycles = await this.storage.getMenstrualCyclesByUserId(userId);
-    const activeCycle = cycles.find(c => c.isActive);
+    const cycles = await this.storage.getMenstrualCycles();
+    const userCycles = cycles.filter(c => c.userId === userId);
+    const activeCycle = userCycles.find(c => c.isActive);
     
     if (!activeCycle) {
       return {
-        title: "Cycle Check-in",
-        message: "How are you feeling today? Track your cycle for better relationship insights."
+        title: "Body-Mind Connection",
+        message: "Understanding your natural rhythms can improve relationship timing and emotional awareness."
       };
     }
 
     const cycleStart = new Date(activeCycle.periodStartDate);
     const today = new Date();
     const cycleDay = this.getDaysBetween(cycleStart, today) + 1;
+    const moments = await this.storage.getMomentsByUserId(userId, 30);
 
-    // Phase-specific reminders
+    // Analyze cycle-related relationship patterns
+    const cycleMoments = moments.filter(m => m.relatedToMenstrualCycle);
+    
+    // Phase-specific insights and relationship guidance
     if (cycleDay <= 5) {
+      // Menstrual phase insights
+      const menstrualMoments = cycleMoments.filter(m => {
+        const momentCycleDay = this.getDaysBetween(cycleStart, new Date(m.createdAt!)) + 1;
+        return momentCycleDay <= 5;
+      });
+      
+      if (menstrualMoments.length >= 2) {
+        const conflictCount = menstrualMoments.filter(m => m.tags?.includes('Conflict')).length;
+        if (conflictCount > 0) {
+          return {
+            title: "Menstrual Phase Pattern",
+            message: "You tend to experience more conflicts during your period. Extra patience and self-care can help maintain harmony."
+          };
+        }
+      }
+      
       return {
-        title: "Cycle Support",
-        message: "You're in your menstrual phase. Remember to be gentle with yourself and your relationships."
+        title: "Rest & Restore Phase",
+        message: "Your body prioritizes rest now. Gentle communication and self-compassion strengthen relationships during this time."
       };
+      
     } else if (cycleDay >= 12 && cycleDay <= 16) {
+      // Fertile window insights
+      const fertileMoments = cycleMoments.filter(m => {
+        const momentCycleDay = this.getDaysBetween(cycleStart, new Date(m.createdAt!)) + 1;
+        return momentCycleDay >= 12 && momentCycleDay <= 16;
+      });
+      
+      if (fertileMoments.length >= 2) {
+        const intimacyCount = fertileMoments.filter(m => m.isIntimate).length;
+        if (intimacyCount > fertileMoments.length * 0.5) {
+          return {
+            title: "Fertile Window Connection",
+            message: "Your intimate moments often align with your fertile window. This natural timing strengthens emotional bonds."
+          };
+        }
+      }
+      
       return {
-        title: "Energy Peak",
-        message: "You're approaching your fertile window. Great time for meaningful conversations!"
+        title: "Peak Connection Energy",
+        message: "Your communication and connection energy peaks now. Perfect time for important conversations and deeper bonding."
       };
-    } else {
+      
+    } else if (cycleDay >= 17 && cycleDay <= 24) {
+      // Luteal phase insights
       return {
-        title: "Cycle Awareness",
-        message: `Day ${cycleDay} of your cycle. How are your energy and mood affecting your relationships?`
+        title: "Nesting Energy Phase",
+        message: "You naturally crave stability and comfort now. Focus on creating cozy, intimate moments with your connections."
+      };
+      
+    } else {
+      // Follicular phase insights
+      const recentMoments = moments.filter(m => 
+        this.getDaysBetween(new Date(m.createdAt!), new Date()) <= 7
+      );
+      
+      if (recentMoments.length >= 3) {
+        return {
+          title: "Rising Energy Phase",
+          message: "Your energy is building for the month ahead. Great time to plan special activities and new relationship experiences."
+        };
+      }
+      
+      return {
+        title: "Fresh Start Energy",
+        message: "New cycle, fresh perspective. Your optimism and openness create opportunities for deeper connections."
       };
     }
   }
