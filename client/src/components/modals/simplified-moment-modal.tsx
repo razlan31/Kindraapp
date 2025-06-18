@@ -27,7 +27,19 @@ export function MomentModal() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
+  // Debug modal state
+  console.log("MomentModal render - momentModalOpen:", momentModalOpen, "activityType:", activityType);
+
+  // Preset tag options organized by category
+  const presetTags = {
+    positive: ["Green Flag", "Quality Time", "Growth", "Support", "Trust", "Communication", "Affection", "Fun", "Celebration"],
+    negative: ["Red Flag", "Stress", "Disconnection", "Jealousy", "Miscommunication", "Disappointment"],
+    intimate: ["Physical Touch", "Emotional Connection", "Vulnerability", "Deep Conversation"],
+    general: ["Milestone", "Life Goals", "Future Planning", "Career", "Family", "Friends", "Travel", "Hobbies"]
+  };
+  
   // Form state
+  const [connectionId, setConnectionId] = useState<number>(2);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [emoji, setEmoji] = useState("😊");
@@ -38,6 +50,7 @@ export function MomentModal() {
   const [momentType, setMomentType] = useState<string>("positive");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [mediaFiles, setMediaFiles] = useState<MediaFile[]>([]);
+  const [isIntimate, setIsIntimate] = useState<boolean>(false);
   const [reflection, setReflection] = useState('');
   const [isResolved, setIsResolved] = useState(false);
   const [resolvedDate, setResolvedDate] = useState<Date | null>(null);
@@ -51,21 +64,6 @@ export function MomentModal() {
   const [datePickerOpen, setDatePickerOpen] = useState(false);
   const [isTagsCollapsed, setIsTagsCollapsed] = useState(true);
   const [isReflectionCollapsed, setIsReflectionCollapsed] = useState(true);
-
-  // Debug modal state
-  console.log("MomentModal render - momentModalOpen:", momentModalOpen, "activityType:", activityType);
-
-  // Preset tag options organized by category
-  const presetTags = {
-    positive: ["Green Flag", "Quality Time", "Growth", "Support", "Trust", "Communication", "Affection", "Fun", "Celebration"],
-    negative: ["Red Flag", "Stress", "Disconnection", "Jealousy", "Miscommunication", "Disappointment"],
-    intimate: ["Physical Touch", "Emotional Connection", "Vulnerability", "Deep Conversation"],
-    general: ["Milestone", "Life Goals", "Future Planning", "Career", "Family", "Friends", "Travel", "Hobbies"]
-  };
-  
-  // Additional form state
-  const [connectionId, setConnectionId] = useState<number>(2);
-  const [isIntimate, setIsIntimate] = useState<boolean>(false);
 
   // Initialize form with existing data when editing
   useEffect(() => {
@@ -182,23 +180,7 @@ export function MomentModal() {
     }
   };
   
-  // Conflict resolution fields
-  const [isResolved, setIsResolved] = useState(false);
-  const [resolutionNotes, setResolutionNotes] = useState('');
-  const [resolvedDate, setResolvedDate] = useState<Date>(new Date());
-  
-  // Intimacy fields
-  const [intimacyRating, setIntimacyRating] = useState<string>("5");
-  
-  // Reflection field
-  const [reflection, setReflection] = useState('');
-  
-  // Date picker state
-  const [datePickerOpen, setDatePickerOpen] = useState(false);
-  
-  // Collapsible sections state
-  const [isTagsCollapsed, setIsTagsCollapsed] = useState(true);
-  const [isReflectionCollapsed, setIsReflectionCollapsed] = useState(true);
+  // Removed duplicate state declarations
   
   // Fetch user connections
   const { data: connections = [] } = useQuery<Connection[]>({
@@ -209,10 +191,13 @@ export function MomentModal() {
   // Mutation for creating/updating moments
   const { mutate: createMoment } = useMutation({
     mutationFn: async (momentData: any) => {
-      return apiRequest(`/api/moments${editingMoment ? `/${editingMoment.id}` : ''}`, {
+      const response = await fetch(`/api/moments${editingMoment ? `/${editingMoment.id}` : ''}`, {
         method: editingMoment ? 'PATCH' : 'POST',
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(momentData),
       });
+      if (!response.ok) throw new Error('Failed to save moment');
+      return response.json();
     },
     onMutate: async (newMoment) => {
       await queryClient.cancelQueries({ queryKey: ['/api/moments'] });
@@ -303,7 +288,7 @@ export function MomentModal() {
   };
 
   // Create moment mutation with optimistic updates
-  const { mutate: createMoment } = useMutation({
+  const { mutate: createMilestone } = useMutation({
     mutationFn: async (data: any) => {
       console.log("🔥 FORM SUBMISSION - Data being sent to API:", data);
       console.log("🔥 FORM SUBMISSION - data.createdAt:", data.createdAt);
