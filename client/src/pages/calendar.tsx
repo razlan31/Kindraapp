@@ -338,7 +338,7 @@ export default function Calendar() {
     const isIntimacy = moment.tags?.includes('Sex') || moment.isIntimate || moment.emoji === '💗';
     const isDating = moment.tags?.includes('Dating') || moment.tags?.includes('Relationship Stage') || moment.emoji === '💕';
     const isPlan = moment.tags?.includes('Plan') || moment.emoji === '📅';
-    const isMilestone = moment.isMilestone || moment.tags?.includes('Milestone') || moment.emoji === '🏆' || (moment as any).isBirthday;
+    const isMilestone = moment.tags?.includes('Milestone') || moment.emoji === '🏆' || (moment as any).isBirthday;
     
     // Type filters
     if (isConflict && !filters.conflicts) {
@@ -508,6 +508,9 @@ export default function Calendar() {
 
   // Get moments for a specific day
   const getMomentsForDay = (day: Date) => {
+    if (!moments || !Array.isArray(moments)) {
+      return [];
+    }
     const dayMoments = moments.filter(moment => {
       const momentDate = new Date(moment.createdAt || new Date());
       const same = isSameDay(momentDate, day);
@@ -1528,7 +1531,7 @@ export default function Calendar() {
               const connection = connections?.find(c => c.id === connectionId);
               if (!connection) return null;
               
-              const cycleInfo = getCyclePhaseForDay(selectedDay, connectionId);
+              const cycleInfo = getCyclePhaseForDay(selectedDay, connectionId, cycles);
               if (!cycleInfo || cycleInfo.phase === 'none') return null;
               
               return (
