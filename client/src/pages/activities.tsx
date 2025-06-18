@@ -14,6 +14,7 @@ import { SimpleConnectionForm } from "@/components/modals/simple-connection-form
 import { Moment, Connection, Plan, relationshipStages } from "@shared/schema";
 import { useAuth } from "@/contexts/auth-context";
 import { useRelationshipFocus } from "@/contexts/relationship-focus-context";
+import { useSync } from "@/contexts/sync-context";
 import { Button } from "@/components/ui/button";
 import { useModal } from "@/contexts/modal-context";
 import { Input } from "@/components/ui/input";
@@ -37,6 +38,7 @@ export default function Activities() {
   const { user, isAuthenticated, loading } = useAuth();
   const { openMomentModal, openPlanModal, closePlanModal, planModalOpen, setSelectedConnection: setModalConnection, editingMoment, registerConnectionChangeListener } = useModal();
   const { mainFocusConnection, loading: focusLoading } = useRelationshipFocus();
+  const { registerSyncHandler } = useSync();
   const queryClient = useQueryClient();
   const [location] = useLocation();
   const [searchTerm, setSearchTerm] = useState("");
@@ -99,32 +101,27 @@ export default function Activities() {
     }
   };
 
-  // Listen for connection activity events to update filters
+  // Register sync handler for connection activity updates
   useEffect(() => {
-    const handleConnectionActivity = (event: CustomEvent) => {
-      console.log("🔄 SYNC - Activities page received connectionActivity event:", event.detail);
-      const { connectionId } = event.detail;
+    const handleConnectionActivity = (connectionId: number, activityType: string) => {
+      console.log("🔄 SYNC CONTEXT - Activities page received sync:", connectionId, activityType);
       
       setSelectedConnections(prev => {
-        console.log("🔄 SYNC - Processing connection:", connectionId, "current filters:", prev);
+        console.log("🔄 SYNC CONTEXT - Processing connection:", connectionId, "current filters:", prev);
         
         if (connectionId && !prev.includes(connectionId)) {
-          console.log("🔄 SYNC - Adding connection to filter:", connectionId);
+          console.log("🔄 SYNC CONTEXT - Adding connection to filter:", connectionId);
           const updated = [...prev, connectionId];
-          console.log("🔄 SYNC - Updated filters:", updated);
+          console.log("🔄 SYNC CONTEXT - Updated filters:", updated);
           return updated;
         }
         return prev;
       });
     };
 
-    console.log("🔄 SYNC - Activities page setting up persistent event listener");
-    window.addEventListener('connectionActivity', handleConnectionActivity as EventListener);
-    return () => {
-      console.log("🔄 SYNC - Activities page removing event listener on unmount");
-      window.removeEventListener('connectionActivity', handleConnectionActivity as EventListener);
-    };
-  }, []); // Remove selectedConnections dependency to prevent constant listener recreation
+    console.log("🔄 SYNC CONTEXT - Activities page registering sync handler");
+    registerSyncHandler(handleConnectionActivity);
+  }, [registerSyncHandler]);
 
   // Handle connection creation
   const handleAddConnection = async (formData: FormData) => {

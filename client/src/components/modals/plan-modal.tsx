@@ -160,16 +160,11 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
       
       // Trigger connection sync for activities page
       const connectionId = localSelectedConnection?.id || selectedConnection?.id;
-      console.log("🔄 SYNC - Plan saved, dispatching sync:", connectionId);
+      console.log("🔄 SYNC CONTEXT - Plan saved, triggering sync:", connectionId);
       
       if (connectionId) {
-        setTimeout(() => {
-          const event = new CustomEvent('connectionActivity', { 
-            detail: { connectionId, activityType: 'plan' } 
-          });
-          window.dispatchEvent(event);
-          console.log("🔄 SYNC - Plan sync event dispatched for:", connectionId);
-        }, 100);
+        triggerConnectionSync(connectionId, 'plan');
+        console.log("🔄 SYNC CONTEXT - Plan sync triggered for:", connectionId);
       }
       
       handleClose();
