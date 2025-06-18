@@ -39,7 +39,7 @@ const planSchema = z.object({
   description: z.string().optional(),
   scheduledDate: z.date(),
   scheduledTime: z.string().optional(),
-  connectionId: z.number(),
+  connectionId: z.number().min(1, "Please select a connection"),
   notes: z.string().optional(),
   isCompleted: z.boolean().optional(),
   hasReminder: z.boolean().optional(),
@@ -85,11 +85,17 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
 
   // Update local state when selectedConnection prop changes
   useEffect(() => {
+    console.log("🔥 PLAN MODAL - Connection effect:", {
+      selectedConnection,
+      localSelectedConnection,
+      isOpen
+    });
     if (selectedConnection && selectedConnection.id !== localSelectedConnection?.id) {
+      console.log("🔥 PLAN MODAL - Setting connection:", selectedConnection);
       setLocalSelectedConnection(selectedConnection);
       setFormData(prev => ({ ...prev, connectionId: selectedConnection.id }));
     }
-  }, [selectedConnection, localSelectedConnection?.id]);
+  }, [selectedConnection, localSelectedConnection?.id, isOpen]);
 
   // Fetch connections for the picker
   const { data: connections = [] } = useQuery<Connection[]>({
@@ -99,6 +105,14 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
 
   // Initialize form data when editing an existing plan or creating new one
   useEffect(() => {
+    console.log("🔥 PLAN MODAL - Form init effect:", {
+      editingMoment: !!editingMoment,
+      isOpen,
+      selectedConnection,
+      contextSelectedDate,
+      connectionsCount: connections.length
+    });
+    
     if (editingMoment && isOpen && connections.length > 0) {
       // Find the connection for the editing moment
       const momentConnection = connections.find(c => c.id === editingMoment.connectionId);
@@ -118,22 +132,33 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
       // Set the connection for the picker
       setLocalSelectedConnection(momentConnection || selectedConnection);
     } else if (!editingMoment && isOpen) {
-      // Reset form for new plans - use selectedDate from modal context if available
+      // Reset form for new plans - ensure connectionId is set
+      const connectionId = selectedConnection?.id || localSelectedConnection?.id;
+      console.log("🔥 PLAN MODAL - Setting up new plan with connectionId:", connectionId);
+      
       setFormData({
         title: "",
         description: "",
         scheduledDate: contextSelectedDate || selectedDate || new Date(),
-        connectionId: localSelectedConnection?.id || selectedConnection?.id,
+        connectionId: connectionId || undefined, // Let validation catch missing connection
         notes: "",
         isCompleted: false,
         hasReminder: false,
         reminderMinutes: 15
       });
+      
+      // Ensure local connection is set
+      if (selectedConnection && !localSelectedConnection) {
+        console.log("🔥 PLAN MODAL - Setting localSelectedConnection from selectedConnection");
+        setLocalSelectedConnection(selectedConnection);
+      }
     }
   }, [editingMoment, isOpen, selectedConnection, selectedDate, contextSelectedDate, localSelectedConnection?.id, connections]);
 
   const createPlanMutation = useMutation({
     mutationFn: async (data: PlanFormData) => {
+      console.log("🔥 PLAN MUTATION - Creating plan with data:", data);
+      
       const momentData = {
         title: data.title,
         content: data.description || `Plan scheduled for ${data.scheduledDate}`,
@@ -145,6 +170,8 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
         notes: data.notes
       };
 
+      console.log("🔥 PLAN MUTATION - Sending momentData:", momentData);
+
       // If editing, use PATCH; otherwise, use POST
       if (editingMoment) {
         return apiRequest(`/api/moments/${editingMoment.id}`, 'PATCH', momentData);
@@ -152,7 +179,9 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
         return apiRequest('/api/moments', 'POST', momentData);
       }
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      console.log("🔥 PLAN MUTATION - Success, data:", data);
+      
       toast({
         title: editingMoment ? "Plan updated!" : "Plan created!",
         description: editingMoment ? "Your plan has been updated successfully." : "Your plan has been added successfully.",
@@ -160,9 +189,9 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
       queryClient.invalidateQueries({ queryKey: ['/api/moments'] });
       queryClient.invalidateQueries({ queryKey: ['/api/milestones'] });
       
-      // Trigger connection sync for activities page
-      const connectionId = localSelectedConnection?.id || selectedConnection?.id;
-      console.log("🔄 SYNC CONTEXT - Plan saved, triggering sync:", connectionId);
+      // Trigger connection sync for activities page - use the actual connectionId from form data
+      const connectionId = formData.connectionId || localSelectedConnection?.id || selectedConnection?.id;
+      console.log("🔄 SYNC CONTEXT - Plan saved, triggering sync with connectionId:", connectionId);
       
       if (connectionId) {
         triggerConnectionSync(connectionId, 'plan');
@@ -218,7 +247,16 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
     
     const connectionId = localSelectedConnection?.id || formData.connectionId;
     
+    console.log("🔥 PLAN VALIDATION - formData:", formData);
+    console.log("🔥 PLAN VALIDATION - connectionId:", connectionId);
+    console.log("🔥 PLAN VALIDATION - localSelectedConnection:", localSelectedConnection);
+    
     if (!formData.title || !formData.scheduledDate || !connectionId) {
+      console.log("🔥 PLAN VALIDATION - Missing fields:", {
+        title: !!formData.title,
+        scheduledDate: !!formData.scheduledDate,
+        connectionId: !!connectionId
+      });
       toast({
         title: "Missing information",
         description: "Please fill in all required fields and select a connection.",
@@ -270,7 +308,7 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
     }
 
     try {
-      const validatedData = planSchema.parse({ 
+      const planData = { 
         title: formData.title,
         description: formData.description || "",
         scheduledDate: formData.scheduledDate,
@@ -280,18 +318,22 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
         isCompleted,
         hasReminder: formData.hasReminder || false,
         reminderMinutes: formData.reminderMinutes || 15
-      });
+      };
+      
+      console.log("🔥 PLAN VALIDATION - Validating data:", planData);
+      const validatedData = planSchema.parse(planData);
+      console.log("🔥 PLAN VALIDATION - Validation successful:", validatedData);
       createPlanMutation.mutate(validatedData);
     } catch (error) {
       if (error instanceof z.ZodError) {
-        console.error("Plan validation error:", error.errors);
+        console.error("🔥 PLAN VALIDATION - Zod error:", error.errors);
         toast({
           title: "Validation error",
           description: error.errors[0]?.message || "Please check your input.",
           variant: "destructive",
         });
       } else {
-        console.error("Plan creation error:", error);
+        console.error("🔥 PLAN VALIDATION - General error:", error);
         toast({
           title: "Error",
           description: "Failed to create plan. Please try again.",
