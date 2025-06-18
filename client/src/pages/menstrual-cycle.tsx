@@ -1092,158 +1092,42 @@ export default function MenstrualCyclePage() {
                       <div className="flex flex-wrap gap-0.5 items-center overflow-hidden max-w-full">
                         {/* Priority 1: Activity emojis (moments/milestones) - not applicable to cycle tracker */}
                         
-                        {/* Get cycle phases for this day using calendar's logic */}
+                        {/* Get cycle phases for this day - simplified logic */}
                         {(() => {
-
-                          
-                          // Determine which connections to check for cycles based on selection
-                          let connectionsToCheck = [];
-                          if (selectedPersonIds.length === 0) {
-                            // No specific selection - check all connections with cycles
-                            connectionsToCheck = Array.from(new Set(cycles.map(c => c.connectionId).filter(id => id !== null)));
-                          } else {
-                            // Specific connections selected - only check those that have cycles
-                            connectionsToCheck = selectedPersonIds.filter(id => 
-                              cycles.some(c => c.connectionId === id)
-                            );
+                          // Simple approach: show emoji for single connection, alphabet letters only for multiple overlapping cycles
+                          if (selectedPersonIds.length !== 1) {
+                            // Multiple or no selection - don't show anything for cycle tracker
+                            return null;
                           }
                           
-                          // Only show alphabet letters when there are multiple connections with cycles on this day
-                          const actualConnectionsWithCycles = connectionsToCheck.filter(connectionId => {
-                            return getCyclePhaseForDay(day, connectionId, cycles) !== null;
-                          });
+                          // Single connection selected - show just the emoji
+                          const connectionId = selectedPersonIds[0];
+                          const phaseInfo = getCyclePhaseForDay(day, connectionId, cycles);
                           
-                          // Process each connection that has cycles
-                          let cyclePhases = [];
-                          for (const connectionId of connectionsToCheck) {
-                            const phaseInfo = getCyclePhaseForDay(day, connectionId, cycles);
-                            
-
-                            
-                            if (phaseInfo) {
-                              const connection = connections.find(c => c.id === connectionId);
-                              if (connection) {
-                                cyclePhases.push({ ...phaseInfo, connection });
-                              }
-                            }
+                          if (!phaseInfo) {
+                            return null;
                           }
                           
-
+                          const getPhaseEmoji = (phase: string, subPhase?: string) => {
+                            if (phase === 'menstrual') return '🩸';
+                            if (phase === 'fertile' && subPhase === 'ovulation') return '🥚';
+                            if (phase === 'fertile') return '💗';
+                            if (phase === 'follicular') return '🌱';
+                            if (phase === 'luteal') return '🌙';
+                            return '';
+                          };
                           
-                          // Create cycle display object exactly like calendar
-                          let cycleDisplay = null;
-                          if (cyclePhases.length === 1) {
-                            // Single connection - use basic display
-                            const phase = cyclePhases[0];
-                            const getPhaseColor = (phase: string, subPhase?: string) => {
-                              if (phase === 'menstrual') return 'text-red-600 bg-red-100 dark:bg-red-900/30';
-                              if (phase === 'fertile' && subPhase === 'ovulation') return 'text-blue-600 bg-blue-200 dark:bg-blue-800/50 font-semibold';
-                              if (phase === 'fertile') return 'text-yellow-600 bg-yellow-200 dark:bg-yellow-800/50 font-semibold';
-                              if (phase === 'follicular') return 'text-green-600 bg-green-100 dark:bg-green-900/30 opacity-50';
-                              if (phase === 'luteal') return 'text-purple-600 bg-purple-100 dark:bg-purple-900/30 opacity-50';
-                              return 'text-gray-600 bg-gray-100 dark:bg-gray-900/30';
-                            };
-                            
-                            cycleDisplay = {
-                              isMultiple: false,
-                              initial: phase.connection?.name?.[0]?.toUpperCase() || '?',
-                              color: getPhaseColor(phase.phase, phase.subPhase),
-                              phase: phase.phase,
-                              connectionName: phase.connection?.name || 'Unknown'
-                            };
-                          } else if (cyclePhases.length > 1 && actualConnectionsWithCycles.length > 1) {
-                            // Multiple connections with actual cycles on this day - create calendar-style display
-                            const getPhaseColor = (phase: string, subPhase?: string) => {
-                              if (phase === 'menstrual') return 'text-red-600 bg-red-100 dark:bg-red-900/30';
-                              if (phase === 'fertile' && subPhase === 'ovulation') return 'text-blue-600 bg-blue-200 dark:bg-blue-800/50 font-semibold';
-                              if (phase === 'fertile') return 'text-yellow-600 bg-yellow-200 dark:bg-yellow-800/50 font-semibold';
-                              if (phase === 'follicular') return 'text-green-600 bg-green-100 dark:bg-green-900/30 opacity-50';
-                              if (phase === 'luteal') return 'text-purple-600 bg-purple-100 dark:bg-purple-900/30 opacity-50';
-                              return 'text-gray-600 bg-gray-100 dark:bg-gray-900/30';
-                            };
-                            
-                            const getPhaseEmoji = (phase: string, subPhase?: string) => {
-                              if (phase === 'menstrual') return '🩸';
-                              if (phase === 'fertile' && subPhase === 'ovulation') return '🥚';
-                              if (phase === 'fertile') return '💗';
-                              if (phase === 'follicular') return '🌱';
-                              if (phase === 'luteal') return '🌙';
-                              return '';
-                            };
-                            
-                            cycleDisplay = {
-                              isMultiple: true,
-                              coloredInitials: cyclePhases.map(phase => ({
-                                initial: phase.connection?.name?.[0]?.toUpperCase() || '?',
-                                color: getPhaseColor(phase.phase, phase.subPhase),
-                                connectionName: phase.connection?.name || 'Unknown',
-                                phase: phase.phase,
-                                subPhase: phase.subPhase,
-                                emoji: getPhaseEmoji(phase.phase, phase.subPhase),
-                                isProminent: phase.phase === 'menstrual' || phase.phase === 'fertile'
-                              }))
-                            };
-                            
-
-                          }
+                          const emoji = getPhaseEmoji(phaseInfo.phase, phaseInfo.subPhase);
+                          if (!emoji) return null;
                           
-                          // Render using calendar's exact logic
+                          // Return just the emoji for single connection
                           return (
-                            <>
-                              {/* Priority 2: Show connection alphabet letters (only when sufficient space) */}
-                              {cycleDisplay && (
-                                <div className="flex gap-0.5">
-                                  {cycleDisplay.isMultiple && cycleDisplay.coloredInitials ? (
-                                    // Show alphabet letters for multiple connections
-                                    <div className="flex flex-wrap gap-0.5 max-w-full">
-                                      {cycleDisplay.coloredInitials.slice(0, 2).map((item: any, index: number) => (
-                                        <div
-                                          key={index}
-                                          className={`inline-flex items-center justify-center ${item.color} rounded-full border w-4 h-4 text-xs font-bold flex-shrink-0`}
-                                          title={`${item.connectionName}: ${item.phase} phase`}
-                                        >
-                                          <span className="font-bold text-[8px]">
-                                            {item.initial}
-                                          </span>
-                                        </div>
-                                      ))}
-                                    </div>
-                                  ) : (
-                                    // Show single connection alphabet
-                                    <div className={`inline-flex items-center justify-center ${cycleDisplay.color} rounded-full border w-4 h-4 text-xs font-bold`}>
-                                      <span className="font-bold text-[8px]">
-                                        {cycleDisplay.initial}
-                                      </span>
-                                    </div>
-                                  )}
-                                </div>
-                              )}
-
-                              {/* Priority 3: Show menstrual cycle emojis (lowest priority, only when plenty of space) */}
-                              {cycleDisplay && (
-                                <div className="flex gap-0.5 mt-0.5">
-                                  {cycleDisplay.isMultiple && cycleDisplay.coloredInitials ? (
-                                    // Show menstrual emojis for multiple connections (only prominent phases)
-                                    cycleDisplay.coloredInitials.filter((item: any) => item.isProminent && item.emoji).slice(0, 2).map((item: any, index: number) => (
-                                      <span
-                                        key={index}
-                                        className="text-[8px]"
-                                        title={`${item.connectionName}: ${item.phase} phase`}
-                                      >
-                                        {item.emoji}
-                                      </span>
-                                    ))
-                                  ) : (
-                                    // Show single cycle indicator
-                                    cycleDisplay.phase === 'menstrual' ? (
-                                      <span className="text-[8px]" title={`${cycleDisplay.phase} phase`}>🩸</span>
-                                    ) : cycleDisplay.phase === 'fertile' ? (
-                                      <span className="text-[8px]" title={`${cycleDisplay.phase} phase`}>💗</span>
-                                    ) : null
-                                  )}
-                                </div>
-                              )}
-                            </>
+                            <span 
+                              className="text-xs opacity-90"
+                              title={`${phaseInfo.phase} phase`}
+                            >
+                              {emoji}
+                            </span>
                           );
                         })()}
                       </div>
