@@ -114,7 +114,9 @@ export function MomentModal() {
       }
     } else {
       // Reset form for new entries
-      setConnectionId(selectedConnectionId || 2);
+      const initialConnectionId = selectedConnectionId || 2;
+      console.log("🔥 MODAL INIT - Setting connectionId:", initialConnectionId, "from selectedConnectionId:", selectedConnectionId);
+      setConnectionId(initialConnectionId);
       setEmoji(activityType === 'conflict' ? '⚡' : activityType === 'intimacy' ? '💗' : '😊');
       setContent("");
       setLocalSelectedDate(selectedDate || new Date());
@@ -471,6 +473,15 @@ export function MomentModal() {
   };
   
   const handleSubmit = () => {
+    console.log("🔥 SUBMIT DEBUG - Starting submit with:", {
+      isSubmitting,
+      connectionId,
+      selectedConnectionId,
+      title: title.trim(),
+      content: content.trim(),
+      activityType
+    });
+    
     setIsSubmitting(true);
     
     // Use selected tags or fallback to activity type tags (but not moment type)
@@ -580,6 +591,8 @@ export function MomentModal() {
       
       return;
     }
+    
+    console.log("🔥 SUBMIT DEBUG - Creating momentData with connectionId:", connectionId);
     
     const momentData = {
       connectionId,
@@ -1063,7 +1076,11 @@ export function MomentModal() {
               <Button variant="outline" onClick={closeMomentModal} disabled={isSubmitting}>
                 Cancel
               </Button>
-              <Button onClick={handleSubmit} disabled={isSubmitting}>
+              <Button 
+                onClick={handleSubmit} 
+                disabled={isSubmitting}
+                className={isSubmitting ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}
+              >
                 {isSubmitting ? "Saving..." : "Save"}
               </Button>
             </div>
