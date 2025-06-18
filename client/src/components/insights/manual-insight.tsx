@@ -20,7 +20,7 @@ export function ManualInsight({ context, data, className = "" }: ManualInsightPr
     setError(null);
 
     try {
-      const response = await apiRequest("POST", "/api/ai/mini-insight", { context, data });
+      const response = await apiRequest("/api/ai/mini-insight", "POST", { context, data });
       const result = await response.json();
       if (result.insight) {
         setInsight(result.insight);
