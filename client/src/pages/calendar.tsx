@@ -869,24 +869,34 @@ export default function Calendar() {
                       <div className="text-xs text-muted-foreground opacity-75 ml-6 space-y-1">
                         <div>Includes period, fertile window, ovulation & phases</div>
                         <div className="grid grid-cols-2 gap-1 mt-2">
-                          <div className="flex items-center gap-1">
-                            <span className="text-sm">🩸</span>
+                          <div className="flex items-center gap-1.5">
+                            <div className="w-4 h-4 bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-700 rounded flex items-center justify-center">
+                              <span className="text-xs">🩸</span>
+                            </div>
                             <span>Period</span>
                           </div>
-                          <div className="flex items-center gap-1">
-                            <span className="text-sm">🌱</span>
+                          <div className="flex items-center gap-1.5">
+                            <div className="w-4 h-4 bg-green-100 dark:bg-green-900/30 border border-green-300 dark:border-green-700 rounded flex items-center justify-center opacity-50">
+                              <span className="text-xs">🌱</span>
+                            </div>
                             <span>Follicular</span>
                           </div>
-                          <div className="flex items-center gap-1">
-                            <span className="text-sm">🌸</span>
+                          <div className="flex items-center gap-1.5">
+                            <div className="w-4 h-4 bg-yellow-200 dark:bg-yellow-800/50 border-2 border-yellow-400 dark:border-yellow-400 rounded flex items-center justify-center font-semibold">
+                              <span className="text-xs">🌸</span>
+                            </div>
                             <span>Fertile</span>
                           </div>
-                          <div className="flex items-center gap-1">
-                            <span className="text-sm">🥚</span>
+                          <div className="flex items-center gap-1.5">
+                            <div className="w-4 h-4 bg-blue-200 dark:bg-blue-800/50 border-2 border-blue-400 dark:border-blue-400 rounded flex items-center justify-center font-semibold">
+                              <span className="text-xs">🥚</span>
+                            </div>
                             <span>Ovulation</span>
                           </div>
-                          <div className="flex items-center gap-1">
-                            <span className="text-sm">🌙</span>
+                          <div className="flex items-center gap-1.5">
+                            <div className="w-4 h-4 bg-purple-100 dark:bg-purple-900/30 border border-purple-300 dark:border-purple-700 rounded flex items-center justify-center opacity-50">
+                              <span className="text-xs">🌙</span>
+                            </div>
                             <span>Luteal</span>
                           </div>
                         </div>
