@@ -1094,14 +1094,7 @@ export default function MenstrualCyclePage() {
                         
                         {/* Get cycle phases for this day using calendar's logic */}
                         {(() => {
-                          // Debug May 11th specifically
-                          if (format(day, 'yyyy-MM-dd') === '2025-05-11') {
-                            console.log(`🔍 CYCLE TRACKER May 11th DEBUG:`, {
-                              selectedPersonIds,
-                              cyclesLength: cycles.length,
-                              allCycles: cycles.map(c => ({ id: c.id, connectionId: c.connectionId, start: c.periodStartDate, end: c.cycleEndDate }))
-                            });
-                          }
+
                           
                           // Determine which connections to check for cycles based on selection
                           let connectionsToCheck = [];
@@ -1125,13 +1118,7 @@ export default function MenstrualCyclePage() {
                           for (const connectionId of connectionsToCheck) {
                             const phaseInfo = getCyclePhaseForDay(day, connectionId, cycles);
                             
-                            // Debug May 11th phase detection
-                            if (format(day, 'yyyy-MM-dd') === '2025-05-11') {
-                              console.log(`🔍 CYCLE TRACKER May 11th - Connection ${connectionId}:`, {
-                                phaseInfo,
-                                connectionName: connections.find(c => c.id === connectionId)?.name
-                              });
-                            }
+
                             
                             if (phaseInfo) {
                               const connection = connections.find(c => c.id === connectionId);
@@ -1141,16 +1128,7 @@ export default function MenstrualCyclePage() {
                             }
                           }
                           
-                          // Debug May 11th final cycle phases
-                          if (format(day, 'yyyy-MM-dd') === '2025-05-11') {
-                            console.log(`🔍 CYCLE TRACKER May 11th - Final cyclePhases:`, {
-                              cyclePhases: cyclePhases.map(p => ({
-                                connectionName: p.connection?.name,
-                                phase: p.phase,
-                                subPhase: p.subPhase
-                              }))
-                            });
-                          }
+
                           
                           // Create cycle display object exactly like calendar
                           let cycleDisplay = null;
@@ -1206,14 +1184,7 @@ export default function MenstrualCyclePage() {
                               }))
                             };
                             
-                            // Debug May 11th multiple connection display
-                            if (format(day, 'yyyy-MM-dd') === '2025-05-11') {
-                              console.log(`🔍 CYCLE TRACKER May 11th - Multiple display created:`, {
-                                isMultiple: cycleDisplay.isMultiple,
-                                coloredInitialsCount: cycleDisplay.coloredInitials.length,
-                                coloredInitials: cycleDisplay.coloredInitials
-                              });
-                            }
+
                           }
                           
                           // Render using calendar's exact logic
