@@ -111,11 +111,13 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
-- June 18, 2025: VISUAL HIERARCHY UPDATE - Enhanced visual hierarchy in cycle tracking displays by reducing opacity for less critical phases
-  - Reduced follicular, luteal, fertility, and ovulation phases to 50% opacity across both cycle tracker and calendar views
-  - Maintained full visibility only for menstrual phase (most important for users) to emphasize critical information
+- June 18, 2025: VISUAL HIERARCHY UPDATE - Enhanced visual hierarchy in cycle tracking displays with prominent fertility indicators
+  - Made fertility window (💗) and ovulation day (🥚) highly prominent with stronger colors, thicker borders, and bold font weight
+  - Reduced follicular and luteal phases to 50% opacity to keep them subtle
+  - Maintained full visibility for menstrual phase (🩸) as the primary focus
+  - Enhanced fertility phases with bg-blue-200/bg-yellow-200 backgrounds and border-2 styling for maximum visibility
   - Activity emojis (moments/milestones) remain prominent regardless of cycle phase background
-  - Created clear visual hierarchy that guides user attention to the most relevant information: menstrual phase and activities
+  - Created clear visual hierarchy: menstrual phase, fertility phases, and activities are prominent; follicular/luteal phases are subtle
 
 - June 18, 2025: VISUAL CONSISTENCY UPDATE - Standardized cycle phase emojis and colors between calendar and cycle tracker
   - Updated all cycle phase emojis to match cycle tracker exactly: 🩸 menstrual, 🌱 follicular, 💗 fertile, 🥚 ovulation, 🌙 luteal
