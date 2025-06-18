@@ -876,7 +876,7 @@ export default function Calendar() {
                             <span>Period</span>
                           </div>
                           <div className="flex items-center gap-1.5">
-                            <div className="w-4 h-4 bg-green-100 dark:bg-green-900/30 border border-green-300 dark:border-green-700 rounded flex items-center justify-center opacity-50">
+                            <div className="w-4 h-4 bg-green-100 dark:bg-green-900/30 border border-green-300 dark:border-green-700 rounded flex items-center justify-center">
                               <span className="text-xs">🌱</span>
                             </div>
                             <span>Follicular</span>
@@ -894,7 +894,7 @@ export default function Calendar() {
                             <span>Ovulation</span>
                           </div>
                           <div className="flex items-center gap-1.5">
-                            <div className="w-4 h-4 bg-purple-100 dark:bg-purple-900/30 border border-purple-300 dark:border-purple-700 rounded flex items-center justify-center opacity-50">
+                            <div className="w-4 h-4 bg-purple-100 dark:bg-purple-900/30 border border-purple-300 dark:border-purple-700 rounded flex items-center justify-center">
                               <span className="text-xs">🌙</span>
                             </div>
                             <span>Luteal</span>
