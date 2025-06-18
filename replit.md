@@ -111,6 +111,14 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
+- June 18, 2025: REDUCED ZODIAC REFERENCES & ELIMINATED REPLACEMENT LANGUAGE - Fine-tuned quote generation system based on user feedback
+  - Reduced zodiac sign context usage from 50% to 25% probability to minimize astrology references
+  - Updated all edgy quote prompts to focus on self-worth and what users deserve rather than "replacing" people
+  - Enhanced system messages to explicitly avoid zodiac references in AI-generated content
+  - Maintained "you deserve better" messaging while eliminating "replacing someone" language
+  - Refined fallback quotes to remove any replacement-focused content
+  - Quote system now provides empowering messages about standards without suggesting finding someone new
+
 - June 18, 2025: REFINED EDGY QUOTE STYLE - Updated edgy style to be witty, cheeky, and empowering rather than harsh or negative
   - Changed AI prompts to "cheeky, empowering relationship truth" with "playful directness"
   - Updated system message to describe coach as "witty, confident" who is "cheeky and clever about healthy boundaries"

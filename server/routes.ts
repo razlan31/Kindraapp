@@ -2998,7 +2998,8 @@ Format as a brief analysis (2-3 sentences) focusing on what their data actually 
             context += ` and their love language is ${user.loveLanguage}`;
           }
           
-          if (user.zodiacSign) {
+          // Only include zodiac sign 25% of the time to reduce zodiac references
+          if (user.zodiacSign && Math.random() < 0.25) {
             context += ` and they are a ${user.zodiacSign}`;
           }
           
@@ -3006,7 +3007,7 @@ Format as a brief analysis (2-3 sentences) focusing on what their data actually 
           if (selectedStyle === 'simple') {
             prompt = `Generate a short, punchy relationship advice (5-8 words max) for someone who ${context}. Be direct, memorable, and actionable. No fluff. Examples: "Show up consistently" or "Listen without fixing" or "Trust actions over words."`;
           } else if (selectedStyle === 'edgy') {
-            prompt = `Generate a cheeky, empowering relationship truth (1-2 sentences) for someone who ${context}. Be witty and direct about healthy boundaries while building self-worth. Focus on clarity and confidence. Examples: "Mixed signals aren't mysterious — they're just unattractive" or "Clarity is sexy. Mixed signals are not."`;
+            prompt = `Generate a cheeky, empowering relationship truth (1-2 sentences) for someone who ${context}. Be witty and direct about healthy boundaries while building self-worth. Focus on what you deserve, not replacing people. Examples: "Mixed signals aren't mysterious — they're just unattractive" or "You deserve effort that matches your energy."`;
           } else if (selectedStyle === 'soft') {
             prompt = `Generate a gentle, positive affirmation about relationships (1-2 sentences) for someone who ${context}. Be encouraging, supportive, and nurturing. Focus on self-worth and healing. Examples: "You deserve love that feels peaceful and secure" or "Your heart's capacity to love is your greatest strength."`;
           } else {
@@ -3017,7 +3018,7 @@ Format as a brief analysis (2-3 sentences) focusing on what their data actually 
           if (selectedStyle === 'simple') {
             prompt = `Generate short, memorable relationship advice (3-6 words). Be direct and actionable. Examples: "Choose growth together" or "Communicate before assuming" or "Actions reveal intentions."`;
           } else if (selectedStyle === 'edgy') {
-            prompt = `Generate a witty, confident relationship truth (1-2 sentences). Be cheeky and empowering about healthy standards. Focus on self-worth with playful directness. Examples: "If you need a translator to understand their feelings, it's already a red flag" or "Don't romanticize confusion — you deserve a love that speaks clearly."`;
+            prompt = `Generate a witty, confident relationship truth (1-2 sentences). Be cheeky and empowering about healthy standards. Focus on self-worth, not replacing people. Examples: "If you need a translator to understand their feelings, it's already a red flag" or "You deserve effort that matches your energy."`;
           } else if (selectedStyle === 'soft') {
             prompt = `Generate a gentle, positive affirmation about relationships (1-2 sentences). Be encouraging and nurturing. Focus on self-worth and healing. Examples: "You are worthy of love that celebrates who you are" or "Your kind heart deserves gentle, patient love in return."`;
           } else {
@@ -3033,7 +3034,7 @@ Format as a brief analysis (2-3 sentences) focusing on what their data actually 
           systemMessage = "You are a direct, no-nonsense relationship advisor. Keep advice extremely short and punchy. Maximum 8 words. Be memorable and actionable.";
           temperature = 0.5;
         } else if (selectedStyle === 'edgy') {
-          systemMessage = "You are a witty, confident relationship coach who delivers empowering truths with playful directness. Be cheeky and clever about healthy boundaries while building self-worth. Focus on clarity and confidence, never cruelty.";
+          systemMessage = "You are a witty, confident relationship coach who delivers empowering truths with playful directness. Be cheeky and clever about healthy boundaries while building self-worth. Focus on what people deserve, not replacing others. Avoid zodiac references.";
           temperature = 0.7;
         } else if (selectedStyle === 'soft') {
           systemMessage = "You are a gentle, nurturing relationship counselor who provides warm, positive affirmations. Focus on healing, self-worth, and encouragement. Be supportive and kind.";
@@ -3100,7 +3101,7 @@ Format as a brief analysis (2-3 sentences) focusing on what their data actually 
             "Their inconsistency isn't romantic — it's a warning.",
             "Love shouldn't feel like decoding hieroglyphics.",
             "If their vibe feels like Morse code, it's not love — it's a lack of clarity.",
-            "Mixed signals are the universe's way of saying: try again, but not with them."
+            "You deserve effort that matches your energy."
           ],
           soft: [
             "You are worthy of love that celebrates who you are.",
