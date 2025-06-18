@@ -234,20 +234,7 @@ export const getCyclePhaseForDay = (day: Date, connectionId: number, cycles: Men
         differenceInDays(new Date(cycle.cycleEndDate), cycleStart) + 1 : 
         (calculateCycleLength(connectionCycles) || 28);
       
-      // Debug ovulation calculation for June
-      if (connectionId === 6 && format(day, 'yyyy-MM').startsWith('2025-06')) {
-        const ovulationDay = calculateOvulationDay(cycleLength, connectionCycles);
-        console.log(`🔍 JUNE OVULATION CALC - ${format(day, 'yyyy-MM-dd')}:`, {
-          dayInCycle,
-          cycleLength,
-          ovulationDay,
-          isOvulationDay: dayInCycle === ovulationDay,
-          calculationFormula: `${cycleLength} - 14 = ${cycleLength - 14}`,
-          cycleId: cycle.id,
-          cycleStart: format(cycleStart, 'yyyy-MM-dd'),
-          expectedOvulationDate: format(addDays(cycleStart, ovulationDay - 1), 'yyyy-MM-dd')
-        });
-      }
+      // Ovulation calculation now correctly shows June 14th for 28-day cycle
       
       const periodLength = cycle.periodEndDate ? 
         differenceInDays(new Date(cycle.periodEndDate), cycleStart) + 1 : 5;
