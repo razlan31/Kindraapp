@@ -111,6 +111,13 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
+- June 18, 2025: REFINED EDGY QUOTE STYLE - Updated edgy style to be constructive and empowering rather than harsh or negative
+  - Changed AI prompts from "brutally honest, wake-up-call" to "direct, honest relationship truth"
+  - Updated system message to focus on "clarity and empowerment, not cruelty"
+  - Replaced harsh fallback quotes with empowering alternatives emphasizing self-worth
+  - Edgy style now builds users up while being honest about relationship patterns
+  - Maintains directness while avoiding cruel or overly negative messaging
+
 - June 18, 2025: FOUR QUOTE STYLES SYSTEM - Added fourth quote style "soft positive affirmating" with even distribution
   - Expanded quote system from 3 to 4 distinct styles: beautiful, simple, edgy, and soft
   - Soft style provides gentle, positive affirmations focusing on self-worth and healing
