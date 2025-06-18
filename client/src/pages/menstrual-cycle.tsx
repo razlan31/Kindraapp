@@ -1045,75 +1045,144 @@ export default function MenstrualCyclePage() {
                         relative p-1 h-10 w-10 flex flex-col items-center justify-center text-xs border rounded-lg transition-colors hover:bg-accent/50
                         border-border/20
                         ${cyclesOnDay.length > 0 ? 
-                          // Apply cycle background styling to match calendar page
+                          // Apply cycle background styling to match calendar page - enhanced visual hierarchy
                           cyclesOnDay.length === 1 ? 
                             getCycleStage(day, cyclesOnDay[0]) === 'menstrual' ? 'bg-red-100 dark:bg-red-900/30 border-red-300 dark:border-red-700 border-2' :
-                            getCycleStage(day, cyclesOnDay[0]) === 'ovulation' ? 'bg-blue-700 dark:bg-blue-800 border-blue-800 dark:border-blue-900 border-2' :
-                            getCycleStage(day, cyclesOnDay[0]) === 'fertile' ? 'bg-blue-100 dark:bg-blue-900/30 border-blue-300 dark:border-blue-700 border-2' :
-                            getCycleStage(day, cyclesOnDay[0]) === 'follicular' ? 'bg-green-100 dark:bg-green-900/30 border-green-300 dark:border-green-700 border-2' :
-                            getCycleStage(day, cyclesOnDay[0]) === 'luteal' ? 'bg-yellow-100 dark:bg-yellow-900/30 border-yellow-300 dark:border-yellow-700 border-2' :
+                            getCycleStage(day, cyclesOnDay[0]) === 'ovulation' ? 'bg-blue-200 dark:bg-blue-800/50 border-blue-300 dark:border-blue-700 border-2 font-bold' :
+                            getCycleStage(day, cyclesOnDay[0]) === 'fertile' ? 'bg-yellow-200 dark:bg-yellow-800/50 border-yellow-300 dark:border-yellow-700 border-2 font-bold' :
+                            getCycleStage(day, cyclesOnDay[0]) === 'follicular' ? 'bg-green-100 dark:bg-green-900/30 border-green-300 dark:border-green-700 border-2 opacity-50' :
+                            getCycleStage(day, cyclesOnDay[0]) === 'luteal' ? 'bg-purple-100 dark:bg-purple-900/30 border-purple-300 dark:border-purple-700 border-2 opacity-50' :
                             'bg-background/50'
                           :
-                          // Multiple cycles - use gradient background like calendar page
-                          'bg-gradient-to-br from-pink-50 to-purple-50 dark:from-pink-900/20 dark:to-purple-900/20 border-pink-200 dark:border-pink-700 border-2'
+                          // Multiple cycles - determine background based on prominent phases
+                          (() => {
+                            const hasProminentPhase = cyclesOnDay.some(cycle => {
+                              const stage = getCycleStage(day, cycle);
+                              return stage === 'menstrual' || stage === 'fertile' || stage === 'ovulation';
+                            });
+                            
+                            if (hasProminentPhase) {
+                              const prominentCycle = cyclesOnDay.find(cycle => {
+                                const stage = getCycleStage(day, cycle);
+                                return stage === 'menstrual' || stage === 'ovulation' || stage === 'fertile';
+                              });
+                              if (prominentCycle) {
+                                const stage = getCycleStage(day, prominentCycle);
+                                if (stage === 'menstrual') return 'bg-red-100 dark:bg-red-900/30 border-red-300 dark:border-red-700 border-2';
+                                if (stage === 'ovulation') return 'bg-blue-200 dark:bg-blue-800/50 border-blue-300 dark:border-blue-700 border-2 font-bold';
+                                if (stage === 'fertile') return 'bg-yellow-200 dark:bg-yellow-800/50 border-yellow-300 dark:border-yellow-700 border-2 font-bold';
+                              }
+                            }
+                            
+                            return 'bg-gradient-to-br from-pink-50 to-purple-50 dark:from-pink-900/20 dark:to-purple-900/20 border-pink-200 dark:border-pink-700 border-2';
+                          })()
                         :
                         'bg-background/50'
                         }
                       `}
 
                     >
-                      {cyclesOnDay.length > 0 ? (
-                        // Multiple cycles - show colored initials like calendar page
-                        cyclesOnDay.length > 1 ? (
-                          <div className="flex flex-col items-center justify-center">
-                            <div className="text-xs font-bold mb-1">{format(day, 'd')}</div>
-                            <div className="flex gap-0.5">
-                              {cyclesOnDay.slice(0, 3).map((cycle, index) => {
+                      <div className="text-[6px] font-bold text-gray-600 mb-0.5">
+                        {format(day, 'd')}
+                      </div>
+                      
+                      {/* Priority display system matching calendar page */}
+                      <div className="flex flex-wrap gap-0.5 items-center overflow-hidden max-w-full">
+                        {/* Priority 1: Activity emojis (moments/milestones) - not applicable to cycle tracker */}
+                        
+                        {/* Priority 2: Connection alphabet letters (only when sufficient space) */}
+                        {cyclesOnDay.length > 0 && (
+                          <div className="flex gap-0.5">
+                            {cyclesOnDay.length > 1 ? (
+                              // Multiple connections - show colored initials with phase-based colors
+                              <div className="flex flex-wrap gap-0.5 max-w-full">
+                                {cyclesOnDay.slice(0, 2).map((cycle, index) => {
+                                  const connection = connections.find(c => c.id === cycle.connectionId);
+                                  const stage = getCycleStage(day, cycle);
+                                  const initial = connection?.name?.[0]?.toUpperCase() || '?';
+                                  
+                                  // Get phase-based color for initial
+                                  const getPhaseColor = (phase: string) => {
+                                    if (phase === 'menstrual') return 'text-red-600 bg-red-100 dark:bg-red-900/30';
+                                    if (phase === 'ovulation') return 'text-blue-600 bg-blue-200 dark:bg-blue-800/50 font-semibold';
+                                    if (phase === 'fertile') return 'text-yellow-600 bg-yellow-200 dark:bg-yellow-800/50 font-semibold';
+                                    if (phase === 'follicular') return 'text-green-600 bg-green-100 dark:bg-green-900/30 opacity-50';
+                                    if (phase === 'luteal') return 'text-purple-600 bg-purple-100 dark:bg-purple-900/30 opacity-50';
+                                    return 'text-gray-600 bg-gray-100 dark:bg-gray-900/30';
+                                  };
+                                  
+                                  return (
+                                    <div
+                                      key={`${cycle.id}-${index}`}
+                                      className={`inline-flex items-center justify-center ${getPhaseColor(stage)} rounded-full border w-4 h-4 text-xs font-bold flex-shrink-0`}
+                                      title={`${connection?.name || 'Unknown'}: ${stage} phase`}
+                                    >
+                                      <span className="font-bold text-[8px]">
+                                        {initial}
+                                      </span>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            ) : (
+                              // Single connection - show alphabet with phase color
+                              (() => {
+                                const cycle = cyclesOnDay[0];
                                 const connection = connections.find(c => c.id === cycle.connectionId);
+                                const stage = getCycleStage(day, cycle);
                                 const initial = connection?.name?.[0]?.toUpperCase() || '?';
-                                const colors = [
-                                  'text-red-600', 'text-blue-600', 'text-green-600', 'text-purple-600',
-                                  'text-orange-600', 'text-pink-600', 'text-indigo-600', 'text-teal-600'
-                                ];
-                                const connectionColor = colors[(cycle.connectionId || 0) % colors.length];
+                                
+                                const getPhaseColor = (phase: string) => {
+                                  if (phase === 'menstrual') return 'text-red-600 bg-red-100 dark:bg-red-900/30';
+                                  if (phase === 'ovulation') return 'text-blue-600 bg-blue-200 dark:bg-blue-800/50 font-semibold';
+                                  if (phase === 'fertile') return 'text-yellow-600 bg-yellow-200 dark:bg-yellow-800/50 font-semibold';
+                                  if (phase === 'follicular') return 'text-green-600 bg-green-100 dark:bg-green-900/30 opacity-50';
+                                  if (phase === 'luteal') return 'text-purple-600 bg-purple-100 dark:bg-purple-900/30 opacity-50';
+                                  return 'text-gray-600 bg-gray-100 dark:bg-gray-900/30';
+                                };
                                 
                                 return (
-                                  <span
-                                    key={`${cycle.id}-${index}`}
-                                    className={`text-[8px] font-bold ${connectionColor}`}
-                                    title={`${connection?.name || 'Unknown'} - ${getCycleStage(day, cycle)}`}
+                                  <div
+                                    className={`inline-flex items-center justify-center ${getPhaseColor(stage)} rounded-full border w-4 h-4 text-xs font-bold`}
+                                    title={`${connection?.name || 'Unknown'}: ${stage} phase`}
                                   >
-                                    {initial}
-                                  </span>
+                                    <span className="font-bold text-[8px]">
+                                      {initial}
+                                    </span>
+                                  </div>
                                 );
-                              })}
-                            </div>
+                              })()
+                            )}
                           </div>
-                        ) : (
-                          // Single cycle - show emoji indicator and date like calendar page
-                          (() => {
-                            const cycle = cyclesOnDay[0];
-                            const stage = getCycleStage(day, cycle);
-                            let indicator = '';
-                            
-                            if (stage === 'menstrual') indicator = '🩸';
-                            else if (stage === 'ovulation') indicator = '🥚';
-                            else if (stage === 'fertile') indicator = '💗';
-                            else if (stage === 'follicular') indicator = '🌱';
-                            else if (stage === 'luteal') indicator = '🌙';
-                            
-                            return (
-                              <div className="flex flex-col items-center justify-center">
-                                <div className="text-xs font-bold">{format(day, 'd')}</div>
-                                {indicator && <div className="text-xs">{indicator}</div>}
-                              </div>
-                            );
-                          })()
-                        )
-                      ) : (
-                        // No cycle data - show regular date only
-                        <span className="text-muted-foreground">{format(day, 'd')}</span>
-                      )}
+                        )}
+
+                        {/* Priority 3: Menstrual cycle emojis (lowest priority, only prominent phases, only when plenty of space) */}
+                        {cyclesOnDay.length > 0 && cyclesOnDay.length <= 1 && (
+                          <div className="flex gap-0.5 mt-0.5">
+                            {(() => {
+                              const cycle = cyclesOnDay[0];
+                              const stage = getCycleStage(day, cycle);
+                              
+                              // Only show emojis for prominent phases
+                              const getPhaseEmoji = (phase: string) => {
+                                if (phase === 'menstrual') return '🩸';
+                                if (phase === 'ovulation') return '🥚';
+                                if (phase === 'fertile') return '💗';
+                                // Don't show emojis for follicular/luteal phases to reduce clutter
+                                return '';
+                              };
+                              
+                              const emoji = getPhaseEmoji(stage);
+                              
+                              return emoji ? (
+                                <span className="text-[8px]" title={`${stage} phase`}>
+                                  {emoji}
+                                </span>
+                              ) : null;
+                            })()}
+                          </div>
+                        )}
+                      </div>
                     </div>
                   );
                 })}
