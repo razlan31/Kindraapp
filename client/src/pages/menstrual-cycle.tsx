@@ -1094,8 +1094,8 @@ export default function MenstrualCyclePage() {
                         
                         {/* Cycle tracker priority system: 1) Alphabet letters for multiple connections, 2) Menstrual emojis */}
                         {(() => {
-                          // Get cycles for selected connections only
-                          const dayActiveCycles = cycles.filter(cycle => {
+                          // Get cycles for ALL selected connections (not just ones with cycles on this specific day)
+                          const allSelectedCycles = cycles.filter(cycle => {
                             if (!cycle.connectionId || !selectedPersonIds.includes(cycle.connectionId)) return false;
                             
                             const cycleStart = new Date(cycle.periodStartDate);
@@ -1106,19 +1106,22 @@ export default function MenstrualCyclePage() {
                             return day >= cycleStart && day <= cycleEnd;
                           });
                           
-                          if (dayActiveCycles.length === 0) return null;
+                          // For alphabet letters, check all selected connections regardless of cycle status
+                          const selectedConnections = connections.filter(c => selectedPersonIds.includes(c.id));
                           
-                          // Priority 1: Multiple connections selected - show alphabet letters
+                          // Priority 1: Multiple connections selected - show alphabet letters for ALL selected connections
                           if (selectedPersonIds.length > 1) {
                             return (
                               <div className="flex gap-0.5">
-                                {dayActiveCycles.slice(0, 2).map((cycle, index) => {
-                                  const connection = connections.find(c => c.id === cycle.connectionId);
-                                  const phaseInfo = cycle.connectionId ? getCyclePhaseForDay(day, cycle.connectionId, cycles) : null;
+                                {selectedConnections.slice(0, 2).map((connection, index) => {
+                                  const connectionCycle = allSelectedCycles.find(c => c.connectionId === connection.id);
+                                  const phaseInfo = connectionCycle ? getCyclePhaseForDay(day, connection.id, cycles) : null;
                                   
-                                  if (!connection || !phaseInfo) return null;
+                                  // Show alphabet letter even if no cycle data, but with different styling
+                                  const hasPhase = !!phaseInfo;
                                   
-                                  const getPhaseColor = (phase: string, subPhase?: string) => {
+                                  const getPhaseColor = (phase?: string, subPhase?: string) => {
+                                    if (!phase) return 'bg-gray-100 text-gray-600 border-gray-300';
                                     if (phase === 'menstrual') return 'bg-red-100 text-red-800 border-red-300';
                                     if (phase === 'fertile' && subPhase === 'ovulation') return 'bg-blue-100 text-blue-800 border-blue-300';
                                     if (phase === 'fertile') return 'bg-yellow-100 text-yellow-800 border-yellow-300';
@@ -1129,9 +1132,9 @@ export default function MenstrualCyclePage() {
                                   
                                   return (
                                     <div
-                                      key={cycle.id}
-                                      className={`inline-flex items-center justify-center rounded-full border w-4 h-4 text-xs font-bold ${getPhaseColor(phaseInfo.phase, phaseInfo.subPhase)}`}
-                                      title={`${connection.name}: ${phaseInfo.phase} phase`}
+                                      key={connection.id}
+                                      className={`inline-flex items-center justify-center rounded-full border w-4 h-4 text-xs font-bold ${getPhaseColor(phaseInfo?.phase, phaseInfo?.subPhase)}`}
+                                      title={hasPhase ? `${connection.name}: ${phaseInfo!.phase} phase` : `${connection.name}: No cycle data`}
                                     >
                                       <span className="font-bold text-[8px]">
                                         {connection.name[0].toUpperCase()}
@@ -1144,13 +1147,15 @@ export default function MenstrualCyclePage() {
                           }
                           
                           // Priority 2: Single connection - show accurate menstrual emoji according to legend
-                          const cycle = dayActiveCycles[0];
+                          if (allSelectedCycles.length === 0) return null;
+                          
+                          const cycle = allSelectedCycles[0];
                           const phaseInfo = cycle.connectionId ? getCyclePhaseForDay(day, cycle.connectionId, cycles) : null;
                           
                           if (!phaseInfo) return null;
                           
                           const getAccuratePhaseEmoji = (phase: string, subPhase?: string) => {
-                            // Use exact emojis from legend
+                            // Use exact emojis from legend - check legend component for accuracy
                             if (phase === 'menstrual') return '🩸';
                             if (phase === 'follicular') return '🌱';
                             if (phase === 'fertile' && subPhase === 'ovulation') return '🥚';
@@ -1193,19 +1198,19 @@ export default function MenstrualCyclePage() {
                     <span>Follicular phase</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 bg-blue-100 dark:bg-blue-900/30 border border-blue-300 dark:border-blue-700 rounded flex items-center justify-center">
+                    <div className="w-4 h-4 bg-yellow-100 dark:bg-yellow-900/30 border border-yellow-300 dark:border-yellow-700 rounded flex items-center justify-center">
                       <span className="text-xs">💗</span>
                     </div>
                     <span>Fertile window</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 bg-blue-700 dark:bg-blue-800 border border-blue-800 dark:border-blue-900 rounded flex items-center justify-center">
+                    <div className="w-4 h-4 bg-blue-100 dark:bg-blue-900/30 border border-blue-300 dark:border-blue-700 rounded flex items-center justify-center">
                       <span className="text-xs">🥚</span>
                     </div>
                     <span>Ovulation day</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 bg-yellow-100 dark:bg-yellow-900/30 border border-yellow-300 dark:border-yellow-700 rounded flex items-center justify-center">
+                    <div className="w-4 h-4 bg-purple-100 dark:bg-purple-900/30 border border-purple-300 dark:border-purple-700 rounded flex items-center justify-center">
                       <span className="text-xs">🌙</span>
                     </div>
                     <span>Luteal phase</span>
