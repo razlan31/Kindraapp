@@ -2972,8 +2972,15 @@ Format as a brief analysis (2-3 sentences) focusing on what their data actually 
           ['😤', '😞', '⚡', '😔', '💔', '😒'].includes(m.emoji)
         ).length;
 
-        // Determine quote type and create prompt
+        // Determine quote type and style for variety
         const shouldPersonalize = hasConnections && hasMoments && Math.random() > 0.3;
+        
+        // Add quote style variety - cycle through different styles
+        const today = new Date().toISOString().split('T')[0];
+        const dayHash = today.split('-').reduce((a, b) => parseInt(a) + parseInt(b), 0);
+        const styleIndex = dayHash % 3;
+        const quoteStyles = ['beautiful', 'simple', 'edgy'];
+        const selectedStyle = quoteStyles[styleIndex];
         
         let prompt = "";
         let quoteType: 'personalized' | 'general' = 'general';
@@ -2998,25 +3005,54 @@ Format as a brief analysis (2-3 sentences) focusing on what their data actually 
             context += ` and they are a ${user.zodiacSign}`;
           }
           
-          prompt = `Generate a thoughtful, encouraging relationship quote or advice (1-2 sentences) that's subtly tailored for someone who ${context}. The quote should be inspirational, practical, and feel personal without being too specific. Focus on growth, understanding, or positive relationship dynamics. Don't mention specific details about their data.`;
+          // Style-specific prompts for personalized quotes
+          if (selectedStyle === 'simple') {
+            prompt = `Generate a simple, direct relationship advice (max 10 words) for someone who ${context}. Be concise and actionable. Examples: "Listen more. Judge less." or "Actions speak louder than promises."`;
+          } else if (selectedStyle === 'edgy') {
+            prompt = `Generate a brutally honest, no-nonsense relationship truth (1-2 sentences) for someone who ${context}. Be direct and call out common relationship mistakes. Examples: "If they wanted to, they would" or "Stop making excuses for people who don't prioritize you."`;
+          } else {
+            prompt = `Generate a thoughtful, beautifully worded relationship quote (1-2 sentences) for someone who ${context}. Make it inspirational and poetic about love, growth, and connection.`;
+          }
         } else {
-          prompt = `Generate an inspirational, thoughtful relationship quote or piece of advice (1-2 sentences). Focus on universal relationship wisdom about love, communication, growth, understanding, or building strong connections. Make it encouraging and practical.`;
+          // Style-specific prompts for general quotes
+          if (selectedStyle === 'simple') {
+            prompt = `Generate a simple, direct relationship advice (max 10 words). Be concise and actionable. Focus on universal relationship truths. Examples: "Good relationships need trust and effort" or "Be honest. Be kind. Show up."`;
+          } else if (selectedStyle === 'edgy') {
+            prompt = `Generate a brutally honest, no-nonsense relationship truth (1-2 sentences). Be direct about common relationship mistakes and red flags. Examples: "You can't love someone into loving you back" or "Red flags look normal through rose-colored glasses."`;
+          } else {
+            prompt = `Generate an inspirational, beautifully worded relationship quote (1-2 sentences). Focus on universal relationship wisdom about love, communication, growth, and building strong connections. Make it poetic and meaningful.`;
+          }
+        }
+
+        // Adjust system message and temperature based on style
+        let systemMessage = "You are a wise relationship counselor who provides thoughtful advice.";
+        let temperature = 0.8;
+        
+        if (selectedStyle === 'simple') {
+          systemMessage = "You are a direct, no-fluff relationship advisor. Keep advice concise and actionable.";
+          temperature = 0.6;
+        } else if (selectedStyle === 'edgy') {
+          systemMessage = "You are a brutally honest relationship coach who tells hard truths. Be direct and call out toxic patterns.";
+          temperature = 0.7;
+        } else {
+          systemMessage = "You are a wise, poetic relationship counselor who provides beautiful, inspiring wisdom.";
+          temperature = 0.9;
         }
 
         const response = await openai.chat.completions.create({
-          model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
+          model: "gpt-4o",
           messages: [
             {
               role: "system",
-              content: "You are a wise relationship counselor who provides thoughtful, encouraging quotes and advice. Keep responses concise but meaningful."
+              content: systemMessage
             },
             {
               role: "user",
               content: prompt
             }
           ],
-          max_tokens: 150,
-          temperature: 0.8,
+          max_tokens: selectedStyle === 'simple' ? 50 : 150,
+          temperature,
         });
 
         const quote = response.choices[0]?.message?.content?.replace(/^["']|["']$/g, '') || "";
@@ -3024,6 +3060,7 @@ Format as a brief analysis (2-3 sentences) focusing on what their data actually 
         const result = {
           quote,
           type: quoteType,
+          style: selectedStyle,
           context: quoteType === 'personalized' ? "Based on your recent relationship journey" : undefined
         };
 
@@ -3031,31 +3068,48 @@ Format as a brief analysis (2-3 sentences) focusing on what their data actually 
       } catch (aiError) {
         console.log("AI quote generation failed, using fallback");
         
-        // Fallback quotes based on user's love language or general wisdom
-        const fallbackQuotes = [
-          {
-            quote: "The greatest relationships are built on understanding, patience, and genuine care for each other's growth.",
-            type: 'general' as const
-          },
-          {
-            quote: "Love is not about finding someone perfect, but about seeing someone perfectly despite their imperfections.",
-            type: 'general' as const
-          },
-          {
-            quote: "Strong relationships require daily effort, open communication, and the courage to be vulnerable with each other.",
-            type: 'general' as const
-          },
-          {
-            quote: "Quality time isn't measured in hours spent together, but in the depth of connection shared in those moments.",
-            type: 'general' as const
-          }
-        ];
+        // Fallback quotes with variety - organize by style
+        const fallbackQuotes = {
+          beautiful: [
+            "The greatest relationships are built on understanding, patience, and genuine care for each other's growth.",
+            "Love is not about finding someone perfect, but about seeing someone perfectly despite their imperfections.",
+            "Strong relationships require daily effort, open communication, and the courage to be vulnerable with each other.",
+            "Quality time isn't measured in hours spent together, but in the depth of connection shared in those moments."
+          ],
+          simple: [
+            "Listen more. Judge less.",
+            "Actions speak louder than promises.",
+            "Be honest. Be kind. Show up.",
+            "Good relationships need trust and effort.",
+            "Communication fixes most problems.",
+            "Respect differences. Celebrate similarities."
+          ],
+          edgy: [
+            "If they wanted to, they would.",
+            "Stop making excuses for people who don't prioritize you.",
+            "You can't love someone into loving you back.",
+            "Red flags look normal through rose-colored glasses.",
+            "Your standards aren't too high, their effort is too low.",
+            "Don't set yourself on fire to keep someone else warm."
+          ]
+        };
 
+        // Use the same style selection logic as AI generation
+        const selectedQuotes = fallbackQuotes[selectedStyle];
         let selectedQuote;
-        if (user.loveLanguage === "Quality Time") {
-          selectedQuote = fallbackQuotes[3];
+        
+        if (selectedStyle === 'beautiful' && user.loveLanguage === "Quality Time") {
+          selectedQuote = {
+            quote: selectedQuotes[3], // Quality time specific quote
+            type: 'general' as const,
+            style: selectedStyle
+          };
         } else {
-          selectedQuote = fallbackQuotes[Math.floor(Math.random() * fallbackQuotes.length)];
+          selectedQuote = {
+            quote: selectedQuotes[Math.floor(Math.random() * selectedQuotes.length)],
+            type: 'general' as const,
+            style: selectedStyle
+          };
         }
 
         res.json(selectedQuote);

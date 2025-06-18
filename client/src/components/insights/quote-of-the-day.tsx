@@ -17,6 +17,7 @@ interface QuoteOfTheDayProps {
 interface DailyQuote {
   quote: string;
   type: 'personalized' | 'general';
+  style?: string;
   context?: string;
 }
 
@@ -43,32 +44,100 @@ export function QuoteOfTheDay({ connections, moments, userData }: QuoteOfTheDayP
     }
   };
 
-  // Fallback quotes for when AI is not available
+  // Fallback quotes for when AI is not available - now with variety
   const fallbackQuotes = [
+    // Beautiful/Inspirational quotes
     {
       quote: "The greatest relationships are built on understanding, patience, and genuine care for each other's growth.",
-      type: 'general' as const
+      type: 'general' as const,
+      style: 'beautiful'
     },
     {
       quote: "Love is not about finding someone perfect, but about seeing someone perfectly despite their imperfections.",
-      type: 'general' as const
-    },
-    {
-      quote: "Strong relationships require daily effort, open communication, and the courage to be vulnerable with each other.",
-      type: 'general' as const
+      type: 'general' as const,
+      style: 'beautiful'
     },
     {
       quote: "Quality time isn't measured in hours spent together, but in the depth of connection shared in those moments.",
-      type: 'general' as const
+      type: 'general' as const,
+      style: 'beautiful'
+    },
+    
+    // Simple/Direct quotes
+    {
+      quote: "Good relationships need two things: trust and effort.",
+      type: 'general' as const,
+      style: 'simple'
+    },
+    {
+      quote: "Listen more. Judge less. Love harder.",
+      type: 'general' as const,
+      style: 'simple'
+    },
+    {
+      quote: "Be honest. Be kind. Show up.",
+      type: 'general' as const,
+      style: 'simple'
+    },
+    {
+      quote: "Actions speak louder than promises.",
+      type: 'general' as const,
+      style: 'simple'
+    },
+    {
+      quote: "Love is a choice you make daily.",
+      type: 'general' as const,
+      style: 'simple'
+    },
+    
+    // Edgy/Real quotes
+    {
+      quote: "If they wanted to, they would. Stop making excuses for people.",
+      type: 'general' as const,
+      style: 'edgy'
+    },
+    {
+      quote: "You can't love someone into loving you back.",
+      type: 'general' as const,
+      style: 'edgy'
+    },
+    {
+      quote: "Red flags look like regular flags when you're wearing rose-colored glasses.",
+      type: 'general' as const,
+      style: 'edgy'
+    },
+    {
+      quote: "Stop trying to fix people who don't think they're broken.",
+      type: 'general' as const,
+      style: 'edgy'
+    },
+    {
+      quote: "You deserve someone who chooses you every day, not just when it's convenient.",
+      type: 'general' as const,
+      style: 'edgy'
+    },
+    {
+      quote: "Don't settle for being someone's option when you could be someone else's priority.",
+      type: 'general' as const,
+      style: 'edgy'
     }
   ];
 
-  // Get a fallback quote based on user's love language or general
+  // Get a fallback quote with variety - cycle through different styles
   const getFallbackQuote = () => {
-    if (userData.loveLanguage === "Quality Time") {
-      return fallbackQuotes[3];
-    }
-    return fallbackQuotes[Math.floor(Math.random() * fallbackQuotes.length)];
+    const today = new Date().toISOString().split('T')[0];
+    const dayHash = today.split('-').reduce((a, b) => parseInt(a) + parseInt(b), 0);
+    
+    // Determine style based on day (ensures variety over time)
+    const styleIndex = dayHash % 3;
+    const styles = ['beautiful', 'simple', 'edgy'];
+    const selectedStyle = styles[styleIndex];
+    
+    // Filter quotes by style
+    const styleQuotes = fallbackQuotes.filter(q => q.style === selectedStyle);
+    const randomIndex = dayHash % styleQuotes.length;
+    
+    return styleQuotes[randomIndex] || fallbackQuotes[0];
   };
 
   const displayQuote = quote || getFallbackQuote();
