@@ -215,6 +215,23 @@ export const getCyclePhaseForDay = (day: Date, connectionId: number, cycles: Men
       cycleEnd = addDays(cycleStart, avgCycleLength - 1);
     }
     
+    // Debug logging for May dates and connection 6 (Amalina)
+    const dayStr = format(day, 'yyyy-MM-dd');
+    if (connectionId === 6 && (dayStr === '2025-05-01' || dayStr === '2025-05-02' || dayStr === '2025-05-03' || dayStr === '2025-05-04')) {
+      console.log(`🔍 AMALINA MAY DEBUG - ${dayStr}:`, {
+        dayStr,
+        cycleId: cycle.id,
+        periodStart: format(cycleStart, 'yyyy-MM-dd'),
+        periodEnd: cycle.periodEndDate ? format(new Date(cycle.periodEndDate), 'yyyy-MM-dd') : 'no end date',
+        cycleEnd: format(cycleEnd, 'yyyy-MM-dd'),
+        dayWithinRange: day >= cycleStart && day <= cycleEnd,
+        dayAsDate: day,
+        cycleStartAsDate: cycleStart,
+        periodStartDate: cycle.periodStartDate,
+        periodEndDate: cycle.periodEndDate
+      });
+    }
+    
     if (day >= cycleStart && day <= cycleEnd) {
       // Normalize dates to start of day to avoid timezone issues
       const normalizedDay = startOfDay(day);
@@ -230,6 +247,16 @@ export const getCyclePhaseForDay = (day: Date, connectionId: number, cycles: Men
       
       const periodLength = cycle.periodEndDate ? 
         differenceInDays(new Date(cycle.periodEndDate), cycleStart) + 1 : 5;
+      
+      // Debug for May period days
+      if (connectionId === 6 && dayStr.startsWith('2025-05')) {
+        console.log(`🔍 CYCLE CALCULATION - ${dayStr}:`, {
+          dayInCycle,
+          periodLength,
+          cycleLength,
+          willReturnPhase: dayInCycle <= periodLength ? 'menstrual' : 'other'
+        });
+      }
       
       // Get detailed phase information
       const detailedPhase = getDetailedCyclePhase(
