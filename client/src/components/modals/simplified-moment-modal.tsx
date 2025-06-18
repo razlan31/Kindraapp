@@ -202,7 +202,7 @@ export function MomentModal() {
     console.log("🔄 SYNC - handleSuccess called with result:", result);
     
     // Trigger connection sync for activities page if a connection was used
-    const connectionId = localSelectedConnection?.id || selectedConnection?.id;
+    const connectionId = selectedConnectionId;
     if (connectionId && window.dispatchEvent) {
       console.log("🔄 SYNC - Dispatching connectionActivity event for connection:", connectionId);
       window.dispatchEvent(new CustomEvent('connectionActivity', { 
@@ -308,7 +308,7 @@ export function MomentModal() {
       queryClient.invalidateQueries({ queryKey: ['/api/moments'] });
       
       // Trigger connection sync for activities page
-      const connectionId = localSelectedConnection?.id || selectedConnection?.id;
+      const connectionId = selectedConnectionId;
       if (connectionId && window.dispatchEvent) {
         console.log("🔄 SYNC - Dispatching connectionActivity event for connection:", connectionId);
         window.dispatchEvent(new CustomEvent('connectionActivity', { 
