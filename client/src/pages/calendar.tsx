@@ -24,7 +24,7 @@ import { EntryDetailModal } from "@/components/modals/entry-detail-modal";
 import { PlanModal } from "@/components/modals/plan-modal";
 import { MomentModal } from "@/components/modals/moment-modal";
 import { apiRequest } from "@/lib/queryClient";
-import { getCyclePhaseForDay, getCycleDisplayInfo, calculateCycleLength } from "@/lib/cycle-utils";
+import { getCyclePhaseForDay, getCycleDisplayInfo, calculateCycleLength, getDetailedCyclePhase } from "@/lib/cycle-utils";
 
 function MenstrualCycleTracker({ selectedConnectionIds }: { selectedConnectionIds: number[] }) {
   const { data: cycles = [], isLoading } = useQuery<MenstrualCycle[]>({
@@ -1139,6 +1139,20 @@ export default function Calendar() {
                         
                         // Use exact same phase calculation as cycle tracker
                         const detailedPhase = getDetailedCyclePhase(dayInCycle, avgCycleLength, periodLength);
+                        
+                        // Debug logging for Amalina's June cycles
+                        if (connectionId === 6 && format(day, 'yyyy-MM').startsWith('2025-06')) {
+                          console.log(`🔍 CALENDAR DIRECT - ${format(day, 'yyyy-MM-dd')}:`, {
+                            connectionId,
+                            dayInCycle,
+                            avgCycleLength,
+                            periodLength,
+                            ovulationDay: avgCycleLength - 14,
+                            phase: detailedPhase.phase,
+                            subPhase: detailedPhase.subPhase,
+                            isOvulation: detailedPhase.subPhase === 'ovulation'
+                          });
+                        }
                         
                         phaseInfo = { 
                           phase: detailedPhase.phase,
