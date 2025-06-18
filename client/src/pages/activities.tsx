@@ -104,21 +104,27 @@ export default function Activities() {
     const handleConnectionActivity = (event: CustomEvent) => {
       console.log("🔄 SYNC - Activities page received connectionActivity event:", event.detail);
       const { connectionId } = event.detail;
-      console.log("🔄 SYNC - Processing connection:", connectionId, "current filters:", selectedConnections);
       
-      if (connectionId && !selectedConnections.includes(connectionId)) {
-        console.log("🔄 SYNC - Adding connection to filter:", connectionId);
-        setSelectedConnections(prev => {
+      setSelectedConnections(prev => {
+        console.log("🔄 SYNC - Processing connection:", connectionId, "current filters:", prev);
+        
+        if (connectionId && !prev.includes(connectionId)) {
+          console.log("🔄 SYNC - Adding connection to filter:", connectionId);
           const updated = [...prev, connectionId];
           console.log("🔄 SYNC - Updated filters:", updated);
           return updated;
-        });
-      }
+        }
+        return prev;
+      });
     };
 
+    console.log("🔄 SYNC - Activities page setting up persistent event listener");
     window.addEventListener('connectionActivity', handleConnectionActivity as EventListener);
-    return () => window.removeEventListener('connectionActivity', handleConnectionActivity as EventListener);
-  }, [selectedConnections]);
+    return () => {
+      console.log("🔄 SYNC - Activities page removing event listener on unmount");
+      window.removeEventListener('connectionActivity', handleConnectionActivity as EventListener);
+    };
+  }, []); // Remove selectedConnections dependency to prevent constant listener recreation
 
   // Handle connection creation
   const handleAddConnection = async (formData: FormData) => {

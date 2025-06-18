@@ -106,7 +106,7 @@ export function MomentModal() {
     } else {
       // Reset form for new entries
       setConnectionId(selectedConnectionId || 2);
-      setEmoji(activityType === 'conflict' ? '⚡' : activityType === 'intimacy' ? '💕' : '😊');
+      setEmoji(activityType === 'conflict' ? '⚡' : activityType === 'intimacy' ? '💗' : '😊');
       setContent("");
       setLocalSelectedDate(selectedDate || new Date());
       setMomentType('positive');
@@ -309,17 +309,20 @@ export function MomentModal() {
       
       // Trigger connection sync for activities page
       const connectionId = selectedConnectionId;
-      console.log("🔄 SYNC - Dispatching connection sync:", connectionId, activityType);
+      console.log("🔄 SYNC - About to dispatch connection sync:", connectionId, activityType);
       
       if (connectionId) {
         // Use setTimeout to ensure the event is processed after current execution
         setTimeout(() => {
+          console.log("🔄 SYNC - Creating and dispatching event for connection:", connectionId);
           const event = new CustomEvent('connectionActivity', { 
             detail: { connectionId, activityType } 
           });
-          window.dispatchEvent(event);
-          console.log("🔄 SYNC - Event dispatched for connection:", connectionId);
-        }, 100);
+          const dispatched = window.dispatchEvent(event);
+          console.log("🔄 SYNC - Event dispatched successfully:", dispatched, "for connection:", connectionId);
+        }, 200);
+      } else {
+        console.log("🔄 SYNC - No connectionId available for sync dispatch");
       }
       console.log("Moment saved - triggering connection sync:", selectedConnectionId);
       if (selectedConnectionId) {
@@ -457,7 +460,7 @@ export function MomentModal() {
     } else if (activityType === 'conflict') {
       finalEmoji = '⚡';
     } else if (activityType === 'intimacy') {
-      finalEmoji = '💕';
+      finalEmoji = '💗';
     }
     
     console.log("🗓️ FRONTEND - Creating moment with date:", {
