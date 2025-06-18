@@ -2527,6 +2527,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const cycleId = parseInt(req.params.id);
       const updates = req.body;
       
+      console.log(`PATCH cycle ${cycleId} with updates:`, updates);
+      
       // Map frontend column names to database column names
       if (updates.startDate) {
         updates.periodStartDate = new Date(updates.startDate);
@@ -2544,30 +2546,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ error: "Cycle not found" });
       }
       
+      console.log(`Updated cycle ${cycleId}:`, cycle);
+      
       // Handle pattern inheritance when cycle is manually edited
       try {
-        console.log("Cycle manually edited, checking for pattern inheritance impact");
+        console.log("🔄 PATTERN INHERITANCE: Cycle manually edited, triggering pattern inheritance");
         
         // Get all cycles for this user
         const allCycles = await storage.getMenstrualCycles(userId);
         const connectionId = cycle.connectionId;
         
-        // Mark this cycle as manually edited (clear auto-generated notes)
-        if (cycle.notes && cycle.notes.includes('Auto-generated')) {
-          await storage.updateMenstrualCycle(cycleId, {
-            notes: `Manually edited cycle - new pattern established`
-          });
-        }
-        
-        // Find and remove future auto-generated cycles for this connection
-        // They need to be regenerated with the new pattern
+        // Find future auto-generated cycles that need to be regenerated
         const futureAutoCycles = allCycles.filter((c: any) => 
           c.connectionId === connectionId && 
           c.periodStartDate > cycle.periodStartDate &&
           c.notes && c.notes.includes('Auto-generated')
         );
         
-        console.log(`Found ${futureAutoCycles.length} future auto-generated cycles to regenerate`);
+        console.log(`🗑️ Found ${futureAutoCycles.length} future auto-generated cycles to regenerate`);
         
         // Remove future auto-generated cycles
         for (const futureCycle of futureAutoCycles) {
@@ -2575,37 +2571,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
           await storage.deleteMenstrualCycle(futureCycle.id);
         }
         
-        // Refresh cycles data and trigger new pattern inheritance
-        const refreshedCycles = await storage.getMenstrualCycles(userId);
-        const updatedCycles = await checkAndCreateAutomaticCycles(userId, refreshedCycles);
-        
-        console.log("Completed pattern inheritance regeneration after manual edit");
-        
-        // If the updated cycle now has an end date, handle automatic progression
-        if (cycle.cycleEndDate && updates.cycleEndDate) {
-          console.log("Cycle updated with end date, handling automatic progression");
-          
-          // Find any existing active cycles for this connection that need to be removed
-          const existingActiveCycles = updatedCycles.filter((c: any) => 
-            c.connectionId === connectionId && 
-            !c.cycleEndDate && 
-            c.id !== cycle.id
-          );
-          
-          // Remove existing active cycles for this connection
-          for (const activeCycle of existingActiveCycles) {
-            console.log(`Removing existing active cycle ${activeCycle.id} for connection ${connectionId}`);
-            await storage.deleteMenstrualCycle(activeCycle.id);
-          }
-          
-          // Trigger final automatic progression
-          const finalCycles = await storage.getMenstrualCycles(userId);
-          await checkAndCreateAutomaticCycles(userId, finalCycles);
+        // Mark this cycle as a manually updated pattern source
+        if (cycle.notes && cycle.notes.includes('Auto-generated')) {
+          await storage.updateMenstrualCycle(cycleId, {
+            notes: `Manually edited cycle - new pattern established`
+          });
         }
         
+        // Refresh cycles data and trigger new pattern inheritance
+        const refreshedCycles = await storage.getMenstrualCycles(userId);
+        await checkAndCreateAutomaticCycles(userId, refreshedCycles);
+        
+        console.log("✅ PATTERN INHERITANCE: Completed pattern inheritance regeneration after manual edit");
+        
       } catch (error) {
-        console.error("Error handling pattern inheritance:", error);
-        // Don't fail the request if pattern inheritance fails
+        console.error("❌ PATTERN INHERITANCE: Error handling pattern inheritance:", error);
+        // Don't fail the update if pattern inheritance fails
       }
       
       res.json(cycle);
