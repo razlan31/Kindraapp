@@ -1017,7 +1017,7 @@ export default function MenstrualCyclePage() {
               </div>
 
               {/* Calendar Grid */}
-              <div className="grid grid-cols-7 gap-1 text-center text-xs">
+              <div className="grid grid-cols-7 gap-2 text-center text-xs">
                 {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map(day => (
                   <div key={day} className="p-2 font-medium text-muted-foreground">
                     {day}
@@ -1044,7 +1044,7 @@ export default function MenstrualCyclePage() {
                     <div
                       key={day.getTime()}
                       className={`
-                        relative p-1 h-10 w-10 flex flex-col items-center justify-center text-xs border rounded-lg transition-colors hover:bg-accent/50
+                        relative p-2 h-16 w-16 flex flex-col items-center justify-center text-sm border rounded-lg transition-colors hover:bg-accent/50
                         border-border/20
                         ${cyclesOnDay.length > 0 ? 
                           // Apply cycle background styling to match calendar page - enhanced visual hierarchy
@@ -1084,12 +1084,12 @@ export default function MenstrualCyclePage() {
                       `}
 
                     >
-                      <div className="text-[6px] font-bold text-gray-600 mb-0.5">
+                      <div className="text-xs font-bold text-gray-600 mb-1">
                         {format(day, 'd')}
                       </div>
                       
                       {/* Priority display system matching calendar page exactly */}
-                      <div className="flex flex-wrap gap-0.5 items-center overflow-hidden max-w-full">
+                      <div className="flex flex-wrap gap-1 items-center overflow-hidden max-w-full">
                         {/* Priority 1: Activity emojis (moments/milestones) - not applicable to cycle tracker */}
                         
                         {/* Cycle tracker priority system: 1) Alphabet letters for multiple connections, 2) Menstrual emojis */}
@@ -1133,10 +1133,10 @@ export default function MenstrualCyclePage() {
                                   return (
                                     <div
                                       key={connection.id}
-                                      className={`inline-flex items-center justify-center rounded-full border w-4 h-4 text-xs font-bold ${getPhaseColor(phaseInfo?.phase, phaseInfo?.subPhase)}`}
+                                      className={`inline-flex items-center justify-center rounded-full border w-6 h-6 text-sm font-bold ${getPhaseColor(phaseInfo?.phase, phaseInfo?.subPhase)}`}
                                       title={hasPhase ? `${connection.name}: ${phaseInfo!.phase} phase` : `${connection.name}: No cycle data`}
                                     >
-                                      <span className="font-bold text-[8px]">
+                                      <span className="font-bold text-xs">
                                         {connection.name[0].toUpperCase()}
                                       </span>
                                     </div>
@@ -1169,7 +1169,7 @@ export default function MenstrualCyclePage() {
                           
                           return (
                             <span 
-                              className="text-xs"
+                              className="text-lg"
                               title={`${phaseInfo.phase}${phaseInfo.subPhase ? ` (${phaseInfo.subPhase})` : ''} phase`}
                             >
                               {emoji}
