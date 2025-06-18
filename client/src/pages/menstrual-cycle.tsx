@@ -1017,12 +1017,15 @@ export default function MenstrualCyclePage() {
               </div>
 
               {/* Calendar Grid */}
-              <div className="grid grid-cols-7 gap-2 text-center text-xs">
+              <div className="grid grid-cols-7 gap-1 text-center text-xs">
+                {/* Header row */}
                 {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map(day => (
-                  <div key={day} className="p-2 font-medium text-muted-foreground">
+                  <div key={day} className="p-2 font-medium text-muted-foreground text-center">
                     {day}
                   </div>
                 ))}
+                
+                {/* Calendar days */}
                 
                 {/* Empty cells for days before month start */}
                 {Array.from({ length: startOfWeek(monthStart).getTime() !== monthStart.getTime() ? getDay(monthStart) : 0 }, (_, i) => (
@@ -1044,7 +1047,7 @@ export default function MenstrualCyclePage() {
                     <div
                       key={day.getTime()}
                       className={`
-                        relative p-2 h-16 w-16 flex flex-col items-center justify-center text-sm border rounded-lg transition-colors hover:bg-accent/50
+                        relative p-2 min-h-16 aspect-square flex flex-col items-center justify-center text-sm border rounded-lg transition-colors hover:bg-accent/50
                         border-border/20
                         ${cyclesOnDay.length > 0 ? 
                           // Apply cycle background styling to match calendar page - enhanced visual hierarchy
