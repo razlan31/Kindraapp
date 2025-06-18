@@ -1245,24 +1245,26 @@ export default function Calendar() {
                         <div className="flex gap-0.5">
                           {cycleDisplay.isMultiple && cycleDisplay.coloredInitials ? (
                             // Show enhanced phase-based styling for multiple connections
-                            cycleDisplay.coloredInitials.map((item: any, index: number) => (
-                              <div
-                                key={index}
-                                className={`inline-flex items-center gap-1 px-2 py-1 rounded-full border-2 ${item.color} ${viewMode === 'daily' ? 'text-sm' : viewMode === 'weekly' ? 'text-xs' : 'text-xs'}`}
-                                title={`${item.connectionName}: ${item.phase} phase`}
-                              >
-                                {/* Show emoji for prominent phases only */}
-                                {item.isProminent && item.emoji && (
-                                  <span className={`${viewMode === 'daily' ? 'text-base' : 'text-xs'}`}>
-                                    {item.emoji}
-                                  </span>
-                                )}
-                                {/* Connection initial */}
-                                <span className={`font-bold ${viewMode === 'daily' ? 'text-sm' : 'text-xs'}`}>
-                                  {item.initial}
-                                </span>
-                              </div>
-                            ))
+                            <div className={`flex flex-wrap ${viewMode === 'daily' ? 'gap-1' : 'gap-0.5'} max-w-full`}>
+                              {cycleDisplay.coloredInitials.map((item: any, index: number) => (
+                                <div
+                                  key={index}
+                                  className={`inline-flex items-center justify-center ${item.color} rounded-full border ${viewMode === 'daily' ? 'w-8 h-8 text-xs' : viewMode === 'weekly' ? 'w-6 h-6 text-xs' : 'w-5 h-5 text-xs'} font-bold flex-shrink-0`}
+                                  title={`${item.connectionName}: ${item.phase} phase`}
+                                >
+                                  {/* Show emoji for prominent phases, initial for others */}
+                                  {item.isProminent && item.emoji ? (
+                                    <span className={`${viewMode === 'daily' ? 'text-sm' : 'text-xs'}`}>
+                                      {item.emoji}
+                                    </span>
+                                  ) : (
+                                    <span className={`${viewMode === 'daily' ? 'text-xs' : 'text-xs'} font-bold`}>
+                                      {item.initial}
+                                    </span>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
                           ) : (
                             // Show regular cycle indicator for single connection
                             <span
