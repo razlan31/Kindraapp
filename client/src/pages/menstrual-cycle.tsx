@@ -1086,11 +1086,11 @@ export default function MenstrualCyclePage() {
                         {format(day, 'd')}
                       </div>
                       
-                      {/* Priority display system matching calendar page */}
+                      {/* Priority display system matching calendar page exactly */}
                       <div className="flex flex-wrap gap-0.5 items-center overflow-hidden max-w-full">
                         {/* Priority 1: Activity emojis (moments/milestones) - not applicable to cycle tracker */}
                         
-                        {/* Priority 2: Connection alphabet letters (only when sufficient space) */}
+                        {/* Priority 2: Connection alphabet letters (only when no activities and sufficient space) */}
                         {cyclesOnDay.length > 0 && (
                           <div className="flex gap-0.5">
                             {cyclesOnDay.length > 1 ? (
@@ -1101,7 +1101,7 @@ export default function MenstrualCyclePage() {
                                   const stage = getCycleStage(day, cycle);
                                   const initial = connection?.name?.[0]?.toUpperCase() || '?';
                                   
-                                  // Get phase-based color for initial
+                                  // Get phase-based color for initial (matching calendar exactly)
                                   const getPhaseColor = (phase: string) => {
                                     if (phase === 'menstrual') return 'text-red-600 bg-red-100 dark:bg-red-900/30';
                                     if (phase === 'ovulation') return 'text-blue-600 bg-blue-200 dark:bg-blue-800/50 font-semibold';
@@ -1110,6 +1110,8 @@ export default function MenstrualCyclePage() {
                                     if (phase === 'luteal') return 'text-purple-600 bg-purple-100 dark:bg-purple-900/30 opacity-50';
                                     return 'text-gray-600 bg-gray-100 dark:bg-gray-900/30';
                                   };
+                                  
+                                  const isProminent = stage === 'menstrual' || stage === 'fertile' || stage === 'ovulation';
                                   
                                   return (
                                     <div
@@ -1157,29 +1159,59 @@ export default function MenstrualCyclePage() {
                         )}
 
                         {/* Priority 3: Menstrual cycle emojis (lowest priority, only prominent phases, only when plenty of space) */}
-                        {cyclesOnDay.length > 0 && cyclesOnDay.length <= 1 && (
+                        {cyclesOnDay.length > 0 && (
                           <div className="flex gap-0.5 mt-0.5">
-                            {(() => {
-                              const cycle = cyclesOnDay[0];
-                              const stage = getCycleStage(day, cycle);
-                              
-                              // Only show emojis for prominent phases
-                              const getPhaseEmoji = (phase: string) => {
-                                if (phase === 'menstrual') return '🩸';
-                                if (phase === 'ovulation') return '🥚';
-                                if (phase === 'fertile') return '💗';
-                                // Don't show emojis for follicular/luteal phases to reduce clutter
-                                return '';
-                              };
-                              
-                              const emoji = getPhaseEmoji(stage);
-                              
-                              return emoji ? (
-                                <span className="text-[8px]" title={`${stage} phase`}>
-                                  {emoji}
-                                </span>
-                              ) : null;
-                            })()}
+                            {cyclesOnDay.length > 1 ? (
+                              // Multiple connections - show emojis for prominent phases only
+                              cyclesOnDay.map((cycle, index) => {
+                                const stage = getCycleStage(day, cycle);
+                                const connection = connections.find(c => c.id === cycle.connectionId);
+                                
+                                // Only show emojis for prominent phases
+                                const getPhaseEmoji = (phase: string) => {
+                                  if (phase === 'menstrual') return '🩸';
+                                  if (phase === 'ovulation') return '🥚';
+                                  if (phase === 'fertile') return '💗';
+                                  return '';
+                                };
+                                
+                                const emoji = getPhaseEmoji(stage);
+                                const isProminent = stage === 'menstrual' || stage === 'fertile' || stage === 'ovulation';
+                                
+                                return emoji && isProminent ? (
+                                  <span 
+                                    key={index}
+                                    className="text-[8px]" 
+                                    title={`${connection?.name || 'Unknown'}: ${stage} phase`}
+                                  >
+                                    {emoji}
+                                  </span>
+                                ) : null;
+                              }).filter(Boolean).slice(0, 2)
+                            ) : (
+                              // Single connection - show emoji for prominent phases
+                              (() => {
+                                const cycle = cyclesOnDay[0];
+                                const stage = getCycleStage(day, cycle);
+                                
+                                // Only show emojis for prominent phases
+                                const getPhaseEmoji = (phase: string) => {
+                                  if (phase === 'menstrual') return '🩸';
+                                  if (phase === 'ovulation') return '🥚';
+                                  if (phase === 'fertile') return '💗';
+                                  return '';
+                                };
+                                
+                                const emoji = getPhaseEmoji(stage);
+                                const isProminent = stage === 'menstrual' || stage === 'fertile' || stage === 'ovulation';
+                                
+                                return emoji && isProminent ? (
+                                  <span className="text-[8px]" title={`${stage} phase`}>
+                                    {emoji}
+                                  </span>
+                                ) : null;
+                              })()
+                            )}
                           </div>
                         )}
                       </div>
