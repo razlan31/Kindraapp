@@ -1,4 +1,4 @@
-import { differenceInDays, addDays, startOfDay } from "date-fns";
+import { differenceInDays, addDays, startOfDay, format } from "date-fns";
 import type { MenstrualCycle } from "@shared/schema";
 
 // Cycle prediction utilities
@@ -249,11 +249,14 @@ export const getCyclePhaseForDay = (day: Date, connectionId: number, cycles: Men
         differenceInDays(new Date(cycle.periodEndDate), cycleStart) + 1 : 5;
       
       // Debug for May period days
-      if (connectionId === 6 && dayStr.startsWith('2025-05')) {
-        console.log(`🔍 CYCLE CALCULATION - ${dayStr}:`, {
+      if (connectionId === 6 && (dayStr === '2025-05-01' || dayStr === '2025-05-02' || dayStr === '2025-05-03' || dayStr === '2025-05-04')) {
+        console.log(`🔍 PERIOD CALCULATION - ${dayStr}:`, {
           dayInCycle,
           periodLength,
           cycleLength,
+          dayInCycleCalc: `${dayStr} - ${format(new Date(cycle.periodStartDate), 'yyyy-MM-dd')} = ${dayInCycle}`,
+          periodLengthCalc: cycle.periodEndDate ? `${format(new Date(cycle.periodEndDate), 'yyyy-MM-dd')} - ${format(new Date(cycle.periodStartDate), 'yyyy-MM-dd')} + 1 = ${periodLength}` : 'no period end, using 5',
+          isMenstrualPhase: dayInCycle <= periodLength,
           willReturnPhase: dayInCycle <= periodLength ? 'menstrual' : 'other'
         });
       }
