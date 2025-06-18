@@ -36,6 +36,7 @@ import { ModalProvider } from "./contexts/modal-context";
 import { ThemeProvider } from "./contexts/theme-context";
 import { SyncProvider } from "./contexts/sync-context";
 import { MomentModal } from "./components/modals/simplified-moment-modal";
+import { PlanModal } from "./components/modals/plan-modal";
 
 import { MoodTrackerModal } from "./components/modals/mood-tracker-modal";
 import { BadgeNotificationMonitor } from "./components/BadgeNotificationMonitor";
@@ -119,7 +120,10 @@ function ModalsContainer() {
   const { 
     moodTrackerModalOpen, 
     closeMoodTrackerModal,
-    selectedConnection 
+    planModalOpen,
+    closePlanModal,
+    selectedConnection,
+    selectedDate
   } = useModal();
   
   return (
@@ -130,7 +134,12 @@ function ModalsContainer() {
         onClose={closeMoodTrackerModal}
         connection={selectedConnection}
       />
-
+      <PlanModal
+        isOpen={planModalOpen}
+        onClose={closePlanModal}
+        selectedConnection={selectedConnection}
+        selectedDate={selectedDate}
+      />
     </>
   );
 }

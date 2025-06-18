@@ -115,13 +115,17 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   };
 
   const openPlanModal = (connection?: Connection, date?: Date) => {
+    console.log("🔥 PLAN MODAL - openPlanModal called with:", { connection: connection?.name, date });
     if (connection) {
       setSelectedConnectionObject(connection);
       setSelectedConnectionId(connection.id);
+      console.log("🔥 PLAN MODAL - Set connection:", connection.name);
     }
     if (date) {
       setSelectedDate(date);
+      console.log("🔥 PLAN MODAL - Set date:", date);
     }
+    console.log("🔥 PLAN MODAL - Setting planModalOpen to true");
     setPlanModalOpen(true);
   };
 
