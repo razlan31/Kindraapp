@@ -31,7 +31,7 @@ import { apiRequest } from "@/lib/queryClient";
 export function BottomNavigation() {
   const [location, setLocation] = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { openMomentModal, openPlanModal } = useModal();
+  const { openMomentModal, openPlanModal, setSelectedConnection } = useModal();
   
   // Local connection modal state
   const [connectionModalOpen, setConnectionModalOpen] = useState(false);
@@ -110,7 +110,11 @@ export function BottomNavigation() {
             </button>
             
             <button 
-              onClick={() => handleActionClick(() => openPlanModal())}
+              onClick={() => handleActionClick(() => {
+                console.log("🔥 FLOATING PLAN BUTTON - Clicked, opening plan modal with connection picker enabled");
+                // Open plan modal with connection picker enabled - let user select connection
+                openPlanModal();
+              })}
               className="bg-purple-500 text-white rounded-full h-12 w-12 flex items-center justify-center shadow-lg hover:shadow-xl transition-all hover:scale-105 relative group"
             >
               <CalendarPlus className="h-5 w-5" />
