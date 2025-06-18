@@ -1847,7 +1847,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Positive moments
         if (criteria.positiveMoments) {
           const positiveCount = moments.filter(m => 
-            ['😍', '❤️', '😊', '🥰', '💖', '✨', '🔥', '💕'].includes(m.emoji) ||
+            ['😍', '❤️', '😊', '🥰', '💖', '✨', '🔥', '💗'].includes(m.emoji) ||
             m.tags?.includes('Green Flag')
           ).length;
           if (positiveCount >= criteria.positiveMoments) isEarned = true;

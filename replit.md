@@ -120,7 +120,7 @@ The badges system currently has several issues that need attention:
   - Fixed alignment issues with contained circular indicators and proper flex wrapping
 
 - June 18, 2025: VISUAL HIERARCHY UPDATE - Enhanced visual hierarchy in cycle tracking displays with prominent fertility indicators
-  - Made fertility window (💗) and ovulation day (🥚) highly prominent with stronger colors, thicker borders, and bold font weight
+  - Made fertility window (🌸) and ovulation day (🥚) highly prominent with stronger colors, thicker borders, and bold font weight
   - Reduced follicular and luteal phases to 50% opacity to keep them subtle
   - Maintained full visibility for menstrual phase (🩸) as the primary focus
   - Enhanced fertility phases with bg-blue-200/bg-yellow-200 backgrounds and border-2 styling for maximum visibility
