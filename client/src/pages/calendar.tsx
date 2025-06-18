@@ -1146,17 +1146,45 @@ export default function Calendar() {
                   }
 
                 } else if (cyclePhases.length > 1) {
-                  // Multiple connections have cycles on this day - show combined info with colored initials
-                  const getConnectionColor = (connectionId: number) => {
-                    const colors = [
-                      'text-red-600', 'text-blue-600', 'text-green-600', 'text-purple-600',
-                      'text-orange-600', 'text-pink-600', 'text-indigo-600', 'text-teal-600'
-                    ];
-                    return colors[connectionId % colors.length];
+                  // Multiple connections have cycles on this day - show combined info with phase-based colors
+                  const getPhaseColor = (phase: string, subPhase?: string) => {
+                    if (phase === 'menstrual') return 'text-red-600 bg-red-100 dark:bg-red-900/30';
+                    if (phase === 'fertile' && subPhase === 'ovulation') return 'text-blue-600 bg-blue-200 dark:bg-blue-800/50 font-semibold';
+                    if (phase === 'fertile') return 'text-yellow-600 bg-yellow-200 dark:bg-yellow-800/50 font-semibold';
+                    if (phase === 'follicular') return 'text-green-600 bg-green-100 dark:bg-green-900/30 opacity-50';
+                    if (phase === 'luteal') return 'text-purple-600 bg-purple-100 dark:bg-purple-900/30 opacity-50';
+                    return 'text-gray-600 bg-gray-100 dark:bg-gray-900/30';
                   };
                   
+                  const getPhaseEmoji = (phase: string, subPhase?: string) => {
+                    if (phase === 'menstrual') return '🩸';
+                    if (phase === 'fertile' && subPhase === 'ovulation') return '🥚';
+                    if (phase === 'fertile') return '💗';
+                    if (phase === 'follicular') return '🌱';
+                    if (phase === 'luteal') return '🌙';
+                    return '';
+                  };
+                  
+                  // Determine overall background - prioritize prominent phases
+                  let backgroundColor = 'bg-gradient-to-br from-pink-50 to-purple-50 dark:from-pink-900/20 dark:to-purple-900/20 border-pink-200 dark:border-pink-700';
+                  const hasProminentPhase = cyclePhases.some(p => 
+                    p.phase === 'menstrual' || (p.phase === 'fertile')
+                  );
+                  
+                  if (hasProminentPhase) {
+                    const prominentPhase = cyclePhases.find(p => 
+                      p.phase === 'menstrual' || (p.phase === 'fertile' && p.subPhase === 'ovulation') || p.phase === 'fertile'
+                    );
+                    if (prominentPhase) {
+                      const phaseInfo = getCycleDisplayInfo(prominentPhase);
+                      if (phaseInfo?.color) {
+                        backgroundColor = phaseInfo.color;
+                      }
+                    }
+                  }
+                  
                   cycleDisplay = {
-                    color: 'bg-gradient-to-br from-pink-50 to-purple-50 dark:from-pink-900/20 dark:to-purple-900/20 border-pink-200 dark:border-pink-700',
+                    color: backgroundColor,
                     indicator: '', // We'll handle this specially in the render
                     title: `Multiple cycles: ${cyclePhases.map(p => `${p.connection?.name || 'Unknown'} (${p.phase})`).join(', ')}`,
                     description: 'Multiple cycle phases',
@@ -1164,9 +1192,12 @@ export default function Calendar() {
                     phases: cyclePhases,
                     coloredInitials: cyclePhases.map(phase => ({
                       initial: phase.connection?.name?.[0]?.toUpperCase() || '?',
-                      color: getConnectionColor(phase.connection?.id || 0),
+                      color: getPhaseColor(phase.phase, phase.subPhase),
                       connectionName: phase.connection?.name || 'Unknown',
-                      phase: phase.phase
+                      phase: phase.phase,
+                      subPhase: phase.subPhase,
+                      emoji: getPhaseEmoji(phase.phase, phase.subPhase),
+                      isProminent: phase.phase === 'menstrual' || phase.phase === 'fertile'
                     }))
                   };
                 }
@@ -1213,15 +1244,24 @@ export default function Calendar() {
                       {cycleDisplay && filters.menstrualCycle && (
                         <div className="flex gap-0.5">
                           {cycleDisplay.isMultiple && cycleDisplay.coloredInitials ? (
-                            // Show colored initials for multiple connections
-                            cycleDisplay.coloredInitials.map((item, index) => (
-                              <span
+                            // Show enhanced phase-based styling for multiple connections
+                            cycleDisplay.coloredInitials.map((item: any, index: number) => (
+                              <div
                                 key={index}
-                                className={`${item.color} ${viewMode === 'daily' ? 'text-lg font-bold' : viewMode === 'weekly' ? 'text-sm font-semibold' : 'text-xs font-medium'}`}
+                                className={`inline-flex items-center gap-1 px-2 py-1 rounded-full border-2 ${item.color} ${viewMode === 'daily' ? 'text-sm' : viewMode === 'weekly' ? 'text-xs' : 'text-xs'}`}
                                 title={`${item.connectionName}: ${item.phase} phase`}
                               >
-                                {item.initial}
-                              </span>
+                                {/* Show emoji for prominent phases only */}
+                                {item.isProminent && item.emoji && (
+                                  <span className={`${viewMode === 'daily' ? 'text-base' : 'text-xs'}`}>
+                                    {item.emoji}
+                                  </span>
+                                )}
+                                {/* Connection initial */}
+                                <span className={`font-bold ${viewMode === 'daily' ? 'text-sm' : 'text-xs'}`}>
+                                  {item.initial}
+                                </span>
+                              </div>
                             ))
                           ) : (
                             // Show regular cycle indicator for single connection
