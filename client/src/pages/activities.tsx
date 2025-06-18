@@ -249,16 +249,18 @@ export default function Activities() {
 
     // For timeline view, apply date range filtering (only show events within 1 month in the future)
     if (activeTab === 'timeline') {
-      const momentDate = new Date(moment.createdAt);
-      const now = new Date();
-      const oneMonthFromNow = new Date();
-      oneMonthFromNow.setMonth(now.getMonth() + 1);
-      
-      // Only show events that are:
-      // 1. In the past or today
-      // 2. In the future but within 1 month
-      if (momentDate > oneMonthFromNow) {
-        return false;
+      const momentDate = moment.createdAt ? new Date(moment.createdAt) : null;
+      if (momentDate) {
+        const now = new Date();
+        const oneMonthFromNow = new Date();
+        oneMonthFromNow.setMonth(now.getMonth() + 1);
+        
+        // Only show events that are:
+        // 1. In the past or today
+        // 2. In the future but within 1 month
+        if (momentDate > oneMonthFromNow) {
+          return false;
+        }
       }
     }
 
@@ -321,6 +323,12 @@ export default function Activities() {
   const sortedDates = Object.keys(groupedMoments).sort((a, b) => 
     new Date(b).getTime() - new Date(a).getTime()
   );
+
+  // Separate past and upcoming events for timeline view
+  const now = new Date();
+  const today = format(now, 'yyyy-MM-dd');
+  const pastDates = sortedDates.filter(date => date <= today);
+  const upcomingDates = sortedDates.filter(date => date > today).reverse(); // Reverse to show nearest first
 
   return (
     <div className="max-w-md mx-auto bg-white dark:bg-neutral-900 min-h-screen flex flex-col relative">
@@ -620,39 +628,87 @@ export default function Activities() {
         {/* Content */}
         <div className="px-3">
           {activeTab === 'timeline' && (
-            <div className="space-y-4">
+            <div className="space-y-6">
               {sortedDates.length > 0 ? (
-                sortedDates.map(date => (
-                  <div key={date} className="space-y-3">
-                    <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-                      <Calendar className="h-4 w-4" />
-                      {format(new Date(date), 'EEEE, MMMM d, yyyy')}
-                    </div>
-                    <div className="space-y-2">
-                      {groupedMoments[date].map((moment) => {
-                        const connection = connections.find(c => c.id === moment.connectionId);
-                        if (!connection) return null;
+                <>
+                  {/* Upcoming Events Section */}
+                  {upcomingDates.length > 0 && (
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-2 text-lg font-semibold text-primary border-b border-border pb-2">
+                        <Calendar className="h-5 w-5" />
+                        Upcoming Events
+                      </div>
+                      {upcomingDates.map(date => (
+                        <div key={`upcoming-${date}`} className="space-y-3">
+                          <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+                            <Calendar className="h-4 w-4" />
+                            {format(new Date(date), 'EEEE, MMMM d, yyyy')}
+                          </div>
+                          <div className="space-y-2">
+                            {groupedMoments[date].map((moment) => {
+                              const connection = connections.find(c => c.id === moment.connectionId);
+                              if (!connection) return null;
 
-                        return (
-                          <MomentCard 
-                            key={moment.id} 
-                            moment={moment} 
-                            connection={{
-                              id: connection.id,
-                              name: connection.name,
-                              profileImage: connection.profileImage || undefined
-                            }}
-                            onAddReflection={handleAddReflection}
-                            onViewDetail={handleViewEntryDetail}
-                            onResolveConflict={handleResolveConflict}
-                            onViewConnection={handleViewConnectionDetail}
-                            hasAiReflection={moment.id % 3 === 0}
-                          />
-                        );
-                      })}
+                              return (
+                                <MomentCard 
+                                  key={moment.id} 
+                                  moment={moment} 
+                                  connection={{
+                                    id: connection.id,
+                                    name: connection.name,
+                                    profileImage: connection.profileImage || undefined
+                                  }}
+                                  onAddReflection={handleAddReflection}
+                                  onViewDetail={handleViewEntryDetail}
+                                  onResolveConflict={handleResolveConflict}
+                                  onViewConnection={handleViewConnectionDetail}
+                                  hasAiReflection={moment.id % 3 === 0}
+                                />
+                              );
+                            })}
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                  </div>
-                ))
+                  )}
+
+                  {/* Past Events Section */}
+                  {pastDates.length > 0 && (
+                    <div className="space-y-4">
+                      {pastDates.map(date => (
+                        <div key={`past-${date}`} className="space-y-3">
+                          <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+                            <Calendar className="h-4 w-4" />
+                            {format(new Date(date), 'EEEE, MMMM d, yyyy')}
+                          </div>
+                          <div className="space-y-2">
+                            {groupedMoments[date].map((moment) => {
+                              const connection = connections.find(c => c.id === moment.connectionId);
+                              if (!connection) return null;
+
+                              return (
+                                <MomentCard 
+                                  key={moment.id} 
+                                  moment={moment} 
+                                  connection={{
+                                    id: connection.id,
+                                    name: connection.name,
+                                    profileImage: connection.profileImage || undefined
+                                  }}
+                                  onAddReflection={handleAddReflection}
+                                  onViewDetail={handleViewEntryDetail}
+                                  onResolveConflict={handleResolveConflict}
+                                  onViewConnection={handleViewConnectionDetail}
+                                  hasAiReflection={moment.id % 3 === 0}
+                                />
+                              );
+                            })}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </>
               ) : (
                 <div className="text-center py-8 text-muted-foreground">
                   <p>No activities found</p>
