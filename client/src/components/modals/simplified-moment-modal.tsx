@@ -233,12 +233,12 @@ export function MomentModal() {
       queryClient.invalidateQueries({ queryKey: ['/api/moments'] });
       
       // Trigger connection sync for activities page
-      const connectionId = selectedConnectionId;
-      console.log("🔄 SYNC CONTEXT - About to trigger sync:", connectionId, activityType);
+      const syncConnectionId = selectedConnectionId || connectionId;
+      console.log("🔄 SYNC CONTEXT - About to trigger sync:", syncConnectionId, activityType, "selectedConnectionId:", selectedConnectionId, "formConnectionId:", connectionId);
       
-      if (connectionId) {
-        triggerConnectionSync(connectionId, activityType);
-        console.log("🔄 SYNC CONTEXT - Sync triggered for connection:", connectionId);
+      if (syncConnectionId) {
+        triggerConnectionSync(syncConnectionId, activityType || 'moment');
+        console.log("🔄 SYNC CONTEXT - Sync triggered for connection:", syncConnectionId);
       } else {
         console.log("🔄 SYNC CONTEXT - No connectionId available for sync");
       }
@@ -349,12 +349,12 @@ export function MomentModal() {
       queryClient.invalidateQueries({ queryKey: ['/api/moments'] });
       
       // Trigger connection sync for activities page
-      const connectionId = selectedConnectionId;
-      console.log("🔄 SYNC CONTEXT - About to trigger sync:", connectionId, activityType);
+      const syncConnectionId = selectedConnectionId || connectionId;
+      console.log("🔄 SYNC CONTEXT - About to trigger sync:", syncConnectionId, activityType, "selectedConnectionId:", selectedConnectionId, "formConnectionId:", connectionId);
       
-      if (connectionId) {
-        triggerConnectionSync(connectionId, activityType);
-        console.log("🔄 SYNC CONTEXT - Sync triggered for connection:", connectionId);
+      if (syncConnectionId) {
+        triggerConnectionSync(syncConnectionId, activityType || 'moment');
+        console.log("🔄 SYNC CONTEXT - Sync triggered for connection:", syncConnectionId);
       } else {
         console.log("🔄 SYNC CONTEXT - No connectionId available for sync");
       }
