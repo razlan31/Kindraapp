@@ -232,10 +232,12 @@ export const getCyclePhaseForDay = (day: Date, connectionId: number, cycles: Men
       });
     }
     
-    if (day >= cycleStart && day <= cycleEnd) {
-      // Normalize dates to start of day to avoid timezone issues
-      const normalizedDay = startOfDay(day);
-      const normalizedCycleStart = startOfDay(cycleStart);
+    // Normalize dates to start of day BEFORE comparison to avoid timezone issues
+    const normalizedDay = startOfDay(day);
+    const normalizedCycleStart = startOfDay(cycleStart);
+    const normalizedCycleEnd = startOfDay(cycleEnd);
+    
+    if (normalizedDay >= normalizedCycleStart && normalizedDay <= normalizedCycleEnd) {
       
       const dayInCycle = differenceInDays(normalizedDay, normalizedCycleStart) + 1;
       const periodEnd = cycle.periodEndDate ? new Date(cycle.periodEndDate) : addDays(cycleStart, 4);
