@@ -99,6 +99,22 @@ export default function Activities() {
     }
   };
 
+  // Listen for connection activity events to update filters
+  useEffect(() => {
+    const handleConnectionActivity = (event: CustomEvent) => {
+      const { connectionId } = event.detail;
+      console.log("🔄 SYNC - Activities page received connectionActivity event for:", connectionId);
+      
+      if (connectionId && !selectedConnections.includes(connectionId)) {
+        console.log("🔄 SYNC - Adding connection to filter:", connectionId);
+        setSelectedConnections(prev => [...prev, connectionId]);
+      }
+    };
+
+    window.addEventListener('connectionActivity', handleConnectionActivity as EventListener);
+    return () => window.removeEventListener('connectionActivity', handleConnectionActivity as EventListener);
+  }, [selectedConnections]);
+
   // Handle connection creation
   const handleAddConnection = async (formData: FormData) => {
     try {

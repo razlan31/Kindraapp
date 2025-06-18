@@ -198,7 +198,18 @@ export function MomentModal() {
   // This effect is removed as form initialization is handled in the main useEffect above
   
   // Success and error handlers - now optimized for instant updates
-  const handleSuccess = () => {
+  const handleSuccess = (result?: any) => {
+    console.log("🔄 SYNC - handleSuccess called with result:", result);
+    
+    // Trigger connection sync for activities page if a connection was used
+    const connectionId = localSelectedConnection?.id || selectedConnection?.id;
+    if (connectionId && window.dispatchEvent) {
+      console.log("🔄 SYNC - Dispatching connectionActivity event for connection:", connectionId);
+      window.dispatchEvent(new CustomEvent('connectionActivity', { 
+        detail: { connectionId, activityType } 
+      }));
+    }
+    
     // Only clear form if creating new entry (not editing)
     if (!editingMoment) {
       setTitle("");
@@ -296,7 +307,14 @@ export function MomentModal() {
       // Optimized cache invalidation - single invalidation
       queryClient.invalidateQueries({ queryKey: ['/api/moments'] });
       
-      // Trigger connection sync back to activity page
+      // Trigger connection sync for activities page
+      const connectionId = localSelectedConnection?.id || selectedConnection?.id;
+      if (connectionId && window.dispatchEvent) {
+        console.log("🔄 SYNC - Dispatching connectionActivity event for connection:", connectionId);
+        window.dispatchEvent(new CustomEvent('connectionActivity', { 
+          detail: { connectionId, activityType } 
+        }));
+      }
       console.log("Moment saved - triggering connection sync:", selectedConnectionId);
       if (selectedConnectionId) {
         const selectedConnection = connections.find(c => c.id === selectedConnectionId);
