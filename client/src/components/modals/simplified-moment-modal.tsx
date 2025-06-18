@@ -856,7 +856,7 @@ export function MomentModal() {
                       <PopoverContent className="w-auto p-0">
                         <Calendar
                           mode="single"
-                          selected={resolvedDate || undefined}
+                          selected={resolvedDate ?? undefined}
                           onSelect={(date) => {
                             if (date) {
                               setResolvedDate(date);
