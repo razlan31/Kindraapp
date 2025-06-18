@@ -1112,70 +1112,8 @@ export default function Calendar() {
                         console.log(`🔍 MAY 16th: About to call getCyclePhaseForDay with connectionId ${connectionId}`);
                       }
                       
-                      // Use EXACT same calculation logic as cycle tracker
-                      const connectionCycles = cycles.filter(c => c.connectionId === connectionId);
-                      
-                      // Find "current cycle" using exact cycle tracker logic
-                      const currentCycle = connectionCycles.find(cycle => {
-                        if (!cycle.cycleEndDate) return true; // No end date means actively ongoing
-                        
-                        const today = new Date();
-                        const startDate = new Date(cycle.periodStartDate);
-                        const endDate = new Date(cycle.cycleEndDate);
-                        
-                        // Check if today is within the cycle period
-                        return today >= startDate && today <= endDate;
-                      });
-                      
-                      let phaseInfo = null;
-                      if (currentCycle) {
-                        // Use exact same calculations as cycle tracker
-                        const avgCycleLength = calculateCycleLength(connectionCycles);
-                        const dayInCycle = differenceInDays(day, new Date(currentCycle.periodStartDate)) + 1;
-                        const periodLength = currentCycle.periodEndDate ? 
-                          differenceInDays(new Date(currentCycle.periodEndDate), new Date(currentCycle.periodStartDate)) + 1 : 5;
-                        
-                        // Check if this day is within the current cycle's range
-                        const cycleStartDate = new Date(currentCycle.periodStartDate);
-                        let cycleEndDate: Date;
-                        
-                        if (currentCycle.cycleEndDate) {
-                          cycleEndDate = new Date(currentCycle.cycleEndDate);
-                        } else {
-                          // For ongoing cycles, use average cycle length
-                          cycleEndDate = addDays(cycleStartDate, avgCycleLength - 1);
-                        }
-                        
-                        // Only show phase info if day is within this cycle's range
-                        if (day >= cycleStartDate && day <= cycleEndDate) {
-                          const detailedPhase = getDetailedCyclePhase(dayInCycle, avgCycleLength, periodLength);
-                          
-                          // Debug logging for Amalina's June cycles
-                          if (connectionId === 6 && format(day, 'yyyy-MM').startsWith('2025-06')) {
-                            console.log(`🔍 CALENDAR DIRECT - ${format(day, 'yyyy-MM-dd')}:`, {
-                              connectionId,
-                              dayInCycle,
-                              avgCycleLength,
-                              periodLength,
-                              currentCycleId: currentCycle.id,
-                              ovulationDay: avgCycleLength - 14,
-                              phase: detailedPhase.phase,
-                              subPhase: detailedPhase.subPhase,
-                              isOvulation: detailedPhase.subPhase === 'ovulation',
-                              dayWithinRange: day >= cycleStartDate && day <= cycleEndDate
-                            });
-                          }
-                          
-                          phaseInfo = { 
-                            phase: detailedPhase.phase,
-                            subPhase: detailedPhase.subPhase,
-                            day: dayInCycle, 
-                            cycle: currentCycle,
-                            isOvulation: detailedPhase.subPhase === 'ovulation',
-                            detailedInfo: detailedPhase
-                          };
-                        }
-                      }
+                      // Use the exact centralized function that was working before
+                      const phaseInfo = getCyclePhaseForDay(day, connectionId, cycles);
                       
                       if (format(day, 'yyyy-MM-dd') === '2025-05-16') {
                         console.log(`🔍 MAY 16th: getCyclePhaseForDay returned:`, phaseInfo);

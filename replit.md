@@ -111,6 +111,12 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
+- June 18, 2025: Fixed calendar cycle pattern synchronization with cycle tracker
+  - Resolved issue where calendar was not displaying cycle phases correctly
+  - Calendar now uses the centralized getCyclePhaseForDay function from cycle-utils
+  - Ensured calendar displays identical patterns to cycle tracker (source of truth)
+  - Fixed ovulation timing consistency between calendar and cycle tracker displays
+
 - June 17, 2025: Implemented automatic cycle stopping and pattern inheritance system
   - When user manually adds a new cycle, any active cycles for the same connection automatically complete with end date set to 1 day before new cycle starts
   - Previous cycle preserves all user data (notes, symptoms, mood) and gets marked as auto-completed
