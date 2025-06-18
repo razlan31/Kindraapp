@@ -157,7 +157,7 @@ export function analyzeConnectionCorrelations(moments: Moment[], connections: Co
       );
       
       if (stageMoments.length >= 10) {
-        const positiveEmojis = ['😍', '💕', '❤️', '🎉', '🌅', '✈️', '💝', '📚', '🥰', '😊', '😄'];
+        const positiveEmojis = ['😍', '💗', '❤️', '🎉', '🌅', '✈️', '💝', '📚', '🥰', '😊', '😄'];
         const negativeEmojis = ['😢', '😞', '😕', '💔', '😤', '😠', '🙄', '😣'];
         
         const positiveCount = stageMoments.filter(m => positiveEmojis.includes(m.emoji)).length;
@@ -342,7 +342,7 @@ function calculateWeeklyAverage(moments: Moment[]): number {
 }
 
 function calculateEmotionalBalance(moments: Moment[]): number {
-  const positiveEmojis = ['😍', '💕', '❤️', '🎉', '🌅', '✈️', '💝', '📚', '🥰', '😊', '😄'];
+  const positiveEmojis = ['😍', '💗', '❤️', '🎉', '🌅', '✈️', '💝', '📚', '🥰', '😊', '😄'];
   const negativeEmojis = ['😢', '😞', '😕', '💔', '😤', '😠', '🙄', '😣'];
   
   const positiveCount = moments.filter(m => positiveEmojis.includes(m.emoji)).length;
@@ -384,7 +384,7 @@ function getStageRecommendations(stage: string, positiveRatio: number): string[]
 }
 
 function predictRelationshipTrajectory(moments: Moment[]) {
-  const positiveEmojis = ['😍', '💕', '❤️', '🎉', '🌅', '✈️', '💝', '📚', '🥰', '😊', '😄'];
+  const positiveEmojis = ['😍', '💗', '❤️', '🎉', '🌅', '✈️', '💝', '📚', '🥰', '😊', '😄'];
   const negativeEmojis = ['😢', '😞', '😕', '💔', '😤', '😠', '🙄', '😣'];
   
   // Analyze recent trend (last 30% of moments)
@@ -424,7 +424,7 @@ function predictRelationshipTrajectory(moments: Moment[]) {
 
 function detectConflictResolutionPatterns(moments: Moment[]) {
   const conflictEmojis = ['😤', '😠', '🙄', '😣', '💔', '😞'];
-  const resolutionEmojis = ['🤝', '💕', '❤️', '😊', '🥰'];
+  const resolutionEmojis = ['🤝', '💗', '❤️', '😊', '🥰'];
   
   const patterns: Array<{
     method: string;

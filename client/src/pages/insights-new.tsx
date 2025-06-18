@@ -256,14 +256,14 @@ export default function InsightsNew() {
                   </div>
                 </div>
                 <div className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">
-                  {Math.round((emotionData.filter(e => ['😍', '💕', '❤️', '🥰', '😊'].includes(e.emoji)).reduce((sum, e) => sum + e.count, 0) / moments.length) * 100)}% positive
+                  {Math.round((emotionData.filter(e => ['😍', '💗', '❤️', '🥰', '😊'].includes(e.emoji)).reduce((sum, e) => sum + e.count, 0) / moments.length) * 100)}% positive
                 </div>
               </div>
               
               {/* Enhanced Emotion Analysis Grid */}
               <div className="grid grid-cols-3 gap-2 mb-3">
                 {emotionData.slice(0, 6).map((emotion, index) => {
-                  const isPositive = ['😍', '💕', '❤️', '🥰', '😊', '🌟', '✨', '💫', '🔥', '😘'].includes(emotion.emoji);
+                  const isPositive = ['😍', '💗', '❤️', '🥰', '😊', '🌟', '✨', '💫', '🔥', '😘'].includes(emotion.emoji);
                   const isNegative = ['😔', '😢', '😠', '😤', '💔', '😕', '😞'].includes(emotion.emoji);
                   
                   return (
@@ -295,7 +295,7 @@ export default function InsightsNew() {
                 <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-2">
                   <div className="text-xs font-medium text-green-700 dark:text-green-300">Positive</div>
                   <div className="text-sm font-bold text-green-600">
-                    {emotionData.filter(e => ['😍', '💕', '❤️', '🥰', '😊', '🌟'].includes(e.emoji)).reduce((sum, e) => sum + e.count, 0)}
+                    {emotionData.filter(e => ['😍', '💗', '❤️', '🥰', '😊', '🌟'].includes(e.emoji)).reduce((sum, e) => sum + e.count, 0)}
                   </div>
                 </div>
                 <div className="bg-red-50 dark:bg-red-900/20 rounded-lg p-2">
