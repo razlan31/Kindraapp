@@ -247,16 +247,13 @@ export function MomentModal() {
       
       queryClient.invalidateQueries({ queryKey: ['/api/moments'] });
       
-      // Trigger connection sync for activities page
-      const syncConnectionId = selectedConnectionId || connectionId;
-      console.log("🔄 SYNC CONTEXT - About to trigger sync:", syncConnectionId, activityType, "selectedConnectionId:", selectedConnectionId, "formConnectionId:", connectionId);
+      // Trigger connection sync for activities page using the actual saved connectionId from form
+      console.log("🔄 SYNC CONTEXT - About to trigger sync with actual connectionId:", connectionId, "activityType:", activityType);
       
-      // Always try to trigger sync even without explicit connectionId by using form connectionId
-      const finalConnectionId = syncConnectionId || connectionId;
-      if (finalConnectionId) {
-        console.log("🔄 SYNC CONTEXT - Triggering sync with connectionId:", finalConnectionId);
-        triggerConnectionSync(finalConnectionId, activityType || 'moment');
-        console.log("🔄 SYNC CONTEXT - Sync triggered for connection:", finalConnectionId);
+      if (connectionId) {
+        console.log("🔄 SYNC CONTEXT - Triggering sync with connectionId from form:", connectionId);
+        triggerConnectionSync(connectionId, activityType || 'moment');
+        console.log("🔄 SYNC CONTEXT - Sync triggered for connection:", connectionId);
       } else {
         console.log("🔄 SYNC CONTEXT - No connectionId available for sync");
       }
@@ -373,16 +370,13 @@ export function MomentModal() {
       // Optimized cache invalidation - single invalidation
       queryClient.invalidateQueries({ queryKey: ['/api/moments'] });
       
-      // Trigger connection sync for activities page
-      const syncConnectionId = selectedConnectionId || connectionId;
-      console.log("🔄 SYNC CONTEXT - About to trigger sync:", syncConnectionId, activityType, "selectedConnectionId:", selectedConnectionId, "formConnectionId:", connectionId);
+      // Trigger connection sync for activities page using the actual saved connectionId from form
+      console.log("🔄 SYNC CONTEXT - About to trigger sync with actual connectionId:", connectionId, "activityType:", activityType);
       
-      // Always try to trigger sync even without explicit connectionId by using form connectionId
-      const finalConnectionId = syncConnectionId || connectionId;
-      if (finalConnectionId) {
-        console.log("🔄 SYNC CONTEXT - Triggering sync with connectionId:", finalConnectionId);
-        triggerConnectionSync(finalConnectionId, activityType || 'moment');
-        console.log("🔄 SYNC CONTEXT - Sync triggered for connection:", finalConnectionId);
+      if (connectionId) {
+        console.log("🔄 SYNC CONTEXT - Triggering sync with connectionId from form:", connectionId);
+        triggerConnectionSync(connectionId, activityType || 'moment');
+        console.log("🔄 SYNC CONTEXT - Sync triggered for connection:", connectionId);
       } else {
         console.log("🔄 SYNC CONTEXT - No connectionId available for sync");
       }

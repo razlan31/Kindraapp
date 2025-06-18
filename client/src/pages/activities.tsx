@@ -108,13 +108,13 @@ export default function Activities() {
     const handleConnectionActivity = (connectionId: number, activityType: string) => {
       console.log("🔄 SYNC CONTEXT - Activities page received sync:", connectionId, activityType);
       
-      // Update connection filters to include the connection that had activity
+      // Update connection filters to ONLY show the connection that had activity
       setSelectedConnections(prev => {
         console.log("🔄 SYNC CONTEXT - Processing connection:", connectionId, "current filters:", prev);
         
-        if (connectionId && !prev.includes(connectionId)) {
-          console.log("🔄 SYNC CONTEXT - Adding connection to filter:", connectionId);
-          const updated = [...prev, connectionId];
+        if (connectionId) {
+          console.log("🔄 SYNC CONTEXT - Setting filter to only show connection:", connectionId);
+          const updated = [connectionId]; // Only show the connection that was just used
           console.log("🔄 SYNC CONTEXT - Updated filters:", updated);
           setHasUserSelectedConnection(true); // Mark as user-selected to maintain filter
           return updated;
