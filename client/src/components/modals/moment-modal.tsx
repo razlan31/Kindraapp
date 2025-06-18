@@ -20,7 +20,7 @@ import { z } from "zod";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 
 export function MomentModal() {
-  const { momentModalOpen, closeMomentModal, selectedConnectionId, mainFocusConnection } = useModal();
+  const { momentModalOpen, closeMomentModal, selectedConnectionId, mainFocusConnection, setSelectedConnection } = useModal();
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -183,7 +183,13 @@ export function MomentModal() {
                 <FormItem>
                   <FormLabel>With who?</FormLabel>
                   <Select
-                    onValueChange={(value) => field.onChange(parseInt(value))}
+                    onValueChange={(value) => {
+                      const connectionId = parseInt(value);
+                      field.onChange(connectionId);
+                      // Update modal context to sync with activity page
+                      const selectedConnection = connections.find(c => c.id === connectionId);
+                      setSelectedConnection(connectionId, selectedConnection);
+                    }}
                     defaultValue={field.value.toString()}
                   >
                     <FormControl>

@@ -64,7 +64,7 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [editingMoment, setEditingMoment] = useState<Moment | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [navigationConnectionId, setNavigationConnectionId] = useState<number | null>(null);
-  const [connectionChangeListener, setConnectionChangeListener] = useState<((connectionId: number | null) => void) | null>(null);
+  const [connectionChangeListener, setConnectionChangeListener] = useState<((connectionId: number | null) => void) | undefined>(undefined);
 
   const openMomentModal = (activityType: 'moment' | 'conflict' | 'intimacy' | 'plan' = 'moment', moment?: Moment, date?: Date) => {
     console.log("openMomentModal called with:", { activityType, moment: !!moment, date });
@@ -165,6 +165,8 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         setSelectedConnection,
         setMainFocusConnection: setMainFocusConnectionObject,
         setNavigationConnectionId,
+        onConnectionChanged: connectionChangeListener,
+        registerConnectionChangeListener,
       }}
     >
       {children}

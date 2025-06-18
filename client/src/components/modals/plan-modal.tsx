@@ -49,7 +49,7 @@ type PlanFormData = z.infer<typeof planSchema>;
 
 export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, showConnectionPicker = true, editingMoment }: PlanModalProps) {
   const { toast } = useToast();
-  const { selectedDate: contextSelectedDate } = useModal();
+  const { selectedDate: contextSelectedDate, setSelectedConnection } = useModal();
   const queryClient = useQueryClient();
   
   // Local connection state for picker
@@ -320,6 +320,8 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
                     onClick={() => {
                       setLocalSelectedConnection(connection);
                       setFormData(prev => ({ ...prev, connectionId: connection.id }));
+                      // Update modal context to sync with activity page
+                      setSelectedConnection(connection.id, connection);
                     }}
                   >
                     <div className="flex items-center gap-2">
