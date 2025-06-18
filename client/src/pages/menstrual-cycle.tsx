@@ -1165,7 +1165,7 @@ export default function MenstrualCyclePage() {
                             if (phase === 'menstrual') return '🩸';
                             if (phase === 'follicular') return '🌱';
                             if (phase === 'fertile' && subPhase === 'ovulation') return '🥚';
-                            if (phase === 'fertile') return '💗';
+                            if (phase === 'fertile') return '🌸';
                             if (phase === 'luteal') return '🌙';
                             return '';
                           };
@@ -1206,7 +1206,7 @@ export default function MenstrualCyclePage() {
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="w-4 h-4 bg-yellow-100 dark:bg-yellow-900/30 border border-yellow-300 dark:border-yellow-700 rounded flex items-center justify-center">
-                      <span className="text-xs">💗</span>
+                      <span className="text-xs">🌸</span>
                     </div>
                     <span>Fertile window</span>
                   </div>

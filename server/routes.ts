@@ -3170,7 +3170,7 @@ Format as a brief analysis (2-3 sentences) focusing on what their data actually 
         {
           userId,
           connectionId: templateConnection.id,
-          emoji: "💕",
+          emoji: "💗",
           content: "Shared vulnerable stories about our families - felt so emotionally connected",
           title: "Emotional Intimacy",
           tags: ["Sex", "Vulnerability", "Connection"],

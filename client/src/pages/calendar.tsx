@@ -545,7 +545,7 @@ export default function Calendar() {
     
     // Check if it's intimacy
     if (moment.isIntimate || tags.includes("Intimacy")) {
-      return { type: 'emoji', value: '💕', color: 'text-pink-500' };
+      return { type: 'emoji', value: '💗', color: 'text-pink-500' };
     }
     
     // For regular moments, show colored circles based on type
@@ -804,7 +804,7 @@ export default function Calendar() {
                       </div>
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <span className="text-sm">💕</span>
+                          <span className="text-sm">💗</span>
                           <span>Intimacy</span>
                         </div>
                         <Checkbox

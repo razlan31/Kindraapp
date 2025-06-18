@@ -127,8 +127,13 @@ The badges system currently has several issues that need attention:
   - Activity emojis (moments/milestones) remain prominent regardless of cycle phase background
   - Created clear visual hierarchy: menstrual phase, fertility phases, and activities are prominent; follicular/luteal phases are subtle
 
+- June 18, 2025: EMOJI UPDATES - Changed fertile phase emoji and standardized intimacy emoji
+  - Changed fertile phase emoji from 💗 to 🌸 across all components (calendar, cycle tracker, legends)
+  - Updated intimacy emoji from 💕 to 💗 throughout the app (calendar filters, moment displays, server routes)
+  - Updated cycle phase emojis: 🩸 menstrual, 🌱 follicular, 🌸 fertile, 🥚 ovulation, 🌙 luteal
+  - Maintained visual consistency between calendar and cycle tracker with new emoji system
+
 - June 18, 2025: VISUAL CONSISTENCY UPDATE - Standardized cycle phase emojis and colors between calendar and cycle tracker
-  - Updated all cycle phase emojis to match cycle tracker exactly: 🩸 menstrual, 🌱 follicular, 💗 fertile, 🥚 ovulation, 🌙 luteal
   - Calendar and cycle tracker now display identical visual styling from centralized cycle-utils.ts
   - Achieved perfect consistency between calendar view and dedicated cycle tracker interface
 

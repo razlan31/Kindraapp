@@ -142,7 +142,7 @@ export const getDetailedCyclePhase = (
         subPhase: "fertile_window",
         color: "bg-yellow-200 dark:bg-yellow-800/50 border-yellow-400 dark:border-yellow-400 border-2 font-semibold",
         description: "Fertile window",
-        emoji: "💗",
+        emoji: "🌸",
         dayRange: `Days ${fertileStart}-${fertileEnd}`,
         hormonalProfile: "High estrogen, approaching ovulation",
         recommendations: ["Fertility awareness", "Communication focus", "Relationship building", "Self-confidence peak"]
