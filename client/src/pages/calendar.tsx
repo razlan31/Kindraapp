@@ -1290,7 +1290,7 @@ export default function Calendar() {
                             <div className="flex gap-0.5">
                               {dayActiveCycles.slice(0, 2).map((cycle, index) => {
                                 const connection = connections.find(c => c.id === cycle.connectionId);
-                                const phaseInfo = cycle.connectionId ? getCyclePhaseForDay(day, cycle.connectionId) : null;
+                                const phaseInfo = cycle.connectionId ? getCyclePhaseForDay(day, cycle.connectionId, cycles) : null;
                                 
                                 if (!connection || !phaseInfo) return null;
                                 
@@ -1320,7 +1320,7 @@ export default function Calendar() {
                         
                         // Single connection or single cycle - show emoji
                         const cycle = dayActiveCycles[0];
-                        const phaseInfo = cycle.connectionId ? getCyclePhaseForDay(day, cycle.connectionId) : null;
+                        const phaseInfo = cycle.connectionId ? getCyclePhaseForDay(day, cycle.connectionId, cycles) : null;
                         
                         if (!phaseInfo) return null;
                         
