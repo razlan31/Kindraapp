@@ -157,6 +157,11 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
       });
       queryClient.invalidateQueries({ queryKey: ['/api/moments'] });
       queryClient.invalidateQueries({ queryKey: ['/api/milestones'] });
+      
+      // Trigger connection sync back to activity page
+      console.log("Plan saved - triggering connection sync:", connectionId);
+      setSelectedConnection(connectionId, localSelectedConnection);
+      
       handleClose();
     },
     onError: (error) => {

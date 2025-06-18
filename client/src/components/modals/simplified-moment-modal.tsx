@@ -20,7 +20,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
 export function MomentModal() {
-  const { momentModalOpen, closeMomentModal, selectedConnectionId, activityType, editingMoment, selectedDate } = useModal();
+  const { momentModalOpen, closeMomentModal, selectedConnectionId, activityType, editingMoment, selectedDate, setSelectedConnection } = useModal();
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -296,6 +296,13 @@ export function MomentModal() {
       // Optimized cache invalidation - single invalidation
       queryClient.invalidateQueries({ queryKey: ['/api/moments'] });
       
+      // Trigger connection sync back to activity page
+      console.log("Moment saved - triggering connection sync:", selectedConnectionId);
+      if (selectedConnectionId) {
+        const selectedConnection = connections.find(c => c.id === selectedConnectionId);
+        setSelectedConnection(selectedConnectionId, selectedConnection);
+      }
+      
       handleSuccess();
     },
     onError: (error: any, newMoment, context) => {
@@ -331,6 +338,13 @@ export function MomentModal() {
           moment.id === editingMoment?.id ? { ...moment, ...updatedData } : moment
         );
       });
+      
+      // Trigger connection sync back to activity page
+      console.log("Moment updated - triggering connection sync:", selectedConnectionId);
+      if (selectedConnectionId) {
+        const selectedConnection = connections.find(c => c.id === selectedConnectionId);
+        setSelectedConnection(selectedConnectionId, selectedConnection);
+      }
       
       closeMomentModal();
       setIsSubmitting(false);
