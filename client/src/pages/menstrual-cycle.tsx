@@ -764,6 +764,19 @@ export default function MenstrualCyclePage() {
               const currentDay = currentCycle ? differenceInDays(new Date(), new Date(currentCycle.periodStartDate)) + 1 : 0;
               const periodLength = currentCycle?.periodEndDate ? 
                 differenceInDays(new Date(currentCycle.periodEndDate), new Date(currentCycle.periodStartDate)) + 1 : 5;
+              
+              // Debug cycle tracker calculations for connection 6 (Amalina)
+              if (personId === 6) {
+                console.log(`🔍 CYCLE TRACKER DEBUG - Amalina:`, {
+                  avgCycleLength,
+                  currentDay,
+                  periodLength,
+                  ovulationDay: calculateOvulationDay(avgCycleLength, personCycles),
+                  currentCycleId: currentCycle?.id,
+                  personCycles: personCycles.map(c => ({ id: c.id, start: c.periodStartDate, end: c.cycleEndDate }))
+                });
+              }
+              
               const currentPhase = currentCycle ? getDetailedCyclePhase(currentDay, avgCycleLength, periodLength) : null;
               
               // Get phase-based colors using new detailed phase system

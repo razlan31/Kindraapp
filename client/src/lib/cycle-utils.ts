@@ -247,6 +247,17 @@ export const getCyclePhaseForDay = (day: Date, connectionId: number, cycles: Men
         differenceInDays(new Date(cycle.cycleEndDate), cycleStart) + 1 : 
         (calculateCycleLength(connectionCycles) || 28);
       
+      // Debug June ovulation calculation
+      if (connectionId === 6 && dayStr.startsWith('2025-06')) {
+        console.log(`🔍 JUNE OVULATION DEBUG - ${dayStr}:`, {
+          cycleLength,
+          avgCycleLength: calculateCycleLength(connectionCycles),
+          ovulationDay: calculateOvulationDay(cycleLength, connectionCycles),
+          dayInCycle,
+          cycleId: cycle.id
+        });
+      }
+      
       const periodLength = cycle.periodEndDate ? 
         differenceInDays(new Date(cycle.periodEndDate), cycleStart) + 1 : 5;
       
