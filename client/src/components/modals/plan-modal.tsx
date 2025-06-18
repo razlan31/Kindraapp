@@ -180,7 +180,7 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
       description: "",
       scheduledDate: selectedDate || new Date(),
       scheduledTime: "",
-      connectionId: localSelectedConnection?.id || selectedConnection?.id,
+      connectionId: localSelectedConnection?.id || selectedConnection?.id || 0,
       notes: "",
       isCompleted: false,
       hasReminder: false,
@@ -264,17 +264,30 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
 
     try {
       const validatedData = planSchema.parse({ 
-        ...formData, 
+        title: formData.title,
+        description: formData.description || "",
+        scheduledDate: formData.scheduledDate,
+        scheduledTime: formData.scheduledTime || "",
         connectionId,
+        notes: isCompleted ? reflection : formData.notes || "",
         isCompleted,
-        notes: isCompleted ? reflection : formData.notes
+        hasReminder: formData.hasReminder || false,
+        reminderMinutes: formData.reminderMinutes || 15
       });
       createPlanMutation.mutate(validatedData);
     } catch (error) {
       if (error instanceof z.ZodError) {
+        console.error("Plan validation error:", error.errors);
         toast({
           title: "Validation error",
           description: error.errors[0]?.message || "Please check your input.",
+          variant: "destructive",
+        });
+      } else {
+        console.error("Plan creation error:", error);
+        toast({
+          title: "Error",
+          description: "Failed to create plan. Please try again.",
           variant: "destructive",
         });
       }

@@ -111,6 +111,14 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
+- June 18, 2025: BIDIRECTIONAL CONNECTION SYNC FIX - Fixed comprehensive bidirectional connection filter synchronization between activity page and all modals
+  - Fixed plan modal validation errors causing "failed to create plan" messages from + button
+  - Enhanced plan schema validation with proper data structure and error handling
+  - Implemented connection sync triggers in moment and plan modals to update activity page filters after saving
+  - Fixed API request format for mini-insight generation (parameter order correction)
+  - All modal activities (moments, plans, conflicts, intimacy) now properly sync back to activity page connection filters
+  - Plan button from + menu now works correctly with proper connection preselection and validation
+
 - June 18, 2025: BALANCED NOTIFICATION SYSTEM - Created optimal mix of value-driven insights and gentle reminders
   - 70% value-driven insights: Pattern analysis, behavioral insights, emotional intelligence scores
   - 30% gentle reminders: Soft prompts for moment logging when patterns detected
