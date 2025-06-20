@@ -3815,14 +3815,14 @@ Format as a brief analysis (2-3 sentences) focusing on what their data actually 
   });
 
   // Support messaging endpoint
-  app.post("/api/support/send", googleAuthMiddleware, async (req: Request, res: Response) => {
+  app.post("/api/support/send", isAuthenticated, async (req: Request, res: Response) => {
     console.log('🔔 SUPPORT - POST /api/support/send called');
     console.log('🔔 SUPPORT - Request body:', req.body);
-    console.log('🔔 SUPPORT - User from req.user:', req.user);
+    console.log('🔔 SUPPORT - Session userId:', (req.session as any)?.userId);
     
     try {
       const { subject, message } = req.body;
-      const userId = req.user?.id;
+      const userId = (req.session as any)?.userId;
 
       console.log('🔔 SUPPORT - Extracted data:', { subject, message, userId });
 
