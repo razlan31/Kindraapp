@@ -13,6 +13,7 @@ import Stripe from "stripe";
 import { aiCoach, type RelationshipContext } from "./ai-relationship-coach";
 import { ensureUserConnection } from "./user-connection-utils";
 import { setupAuth, isAuthenticated as googleAuthMiddleware } from "./auth";
+import sgMail from "@sendgrid/mail";
 
 // Initialize Stripe
 if (!process.env.STRIPE_SECRET_KEY) {
@@ -22,6 +23,13 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
   // @ts-ignore - Using compatible Stripe API version
   apiVersion: "2023-10-16",
 });
+
+// Initialize SendGrid
+if (!process.env.SENDGRID_API_KEY) {
+  console.warn('SendGrid API key not found - support messaging will be disabled');
+} else {
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+}
 
 // Helper function to safely format dates for database insertion
 function formatDateForDB(date: Date | string | null): string {

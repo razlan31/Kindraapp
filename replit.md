@@ -111,6 +111,13 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
+- June 20, 2025: SUPPORT MESSAGING SYSTEM - Added user support messaging in settings page
+  - Created support contact form in settings with subject and message fields
+  - Set up SendGrid email backend to send messages to jagohtrade@gmail.com
+  - System automatically includes user profile information and contact details in emails
+  - User email address is hidden from frontend but automatically detected by backend
+  - Added proper form validation and loading states for better user experience
+
 - June 18, 2025: TIMELINE DATE FILTERING - Limited timeline view to show upcoming events only within 1 month
   - Added date range filtering for timeline tab to prevent showing events too far in the future
   - Timeline now shows all past events plus upcoming events within 1 month from current date

@@ -25,8 +25,11 @@ import {
   Save,
   CreditCard,
   RotateCcw,
-  Archive
+  Archive,
+  MessageCircle,
+  Send
 } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
 
 // Billing component that connects to real Stripe data
 function BillingSection() {
@@ -291,6 +294,32 @@ export default function Settings() {
       toast({
         title: "Error",
         description: error.message || "Failed to restore connection",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Support message state
+  const [supportMessage, setSupportMessage] = useState("");
+  const [supportSubject, setSupportSubject] = useState("");
+
+  // Send support message mutation
+  const sendSupportMutation = useMutation({
+    mutationFn: async (data: { subject: string; message: string }) => {
+      return await apiRequest("/api/support/send", "POST", data);
+    },
+    onSuccess: () => {
+      setSupportMessage("");
+      setSupportSubject("");
+      toast({
+        title: "Message Sent",
+        description: "Your support message has been sent successfully. We'll get back to you soon!",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Failed to Send",
+        description: error.message || "Failed to send support message. Please try again.",
         variant: "destructive",
       });
     },
@@ -743,6 +772,63 @@ export default function Settings() {
                   ))}
                 </div>
               )}
+            </CardContent>
+          </Card>
+
+          {/* Support */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <MessageCircle className="h-5 w-5" />
+                Contact Support
+              </CardTitle>
+              <CardDescription>
+                Send us a message and we'll get back to you soon
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="support-subject">Subject</Label>
+                <Input
+                  id="support-subject"
+                  placeholder="Brief description of your issue"
+                  value={supportSubject}
+                  onChange={(e) => setSupportSubject(e.target.value)}
+                  disabled={sendSupportMutation.isPending}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="support-message">Message</Label>
+                <Textarea
+                  id="support-message"
+                  placeholder="Describe your issue or question in detail..."
+                  value={supportMessage}
+                  onChange={(e) => setSupportMessage(e.target.value)}
+                  disabled={sendSupportMutation.isPending}
+                  rows={4}
+                />
+              </div>
+              <Button 
+                onClick={() => {
+                  if (!supportSubject.trim() || !supportMessage.trim()) {
+                    toast({
+                      title: "Missing Information",
+                      description: "Please fill in both subject and message fields.",
+                      variant: "destructive",
+                    });
+                    return;
+                  }
+                  sendSupportMutation.mutate({
+                    subject: supportSubject,
+                    message: supportMessage
+                  });
+                }}
+                disabled={sendSupportMutation.isPending || !supportSubject.trim() || !supportMessage.trim()}
+                className="w-full"
+              >
+                <Send className="h-4 w-4 mr-2" />
+                {sendSupportMutation.isPending ? "Sending..." : "Send Message"}
+              </Button>
             </CardContent>
           </Card>
 
