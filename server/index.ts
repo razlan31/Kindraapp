@@ -38,9 +38,6 @@ app.use((req, res, next) => {
   next();
 });
 
-// Serve screenshots file directly
-app.use('/files', express.static(path.join(__dirname, '../public')));
-
 (async () => {
   // Initialize badges on startup
   try {
@@ -49,6 +46,15 @@ app.use('/files', express.static(path.join(__dirname, '../public')));
     console.error('Failed to initialize badges:', error);
   }
 
+  // Direct download endpoint
+  app.get('/kindra-screenshots.tar.gz', (req, res) => {
+    const filePath = path.join(import.meta.dirname, '../kindra-screenshots.tar.gz');
+    res.download(filePath, 'kindra-screenshots.tar.gz');
+  });
+  
+  // Serve public files for downloads
+  app.use('/files', express.static(path.join(import.meta.dirname, '../public')));
+  
   const server = await registerRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
