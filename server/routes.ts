@@ -3873,10 +3873,11 @@ User Profile:
 
       const emailData = {
         to: 'jagohtrade@gmail.com',
-        from: 'support@kindra.app', // Using a generic from address
+        from: 'jagohtrade@gmail.com', // Use the same email as sender to avoid verification issues
         subject: `Kindra Support: ${subject}`,
         text: emailContent,
-        html: emailContent.replace(/\n/g, '<br>')
+        html: emailContent.replace(/\n/g, '<br>'),
+        replyTo: user.email // Set user's email as reply-to so you can respond directly
       };
 
       console.log('🔔 SUPPORT - Attempting to send email:', { to: emailData.to, subject: emailData.subject });
