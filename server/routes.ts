@@ -13,7 +13,7 @@ import Stripe from "stripe";
 import { aiCoach, type RelationshipContext } from "./ai-relationship-coach";
 import { ensureUserConnection } from "./user-connection-utils";
 import { setupAuth, isAuthenticated as googleAuthMiddleware } from "./auth";
-import sgMail from "@sendgrid/mail";
+import nodemailer from "nodemailer";
 
 // Initialize Stripe
 if (!process.env.STRIPE_SECRET_KEY) {
@@ -24,12 +24,14 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
   apiVersion: "2023-10-16",
 });
 
-// Initialize SendGrid
-if (!process.env.SENDGRID_API_KEY) {
-  console.warn('SendGrid API key not found - support messaging will be disabled');
-} else {
-  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-}
+// Initialize Nodemailer transporter (using Gmail SMTP)
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'jagohtrade@gmail.com',
+    pass: process.env.GMAIL_APP_PASSWORD // You'll need to generate an app password
+  }
+});
 
 // Helper function to safely format dates for database insertion
 function formatDateForDB(date: Date | string | null): string {
@@ -3836,8 +3838,8 @@ Format as a brief analysis (2-3 sentences) focusing on what their data actually 
         return res.status(400).json({ error: "Subject and message are required" });
       }
 
-      if (!process.env.SENDGRID_API_KEY) {
-        console.error('🔔 SUPPORT - SendGrid API key not configured');
+      if (!process.env.GMAIL_APP_PASSWORD) {
+        console.error('🔔 SUPPORT - Gmail app password not configured');
         return res.status(500).json({ error: "Email service is not configured" });
       }
 
@@ -3871,17 +3873,17 @@ User Profile:
 - Account Created: ${user.createdAt}
       `;
 
-      const emailData = {
+      const mailOptions = {
+        from: 'jagohtrade@gmail.com',
         to: 'jagohtrade@gmail.com',
-        from: 'jagohtrade@gmail.com', // Use the same email as sender to avoid verification issues
         subject: `Kindra Support: ${subject}`,
         text: emailContent,
         html: emailContent.replace(/\n/g, '<br>'),
         replyTo: user.email // Set user's email as reply-to so you can respond directly
       };
 
-      console.log('🔔 SUPPORT - Attempting to send email:', { to: emailData.to, subject: emailData.subject });
-      await sgMail.send(emailData);
+      console.log('🔔 SUPPORT - Attempting to send email:', { to: mailOptions.to, subject: mailOptions.subject });
+      await transporter.sendMail(mailOptions);
       console.log('🔔 SUPPORT - Email sent successfully');
 
       res.json({ 
