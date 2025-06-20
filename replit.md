@@ -111,6 +111,13 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
+- June 20, 2025: SCREENSHOT DOWNLOAD SERVICE - Created direct download endpoint for comprehensive mobile development documentation
+  - Added /download/screenshots endpoint serving kindra-screenshots.tar.gz file (7.6MB)
+  - Archive contains 100 screenshot files covering all app features and UI components
+  - Includes README.md with technical specifications for React Native developer
+  - Screenshots document dashboard, activities, connections, cycle tracking, settings, modals, and navigation
+  - Complete visual reference package for accurate mobile app conversion
+
 - June 20, 2025: SUPPORT MESSAGING SYSTEM - Added user support messaging in settings page with free email service
   - Created support contact form in settings with subject and message fields
   - Implemented free Gmail SMTP backend using nodemailer to send messages to jagohtrade@gmail.com

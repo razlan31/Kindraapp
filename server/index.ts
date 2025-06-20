@@ -2,6 +2,7 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { storage } from "./database-storage";
+import path from "path";
 
 const app = express();
 app.use(express.json({ limit: '10mb' }));
@@ -35,6 +36,17 @@ app.use((req, res, next) => {
   });
 
   next();
+});
+
+// Download endpoint for screenshots
+app.get('/download/screenshots', (req, res) => {
+  const filePath = path.join(__dirname, '../kindra-screenshots.tar.gz');
+  res.download(filePath, 'kindra-screenshots.tar.gz', (err) => {
+    if (err) {
+      console.error('Download error:', err);
+      res.status(404).send('File not found');
+    }
+  });
 });
 
 (async () => {
