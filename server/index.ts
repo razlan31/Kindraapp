@@ -38,16 +38,8 @@ app.use((req, res, next) => {
   next();
 });
 
-// Download endpoint for screenshots
-app.get('/download/screenshots', (req, res) => {
-  const filePath = path.join(__dirname, '../kindra-screenshots.tar.gz');
-  res.download(filePath, 'kindra-screenshots.tar.gz', (err) => {
-    if (err) {
-      console.error('Download error:', err);
-      res.status(404).send('File not found');
-    }
-  });
-});
+// Serve screenshots file directly
+app.use('/files', express.static(path.join(__dirname, '../public')));
 
 (async () => {
   // Initialize badges on startup
