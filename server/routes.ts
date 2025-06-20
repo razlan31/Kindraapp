@@ -3842,7 +3842,7 @@ Format as a brief analysis (2-3 sentences) focusing on what their data actually 
       }
 
       // Get user information for context
-      const user = await storage.getUserById(userId);
+      const user = await storage.getUser(userId.toString());
       if (!user) {
         console.log('🔔 SUPPORT - User not found in database');
         return res.status(404).json({ error: "User not found" });
