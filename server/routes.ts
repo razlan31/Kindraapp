@@ -3814,5 +3814,87 @@ Format as a brief analysis (2-3 sentences) focusing on what their data actually 
     }
   });
 
+  // Support messaging endpoint
+  app.post("/api/support/send", googleAuthMiddleware, async (req: Request, res: Response) => {
+    console.log('🔔 SUPPORT - POST /api/support/send called');
+    console.log('🔔 SUPPORT - Request body:', req.body);
+    console.log('🔔 SUPPORT - User from req.user:', req.user);
+    
+    try {
+      const { subject, message } = req.body;
+      const userId = req.user?.id;
+
+      console.log('🔔 SUPPORT - Extracted data:', { subject, message, userId });
+
+      if (!userId) {
+        console.log('🔔 SUPPORT - No user ID found');
+        return res.status(401).json({ error: "Authentication required" });
+      }
+
+      if (!subject || !message) {
+        console.log('🔔 SUPPORT - Missing subject or message');
+        return res.status(400).json({ error: "Subject and message are required" });
+      }
+
+      if (!process.env.SENDGRID_API_KEY) {
+        console.error('🔔 SUPPORT - SendGrid API key not configured');
+        return res.status(500).json({ error: "Email service is not configured" });
+      }
+
+      // Get user information for context
+      const user = await storage.getUserById(userId);
+      if (!user) {
+        console.log('🔔 SUPPORT - User not found in database');
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      console.log('🔔 SUPPORT - Found user:', { id: user.id, email: user.email, displayName: user.displayName });
+
+      // Prepare email content with user context
+      const emailContent = `
+Support Message from Kindra App
+
+From: ${user.displayName || user.email} (${user.email})
+User ID: ${user.id}
+Subject: ${subject}
+
+Message:
+${message}
+
+---
+User Profile:
+- Display Name: ${user.displayName || 'Not set'}
+- Username: ${user.username || 'Not set'}
+- Love Language: ${user.loveLanguage || 'Not set'}
+- Zodiac Sign: ${user.zodiacSign || 'Not set'}
+- Relationship Goals: ${user.relationshipGoals || 'Not set'}
+- Account Created: ${user.createdAt}
+      `;
+
+      const emailData = {
+        to: 'jagohtrade@gmail.com',
+        from: 'support@kindra.app', // Using a generic from address
+        subject: `Kindra Support: ${subject}`,
+        text: emailContent,
+        html: emailContent.replace(/\n/g, '<br>')
+      };
+
+      console.log('🔔 SUPPORT - Attempting to send email:', { to: emailData.to, subject: emailData.subject });
+      await sgMail.send(emailData);
+      console.log('🔔 SUPPORT - Email sent successfully');
+
+      res.json({ 
+        success: true, 
+        message: "Support message sent successfully" 
+      });
+
+    } catch (error) {
+      console.error('🔔 SUPPORT - Email error:', error);
+      res.status(500).json({ 
+        error: "Failed to send support message. Please try again." 
+      });
+    }
+  });
+
   return httpServer;
 }
