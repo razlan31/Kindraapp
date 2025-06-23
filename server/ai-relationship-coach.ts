@@ -24,6 +24,11 @@ export interface RelationshipContext {
 
 export class AIRelationshipCoach {
   private conversationHistory: Map<number, ChatMessage[]> = new Map();
+  private storage: any;
+
+  constructor(storage: any) {
+    this.storage = storage;
+  }
 
   async generateResponse(
     userId: number,
@@ -31,15 +36,35 @@ export class AIRelationshipCoach {
     context: RelationshipContext
   ): Promise<string> {
     try {
-      // Get or initialize conversation history
-      const history = this.conversationHistory.get(userId) || [];
+      // Get conversation history from database first, fallback to memory
+      let history = this.conversationHistory.get(userId) || [];
+      
+      // If no memory cache, try to load from database
+      if (history.length === 0) {
+        const conversations = await this.storage.getChatConversations(userId.toString());
+        if (conversations.length > 0) {
+          // Get the most recent conversation
+          const latestConversation = conversations[conversations.length - 1];
+          if (latestConversation.messages) {
+            const messages = typeof latestConversation.messages === 'string' 
+              ? JSON.parse(latestConversation.messages) 
+              : latestConversation.messages;
+            history = messages.map((msg: any) => ({
+              ...msg,
+              timestamp: new Date(msg.timestamp)
+            }));
+            this.conversationHistory.set(userId, history);
+          }
+        }
+      }
       
       // Add user message to history
-      history.push({
-        role: 'user',
+      const newUserMessage = {
+        role: 'user' as const,
         content: userMessage,
         timestamp: new Date()
-      });
+      };
+      history.push(newUserMessage);
 
       // Generate relationship context summary
       const contextSummary = this.generateContextSummary(context);
@@ -65,15 +90,41 @@ export class AIRelationshipCoach {
 
       const assistantResponse = completion.choices[0].message.content || "I'm here to help with your relationships. Could you tell me more about what's on your mind?";
 
-      // Add assistant response to history
-      history.push({
-        role: 'assistant',
+      // Store AI response in history
+      const newAssistantMessage = {
+        role: 'assistant' as const,
         content: assistantResponse,
         timestamp: new Date()
-      });
+      };
+      history.push(newAssistantMessage);
 
-      // Update conversation history
+      // Update conversation history in memory
       this.conversationHistory.set(userId, history);
+
+      // Save conversation to database
+      try {
+        const title = history.length > 1 ? history[0].content.slice(0, 50) + "..." : "New Conversation";
+        const conversations = await this.storage.getChatConversations(userId.toString());
+        
+        if (conversations.length > 0) {
+          // Update the most recent conversation
+          const latestConversation = conversations[conversations.length - 1];
+          await this.storage.updateChatConversation(latestConversation.id, {
+            messages: JSON.stringify(history),
+            updatedAt: new Date()
+          });
+        } else {
+          // Create new conversation
+          await this.storage.createChatConversation({
+            userId: userId.toString(),
+            title,
+            messages: JSON.stringify(history)
+          });
+        }
+      } catch (dbError) {
+        console.error("Failed to save conversation to database:", dbError);
+        // Continue execution even if database save fails
+      }
 
       return assistantResponse;
     } catch (error) {

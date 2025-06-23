@@ -12,7 +12,7 @@ import bcrypt from "bcryptjs";
 import session from "express-session";
 import MemoryStore from "memorystore";
 import Stripe from "stripe";
-import { aiCoach, type RelationshipContext } from "./ai-relationship-coach";
+import { AIRelationshipCoach, type RelationshipContext } from "./ai-relationship-coach";
 import { ensureUserConnection } from "./user-connection-utils";
 import { setupAuth, isAuthenticated as googleAuthMiddleware } from "./auth";
 import nodemailer from "nodemailer";
@@ -2670,7 +2670,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/ai/conversation", isAuthenticated, async (req: Request, res: Response) => {
     try {
       const userId = (req.session as any).userId as number;
-      const conversation = aiCoach.getConversationHistory(userId);
+      const conversation = await aiCoach.getConversationHistory(userId);
       
       res.json({ conversation });
     } catch (error) {
