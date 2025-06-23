@@ -94,8 +94,8 @@ export function BottomNavigation() {
   
   return (
     <>
-      {/* Floating Action Menu - Above Luna AI button */}
-      <div className="fixed bottom-[88px] right-4 z-50">
+      {/* Floating Action Menu - Stacked above Luna AI button */}
+      <div className="fixed bottom-[84px] right-4 z-50">
         {/* Action Menu Items */}
         {isMenuOpen && (
           <div className="absolute bottom-20 right-0 flex flex-col items-end gap-2 animate-in slide-in-from-bottom-2 duration-200">
