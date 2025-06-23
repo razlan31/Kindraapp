@@ -229,6 +229,9 @@ export default function Settings() {
   const { theme, setTheme } = useTheme();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [activeTab, setActiveTab] = useState("profile");
+  const [showPricingModal, setShowPricingModal] = useState(false);
+  const { subscriptionStatus, isPremium, isTrialActive } = useSubscription();
 
   // Local state for settings
   const [settings, setSettings] = useState({
@@ -425,7 +428,42 @@ export default function Settings() {
           </Button>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-6">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="grid w-full grid-cols-5">
+              <TabsTrigger value="profile">Profile</TabsTrigger>
+              <TabsTrigger value="billing">Billing</TabsTrigger>
+              <TabsTrigger value="data">Data</TabsTrigger>
+              <TabsTrigger value="preferences">Preferences</TabsTrigger>
+              <TabsTrigger value="support">Support</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="profile" className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Bell className="h-5 w-5" />
+                    Notifications
+                  </CardTitle>
+                  <CardDescription>
+                    Choose what notifications you'd like to receive
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  {/* Master toggle for all notifications */}
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label htmlFor="pushEnabled">Push Notifications</Label>
+                      <p className="text-sm text-neutral-600 dark:text-neutral-400">Enable all push notifications</p>
+                    </div>
+                    <Switch
+                      id="pushEnabled"
+                      checked={settings.notifications.pushEnabled}
+                      onCheckedChange={(checked) => updateNotificationSetting('pushEnabled', checked)}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
             </TabsContent>
 
             <TabsContent value="billing" className="space-y-6">
@@ -1077,8 +1115,8 @@ export default function Settings() {
               <BillingSection />
             </CardContent>
           </Card>
-
-
+            </TabsContent>
+          </Tabs>
         </div>
       </main>
 
