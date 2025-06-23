@@ -43,6 +43,7 @@ import { PlanModal } from "./components/modals/plan-modal";
 
 import { MoodTrackerModal } from "./components/modals/mood-tracker-modal";
 import { BadgeNotificationMonitor } from "./components/BadgeNotificationMonitor";
+import { MessageCircle } from "lucide-react";
 
 import { useEffect } from "react";
 import { useLocation } from "wouter";
@@ -110,6 +111,7 @@ function App() {
                   <BadgeNotificationMonitor />
                   <Router />
                   <ModalsContainer />
+                  <FloatingAIButton />
                 </TooltipProvider>
               </ModalProvider>
             </SyncProvider>
@@ -117,6 +119,24 @@ function App() {
         </ThemeProvider>
       </AuthProvider>
     </QueryClientProvider>
+  );
+}
+
+function FloatingAIButton() {
+  const [location, navigate] = useLocation();
+  
+  // Only show on certain pages
+  if (location === '/ai-coach') {
+    return null;
+  }
+  
+  return (
+    <button
+      onClick={() => navigate('/ai-coach')}
+      className="fixed bottom-20 right-4 z-50 w-14 h-14 rounded-full bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-600 hover:to-purple-600 shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center text-white"
+    >
+      <MessageCircle className="h-6 w-6" />
+    </button>
   );
 }
 
