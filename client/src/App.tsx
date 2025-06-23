@@ -20,6 +20,7 @@ import SimpleForm from "./pages/simple-form";
 import Activities from "@/pages/activities";
 import Calendar from "@/pages/calendar";
 import InsightsNew from "@/pages/insights-new";
+import InsightsDuplicate from "@/pages/insights-duplicate";
 import Luna from "@/pages/luna";
 import Trackings from "@/pages/trackings";
 import Profile from "@/pages/profile";
@@ -83,6 +84,7 @@ function Router() {
       <Route path="/connections/:id" component={ConnectionDetail} />
       <Route path="/activities" component={Activities} />
       <Route path="/calendar" component={Calendar} />
+      <Route path="/insights-duplicate" component={InsightsDuplicate} />
       <Route path="/badges" component={Badges} />
       <Route path="/insights" component={InsightsNew} />
       <Route path="/profile" component={Profile} />
