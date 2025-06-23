@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -28,7 +28,7 @@ interface UserBadge {
   badge: Badge;
 }
 
-function BadgeCard({ badge, isEarned, earnedCount = 0, progress }: { 
+const BadgeCard = React.memo(function BadgeCard({ badge, isEarned, earnedCount = 0, progress }: { 
   badge: Badge; 
   isEarned: boolean; 
   earnedCount?: number;
@@ -106,7 +106,7 @@ function BadgeCard({ badge, isEarned, earnedCount = 0, progress }: {
       </CardContent>
     </Card>
   );
-}
+});
 
 function CategorySection({ title, badges, userBadges, icon }: {
   title: string;
@@ -166,7 +166,8 @@ export default function BadgesPage() {
 
   const { data: allBadges = [], isLoading: allBadgesLoading } = useQuery<Badge[]>({
     queryKey: ["/api/badges/all"],
-    staleTime: 10 * 60 * 1000, // 10 minutes - badges rarely change
+    staleTime: 30 * 60 * 1000, // 30 minutes - badges rarely change
+    select: (data) => data || [], // Optimize empty state
   });
 
   const isLoading = userBadgesLoading || allBadgesLoading;
@@ -182,19 +183,28 @@ export default function BadgesPage() {
     );
   }
 
-  const earnedBadgeIds = new Set(userBadges.map(ub => ub.badgeId));
-  const earnedBadges = userBadges.filter(ub => ub.badge && ub.badge.id);
-  const unearnedBadges = allBadges.filter(badge => badge && badge.id && !earnedBadgeIds.has(badge.id));
+  // Memoize expensive calculations
+  const { earnedBadgeIds, earnedBadges, unearnedBadges, badgesByCategory } = useMemo(() => {
+    const earnedIds = new Set(userBadges.map(ub => ub.badgeId));
+    const earned = userBadges.filter(ub => ub.badge && ub.badge.id);
+    const unearned = allBadges.filter(badge => badge && badge.id && !earnedIds.has(badge.id));
 
-  // Group badges by category
-  const badgesByCategory = allBadges.reduce((acc: Record<string, Badge[]>, badge) => {
-    if (!badge || !badge.category) return acc;
-    if (!acc[badge.category]) {
-      acc[badge.category] = [];
-    }
-    acc[badge.category].push(badge);
-    return acc;
-  }, {} as Record<string, Badge[]>);
+    const categories = allBadges.reduce((acc: Record<string, Badge[]>, badge) => {
+      if (!badge || !badge.category) return acc;
+      if (!acc[badge.category]) {
+        acc[badge.category] = [];
+      }
+      acc[badge.category].push(badge);
+      return acc;
+    }, {} as Record<string, Badge[]>);
+
+    return {
+      earnedBadgeIds: earnedIds,
+      earnedBadges: earned,
+      unearnedBadges: unearned,
+      badgesByCategory: categories
+    };
+  }, [userBadges, allBadges]);
 
   const categoryIcons = {
     "Getting Started": <UserPlus className="w-5 h-5 text-blue-500" />,
