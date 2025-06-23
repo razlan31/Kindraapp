@@ -79,12 +79,12 @@ export default function InsightsNew() {
     );
   }
 
-  // Calculate statistics
-  const totalMoments = moments.length;
-  const totalConnections = connections.length;
-  const recentMoments = moments.slice(0, 3);
-  const recentConnections = connections.slice(0, 3);
-  const recentBadges = badges.slice(0, 3);
+  // Calculate statistics with safety checks
+  const totalMoments = moments?.length || 0;
+  const totalConnections = connections?.length || 0;
+  const recentMoments = moments?.slice(0, 3) || [];
+  const recentConnections = connections?.slice(0, 3) || [];
+  const recentBadges = badges?.slice(0, 3) || [];
 
   return (
     <div className="max-w-md mx-auto bg-white dark:bg-neutral-900 min-h-screen flex flex-col relative">
@@ -137,7 +137,7 @@ export default function InsightsNew() {
               </div>
               
               <div className="space-y-3">
-                {recentMoments.map((moment) => (
+                {recentMoments.filter(moment => moment && moment.id).map((moment) => (
                   <MomentCard key={moment.id} moment={moment} />
                 ))}
                 {recentMoments.length === 0 && (
