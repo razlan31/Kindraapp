@@ -101,35 +101,8 @@ export class AIRelationshipCoach {
       // Update conversation history in memory
       this.conversationHistory.set(userId, history);
 
-      // Save conversation to database
-      try {
-        const title = history.length > 1 ? history[0].content.slice(0, 50) + "..." : "New Conversation";
-        const conversations = await this.storage.getChatConversations(userId.toString());
-        
-        console.log("💾 Saving conversation to database, current conversations:", conversations.length);
-        
-        if (conversations.length > 0) {
-          // Update the most recent conversation
-          const latestConversation = conversations[conversations.length - 1];
-          console.log("📝 Updating existing conversation:", latestConversation.id);
-          await this.storage.updateChatConversation(latestConversation.id, {
-            messages: JSON.stringify(history),
-            updatedAt: new Date()
-          });
-        } else {
-          // Create new conversation
-          console.log("📝 Creating new conversation with title:", title);
-          await this.storage.createChatConversation({
-            userId: userId.toString(),
-            title,
-            messages: JSON.stringify(history)
-          });
-        }
-        console.log("✅ Conversation saved successfully");
-      } catch (dbError) {
-        console.error("❌ Failed to save conversation to database:", dbError);
-        // Continue execution even if database save fails
-      }
+      // Don't save to database during regular chat - only save when starting new chat
+      // This prevents duplicate conversations from being created
 
       return assistantResponse;
     } catch (error) {
@@ -326,17 +299,36 @@ PERSONAL GROWTH TRACKING:`;
   async startNewConversation(userId: number): Promise<void> {
     console.log("🆕 Starting new conversation for user:", userId);
     
-    // Save current conversation to database if it exists
+    // Save current conversation to database if it exists and has messages
     const currentHistory = this.conversationHistory.get(userId);
     if (currentHistory && currentHistory.length > 0) {
       try {
         const title = currentHistory[0].content.slice(0, 50) + "...";
-        await this.storage.createChatConversation({
-          userId: userId.toString(),
-          title,
-          messages: JSON.stringify(currentHistory)
+        
+        // Check if this conversation is already saved (to prevent duplicates)
+        const existingConversations = await this.storage.getChatConversations(userId.toString());
+        const isAlreadySaved = existingConversations.some(conv => {
+          try {
+            const existingMessages = typeof conv.messages === 'string' 
+              ? JSON.parse(conv.messages) 
+              : conv.messages;
+            return existingMessages.length === currentHistory.length &&
+                   existingMessages[0]?.content === currentHistory[0]?.content;
+          } catch {
+            return false;
+          }
         });
-        console.log("💾 Saved current conversation to database");
+        
+        if (!isAlreadySaved) {
+          await this.storage.createChatConversation({
+            userId: userId.toString(),
+            title,
+            messages: JSON.stringify(currentHistory)
+          });
+          console.log("💾 Saved current conversation to database");
+        } else {
+          console.log("📝 Conversation already exists in database, skipping save");
+        }
       } catch (dbError) {
         console.error("❌ Failed to save current conversation:", dbError);
       }
