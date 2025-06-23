@@ -94,17 +94,17 @@ export function BottomNavigation() {
   
   return (
     <>
-      {/* Floating Action Menu - Positioned between connections and activities */}
-      <div className="fixed top-[180px] right-1/2 translate-x-1/2 z-50">
+      {/* Floating Action Menu - Between connection selector and activity tabs, overflowing bottom nav */}
+      <div className="fixed bottom-[120px] left-1/2 transform -translate-x-1/2 z-50">
         {/* Action Menu Items */}
         {isMenuOpen && (
-          <div className="absolute bottom-20 right-0 flex flex-col items-end gap-3 animate-in slide-in-from-bottom-2 duration-200">
+          <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 flex flex-col items-center gap-3 animate-in slide-in-from-bottom-2 duration-200">
             <button 
               onClick={() => handleActionClick(() => setConnectionModalOpen(true))}
               className="bg-blue-500 text-white rounded-full h-14 w-14 flex items-center justify-center shadow-xl hover:shadow-2xl transition-all hover:scale-105 relative group border-2 border-white dark:border-gray-800"
             >
               <UserPlus className="h-5 w-5" />
-              <span className="absolute right-14 bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap">
+              <span className="absolute left-16 bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap">
                 Add Connection
               </span>
             </button>
@@ -118,7 +118,7 @@ export function BottomNavigation() {
               className="bg-purple-500 text-white rounded-full h-14 w-14 flex items-center justify-center shadow-xl hover:shadow-2xl transition-all hover:scale-105 relative group border-2 border-white dark:border-gray-800"
             >
               <CalendarPlus className="h-5 w-5" />
-              <span className="absolute right-14 bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap">
+              <span className="absolute left-16 bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap">
                 Add Plan
               </span>
             </button>
@@ -128,7 +128,7 @@ export function BottomNavigation() {
               className="bg-pink-500 text-white rounded-full h-14 w-14 flex items-center justify-center shadow-xl hover:shadow-2xl transition-all hover:scale-105 relative group border-2 border-white dark:border-gray-800"
             >
               <Heart className="h-5 w-5" />
-              <span className="absolute right-14 bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap">
+              <span className="absolute left-16 bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap">
                 Log Intimacy
               </span>
             </button>
@@ -138,7 +138,7 @@ export function BottomNavigation() {
               className="bg-red-500 text-white rounded-full h-12 w-12 flex items-center justify-center shadow-lg hover:shadow-xl transition-all hover:scale-105 relative group"
             >
               <AlertTriangle className="h-5 w-5" />
-              <span className="absolute right-14 bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap">
+              <span className="absolute left-16 bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap">
                 Log Conflict
               </span>
             </button>
@@ -148,7 +148,7 @@ export function BottomNavigation() {
               className="bg-green-500 text-white rounded-full h-14 w-14 flex items-center justify-center shadow-xl hover:shadow-2xl transition-all hover:scale-105 relative group border-2 border-white dark:border-gray-800"
             >
               <Smile className="h-5 w-5" />
-              <span className="absolute right-14 bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap">
+              <span className="absolute left-16 bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap">
                 Log Moment
               </span>
             </button>
