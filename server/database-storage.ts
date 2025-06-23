@@ -50,6 +50,19 @@ export class DatabaseStorage implements IStorage {
     return user;
   }
 
+  // Connection operations with subscription awareness
+  async getConnections(userId: string): Promise<Connection[]> {
+    return this.getConnectionsByUserId(userId);
+  }
+
+  async getMoments(userId: string, limit?: number): Promise<Moment[]> {
+    const query = db.select().from(moments).where(eq(moments.userId, userId)).orderBy(desc(moments.createdAt));
+    if (limit) {
+      return query.limit(limit);
+    }
+    return query;
+  }
+
   async upsertUser(user: UpsertUser): Promise<User> {
     const [upsertedUser] = await db
       .insert(users)

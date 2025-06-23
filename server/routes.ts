@@ -3166,7 +3166,7 @@ Format as a brief analysis (2-3 sentences) focusing on what their data actually 
         return res.status(404).json({ message: "User not found" });
       }
 
-      const connections = await storage.getConnections(userId);
+      const connections = await storage.getConnectionsByUserId(userId);
       const subscriptionStatus = getUserSubscriptionStatus(user, connections.length);
 
       res.json(subscriptionStatus);
