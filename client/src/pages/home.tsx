@@ -52,9 +52,9 @@ export default function Home() {
     <div className="max-w-md mx-auto bg-white dark:bg-neutral-900 min-h-screen flex flex-col relative">
       <Header />
 
-      <main className="flex-1 px-4 pt-4 pb-20 h-[calc(100vh-120px)] flex flex-col">
+      <main className="flex-1 px-4 pt-4 pb-24 flex flex-col overflow-hidden">
         {/* Luna AI - Main Feature */}
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col min-h-0">
           <AIChat />
         </div>
       </main>

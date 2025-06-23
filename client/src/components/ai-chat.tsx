@@ -447,7 +447,7 @@ export function AIChat({ className, compact = false }: AIChatProps = {}) {
             </Card>
           )}
 
-          <div className="h-[calc(100vh-240px)] overflow-y-auto rounded-xl p-4 space-y-4 bg-gradient-to-br from-violet-50/80 via-purple-50/60 to-pink-50/80 dark:from-violet-900/20 dark:via-purple-900/20 dark:to-pink-900/20 border border-violet-100 dark:border-violet-800">
+          <div className="flex-1 overflow-y-auto rounded-xl p-4 space-y-4 bg-gradient-to-br from-violet-50/80 via-purple-50/60 to-pink-50/80 dark:from-violet-900/20 dark:via-purple-900/20 dark:to-pink-900/20 border border-violet-100 dark:border-violet-800">
             {conversation.length === 0 ? (
               <div className="text-center py-8">
                 <div className="mb-6">
@@ -521,25 +521,25 @@ export function AIChat({ className, compact = false }: AIChatProps = {}) {
             <div ref={messagesEndRef} />
           </div>
 
-          <div className="flex gap-3 items-end">
+          <div className="flex gap-3 items-end mt-4">
             <Textarea
               ref={textareaRef}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Ask your AI relationship coach anything..."
-              className="flex-1 min-h-[80px] max-h-[120px] resize-none border-violet-200 focus:border-violet-400 focus:ring-violet-100 text-base"
+              className="flex-1 min-h-[70px] max-h-[100px] resize-none border-violet-200 focus:border-violet-400 focus:ring-violet-100 text-base"
               disabled={chatMutation.isPending}
             />
             <Button
               onClick={handleSubmit}
               disabled={!message.trim() || chatMutation.isPending}
-              className="h-[80px] px-6 flex items-center gap-2 bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white border-0 rounded-xl"
+              className="h-[70px] px-4 flex items-center gap-2 bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white border-0 rounded-xl"
             >
               {chatMutation.isPending ? (
-                <Loader2 className="h-5 w-5 animate-spin" />
+                <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
-                <Send className="h-5 w-5" />
+                <Send className="h-4 w-4" />
               )}
               Send
             </Button>
