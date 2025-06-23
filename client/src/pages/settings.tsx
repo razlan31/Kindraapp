@@ -208,10 +208,7 @@ function Settings() {
       quoteOfTheDay: true,
       cycleReminders: true,
       soundEnabled: true,
-      // Notification distribution settings (70% value-driven, 30% reminders)
-      insightFrequency: "weekly" as "daily" | "twice-weekly" | "weekly" | "bi-weekly" | "monthly",
-      reminderFrequency: "twice-weekly" as "daily" | "twice-weekly" | "weekly" | "bi-weekly" | "monthly",
-      cycleReminderType: "insights-focused" as "insights-focused" | "tracking-reminders" | "balanced",
+
     },
     privacy: {
       shareAnalytics: true,
@@ -496,104 +493,42 @@ function Settings() {
                     <h4 className="font-medium">Notification Types</h4>
                     
                     {/* AI Insights - 70% value-driven */}
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <Label htmlFor="insightAlerts">AI Insights & Pattern Analysis</Label>
-                          <p className="text-sm text-neutral-600 dark:text-neutral-400">Behavioral insights, emotional intelligence scores, timing patterns</p>
-                        </div>
-                        <Switch
-                          id="insightAlerts"
-                          checked={settings.notifications.insightAlerts}
-                          onCheckedChange={(checked) => updateNotificationSetting('insightAlerts', checked)}
-                        />
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <Label htmlFor="insightAlerts">AI Insights & Pattern Analysis</Label>
+                        <p className="text-sm text-neutral-600 dark:text-neutral-400">Behavioral insights, emotional intelligence scores, timing patterns</p>
                       </div>
-                      {settings.notifications.insightAlerts && (
-                        <div className="ml-4 space-y-2">
-                          <Label className="text-sm">Frequency</Label>
-                          <Select 
-                            value={settings.notifications.insightFrequency} 
-                            onValueChange={(value) => updateNotificationSetting('insightFrequency', value)}
-                          >
-                            <SelectTrigger className="w-40">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="twice-weekly">Twice Weekly</SelectItem>
-                              <SelectItem value="weekly">Weekly</SelectItem>
-                              <SelectItem value="bi-weekly">Bi-weekly</SelectItem>
-                              <SelectItem value="monthly">Monthly</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      )}
+                      <Switch
+                        id="insightAlerts"
+                        checked={settings.notifications.insightAlerts}
+                        onCheckedChange={(checked) => updateNotificationSetting('insightAlerts', checked)}
+                      />
                     </div>
 
                     {/* Moment Reminders - 30% gentle prompts */}
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <Label htmlFor="momentReminders">Moment Reminders</Label>
-                          <p className="text-sm text-neutral-600 dark:text-neutral-400">Gentle prompts when patterns suggest moment logging would be valuable</p>
-                        </div>
-                        <Switch
-                          id="momentReminders"
-                          checked={settings.notifications.momentReminders}
-                          onCheckedChange={(checked) => updateNotificationSetting('momentReminders', checked)}
-                        />
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <Label htmlFor="momentReminders">Moment Reminders</Label>
+                        <p className="text-sm text-neutral-600 dark:text-neutral-400">Gentle prompts when patterns suggest moment logging would be valuable</p>
                       </div>
-                      {settings.notifications.momentReminders && (
-                        <div className="ml-4 space-y-2">
-                          <Label className="text-sm">Frequency</Label>
-                          <Select 
-                            value={settings.notifications.reminderFrequency} 
-                            onValueChange={(value) => updateNotificationSetting('reminderFrequency', value)}
-                          >
-                            <SelectTrigger className="w-40">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="daily">Daily</SelectItem>
-                              <SelectItem value="twice-weekly">Twice Weekly</SelectItem>
-                              <SelectItem value="weekly">Weekly</SelectItem>
-                              <SelectItem value="bi-weekly">Bi-weekly</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      )}
+                      <Switch
+                        id="momentReminders"
+                        checked={settings.notifications.momentReminders}
+                        onCheckedChange={(checked) => updateNotificationSetting('momentReminders', checked)}
+                      />
                     </div>
 
                     {/* Cycle Reminders with smart balance */}
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <Label htmlFor="cycleReminders">Cycle Insights & Reminders</Label>
-                          <p className="text-sm text-neutral-600 dark:text-neutral-400">Phase-specific relationship strategies and gentle tracking prompts</p>
-                        </div>
-                        <Switch
-                          id="cycleReminders"
-                          checked={settings.notifications.cycleReminders}
-                          onCheckedChange={(checked) => updateNotificationSetting('cycleReminders', checked)}
-                        />
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <Label htmlFor="cycleReminders">Cycle Insights & Reminders</Label>
+                        <p className="text-sm text-neutral-600 dark:text-neutral-400">Phase-specific relationship strategies and gentle tracking prompts</p>
                       </div>
-                      {settings.notifications.cycleReminders && (
-                        <div className="ml-4 space-y-2">
-                          <Label className="text-sm">Focus</Label>
-                          <Select 
-                            value={settings.notifications.cycleReminderType} 
-                            onValueChange={(value) => updateNotificationSetting('cycleReminderType', value)}
-                          >
-                            <SelectTrigger className="w-48">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="insights-focused">Insights Focused (80% insights, 20% reminders)</SelectItem>
-                              <SelectItem value="balanced">Balanced (50% insights, 50% reminders)</SelectItem>
-                              <SelectItem value="tracking-reminders">Tracking Focused (20% insights, 80% reminders)</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      )}
+                      <Switch
+                        id="cycleReminders"
+                        checked={settings.notifications.cycleReminders}
+                        onCheckedChange={(checked) => updateNotificationSetting('cycleReminders', checked)}
+                      />
                     </div>
 
                     {/* Quote of the Day */}
@@ -629,7 +564,8 @@ function Settings() {
                     <div className="text-sm text-blue-800 dark:text-blue-200 space-y-1">
                       <p>• 70% value-driven insights: Pattern analysis, emotional intelligence, timing insights</p>
                       <p>• 30% gentle reminders: Soft prompts when data suggests moment logging would be valuable</p>
-                      <p>• Frequency management prevents overwhelming while maintaining engagement</p>
+                      <p>• Automatic frequency distribution based on your overall preference and intelligent scheduling</p>
+                      <p>• Smart cooldown periods prevent overwhelming while maintaining engagement</p>
                     </div>
                   </div>
                 </CardContent>
