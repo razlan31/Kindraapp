@@ -138,7 +138,7 @@ export function BottomNavigation() {
               className="bg-red-500 text-white rounded-full h-12 w-12 flex items-center justify-center shadow-lg hover:shadow-xl transition-all hover:scale-105 relative group"
             >
               <AlertTriangle className="h-5 w-5" />
-              <span className="absolute left-16 bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap">
+              <span className="absolute right-14 bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap">
                 Log Conflict
               </span>
             </button>
