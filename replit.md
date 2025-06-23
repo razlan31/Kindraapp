@@ -111,6 +111,17 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
+- June 23, 2025: NAVIGATION RESTRUCTURE - Separated AI coach and reorganized app structure for better user experience
+  - Created dedicated Luna AI page with full-screen chat experience
+  - Renamed Activities to "Trackings" with toggle between Activities and Connections views
+  - Updated bottom navigation: Luna, Trackings, Calendar, Insights (4 clean tabs)
+  - Moved dashboard content from Home to Insights page (now has Dashboard and Daily Quote tabs)
+  - Added floating Luna button accessible from all pages except Luna page itself
+  - Implemented compact mode for AI chat in floating panel
+  - Serves both AI-only users (dedicated Luna page) and full tracking users (Trackings page)
+  - Maintains clean 4-tab navigation while providing comprehensive functionality
+  - Enhanced user experience with clear separation of concerns and flexible access patterns
+
 - June 23, 2025: IMPLEMENTED IMPROVED PRICING MODEL - Added comprehensive subscription management system with freemium monetization
   - Created subscription database schema with usage tracking (monthly_ai_insights, monthly_ai_coaching, trial_end_date)
   - Implemented three premium tiers: Weekly ($1.99), Monthly ($4.99), Annual ($39.99) with 37% savings
