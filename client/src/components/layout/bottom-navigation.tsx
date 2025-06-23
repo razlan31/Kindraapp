@@ -95,7 +95,7 @@ export function BottomNavigation() {
   return (
     <>
       {/* Floating Action Menu - Above Luna AI button */}
-      <div className="fixed bottom-32 right-4 z-50">
+      <div className="fixed bottom-[88px] right-4 z-50">
         {/* Action Menu Items */}
         {isMenuOpen && (
           <div className="absolute bottom-20 right-0 flex flex-col items-end gap-2 animate-in slide-in-from-bottom-2 duration-200">
@@ -104,7 +104,7 @@ export function BottomNavigation() {
               className="bg-blue-500 text-white rounded-full h-12 w-12 flex items-center justify-center shadow-lg hover:shadow-xl transition-all hover:scale-105 relative group"
             >
               <UserPlus className="h-5 w-5" />
-              <span className="absolute left-16 bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap">
+              <span className="absolute right-14 bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
                 Add Connection
               </span>
             </button>
@@ -118,7 +118,7 @@ export function BottomNavigation() {
               className="bg-purple-500 text-white rounded-full h-12 w-12 flex items-center justify-center shadow-lg hover:shadow-xl transition-all hover:scale-105 relative group"
             >
               <CalendarPlus className="h-5 w-5" />
-              <span className="absolute left-16 bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap">
+              <span className="absolute right-14 bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
                 Add Plan
               </span>
             </button>
@@ -128,7 +128,7 @@ export function BottomNavigation() {
               className="bg-pink-500 text-white rounded-full h-12 w-12 flex items-center justify-center shadow-lg hover:shadow-xl transition-all hover:scale-105 relative group"
             >
               <Heart className="h-5 w-5" />
-              <span className="absolute left-16 bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap">
+              <span className="absolute right-14 bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
                 Log Intimacy
               </span>
             </button>
@@ -148,26 +148,21 @@ export function BottomNavigation() {
               className="bg-green-500 text-white rounded-full h-12 w-12 flex items-center justify-center shadow-lg hover:shadow-xl transition-all hover:scale-105 relative group"
             >
               <Smile className="h-5 w-5" />
-              <span className="absolute left-16 bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap">
+              <span className="absolute right-14 bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
                 Log Moment
               </span>
             </button>
           </div>
         )}
         
-        {/* Main Toggle Button - Enhanced protruding design */}
+        {/* Main Toggle Button - Same size as Luna button */}
         <button 
           onClick={() => setIsMenuOpen(!isMenuOpen)}
-          className={`bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-full h-16 w-16 flex items-center justify-center shadow-2xl hover:shadow-3xl transition-all duration-300 border-4 border-white dark:border-gray-800 ${
-            isMenuOpen ? 'rotate-45 scale-125' : 'hover:scale-110'
+          className={`bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-full h-14 w-14 flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 ${
+            isMenuOpen ? 'rotate-45 scale-110' : 'hover:scale-105'
           }`}
-          style={{
-            boxShadow: isMenuOpen 
-              ? '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1)' 
-              : '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)'
-          }}
         >
-          <Plus className={`h-7 w-7 transition-transform duration-300 ${isMenuOpen ? 'rotate-45' : ''}`} />
+          <Plus className={`h-6 w-6 transition-transform duration-300 ${isMenuOpen ? 'rotate-45' : ''}`} />
         </button>
       </div>
 
