@@ -462,35 +462,37 @@ function Settings() {
                     />
                   </div>
 
-                  <Separator />
+                  {settings.notifications.pushEnabled && (
+                    <>
+                      <Separator />
 
-                  {/* Global frequency setting */}
-                  <div className="space-y-3">
-                    <Label>Overall Frequency</Label>
-                    <p className="text-sm text-neutral-600 dark:text-neutral-400">How often you'd like to receive notifications overall</p>
-                    <Select 
-                      value={settings.notifications.globalFrequency} 
-                      onValueChange={(value) => updateNotificationSetting('globalFrequency', value)}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="daily">Daily</SelectItem>
-                        <SelectItem value="twice-daily">Twice Daily</SelectItem>
-                        <SelectItem value="3-times-daily">3 Times Daily</SelectItem>
-                        <SelectItem value="weekly">Weekly</SelectItem>
-                        <SelectItem value="every-2-weeks">Every 2 Weeks</SelectItem>
-                        <SelectItem value="monthly">Monthly</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                      {/* Global frequency setting */}
+                      <div className="space-y-3">
+                        <Label>Frequency</Label>
+                        <p className="text-sm text-neutral-600 dark:text-neutral-400">How often you'd like to receive notifications</p>
+                        <Select 
+                          value={settings.notifications.globalFrequency} 
+                          onValueChange={(value) => updateNotificationSetting('globalFrequency', value)}
+                        >
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="daily">Daily</SelectItem>
+                            <SelectItem value="twice-daily">Twice Daily</SelectItem>
+                            <SelectItem value="3-times-daily">3 Times Daily</SelectItem>
+                            <SelectItem value="weekly">Weekly</SelectItem>
+                            <SelectItem value="every-2-weeks">Every 2 Weeks</SelectItem>
+                            <SelectItem value="monthly">Monthly</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
 
-                  <Separator />
+                      <Separator />
 
-                  {/* Notification type breakdown */}
-                  <div className="space-y-4">
-                    <h4 className="font-medium">Notification Types</h4>
+                      {/* Notification type breakdown */}
+                      <div className="space-y-4">
+                        <h4 className="font-medium">Notification Types</h4>
                     
                     {/* AI Insights - 70% value-driven */}
                     <div className="flex items-center justify-between">
@@ -544,30 +546,23 @@ function Settings() {
                       />
                     </div>
 
-                    {/* Sound settings */}
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <Label htmlFor="soundEnabled">Notification Sounds</Label>
-                        <p className="text-sm text-neutral-600 dark:text-neutral-400">Play sounds with notifications</p>
+                        {/* Sound settings */}
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <Label htmlFor="soundEnabled">Notification Sounds</Label>
+                            <p className="text-sm text-neutral-600 dark:text-neutral-400">Play sounds with notifications</p>
+                          </div>
+                          <Switch
+                            id="soundEnabled"
+                            checked={settings.notifications.soundEnabled}
+                            onCheckedChange={(checked) => updateNotificationSetting('soundEnabled', checked)}
+                          />
+                        </div>
                       </div>
-                      <Switch
-                        id="soundEnabled"
-                        checked={settings.notifications.soundEnabled}
-                        onCheckedChange={(checked) => updateNotificationSetting('soundEnabled', checked)}
-                      />
-                    </div>
-                  </div>
+                    </>
+                  )}
 
-                  {/* Notification Distribution Summary */}
-                  <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                    <h5 className="font-medium text-blue-900 dark:text-blue-100 mb-2">Smart Distribution</h5>
-                    <div className="text-sm text-blue-800 dark:text-blue-200 space-y-1">
-                      <p>• 70% value-driven insights: Pattern analysis, emotional intelligence, timing insights</p>
-                      <p>• 30% gentle reminders: Soft prompts when data suggests moment logging would be valuable</p>
-                      <p>• Automatic frequency distribution based on your overall preference and intelligent scheduling</p>
-                      <p>• Smart cooldown periods prevent overwhelming while maintaining engagement</p>
-                    </div>
-                  </div>
+
                 </CardContent>
               </Card>
             </TabsContent>
