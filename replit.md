@@ -381,4 +381,5 @@ The badges system currently has several issues that need attention:
 
 Preferred communication style: Simple, everyday language.
 Development approach: Make precise, targeted fixes only. Do not modify working features when fixing unrelated issues. Avoid scope creep - stick strictly to the requested changes. NEVER make unauthorized changes without explicit user permission. Only work on exactly what the user requests.
+**Critical Efficiency Rule**: Complete tasks in ONE step by: 1) Searching comprehensively first to understand ALL components, 2) Analyzing complete scope before making any changes, 3) Making all related edits simultaneously using multiple tool calls. NO piecemeal changes - user expects complete solutions in single actions.
 UI/UX preferences: Keep navigation clean and simple. Subscription/billing features should be integrated into Settings page rather than having dedicated navigation tabs. NEVER modify the bottom navigation bar - it should always maintain: Home, Activities, Calendar, Insights, with Settings accessible through other means.
