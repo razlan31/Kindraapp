@@ -357,16 +357,7 @@ function Settings() {
     });
   };
 
-  // Update theme when preference changes
-  React.useEffect(() => {
-    if (settings.preferences.theme !== theme) {
-      setTheme(settings.preferences.theme);
-      setSettings(prev => ({
-        ...prev,
-        preferences: { ...prev.preferences, theme: theme as "light" | "dark" | "system" }
-      }));
-    }
-  }, [theme, settings.preferences.theme]);
+
 
   if (!user) {
     return (
@@ -424,14 +415,17 @@ function Settings() {
                       <Label>Theme</Label>
                       <p className="text-sm text-neutral-600 dark:text-neutral-400">Choose your preferred theme</p>
                     </div>
-                    <Select value={theme} onValueChange={setTheme}>
+                    <Select value={theme} onValueChange={(value) => {
+                      console.log('Theme changing from', theme, 'to', value);
+                      setTheme(value as "light" | "dark" | "minimalist");
+                    }}>
                       <SelectTrigger className="w-32">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="light">Light</SelectItem>
                         <SelectItem value="dark">Dark</SelectItem>
-                        <SelectItem value="system">Minimalist</SelectItem>
+                        <SelectItem value="minimalist">Minimalist</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
