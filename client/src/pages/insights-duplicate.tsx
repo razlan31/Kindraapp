@@ -68,6 +68,12 @@ export default function InsightsDuplicate() {
 
   // Fetch badges
   const { data: badges = [] } = useQuery<Badge[]>({
+    queryKey: ["/api/badges"],
+    enabled: !loading && !!user,
+  });
+
+  // Fetch user badges
+  const { data: userBadges = [] } = useQuery<any[]>({
     queryKey: ["/api/user-badges"],
     enabled: !loading && !!user,
   });
@@ -120,7 +126,7 @@ export default function InsightsDuplicate() {
   // Calculate stats based on filtered data
   const activeConnections = connections.length;
   const totalMoments = filteredMoments.length;
-  const earnedBadges = badges.length;
+  const earnedBadges = userBadges.length;
 
   // Calculate detailed stats for the focused connection
   const positiveMoments = filteredMoments.filter(m => 
@@ -202,7 +208,7 @@ export default function InsightsDuplicate() {
   console.log("InsightsDuplicate rendering main content", {
     connectionsCount: connections.length,
     momentsCount: moments.length,
-    badgesCount: badges.length,
+    badgesCount: userBadges.length,
     dashboardConnection: dashboardConnection?.name
   });
 
