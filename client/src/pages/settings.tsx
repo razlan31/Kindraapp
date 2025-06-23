@@ -350,6 +350,28 @@ export default function Settings() {
     },
   });
 
+  // Send support message mutation
+  const sendSupportMutation = useMutation({
+    mutationFn: async (data: { subject: string; message: string }) => {
+      return await apiRequest("/api/support/send", "POST", data);
+    },
+    onSuccess: () => {
+      setSupportMessage("");
+      setSupportSubject("");
+      toast({
+        title: "Message Sent",
+        description: "Your support message has been sent successfully. We'll get back to you soon!",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Failed to Send",
+        description: error.message || "Failed to send support message. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleSaveSettings = () => {
     saveSettingsMutation.mutate(settings);
   };
