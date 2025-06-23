@@ -27,9 +27,14 @@ import {
   RotateCcw,
   Archive,
   MessageCircle,
-  Send
+  Send,
+  Crown,
+  Star
 } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
+import { UsageIndicator } from "@/components/subscription/usage-indicator";
+import { PricingModal } from "@/components/subscription/pricing-modal";
+import { useSubscription } from "@/hooks/use-subscription";
 
 // Billing component that connects to real Stripe data
 function BillingSection() {
@@ -421,6 +426,231 @@ export default function Settings() {
         </div>
 
         <div className="space-y-4">
+            </TabsContent>
+
+            <TabsContent value="billing" className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <CardTitle className="flex items-center gap-2">
+                        <CreditCard className="h-5 w-5" />
+                        Subscription & Billing
+                      </CardTitle>
+                      <CardDescription>
+                        Manage your subscription plan and billing information
+                      </CardDescription>
+                    </div>
+                    {isPremium && (
+                      <div className="flex items-center gap-2 px-3 py-1 bg-gradient-to-r from-purple-100 to-blue-100 text-purple-700 rounded-full text-sm font-medium">
+                        <Crown className="h-4 w-4" />
+                        {isTrialActive ? 'Free Trial' : 'Premium'}
+                      </div>
+                    )}
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  {/* Current Plan Status */}
+                  <div className="space-y-4">
+                    <h3 className="font-semibold text-gray-900">Current Plan</h3>
+                    <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                      <div>
+                        <div className="font-medium">
+                          {isPremium ? (isTrialActive ? 'Free Trial' : 'Premium Plan') : 'Free Plan'}
+                        </div>
+                        <div className="text-sm text-gray-600">
+                          {isPremium 
+                            ? `${subscriptionStatus?.features.connections} connections, ${subscriptionStatus?.features.aiInsightsPerMonth} AI insights/month`
+                            : `${subscriptionStatus?.features.connections} connection, ${subscriptionStatus?.features.aiInsightsPerMonth} AI insights/month`
+                          }
+                        </div>
+                      </div>
+                      {!isPremium && (
+                        <Button
+                          onClick={() => setShowPricingModal(true)}
+                          className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+                        >
+                          <Star className="h-4 w-4 mr-2" />
+                          Upgrade
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Usage Overview */}
+                  {subscriptionStatus && (
+                    <div className="space-y-4">
+                      <h3 className="font-semibold text-gray-900">Usage This Month</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <UsageIndicator
+                          label="Connections"
+                          current={subscriptionStatus.usage.connectionsUsed}
+                          limit={typeof subscriptionStatus.features.connections === 'number' ? subscriptionStatus.features.connections : undefined}
+                          icon="👥"
+                        />
+                        <UsageIndicator
+                          label="AI Insights"
+                          current={subscriptionStatus.usage.aiInsightsUsed}
+                          limit={subscriptionStatus.features.aiInsightsPerMonth}
+                          icon="🧠"
+                        />
+                        <UsageIndicator
+                          label="AI Coaching"
+                          current={subscriptionStatus.usage.aiCoachingUsed}
+                          limit={subscriptionStatus.features.aiCoachingPerMonth}
+                          icon="💬"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Premium Features */}
+                  {!isPremium && (
+                    <div className="space-y-4">
+                      <h3 className="font-semibold text-gray-900">Premium Features</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="p-4 border border-gray-200 rounded-lg">
+                          <div className="font-medium mb-2">Unlimited Connections</div>
+                          <div className="text-sm text-gray-600">Track relationships with as many people as you want</div>
+                        </div>
+                        <div className="p-4 border border-gray-200 rounded-lg">
+                          <div className="font-medium mb-2">50 AI Insights/Month</div>
+                          <div className="text-sm text-gray-600">Get comprehensive relationship analysis</div>
+                        </div>
+                        <div className="p-4 border border-gray-200 rounded-lg">
+                          <div className="font-medium mb-2">100 AI Coaching/Month</div>
+                          <div className="text-sm text-gray-600">Unlimited access to relationship coaching</div>
+                        </div>
+                        <div className="p-4 border border-gray-200 rounded-lg">
+                          <div className="font-medium mb-2">Advanced Analytics</div>
+                          <div className="text-sm text-gray-600">Deep insights and pattern recognition</div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Billing Actions */}
+                  {isPremium && (
+                    <div className="space-y-4">
+                      <h3 className="font-semibold text-gray-900">Billing Management</h3>
+                      <div className="flex gap-3">
+                        <Button variant="outline">
+                          View Billing History
+                        </Button>
+                        <Button variant="outline">
+                          Update Payment Method
+                        </Button>
+                        <Button variant="outline">
+                          Cancel Subscription
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="data" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Download className="h-5 w-5" />
+                Data Management
+              </CardTitle>
+              <CardDescription>
+                Export your data or manage archived connections
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-4">
+                <div>
+                  <Label className="text-sm font-medium">Export Data</Label>
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400">Download all your data</p>
+                </div>
+                <Button onClick={handleExportData} disabled={isExporting}>
+                  <Download className="h-4 w-4 mr-2" />
+                  {isExporting ? "Preparing..." : "Export Data"}
+                </Button>
+              </div>
+
+              <Separator />
+
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label className="text-red-600 dark:text-red-400">Delete Account</Label>
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400">Permanently delete your account</p>
+                </div>
+                <Button variant="destructive" onClick={handleDeleteAccount}>
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  Delete
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Archived Connections */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Archive className="h-5 w-5" />
+                Archived Connections
+              </CardTitle>
+              <CardDescription>
+                Restore archived connections back to your active list
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {archivedConnections.length === 0 ? (
+                <div className="text-center py-6">
+                  <Archive className="h-12 w-12 mx-auto text-neutral-400 mb-3" />
+                  <p className="text-neutral-600 dark:text-neutral-400">No archived connections</p>
+                  <p className="text-sm text-neutral-500 dark:text-neutral-500">
+                    Connections you archive will appear here
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {archivedConnections.map((connection: any) => (
+                    <div key={connection.id} className="flex items-center justify-between p-3 border rounded-lg dark:border-neutral-700">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-neutral-200 dark:bg-neutral-700 rounded-full flex items-center justify-center">
+                          {connection.profileImage ? (
+                            <img 
+                              src={connection.profileImage} 
+                              alt={connection.name}
+                              className="w-10 h-10 rounded-full object-cover"
+                            />
+                          ) : (
+                            <span className="text-sm font-medium text-neutral-600 dark:text-neutral-300">
+                              {connection.name.charAt(0).toUpperCase()}
+                            </span>
+                          )}
+                        </div>
+                        <div>
+                          <div className="font-medium">{connection.name}</div>
+                          <div className="text-sm text-neutral-500 dark:text-neutral-400">
+                            {connection.relationshipStage}
+                          </div>
+                        </div>
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => restoreConnectionMutation.mutate(connection.id)}
+                        disabled={restoreConnectionMutation.isPending}
+                      >
+                        <RotateCcw className="h-4 w-4 mr-1" />
+                        {restoreConnectionMutation.isPending ? "Restoring..." : "Restore"}
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+            </TabsContent>
+
+            <TabsContent value="preferences" className="space-y-6">
           {/* Notifications */}
           <Card>
             <CardHeader>
