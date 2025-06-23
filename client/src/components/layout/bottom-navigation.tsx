@@ -104,7 +104,7 @@ export function BottomNavigation() {
               className="bg-blue-500 text-white rounded-full h-12 w-12 flex items-center justify-center shadow-lg hover:shadow-xl transition-all hover:scale-105 relative group"
             >
               <UserPlus className="h-5 w-5" />
-              <span className="absolute right-14 bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
+              <span className="absolute right-14 bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap">
                 Add Connection
               </span>
             </button>
@@ -118,7 +118,7 @@ export function BottomNavigation() {
               className="bg-purple-500 text-white rounded-full h-12 w-12 flex items-center justify-center shadow-lg hover:shadow-xl transition-all hover:scale-105 relative group"
             >
               <CalendarPlus className="h-5 w-5" />
-              <span className="absolute right-14 bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
+              <span className="absolute right-14 bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap">
                 Add Plan
               </span>
             </button>
@@ -128,7 +128,7 @@ export function BottomNavigation() {
               className="bg-pink-500 text-white rounded-full h-12 w-12 flex items-center justify-center shadow-lg hover:shadow-xl transition-all hover:scale-105 relative group"
             >
               <Heart className="h-5 w-5" />
-              <span className="absolute right-14 bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
+              <span className="absolute right-14 bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap">
                 Log Intimacy
               </span>
             </button>
@@ -148,7 +148,7 @@ export function BottomNavigation() {
               className="bg-green-500 text-white rounded-full h-12 w-12 flex items-center justify-center shadow-lg hover:shadow-xl transition-all hover:scale-105 relative group"
             >
               <Smile className="h-5 w-5" />
-              <span className="absolute right-14 bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
+              <span className="absolute right-14 bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap">
                 Log Moment
               </span>
             </button>
