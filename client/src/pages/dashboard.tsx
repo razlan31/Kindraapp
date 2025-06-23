@@ -18,6 +18,7 @@ import { FocusSelector } from "@/components/relationships/focus-selector";
 import { useRelationshipFocus } from "@/contexts/relationship-focus-context";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { SubscriptionBanner } from "@/components/subscription/subscription-banner";
 
 export default function Dashboard() {
   console.log("Dashboard component rendered");

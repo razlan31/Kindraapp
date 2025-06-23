@@ -1,8 +1,8 @@
 import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Crown, Star, Zap } from "lucide-react";
+import { Crown, Star, ArrowUp } from "lucide-react";
 import { PricingModal } from "./pricing-modal";
 
 interface UpgradePromptProps {
@@ -10,66 +10,42 @@ interface UpgradePromptProps {
   message: string;
   currentUsage?: number;
   limit?: number;
-  className?: string;
 }
 
-export function UpgradePrompt({ 
-  feature, 
-  message, 
-  currentUsage, 
-  limit, 
-  className = "" 
-}: UpgradePromptProps) {
+export function UpgradePrompt({ feature, message, currentUsage, limit }: UpgradePromptProps) {
   const [showPricingModal, setShowPricingModal] = useState(false);
 
   return (
     <>
-      <Card className={`border-purple-200 bg-gradient-to-br from-purple-50 to-blue-50 ${className}`}>
-        <CardHeader className="text-center pb-3">
-          <div className="flex justify-center mb-2">
-            <div className="p-3 bg-purple-100 rounded-full">
-              <Crown className="h-6 w-6 text-purple-600" />
-            </div>
+      <Card className="border-orange-200 bg-gradient-to-r from-orange-50 to-red-50">
+        <CardHeader className="text-center">
+          <div className="mx-auto w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center mb-4">
+            <Crown className="h-8 w-8 text-white" />
           </div>
-          <CardTitle className="text-lg">Upgrade to Premium</CardTitle>
-          <CardDescription className="text-center">
-            {message}
-          </CardDescription>
-        </CardHeader>
-        
-        <CardContent className="space-y-4">
+          <CardTitle className="text-xl font-bold text-gray-900">
+            {feature} Limit Reached
+          </CardTitle>
           {currentUsage !== undefined && limit !== undefined && (
-            <div className="text-center">
-              <Badge variant="outline" className="border-purple-200 text-purple-700">
-                {currentUsage}/{limit} {feature} used this month
-              </Badge>
-            </div>
+            <Badge variant="outline" className="border-orange-500 text-orange-600 mx-auto">
+              {currentUsage}/{limit} used this month
+            </Badge>
           )}
+        </CardHeader>
+        <CardContent className="text-center space-y-4">
+          <p className="text-gray-600">{message}</p>
           
-          <div className="space-y-2">
-            <div className="flex items-center gap-2 text-sm">
-              <Zap className="h-4 w-4 text-yellow-500" />
-              <span>Unlimited {feature.toLowerCase()}</span>
-            </div>
-            <div className="flex items-center gap-2 text-sm">
-              <Star className="h-4 w-4 text-blue-500" />
-              <span>Advanced relationship analytics</span>
-            </div>
-            <div className="flex items-center gap-2 text-sm">
-              <Crown className="h-4 w-4 text-purple-500" />
-              <span>Ad-free experience</span>
-            </div>
-          </div>
-          
-          <Button 
-            onClick={() => setShowPricingModal(true)}
-            className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
-          >
-            Start 5-Day Free Trial
-          </Button>
-          
-          <div className="text-center text-xs text-muted-foreground">
-            Cancel anytime • No commitment required
+          <div className="space-y-3">
+            <Button 
+              onClick={() => setShowPricingModal(true)}
+              className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+            >
+              <Star className="h-4 w-4 mr-2" />
+              Upgrade to Premium
+            </Button>
+            
+            <p className="text-sm text-gray-500">
+              Get unlimited access to all features with our premium plans starting at $1.99/week
+            </p>
           </div>
         </CardContent>
       </Card>
