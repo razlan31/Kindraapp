@@ -9,6 +9,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { ArrowLeft, Camera, Save, Edit, Shield, LogOut } from "lucide-react";
+import { Header } from "@/components/layout/header";
+import { BottomNavigation } from "@/components/layout/bottom-navigation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -223,8 +225,10 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900" key={`profile-${user.id}-${user.email}-${user.relationshipGoals}`}>
-      <div className="max-w-2xl mx-auto p-3 space-y-4">
+    <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900">
+      <Header />
+      <main className="container mx-auto px-4 py-8 pb-20">
+        <div className="max-w-2xl mx-auto space-y-4" key={`profile-${user.id}-${user.email}-${user.relationshipGoals}`}>
         {/* Header */}
         <div className="flex items-center gap-4 pt-4">
           <Button
@@ -563,7 +567,9 @@ export default function ProfilePage() {
             </Button>
           </div>
         )}
-      </div>
+        </div>
+      </main>
+      <BottomNavigation />
     </div>
   );
 }

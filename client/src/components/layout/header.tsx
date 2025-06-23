@@ -31,7 +31,9 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 bg-white dark:bg-neutral-900 px-4 py-3 border-b border-neutral-200 dark:border-neutral-800 flex items-center">
       <div className="flex items-center">
-        <h1 className="text-2xl font-heading font-bold text-primary">Kindra</h1>
+        <Link href="/" className="text-2xl font-heading font-bold text-primary hover:opacity-80 transition-opacity">
+          Kindra
+        </Link>
       </div>
       <div className="flex-1"></div>
       <div className="flex items-center space-x-3">

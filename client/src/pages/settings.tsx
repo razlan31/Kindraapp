@@ -377,15 +377,9 @@ function Settings() {
     <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900">
       <Header />
       <main className="container mx-auto px-4 py-8 pb-20">
-        <div className="flex justify-between items-center mb-4">
-          <div>
-            <h2 className="text-xl font-heading font-semibold">Settings</h2>
-            <p className="text-sm text-neutral-600 dark:text-neutral-400">Manage your preferences</p>
-          </div>
-          <Button onClick={handleSaveSettings} disabled={saveSettingsMutation.isPending} size="sm">
-            <Save className="h-4 w-4 mr-2" />
-            {saveSettingsMutation.isPending ? "Saving..." : "Save"}
-          </Button>
+        <div className="mb-4">
+          <h2 className="text-xl font-heading font-semibold">Settings</h2>
+          <p className="text-sm text-neutral-600 dark:text-neutral-400">Manage your preferences</p>
         </div>
 
         <div className="space-y-6">

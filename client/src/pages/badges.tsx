@@ -8,6 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Trophy, Lock, Star, Award, Target, Calendar, Heart, MessageCircle, UserPlus, Zap, ArrowLeft } from "lucide-react";
 import { BottomNavigation } from "@/components/layout/bottom-navigation";
+import { Header } from "@/components/layout/header";
 
 interface Badge {
   id: number;
@@ -208,7 +209,9 @@ export default function BadgesPage() {
   const completionPercentage = Math.round((earnedBadgeIds.size / allBadges.length) * 100);
 
   return (
-    <div className="container mx-auto p-6 max-w-7xl pb-20">
+    <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900">
+      <Header />
+      <main className="container mx-auto p-6 max-w-7xl pb-20">
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-4 mb-4">
