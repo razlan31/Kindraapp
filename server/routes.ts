@@ -3254,7 +3254,7 @@ Format as a brief analysis (2-3 sentences) focusing on what their data actually 
   });
 
   // Stripe webhook for subscription events
-  app.post("/api/webhook/stripe", express.raw({type: 'application/json'}), async (req: Request, res: Response) => {
+  app.post("/api/webhook/stripe", async (req: Request, res: Response) => {
     const sig = req.headers['stripe-signature'];
     let event;
 
