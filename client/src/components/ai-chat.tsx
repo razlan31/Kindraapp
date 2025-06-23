@@ -447,17 +447,17 @@ export function AIChat({ className, compact = false }: AIChatProps = {}) {
             </Card>
           )}
 
-          <div className="h-[calc(100vh-200px)] max-h-[450px] overflow-y-auto rounded-lg p-6 space-y-4 bg-gradient-to-br from-violet-50/50 via-purple-50/30 to-pink-50/50 dark:from-violet-900/10 dark:via-purple-900/10 dark:to-pink-900/10">
+          <div className="h-[calc(100vh-240px)] overflow-y-auto rounded-xl p-4 space-y-4 bg-gradient-to-br from-violet-50/80 via-purple-50/60 to-pink-50/80 dark:from-violet-900/20 dark:via-purple-900/20 dark:to-pink-900/20 border border-violet-100 dark:border-violet-800">
             {conversation.length === 0 ? (
-              <div className="text-center py-12">
-                <div className="mb-8">
-                  <div className="bg-gradient-to-r from-rose-400 to-purple-400 p-4 rounded-xl w-16 h-16 mx-auto mb-6">
+              <div className="text-center py-8">
+                <div className="mb-6">
+                  <div className="bg-gradient-to-r from-violet-500 to-purple-500 p-3 rounded-2xl w-14 h-14 mx-auto mb-4">
                     <MessageCircle className="h-8 w-8 text-white" />
                   </div>
-                  <h3 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">
-                    Luna AI
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                    🌙 Luna AI Coach
                   </h3>
-                  <p className="text-gray-600 dark:text-gray-400 max-w-md mx-auto">
+                  <p className="text-gray-600 dark:text-gray-400 text-sm px-4">
                     Your intelligent relationship coach
                   </p>
                 </div>
@@ -528,13 +528,13 @@ export function AIChat({ className, compact = false }: AIChatProps = {}) {
               onChange={(e) => setMessage(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Ask your AI relationship coach anything..."
-              className="flex-1 min-h-[60px] max-h-[120px] resize-none border-violet-200 focus:border-violet-400 focus:ring-violet-100"
+              className="flex-1 min-h-[80px] max-h-[120px] resize-none border-violet-200 focus:border-violet-400 focus:ring-violet-100 text-base"
               disabled={chatMutation.isPending}
             />
             <Button
               onClick={handleSubmit}
               disabled={!message.trim() || chatMutation.isPending}
-              className="h-[60px] px-6 flex items-center gap-2 bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white border-0"
+              className="h-[80px] px-6 flex items-center gap-2 bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white border-0 rounded-xl"
             >
               {chatMutation.isPending ? (
                 <Loader2 className="h-5 w-5 animate-spin" />
