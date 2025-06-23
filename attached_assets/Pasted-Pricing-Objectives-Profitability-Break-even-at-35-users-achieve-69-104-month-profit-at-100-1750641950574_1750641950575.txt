@@ -1,0 +1,236 @@
+Pricing Objectives
+
+
+
+
+
+Profitability: Break even at ~35 users; achieve $69–$104/month profit at 100 users, $744–$1,074/month at 1,000 users.
+
+
+
+User Appeal: Offer a 37% annual discount ($29.99 vs. $47.88) to make pricing compelling, boosting retention.
+
+
+
+Accessibility: Set $3.99/month (~RM 17) and $1.99/week (~RM 8.50) to maximize 15–20% conversions in Malaysia.
+
+
+
+Capital: Generate ~$208–$313 after 3 months at 100 users for US marketing.
+
+
+
+Cost Coverage: Cover OpenAI, hosting ($5–$50/month), and Stripe fees (~3%).
+
+Pricing Model
+
+Free Tier (Ad-Supported)
+
+
+
+
+
+Features:
+
+
+
+
+
+2 connections.
+
+
+
+Basic moment tracking (emojis, tags).
+
+
+
+3 AI insights and 3 AI coach generations/month.
+
+
+
+Basic quotes, 3 badges, calendar view.
+
+
+
+Single banner ad (Google AdSense/AdMob, styled in Warm Peach #F6B89B, Soft Lavender #C9AEDF).
+
+
+
+Ad Revenue: $0.50–$1.50/user/month (avg $1.00).
+
+
+
+Purpose: Drive sign-ups, generate baseline revenue, and showcase AI value for trial conversions.
+
+Premium Tier (Ad-Free, 5-Day Free Trial)
+
+
+
+
+
+Features:
+
+
+
+
+
+Unlimited connections and moment tracking.
+
+
+
+Unlimited AI insights and coaching (OpenAI GPT-4o).
+
+
+
+Advanced analytics (relationship health scores, patterns).
+
+
+
+Menstrual cycle tracking with predictive insights.
+
+
+
+Full badges and milestones.
+
+
+
+Data export, priority support.
+
+
+
+Billing Options:
+
+
+
+
+
+Weekly: $1.99 (~$8.67/month, ~RM 8.50).
+
+
+
+Monthly: $3.99 (~RM 17).
+
+
+
+Annual: $29.99 (~$2.50/month, ~RM 10.65, 37% savings vs. $3.99 × 12 = $47.88).
+
+
+
+Purpose: Balance affordability with a compelling annual plan to maximize conversions and retention.
+
+Cost and Revenue Analysis
+
+Costs
+
+
+
+
+
+OpenAI API: Free: ~$0.25/user/month (cached); Premium: $1–$3/user/month.
+
+
+
+Hosting: Replit with PostgreSQL/Node.js, $5–$10/month (100 users), $20–$50/month (1,000 users).
+
+
+
+Stripe Fees: ~3% of premium revenue.
+
+
+
+Total:
+
+
+
+
+
+100 users (85 free, 15 premium, 15% conversion): $43.62–$78.62/month.
+
+
+
+1,000 users (850 free, 150 premium): $406.22–$736.22/month.
+
+Revenue
+
+
+
+
+
+Assumptions:
+
+
+
+
+
+15% conversion rate (5-day trial, 3 AI insights/month).
+
+
+
+Billing mix: 30% weekly ($8.67/month), 50% monthly ($3.99), 20% annual ($2.50).
+
+
+
+Avg premium revenue: (0.3 × $8.67) + (0.5 × $3.99) + (0.2 × $2.50) = $4.20/user/month.
+
+
+
+Ad revenue: $1.00/free user/month.
+
+
+
+At 100 Users:
+
+
+
+
+
+Free: 85 × $1.00 = $85.
+
+
+
+Premium: 15 × $4.20 = $63.
+
+
+
+Total: $148/month.
+
+
+
+Costs: $43.62–$78.62.
+
+
+
+Profit: $69.38–$104.38/month (~$833–$1,253/year).
+
+
+
+Capital (3 months): $208–$313 for US marketing.
+
+
+
+At 1,000 Users:
+
+
+
+
+
+Free: 850 × $1.00 = $850.
+
+
+
+Premium: 150 × $4.20 = $630.
+
+
+
+Total: $1,480/month.
+
+
+
+Costs: $406.22–$736.22.
+
+
+
+Profit: $743.78–$1,073.78/month (~$8,925–$12,885/year).
+
+
+

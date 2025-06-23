@@ -32,10 +32,83 @@ export const users = pgTable("users", {
   personalNotes: text("personal_notes"),
   stripeCustomerId: text("stripe_customer_id"),
   stripeSubscriptionId: text("stripe_subscription_id"),
+  subscriptionStatus: text("subscription_status").default("free"), // free, active, canceled, past_due
+  subscriptionPlan: text("subscription_plan"), // weekly, monthly, annual
+  subscriptionStartDate: timestamp("subscription_start_date"),
+  subscriptionEndDate: timestamp("subscription_end_date"),
+  trialEndDate: timestamp("trial_end_date"), // 5-day free trial
   points: integer("points").default(0),
+  // Usage tracking for free tier limits
+  monthlyAiInsights: integer("monthly_ai_insights").default(0),
+  monthlyAiCoaching: integer("monthly_ai_coaching").default(0),
+  lastUsageReset: timestamp("last_usage_reset").defaultNow(),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
+
+// Subscription plans configuration
+export const subscriptionPlans = {
+  free: {
+    name: "Free",
+    price: 0,
+    interval: null,
+    features: {
+      connections: 1,
+      aiInsightsPerMonth: 3,
+      aiCoachingPerMonth: 3,
+      advancedAnalytics: false,
+      cycleTracking: "basic",
+      dataExport: false,
+      prioritySupport: false,
+      adFree: false
+    }
+  },
+  weekly: {
+    name: "Premium Weekly",
+    price: 1.99,
+    interval: "week",
+    features: {
+      connections: "unlimited",
+      aiInsightsPerMonth: "unlimited",
+      aiCoachingPerMonth: "unlimited", 
+      advancedAnalytics: true,
+      cycleTracking: "advanced",
+      dataExport: true,
+      prioritySupport: true,
+      adFree: true
+    }
+  },
+  monthly: {
+    name: "Premium Monthly", 
+    price: 4.99,
+    interval: "month",
+    features: {
+      connections: "unlimited",
+      aiInsightsPerMonth: "unlimited",
+      aiCoachingPerMonth: "unlimited",
+      advancedAnalytics: true,
+      cycleTracking: "advanced", 
+      dataExport: true,
+      prioritySupport: true,
+      adFree: true
+    }
+  },
+  annual: {
+    name: "Premium Annual",
+    price: 39.99,
+    interval: "year", 
+    features: {
+      connections: "unlimited",
+      aiInsightsPerMonth: "unlimited",
+      aiCoachingPerMonth: "unlimited",
+      advancedAnalytics: true,
+      cycleTracking: "advanced",
+      dataExport: true,
+      prioritySupport: true,
+      adFree: true
+    }
+  }
+} as const;
 
 export const userSchema = createInsertSchema(users).omit({ id: true, createdAt: true, updatedAt: true });
 export const registrationSchema = userSchema.pick({ username: true, email: true, password: true, displayName: true, zodiacSign: true, loveLanguage: true });
