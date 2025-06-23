@@ -401,8 +401,8 @@ function Settings() {
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="preferences">Preferences</TabsTrigger>
-              <TabsTrigger value="billing">Billing</TabsTrigger>
               <TabsTrigger value="data">Data</TabsTrigger>
+              <TabsTrigger value="billing">Billing</TabsTrigger>
               <TabsTrigger value="support">Support</TabsTrigger>
             </TabsList>
 
@@ -567,11 +567,6 @@ function Settings() {
               </Card>
             </TabsContent>
 
-            {/* Billing Tab */}
-            <TabsContent value="billing" className="space-y-6">
-              <BillingSection />
-            </TabsContent>
-
             {/* Data Tab */}
             <TabsContent value="data" className="space-y-6">
               <Card>
@@ -649,7 +644,10 @@ function Settings() {
               </Card>
             </TabsContent>
 
-
+            {/* Billing Tab */}
+            <TabsContent value="billing" className="space-y-6">
+              <BillingSection />
+            </TabsContent>
 
             {/* Support Tab */}
             <TabsContent value="support" className="space-y-6">
