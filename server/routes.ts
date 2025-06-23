@@ -4,8 +4,10 @@ import { storage } from "./database-storage";
 import { z } from "zod";
 import { 
   userSchema, connectionSchema, momentSchema,
-  userBadgeSchema, menstrualCycleSchema, milestoneSchema, planSchema, chatConversationSchema
+  userBadgeSchema, menstrualCycleSchema, milestoneSchema, planSchema, chatConversationSchema,
+  subscriptionPlans
 } from "@shared/schema";
+import { getUserSubscriptionStatus, incrementUsage, startFreeTrial } from "./subscription-utils";
 import bcrypt from "bcryptjs";
 import session from "express-session";
 import MemoryStore from "memorystore";
