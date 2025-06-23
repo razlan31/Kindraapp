@@ -2682,6 +2682,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Start new chat (saves current conversation and starts fresh)
+  app.post("/api/ai/conversation/new", isAuthenticated, async (req: Request, res: Response) => {
+    try {
+      const userId = (req.session as any).userId as number;
+      await aiCoach.startNewConversation(userId);
+      
+      res.json({ message: "New conversation started" });
+    } catch (error) {
+      console.error("Error starting new conversation:", error);
+      res.status(500).json({ message: "Failed to start new conversation" });
+    }
+  });
+
+  // Clear all conversation history (destructive action)
   app.delete("/api/ai/conversation", isAuthenticated, async (req: Request, res: Response) => {
     try {
       const userId = (req.session as any).userId as number;

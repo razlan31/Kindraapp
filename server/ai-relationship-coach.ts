@@ -323,7 +323,32 @@ PERSONAL GROWTH TRACKING:`;
     return summary;
   }
 
+  async startNewConversation(userId: number): Promise<void> {
+    console.log("🆕 Starting new conversation for user:", userId);
+    
+    // Save current conversation to database if it exists
+    const currentHistory = this.conversationHistory.get(userId);
+    if (currentHistory && currentHistory.length > 0) {
+      try {
+        const title = currentHistory[0].content.slice(0, 50) + "...";
+        await this.storage.createChatConversation({
+          userId: userId.toString(),
+          title,
+          messages: JSON.stringify(currentHistory)
+        });
+        console.log("💾 Saved current conversation to database");
+      } catch (dbError) {
+        console.error("❌ Failed to save current conversation:", dbError);
+      }
+    }
+    
+    // Clear memory cache to start fresh
+    this.conversationHistory.delete(userId);
+    console.log("✅ New conversation started");
+  }
+
   async clearConversationHistory(userId: number): Promise<void> {
+    console.log("🗑️ Clearing all conversation history for user:", userId);
     this.conversationHistory.delete(userId);
     
     // Also clear from database
@@ -332,8 +357,9 @@ PERSONAL GROWTH TRACKING:`;
       for (const conversation of conversations) {
         await this.storage.deleteChatConversation(conversation.id);
       }
+      console.log("✅ All conversation history cleared");
     } catch (dbError) {
-      console.error("Failed to clear conversation from database:", dbError);
+      console.error("❌ Failed to clear conversation from database:", dbError);
     }
   }
 
