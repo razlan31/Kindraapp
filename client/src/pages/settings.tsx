@@ -371,9 +371,9 @@ function Settings() {
   }
 
   return (
-    <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900">
+    <div className="bg-neutral-50 dark:bg-neutral-900">
       <Header />
-      <main className="container mx-auto px-4 py-6 pb-40">
+      <main className="container mx-auto px-4 py-4" style={{ paddingBottom: '5rem', minHeight: 'calc(100vh - 4rem - 4rem)' }}>
         <div className="mb-4">
           <h2 className="text-xl font-heading font-semibold">Settings</h2>
           <p className="text-sm text-neutral-600 dark:text-neutral-400">Manage your preferences</p>

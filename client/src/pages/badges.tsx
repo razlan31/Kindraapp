@@ -209,9 +209,9 @@ export default function BadgesPage() {
   const completionPercentage = Math.round((earnedBadgeIds.size / allBadges.length) * 100);
 
   return (
-    <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900">
+    <div className="bg-neutral-50 dark:bg-neutral-900">
       <Header />
-      <main className="container mx-auto p-4 max-w-7xl pb-40">
+      <main className="container mx-auto p-4 max-w-7xl" style={{ paddingBottom: '5rem', minHeight: 'calc(100vh - 4rem - 4rem)' }}>
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-4 mb-4">
