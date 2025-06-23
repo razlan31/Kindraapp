@@ -318,13 +318,46 @@ PERSONAL GROWTH TRACKING:`;
     return summary;
   }
 
-  clearConversation(userId: number): void {
+  async clearConversationHistory(userId: number): Promise<void> {
     this.conversationHistory.delete(userId);
+    
+    // Also clear from database
+    try {
+      const conversations = await this.storage.getChatConversations(userId.toString());
+      for (const conversation of conversations) {
+        await this.storage.deleteChatConversation(conversation.id);
+      }
+    } catch (dbError) {
+      console.error("Failed to clear conversation from database:", dbError);
+    }
   }
 
-  getConversationHistory(userId: number): ChatMessage[] {
-    return this.conversationHistory.get(userId) || [];
+  async getConversationHistory(userId: number): Promise<ChatMessage[]> {
+    // Check memory first
+    let history = this.conversationHistory.get(userId);
+    
+    if (!history || history.length === 0) {
+      // Load from database if not in memory
+      try {
+        const conversations = await this.storage.getChatConversations(userId.toString());
+        if (conversations.length > 0) {
+          const latestConversation = conversations[conversations.length - 1];
+          if (latestConversation.messages) {
+            const messages = typeof latestConversation.messages === 'string' 
+              ? JSON.parse(latestConversation.messages) 
+              : latestConversation.messages;
+            history = messages.map((msg: any) => ({
+              ...msg,
+              timestamp: new Date(msg.timestamp)
+            }));
+            this.conversationHistory.set(userId, history);
+          }
+        }
+      } catch (dbError) {
+        console.error("Failed to load conversation from database:", dbError);
+      }
+    }
+    
+    return history || [];
   }
 }
-
-export const aiCoach = new AIRelationshipCoach();

@@ -119,6 +119,9 @@ const isAuthenticated = (req: Request & { session: any }, res: Response, next: F
 };
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Initialize AI coach with storage dependency
+  const aiCoach = new AIRelationshipCoach(storage);
+  
   // Setup Google OAuth authentication
   await setupAuth(app);
 
