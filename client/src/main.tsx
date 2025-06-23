@@ -1,7 +1,7 @@
 import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";
-import { ThemeProvider } from "./components/theme-provider";
+import { ThemeProvider } from "./contexts/theme-context";
 import { AuthProvider } from "./contexts/auth-context";
 import { ModalProvider } from "./contexts/modal-context";
 
