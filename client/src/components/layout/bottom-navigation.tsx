@@ -185,7 +185,7 @@ export function BottomNavigation() {
               <Calendar className="h-4 w-4" />
               <span className="text-[10px] mt-0.5">Calendar</span>
             </Link>
-            <Link href="/insights-duplicate" className={`bottom-tab flex flex-col items-center justify-center h-full px-1 ${location === '/insights-duplicate' ? 'active' : ''}`}>
+            <Link href="/insights" className={`bottom-tab flex flex-col items-center justify-center h-full px-1 ${location === '/insights' ? 'active' : ''}`}>
               <LineChart className="h-4 w-4" />
               <span className="text-[10px] mt-0.5">Insights</span>
             </Link>

@@ -84,9 +84,9 @@ function Router() {
       <Route path="/connections/:id" component={ConnectionDetail} />
       <Route path="/activities" component={Activities} />
       <Route path="/calendar" component={Calendar} />
-      <Route path="/insights-duplicate" component={InsightsDuplicate} />
       <Route path="/badges" component={Badges} />
       <Route path="/insights" component={InsightsNew} />
+      <Route path="/insights-duplicate" component={InsightsDuplicate} />
       <Route path="/profile" component={Profile} />
       <Route path="/settings" component={Settings} />
 
