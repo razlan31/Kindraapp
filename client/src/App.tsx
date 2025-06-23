@@ -22,7 +22,7 @@ import Calendar from "@/pages/calendar";
 import InsightsNew from "@/pages/insights-new";
 import Profile from "@/pages/profile";
 import Settings from "@/pages/settings";
-import SubscriptionPage from "@/pages/subscription";
+
 
 import MenstrualCycle from "@/pages/menstrual-cycle";
 import AICoach from "@/pages/ai-coach";
@@ -84,7 +84,7 @@ function Router() {
       <Route path="/insights" component={InsightsNew} />
       <Route path="/profile" component={Profile} />
       <Route path="/settings" component={Settings} />
-      <Route path="/subscription" component={SubscriptionPage} />
+
       <Route path="/cycle" component={MenstrualCycle} />
       <Route path="/cycle-tracking" component={MenstrualCycle} />
       <Route path="/menstrual-cycle" component={MenstrualCycle} />

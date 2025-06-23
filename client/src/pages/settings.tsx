@@ -853,6 +853,14 @@ export default function Settings() {
       </main>
 
       <BottomNavigation />
+
+      {/* Pricing Modal */}
+      <PricingModal
+        isOpen={showPricingModal}
+        onClose={() => setShowPricingModal(false)}
+        currentPlan={isPremium ? 'premium' : 'free'}
+        showTrialButton={!isTrialActive}
+      />
     </div>
   );
 }

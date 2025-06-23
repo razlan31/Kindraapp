@@ -181,9 +181,9 @@ export function BottomNavigation() {
               <Heart className="h-5 w-5" />
               <span className="text-xs mt-1">Activities</span>
             </Link>
-            <Link href="/subscription" className={`bottom-tab flex flex-col items-center justify-center h-full ${location === '/subscription' ? 'active' : ''}`}>
-              <Trophy className="h-5 w-5" />
-              <span className="text-xs mt-1">Premium</span>
+            <Link href="/calendar" className={`bottom-tab flex flex-col items-center justify-center h-full ${location === '/calendar' ? 'active' : ''}`}>
+              <Calendar className="h-5 w-5" />
+              <span className="text-xs mt-1">Calendar</span>
             </Link>
           </div>
         </div>
