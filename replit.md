@@ -111,6 +111,13 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
+- June 23, 2025: CODEBASE CLEANUP - Removed duplicate home page versions and cleaned up unnecessary components
+  - Deleted insights-duplicate.tsx (duplicate of dashboard functionality)
+  - Deleted legacy insights.tsx (old insights page)
+  - Simplified navigation structure with single insights page (InsightsNew)
+  - Cleaned up App.tsx imports and routes
+  - Final structure: Home (InsightsNew), Dashboard, with clear separation of concerns
+
 - June 23, 2025: NAVIGATION RESTRUCTURE - Separated AI coach and reorganized app structure for better user experience
   - Created dedicated Luna AI page with full-screen chat experience
   - Renamed Activities to "Trackings" with toggle between Activities and Connections views
