@@ -259,14 +259,32 @@ export function AIChat() {
     }
   };
 
-  const startNewChat = () => {
-    if (conversation.length > 0) {
-      saveConversationMutation.mutate(conversation);
+  // Start new chat mutation
+  const newChatMutation = useMutation({
+    mutationFn: async () => {
+      const response = await fetch('/api/ai/conversation/new', {
+        method: 'POST',
+      });
+      if (!response.ok) {
+        throw new Error('Failed to start new chat');
+      }
+      return await response.json();
+    },
+    onSuccess: () => {
+      setConversation([]);
+      setCurrentConversationId(null);
+      setMessage("");
+      queryClient.invalidateQueries({ queryKey: ['/api/ai/conversation'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/chat/conversations'] });
+      toast({
+        title: "New chat started",
+        description: "Your previous conversation has been saved",
+      });
     }
-    setConversation([]);
-    setCurrentConversationId(null);
-    setMessage("");
-    clearMutation.mutate();
+  });
+
+  const startNewChat = () => {
+    newChatMutation.mutate();
   };
 
   const downloadConversation = () => {
@@ -354,7 +372,8 @@ export function AIChat() {
                   <TooltipTrigger asChild>
                     <button
                       onClick={startNewChat}
-                      className="p-2 rounded-lg bg-gradient-to-r from-violet-100 to-purple-100 hover:from-violet-200 hover:to-purple-200 dark:from-violet-800/20 dark:to-purple-800/20 dark:hover:from-violet-700/30 dark:hover:to-purple-700/30 transition-all"
+                      disabled={newChatMutation.isPending || conversation.length === 0}
+                      className="p-2 rounded-lg bg-gradient-to-r from-violet-100 to-purple-100 hover:from-violet-200 hover:to-purple-200 dark:from-violet-800/20 dark:to-purple-800/20 dark:hover:from-violet-700/30 dark:hover:to-purple-700/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <Plus className="h-4 w-4 text-violet-600 dark:text-violet-400" />
                     </button>
