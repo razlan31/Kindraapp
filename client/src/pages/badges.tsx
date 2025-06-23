@@ -172,18 +172,7 @@ export default function BadgesPage() {
 
   const isLoading = userBadgesLoading || allBadgesLoading;
 
-  if (isLoading) {
-    return (
-      <div className="container mx-auto p-6">
-        <div className="text-center py-8">
-          <div className="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto"></div>
-          <p className="mt-2 text-gray-600 dark:text-gray-400">Loading badges...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Memoize expensive calculations
+  // Memoize expensive calculations - always called to avoid hooks order issues
   const { earnedBadgeIds, earnedBadges, unearnedBadges, badgesByCategory } = useMemo(() => {
     const earnedIds = new Set(userBadges.map(ub => ub.badgeId));
     const earned = userBadges.filter(ub => ub.badge && ub.badge.id);
@@ -206,6 +195,26 @@ export default function BadgesPage() {
     };
   }, [userBadges, allBadges]);
 
+  const completionPercentage = useMemo(() => 
+    Math.round((earnedBadgeIds.size / Math.max(allBadges.length, 1)) * 100), 
+    [earnedBadgeIds.size, allBadges.length]
+  );
+
+  if (isLoading) {
+    return (
+      <div className="bg-neutral-50 dark:bg-neutral-900">
+        <Header />
+        <main className="container mx-auto p-4 max-w-7xl" style={{ paddingBottom: '5rem', minHeight: 'calc(100vh - 4rem - 4rem)' }}>
+          <div className="text-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+            <p className="mt-4 text-gray-600 dark:text-gray-400">Loading badges...</p>
+          </div>
+        </main>
+        <BottomNavigation />
+      </div>
+    );
+  }
+
   const categoryIcons = {
     "Getting Started": <UserPlus className="w-5 h-5 text-blue-500" />,
     "Relationship Progress": <Heart className="w-5 h-5 text-pink-500" />,
@@ -218,7 +227,7 @@ export default function BadgesPage() {
     "Legendary": <Trophy className="w-5 h-5 text-yellow-600" />,
   };
 
-  const completionPercentage = Math.round((earnedBadgeIds.size / allBadges.length) * 100);
+
 
   return (
     <div className="bg-neutral-50 dark:bg-neutral-900">
