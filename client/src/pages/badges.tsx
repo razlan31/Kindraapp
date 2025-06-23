@@ -315,7 +315,7 @@ export default function BadgesPage() {
           )}
         </TabsContent>
       </Tabs>
-      
+      </main>
       <BottomNavigation />
     </div>
   );

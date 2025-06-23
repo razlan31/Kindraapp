@@ -23,7 +23,6 @@ import {
   Trash2, 
   LogOut,
   Lock,
-  Save,
   CreditCard,
   RotateCcw,
   Archive,
@@ -307,9 +306,7 @@ function Settings() {
     },
   });
 
-  const handleSaveSettings = () => {
-    saveSettingsMutation.mutate(settings);
-  };
+
 
   const updateNotificationSetting = (key: keyof typeof settings.notifications, value: boolean | string) => {
     setSettings(prev => ({
