@@ -232,6 +232,7 @@ export default function Settings() {
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState("profile");
   const [showPricingModal, setShowPricingModal] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
   const { subscriptionStatus, isPremium, isTrialActive } = useSubscription();
 
   // Local state for settings
@@ -278,11 +279,20 @@ export default function Settings() {
     }
   }, [theme, settings.preferences.theme]);
 
+  // Additional state variables
+  const [deleteAccountInput, setDeleteAccountInput] = useState("");
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [restoringConnection, setRestoringConnection] = useState<number | null>(null);
+
   // Fetch archived connections
   const { data: archivedConnections = [] } = useQuery<any[]>({
     queryKey: ["/api/connections/archived"],
     enabled: !!user,
   });
+
+  // Support message state
+  const [supportMessage, setSupportMessage] = useState("");
+  const [supportSubject, setSupportSubject] = useState("");
 
   // Restore connection mutation
   const restoreConnectionMutation = useMutation({
@@ -303,32 +313,6 @@ export default function Settings() {
       toast({
         title: "Error",
         description: error.message || "Failed to restore connection",
-        variant: "destructive",
-      });
-    },
-  });
-
-  // Support message state
-  const [supportMessage, setSupportMessage] = useState("");
-  const [supportSubject, setSupportSubject] = useState("");
-
-  // Send support message mutation
-  const sendSupportMutation = useMutation({
-    mutationFn: async (data: { subject: string; message: string }) => {
-      return await apiRequest("/api/support/send", "POST", data);
-    },
-    onSuccess: () => {
-      setSupportMessage("");
-      setSupportSubject("");
-      toast({
-        title: "Message Sent",
-        description: "Your support message has been sent successfully. We'll get back to you soon!",
-      });
-    },
-    onError: (error: any) => {
-      toast({
-        title: "Failed to Send",
-        description: error.message || "Failed to send support message. Please try again.",
         variant: "destructive",
       });
     },
@@ -392,10 +376,13 @@ export default function Settings() {
   };
 
   const handleExportData = () => {
+    setIsExporting(true);
     toast({
       title: "Export Started",
       description: "Your data export will be ready shortly. You'll receive an email when it's complete.",
     });
+    // Reset after simulated delay
+    setTimeout(() => setIsExporting(false), 3000);
   };
 
   const handleDeleteAccount = () => {
