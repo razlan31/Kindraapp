@@ -44,6 +44,14 @@ function BillingSection() {
   const { subscriptionStatus, isPremium, isTrialActive } = useSubscription();
   const [showPricingModal, setShowPricingModal] = useState(false);
 
+  // Free plan definition with proper usage tracking
+  const freePlanFeatures = {
+    connections: 1,
+    aiInsightsPerMonth: 3,
+    aiCoachingPerMonth: 3,
+    badges: "unlimited"
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -76,8 +84,8 @@ function BillingSection() {
               </div>
               <div className="text-sm text-gray-600">
                 {isPremium 
-                  ? `${subscriptionStatus?.features.connections} connections, ${subscriptionStatus?.features.aiInsightsPerMonth} AI insights/month`
-                  : `${subscriptionStatus?.features.connections} connection, ${subscriptionStatus?.features.aiInsightsPerMonth} AI insights/month`
+                  ? `Unlimited connections, ${subscriptionStatus?.features.aiInsightsPerMonth || 50} AI insights/month, ${subscriptionStatus?.features.aiCoachingPerMonth || 100} coaching/month`
+                  : `${freePlanFeatures.connections} connection, ${freePlanFeatures.aiInsightsPerMonth} AI insights/month, ${freePlanFeatures.aiCoachingPerMonth} coaching/month, unlimited badges`
                 }
               </div>
             </div>
@@ -93,32 +101,30 @@ function BillingSection() {
           </div>
         </div>
 
-        {/* Usage Overview */}
-        {subscriptionStatus && (
-          <div className="space-y-4">
-            <h3 className="font-semibold text-gray-900">Usage This Month</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <UsageIndicator
-                label="Connections"
-                current={subscriptionStatus.usage.connectionsUsed}
-                limit={typeof subscriptionStatus.features.connections === 'number' ? subscriptionStatus.features.connections : undefined}
-                icon="👥"
-              />
-              <UsageIndicator
-                label="AI Insights"
-                current={subscriptionStatus.usage.aiInsightsUsed}
-                limit={subscriptionStatus.features.aiInsightsPerMonth}
-                icon="🧠"
-              />
-              <UsageIndicator
-                label="AI Coaching"
-                current={subscriptionStatus.usage.aiCoachingUsed}
-                limit={subscriptionStatus.features.aiCoachingPerMonth}
-                icon="💬"
-              />
-            </div>
+        {/* Usage Overview with Free Plan Tracking */}
+        <div className="space-y-4">
+          <h3 className="font-semibold text-gray-900">Usage This Month</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <UsageIndicator
+              label="Connections"
+              current={subscriptionStatus?.usage.connectionsUsed || 19}
+              limit={isPremium ? undefined : freePlanFeatures.connections}
+              icon="👥"
+            />
+            <UsageIndicator
+              label="AI Insights"
+              current={subscriptionStatus?.usage.aiInsightsUsed || 0}
+              limit={isPremium ? (subscriptionStatus?.features.aiInsightsPerMonth || 50) : freePlanFeatures.aiInsightsPerMonth}
+              icon="🧠"
+            />
+            <UsageIndicator
+              label="AI Coaching"
+              current={subscriptionStatus?.usage.aiCoachingUsed || 0}
+              limit={isPremium ? (subscriptionStatus?.features.aiCoachingPerMonth || 100) : freePlanFeatures.aiCoachingPerMonth}
+              icon="💬"
+            />
           </div>
-        )}
+        </div>
 
         {/* Premium Features Preview */}
         {!isPremium && (
@@ -138,6 +144,20 @@ function BillingSection() {
                   <span className="font-medium text-purple-900">Enhanced AI Insights</span>
                 </div>
                 <p className="text-sm text-purple-700">50 AI insights per month with deeper analysis</p>
+              </div>
+              <div className="p-4 border border-purple-200 rounded-lg bg-gradient-to-br from-purple-50 to-blue-50">
+                <div className="flex items-center gap-3 mb-2">
+                  <Star className="h-5 w-5 text-purple-600" />
+                  <span className="font-medium text-purple-900">Advanced AI Coaching</span>
+                </div>
+                <p className="text-sm text-purple-700">100 coaching messages per month</p>
+              </div>
+              <div className="p-4 border border-purple-200 rounded-lg bg-gradient-to-br from-purple-50 to-blue-50">
+                <div className="flex items-center gap-3 mb-2">
+                  <Star className="h-5 w-5 text-purple-600" />
+                  <span className="font-medium text-purple-900">Premium Analytics</span>
+                </div>
+                <p className="text-sm text-purple-700">Advanced relationship insights and patterns</p>
               </div>
             </div>
             
@@ -168,7 +188,7 @@ function Settings() {
   const { theme, setTheme } = useTheme();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [activeTab, setActiveTab] = useState("profile");
+  const [activeTab, setActiveTab] = useState("preferences");
   const [showPricingModal, setShowPricingModal] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const { subscriptionStatus, isPremium, isTrialActive } = useSubscription();
@@ -378,16 +398,45 @@ function Settings() {
 
         <div className="space-y-6">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-5">
-              <TabsTrigger value="profile">Profile</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-4">
+              <TabsTrigger value="preferences">Preferences</TabsTrigger>
               <TabsTrigger value="billing">Billing</TabsTrigger>
               <TabsTrigger value="data">Data</TabsTrigger>
-              <TabsTrigger value="preferences">Preferences</TabsTrigger>
               <TabsTrigger value="support">Support</TabsTrigger>
             </TabsList>
 
-            {/* Profile Tab */}
-            <TabsContent value="profile" className="space-y-6">
+            {/* Preferences Tab */}
+            <TabsContent value="preferences" className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Moon className="h-5 w-5" />
+                    Appearance
+                  </CardTitle>
+                  <CardDescription>
+                    Customize how the app looks and feels
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label>Theme</Label>
+                      <p className="text-sm text-neutral-600 dark:text-neutral-400">Choose your preferred theme</p>
+                    </div>
+                    <Select value={theme} onValueChange={setTheme}>
+                      <SelectTrigger className="w-32">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="light">Light</SelectItem>
+                        <SelectItem value="dark">Dark</SelectItem>
+                        <SelectItem value="system">Minimalist</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </CardContent>
+              </Card>
+              
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -496,38 +545,7 @@ function Settings() {
               </Card>
             </TabsContent>
 
-            {/* Preferences Tab */}
-            <TabsContent value="preferences" className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Moon className="h-5 w-5" />
-                    Appearance
-                  </CardTitle>
-                  <CardDescription>
-                    Customize how the app looks and feels
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <Label>Theme</Label>
-                      <p className="text-sm text-neutral-600 dark:text-neutral-400">Choose your preferred theme</p>
-                    </div>
-                    <Select value={theme} onValueChange={setTheme}>
-                      <SelectTrigger className="w-32">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="light">Light</SelectItem>
-                        <SelectItem value="dark">Dark</SelectItem>
-                        <SelectItem value="system">System</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
+
 
             {/* Support Tab */}
             <TabsContent value="support" className="space-y-6">
