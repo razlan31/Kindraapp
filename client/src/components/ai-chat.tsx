@@ -73,11 +73,16 @@ export function AIChat() {
   });
 
   useEffect(() => {
-    if (conversationData && (conversationData as any).conversation) {
-      setConversation((conversationData as any).conversation.map((msg: any) => ({
+    console.log("Loading conversation data:", conversationData);
+    if (conversationData && Array.isArray((conversationData as any).conversation)) {
+      const loadedConversation = (conversationData as any).conversation.map((msg: any) => ({
         ...msg,
         timestamp: new Date(msg.timestamp)
-      })));
+      }));
+      console.log("Setting conversation from API:", loadedConversation);
+      setConversation(loadedConversation);
+    } else if (conversationData) {
+      console.log("Conversation data format:", conversationData);
     }
   }, [conversationData]);
 
@@ -110,7 +115,9 @@ export function AIChat() {
       };
       
       setConversation(prev => [...prev, newUserMessage, newAssistantMessage]);
+      // Invalidate both conversation queries to ensure fresh data
       queryClient.invalidateQueries({ queryKey: ['/api/ai/conversation'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/chat/conversations'] });
       setMessage("");
       // Clear the draft message from localStorage after successful send
       localStorage.removeItem('luna-ai-draft-message');
@@ -144,6 +151,7 @@ export function AIChat() {
     onSuccess: () => {
       setConversation([]);
       queryClient.invalidateQueries({ queryKey: ['/api/ai/conversation'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/chat/conversations'] });
       toast({
         title: "Conversation cleared",
         description: "Your chat history has been cleared",

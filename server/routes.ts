@@ -2685,7 +2685,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.delete("/api/ai/conversation", isAuthenticated, async (req: Request, res: Response) => {
     try {
       const userId = (req.session as any).userId as number;
-      aiCoach.clearConversation(userId);
+      await aiCoach.clearConversationHistory(userId);
       
       res.json({ message: "Conversation cleared" });
     } catch (error) {

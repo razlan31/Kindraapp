@@ -106,23 +106,28 @@ export class AIRelationshipCoach {
         const title = history.length > 1 ? history[0].content.slice(0, 50) + "..." : "New Conversation";
         const conversations = await this.storage.getChatConversations(userId.toString());
         
+        console.log("💾 Saving conversation to database, current conversations:", conversations.length);
+        
         if (conversations.length > 0) {
           // Update the most recent conversation
           const latestConversation = conversations[conversations.length - 1];
+          console.log("📝 Updating existing conversation:", latestConversation.id);
           await this.storage.updateChatConversation(latestConversation.id, {
             messages: JSON.stringify(history),
             updatedAt: new Date()
           });
         } else {
           // Create new conversation
+          console.log("📝 Creating new conversation with title:", title);
           await this.storage.createChatConversation({
             userId: userId.toString(),
             title,
             messages: JSON.stringify(history)
           });
         }
+        console.log("✅ Conversation saved successfully");
       } catch (dbError) {
-        console.error("Failed to save conversation to database:", dbError);
+        console.error("❌ Failed to save conversation to database:", dbError);
         // Continue execution even if database save fails
       }
 
@@ -333,15 +338,23 @@ PERSONAL GROWTH TRACKING:`;
   }
 
   async getConversationHistory(userId: number): Promise<ChatMessage[]> {
+    console.log("🔍 Loading conversation history for user:", userId);
+    
     // Check memory first
     let history = this.conversationHistory.get(userId);
+    console.log("📱 Memory cache has:", history?.length || 0, "messages");
     
     if (!history || history.length === 0) {
       // Load from database if not in memory
       try {
+        console.log("💾 Loading from database...");
         const conversations = await this.storage.getChatConversations(userId.toString());
+        console.log("📊 Found", conversations.length, "conversations in database");
+        
         if (conversations.length > 0) {
           const latestConversation = conversations[conversations.length - 1];
+          console.log("📄 Latest conversation:", latestConversation.title, "created:", latestConversation.createdAt);
+          
           if (latestConversation.messages) {
             const messages = typeof latestConversation.messages === 'string' 
               ? JSON.parse(latestConversation.messages) 
@@ -350,14 +363,19 @@ PERSONAL GROWTH TRACKING:`;
               ...msg,
               timestamp: new Date(msg.timestamp)
             }));
+            console.log("✅ Loaded", history.length, "messages from database");
             this.conversationHistory.set(userId, history);
           }
+        } else {
+          console.log("📭 No conversations found in database");
         }
       } catch (dbError) {
-        console.error("Failed to load conversation from database:", dbError);
+        console.error("❌ Failed to load conversation from database:", dbError);
       }
     }
     
-    return history || [];
+    const result = history || [];
+    console.log("🎯 Returning", result.length, "messages to client");
+    return result;
   }
 }
