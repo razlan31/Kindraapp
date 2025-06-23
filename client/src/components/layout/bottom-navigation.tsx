@@ -175,7 +175,7 @@ export function BottomNavigation() {
             </Link>
             <Link href="/connections" className={`bottom-tab flex flex-col items-center justify-center h-full px-1 ${location === '/connections' ? 'active' : ''}`}>
               <Users className="h-4 w-4" />
-              <span className="text-[10px] mt-0.5">Connect</span>
+              <span className="text-[10px] mt-0.5">Connection</span>
             </Link>
             <Link href="/activities" className={`bottom-tab flex flex-col items-center justify-center h-full px-1 ${location === '/activities' ? 'active' : ''}`}>
               <Heart className="h-4 w-4" />

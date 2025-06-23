@@ -61,7 +61,7 @@ export default function InsightsNew() {
     <div className="max-w-md mx-auto bg-white dark:bg-neutral-900 min-h-screen flex flex-col relative">
       <Header />
 
-      <main className="flex-1 overflow-y-auto pb-20 px-4 pt-6">
+      <main className="flex-1 px-4 pt-6 pb-20 h-[calc(100vh-60px)]">
         {/* Luna AI - Main Feature */}
         <AIChat />
       </main>
