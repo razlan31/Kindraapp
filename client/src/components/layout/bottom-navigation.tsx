@@ -98,10 +98,10 @@ export function BottomNavigation() {
       <div className="fixed bottom-32 right-4 z-50">
         {/* Action Menu Items */}
         {isMenuOpen && (
-          <div className="absolute bottom-20 right-0 flex flex-col items-end gap-3 animate-in slide-in-from-bottom-2 duration-200">
+          <div className="absolute bottom-20 right-0 flex flex-col items-end gap-2 animate-in slide-in-from-bottom-2 duration-200">
             <button 
               onClick={() => handleActionClick(() => setConnectionModalOpen(true))}
-              className="bg-blue-500 text-white rounded-full h-14 w-14 flex items-center justify-center shadow-xl hover:shadow-2xl transition-all hover:scale-105 relative group border-2 border-white dark:border-gray-800"
+              className="bg-blue-500 text-white rounded-full h-12 w-12 flex items-center justify-center shadow-lg hover:shadow-xl transition-all hover:scale-105 relative group"
             >
               <UserPlus className="h-5 w-5" />
               <span className="absolute left-16 bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap">
@@ -115,7 +115,7 @@ export function BottomNavigation() {
                 // Open plan modal with connection picker enabled - let user select connection
                 openPlanModal();
               })}
-              className="bg-purple-500 text-white rounded-full h-14 w-14 flex items-center justify-center shadow-xl hover:shadow-2xl transition-all hover:scale-105 relative group border-2 border-white dark:border-gray-800"
+              className="bg-purple-500 text-white rounded-full h-12 w-12 flex items-center justify-center shadow-lg hover:shadow-xl transition-all hover:scale-105 relative group"
             >
               <CalendarPlus className="h-5 w-5" />
               <span className="absolute left-16 bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap">
@@ -125,7 +125,7 @@ export function BottomNavigation() {
             
             <button 
               onClick={() => handleActionClick(() => openMomentModal('intimacy'))}
-              className="bg-pink-500 text-white rounded-full h-14 w-14 flex items-center justify-center shadow-xl hover:shadow-2xl transition-all hover:scale-105 relative group border-2 border-white dark:border-gray-800"
+              className="bg-pink-500 text-white rounded-full h-12 w-12 flex items-center justify-center shadow-lg hover:shadow-xl transition-all hover:scale-105 relative group"
             >
               <Heart className="h-5 w-5" />
               <span className="absolute left-16 bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap">
@@ -145,7 +145,7 @@ export function BottomNavigation() {
             
             <button 
               onClick={() => handleActionClick(() => openMomentModal('moment'))}
-              className="bg-green-500 text-white rounded-full h-14 w-14 flex items-center justify-center shadow-xl hover:shadow-2xl transition-all hover:scale-105 relative group border-2 border-white dark:border-gray-800"
+              className="bg-green-500 text-white rounded-full h-12 w-12 flex items-center justify-center shadow-lg hover:shadow-xl transition-all hover:scale-105 relative group"
             >
               <Smile className="h-5 w-5" />
               <span className="absolute left-16 bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap">
@@ -155,14 +155,19 @@ export function BottomNavigation() {
           </div>
         )}
         
-        {/* Main Toggle Button */}
+        {/* Main Toggle Button - Enhanced protruding design */}
         <button 
           onClick={() => setIsMenuOpen(!isMenuOpen)}
-          className={`bg-primary text-white rounded-full h-14 w-14 flex items-center justify-center shadow-lg hover:shadow-xl transition-all hover:scale-105 ${
-            isMenuOpen ? 'rotate-45' : ''
+          className={`bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-full h-16 w-16 flex items-center justify-center shadow-2xl hover:shadow-3xl transition-all duration-300 border-4 border-white dark:border-gray-800 ${
+            isMenuOpen ? 'rotate-45 scale-125' : 'hover:scale-110'
           }`}
+          style={{
+            boxShadow: isMenuOpen 
+              ? '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1)' 
+              : '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)'
+          }}
         >
-          {isMenuOpen ? <X className="h-6 w-6" /> : <Plus className="h-6 w-6" />}
+          <Plus className={`h-7 w-7 transition-transform duration-300 ${isMenuOpen ? 'rotate-45' : ''}`} />
         </button>
       </div>
 
