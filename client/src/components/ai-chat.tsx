@@ -447,7 +447,7 @@ export function AIChat({ className, compact = false }: AIChatProps = {}) {
             </Card>
           )}
 
-          <div className="min-h-[400px] max-h-[500px] overflow-y-auto rounded-lg p-6 space-y-4 bg-gradient-to-br from-violet-50/50 via-purple-50/30 to-pink-50/50 dark:from-violet-900/10 dark:via-purple-900/10 dark:to-pink-900/10">
+          <div className="h-[calc(100vh-200px)] max-h-[450px] overflow-y-auto rounded-lg p-6 space-y-4 bg-gradient-to-br from-violet-50/50 via-purple-50/30 to-pink-50/50 dark:from-violet-900/10 dark:via-purple-900/10 dark:to-pink-900/10">
             {conversation.length === 0 ? (
               <div className="text-center py-12">
                 <div className="mb-8">

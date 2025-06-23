@@ -112,7 +112,7 @@ function App() {
                   <BadgeNotificationMonitor />
                   <Router />
                   <ModalsContainer />
-                  <FloatingAIButton />
+
                 </TooltipProvider>
               </ModalProvider>
             </SyncProvider>
