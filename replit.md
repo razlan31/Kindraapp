@@ -111,6 +111,19 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
+- June 23, 2025: IMPLEMENTED IMPROVED PRICING MODEL - Added comprehensive subscription management system with freemium monetization
+  - Created subscription database schema with usage tracking (monthly_ai_insights, monthly_ai_coaching, trial_end_date)
+  - Implemented three premium tiers: Weekly ($1.99), Monthly ($4.99), Annual ($39.99) with 37% savings
+  - Added free tier limits: 1 connection, 3 AI insights/month, 3 AI coach messages/month, unlimited badges
+  - Built subscription utility functions with intelligent usage tracking and limit enforcement
+  - Created pricing modal component with 5-day free trial and Stripe checkout integration
+  - Added subscription status page with usage indicators and upgrade prompts
+  - Implemented usage limits on connection creation, AI insights, and AI coaching endpoints
+  - Added premium navigation tab and upgrade prompts throughout the app
+  - Enhanced user experience with clear usage tracking and gentle upgrade prompts
+  - Stripe webhook integration for subscription lifecycle management
+  - Revenue model: $1/month ad revenue from free users + premium subscriptions for optimal profitability
+
 - June 20, 2025: SCREENSHOT DOWNLOAD SERVICE - Created multiple download endpoints for comprehensive mobile development documentation
   - Added three download endpoints: /kindra-screenshots.tar.gz, /files/kindra-screenshots.tar.gz, and /files/download.html
   - Archive contains 100 screenshot files covering all app features and UI components (7.6MB)

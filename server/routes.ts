@@ -3153,6 +3153,166 @@ Format as a brief analysis (2-3 sentences) focusing on what their data actually 
     }
   });
 
+  // Subscription management routes
+  app.get("/api/subscription/status", googleAuthMiddleware, async (req: Request, res: Response) => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const connections = await storage.getConnections(userId);
+      const subscriptionStatus = getUserSubscriptionStatus(user, connections.length);
+
+      res.json(subscriptionStatus);
+    } catch (error) {
+      console.error("Error fetching subscription status:", error);
+      res.status(500).json({ message: "Failed to fetch subscription status" });
+    }
+  });
+
+  app.post("/api/subscription/start-trial", googleAuthMiddleware, async (req: Request, res: Response) => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Check if user already had a trial
+      if (user.trialEndDate) {
+        return res.status(400).json({ message: "Trial already used" });
+      }
+
+      const trialUpdates = startFreeTrial(user);
+      await storage.updateUser(userId, trialUpdates);
+
+      res.json({ message: "Trial started successfully", trialEndDate: trialUpdates.trialEndDate });
+    } catch (error) {
+      console.error("Error starting trial:", error);
+      res.status(500).json({ message: "Failed to start trial" });
+    }
+  });
+
+  app.post("/api/subscription/create-checkout", googleAuthMiddleware, async (req: Request, res: Response) => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      const { plan } = req.body;
+      if (!plan || !subscriptionPlans[plan as keyof typeof subscriptionPlans]) {
+        return res.status(400).json({ message: "Invalid plan" });
+      }
+
+      const planData = subscriptionPlans[plan as keyof typeof subscriptionPlans];
+      
+      // Create Stripe checkout session
+      const session = await stripe.checkout.sessions.create({
+        mode: 'subscription',
+        payment_method_types: ['card'],
+        line_items: [
+          {
+            price_data: {
+              currency: 'usd',
+              product_data: {
+                name: planData.name,
+                description: `Kindra Premium - ${planData.name}`
+              },
+              unit_amount: Math.round(planData.price * 100), // Convert to cents
+              recurring: {
+                interval: planData.interval as 'week' | 'month' | 'year'
+              }
+            },
+            quantity: 1,
+          },
+        ],
+        success_url: `${req.get('origin')}/subscription/success?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${req.get('origin')}/subscription/cancel`,
+        customer_email: req.user?.email || undefined,
+        metadata: {
+          userId,
+          plan
+        }
+      });
+
+      res.json({ url: session.url });
+    } catch (error) {
+      console.error("Error creating checkout session:", error);
+      res.status(500).json({ message: "Failed to create checkout session" });
+    }
+  });
+
+  // Stripe webhook for subscription events
+  app.post("/api/webhook/stripe", express.raw({type: 'application/json'}), async (req: Request, res: Response) => {
+    const sig = req.headers['stripe-signature'];
+    let event;
+
+    try {
+      event = stripe.webhooks.constructEvent(req.body, sig as string, process.env.STRIPE_WEBHOOK_SECRET || '');
+    } catch (err: any) {
+      console.log(`Webhook signature verification failed.`, err.message);
+      return res.status(400).send(`Webhook Error: ${err.message}`);
+    }
+
+    // Handle the event
+    switch (event.type) {
+      case 'checkout.session.completed':
+        const session = event.data.object;
+        const { userId, plan } = session.metadata || {};
+        
+        if (userId && plan) {
+          const planData = subscriptionPlans[plan as keyof typeof subscriptionPlans];
+          const endDate = new Date();
+          
+          // Calculate subscription end date based on interval
+          if (planData.interval === 'week') {
+            endDate.setDate(endDate.getDate() + 7);
+          } else if (planData.interval === 'month') {
+            endDate.setMonth(endDate.getMonth() + 1);
+          } else if (planData.interval === 'year') {
+            endDate.setFullYear(endDate.getFullYear() + 1);
+          }
+
+          await storage.updateUser(userId, {
+            stripeCustomerId: session.customer as string,
+            stripeSubscriptionId: session.subscription as string,
+            subscriptionStatus: 'active',
+            subscriptionPlan: plan,
+            subscriptionStartDate: new Date(),
+            subscriptionEndDate: endDate
+          });
+        }
+        break;
+      
+      case 'customer.subscription.deleted':
+        const subscription = event.data.object;
+        const user = await storage.getUserByStripeSubscriptionId(subscription.id);
+        if (user) {
+          await storage.updateUser(user.id, {
+            subscriptionStatus: 'canceled',
+            subscriptionEndDate: new Date()
+          });
+        }
+        break;
+
+      default:
+        console.log(`Unhandled event type ${event.type}`);
+    }
+
+    res.json({received: true});
+  });
+
   // Create a comprehensive connection template with all types of entries
   app.post("/api/create-template-connection", isAuthenticated, async (req: Request, res: Response) => {
     try {
