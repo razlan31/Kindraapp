@@ -167,27 +167,27 @@ export function BottomNavigation() {
       </div>
 
       <nav className="fixed bottom-0 left-0 right-0 bg-white dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-800 z-50">
-        <div className="max-w-md mx-auto px-4">
-          <div className="grid grid-cols-5 h-16 items-center">
-            <Link href="/" className={`bottom-tab flex flex-col items-center justify-center h-full ${location === '/' ? 'active' : ''}`}>
-              <Home className="h-5 w-5" />
-              <span className="text-xs mt-1">Home</span>
+        <div className="max-w-md mx-auto px-2">
+          <div className="grid grid-cols-5 h-14 items-center">
+            <Link href="/" className={`bottom-tab flex flex-col items-center justify-center h-full px-1 ${location === '/' ? 'active' : ''}`}>
+              <Home className="h-4 w-4" />
+              <span className="text-[10px] mt-0.5">Home</span>
             </Link>
-            <Link href="/connections" className={`bottom-tab flex flex-col items-center justify-center h-full ${location === '/connections' ? 'active' : ''}`}>
-              <Users className="h-5 w-5" />
-              <span className="text-xs mt-1">Connections</span>
+            <Link href="/connections" className={`bottom-tab flex flex-col items-center justify-center h-full px-1 ${location === '/connections' ? 'active' : ''}`}>
+              <Users className="h-4 w-4" />
+              <span className="text-[10px] mt-0.5">Connect</span>
             </Link>
-            <Link href="/activities" className={`bottom-tab flex flex-col items-center justify-center h-full ${location === '/activities' ? 'active' : ''}`}>
-              <Heart className="h-5 w-5" />
-              <span className="text-xs mt-1">Activities</span>
+            <Link href="/activities" className={`bottom-tab flex flex-col items-center justify-center h-full px-1 ${location === '/activities' ? 'active' : ''}`}>
+              <Heart className="h-4 w-4" />
+              <span className="text-[10px] mt-0.5">Activity</span>
             </Link>
-            <Link href="/calendar" className={`bottom-tab flex flex-col items-center justify-center h-full ${location === '/calendar' ? 'active' : ''}`}>
-              <Calendar className="h-5 w-5" />
-              <span className="text-xs mt-1">Calendar</span>
+            <Link href="/calendar" className={`bottom-tab flex flex-col items-center justify-center h-full px-1 ${location === '/calendar' ? 'active' : ''}`}>
+              <Calendar className="h-4 w-4" />
+              <span className="text-[10px] mt-0.5">Calendar</span>
             </Link>
-            <Link href="/insights-duplicate" className={`bottom-tab flex flex-col items-center justify-center h-full ${location === '/insights-duplicate' ? 'active' : ''}`}>
-              <LineChart className="h-5 w-5" />
-              <span className="text-xs mt-1">Insights</span>
+            <Link href="/insights-duplicate" className={`bottom-tab flex flex-col items-center justify-center h-full px-1 ${location === '/insights-duplicate' ? 'active' : ''}`}>
+              <LineChart className="h-4 w-4" />
+              <span className="text-[10px] mt-0.5">Insights</span>
             </Link>
           </div>
         </div>
