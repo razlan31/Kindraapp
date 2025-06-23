@@ -104,6 +104,15 @@ export function AIInsights() {
     });
   }
 
+  // Show simple fallback if no insights
+  if (insights.length === 0) {
+    insights.push({
+      title: "Welcome to Kindra",
+      description: "Start by adding your first connection to unlock insights",
+      icon: <Heart className="h-4 w-4 text-purple-500" />
+    });
+  }
+
   return (
     <div className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-2xl p-6 border border-purple-100 dark:border-purple-800">
       <div className="flex items-center gap-3 mb-4">
