@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -161,10 +161,12 @@ export default function BadgesPage() {
 
   const { data: userBadges = [], isLoading: userBadgesLoading } = useQuery<UserBadge[]>({
     queryKey: ["/api/badges"],
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   const { data: allBadges = [], isLoading: allBadgesLoading } = useQuery<Badge[]>({
     queryKey: ["/api/badges/all"],
+    staleTime: 10 * 60 * 1000, // 10 minutes - badges rarely change
   });
 
   const isLoading = userBadgesLoading || allBadgesLoading;
