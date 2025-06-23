@@ -20,6 +20,8 @@ import SimpleForm from "./pages/simple-form";
 import Activities from "@/pages/activities";
 import Calendar from "@/pages/calendar";
 import InsightsNew from "@/pages/insights-new";
+import Luna from "@/pages/luna";
+import Trackings from "@/pages/trackings";
 import Profile from "@/pages/profile";
 import Settings from "@/pages/settings";
 

@@ -33,7 +33,12 @@ interface SavedConversation {
   updatedAt: string;
 }
 
-export function AIChat() {
+interface AIChatProps {
+  className?: string;
+  compact?: boolean;
+}
+
+export function AIChat({ className, compact = false }: AIChatProps = {}) {
   const [message, setMessage] = useState("");
   const [conversation, setConversation] = useState<ChatMessage[]>([]);
   const [currentConversationId, setCurrentConversationId] = useState<number | null>(null);
