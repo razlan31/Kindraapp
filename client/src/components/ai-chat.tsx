@@ -383,20 +383,7 @@ export function AIChat() {
                   </TooltipContent>
                 </Tooltip>
 
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button
-                      onClick={() => clearMutation.mutate()}
-                      disabled={conversation.length === 0 || clearMutation.isPending}
-                      className="p-2 rounded-lg bg-gradient-to-r from-violet-100 to-purple-100 hover:from-violet-200 hover:to-purple-200 dark:from-violet-800/20 dark:to-purple-800/20 dark:hover:from-violet-700/30 dark:hover:to-purple-700/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      <Trash2 className="h-4 w-4 text-violet-600 dark:text-violet-400" />
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent side="bottom">
-                    <p>Clear</p>
-                  </TooltipContent>
-                </Tooltip>
+
 
                 <Tooltip>
                   <TooltipTrigger asChild>
