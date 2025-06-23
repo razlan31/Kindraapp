@@ -371,9 +371,9 @@ function Settings() {
   }
 
   return (
-    <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900">
+    <div className="h-screen bg-neutral-50 dark:bg-neutral-900 flex flex-col">
       <Header />
-      <main className="container mx-auto px-4 py-8 pb-20">
+      <main className="flex-1 overflow-y-auto container mx-auto px-4 py-8 pb-24">
         <div className="mb-4">
           <h2 className="text-xl font-heading font-semibold">Settings</h2>
           <p className="text-sm text-neutral-600 dark:text-neutral-400">Manage your preferences</p>

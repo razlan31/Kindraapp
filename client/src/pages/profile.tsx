@@ -225,9 +225,9 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900">
+    <div className="h-screen bg-neutral-50 dark:bg-neutral-900 flex flex-col">
       <Header />
-      <main className="container mx-auto px-4 py-8 pb-20">
+      <main className="flex-1 overflow-y-auto container mx-auto px-4 py-8 pb-24">
         <div className="max-w-2xl mx-auto space-y-4" key={`profile-${user.id}-${user.email}-${user.relationshipGoals}`}>
         {/* Header */}
         <div className="flex items-center gap-4 pt-4">
