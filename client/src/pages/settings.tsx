@@ -37,195 +37,133 @@ import { UsageIndicator } from "@/components/subscription/usage-indicator";
 import { PricingModal } from "@/components/subscription/pricing-modal";
 import { useSubscription } from "@/hooks/use-subscription";
 
-// Billing component that connects to real Stripe data
+// Billing component
 function BillingSection() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
-
-  // Fetch subscription data from Stripe
-  const { data: subscriptionData, isLoading: subscriptionLoading } = useQuery({
-    queryKey: ['/api/billing/subscription'],
-  });
-
-  // Fetch billing invoices
-  const { data: invoicesData } = useQuery({
-    queryKey: ['/api/billing/invoices'],
-  });
-
-  // Cancel subscription mutation
-  const cancelSubscriptionMutation = useMutation({
-    mutationFn: () => apiRequest("POST", "/api/billing/cancel-subscription"),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/billing/subscription'] });
-      toast({
-        title: "Subscription Cancelled",
-        description: "Your subscription will end at the current billing period",
-      });
-    },
-    onError: (error: any) => {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to cancel subscription",
-        variant: "destructive",
-      });
-    },
-  });
-
-  // Open Stripe customer portal
-  const openCustomerPortal = async () => {
-    try {
-      const response = await apiRequest("POST", "/api/billing/create-customer-portal");
-      const data = await response.json();
-      if (data.url) {
-        window.open(data.url, '_blank');
-      }
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to open billing portal",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const subscription = subscriptionData?.subscription;
-  const invoices = invoicesData?.invoices || [];
-
-  if (subscriptionLoading) {
-    return (
-      <div className="flex items-center justify-center py-8">
-        <div className="animate-spin w-6 h-6 border-2 border-primary border-t-transparent rounded-full" />
-      </div>
-    );
-  }
-
-  if (!subscription) {
-    return (
-      <div className="text-center py-8">
-        <p className="text-neutral-600 dark:text-neutral-400 mb-4">No active subscription found</p>
-        <Button variant="outline">
-          Subscribe to Premium
-        </Button>
-      </div>
-    );
-  }
-
-  const formatDate = (timestamp: number) => {
-    return new Date(timestamp * 1000).toLocaleDateString();
-  };
-
-  const getSubscriptionStatus = () => {
-    if (subscription.cancel_at_period_end) {
-      return { text: "Cancelling", color: "text-orange-600 dark:text-orange-400" };
-    }
-    if (subscription.status === 'active') {
-      return { text: "Active", color: "text-green-600 dark:text-green-400" };
-    }
-    if (subscription.status === 'past_due') {
-      return { text: "Past Due", color: "text-red-600 dark:text-red-400" };
-    }
-    return { text: subscription.status, color: "text-neutral-600 dark:text-neutral-400" };
-  };
-
-  const status = getSubscriptionStatus();
+  const { subscriptionStatus, isPremium, isTrialActive } = useSubscription();
+  const [showPricingModal, setShowPricingModal] = useState(false);
 
   return (
-    <>
-      <div className="space-y-2">
-        <Label>Current Plan</Label>
-        <div className="flex items-center justify-between p-3 bg-neutral-50 dark:bg-neutral-800 rounded-lg">
+    <Card>
+      <CardHeader>
+        <div className="flex items-center justify-between">
           <div>
-            <p className="font-medium">Premium Plan</p>
-            <p className="text-sm text-neutral-600 dark:text-neutral-400">
-              ${(subscription.items.data[0]?.price?.unit_amount / 100).toFixed(2)}/
-              {subscription.items.data[0]?.price?.recurring?.interval}
-            </p>
+            <CardTitle className="flex items-center gap-2">
+              <CreditCard className="h-5 w-5" />
+              Subscription & Billing
+            </CardTitle>
+            <CardDescription>
+              Manage your subscription plan and billing information
+            </CardDescription>
           </div>
-          <div className="text-right">
-            <p className={`text-sm font-medium ${status.color}`}>{status.text}</p>
-            <p className="text-xs text-neutral-600 dark:text-neutral-400">
-              {subscription.cancel_at_period_end 
-                ? `Ends ${formatDate(subscription.current_period_end)}`
-                : `Renews ${formatDate(subscription.current_period_end)}`
-              }
-            </p>
+          {isPremium && (
+            <div className="flex items-center gap-2 px-3 py-1 bg-gradient-to-r from-purple-100 to-blue-100 text-purple-700 rounded-full text-sm font-medium">
+              <Crown className="h-4 w-4" />
+              {isTrialActive ? 'Free Trial' : 'Premium'}
+            </div>
+          )}
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        {/* Current Plan Status */}
+        <div className="space-y-4">
+          <h3 className="font-semibold text-gray-900">Current Plan</h3>
+          <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+            <div>
+              <div className="font-medium">
+                {isPremium ? (isTrialActive ? 'Free Trial' : 'Premium Plan') : 'Free Plan'}
+              </div>
+              <div className="text-sm text-gray-600">
+                {isPremium 
+                  ? `${subscriptionStatus?.features.connections} connections, ${subscriptionStatus?.features.aiInsightsPerMonth} AI insights/month`
+                  : `${subscriptionStatus?.features.connections} connection, ${subscriptionStatus?.features.aiInsightsPerMonth} AI insights/month`
+                }
+              </div>
+            </div>
+            {!isPremium && (
+              <Button
+                onClick={() => setShowPricingModal(true)}
+                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+              >
+                <Star className="h-4 w-4 mr-2" />
+                Upgrade
+              </Button>
+            )}
           </div>
         </div>
-      </div>
 
-      <div className="space-y-2">
-        <Label>Payment Method</Label>
-        <div className="flex items-center justify-between p-3 bg-neutral-50 dark:bg-neutral-800 rounded-lg">
-          <div className="flex items-center gap-3">
-            <CreditCard className="h-4 w-4" />
-            <div>
-              {subscription.default_payment_method ? (
-                <>
-                  <p className="font-medium">
-                    •••• •••• •••• {subscription.default_payment_method.card?.last4}
-                  </p>
-                  <p className="text-sm text-neutral-600 dark:text-neutral-400">
-                    Expires {subscription.default_payment_method.card?.exp_month}/
-                    {subscription.default_payment_method.card?.exp_year}
-                  </p>
-                </>
-              ) : (
-                <p className="font-medium">No payment method</p>
-              )}
+        {/* Usage Overview */}
+        {subscriptionStatus && (
+          <div className="space-y-4">
+            <h3 className="font-semibold text-gray-900">Usage This Month</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <UsageIndicator
+                label="Connections"
+                current={subscriptionStatus.usage.connectionsUsed}
+                limit={typeof subscriptionStatus.features.connections === 'number' ? subscriptionStatus.features.connections : undefined}
+                icon="👥"
+              />
+              <UsageIndicator
+                label="AI Insights"
+                current={subscriptionStatus.usage.aiInsightsUsed}
+                limit={subscriptionStatus.features.aiInsightsPerMonth}
+                icon="🧠"
+              />
+              <UsageIndicator
+                label="AI Coaching"
+                current={subscriptionStatus.usage.aiCoachingUsed}
+                limit={subscriptionStatus.features.aiCoachingPerMonth}
+                icon="💬"
+              />
             </div>
           </div>
-          <Button variant="outline" size="sm" onClick={openCustomerPortal}>
-            Update
-          </Button>
-        </div>
-      </div>
-
-      <Separator />
-
-      <div className="flex items-center justify-between">
-        <div>
-          <Label>Billing History</Label>
-          <p className="text-sm text-neutral-600 dark:text-neutral-400">
-            View past invoices and payments ({invoices.length} invoices)
-          </p>
-        </div>
-        <Button variant="outline" onClick={openCustomerPortal}>
-          <Download className="h-4 w-4 mr-2" />
-          View History
-        </Button>
-      </div>
-
-      <Separator />
-
-      <div className="flex items-center justify-between">
-        <div>
-          <Label className="text-red-600 dark:text-red-400">Cancel Subscription</Label>
-          <p className="text-sm text-neutral-600 dark:text-neutral-400">
-            {subscription.cancel_at_period_end 
-              ? "Subscription will end at current billing period"
-              : "End your subscription and lose premium features"
-            }
-          </p>
-        </div>
-        {!subscription.cancel_at_period_end && (
-          <Button 
-            variant="destructive" 
-            onClick={() => {
-              if (confirm('Are you sure you want to cancel your subscription? You will lose access to premium features at the end of your billing period.')) {
-                cancelSubscriptionMutation.mutate();
-              }
-            }}
-            disabled={cancelSubscriptionMutation.isPending}
-          >
-            {cancelSubscriptionMutation.isPending ? "Cancelling..." : "Cancel Plan"}
-          </Button>
         )}
-      </div>
-    </>
+
+        {/* Premium Features Preview */}
+        {!isPremium && (
+          <div className="space-y-4">
+            <h3 className="font-semibold text-gray-900">Premium Features</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="p-4 border border-purple-200 rounded-lg bg-gradient-to-br from-purple-50 to-blue-50">
+                <div className="flex items-center gap-3 mb-2">
+                  <Crown className="h-5 w-5 text-purple-600" />
+                  <span className="font-medium text-purple-900">Unlimited Connections</span>
+                </div>
+                <p className="text-sm text-purple-700">Track relationships with unlimited people</p>
+              </div>
+              <div className="p-4 border border-purple-200 rounded-lg bg-gradient-to-br from-purple-50 to-blue-50">
+                <div className="flex items-center gap-3 mb-2">
+                  <Star className="h-5 w-5 text-purple-600" />
+                  <span className="font-medium text-purple-900">Enhanced AI Insights</span>
+                </div>
+                <p className="text-sm text-purple-700">50 AI insights per month with deeper analysis</p>
+              </div>
+            </div>
+            
+            <Button
+              onClick={() => setShowPricingModal(true)}
+              className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+              size="lg"
+            >
+              <Crown className="h-5 w-5 mr-2" />
+              Upgrade to Premium
+            </Button>
+          </div>
+        )}
+
+        <PricingModal
+          isOpen={showPricingModal}
+          onClose={() => setShowPricingModal(false)}
+          currentPlan={isPremium ? 'premium' : 'free'}
+          showTrialButton={!isTrialActive}
+        />
+      </CardContent>
+    </Card>
   );
 }
 
-export default function Settings() {
+function Settings() {
   const { user, logout } = useAuth();
   const { theme, setTheme } = useTheme();
   const { toast } = useToast();
@@ -234,6 +172,11 @@ export default function Settings() {
   const [showPricingModal, setShowPricingModal] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const { subscriptionStatus, isPremium, isTrialActive } = useSubscription();
+
+  // Additional state variables
+  const [deleteAccountInput, setDeleteAccountInput] = useState("");
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [restoringConnection, setRestoringConnection] = useState<number | null>(null);
 
   // Local state for settings
   const [settings, setSettings] = useState({
@@ -250,49 +193,20 @@ export default function Settings() {
       shareAnalytics: true,
     },
     preferences: {
-      theme: "light" as "light" | "dark" | "minimalist", // light, dark, minimalist
-      defaultTab: "dashboard" as const, // dashboard, connections, calendar, activities
-      autoSave: true,
-    }
+      theme: theme as "light" | "dark" | "system",
+      language: "en",
+    },
   });
 
-  // Load settings from backend
-  const { data: backendSettings } = useQuery({
-    queryKey: ["/api/settings"],
-    enabled: !!user,
-  });
-
-  // Update local settings when backend data loads
-  React.useEffect(() => {
-    if (backendSettings && typeof backendSettings === 'object') {
-      setSettings(backendSettings as typeof settings);
-    }
-  }, [backendSettings]);
-
-  // Sync theme with settings
-  React.useEffect(() => {
-    if (settings.preferences.theme !== theme) {
-      setSettings(prev => ({
-        ...prev,
-        preferences: { ...prev.preferences, theme }
-      }));
-    }
-  }, [theme, settings.preferences.theme]);
-
-  // Additional state variables
-  const [deleteAccountInput, setDeleteAccountInput] = useState("");
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [restoringConnection, setRestoringConnection] = useState<number | null>(null);
+  // Support message state
+  const [supportMessage, setSupportMessage] = useState("");
+  const [supportSubject, setSupportSubject] = useState("");
 
   // Fetch archived connections
   const { data: archivedConnections = [] } = useQuery<any[]>({
     queryKey: ["/api/connections/archived"],
     enabled: !!user,
   });
-
-  // Support message state
-  const [supportMessage, setSupportMessage] = useState("");
-  const [supportSubject, setSupportSubject] = useState("");
 
   // Restore connection mutation
   const restoreConnectionMutation = useMutation({
@@ -422,11 +336,35 @@ export default function Settings() {
     });
   };
 
+  // Update theme when preference changes
+  React.useEffect(() => {
+    if (settings.preferences.theme !== theme) {
+      setTheme(settings.preferences.theme);
+      setSettings(prev => ({
+        ...prev,
+        preferences: { ...prev.preferences, theme: theme as "light" | "dark" | "system" }
+      }));
+    }
+  }, [theme, settings.preferences.theme]);
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900">
+        <Header />
+        <main className="container mx-auto px-4 py-8">
+          <div className="text-center">
+            <p>Please log in to access settings.</p>
+          </div>
+        </main>
+        <BottomNavigation />
+      </div>
+    );
+  }
+
   return (
-    <div className="max-w-md mx-auto bg-white dark:bg-neutral-900 min-h-screen flex flex-col relative">
+    <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900">
       <Header />
-      
-      <main className="flex-1 overflow-y-auto pb-20 px-3 pt-4">
+      <main className="container mx-auto px-4 py-8 pb-20">
         <div className="flex justify-between items-center mb-4">
           <div>
             <h2 className="text-xl font-heading font-semibold">Settings</h2>
@@ -448,6 +386,7 @@ export default function Settings() {
               <TabsTrigger value="support">Support</TabsTrigger>
             </TabsList>
 
+            {/* Profile Tab */}
             <TabsContent value="profile" className="space-y-6">
               <Card>
                 <CardHeader>
@@ -460,7 +399,6 @@ export default function Settings() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  {/* Master toggle for all notifications */}
                   <div className="flex items-center justify-between">
                     <div>
                       <Label htmlFor="pushEnabled">Push Notifications</Label>
@@ -476,655 +414,178 @@ export default function Settings() {
               </Card>
             </TabsContent>
 
+            {/* Billing Tab */}
             <TabsContent value="billing" className="space-y-6">
+              <BillingSection />
+            </TabsContent>
+
+            {/* Data Tab */}
+            <TabsContent value="data" className="space-y-6">
               <Card>
                 <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <CardTitle className="flex items-center gap-2">
-                        <CreditCard className="h-5 w-5" />
-                        Subscription & Billing
-                      </CardTitle>
-                      <CardDescription>
-                        Manage your subscription plan and billing information
-                      </CardDescription>
-                    </div>
-                    {isPremium && (
-                      <div className="flex items-center gap-2 px-3 py-1 bg-gradient-to-r from-purple-100 to-blue-100 text-purple-700 rounded-full text-sm font-medium">
-                        <Crown className="h-4 w-4" />
-                        {isTrialActive ? 'Free Trial' : 'Premium'}
-                      </div>
-                    )}
-                  </div>
+                  <CardTitle className="flex items-center gap-2">
+                    <Download className="h-5 w-5" />
+                    Data Management
+                  </CardTitle>
+                  <CardDescription>
+                    Export your data or manage your account
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  {/* Current Plan Status */}
                   <div className="space-y-4">
-                    <h3 className="font-semibold text-gray-900">Current Plan</h3>
-                    <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                      <div>
-                        <div className="font-medium">
-                          {isPremium ? (isTrialActive ? 'Free Trial' : 'Premium Plan') : 'Free Plan'}
-                        </div>
-                        <div className="text-sm text-gray-600">
-                          {isPremium 
-                            ? `${subscriptionStatus?.features.connections} connections, ${subscriptionStatus?.features.aiInsightsPerMonth} AI insights/month`
-                            : `${subscriptionStatus?.features.connections} connection, ${subscriptionStatus?.features.aiInsightsPerMonth} AI insights/month`
-                          }
-                        </div>
-                      </div>
-                      {!isPremium && (
-                        <Button
-                          onClick={() => setShowPricingModal(true)}
-                          className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
-                        >
-                          <Star className="h-4 w-4 mr-2" />
-                          Upgrade
-                        </Button>
-                      )}
-                    </div>
+                    <Button
+                      onClick={handleExportData}
+                      disabled={isExporting}
+                      className="w-full justify-start"
+                      variant="outline"
+                    >
+                      <Download className="mr-2 h-4 w-4" />
+                      {isExporting ? "Exporting..." : "Export My Data"}
+                    </Button>
+                    
+                    <Button
+                      onClick={handleDeleteAccount}
+                      variant="destructive"
+                      className="w-full justify-start"
+                    >
+                      <Trash2 className="mr-2 h-4 w-4" />
+                      Delete Account
+                    </Button>
                   </div>
+                </CardContent>
+              </Card>
 
-                  {/* Usage Overview */}
-                  {subscriptionStatus && (
-                    <div className="space-y-4">
-                      <h3 className="font-semibold text-gray-900">Usage This Month</h3>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <UsageIndicator
-                          label="Connections"
-                          current={subscriptionStatus.usage.connectionsUsed}
-                          limit={typeof subscriptionStatus.features.connections === 'number' ? subscriptionStatus.features.connections : undefined}
-                          icon="👥"
-                        />
-                        <UsageIndicator
-                          label="AI Insights"
-                          current={subscriptionStatus.usage.aiInsightsUsed}
-                          limit={subscriptionStatus.features.aiInsightsPerMonth}
-                          icon="🧠"
-                        />
-                        <UsageIndicator
-                          label="AI Coaching"
-                          current={subscriptionStatus.usage.aiCoachingUsed}
-                          limit={subscriptionStatus.features.aiCoachingPerMonth}
-                          icon="💬"
-                        />
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Premium Features */}
-                  {!isPremium && (
-                    <div className="space-y-4">
-                      <h3 className="font-semibold text-gray-900">Premium Features</h3>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="p-4 border border-gray-200 rounded-lg">
-                          <div className="font-medium mb-2">Unlimited Connections</div>
-                          <div className="text-sm text-gray-600">Track relationships with as many people as you want</div>
+              {/* Archived Connections */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Archive className="h-5 w-5" />
+                    Archived Connections
+                  </CardTitle>
+                  <CardDescription>
+                    Connections you've archived can be restored here
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {archivedConnections.length === 0 ? (
+                    <p className="text-neutral-600 dark:text-neutral-400">No archived connections</p>
+                  ) : (
+                    <div className="space-y-2">
+                      {archivedConnections.map((connection: any) => (
+                        <div key={connection.id} className="flex items-center justify-between p-3 border rounded-lg">
+                          <div>
+                            <div className="font-medium">{connection.name}</div>
+                            <div className="text-sm text-neutral-600 dark:text-neutral-400">
+                              Archived • {connection.relationshipStage}
+                            </div>
+                          </div>
+                          <Button
+                            onClick={() => restoreConnectionMutation.mutate(connection.id)}
+                            disabled={restoreConnectionMutation.isPending && restoringConnection === connection.id}
+                            variant="outline"
+                            size="sm"
+                          >
+                            <RotateCcw className="mr-2 h-4 w-4" />
+                            {restoreConnectionMutation.isPending && restoringConnection === connection.id ? "Restoring..." : "Restore"}
+                          </Button>
                         </div>
-                        <div className="p-4 border border-gray-200 rounded-lg">
-                          <div className="font-medium mb-2">50 AI Insights/Month</div>
-                          <div className="text-sm text-gray-600">Get comprehensive relationship analysis</div>
-                        </div>
-                        <div className="p-4 border border-gray-200 rounded-lg">
-                          <div className="font-medium mb-2">100 AI Coaching/Month</div>
-                          <div className="text-sm text-gray-600">Unlimited access to relationship coaching</div>
-                        </div>
-                        <div className="p-4 border border-gray-200 rounded-lg">
-                          <div className="font-medium mb-2">Advanced Analytics</div>
-                          <div className="text-sm text-gray-600">Deep insights and pattern recognition</div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Billing Actions */}
-                  {isPremium && (
-                    <div className="space-y-4">
-                      <h3 className="font-semibold text-gray-900">Billing Management</h3>
-                      <div className="flex gap-3">
-                        <Button variant="outline">
-                          View Billing History
-                        </Button>
-                        <Button variant="outline">
-                          Update Payment Method
-                        </Button>
-                        <Button variant="outline">
-                          Cancel Subscription
-                        </Button>
-                      </div>
+                      ))}
                     </div>
                   )}
                 </CardContent>
               </Card>
             </TabsContent>
 
-            <TabsContent value="data" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Download className="h-5 w-5" />
-                Data Management
-              </CardTitle>
-              <CardDescription>
-                Export your data or manage archived connections
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-4">
-                <div>
-                  <Label className="text-sm font-medium">Export Data</Label>
-                  <p className="text-sm text-neutral-600 dark:text-neutral-400">Download all your data</p>
-                </div>
-                <Button onClick={handleExportData} disabled={isExporting}>
-                  <Download className="h-4 w-4 mr-2" />
-                  {isExporting ? "Preparing..." : "Export Data"}
-                </Button>
-              </div>
-
-              <Separator />
-
-              <div className="flex items-center justify-between">
-                <div>
-                  <Label className="text-red-600 dark:text-red-400">Delete Account</Label>
-                  <p className="text-sm text-neutral-600 dark:text-neutral-400">Permanently delete your account</p>
-                </div>
-                <Button variant="destructive" onClick={handleDeleteAccount}>
-                  <Trash2 className="h-4 w-4 mr-2" />
-                  Delete
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Archived Connections */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Archive className="h-5 w-5" />
-                Archived Connections
-              </CardTitle>
-              <CardDescription>
-                Restore archived connections back to your active list
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {archivedConnections.length === 0 ? (
-                <div className="text-center py-6">
-                  <Archive className="h-12 w-12 mx-auto text-neutral-400 mb-3" />
-                  <p className="text-neutral-600 dark:text-neutral-400">No archived connections</p>
-                  <p className="text-sm text-neutral-500 dark:text-neutral-500">
-                    Connections you archive will appear here
-                  </p>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {archivedConnections.map((connection: any) => (
-                    <div key={connection.id} className="flex items-center justify-between p-3 border rounded-lg dark:border-neutral-700">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-neutral-200 dark:bg-neutral-700 rounded-full flex items-center justify-center">
-                          {connection.profileImage ? (
-                            <img 
-                              src={connection.profileImage} 
-                              alt={connection.name}
-                              className="w-10 h-10 rounded-full object-cover"
-                            />
-                          ) : (
-                            <span className="text-sm font-medium text-neutral-600 dark:text-neutral-300">
-                              {connection.name.charAt(0).toUpperCase()}
-                            </span>
-                          )}
-                        </div>
-                        <div>
-                          <div className="font-medium">{connection.name}</div>
-                          <div className="text-sm text-neutral-500 dark:text-neutral-400">
-                            {connection.relationshipStage}
-                          </div>
-                        </div>
-                      </div>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => restoreConnectionMutation.mutate(connection.id)}
-                        disabled={restoreConnectionMutation.isPending}
-                      >
-                        <RotateCcw className="h-4 w-4 mr-1" />
-                        {restoreConnectionMutation.isPending ? "Restoring..." : "Restore"}
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-            </TabsContent>
-
+            {/* Preferences Tab */}
             <TabsContent value="preferences" className="space-y-6">
-          {/* Notifications */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Bell className="h-5 w-5" />
-                Notifications
-              </CardTitle>
-              <CardDescription>
-                Choose what notifications you'd like to receive
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              {/* Master toggle for all notifications */}
-              <div className="flex items-center justify-between">
-                <div>
-                  <Label htmlFor="pushEnabled">Push Notifications</Label>
-                  <p className="text-sm text-neutral-600 dark:text-neutral-400">Enable all push notifications</p>
-                </div>
-                <Switch
-                  id="pushEnabled"
-                  checked={settings.notifications.pushEnabled}
-                  onCheckedChange={(checked) => updateNotificationSetting('pushEnabled', checked)}
-                />
-              </div>
-
-              {settings.notifications.pushEnabled && (
-                <>
-                  <Separator />
-
-                  {/* Global notification frequency */}
-                  <div className="space-y-3">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Moon className="h-5 w-5" />
+                    Appearance
+                  </CardTitle>
+                  <CardDescription>
+                    Customize how the app looks and feels
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="flex items-center justify-between">
                     <div>
-                      <Label className="text-sm font-medium">Notification Frequency</Label>
-                      <p className="text-sm text-neutral-600 dark:text-neutral-400">How often you want to receive notifications (randomly distributed throughout the day)</p>
+                      <Label>Theme</Label>
+                      <p className="text-sm text-neutral-600 dark:text-neutral-400">Choose your preferred theme</p>
                     </div>
-                    <Select 
-                      value={settings.notifications.globalFrequency} 
-                      onValueChange={(value) => updateNotificationSetting('globalFrequency', value as any)}
-                    >
-                      <SelectTrigger className="w-full">
+                    <Select value={theme} onValueChange={setTheme}>
+                      <SelectTrigger className="w-32">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="daily">Daily</SelectItem>
-                        <SelectItem value="twice-daily">Twice a Day</SelectItem>
-                        <SelectItem value="3-times-daily">3 Times a Day</SelectItem>
-                        <SelectItem value="weekly">Weekly</SelectItem>
-                        <SelectItem value="every-2-weeks">Every Two Weeks</SelectItem>
-                        <SelectItem value="monthly">Monthly</SelectItem>
+                        <SelectItem value="light">Light</SelectItem>
+                        <SelectItem value="dark">Dark</SelectItem>
+                        <SelectItem value="system">System</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
 
-                  <Separator />
-
-                  {/* Notification types - toggles only */}
-                  <div className="space-y-4">
-                    <div>
-                      <Label className="text-sm font-medium">Notification Types</Label>
-                      <p className="text-xs text-neutral-500 dark:text-neutral-500 mt-1">
-                        Notifications will be randomly distributed throughout the day based on your frequency setting. 
-                        Only scheduled plans and events will notify at specific times.
-                      </p>
-                    </div>
-                    
-                    {/* Moment Reminders */}
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <Label htmlFor="momentReminders">Moment Reminders</Label>
-                        <p className="text-sm text-neutral-600 dark:text-neutral-400">Prompts to log relationship moments</p>
-                      </div>
-                      <Switch
-                        id="momentReminders"
-                        checked={settings.notifications.momentReminders}
-                        onCheckedChange={(checked) => updateNotificationSetting('momentReminders', checked)}
-                      />
-                    </div>
-
-                    {/* Insight Alerts */}
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <Label htmlFor="insightAlerts">AI Insights</Label>
-                        <p className="text-sm text-neutral-600 dark:text-neutral-400">Relationship pattern insights</p>
-                      </div>
-                      <Switch
-                        id="insightAlerts"
-                        checked={settings.notifications.insightAlerts}
-                        onCheckedChange={(checked) => updateNotificationSetting('insightAlerts', checked)}
-                      />
-                    </div>
-
-                    {/* Quote of the Day */}
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <Label htmlFor="quoteOfTheDay">Quote of the Day</Label>
-                        <p className="text-sm text-neutral-600 dark:text-neutral-400">Daily relationship wisdom</p>
-                      </div>
-                      <Switch
-                        id="quoteOfTheDay"
-                        checked={settings.notifications.quoteOfTheDay}
-                        onCheckedChange={(checked) => updateNotificationSetting('quoteOfTheDay', checked)}
-                      />
-                    </div>
-
-                    {/* Cycle Reminders */}
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <Label htmlFor="cycleReminders">Cycle Reminders</Label>
-                        <p className="text-sm text-neutral-600 dark:text-neutral-400">Menstrual cycle tracking reminders</p>
-                      </div>
-                      <Switch
-                        id="cycleReminders"
-                        checked={settings.notifications.cycleReminders}
-                        onCheckedChange={(checked) => updateNotificationSetting('cycleReminders', checked)}
-                      />
-                    </div>
-                  </div>
-
-                  <Separator />
-
-                  {/* Notification Sound */}
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <Label htmlFor="soundEnabled">Notification Sound</Label>
-                      <p className="text-sm text-neutral-600 dark:text-neutral-400">Play sound with notifications</p>
-                    </div>
-                    <Switch
-                      id="soundEnabled"
-                      checked={settings.notifications.soundEnabled}
-                      onCheckedChange={(checked) => updateNotificationSetting('soundEnabled', checked)}
+            {/* Support Tab */}
+            <TabsContent value="support" className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <MessageCircle className="h-5 w-5" />
+                    Contact Support
+                  </CardTitle>
+                  <CardDescription>
+                    Send us a message and we'll get back to you soon
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="support-subject">Subject</Label>
+                    <Input
+                      id="support-subject"
+                      placeholder="Brief description of your issue"
+                      value={supportSubject}
+                      onChange={(e) => setSupportSubject(e.target.value)}
+                      disabled={sendSupportMutation.isPending}
                     />
                   </div>
-                </>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* App Preferences */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Moon className="h-5 w-5" />
-                App Preferences
-              </CardTitle>
-              <CardDescription>
-                Customize your app experience
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <Label htmlFor="theme">Theme</Label>
-                <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-2">Choose your preferred theme</p>
-                <Select 
-                  value={theme} 
-                  onValueChange={(value) => {
-                    setTheme(value as "light" | "dark" | "minimalist");
-                    updatePreferenceSetting('theme', value);
-                  }}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="light">Light</SelectItem>
-                    <SelectItem value="dark">Dark</SelectItem>
-                    <SelectItem value="minimalist">Minimalist</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label htmlFor="defaultTab">Default Page</Label>
-                <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-2">Page to open when launching the app</p>
-                <Select 
-                  value={settings.preferences.defaultTab} 
-                  onValueChange={(value) => updatePreferenceSetting('defaultTab', value)}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="dashboard">Dashboard</SelectItem>
-                    <SelectItem value="connections">Connections</SelectItem>
-                    <SelectItem value="calendar">Calendar</SelectItem>
-                    <SelectItem value="activities">Activities</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <div>
-                  <Label htmlFor="autoSave">Auto-save</Label>
-                  <p className="text-sm text-neutral-600 dark:text-neutral-400">Automatically save changes</p>
-                </div>
-                <Switch
-                  id="autoSave"
-                  checked={settings.preferences.autoSave}
-                  onCheckedChange={(checked) => updatePreferenceSetting('autoSave', checked)}
-                />
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Privacy, Security & Account */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Shield className="h-5 w-5" />
-                Privacy, Security & Account
-              </CardTitle>
-              <CardDescription>
-                Control your data privacy, security, and account settings
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <Label htmlFor="shareAnalytics">Analytics Sharing</Label>
-                  <p className="text-sm text-neutral-600 dark:text-neutral-400">Help improve the app with usage data</p>
-                </div>
-                <Switch
-                  id="shareAnalytics"
-                  checked={settings.privacy.shareAnalytics}
-                  onCheckedChange={(checked) => updatePrivacySetting('shareAnalytics', checked)}
-                />
-              </div>
-
-              <Separator />
-
-              <div className="flex items-center justify-between">
-                <div>
-                  <Label>Change Password</Label>
-                  <p className="text-sm text-neutral-600 dark:text-neutral-400">Update your account password</p>
-                </div>
-                <Button variant="outline" onClick={handleChangePassword}>
-                  <Lock className="h-4 w-4 mr-2" />
-                  Change
-                </Button>
-              </div>
-
-              <Separator />
-
-              <div className="flex items-center justify-between">
-                <div>
-                  <Label>Sign Out</Label>
-                  <p className="text-sm text-neutral-600 dark:text-neutral-400">Sign out of your account</p>
-                </div>
-                <Button variant="outline" onClick={logout}>
-                  <LogOut className="h-4 w-4 mr-2" />
-                  Sign Out
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Data Management */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Download className="h-5 w-5" />
-                Data Management
-              </CardTitle>
-              <CardDescription>
-                Export or delete your data
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <Label>Export Data</Label>
-                  <p className="text-sm text-neutral-600 dark:text-neutral-400">Download all your data</p>
-                </div>
-                <Button variant="outline" onClick={handleExportData}>
-                  <Download className="h-4 w-4 mr-2" />
-                  Export
-                </Button>
-              </div>
-
-              <Separator />
-
-              <div className="flex items-center justify-between">
-                <div>
-                  <Label className="text-red-600 dark:text-red-400">Delete Account</Label>
-                  <p className="text-sm text-neutral-600 dark:text-neutral-400">Permanently delete your account</p>
-                </div>
-                <Button variant="destructive" onClick={handleDeleteAccount}>
-                  <Trash2 className="h-4 w-4 mr-2" />
-                  Delete
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Archived Connections */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Archive className="h-5 w-5" />
-                Archived Connections
-              </CardTitle>
-              <CardDescription>
-                Restore archived connections back to your active list
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {archivedConnections.length === 0 ? (
-                <div className="text-center py-6">
-                  <Archive className="h-12 w-12 mx-auto text-neutral-400 mb-3" />
-                  <p className="text-neutral-600 dark:text-neutral-400">No archived connections</p>
-                  <p className="text-sm text-neutral-500 dark:text-neutral-500">
-                    Connections you archive will appear here
-                  </p>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {archivedConnections.map((connection: any) => (
-                    <div key={connection.id} className="flex items-center justify-between p-3 border rounded-lg dark:border-neutral-700">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-neutral-200 dark:bg-neutral-700 rounded-full flex items-center justify-center">
-                          {connection.profileImage ? (
-                            <img 
-                              src={connection.profileImage} 
-                              alt={connection.name}
-                              className="w-10 h-10 rounded-full object-cover"
-                            />
-                          ) : (
-                            <span className="text-sm font-medium text-neutral-600 dark:text-neutral-300">
-                              {connection.name.charAt(0).toUpperCase()}
-                            </span>
-                          )}
-                        </div>
-                        <div>
-                          <p className="font-medium">{connection.name}</p>
-                          <p className="text-sm text-neutral-600 dark:text-neutral-400">
-                            {connection.relationshipStage}
-                          </p>
-                        </div>
-                      </div>
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => restoreConnectionMutation.mutate(connection.id)}
-                        disabled={restoreConnectionMutation.isPending}
-                      >
-                        <RotateCcw className="h-4 w-4 mr-2" />
-                        {restoreConnectionMutation.isPending ? "Restoring..." : "Restore"}
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Support */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <MessageCircle className="h-5 w-5" />
-                Contact Support
-              </CardTitle>
-              <CardDescription>
-                Send us a message and we'll get back to you soon
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="support-subject">Subject</Label>
-                <Input
-                  id="support-subject"
-                  placeholder="Brief description of your issue"
-                  value={supportSubject}
-                  onChange={(e) => setSupportSubject(e.target.value)}
-                  disabled={sendSupportMutation.isPending}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="support-message">Message</Label>
-                <Textarea
-                  id="support-message"
-                  placeholder="Describe your issue or question in detail..."
-                  value={supportMessage}
-                  onChange={(e) => setSupportMessage(e.target.value)}
-                  disabled={sendSupportMutation.isPending}
-                  rows={4}
-                />
-              </div>
-              <Button 
-                onClick={() => {
-                  if (!supportSubject.trim() || !supportMessage.trim()) {
-                    toast({
-                      title: "Missing Information",
-                      description: "Please fill in both subject and message fields.",
-                      variant: "destructive",
-                    });
-                    return;
-                  }
-                  sendSupportMutation.mutate({
-                    subject: supportSubject,
-                    message: supportMessage
-                  });
-                }}
-                disabled={sendSupportMutation.isPending || !supportSubject.trim() || !supportMessage.trim()}
-                className="w-full"
-              >
-                <Send className="h-4 w-4 mr-2" />
-                {sendSupportMutation.isPending ? "Sending..." : "Send Message"}
-              </Button>
-            </CardContent>
-          </Card>
-
-          {/* Billing */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <CreditCard className="h-5 w-5" />
-                Billing
-              </CardTitle>
-              <CardDescription>
-                Manage your subscription and billing details
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <BillingSection />
-            </CardContent>
-          </Card>
+                  <div className="space-y-2">
+                    <Label htmlFor="support-message">Message</Label>
+                    <Textarea
+                      id="support-message"
+                      placeholder="Describe your issue or question in detail..."
+                      value={supportMessage}
+                      onChange={(e) => setSupportMessage(e.target.value)}
+                      disabled={sendSupportMutation.isPending}
+                      rows={4}
+                    />
+                  </div>
+                  <Button 
+                    onClick={() => {
+                      if (!supportSubject.trim() || !supportMessage.trim()) {
+                        toast({
+                          title: "Missing Information",
+                          description: "Please fill in both subject and message fields.",
+                          variant: "destructive",
+                        });
+                        return;
+                      }
+                      sendSupportMutation.mutate({
+                        subject: supportSubject,
+                        message: supportMessage,
+                      });
+                    }}
+                    disabled={sendSupportMutation.isPending}
+                    className="w-full"
+                  >
+                    <Send className="mr-2 h-4 w-4" />
+                    {sendSupportMutation.isPending ? "Sending..." : "Send Message"}
+                  </Button>
+                </CardContent>
+              </Card>
             </TabsContent>
           </Tabs>
         </div>
@@ -1142,3 +603,5 @@ export default function Settings() {
     </div>
   );
 }
+
+export default Settings;
