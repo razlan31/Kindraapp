@@ -4,7 +4,7 @@ import { Header } from "@/components/layout/header";
 import { BottomNavigation } from "@/components/layout/bottom-navigation";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { ConnectionCard } from "@/components/dashboard/connection-card";
-import { MomentCard } from "@/components/dashboard/moment-card";
+import { SimpleMomentCard } from "@/components/dashboard/simple-moment-card";
 import { BadgeShowcase } from "@/components/dashboard/badge-showcase";
 import { AIInsights } from "@/components/insights/ai-insights";
 import { Connection, Moment, Badge, MenstrualCycle } from "@shared/schema";
@@ -138,7 +138,7 @@ export default function InsightsNew() {
               
               <div className="space-y-3">
                 {recentMoments.filter(moment => moment && moment.id).map((moment) => (
-                  <MomentCard key={moment.id} moment={moment} />
+                  <SimpleMomentCard key={moment.id} moment={moment} />
                 ))}
                 {recentMoments.length === 0 && (
                   <div className="text-center py-8 text-gray-500 dark:text-gray-400">

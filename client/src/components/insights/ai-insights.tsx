@@ -2,28 +2,135 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Connection, Moment } from "@shared/schema";
 import { TrendingUp, TrendingDown, AlertCircle, Calendar, Heart, Users, Clock } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "@/contexts/auth-context";
 
-interface AIInsightsProps {
-  connections: Connection[];
-  moments: Moment[];
-  userData: {
-    zodiacSign?: string;
-    loveLanguage?: string;
-  };
-}
+export function AIInsights() {
+  const { user } = useAuth();
+  
+  const { data: connections = [], isLoading: connectionsLoading } = useQuery<Connection[]>({
+    queryKey: ['/api/connections'],
+    enabled: !!user
+  });
 
-export function AIInsights({ connections, moments, userData }: AIInsightsProps) {
+  const { data: moments = [], isLoading: momentsLoading } = useQuery<Moment[]>({
+    queryKey: ['/api/moments'],
+    enabled: !!user
+  });
+
+  // Show loading state while data is being fetched
+  if (connectionsLoading || momentsLoading) {
+    return (
+      <div className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-2xl p-6 border border-purple-100 dark:border-purple-800">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="p-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl">
+            <TrendingUp className="h-5 w-5 text-white" />
+          </div>
+          <div>
+            <h3 className="font-semibold text-lg bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+              AI Insights
+            </h3>
+            <p className="text-sm text-muted-foreground">
+              Loading relationship analytics...
+            </p>
+          </div>
+        </div>
+        <div className="animate-pulse h-20 bg-gray-200 dark:bg-gray-700 rounded"></div>
+      </div>
+    );
+  }
+
   // Safe debug logging without circular references
   console.log("AI Insights Debug:", {
-    connectionsLength: connections.length,
-    momentsLength: moments.length,
-    userData: userData || {},
-    momentsPreview: moments.slice(0, 3).map(m => ({
-      id: m.id,
-      emoji: m.emoji,
-      content: m.content?.substring(0, 50) || ""
-    }))
+    connectionsLength: connections?.length || 0,
+    momentsLength: moments?.length || 0,
+    userData: user || {},
+    momentsPreview: moments?.slice(0, 3).map(m => ({
+      id: m?.id || 'unknown',
+      emoji: m?.emoji || '❓',
+      content: m?.content?.substring(0, 50) || ""
+    })) || []
   });
+
+  // Show no data message if no connections or moments
+  if (!connections?.length && !moments?.length) {
+    return (
+      <div className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-2xl p-6 border border-purple-100 dark:border-purple-800">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="p-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl">
+            <TrendingUp className="h-5 w-5 text-white" />
+          </div>
+          <div>
+            <h3 className="font-semibold text-lg bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+              AI Insights
+            </h3>
+            <p className="text-sm text-muted-foreground">
+              Smart patterns from your relationship data
+            </p>
+          </div>
+        </div>
+        <div className="text-center py-8">
+          <div className="relative mb-4">
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-200 to-pink-200 dark:from-purple-700 dark:to-pink-700 rounded-full opacity-20 animate-pulse"></div>
+            <Calendar className="h-16 w-16 mx-auto text-purple-500 relative z-10" />
+          </div>
+          <p className="text-sm text-muted-foreground max-w-xs mx-auto">
+            Keep tracking moments to unlock personalized relationship insights and patterns
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // Simple insights based on available data
+  const simpleInsights = [];
+  
+  if (connections?.length > 0) {
+    simpleInsights.push({
+      title: `${connections.length} Active Connection${connections.length > 1 ? 's' : ''}`,
+      description: "Building meaningful relationships",
+      type: 'positive'
+    });
+  }
+  
+  if (moments?.length > 0) {
+    simpleInsights.push({
+      title: `${moments.length} Moment${moments.length > 1 ? 's' : ''} Tracked`,
+      description: "Great progress in relationship awareness",
+      type: 'positive'
+    });
+  }
+
+  return (
+    <div className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-2xl p-6 border border-purple-100 dark:border-purple-800">
+      <div className="flex items-center gap-3 mb-4">
+        <div className="p-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl">
+          <TrendingUp className="h-5 w-5 text-white" />
+        </div>
+        <div>
+          <h3 className="font-semibold text-lg bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+            AI Insights
+          </h3>
+          <p className="text-sm text-muted-foreground">
+            Smart patterns from your relationship data
+          </p>
+        </div>
+      </div>
+      
+      <div className="space-y-3">
+        {simpleInsights.map((insight, index) => (
+          <div key={index} className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-purple-100 dark:border-purple-700">
+            <h4 className="font-medium text-gray-900 dark:text-white mb-1">
+              {insight.title}
+            </h4>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              {insight.description}
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 
   // Calculate current week number for rotation
   const getCurrentWeek = () => {
