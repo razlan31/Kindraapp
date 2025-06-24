@@ -253,35 +253,35 @@ export default function AIChat() {
       {/* Chat Area */}
       <div className="flex-1 overflow-y-auto">
         {conversation.length === 0 ? (
-          <div className="flex flex-col items-center justify-center min-h-[60vh] p-8 text-center">
-            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-violet-500 to-pink-500 flex items-center justify-center mb-6">
-              <span className="text-white text-lg font-semibold">L</span>
+          <div className="flex flex-col items-center justify-center min-h-[50vh] sm:min-h-[60vh] p-4 sm:p-8 text-center">
+            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br from-violet-500 to-pink-500 flex items-center justify-center mb-4 sm:mb-6">
+              <span className="text-white text-sm sm:text-lg font-semibold">L</span>
             </div>
-            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">
+            <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white mb-2">
               How can I help you today?
             </h2>
-            <p className="text-gray-600 dark:text-gray-400 max-w-md text-sm leading-relaxed">
+            <p className="text-gray-600 dark:text-gray-400 max-w-xs sm:max-w-md text-xs sm:text-sm leading-relaxed px-2">
               Meet Luna AI, the most powerful relationship AI assistant. I'm here to transform your love life with personalized insights, expert guidance, and deep understanding of your unique relationship patterns.
             </p>
           </div>
         ) : (
-          <div className="p-4 space-y-8">
+          <div className="p-2 sm:p-4 space-y-4 sm:space-y-8">
             {conversation.map((msg, index) => (
               <div key={index} className="max-w-none">
                 {msg.role === 'user' ? (
                   <div className="flex justify-end">
-                    <div className="bg-gray-900 dark:bg-gray-700 text-white rounded-3xl rounded-br-lg px-6 py-3 max-w-[80%]">
-                      <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.content}</p>
+                    <div className="bg-gray-900 dark:bg-gray-700 text-white rounded-3xl rounded-br-lg px-3 sm:px-6 py-2 sm:py-3 max-w-[85%] sm:max-w-[80%]">
+                      <p className="text-xs sm:text-sm leading-relaxed whitespace-pre-wrap">{msg.content}</p>
                     </div>
                   </div>
                 ) : (
-                  <div className="flex gap-4">
-                    <div className="w-7 h-7 rounded-full bg-gradient-to-br from-violet-500 to-pink-500 flex items-center justify-center flex-shrink-0 mt-1">
+                  <div className="flex gap-2 sm:gap-4">
+                    <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-gradient-to-br from-violet-500 to-pink-500 flex items-center justify-center flex-shrink-0 mt-1">
                       <span className="text-white text-xs font-semibold">L</span>
                     </div>
-                    <div className="flex-1">
+                    <div className="flex-1 min-w-0">
                       <div className="prose prose-sm dark:prose-invert max-w-none">
-                        <p className="text-gray-900 dark:text-gray-100 leading-relaxed whitespace-pre-wrap text-base">
+                        <p className="text-gray-900 dark:text-gray-100 leading-relaxed whitespace-pre-wrap text-sm sm:text-base">
                           {msg.content}
                         </p>
                       </div>
@@ -296,7 +296,7 @@ export default function AIChat() {
       </div>
 
       {/* Input Area */}
-      <div className="border-t border-gray-100 dark:border-gray-800 p-4">
+      <div className="border-t border-gray-100 dark:border-gray-800 p-2 sm:p-4">
         <form onSubmit={handleSubmit} className="max-w-4xl mx-auto">
           <div className="relative">
             <Textarea
@@ -309,7 +309,7 @@ export default function AIChat() {
               }}
               onKeyDown={handleKeyDown}
               placeholder="Ask Luna AI anything about your relationships..."
-              className="min-h-[60px] max-h-[120px] resize-none pr-14 border-gray-200 dark:border-gray-700 focus:border-violet-500 dark:focus:border-violet-400 rounded-2xl bg-gray-50 dark:bg-gray-900 text-base leading-relaxed"
+              className="min-h-[50px] sm:min-h-[60px] max-h-[100px] sm:max-h-[120px] resize-none pr-12 sm:pr-14 border-gray-200 dark:border-gray-700 focus:border-violet-500 dark:focus:border-violet-400 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-gray-900 text-sm sm:text-base leading-relaxed"
               disabled={chatMutation.isPending}
             />
             <Button

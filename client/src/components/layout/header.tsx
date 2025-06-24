@@ -29,22 +29,22 @@ export function Header() {
   const initials = getInitials(displayName);
 
   return (
-    <header className="sticky top-0 z-50 bg-white dark:bg-neutral-900 px-4 py-3 border-b border-neutral-200 dark:border-neutral-800 flex items-center">
+    <header className="sticky top-0 z-50 bg-white dark:bg-neutral-900 px-2 sm:px-4 py-2 sm:py-3 border-b border-neutral-200 dark:border-neutral-800 flex items-center">
       <div className="flex items-center">
-        <Link href="/" className="text-2xl font-heading font-bold text-primary hover:opacity-80 transition-opacity">
+        <Link href="/" className="text-lg sm:text-2xl font-heading font-bold text-primary hover:opacity-80 transition-opacity">
           Kindra
         </Link>
       </div>
       <div className="flex-1"></div>
-      <div className="flex items-center space-x-3">
+      <div className="flex items-center space-x-2 sm:space-x-3">
         <UserPointsDisplay />
         <NotificationBell />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="relative h-9 w-9 rounded-full p-0">
-              <Avatar className="h-9 w-9">
+            <Button variant="ghost" className="relative h-8 w-8 sm:h-9 sm:w-9 rounded-full p-0">
+              <Avatar className="h-8 w-8 sm:h-9 sm:w-9">
                 <AvatarImage src={user?.profileImage ?? undefined} alt={displayName} />
-                <AvatarFallback className="bg-neutral-200 dark:bg-neutral-700 text-sm font-medium">
+                <AvatarFallback className="bg-neutral-200 dark:bg-neutral-700 text-xs sm:text-sm font-medium">
                   {initials}
                 </AvatarFallback>
               </Avatar>
