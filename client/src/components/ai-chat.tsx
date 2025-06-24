@@ -276,14 +276,18 @@ export function AIChat({ className, compact = false }: AIChatProps = {}) {
       return await response.json();
     },
     onSuccess: () => {
+      // Clear all conversation state immediately
       setConversation([]);
       setCurrentConversationId(null);
       setMessage("");
-      queryClient.invalidateQueries({ queryKey: ['/api/ai/conversation'] });
+      
+      // Force clear the cache and refetch empty state
+      queryClient.removeQueries({ queryKey: ['/api/ai/conversation'] });
       queryClient.invalidateQueries({ queryKey: ['/api/chat/conversations'] });
+      
       toast({
         title: "New chat started",
-        description: "Your previous conversation has been saved",
+        description: "Ready for a fresh conversation",
       });
     }
   });

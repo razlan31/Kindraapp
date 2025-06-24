@@ -457,14 +457,18 @@ PERSONAL GROWTH TRACKING:`;
       }
     }
     
-    // Clear memory cache to start fresh
+    // CRITICAL: Clear memory cache completely to start fresh
     this.conversationHistory.delete(userId);
-    console.log("✅ New conversation started");
+    console.log("🧹 Cleared in-memory conversation history");
+    console.log("✅ New conversation started - memory state reset");
   }
 
   async clearConversationHistory(userId: number): Promise<void> {
     console.log("🗑️ Clearing all conversation history for user:", userId);
+    
+    // Clear memory cache completely
     this.conversationHistory.delete(userId);
+    console.log("🧹 Cleared in-memory conversation history");
     
     // Also clear from database
     try {
@@ -472,7 +476,8 @@ PERSONAL GROWTH TRACKING:`;
       for (const conversation of conversations) {
         await this.storage.deleteChatConversation(conversation.id);
       }
-      console.log("✅ All conversation history cleared");
+      console.log("🗑️ Cleared all conversations from database");
+      console.log("✅ All conversation history cleared completely");
     } catch (dbError) {
       console.error("❌ Failed to clear conversation from database:", dbError);
     }
@@ -481,42 +486,17 @@ PERSONAL GROWTH TRACKING:`;
   async getConversationHistory(userId: number): Promise<ChatMessage[]> {
     console.log("🔍 Loading conversation history for user:", userId);
     
-    // Check memory first
-    let history = this.conversationHistory.get(userId);
-    console.log("📱 Memory cache has:", history?.length || 0, "messages");
+    // Only return memory cache - no database fallback for fresh conversation experience
+    const memoryHistory = this.conversationHistory.get(userId);
+    console.log("📱 Memory cache has:", memoryHistory?.length || 0, "messages");
     
-    if (!history || history.length === 0) {
-      // Load from database if not in memory
-      try {
-        console.log("💾 Loading from database...");
-        const conversations = await this.storage.getChatConversations(userId.toString());
-        console.log("📊 Found", conversations.length, "conversations in database");
-        
-        if (conversations.length > 0) {
-          const latestConversation = conversations[conversations.length - 1];
-          console.log("📄 Latest conversation:", latestConversation.title, "created:", latestConversation.createdAt);
-          
-          if (latestConversation.messages) {
-            const messages = typeof latestConversation.messages === 'string' 
-              ? JSON.parse(latestConversation.messages) 
-              : latestConversation.messages;
-            history = messages.map((msg: any) => ({
-              ...msg,
-              timestamp: new Date(msg.timestamp)
-            }));
-            console.log("✅ Loaded", history.length, "messages from database");
-            this.conversationHistory.set(userId, history);
-          }
-        } else {
-          console.log("📭 No conversations found in database");
-        }
-      } catch (dbError) {
-        console.error("❌ Failed to load conversation from database:", dbError);
-      }
+    if (memoryHistory && memoryHistory.length > 0) {
+      console.log("🎯 Returning from memory cache");
+      return memoryHistory;
     }
     
-    const result = history || [];
-    console.log("🎯 Returning", result.length, "messages to client");
-    return result;
+    console.log("📝 No memory cache found - returning empty for fresh start");
+    console.log("🎯 Returning empty conversation to client");
+    return [];
   }
 }
