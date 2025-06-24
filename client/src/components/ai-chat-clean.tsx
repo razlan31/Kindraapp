@@ -79,9 +79,11 @@ export default function AIChat() {
       setMessage('');
       queryClient.invalidateQueries({ queryKey: ['/api/ai/conversation'] });
       
-      // Refresh conversation history after first exchange to show new conversation
+      // Refresh conversation history after first exchange to show the new conversation
       if (newMessages.length === 2) {
-        queryClient.invalidateQueries({ queryKey: ['/api/chat/conversations'] });
+        setTimeout(() => {
+          queryClient.invalidateQueries({ queryKey: ['/api/chat/conversations'] });
+        }, 500); // Small delay to ensure the save completes first
       }
     },
   });

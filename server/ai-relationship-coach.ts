@@ -576,36 +576,9 @@ COACHING APPROACH:
   async startNewConversation(userId: number): Promise<void> {
     console.log("🆕 Starting new conversation for user:", userId);
     
-    // Save current conversation to database if it exists and has messages
-    const currentHistory = this.conversationHistory.get(userId);
-    if (currentHistory && currentHistory.length > 0) {
-      try {
-        const title = currentHistory[0].content.slice(0, 50) + "...";
-        
-        // Check if this conversation is already saved (to prevent duplicates)
-        const existingConversations = await this.storage.getChatConversations(userId.toString());
-        const isAlreadySaved = existingConversations.some(conv => {
-          try {
-            const existingMessages = typeof conv.messages === 'string' 
-              ? JSON.parse(conv.messages) 
-              : conv.messages;
-            return existingMessages.length === currentHistory.length &&
-                   existingMessages[0]?.content === currentHistory[0]?.content;
-          } catch {
-            return false;
-          }
-        });
-        
-        const saved = await this.saveCurrentConversation(userId, currentHistory, false);
-        if (saved) {
-          console.log("💾 Saved current conversation before starting new chat -", currentHistory.length, "messages");
-        } else {
-          console.log("📝 Conversation already exists, skipped saving");
-        }
-      } catch (dbError) {
-        console.error("❌ Failed to save current conversation:", dbError);
-      }
-    }
+    // Don't save the previous conversation when starting new chat
+    // The new conversation will be saved automatically after first message exchange
+    console.log("🚫 Skipping save of previous conversation - new conversation will be saved after first exchange");
     
     // CRITICAL: Clear memory cache completely to start fresh
     this.conversationHistory.delete(userId);
