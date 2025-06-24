@@ -20,7 +20,7 @@ export function FloatingLuna() {
       {!isOpen && (
         <Button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-20 right-4 z-50 w-14 h-14 rounded-full bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-600 hover:to-purple-600 shadow-lg hover:shadow-xl transition-all duration-200"
+          className="fixed bottom-[140px] right-4 z-50 w-14 h-14 rounded-full bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-600 hover:to-purple-600 shadow-lg hover:shadow-xl transition-all duration-200"
           size="icon"
         >
           <MessageCircle className="h-6 w-6 text-white" />
