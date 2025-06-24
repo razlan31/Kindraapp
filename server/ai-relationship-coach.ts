@@ -606,6 +606,18 @@ COACHING APPROACH:
     console.log("🧹 Cleared in-memory conversation history - userId:", userId);
     console.log("🔍 Memory cache state after clear:", this.conversationHistory.has(userId));
     console.log("📝 Conversation history size:", this.conversationHistory.size);
+    
+    // Double-check the clear worked
+    const verifyEmpty = this.conversationHistory.get(userId);
+    console.log("🔍 Double-check after delete - userId", userId, "has messages:", verifyEmpty?.length || 0);
+    
+    // If somehow it still exists, force clear it
+    if (verifyEmpty && verifyEmpty.length > 0) {
+      console.log("⚠️ Memory cache still had data, force clearing...");
+      this.conversationHistory.set(userId, []);
+      this.conversationHistory.delete(userId);
+    }
+    
     console.log("✅ New conversation started - memory state reset");
   }
 

@@ -2720,7 +2720,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/ai/conversation/new", isAuthenticated, async (req: Request, res: Response) => {
     try {
       const userId = (req.session as any).userId as number;
+      console.log("🆕 API: Starting new conversation for user:", userId);
+      
       await aiCoach.startNewConversation(userId);
+      
+      // Verify the memory cache was cleared
+      const verifyHistory = await aiCoach.getConversationHistory(userId);
+      console.log("🔍 API: Verification - conversation history after new chat:", verifyHistory.length, "messages");
       
       res.json({ message: "New conversation started" });
     } catch (error) {
