@@ -116,6 +116,7 @@ The badges system currently has several issues that need attention:
   - Deleted legacy insights.tsx (old insights page)
   - Simplified navigation structure with single insights page (InsightsNew)
   - Cleaned up App.tsx imports and routes
+  - Removed Luna AI section from insights page to keep it analytics-focused only
   - Final structure: Home (InsightsNew), Dashboard, with clear separation of concerns
 
 - June 23, 2025: NAVIGATION RESTRUCTURE - Separated AI coach and reorganized app structure for better user experience
