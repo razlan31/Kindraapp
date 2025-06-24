@@ -11,7 +11,12 @@ export interface ChatMessage {
 }
 
 export interface RelationshipContext {
-  user: User;
+  user: User & {
+    totalBadges?: number;
+    totalMoments?: number;
+    totalConnections?: number;
+    cycleTrackingEnabled?: boolean;
+  };
   connections: Connection[];
   recentMoments: Moment[];
   connectionHealthScores: Array<{
@@ -20,6 +25,8 @@ export interface RelationshipContext {
     totalMoments: number;
     positivePatterns: number;
   }>;
+  cycles?: any[];
+  badges?: any[];
 }
 
 export class AIRelationshipCoach {
@@ -308,15 +315,22 @@ Keep the conversation flowing naturally with varied approaches: quick check-ins 
       !selfConnection || m.connectionId !== selfConnection.id
     );
 
-    let summary = `USER PROFILE:
-- Name: ${user.displayName || user.username}`;
-
-    // Only include love language and zodiac if they might be relevant
-    if (user.loveLanguage) {
-      summary += `\n- Love Language: ${user.loveLanguage}`;
-    }
-    if (user.zodiacSign) {
-      summary += `\n- Zodiac Sign: ${user.zodiacSign}`;
+    let summary = `USER PROFILE & ACCOUNT:
+- Name: ${user.displayName || user.firstName || 'User'}
+- Email: ${user.email}
+- Username: ${user.username || 'Not set'}
+- Birthday: ${user.birthday ? new Date(user.birthday).toLocaleDateString() : 'Not specified'}
+- Relationship Goals: ${user.relationshipGoals || 'Not specified'}
+- Relationship Style: ${user.relationshipStyle || 'Not specified'}
+- Love Language: ${user.loveLanguage || 'Not specified'}
+- Zodiac Sign: ${user.zodiacSign || 'Not specified'}
+- Current Focus: ${user.currentFocus || 'General relationship growth'}
+- Account Status: ${user.subscriptionStatus || 'free'} (${user.subscriptionPlan || 'no plan'})
+- Points/Badges: ${user.points || 0} points earned
+- Monthly AI Usage: ${user.monthlyAiInsights || 0} insights, ${user.monthlyAiCoaching || 0} coaching messages used this month`;
+    
+    if (user.personalNotes) {
+      summary += `\n- Personal Notes: ${user.personalNotes}`;
     }
 
     summary += `
@@ -409,14 +423,21 @@ PERSONAL GROWTH TRACKING:`;
       if (healthData) summary += `, Health Score: ${healthData.healthScore}% (${healthData.positivePatterns}/${healthData.totalMoments} positive interactions)`;
     });
 
-    summary += `\n\nRECENT RELATIONSHIP MOMENTS (last ${relationshipMoments.length}):`;
+    summary += `\n\nRECENT ACTIVITIES & MOMENTS (last ${relationshipMoments.length} tracked):`;
     
-    relationshipMoments.slice(0, 8).forEach(moment => {
+    relationshipMoments.slice(0, 12).forEach(moment => {
       const connection = connections.find(c => c.id === moment.connectionId);
       const connectionName = connection ? connection.name : 'Unknown';
       const tags = moment.tags && moment.tags.length > 0 ? ` [${moment.tags.join(', ')}]` : '';
-      const intimacyNote = moment.isIntimate ? ' (intimate)' : '';
-      summary += `\n- ${moment.emoji} with ${connectionName}: "${moment.content}"${tags}${intimacyNote}`;
+      const intimacyNote = moment.isIntimate ? ` (intimate - ${moment.intimacyRating || 'unrated'})` : '';
+      const dateInfo = moment.createdAt ? ` on ${new Date(moment.createdAt).toLocaleDateString()}` : '';
+      const privateNote = moment.isPrivate ? ' (private)' : '';
+      
+      summary += `\n- ${moment.emoji} with ${connectionName}${dateInfo}: "${moment.content}"${tags}${intimacyNote}${privateNote}`;
+      
+      if (moment.reflection) {
+        summary += `\n  Reflection: "${moment.reflection}"`;
+      }
     });
 
     // Add patterns analysis for relationship moments only
@@ -439,6 +460,58 @@ PERSONAL GROWTH TRACKING:`;
     if (intimateMoments > 0) {
       summary += `\nINTIMATE MOMENTS: ${intimateMoments} of ${relationshipMoments.length} recent relationship moments`;
     }
+
+    // Add comprehensive activity breakdown by type
+    const momentsByType = {
+      plans: relationshipMoments.filter(m => m.tags?.includes('Plan')),
+      conflicts: relationshipMoments.filter(m => m.tags?.includes('Conflict')),
+      intimacy: relationshipMoments.filter(m => m.isIntimate),
+      achievements: relationshipMoments.filter(m => ['🏆', '🎯', '✅', '💪', '🌟', '🎉', '🥳'].includes(m.emoji)),
+      communication: relationshipMoments.filter(m => ['💬', '📱', '📞', '💌', '📝'].includes(m.emoji)),
+      dates: relationshipMoments.filter(m => ['💕', '❤️', '🥰', '😍', '💖', '🌹'].includes(m.emoji)),
+      milestones: relationshipMoments.filter(m => m.tags?.includes('Milestone') || ['🎂', '💍', '🏠', '✈️'].includes(m.emoji))
+    };
+
+    summary += `\n\nACTIVITY BREAKDOWN:
+- Plans: ${momentsByType.plans.length} scheduled/completed
+- Conflicts: ${momentsByType.conflicts.length} tracked (for growth/resolution)
+- Intimate moments: ${momentsByType.intimacy.length} recorded
+- Achievements: ${momentsByType.achievements.length} celebrated
+- Communication: ${momentsByType.communication.length} notable conversations
+- Romantic dates: ${momentsByType.dates.length} special moments
+- Milestones: ${momentsByType.milestones.length} important events`;
+
+    // Add cycle tracking information if available
+    const cycleConnections = connections.filter(c => c.relationshipStage === 'Dating' || c.relationshipStage === 'Relationship');
+    if (cycleConnections.length > 0) {
+      summary += `\n\nMENSTRUAL CYCLE TRACKING:`;
+      cycleConnections.forEach(conn => {
+        summary += `\n- ${conn.name}: Cycle tracking enabled (for relationship timing insights)`;
+      });
+    }
+
+    // Add cycles data if available
+    if (context.cycles && context.cycles.length > 0) {
+      const activeCycles = context.cycles.filter((cycle: any) => cycle.isActive);
+      summary += `\n- Active cycles: ${activeCycles.length}`;
+      summary += `\n- Total cycles tracked: ${context.cycles.length}`;
+    }
+
+    // Add badges information if available
+    if (context.badges && context.badges.length > 0) {
+      summary += `\n\nACHIEVEMENTS & BADGES:
+- Total badges earned: ${context.badges.length}
+- Recent achievements tracked for relationship growth motivation`;
+    }
+
+    // Add insights/analytics summary
+    summary += `\n\nAVAILABLE INSIGHTS:
+- Relationship health scores calculated for all connections
+- Pattern analysis across ${relationshipMoments.length} total moments
+- Emotional intelligence tracking through moment reflections
+- Communication effectiveness patterns
+- Conflict resolution success tracking
+- Intimacy and connection quality metrics`;
 
     return summary;
   }

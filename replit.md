@@ -111,12 +111,15 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
-- June 24, 2025: ENHANCED LUNA'S KNOWLEDGE SCOPE - Luna now balances app data with universal relationship wisdom
-  - Luna can respond using both tracked data AND general relationship knowledge appropriately
-  - Enhanced to provide comprehensive advice that goes beyond just app tracking data
-  - Can reference user's patterns while also drawing from universal relationship principles
-  - Fixed relationship context awareness to properly distinguish dating vs friendship relationships
-  - Luna now gives appropriate advice based on actual relationship types and broader relationship wisdom
+- June 24, 2025: COMPREHENSIVE DATA ACCESS - Luna now has full access to all app data for complete relationship insights
+  - Enhanced data context with complete profile information (email, birthday, goals, relationship style, subscription status)
+  - Added comprehensive activity breakdown (plans, conflicts, intimacy, achievements, communication, dates, milestones)
+  - Integrated menstrual cycle tracking data for relationship timing insights
+  - Added badges/achievements data for motivation and progress tracking
+  - Enhanced connection health scores with broader positive pattern recognition
+  - Luna can now reference ALL app features: connections, profile, activities, cycle tracker, insights, calendar, achievements
+  - Increased data scope from 30 to 50 recent moments for deeper pattern analysis
+  - Luna balances comprehensive app data with universal relationship wisdom appropriately
 
 - June 24, 2025: ENHANCED CONVERSATIONAL FLOW - Made Luna more natural, personal, and varied in responses
   - Luna now addresses users directly and personally instead of always giving elaborate answers

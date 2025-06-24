@@ -2621,17 +2621,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Message is required" });
       }
 
-      // Gather user context for AI
+      // Gather comprehensive user context for AI
       const user = await storage.getUser(userId);
-      const connections = await storage.getConnectionsByUserId(userId);
-      const recentMoments = await storage.getMomentsByUserId(userId, 30);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
 
-      // Calculate connection health scores
+      const connections = await storage.getConnectionsByUserId(userId);
+      const allMoments = await storage.getMomentsByUserId(userId); // Get all moments, not just recent
+      
+      // Get menstrual cycles for cycle tracking context
+      let cycles = [];
+      try {
+        cycles = await storage.getMenstrualCycles(parseInt(userId.toString()));
+      } catch (error) {
+        console.log('No cycle data available:', error);
+      }
+
+      // Get user badges for achievement context
+      let badges = [];
+      try {
+        badges = await storage.getUserBadges(parseInt(userId.toString()));
+      } catch (error) {
+        console.log('No badge data available:', error);
+      }
+
+      // Calculate comprehensive connection health scores
       const connectionHealthScores = connections.map(connection => {
-        const connectionMoments = recentMoments.filter(m => m.connectionId === connection.id);
-        const positiveEmojis = ['😍', '❤️', '😊', '🥰', '💖', '✨', '🔥', '💕'];
+        const connectionMoments = allMoments.filter(m => m.connectionId === connection.id);
+        const positiveEmojis = ['😍', '❤️', '😊', '🥰', '💖', '✨', '🔥', '💕', '🌟', '🎉', '🥳'];
         const positiveMoments = connectionMoments.filter(m => 
-          positiveEmojis.includes(m.emoji) || m.tags?.includes('Green Flag')
+          positiveEmojis.includes(m.emoji) || 
+          (m.tags && m.tags.some(tag => ['Green Flag', 'Achievement', 'Success', 'Growth', 'Milestone'].includes(tag)))
         );
         
         const healthScore = connectionMoments.length > 0 
@@ -2646,15 +2667,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         };
       });
 
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
-      }
-
       const context: RelationshipContext = {
-        user,
+        user: {
+          ...user,
+          totalBadges: badges.length,
+          totalMoments: allMoments.length,
+          totalConnections: connections.length,
+          cycleTrackingEnabled: cycles.length > 0
+        },
         connections,
-        recentMoments,
-        connectionHealthScores
+        recentMoments: allMoments.slice(0, 50), // More comprehensive recent activity
+        connectionHealthScores,
+        cycles: cycles.slice(0, 10), // Recent cycle data
+        badges: badges.slice(0, 20) // Recent badges
       };
 
       // Generate AI response
