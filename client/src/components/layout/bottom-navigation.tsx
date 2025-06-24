@@ -7,6 +7,7 @@ import {
   Calendar, 
   Heart,
   Home, 
+  Brain,
   LineChart, 
   Plus, 
   Users,
@@ -170,7 +171,7 @@ export function BottomNavigation() {
         <div className="max-w-md mx-auto px-2">
           <div className="grid grid-cols-5 h-14 items-center">
             <Link href="/" className={`bottom-tab flex flex-col items-center justify-center h-full px-1 ${location === '/' ? 'active' : ''}`}>
-              <Home className="h-4 w-4" />
+              <Brain className="h-4 w-4" />
               <span className="text-[10px] mt-0.5">AI</span>
             </Link>
             <Link href="/connections" className={`bottom-tab flex flex-col items-center justify-center h-full px-1 ${location === '/connections' ? 'active' : ''}`}>
