@@ -502,7 +502,15 @@ PERSONAL GROWTH TRACKING:`;
 - Achievements: ${momentsByType.achievements.length} celebrated
 - Communication: ${momentsByType.communication.length} notable conversations
 - Romantic dates: ${momentsByType.dates.length} special moments
-- Milestones: ${momentsByType.milestones.length} important events`;
+- Milestones: ${momentsByType.milestones.length} important events
+
+LOVE LANGUAGE INTEGRATION:
+- Primary Love Language: ${user.loveLanguage || 'Not specified'}
+- Gift-giving moments: ${relationshipMoments.filter(m => m.tags?.includes('Gift') || ['🎁', '💝', '🌹'].includes(m.emoji)).length} tracked
+- Quality time activities: ${momentsByType.dates.length + momentsByType.plans.length} shared experiences
+- Physical affection: ${relationshipMoments.filter(m => ['🤗', '💋', '🔥'].includes(m.emoji)).length} intimate moments
+- Words of affirmation: ${momentsByType.communication.length} meaningful conversations
+- Acts of service: ${relationshipMoments.filter(m => m.tags?.includes('Acts of Service') || ['🏠', '🍳', '🚗'].includes(m.emoji)).length} supportive actions`;
 
     // Add cycle tracking information if available
     const cycleConnections = connections.filter(c => c.relationshipStage === 'Dating' || c.relationshipStage === 'Relationship');
@@ -527,14 +535,25 @@ PERSONAL GROWTH TRACKING:`;
 - Recent achievements tracked for relationship growth motivation`;
     }
 
-    // Add insights/analytics summary
-    summary += `\n\nAVAILABLE INSIGHTS:
-- Relationship health scores calculated for all connections
-- Pattern analysis across ${relationshipMoments.length} total moments
-- Emotional intelligence tracking through moment reflections
-- Communication effectiveness patterns
-- Conflict resolution success tracking
-- Intimacy and connection quality metrics`;
+    // Add relationship-specific insights based on goals and style
+    summary += `\n\nRELATIONSHIP CONTEXT & INSIGHTS:
+- Dating Goals: ${user.relationshipGoals || 'Not specified'} (tailor advice accordingly)
+- Relationship Style: ${user.relationshipStyle || 'Not specified'}
+- Current Focus: ${user.currentFocus || 'General relationship growth'}
+- Zodiac Considerations: ${user.zodiacSign || 'Not specified'} (use sparingly, 25% of time)
+- Connection health scores calculated for all ${connections.length} tracked relationships
+- Pattern analysis across ${relationshipMoments.length} total moments reveals behavioral trends
+- Emotional intelligence tracking through detailed moment reflections and tags
+- Communication effectiveness patterns based on conflict resolution success
+- Intimacy progression and connection quality metrics over time
+- Activity preferences and love language alignment analysis available
+
+COACHING APPROACH:
+- Reference specific tracked moments when giving advice
+- Connect patterns to user's stated relationship goals and love language preferences  
+- Use health scores and activity breakdowns to provide personalized insights
+- Balance app data analysis with universal relationship wisdom
+- Relate cycle tracking data to relationship timing and emotional patterns when relevant`;
 
     return summary;
   }

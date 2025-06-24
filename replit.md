@@ -111,15 +111,15 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
-- June 24, 2025: COMPREHENSIVE DATA ACCESS - Luna now has full access to all app data for complete relationship insights
-  - Enhanced data context with complete profile information (email, birthday, goals, relationship style, subscription status)
-  - Added comprehensive activity breakdown (plans, conflicts, intimacy, achievements, communication, dates, milestones)
-  - Integrated menstrual cycle tracking data for relationship timing insights
-  - Added badges/achievements data for motivation and progress tracking
-  - Enhanced connection health scores with broader positive pattern recognition
-  - Luna can now reference ALL app features: connections, profile, activities, cycle tracker, insights, calendar, achievements
-  - Increased data scope from 30 to 50 recent moments for deeper pattern analysis
-  - Luna balances comprehensive app data with universal relationship wisdom appropriately
+- June 24, 2025: ENHANCED LOVE LANGUAGE & ACTIVITY INTEGRATION - Luna now connects user's love language and goals to relationship patterns
+  - Added love language integration that analyzes gift-giving, quality time, physical affection, words of affirmation, and acts of service moments
+  - Enhanced coaching approach to reference specific tracked moments when giving advice
+  - Connected user's relationship goals (casual dating) and style (monogamous) to personalized insights
+  - Luna now relates activity patterns to love language preferences and dating goals
+  - Added relationship context coaching that uses health scores and activity breakdowns for targeted advice
+  - Enhanced data context with complete profile information and comprehensive activity breakdown
+  - Integrated menstrual cycle tracking and badges/achievements for complete relationship intelligence
+  - Luna balances app-specific data analysis with universal relationship wisdom based on user's stated preferences
 
 - June 24, 2025: ENHANCED CONVERSATIONAL FLOW - Made Luna more natural, personal, and varied in responses
   - Luna now addresses users directly and personally instead of always giving elaborate answers
