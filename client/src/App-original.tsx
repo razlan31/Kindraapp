@@ -11,13 +11,26 @@ import OnboardingGoals from "@/pages/onboarding/goals";
 import OnboardingComplete from "@/pages/onboarding/complete";
 import Dashboard from "@/pages/dashboard";
 import Connections from "@/pages/connections-simple";
+import ConnectionsNew from "@/pages/connections-new";
+import ConnectionsFormNew from "./pages/connections-form-new";
+import SimpleConnectionForm from "./pages/simple-connection-form";
+import BasicConnectionForm from "./pages/basic-connection-form";
+import SimpleConnectionCreate from "./pages/simple-connection-create";
+import SimpleForm from "./pages/simple-form";
 import Activities from "@/pages/activities";
 import Calendar from "@/pages/calendar";
 import Homepage1 from "@/pages/homepage-1";
+
+import Luna from "@/pages/luna";
+import Trackings from "@/pages/trackings";
 import Insights from "@/pages/insights-original";
 import Profile from "@/pages/profile";
 import Settings from "@/pages/settings";
+
+
 import MenstrualCycle from "@/pages/menstrual-cycle";
+import AICoach from "@/pages/ai-coach";
+import SummaryReport from "@/pages/summary-report";
 import ConnectionDetail from "@/pages/connection-detail";
 import ConnectionEdit from "@/pages/connection-edit";
 import Badges from "@/pages/badges";
@@ -29,8 +42,11 @@ import { ThemeProvider } from "./contexts/theme-context";
 import { SyncProvider } from "./contexts/sync-context";
 import { MomentModal } from "./components/modals/simplified-moment-modal";
 import { PlanModal } from "./components/modals/plan-modal";
+
 import { MoodTrackerModal } from "./components/modals/mood-tracker-modal";
 import { BadgeNotificationMonitor } from "./components/BadgeNotificationMonitor";
+
+
 import { useEffect } from "react";
 import { useLocation } from "wouter";
 
@@ -58,6 +74,11 @@ function Router() {
       <Route path="/" component={Homepage1} />
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/connections" component={Connections} />
+      <Route path="/connections/add" component={ConnectionsFormNew} />
+      <Route path="/connections/simple" component={SimpleConnectionForm} />
+      <Route path="/connections/basic" component={BasicConnectionForm} />
+      <Route path="/connections/test" component={SimpleConnectionCreate} />
+      <Route path="/connections/bulletproof" component={SimpleForm} />
       <Route path="/connections/:id/edit" component={ConnectionEdit} />
       <Route path="/connections/:id" component={ConnectionDetail} />
       <Route path="/activities" component={Activities} />
@@ -68,6 +89,10 @@ function Router() {
       <Route path="/settings" component={Settings} />
 
       <Route path="/cycle" component={MenstrualCycle} />
+      <Route path="/cycle-tracking" component={MenstrualCycle} />
+      <Route path="/menstrual-cycle" component={MenstrualCycle} />
+      <Route path="/ai-coach" component={AICoach} />
+      <Route path="/summary-report" component={SummaryReport} />
       <Route component={NotFound} />
     </Switch>
   );

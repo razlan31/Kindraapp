@@ -27,8 +27,7 @@ export function MomentModal() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // Debug modal state
-  console.log("MomentModal render - momentModalOpen:", momentModalOpen, "activityType:", activityType);
+
 
   // Preset tag options organized by category
   const presetTags = {
