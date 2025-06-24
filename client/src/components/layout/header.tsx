@@ -15,6 +15,8 @@ export function Header() {
     queryKey: ['/api/me'],
     queryFn: () => fetch('/api/me').then(res => res.json()),
     enabled: isAuthenticated,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    refetchOnWindowFocus: false,
   });
   
   const getInitials = (name: string) => {

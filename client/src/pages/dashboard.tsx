@@ -21,9 +21,7 @@ import { useToast } from "@/hooks/use-toast";
 import { SubscriptionBanner } from "@/components/subscription/subscription-banner";
 
 export default function Dashboard() {
-  console.log("Dashboard component rendered");
   const { user, loading } = useAuth();
-  console.log("Dashboard: user loaded", !!user, "loading:", loading);
   const { openMomentModal, openConnectionModal, setSelectedConnection } = useModal();
   const [insight, setInsight] = useState<string>("");
   const [dashboardConnection, setDashboardConnection] = useState<Connection | null>(null);
@@ -33,6 +31,8 @@ export default function Dashboard() {
   const { data: connections = [] } = useQuery<Connection[]>({
     queryKey: ["/api/connections"],
     enabled: !loading && !!user,
+    staleTime: 10 * 60 * 1000, // 10 minutes
+    refetchOnWindowFocus: false,
   });
 
   // State for moments data
@@ -43,17 +43,14 @@ export default function Dashboard() {
   // Function to fetch moments
   const refetchMoments = useCallback(() => {
     if (user?.id) {
-      console.log("Starting to fetch moments for user:", user.id);
       setMomentsLoading(true);
       setMomentsError(null);
       fetch("/api/moments")
         .then(res => res.json())
         .then(data => {
-          console.log("Moments loaded successfully:", data.length);
           setMoments(data);
         })
         .catch(err => {
-          console.error("Error loading moments:", err);
           setMomentsError("Failed to load moments");
         })
         .finally(() => setMomentsLoading(false));

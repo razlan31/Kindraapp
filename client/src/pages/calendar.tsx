@@ -209,45 +209,7 @@ export default function Calendar() {
     refetchOnWindowFocus: true,
   });
 
-  // DEBUG: Comprehensive cycle debugging
-  console.log('🔍 Calendar cycles data loaded:', {
-    cyclesLength: cycles.length,
-    cycles: cycles,
-    timestamp: new Date().toISOString()
-  });
 
-  // FORCE CLEAR ANY CACHED CYCLES - ensure empty state
-  useEffect(() => {
-    // Clear any potential localStorage cycle data regardless of cycles.length
-    localStorage.removeItem('menstrual-cycles');
-    localStorage.removeItem('cycle-cache');
-    localStorage.removeItem('cycles');
-    localStorage.removeItem('cyclePhases');
-    localStorage.removeItem('cycleDisplay');
-    
-    // Also clear any potential session storage
-    sessionStorage.removeItem('menstrual-cycles');
-    sessionStorage.removeItem('cycle-cache');
-    sessionStorage.removeItem('cycles');
-    
-    // Force invalidate React Query cache for cycles
-    queryClient.invalidateQueries({ queryKey: ['/api/menstrual-cycles'] });
-    queryClient.removeQueries({ queryKey: ['/api/menstrual-cycles'] });
-    
-    console.log('🔍 AGGRESSIVE CACHE CLEAR: Cleared all cycle-related storage');
-  }, []); // Run only once on mount
-
-  // Additional debug for June 16th specifically
-  const today = new Date();
-  const june16 = new Date('2025-06-16');
-  if (format(today, 'yyyy-MM-dd') === '2025-06-16') {
-    console.log('🔍 Today is June 16th - cycle data check:', {
-      cyclesLength: cycles.length,
-      hasAnyDatabaseCycles: cycles.length > 0,
-      allCycleIds: cycles.map(c => c.id),
-      allConnectionIds: cycles.map(c => c.connectionId)
-    });
-  }
 
 
 
@@ -389,23 +351,7 @@ export default function Calendar() {
 
 
 
-  // Simple event listeners for cache invalidation only
-  useEffect(() => {
-    const handleMomentCreated = () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/moments'] });
-    };
-    const handleMomentUpdated = () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/moments'] });
-    };
-    
-    window.addEventListener('momentCreated', handleMomentCreated);
-    window.addEventListener('momentUpdated', handleMomentUpdated);
-    
-    return () => {
-      window.removeEventListener('momentCreated', handleMomentCreated);
-      window.removeEventListener('momentUpdated', handleMomentUpdated);
-    };
-  }, [queryClient]);
+
 
 
 

@@ -33,7 +33,9 @@ export function NotificationBell() {
 
   const { data: notifications = [], isLoading } = useQuery({
     queryKey: ["/api/notifications"],
-    refetchInterval: 30000, // Refresh every 30 seconds
+    refetchInterval: 60000, // Refresh every 60 seconds
+    staleTime: 30000, // Consider data stale after 30 seconds
+    refetchOnWindowFocus: false,
   });
 
   const markAsReadMutation = useMutation({
