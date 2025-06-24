@@ -65,26 +65,45 @@ export function getUserSubscriptionStatus(user: User, connectionsCount: number):
   };
 }
 
-export function getAccessibleConnections(connections: any[], user: User): any[] {
+export function getConnectionsWithLockStatus(connections: any[], user: User, focusConnectionId?: number): any[] {
   const now = new Date();
   const isTrialActive = user.trialEndDate ? new Date(user.trialEndDate) > now : false;
   const isSubscriptionActive = user.subscriptionStatus === 'active' && 
     user.subscriptionEndDate && new Date(user.subscriptionEndDate) > now;
   const isPremium = isTrialActive || isSubscriptionActive;
   
-  // Premium users can access all connections
+  // Premium users can access all connections without locks
   if (isPremium) {
-    return connections;
+    return connections.map(conn => ({ ...conn, isLocked: false }));
   }
   
-  // Free users: soft-lock approach - show only the most recently created connection
-  // but preserve all data for when they upgrade again
-  const sortedConnections = connections
-    .filter(conn => !conn.isArchived) // Don't count archived connections
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  // Free users: Show all connections but mark locked status
+  // Priority: 1. Focus connection (always unlocked), 2. Most recent connection if no focus
+  const activeConnections = connections.filter(conn => !conn.isArchived);
   
-  // Return only the most recent connection for free users
-  return sortedConnections.slice(0, 1);
+  let primaryConnection = null;
+  if (focusConnectionId) {
+    primaryConnection = activeConnections.find(conn => conn.id === focusConnectionId);
+  }
+  
+  // If no focus connection or focus not found, use most recent
+  if (!primaryConnection) {
+    const sortedConnections = activeConnections
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    primaryConnection = sortedConnections[0];
+  }
+  
+  // Mark lock status: only the primary connection is unlocked for free users
+  return connections.map(conn => ({
+    ...conn,
+    isLocked: !isPremium && conn.id !== primaryConnection?.id
+  }));
+}
+
+export function getAccessibleConnections(connections: any[], user: User, focusConnectionId?: number): any[] {
+  const connectionsWithStatus = getConnectionsWithLockStatus(connections, user, focusConnectionId);
+  // Return only unlocked connections for API filtering
+  return connectionsWithStatus.filter(conn => !conn.isLocked);
 }
 
 export function incrementUsage(user: User, type: 'insights' | 'coaching'): Partial<User> {

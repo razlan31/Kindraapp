@@ -7,7 +7,7 @@ import {
   userBadgeSchema, menstrualCycleSchema, milestoneSchema, planSchema, chatConversationSchema,
   subscriptionPlans
 } from "@shared/schema";
-import { getUserSubscriptionStatus, incrementUsage, startFreeTrial, getAccessibleConnections } from "./subscription-utils";
+import { getUserSubscriptionStatus, incrementUsage, startFreeTrial, getAccessibleConnections, getConnectionsWithLockStatus } from "./subscription-utils";
 import bcrypt from "bcryptjs";
 import session from "express-session";
 import MemoryStore from "memorystore";
@@ -508,10 +508,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "User not found" });
       }
       
-      // Apply soft-lock: free users see only their most recent connection
-      const accessibleConnections = getAccessibleConnections(allConnections, user);
+      // Get focus connection ID from user's current focus
+      const focusConnectionId = user.currentFocus;
       
-      res.status(200).json(accessibleConnections);
+      // Apply soft-lock: show all connections with lock status indicators
+      const connectionsWithLockStatus = getConnectionsWithLockStatus(allConnections, user, focusConnectionId);
+      
+      res.status(200).json(connectionsWithLockStatus);
     } catch (error) {
       console.error("Error in get connections:", error);
       res.status(500).json({ message: "Server error fetching connections" });
@@ -1113,7 +1116,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Apply soft-lock: filter moments to only show those from accessible connections
       const allConnections = await storage.getConnectionsByUserId(userId);
-      const accessibleConnections = getAccessibleConnections(allConnections, user);
+      const focusConnectionId = user.currentFocus;
+      const accessibleConnections = getAccessibleConnections(allConnections, user, focusConnectionId);
       const accessibleConnectionIds = accessibleConnections.map(conn => conn.id);
       
       const filteredMoments = allMoments.filter(moment => 

@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useModal } from "@/contexts/modal-context";
 import { useRelationshipFocus } from "@/contexts/relationship-focus-context";
 import { Input } from "@/components/ui/input";
-import { Search, Plus, X, Camera, Heart, Users, Clock, Activity, Calendar, Loader2 } from "lucide-react";
+import { Search, Plus, X, Camera, Heart, Users, Clock, Activity, Calendar, Loader2, Lock } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
@@ -284,12 +284,12 @@ export default function Connections() {
               Add Connection
             </Button>
             
-            {/* Soft-lock notice for free users with limited connections */}
-            {connections.length === 1 && (
+            {/* Soft-lock notice for free users with locked connections */}
+            {connections.some((conn: any) => conn.isLocked) && (
               <div className="text-center p-3 bg-blue-50 rounded-lg border border-blue-200">
                 <p className="text-sm text-blue-700">
-                  <strong>Free Plan:</strong> Showing your most recent connection. 
-                  <br />Upgrade to Premium to access all your connections.
+                  <strong>Free Plan:</strong> Some connections are locked. 
+                  <br />Upgrade to Premium to access all connections.
                 </p>
               </div>
             )}
@@ -445,10 +445,14 @@ function ConnectionCard({
 
   return (
     <Card 
-      className={`p-4 cursor-pointer transition-all hover:shadow-md ${
+      className={`p-4 transition-all ${
+        connection.isLocked 
+          ? 'opacity-60 cursor-not-allowed bg-gray-50 border-gray-200' 
+          : 'cursor-pointer hover:shadow-md'
+      } ${
         isMainFocus ? 'ring-2 ring-primary bg-primary/5' : ''
       } ${isLoading ? 'opacity-70 pointer-events-none' : ''}`}
-      onClick={() => !isLoading && onSelect(connection)}
+      onClick={() => !isLoading && !connection.isLocked && onSelect(connection)}
     >
       <div className="flex items-start justify-between">
         <div className="flex items-start space-x-3 flex-1">
@@ -482,6 +486,9 @@ function ConnectionCard({
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
               <h3 className="font-medium text-foreground truncate">{connection.name}</h3>
+              {connection.isLocked && (
+                <Lock className="h-4 w-4 text-gray-500" />
+              )}
               <span className="text-xs px-2 py-1 bg-muted rounded-full text-muted-foreground">
                 {connection.relationshipStage}
               </span>
