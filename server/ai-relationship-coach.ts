@@ -223,6 +223,11 @@ Your multifaceted personality:
 - **Therapist Insight**: Asks the right questions, helps them understand patterns, non-judgmental and emotionally intelligent
 - **Intelligent AI**: Analytical when needed, can process complex situations, remembers context and connections
 
+CRITICAL: Always pay attention to relationship types and respond appropriately:
+- If someone is DATING/in a ROMANTIC relationship, give romantic relationship advice, not friendship advice
+- Use the correct relationship context when giving advice (dating vs friendship vs family vs casual)
+- When they mention someone by name, check their relationship status to that person before responding
+
 Your conversational style:
 - Switch naturally between these roles depending on what the person needs in the moment
 - Sometimes be the encouraging best friend, sometimes the wise mother, sometimes the insightful therapist
@@ -363,27 +368,36 @@ PERSONAL GROWTH TRACKING:`;
     connections.filter(c => c.relationshipStage !== 'Self').forEach(conn => {
       const healthData = connectionHealthScores.find(h => h.name === conn.name);
       
-      // Determine connection category for better AI context
+      // Determine connection category for better AI context with CLEAR relationship status
       const familyStages = ['Mom', 'Dad', 'Mother', 'Father', 'Sister', 'Brother', 'Family', 'Parent', 'Child', 'Sibling'];
       const professionalStages = ['Colleague', 'Boss', 'Mentor', 'Coworker', 'Manager', 'Employee'];
-      const romanticStages = ['Dating', 'Relationship', 'Partner', 'Spouse', 'Married', 'Engaged'];
+      const romanticStages = ['Dating', 'Relationship', 'Partner', 'Spouse', 'Married', 'Engaged', 'Boyfriend', 'Girlfriend'];
       const friendshipStages = ['Friend', 'Best Friend', 'Acquaintance', 'Buddy'];
       const casualStages = ['Talking', 'Potential', 'Situationship', 'Crush'];
       
       let connectionType = 'Personal';
+      let isRomantic = false;
+      
       if (familyStages.some(stage => conn.relationshipStage.toLowerCase().includes(stage.toLowerCase()))) {
         connectionType = 'Family';
       } else if (professionalStages.some(stage => conn.relationshipStage.toLowerCase().includes(stage.toLowerCase()))) {
         connectionType = 'Professional';
       } else if (romanticStages.some(stage => conn.relationshipStage.toLowerCase().includes(stage.toLowerCase()))) {
-        connectionType = 'Romantic';
+        connectionType = 'Romantic Partner';
+        isRomantic = true;
       } else if (friendshipStages.some(stage => conn.relationshipStage.toLowerCase().includes(stage.toLowerCase()))) {
         connectionType = 'Friendship';
       } else if (casualStages.some(stage => conn.relationshipStage.toLowerCase().includes(stage.toLowerCase()))) {
         connectionType = 'Casual/Developing';
       }
       
-      summary += `\n- ${conn.name}: ${conn.relationshipStage} (${connectionType}) stage`;
+      // CRITICAL: Make relationship status very clear for AI context
+      if (isRomantic) {
+        summary += `\n- ${conn.name}: YOUR ${conn.relationshipStage.toUpperCase()} PARTNER (Romantic relationship)`;
+      } else {
+        summary += `\n- ${conn.name}: ${conn.relationshipStage} (${connectionType}) stage`;
+      }
+      
       if (conn.zodiacSign) summary += `, ${conn.zodiacSign}`;
       if (conn.loveLanguage) summary += `, Love Language: ${conn.loveLanguage}`;
       if (healthData) summary += `, Health Score: ${healthData.healthScore}% (${healthData.positivePatterns}/${healthData.totalMoments} positive interactions)`;

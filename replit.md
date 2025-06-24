@@ -111,6 +111,13 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
+- June 24, 2025: FIXED RELATIONSHIP CONTEXT AWARENESS - Luna now properly recognizes dating vs friendship relationships
+  - Enhanced relationship status detection to clearly identify romantic partners vs friends
+  - Added explicit romantic relationship markers (YOUR DATING PARTNER) in AI context
+  - Fixed issue where Luna gave friendship advice for dating relationships
+  - Luna now responds appropriately based on actual relationship type (dating, friendship, family, etc.)
+  - Improved context awareness prevents mismatched relationship advice
+
 - June 24, 2025: ENHANCED CONVERSATIONAL FLOW - Made Luna more natural, personal, and varied in responses
   - Luna now addresses users directly and personally instead of always giving elaborate answers
   - Added response variety: sometimes brief and direct, sometimes deeper when needed
