@@ -23,6 +23,7 @@ import Homepage1 from "@/pages/homepage-1";
 
 import Luna from "@/pages/luna";
 import Trackings from "@/pages/trackings";
+import Insights from "./pages/insights";
 import Profile from "@/pages/profile";
 import Settings from "@/pages/settings";
 
@@ -85,7 +86,7 @@ function Router() {
       <Route path="/activities" component={Activities} />
       <Route path="/calendar" component={Calendar} />
       <Route path="/badges" component={Badges} />
-      <Route path="/insights" component={Homepage1} />
+      <Route path="/insights" component={Insights} />
       <Route path="/profile" component={Profile} />
       <Route path="/settings" component={Settings} />
 
