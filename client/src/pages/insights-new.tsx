@@ -7,7 +7,7 @@ import { ConnectionCard } from "@/components/dashboard/connection-card";
 import { MomentCard } from "@/components/dashboard/moment-card";
 import { BadgeShowcase } from "@/components/dashboard/badge-showcase";
 import { AIInsights } from "@/components/insights/ai-insights";
-import { QuoteOfTheDay } from "@/components/dashboard/quote-of-the-day";
+import { QuoteOfTheDay } from "@/components/insights/quote-of-the-day";
 import { Connection, Moment, Badge } from "@shared/schema";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
@@ -122,12 +122,18 @@ export default function InsightsNew() {
 
         {/* Quote of the Day */}
         <div className="mb-6">
-          <QuoteOfTheDay />
+          <QuoteOfTheDay connections={connections} moments={moments} userData={{
+            zodiacSign: user?.zodiacSign || undefined,
+            loveLanguage: user?.loveLanguage || undefined
+          }} />
         </div>
 
         {/* AI Insights */}
         <div className="mb-6">
-          <AIInsights />
+          <AIInsights connections={connections} moments={moments} userData={{
+            zodiacSign: user?.zodiacSign || undefined,
+            loveLanguage: user?.loveLanguage || undefined
+          }} />
         </div>
 
         {/* Recent Activity */}
