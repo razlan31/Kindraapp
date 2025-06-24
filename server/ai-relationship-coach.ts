@@ -215,15 +215,15 @@ export class AIRelationshipCoach {
       // Update conversation history in memory
       this.conversationHistory.set(userId, history);
 
-      // Update conversation with first message (conversation already exists from new chat)
+      // Save conversation when user starts typing (first message)
       if (history.length === 1) {
         try {
-          const saved = await this.saveCurrentConversation(userId, history, true);
+          const saved = await this.saveCurrentConversation(userId, history, false);
           if (saved) {
-            console.log("💾 Updated conversation with first user message");
+            console.log("💾 Created new conversation when user started typing");
           }
         } catch (error) {
-          console.error("❌ Failed to update conversation:", error);
+          console.error("❌ Failed to create conversation:", error);
         }
       }
       
@@ -580,20 +580,8 @@ COACHING APPROACH:
     this.conversationHistory.delete(userId);
     console.log("🧹 Cleared in-memory conversation history - userId:", userId);
     
-    // Immediately create empty conversation in database so it appears in history
-    try {
-      const timestamp = new Date().toISOString();
-      const title = `New Chat - ${timestamp.slice(0, 16).replace('T', ' ')}`;
-      
-      await this.storage.createChatConversation({
-        userId: userId.toString(),
-        title,
-        messages: JSON.stringify([]) // Empty messages initially
-      });
-      console.log("💾 Created empty conversation in history:", title);
-    } catch (error) {
-      console.error("❌ Failed to create empty conversation:", error);
-    }
+    // Don't create empty conversation - wait for user to actually start typing
+    console.log("🚫 Waiting for user input before saving conversation");
     console.log("🔍 Memory cache state after clear:", this.conversationHistory.has(userId));
     console.log("📝 Conversation history size:", this.conversationHistory.size);
     

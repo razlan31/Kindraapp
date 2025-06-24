@@ -111,6 +111,13 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
+- June 24, 2025: OPTIMIZED CONVERSATION SAVING - Prevented empty conversation clutter while maintaining immediate save functionality
+  - Fixed "New Chat" button to only clear current conversation without creating empty database entries
+  - Conversations now save only when user actually starts typing (prevents accidental empty conversations)
+  - Maintained immediate saving to history when user begins typing first message
+  - Enhanced conversation management prevents clutter from mistaken "New Chat" clicks
+  - Smart conversation detection continues to update existing conversations vs creating duplicates
+
 - June 24, 2025: GROK-INSPIRED CLEAN UI REDESIGN - Completely redesigned Luna AI chat interface for better readability and focus
   - Removed visual noise: eliminated card borders, gradients, and excessive styling elements
   - Implemented conversation-focused layout similar to Grok with clean typography and spacing
