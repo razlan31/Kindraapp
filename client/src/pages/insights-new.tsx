@@ -92,8 +92,9 @@ export default function InsightsNew() {
 
       <main className="flex-1 overflow-y-auto pb-20 px-4 pt-6">
         <Tabs defaultValue="dashboard" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
+            <TabsTrigger value="luna">Luna AI</TabsTrigger>
             <TabsTrigger value="quote">Daily Quote</TabsTrigger>
           </TabsList>
 
