@@ -151,9 +151,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     console.log('🚀 PLANS DATA ROUTE HIT - This should show if route is working');
     try {
       const userId = (req.session as any).userId as number;
+      const user = await storage.getUser(userId);
       console.log('📋 GET /plans-data - Fetching for user', userId);
-      const plans = await storage.getPlans(userId);
-      console.log('📋 Plans found:', plans.length);
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      const allPlans = await storage.getPlans(userId);
+      console.log('📋 Plans found:', allPlans.length);
+      
+      // Apply soft-lock: filter plans to only show those from accessible connections
+      const allConnections = await storage.getConnectionsByUserId(userId);
+      const focusConnectionId = user.currentFocus;
+      const accessibleConnections = getAccessibleConnections(allConnections, user, focusConnectionId);
+      const accessibleConnectionIds = accessibleConnections.map(conn => conn.id);
+      
+      const plans = allPlans.filter(plan => 
+        accessibleConnectionIds.includes(plan.connectionId)
+      );
+      
+      console.log(`📋 Filtered plans: ${plans.length} accessible out of ${allPlans.length} total`);
       console.log('📋 Plans data:', JSON.stringify(plans, null, 2));
       
       // Force JSON response with explicit headers
@@ -4178,6 +4196,35 @@ Format as a brief analysis (2-3 sentences) focusing on what their data actually 
     } catch (error) {
       console.error('Error generating symptom correlation analysis:', error);
       res.status(500).json({ error: 'Failed to analyze symptom correlations' });
+    }
+  });
+
+  // Plans endpoint for frontend compatibility
+  app.get("/api/plans", isAuthenticated, async (req: Request, res: Response) => {
+    try {
+      const userId = (req.session as any).userId as number;
+      const user = await storage.getUser(userId);
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      const allPlans = await storage.getPlans(userId);
+      
+      // Apply soft-lock: filter plans to only show those from accessible connections
+      const allConnections = await storage.getConnectionsByUserId(userId);
+      const focusConnectionId = user.currentFocus;
+      const accessibleConnections = getAccessibleConnections(allConnections, user, focusConnectionId);
+      const accessibleConnectionIds = accessibleConnections.map(conn => conn.id);
+      
+      const plans = allPlans.filter(plan => 
+        accessibleConnectionIds.includes(plan.connectionId)
+      );
+      
+      res.status(200).json(plans);
+    } catch (error) {
+      console.error('Error fetching plans:', error);
+      res.status(500).json({ message: "Failed to fetch plans" });
     }
   });
 
