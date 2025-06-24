@@ -259,7 +259,7 @@ export default function AIChat() {
               How can I help you today?
             </h2>
             <p className="text-gray-600 dark:text-gray-400 max-w-md text-sm leading-relaxed">
-              I'm Luna, your relationship coach. Ask me anything about your relationships, dating, or personal connections.
+              Meet Luna, the most powerful relationship AI assistant. I'm here to transform your love life with personalized insights, expert guidance, and deep understanding of your unique relationship patterns.
             </p>
           </div>
         ) : (
