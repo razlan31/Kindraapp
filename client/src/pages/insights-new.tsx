@@ -1,55 +1,47 @@
-import { useState, useEffect } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Header } from "@/components/layout/header";
 import { BottomNavigation } from "@/components/layout/bottom-navigation";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { ConnectionCard } from "@/components/dashboard/connection-card";
-import { SimpleMomentCard } from "@/components/dashboard/simple-moment-card";
+import { MomentCard } from "@/components/dashboard/moment-card";
 import { BadgeShowcase } from "@/components/dashboard/badge-showcase";
 import { AIInsights } from "@/components/insights/ai-insights";
-import { AIChat } from "@/components/ai-chat";
 import { QuoteOfTheDay } from "@/components/dashboard/quote-of-the-day";
-import { Connection, Moment, Badge, MenstrualCycle } from "@shared/schema";
+import { Connection, Moment, Badge } from "@shared/schema";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
 import { useModal } from "@/contexts/modal-context";
-import { Sparkles, Calendar, ChevronDown, Heart, Plus, Circle, TrendingUp, Users } from "lucide-react";
+import { Heart, Calendar, Circle, Users, TrendingUp } from "lucide-react";
 import { Link } from "wouter";
-import { FocusSelector } from "@/components/relationships/focus-selector";
-import { useRelationshipFocus } from "@/contexts/relationship-focus-context";
-import { apiRequest } from "@/lib/queryClient";
-import { useToast } from "@/hooks/use-toast";
 import { SubscriptionBanner } from "@/components/subscription/subscription-banner";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function InsightsNew() {
   const { user, loading } = useAuth();
-  const { openMomentModal, openConnectionModal, setSelectedConnection } = useModal();
-  const [insight, setInsight] = useState<string>("");
-  const [dashboardConnection, setDashboardConnection] = useState<Connection | null>(null);
-  const { mainFocusConnection } = useRelationshipFocus();
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
+  const { openMomentModal, openConnectionModal } = useModal();
 
-  // Query data
+  // Fetch connections
   const { data: connections = [] } = useQuery<Connection[]>({
-    queryKey: ['/api/connections'],
-    enabled: !!user
+    queryKey: ["/api/connections"],
+    enabled: !loading && !!user,
   });
 
+  // Fetch moments
   const { data: moments = [] } = useQuery<Moment[]>({
-    queryKey: ['/api/moments'],
-    enabled: !!user
+    queryKey: ["/api/moments"],
+    enabled: !loading && !!user,
   });
 
+  // Fetch badges
   const { data: badges = [] } = useQuery<Badge[]>({
-    queryKey: ['/api/user-badges'],
-    enabled: !!user
+    queryKey: ["/api/badges"],
+    enabled: !loading && !!user,
   });
 
-  const { data: cycles = [] } = useQuery<MenstrualCycle[]>({
-    queryKey: ['/api/menstrual-cycles'],
-    enabled: !!user
+  // Fetch user badges
+  const { data: userBadges = [] } = useQuery<any[]>({
+    queryKey: ["/api/user-badges"],
+    enabled: !loading && !!user,
   });
 
   if (loading) {
@@ -81,105 +73,123 @@ export default function InsightsNew() {
     );
   }
 
-  // Calculate statistics with safety checks
-  const totalMoments = moments?.length || 0;
-  const totalConnections = connections?.length || 0;
-  const recentMoments = moments?.slice(0, 3) || [];
-  const recentConnections = connections?.slice(0, 3) || [];
-  const recentBadges = badges?.slice(0, 3) || [];
+  // Calculate weekly moments
+  const weeklyMoments = moments?.filter(moment => {
+    if (!moment?.createdAt) return false;
+    const momentDate = new Date(moment.createdAt);
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+    return momentDate >= oneWeekAgo;
+  }) || [];
+
+  const recentMoments = moments?.slice(0, 5) || [];
 
   return (
     <div className="max-w-md mx-auto bg-white dark:bg-neutral-900 min-h-screen flex flex-col relative">
       <Header />
 
       <main className="flex-1 overflow-y-auto pb-20 px-4 pt-6">
-        <Tabs defaultValue="dashboard" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
-            <TabsTrigger value="luna">Luna AI</TabsTrigger>
-            <TabsTrigger value="quote">Daily Quote</TabsTrigger>
-          </TabsList>
+        {/* Subscription Banner */}
+        <SubscriptionBanner />
 
-          <TabsContent value="dashboard" className="space-y-6 mt-6">
-            {/* Subscription Banner */}
-            <SubscriptionBanner />
+        {/* Stats Overview - 4 cards like old homepage */}
+        <div className="grid grid-cols-2 gap-4 mb-6">
+          <StatCard 
+            title="Connections" 
+            value={connections.length.toString()} 
+            icon={Users} 
+            color="text-blue-600" 
+          />
+          <StatCard 
+            title="Total Moments" 
+            value={moments.length.toString()} 
+            icon={Heart} 
+            color="text-pink-600" 
+          />
+          <StatCard 
+            title="This Week" 
+            value={weeklyMoments.length.toString()} 
+            icon={Calendar} 
+            color="text-green-600" 
+          />
+          <StatCard 
+            title="Badges Earned" 
+            value={userBadges.length.toString()} 
+            icon={Circle} 
+            color="text-purple-600" 
+          />
+        </div>
 
-            {/* Stats Overview - 4 cards like old homepage */}
-            <div className="grid grid-cols-2 gap-4">
-              <StatCard 
-                title="Connections" 
-                value={connections.length} 
-                icon={Users} 
-                color="text-blue-600" 
-              />
-              <StatCard 
-                title="Total Moments" 
-                value={moments.length} 
-                icon={Heart} 
-                color="text-pink-600" 
-              />
-              <StatCard 
-                title="This Week" 
-                value={weeklyMoments.length} 
-                icon={Calendar} 
-                color="text-green-600" 
-              />
-              <StatCard 
-                title="Badges Earned" 
-                value={badges.length} 
-                icon={Circle} 
-                color="text-purple-600" 
-              />
+        {/* Quote of the Day */}
+        <div className="mb-6">
+          <QuoteOfTheDay />
+        </div>
+
+        {/* AI Insights */}
+        <div className="mb-6">
+          <AIInsights />
+        </div>
+
+        {/* Recent Activity */}
+        <section className="space-y-4 mb-6">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+              Recent Activity
+            </h2>
+            <Link href="/connection">
+              <Button variant="ghost" size="sm" className="text-purple-600">
+                View All
+              </Button>
+            </Link>
+          </div>
+          
+          <div className="space-y-3">
+            {recentMoments.filter(moment => moment && moment.id).map((moment) => (
+              <MomentCard key={moment.id} moment={moment} onSelectConnection={() => {}} onAddReflection={() => {}} />
+            ))}
+            {recentMoments.length === 0 && (
+              <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                <Heart className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                <p>No recent activity to show</p>
+                <Button 
+                  onClick={() => openMomentModal()}
+                  className="mt-3"
+                  size="sm"
+                >
+                  Add First Moment
+                </Button>
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* Active Connections */}
+        {connections.length > 0 && (
+          <section className="space-y-4 mb-6">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+              Your Connections
+            </h2>
+            <div className="grid gap-4">
+              {connections.slice(0, 3).map((connection) => (
+                <ConnectionCard key={connection.id} connection={connection} />
+              ))}
+              {connections.length > 3 && (
+                <div className="text-center">
+                  <Link href="/connection">
+                    <Button variant="outline" size="sm">
+                      View All {connections.length} Connections
+                    </Button>
+                  </Link>
+                </div>
+              )}
             </div>
+          </section>
+        )}
 
-            {/* Focus Selector */}
-            <FocusSelector />
-
-            {/* AI Insights */}
-            <AIInsights />
-
-            {/* Recent Activity */}
-            <section className="space-y-4">
-              <div className="flex items-center justify-between">
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Recent Activity
-                </h2>
-                <Link href="/connection">
-                  <Button variant="ghost" size="sm" className="text-purple-600">
-                    View All
-                  </Button>
-                </Link>
-              </div>
-              
-              <div className="space-y-3">
-                {recentMoments.filter(moment => moment && moment.id).map((moment) => (
-                  <SimpleMomentCard key={moment.id} moment={moment} />
-                ))}
-                {recentMoments.length === 0 && (
-                  <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-                    <Heart className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                    <p>No recent activity to show</p>
-                  </div>
-                )}
-              </div>
-            </section>
-
-            {/* Badge Showcase */}
-            <BadgeShowcase badges={recentBadges} />
-          </TabsContent>
-
-          <TabsContent value="quote" className="space-y-6 mt-6">
-            <div className="text-center py-8">
-              <div className="bg-gradient-to-r from-purple-100 to-pink-100 dark:from-purple-900/20 dark:to-pink-900/20 rounded-2xl p-6 mb-4">
-                <Sparkles className="h-8 w-8 mx-auto mb-4 text-purple-600" />
-                <p className="text-lg italic text-gray-700 dark:text-gray-300 mb-2">
-                  "Every relationship teaches you something about yourself."
-                </p>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Daily Inspiration</p>
-              </div>
-            </div>
-          </TabsContent>
-        </Tabs>
+        {/* Badge Showcase */}
+        {userBadges.length > 0 && (
+          <BadgeShowcase badges={userBadges.map((ub: any) => ub.badge || ub)} />
+        )}
       </main>
 
       <BottomNavigation />
