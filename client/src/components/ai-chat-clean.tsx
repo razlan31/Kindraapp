@@ -79,10 +79,12 @@ export default function AIChat() {
       setMessage('');
       queryClient.invalidateQueries({ queryKey: ['/api/ai/conversation'] });
       
-      // Refresh conversation history to show updated conversation
-      setTimeout(() => {
-        queryClient.invalidateQueries({ queryKey: ['/api/chat/conversations'] });
-      }, 500); // Small delay to ensure the save completes first
+      // Refresh conversation history only after complete exchange (to show new conversation)
+      if (newMessages.length === 2) {
+        setTimeout(() => {
+          queryClient.invalidateQueries({ queryKey: ['/api/chat/conversations'] });
+        }, 500); // Small delay to ensure the save completes first
+      }
     },
   });
 

@@ -215,12 +215,12 @@ export class AIRelationshipCoach {
       // Update conversation history in memory
       this.conversationHistory.set(userId, history);
 
-      // Save conversation when user starts typing (first message)
-      if (history.length === 1) {
+      // Save conversation only after complete exchange (user + assistant messages)
+      if (history.length === 2) {
         try {
           const saved = await this.saveCurrentConversation(userId, history, false);
           if (saved) {
-            console.log("💾 Created new conversation when user started typing");
+            console.log("💾 Created new conversation after complete exchange");
           }
         } catch (error) {
           console.error("❌ Failed to create conversation:", error);
@@ -629,7 +629,17 @@ COACHING APPROACH:
   }
 
   private async saveCurrentConversation(userId: number, messages: ChatMessage[], isAutoSave: boolean = false): Promise<boolean> {
-    if (messages.length === 0) return false;
+    // Only save non-empty conversations with actual content
+    if (messages.length === 0) {
+      console.log("🚫 Skipping save - conversation is empty");
+      return false;
+    }
+    
+    // Ensure we have at least one complete exchange before saving
+    if (messages.length < 2) {
+      console.log("🚫 Skipping save - incomplete conversation (need user + assistant messages)");
+      return false;
+    }
     
     const title = messages[0]?.content.slice(0, 50) + "..." || "New Conversation";
     const messagesJson = JSON.stringify(messages);
