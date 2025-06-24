@@ -78,7 +78,11 @@ export default function AIChat() {
       setConversation(newMessages);
       setMessage('');
       queryClient.invalidateQueries({ queryKey: ['/api/ai/conversation'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/chat/conversations'] });
+      
+      // Refresh conversation history after first exchange to show new conversation
+      if (newMessages.length === 2) {
+        queryClient.invalidateQueries({ queryKey: ['/api/chat/conversations'] });
+      }
     },
   });
 
@@ -95,7 +99,7 @@ export default function AIChat() {
       queryClient.invalidateQueries({ queryKey: ['/api/chat/conversations'] });
       toast({ 
         title: "New conversation started",
-        description: "Previous conversation saved to history"
+        description: "Ready for fresh conversation"
       });
     }
   });

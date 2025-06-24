@@ -215,15 +215,27 @@ export class AIRelationshipCoach {
       // Update conversation history in memory
       this.conversationHistory.set(userId, history);
 
-      // Auto-save conversation to database every few messages
+      // Save conversation to database immediately when it starts (after first exchange)
+      if (history.length === 2) {
+        try {
+          const saved = await this.saveCurrentConversation(userId, history, false);
+          if (saved) {
+            console.log("💾 Immediately saved new conversation after first exchange");
+          }
+        } catch (error) {
+          console.error("❌ Failed to save new conversation:", error);
+        }
+      }
+      
+      // Auto-update existing conversation every few messages  
       if (history.length >= 4 && history.length % 4 === 0) {
         try {
           const saved = await this.saveCurrentConversation(userId, history, true);
           if (saved) {
-            console.log("💾 Auto-saved conversation after", history.length, "messages");
+            console.log("💾 Auto-updated conversation after", history.length, "messages");
           }
         } catch (error) {
-          console.error("❌ Failed to auto-save conversation:", error);
+          console.error("❌ Failed to auto-update conversation:", error);
         }
       }
 
