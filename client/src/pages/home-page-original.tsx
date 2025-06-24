@@ -36,7 +36,7 @@ import {
 } from "lucide-react";
 import { useState, useEffect } from "react";
 
-export default function InsightsNew() {
+export default function Insights() {
   const { user, loading } = useAuth();
   
   // Collapsible state management with localStorage persistence
