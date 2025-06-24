@@ -82,46 +82,28 @@ export default function Dashboard() {
     };
   }, [refetchMoments]);
 
-  // Fetch badges
+  // Fetch badges with performance optimization
   const { data: badges = [] } = useQuery<Badge[]>({
     queryKey: ["/api/badges"],
     enabled: !loading && !!user,
+    staleTime: 30 * 60 * 1000, // 30 minutes - badges rarely change
+    refetchOnWindowFocus: false,
   });
 
-  // Fetch user badges
+  // Fetch user badges with performance optimization
   const { data: userBadges = [] } = useQuery<any[]>({
     queryKey: ["/api/user-badges"],
     enabled: !loading && !!user,
-  });
-
-  // Debug logging
-  console.log("Dashboard Debug:", { 
-    user: !!user, 
-    loading,
-    momentsLength: moments.length, 
-    momentsLoading,
-    momentsError,
-    momentsState: moments.length > 0 ? "HAS_DATA" : "NO_DATA",
-    connectionsLength: connections.length,
-    connectionsState: connections.length > 0 ? "HAS_DATA" : "NO_DATA",
-    aiInsightsCondition: !momentsLoading && !momentsError ? "SHOULD_RENDER" : "BLOCKED"
+    staleTime: 15 * 60 * 1000, // 15 minutes
+    refetchOnWindowFocus: false,
   });
 
   // Force refetch moments if they're empty but user is loaded
   useEffect(() => {
     if (!loading && user && moments.length === 0 && !momentsLoading) {
-      console.log("Force refetching moments...");
       refetchMoments();
     }
   }, [loading, user, moments.length, momentsLoading, refetchMoments]);
-
-  // Additional trigger when user changes
-  useEffect(() => {
-    if (user && moments.length === 0) {
-      console.log("User loaded, triggering moments refetch...");
-      refetchMoments();
-    }
-  }, [user?.id, refetchMoments]);
 
   // Determine which connection to focus on - prioritize dashboard selection, then main focus
   const focusConnection = dashboardConnection || mainFocusConnection || null;

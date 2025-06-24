@@ -53,11 +53,12 @@ export default function AIChat() {
     }
   }, [conversationData]);
 
-  // Load saved conversations
+  // Load saved conversations with lazy loading
   const { data: savedConversations } = useQuery({
     queryKey: ['/api/chat/conversations'],
-    staleTime: 1000 * 60 * 10,
+    staleTime: 20 * 60 * 1000, // 20 minutes
     refetchOnWindowFocus: false,
+    enabled: showHistory, // Only load when history panel is opened
   });
 
   // Chat mutation

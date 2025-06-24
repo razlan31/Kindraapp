@@ -122,11 +122,13 @@ The badges system currently has several issues that need attention:
   - Ensured all text sizes scale appropriately from mobile to desktop
 
 - June 24, 2025: PERFORMANCE OPTIMIZATION - Significantly improved app loading times by reducing API polling frequency
-  - Reduced notification polling from every 3 seconds to every 30 seconds
-  - Extended cache duration for conversation data from 5 to 10 minutes
-  - Disabled unnecessary window focus refetching for conversation queries
-  - Added stale time optimization to reduce background API requests
-  - App now loads much faster with reduced server load
+  - Reduced notification polling from every 30 seconds to every 60 seconds
+  - Extended cache duration throughout app: 10-20 minutes for most queries, 30 minutes for badges
+  - Disabled unnecessary window focus refetching for all major queries
+  - Added lazy loading for conversation history (only loads when panel opened)
+  - Removed excessive console logging that was impacting performance
+  - Optimized React Query settings with garbage collection and retry limits
+  - App now loads much faster with dramatically reduced server load
 
 - June 24, 2025: OPTIMIZED CONVERSATION SAVING - Only complete conversations with actual exchanges are saved
   - Fixed "New Chat" button to only clear current conversation without creating empty database entries
