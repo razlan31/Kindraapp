@@ -95,11 +95,12 @@ export default function AIChat() {
     },
     onSuccess: () => {
       setConversation([]);
+      // Immediately refresh both conversation and history
       queryClient.invalidateQueries({ queryKey: ['/api/ai/conversation'] });
       queryClient.invalidateQueries({ queryKey: ['/api/chat/conversations'] });
       toast({ 
         title: "New conversation started",
-        description: "Ready for fresh conversation"
+        description: "Conversation saved to history"
       });
     }
   });

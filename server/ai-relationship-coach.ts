@@ -215,15 +215,15 @@ export class AIRelationshipCoach {
       // Update conversation history in memory
       this.conversationHistory.set(userId, history);
 
-      // Save conversation to database immediately when it starts (after first user message)
+      // Update conversation with first message (conversation already exists from new chat)
       if (history.length === 1) {
         try {
-          const saved = await this.saveCurrentConversation(userId, history, false);
+          const saved = await this.saveCurrentConversation(userId, history, true);
           if (saved) {
-            console.log("💾 Immediately saved new conversation when user started typing");
+            console.log("💾 Updated conversation with first user message");
           }
         } catch (error) {
-          console.error("❌ Failed to save new conversation:", error);
+          console.error("❌ Failed to update conversation:", error);
         }
       }
       
@@ -576,13 +576,24 @@ COACHING APPROACH:
   async startNewConversation(userId: number): Promise<void> {
     console.log("🆕 Starting new conversation for user:", userId);
     
-    // Don't save the previous conversation when starting new chat
-    // The new conversation will be saved automatically after first message exchange
-    console.log("🚫 Skipping save of previous conversation - new conversation will be saved after first exchange");
-    
     // CRITICAL: Clear memory cache completely to start fresh
     this.conversationHistory.delete(userId);
     console.log("🧹 Cleared in-memory conversation history - userId:", userId);
+    
+    // Immediately create empty conversation in database so it appears in history
+    try {
+      const timestamp = new Date().toISOString();
+      const title = `New Chat - ${timestamp.slice(0, 16).replace('T', ' ')}`;
+      
+      await this.storage.createChatConversation({
+        userId: userId.toString(),
+        title,
+        messages: JSON.stringify([]) // Empty messages initially
+      });
+      console.log("💾 Created empty conversation in history:", title);
+    } catch (error) {
+      console.error("❌ Failed to create empty conversation:", error);
+    }
     console.log("🔍 Memory cache state after clear:", this.conversationHistory.has(userId));
     console.log("📝 Conversation history size:", this.conversationHistory.size);
     
