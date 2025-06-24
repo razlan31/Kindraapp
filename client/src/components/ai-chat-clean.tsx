@@ -37,7 +37,8 @@ export default function AIChat() {
   // Load conversation data
   const { data: conversationData } = useQuery({
     queryKey: ['/api/ai/conversation'],
-    staleTime: 1000 * 60 * 5,
+    staleTime: 1000 * 60 * 10,
+    refetchOnWindowFocus: false,
   });
 
   useEffect(() => {
@@ -55,7 +56,8 @@ export default function AIChat() {
   // Load saved conversations
   const { data: savedConversations } = useQuery({
     queryKey: ['/api/chat/conversations'],
-    staleTime: 1000 * 60 * 5,
+    staleTime: 1000 * 60 * 10,
+    refetchOnWindowFocus: false,
   });
 
   // Chat mutation

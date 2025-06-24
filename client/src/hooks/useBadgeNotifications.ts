@@ -27,11 +27,11 @@ export function useBadgeNotifications() {
     }
   }, []);
 
-  // Poll for notifications every 3 seconds, but only if authenticated
+  // Poll for notifications every 30 seconds, but only if authenticated
   const { data: notifications } = useQuery({
     queryKey: ["/api/notifications"],
-    refetchInterval: 3000,
-    staleTime: 0,
+    refetchInterval: 30000,
+    staleTime: 25000,
     enabled: isAuthenticated,
   });
 

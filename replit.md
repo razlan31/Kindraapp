@@ -111,6 +111,13 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
+- June 24, 2025: PERFORMANCE OPTIMIZATION - Significantly improved app loading times by reducing API polling frequency
+  - Reduced notification polling from every 3 seconds to every 30 seconds
+  - Extended cache duration for conversation data from 5 to 10 minutes
+  - Disabled unnecessary window focus refetching for conversation queries
+  - Added stale time optimization to reduce background API requests
+  - App now loads much faster with reduced server load
+
 - June 24, 2025: OPTIMIZED CONVERSATION SAVING - Only complete conversations with actual exchanges are saved
   - Fixed "New Chat" button to only clear current conversation without creating empty database entries
   - Conversations save only after complete exchange (user message + Luna response)
