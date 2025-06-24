@@ -9,7 +9,7 @@ import { Connection, Moment } from "@shared/schema";
 import { AIInsights } from "@/components/insights/ai-insights";
 import { EnhancedAIInsights } from "@/components/insights/enhanced-ai-insights";
 import { AIAdvice } from "@/components/insights/ai-advice";
-
+import { AIChat } from "@/components/ai-chat";
 import { QuoteOfTheDay } from "@/components/insights/quote-of-the-day";
 import { WeeklyRelationshipInsights } from "@/components/insights/weekly-relationship-insights";
 import { 
@@ -140,6 +140,9 @@ export default function InsightsNew() {
       <Header />
 
       <main className="flex-1 overflow-y-auto pb-20 px-4 pt-6 space-y-8">
+        {/* Luna AI - Relationship Coach */}
+        <AIChat />
+
         {/* Quote of the Day Section */}
         <QuoteOfTheDay 
           connections={connections} 
