@@ -2682,6 +2682,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         badges: badges.slice(0, 20) // Recent badges
       };
 
+      console.log("🔍 AI Context Debug:", {
+        userId,
+        connectionsCount: connections.length,
+        momentsCount: allMoments.length,
+        cyclesCount: cycles.length,
+        badgesCount: badges.length,
+        connectionNames: connections.map(c => c.name)
+      });
+
       // Generate AI response
       const aiResponse = await aiCoach.generateResponse(userId, message, context);
 

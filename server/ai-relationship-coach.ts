@@ -53,7 +53,8 @@ export class AIRelationshipCoach {
       'how am i doing', 'what does my', 'based on my',
       'analyze my', 'my patterns', 'my behavior',
       'my cycle', 'my period', 'my mood',
-      'my badges', 'my points', 'my stats'
+      'my badges', 'my points', 'my stats',
+      'analyze', 'me and', 'n me', '& me'
     ];
     
     // Strong indicators for general questions
@@ -89,10 +90,29 @@ export class AIRelationshipCoach {
       if (lowerMessage.includes(indicator)) ambiguousScore += 1;
     });
     
+    // Check if they mention specific people from their connections
+    const mentionedPeople = context.connections.filter(conn => 
+      lowerMessage.includes(conn.name.toLowerCase()) || 
+      (conn.firstName && lowerMessage.includes(conn.firstName.toLowerCase()))
+    );
+    
+    // If they mention specific people, it's definitely data-specific
+    if (mentionedPeople.length > 0) {
+      dataSpecificScore += 4;
+    }
+
     // Check for user context availability
     const hasConnections = context.connections && context.connections.length > 0;
     const hasMoments = context.recentMoments && context.recentMoments.length > 0;
     const hasDataContext = hasConnections || hasMoments;
+    
+    console.log("🔍 Intent Analysis Debug:", {
+      message: lowerMessage,
+      dataSpecificScore,
+      generalScore,
+      mentionedPeople: mentionedPeople.map(p => ({ name: p.name, stage: p.relationshipStage })),
+      matchedDataIndicators: dataSpecificIndicators.filter(indicator => lowerMessage.includes(indicator))
+    });
     
     // Determine intent
     let isDataSpecific = false;
@@ -103,7 +123,9 @@ export class AIRelationshipCoach {
     if (dataSpecificScore > generalScore && dataSpecificScore > 0) {
       isDataSpecific = true;
       confidence = Math.min(0.9, dataSpecificScore * 0.15);
-      reasoning = "Question contains specific references to user's personal data";
+      reasoning = mentionedPeople.length > 0 
+        ? `User mentioned specific people: ${mentionedPeople.map(p => p.name).join(', ')}`
+        : "Question contains specific references to user's personal data";
       
       // But if no data available, suggest clarification
       if (!hasDataContext) {
@@ -170,6 +192,7 @@ export class AIRelationshipCoach {
 
       // Generate relationship context summary
       const contextSummary = this.generateContextSummary(context);
+      console.log("🔍 Context Summary Generated:", contextSummary.substring(0, 500) + "...");
 
       // Create system prompt based on intent
       const systemPrompt = this.createSystemPrompt(contextSummary, intent);
