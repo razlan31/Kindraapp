@@ -104,17 +104,29 @@ export default function InsightsNew() {
             {/* Subscription Banner */}
             <SubscriptionBanner />
 
-            {/* Statistics */}
-            <div className="grid grid-cols-2 gap-3">
+            {/* Stats Overview - 4 cards like old homepage */}
+            <div className="grid grid-cols-2 gap-4">
               <StatCard 
-                title="Moments" 
-                value={totalMoments.toString()} 
+                title="Connections" 
+                value={connections.length} 
+                icon={Users} 
+                color="text-blue-600" 
+              />
+              <StatCard 
+                title="Total Moments" 
+                value={moments.length} 
                 icon={Heart} 
                 color="text-pink-600" 
               />
               <StatCard 
-                title="Connections" 
-                value={totalConnections.toString()} 
+                title="This Week" 
+                value={weeklyMoments.length} 
+                icon={Calendar} 
+                color="text-green-600" 
+              />
+              <StatCard 
+                title="Badges Earned" 
+                value={badges.length} 
                 icon={Circle} 
                 color="text-purple-600" 
               />
@@ -132,7 +144,7 @@ export default function InsightsNew() {
                 <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
                   Recent Activity
                 </h2>
-                <Link href="/activities">
+                <Link href="/connection">
                   <Button variant="ghost" size="sm" className="text-purple-600">
                     View All
                   </Button>
@@ -145,15 +157,8 @@ export default function InsightsNew() {
                 ))}
                 {recentMoments.length === 0 && (
                   <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-                    <Heart className="h-12 w-12 mx-auto mb-3 opacity-50" />
-                    <p>No moments yet. Start tracking your relationship journey!</p>
-                    <Button 
-                      onClick={() => openMomentModal()}
-                      className="mt-3"
-                      size="sm"
-                    >
-                      Add First Moment
-                    </Button>
+                    <Heart className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                    <p>No recent activity to show</p>
                   </div>
                 )}
               </div>
