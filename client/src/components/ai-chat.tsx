@@ -208,23 +208,38 @@ export function AIChat({ className, compact = false }: AIChatProps = {}) {
   // Load conversation mutation
   const loadConversationMutation = useMutation({
     mutationFn: async (conversationId: number) => {
-      const response = await fetch(`/api/chat/conversations/${conversationId}`);
+      console.log("📂 Loading conversation:", conversationId);
+      const response = await fetch(`/api/ai/conversation/load/${conversationId}`, {
+        method: 'POST',
+      });
       if (!response.ok) {
         throw new Error('Failed to load conversation');
       }
-      return await response.json() as SavedConversation;
+      return await response.json();
     },
-    onSuccess: (loadedConversation: SavedConversation) => {
-      const parsedMessages = JSON.parse(loadedConversation.messages as any).map((msg: any) => ({
+    onSuccess: (result: { conversation: any[] }) => {
+      console.log("📂 Conversation loaded successfully:", result);
+      const parsedMessages = result.conversation.map((msg: any) => ({
         ...msg,
         timestamp: new Date(msg.timestamp)
       }));
       setConversation(parsedMessages);
-      setCurrentConversationId(loadedConversation.id);
       setShowHistory(false);
+      
+      // Invalidate and refetch current conversation to sync with server
+      queryClient.invalidateQueries({ queryKey: ['/api/ai/conversation'] });
+      
       toast({
         title: "Conversation loaded",
         description: "Previous conversation has been restored",
+      });
+    },
+    onError: (error) => {
+      console.error("Failed to load conversation:", error);
+      toast({
+        title: "Failed to load conversation",
+        description: "There was an error loading the selected conversation",
+        variant: "destructive",
       });
     }
   });

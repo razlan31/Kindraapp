@@ -2735,6 +2735,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Load specific conversation into current chat session
+  app.post("/api/ai/conversation/load/:id", isAuthenticated, async (req: Request, res: Response) => {
+    try {
+      const userId = (req.session as any).userId as number;
+      const conversationId = parseInt(req.params.id);
+      
+      if (isNaN(conversationId)) {
+        return res.status(400).json({ message: "Invalid conversation ID" });
+      }
+      
+      console.log("📂 Loading conversation", conversationId, "for user:", userId);
+      
+      const conversation = await storage.getChatConversation(conversationId);
+      
+      if (!conversation) {
+        return res.status(404).json({ message: "Conversation not found" });
+      }
+      
+      // Check authorization
+      const conversationUserIdStr = String(conversation.userId);
+      const sessionUserIdStr = String(userId);
+      
+      if (conversationUserIdStr !== sessionUserIdStr) {
+        return res.status(403).json({ message: "Unauthorized to load this conversation" });
+      }
+      
+      // Load conversation into AI coach memory
+      await aiCoach.loadConversation(userId, conversation.messages);
+      console.log("📂 Conversation loaded successfully");
+      
+      res.json({ message: "Conversation loaded successfully", conversation: conversation.messages });
+    } catch (error) {
+      console.error("Error loading conversation:", error);
+      res.status(500).json({ message: "Failed to load conversation" });
+    }
+  });
+
   // Clear all conversation history (destructive action)
   app.delete("/api/ai/conversation", isAuthenticated, async (req: Request, res: Response) => {
     try {
@@ -3772,7 +3809,14 @@ Format as a brief analysis (2-3 sentences) focusing on what their data actually 
         return res.status(404).json({ message: "Conversation not found" });
       }
       
-      if (conversation.userId !== userId) {
+      // Fix type comparison - convert both to strings for comparison
+      const conversationUserIdStr = String(conversation.userId);
+      const sessionUserIdStr = String(userId);
+      
+      console.log(`Authorization check for conversation ${conversationId}: conversation.userId="${conversationUserIdStr}", session.userId="${sessionUserIdStr}"`);
+      
+      if (conversationUserIdStr !== sessionUserIdStr) {
+        console.log(`Authorization failed: "${conversationUserIdStr}" !== "${sessionUserIdStr}"`);
         return res.status(403).json({ message: "Unauthorized to view this conversation" });
       }
       

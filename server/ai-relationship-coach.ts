@@ -614,6 +614,31 @@ COACHING APPROACH:
     console.log("✅ New conversation started - memory state reset");
   }
 
+  async loadConversation(userId: number, messages: any[]): Promise<void> {
+    console.log("📂 Loading conversation for user:", userId, "with", messages.length, "messages");
+    
+    // Parse messages if they're stored as string
+    let parsedMessages: ChatMessage[];
+    if (typeof messages === 'string') {
+      parsedMessages = JSON.parse(messages);
+    } else {
+      parsedMessages = messages;
+    }
+    
+    // Convert timestamps to Date objects
+    const formattedMessages = parsedMessages.map(msg => ({
+      ...msg,
+      timestamp: new Date(msg.timestamp)
+    }));
+    
+    // Clear any new conversation flag
+    this.newConversationFlags.delete(userId);
+    
+    // Load messages into memory cache
+    this.conversationHistory.set(userId, formattedMessages);
+    console.log("📂 Conversation loaded into memory cache");
+  }
+
   async clearConversationHistory(userId: number): Promise<void> {
     console.log("🗑️ Clearing all conversation history for user:", userId);
     
