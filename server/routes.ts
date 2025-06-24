@@ -2774,14 +2774,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/ai/chat", isAuthenticated, async (req: Request, res: Response) => {
     try {
       const userId = (req.session as any).userId as number;
+      const user = await storage.getUser(userId);
       const { message } = req.body;
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Check AI coaching usage limits
+      const { isPremium } = await getUserSubscriptionStatus(user);
+      if (!isPremium && user.monthlyAiCoaching >= 3) {
+        return res.status(403).json({
+          message: "You've reached your monthly limit of 3 AI coaching messages. Please upgrade to premium for unlimited access.",
+          requiresUpgrade: true,
+          usageType: "ai_coaching"
+        });
+      }
 
       if (!message || typeof message !== 'string') {
         return res.status(400).json({ message: "Message is required" });
       }
 
       // Gather comprehensive user context for AI
-      const user = await storage.getUser(userId);
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
@@ -3939,7 +3953,23 @@ Format as a brief analysis (2-3 sentences) focusing on what their data actually 
   // Mini insights API endpoint
   app.post("/api/ai/mini-insight", isAuthenticated, async (req: Request, res: Response) => {
     try {
+      const userId = (req.session as any).userId as number;
+      const user = await storage.getUser(userId);
       const { context, data } = req.body;
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Check AI insights usage limits
+      const { isPremium } = await getUserSubscriptionStatus(user);
+      if (!isPremium && user.monthlyAiInsights >= 3) {
+        return res.status(403).json({
+          message: "You've reached your monthly limit of 3 AI insights. Please upgrade to premium for unlimited access.",
+          requiresUpgrade: true,
+          usageType: "ai_insights"
+        });
+      }
 
       if (!context || !data) {
         return res.status(400).json({ error: "Context and data are required" });
@@ -3947,6 +3977,11 @@ Format as a brief analysis (2-3 sentences) focusing on what their data actually 
 
       const { generateMiniInsight } = await import('./mini-insights');
       const insight = await generateMiniInsight({ context, data });
+      
+      // Increment AI insights usage counter
+      await storage.updateUser(userId, {
+        monthlyAiInsights: user.monthlyAiInsights + 1
+      });
 
       res.json({ insight });
     } catch (error: any) {
