@@ -179,7 +179,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Force JSON response with explicit headers
       res.setHeader('Content-Type', 'application/json');
       res.setHeader('Cache-Control', 'no-cache');
-      res.status(200).json(plans);
+      res.status(200).json(plansWithLockStatus);
     } catch (error) {
       console.error('Error fetching plans:', error);
       res.status(500).json({ message: "Failed to fetch plans" });
