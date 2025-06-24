@@ -445,7 +445,7 @@ function Settings() {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="home">Home</SelectItem>
+                        <SelectItem value="home">AI</SelectItem>
                         <SelectItem value="connections">Connection</SelectItem>
                         <SelectItem value="activities">Activity</SelectItem>
                         <SelectItem value="calendar">Calendar</SelectItem>
