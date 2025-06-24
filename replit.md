@@ -111,15 +111,15 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
-- June 24, 2025: ENHANCED LOVE LANGUAGE & ACTIVITY INTEGRATION - Luna now connects user's love language and goals to relationship patterns
-  - Added love language integration that analyzes gift-giving, quality time, physical affection, words of affirmation, and acts of service moments
-  - Enhanced coaching approach to reference specific tracked moments when giving advice
-  - Connected user's relationship goals (casual dating) and style (monogamous) to personalized insights
-  - Luna now relates activity patterns to love language preferences and dating goals
-  - Added relationship context coaching that uses health scores and activity breakdowns for targeted advice
-  - Enhanced data context with complete profile information and comprehensive activity breakdown
-  - Integrated menstrual cycle tracking and badges/achievements for complete relationship intelligence
-  - Luna balances app-specific data analysis with universal relationship wisdom based on user's stated preferences
+- June 24, 2025: FIXED CONVERSATIONAL FLOW - Luna now asks the right questions instead of prompting user to ask her
+  - Fixed backwards conversation pattern where Luna was suggesting what user should ask instead of asking questions herself
+  - Luna now drives conversation with her own thoughtful questions about user's relationships and feelings
+  - Enhanced questioning patterns: "What do you think might help improve this?", "How are you feeling about this?"
+  - Removed any "you should ask me" or "feel free to ask" prompts - Luna takes initiative in conversation
+  - Luna maintains natural dialogue flow by asking appropriate follow-up questions based on context
+  - Enhanced love language integration with gift-giving, quality time, physical affection analysis
+  - Connected user's relationship goals and style to personalized insights with comprehensive data access
+  - Luna balances app-specific data analysis with universal relationship wisdom while driving engaging conversations
 
 - June 24, 2025: ENHANCED CONVERSATIONAL FLOW - Made Luna more natural, personal, and varied in responses
   - Luna now addresses users directly and personally instead of always giving elaborate answers
