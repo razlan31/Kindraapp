@@ -1,10 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Send, Loader2, Clock, Plus, Trash2, MessageCircle, X } from 'lucide-react';
+import { Send, Loader2, Clock, Plus, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { format } from 'date-fns';
 
 interface ChatMessage {
   role: 'user' | 'assistant';
@@ -167,95 +166,83 @@ export default function AIChat() {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-gradient-to-br from-gray-50 via-white to-gray-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 relative">
-      {/* Modern Header */}
-      <div className="flex items-center justify-between p-6 backdrop-blur-sm bg-white/80 dark:bg-gray-900/80 border-b border-gray-200/50 dark:border-gray-700/50">
-        <div className="flex items-center gap-4">
-          <div className="relative">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-violet-500 via-purple-500 to-pink-500 flex items-center justify-center shadow-lg">
-              <span className="text-white text-lg font-semibold">L</span>
-            </div>
-            <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white dark:border-gray-900 animate-pulse"></div>
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">Luna</h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Your relationship companion</p>
-          </div>
-        </div>
-        
+    <div className="max-w-4xl mx-auto min-h-screen bg-white dark:bg-black">
+      {/* Simple Header */}
+      <div className="flex items-center justify-between p-4 border-b border-gray-100 dark:border-gray-800">
         <div className="flex items-center gap-3">
-          <button
+          <div className="w-7 h-7 rounded-full bg-gradient-to-br from-violet-500 to-pink-500 flex items-center justify-center">
+            <span className="text-white text-xs font-semibold">L</span>
+          </div>
+          <h1 className="text-lg font-medium text-gray-900 dark:text-white">Luna</h1>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button
             onClick={() => setShowHistory(!showHistory)}
-            className="group p-3 rounded-xl hover:bg-gray-100/80 dark:hover:bg-gray-800/80 transition-all duration-200 hover:scale-105"
+            variant="ghost"
+            size="sm"
+            className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
           >
-            <Clock className="h-5 w-5 text-gray-600 dark:text-gray-400 group-hover:text-violet-600 dark:group-hover:text-violet-400 transition-colors" />
-          </button>
-          
-          <button
+            <Clock className="h-4 w-4 mr-1" />
+            History
+          </Button>
+          <Button
             onClick={() => newChatMutation.mutate()}
             disabled={newChatMutation.isPending}
-            className="group p-3 rounded-xl bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-600 hover:to-purple-600 transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-xl disabled:opacity-50"
+            variant="ghost"
+            size="sm"
+            className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
           >
-            <Plus className="h-5 w-5 text-white" />
-          </button>
+            <Plus className="h-4 w-4 mr-1" />
+            New
+          </Button>
         </div>
       </div>
 
-      {/* Modern History Sidebar */}
+      {/* History Panel */}
       {showHistory && (
-        <div className="absolute right-0 top-0 h-full w-80 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-l border-gray-200/50 dark:border-gray-700/50 shadow-2xl z-10">
-          <div className="p-6 border-b border-gray-200/50 dark:border-gray-700/50">
-            <div className="flex items-center justify-between">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white">Chat History</h2>
-              <button
-                onClick={() => setShowHistory(false)}
-                className="p-2 rounded-xl hover:bg-gray-100/80 dark:hover:bg-gray-800/80 transition-all duration-200 hover:scale-105"
+        <div className="border-b border-gray-100 dark:border-gray-800 p-4">
+          <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="font-medium text-gray-900 dark:text-white">Recent conversations</h3>
+              <Button
+                onClick={() => {
+                  setShowHistory(false);
+                  queryClient.invalidateQueries({ queryKey: ['/api/ai/conversation'] });
+                }}
+                variant="ghost"
+                size="sm"
+                className="text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
               >
-                <X className="h-5 w-5 text-gray-600 dark:text-gray-400" />
-              </button>
+                Current chat
+              </Button>
             </div>
-          </div>
-          
-          <div className="p-4 space-y-3 overflow-y-auto h-full pb-24">
             {savedConversations && Array.isArray(savedConversations) && savedConversations.length > 0 ? (
-              savedConversations.map((conv: SavedConversation, index) => (
-                <div key={conv.id} className="relative group">
-                  <button
+              <div className="space-y-2 max-h-48 overflow-y-auto">
+                {savedConversations.map((conv: SavedConversation) => (
+                  <div
+                    key={conv.id}
+                    className="flex items-center justify-between p-3 bg-white dark:bg-gray-800 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer"
                     onClick={() => loadConversation(conv)}
-                    className="w-full text-left p-4 rounded-2xl hover:bg-gradient-to-r hover:from-violet-50 hover:to-purple-50 dark:hover:from-violet-900/20 dark:hover:to-purple-900/20 transition-all duration-200 border border-transparent hover:border-violet-200 dark:hover:border-violet-800 hover:shadow-md"
                   >
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1 min-w-0">
-                        <div className="text-sm font-semibold text-gray-900 dark:text-white truncate mb-1">
-                          {conv.title}
-                        </div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400">
-                          {format(new Date(conv.createdAt), 'MMM d, HH:mm')}
-                        </div>
-                      </div>
-                      <div className="ml-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                        <button
-                          onClick={(e) => deleteConversation(conv.id, e)}
-                          className="p-1.5 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30 text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
-                      </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-sm text-gray-900 dark:text-white truncate">{conv.title}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        {new Date(conv.createdAt).toLocaleDateString()}
+                      </p>
                     </div>
-                  </button>
-                  {index < savedConversations.length - 1 && (
-                    <div className="absolute bottom-0 left-4 right-4 h-px bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-700 to-transparent"></div>
-                  )}
-                </div>
-              ))
-            ) : (
-              <div className="text-center py-12">
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-100 to-purple-100 dark:from-violet-900/30 dark:to-purple-900/30 flex items-center justify-center mx-auto mb-4">
-                  <MessageCircle className="h-8 w-8 text-violet-500 dark:text-violet-400" />
-                </div>
-                <p className="text-gray-500 dark:text-gray-400 font-medium">No conversations yet</p>
-                <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">Start chatting to see your history</p>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={(e) => deleteConversation(conv.id, e)}
+                      className="h-8 w-8 p-0 text-gray-400 hover:text-red-500"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))}
               </div>
+            ) : (
+              <p className="text-gray-500 dark:text-gray-400 text-center py-8 text-sm">No conversations yet</p>
             )}
           </div>
         </div>
