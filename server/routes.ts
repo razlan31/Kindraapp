@@ -3805,15 +3805,18 @@ Format as a brief analysis (2-3 sentences) focusing on what their data actually 
         return res.status(404).json({ message: "Conversation not found" });
       }
       
-      // Fix type comparison - ensure both are numbers
-      const conversationUserId = typeof conversation.userId === 'string' 
-        ? parseInt(conversation.userId) 
-        : conversation.userId;
+      // Simplified authorization check - just convert both to strings for comparison
+      const conversationUserIdStr = String(conversation.userId);
+      const sessionUserIdStr = String(userId);
       
-      if (conversationUserId !== userId) {
-        console.log(`Authorization check failed: conversation.userId=${conversationUserId}, session.userId=${userId}`);
+      console.log(`Authorization check: conversation.userId="${conversationUserIdStr}", session.userId="${sessionUserIdStr}"`);
+      
+      if (conversationUserIdStr !== sessionUserIdStr) {
+        console.log(`Authorization check failed: "${conversationUserIdStr}" !== "${sessionUserIdStr}"`);
         return res.status(403).json({ message: "Unauthorized to delete this conversation" });
       }
+      
+      console.log("Authorization check passed, proceeding with deletion");
       
       const deleted = await storage.deleteChatConversation(conversationId);
       
