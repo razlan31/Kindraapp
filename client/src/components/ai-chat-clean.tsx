@@ -203,8 +203,8 @@ export default function AIChat() {
 
       {/* History Panel */}
       {showHistory && (
-        <div className="border-b border-gray-100 dark:border-gray-800 p-2 sm:p-4">
-          <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-3 sm:p-4">
+        <div className="border-b border-gray-100 dark:border-gray-800 p-3 sm:p-4 lg:p-6">
+          <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4 sm:p-5 lg:p-6">
             <div className="flex items-center justify-between mb-3">
               <h3 className="font-medium text-gray-900 dark:text-white">Recent conversations</h3>
               <Button
@@ -297,7 +297,7 @@ export default function AIChat() {
       </div>
 
       {/* Input Area */}
-      <div className="border-t border-gray-100 dark:border-gray-800 p-2 sm:p-4">
+      <div className="border-t border-gray-100 dark:border-gray-800 p-3 sm:p-4 lg:p-6">
         <form onSubmit={handleSubmit} className="max-w-4xl mx-auto">
           <div className="relative">
             <Textarea
@@ -306,22 +306,22 @@ export default function AIChat() {
               onChange={(e) => {
                 setMessage(e.target.value);
                 e.target.style.height = 'auto';
-                e.target.style.height = Math.min(e.target.scrollHeight, 120) + 'px';
+                e.target.style.height = Math.min(e.target.scrollHeight, 160) + 'px';
               }}
               onKeyDown={handleKeyDown}
               placeholder="Ask Luna AI anything about your relationships..."
-              className="min-h-[50px] sm:min-h-[60px] max-h-[100px] sm:max-h-[120px] resize-none pr-12 sm:pr-14 border-gray-200 dark:border-gray-700 focus:border-violet-500 dark:focus:border-violet-400 rounded-xl sm:rounded-2xl bg-gray-50 dark:bg-gray-900 text-sm sm:text-base leading-relaxed"
+              className="min-h-[60px] sm:min-h-[70px] lg:min-h-[80px] max-h-[120px] sm:max-h-[140px] lg:max-h-[160px] resize-none pr-14 sm:pr-16 lg:pr-18 border-gray-200 dark:border-gray-700 focus:border-violet-500 dark:focus:border-violet-400 rounded-2xl lg:rounded-3xl bg-gray-50 dark:bg-gray-900 text-base sm:text-lg lg:text-xl leading-relaxed px-4 sm:px-5 lg:px-6 py-3 sm:py-4 lg:py-5"
               disabled={chatMutation.isPending}
             />
             <Button
               type="submit"
               disabled={!message.trim() || chatMutation.isPending}
-              className="absolute right-3 bottom-3 h-10 w-10 p-0 bg-violet-600 hover:bg-violet-700 disabled:bg-gray-300 dark:disabled:bg-gray-600 rounded-xl"
+              className="absolute right-3 sm:right-4 lg:right-5 bottom-3 sm:bottom-4 lg:bottom-5 h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 p-0 bg-violet-600 hover:bg-violet-700 disabled:bg-gray-300 dark:disabled:bg-gray-600 rounded-xl lg:rounded-2xl"
             >
               {chatMutation.isPending ? (
-                <Loader2 className="h-5 w-5 animate-spin" />
+                <Loader2 className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 animate-spin" />
               ) : (
-                <Send className="h-5 w-5" />
+                <Send className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6" />
               )}
             </Button>
           </div>
