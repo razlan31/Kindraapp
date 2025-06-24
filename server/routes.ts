@@ -161,18 +161,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const allPlans = await storage.getPlans(userId);
       console.log('📋 Plans found:', allPlans.length);
       
-      // Apply soft-lock: filter plans to only show those from accessible connections
+      // Add lock status to plans without hiding any data
       const allConnections = await storage.getConnectionsByUserId(userId);
       const focusConnectionId = user.currentFocus;
       const accessibleConnections = getAccessibleConnections(allConnections, user, focusConnectionId);
       const accessibleConnectionIds = accessibleConnections.map(conn => conn.id);
       
-      const plans = allPlans.filter(plan => 
-        accessibleConnectionIds.includes(plan.connectionId)
-      );
+      // Add isLocked property to plans from inaccessible connections
+      const plansWithLockStatus = allPlans.map(plan => ({
+        ...plan,
+        isLocked: !accessibleConnectionIds.includes(plan.connectionId)
+      }));
       
-      console.log(`📋 Filtered plans: ${plans.length} accessible out of ${allPlans.length} total`);
-      console.log('📋 Plans data:', JSON.stringify(plans, null, 2));
+      console.log(`📋 Plans with lock status: ${allPlans.length} total plans (${accessibleConnectionIds.length} accessible connections)`);
+      console.log('📋 Plans data:', JSON.stringify(plansWithLockStatus, null, 2));
       
       // Force JSON response with explicit headers
       res.setHeader('Content-Type', 'application/json');
@@ -1703,17 +1705,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         milestones = await storage.getMilestones(userId);
       }
       
-      // Apply soft-lock: filter milestones to only show those from accessible connections
+      // Add lock status to milestones without hiding any data
       const allConnections = await storage.getConnectionsByUserId(userId);
       const focusConnectionId = user.currentFocus;
       const accessibleConnections = getAccessibleConnections(allConnections, user, focusConnectionId);
       const accessibleConnectionIds = accessibleConnections.map(conn => conn.id);
       
-      const filteredMilestones = milestones.filter(milestone => 
-        accessibleConnectionIds.includes(milestone.connectionId)
-      );
+      // Add isLocked property to milestones from inaccessible connections
+      const milestonesWithLockStatus = milestones.map(milestone => ({
+        ...milestone,
+        isLocked: !accessibleConnectionIds.includes(milestone.connectionId)
+      }));
       
-      res.json(filteredMilestones);
+      res.json(milestonesWithLockStatus);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch milestones" });
     }
@@ -2495,22 +2499,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let allCycles = await storage.getMenstrualCycles(userId);
       console.log("Retrieved cycles:", allCycles.length);
       
-      // Apply soft-lock: filter cycles to only show those from accessible connections
+      // Add lock status to cycles without hiding any data
       const allConnections = await storage.getConnectionsByUserId(userId);
       const focusConnectionId = user.currentFocus;
       const accessibleConnections = getAccessibleConnections(allConnections, user, focusConnectionId);
       const accessibleConnectionIds = accessibleConnections.map(conn => conn.id);
       
-      const cycles = allCycles.filter(cycle => 
-        accessibleConnectionIds.includes(cycle.connectionId)
-      );
+      // Check if any cycles need automatic progression
+      const updatedCycles = await checkAndCreateAutomaticCycles(userId, allCycles);
       
-      console.log(`Filtered cycles: ${cycles.length} accessible out of ${allCycles.length} total`);
+      // Add isLocked property to cycles from inaccessible connections
+      const cyclesWithLockStatus = updatedCycles.map(cycle => ({
+        ...cycle,
+        isLocked: !accessibleConnectionIds.includes(cycle.connectionId)
+      }));
       
-      // Check if any accessible cycles need automatic progression
-      const updatedCycles = await checkAndCreateAutomaticCycles(userId, cycles);
+      console.log(`✅ Cycles with lock status: ${allCycles.length} total cycles (${accessibleConnectionIds.length} accessible connections)`);
       
-      res.json(updatedCycles);
+      res.json(cyclesWithLockStatus);
     } catch (error: any) {
       console.error("Error fetching menstrual cycles:", error);
       res.status(500).json({ error: error.message });
@@ -4211,17 +4217,19 @@ Format as a brief analysis (2-3 sentences) focusing on what their data actually 
       
       const allPlans = await storage.getPlans(userId);
       
-      // Apply soft-lock: filter plans to only show those from accessible connections
+      // Add lock status to plans without hiding any data
       const allConnections = await storage.getConnectionsByUserId(userId);
       const focusConnectionId = user.currentFocus;
       const accessibleConnections = getAccessibleConnections(allConnections, user, focusConnectionId);
       const accessibleConnectionIds = accessibleConnections.map(conn => conn.id);
       
-      const plans = allPlans.filter(plan => 
-        accessibleConnectionIds.includes(plan.connectionId)
-      );
+      // Add isLocked property to plans from inaccessible connections
+      const plansWithLockStatus = allPlans.map(plan => ({
+        ...plan,
+        isLocked: !accessibleConnectionIds.includes(plan.connectionId)
+      }));
       
-      res.status(200).json(plans);
+      res.status(200).json(plansWithLockStatus);
     } catch (error) {
       console.error('Error fetching plans:', error);
       res.status(500).json({ message: "Failed to fetch plans" });
