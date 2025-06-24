@@ -189,7 +189,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/plans-data", isAuthenticated, async (req: Request, res: Response) => {
     try {
       const userId = (req.session as any).userId as number;
+      const user = await storage.getUser(userId);
       const planData = { ...req.body, userId };
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Check if connection is accessible for free users
+      const allConnections = await storage.getConnectionsByUserId(userId);
+      const focusConnectionId = user.currentFocus;
+      const accessibleConnections = getAccessibleConnections(allConnections, user, focusConnectionId);
+      const accessibleConnectionIds = accessibleConnections.map(conn => conn.id);
+      
+      if (!accessibleConnectionIds.includes(planData.connectionId)) {
+        return res.status(403).json({ 
+          message: "Cannot create plans for locked connections. Please upgrade to premium to access all connections.",
+          requiresUpgrade: true
+        });
+      }
       console.log('📋 Creating plan for user', userId, 'data:', planData);
       
       const plan = await storage.createPlan(planData);
@@ -1157,10 +1175,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/moments", isAuthenticated, async (req, res) => {
     try {
       const userId = (req.session as any).userId as number;
+      const user = await storage.getUser(userId);
       
       console.log("🚀 ROUTES - POST /api/moments called");
       console.log("🚀 ROUTES - Raw request body:", req.body);
       console.log("🚀 ROUTES - User ID:", userId);
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Check if connection is accessible for free users
+      const allConnections = await storage.getConnectionsByUserId(userId);
+      const focusConnectionId = user.currentFocus;
+      const accessibleConnections = getAccessibleConnections(allConnections, user, focusConnectionId);
+      const accessibleConnectionIds = accessibleConnections.map(conn => conn.id);
+      
+      if (!accessibleConnectionIds.includes(req.body.connectionId)) {
+        return res.status(403).json({ 
+          message: "Cannot create moments for locked connections. Please upgrade to premium to access all connections.",
+          requiresUpgrade: true
+        });
+      }
       
       const momentData = momentSchema.parse({ ...req.body, userId });
       console.log("🚀 ROUTES - Parsed moment data:", momentData);
