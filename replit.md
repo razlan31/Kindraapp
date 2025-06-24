@@ -111,6 +111,15 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
+- June 24, 2025: ENHANCED LUNA WITH COMPREHENSIVE ADVICE FRAMEWORK - Luna now combines personalized context awareness with depth of expert guidance
+  - Luna provides BOTH data-driven personalized insights AND comprehensive relationship advice
+  - Enhanced advice framework includes: root cause analysis, multiple perspectives, actionable strategies, long-term planning, and contingency advice
+  - Luna now explores deeper "why" behind issues while providing specific steps users can take immediately
+  - Added professional resource recommendations (therapy, counseling) when appropriate for additional support
+  - Luna balances expert guidance with thoughtful reflection questions to help users uncover their own insights
+  - Combines the personalization advantage of knowing user's tracked data with the comprehensive guidance depth of expert relationship advisors
+  - Luna addresses both immediate actionable steps and sustained improvement strategies
+
 - June 24, 2025: CORRECTED EXPERT-CLIENT RELATIONSHIP - Luna now provides direct advice instead of asking users to solve their own problems
   - Fixed fundamental misunderstanding: Luna is the EXPERT who gives advice, not someone who asks user for solutions
   - Luna now provides specific, actionable suggestions when asked about improvements or next steps
