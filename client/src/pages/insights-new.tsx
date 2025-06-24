@@ -1,40 +1,7 @@
 import { Header } from "@/components/layout/header";
 import { BottomNavigation } from "@/components/layout/bottom-navigation";
 import { useAuth } from "@/contexts/auth-context";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { useQuery } from "@tanstack/react-query";
-import { Connection, Moment } from "@shared/schema";
-import { AIInsights } from "@/components/insights/ai-insights";
-import { EnhancedAIInsights } from "@/components/insights/enhanced-ai-insights";
-import { AIAdvice } from "@/components/insights/ai-advice";
 import { AIChat } from "@/components/ai-chat";
-import { QuoteOfTheDay } from "@/components/insights/quote-of-the-day";
-import { WeeklyRelationshipInsights } from "@/components/insights/weekly-relationship-insights";
-import { 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  ResponsiveContainer
-} from "recharts";
-import { 
-  Calendar,
-  Heart,
-  BarChart3,
-  Plus,
-  TrendingUp,
-  Users,
-  MessageCircle,
-  Activity,
-  Sparkles,
-  ChevronDown,
-  ChevronUp
-} from "lucide-react";
-import { useState, useEffect } from "react";
 
 export default function InsightsNew() {
   const { user, loading } = useAuth();
