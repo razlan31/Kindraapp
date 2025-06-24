@@ -586,7 +586,7 @@ COACHING APPROACH:
         
         const saved = await this.saveCurrentConversation(userId, currentHistory, false);
         if (saved) {
-          console.log("💾 Saved current conversation before starting new chat");
+          console.log("💾 Saved current conversation before starting new chat -", currentHistory.length, "messages");
         } else {
           console.log("📝 Conversation already exists, skipped saving");
         }

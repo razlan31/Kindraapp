@@ -93,7 +93,10 @@ export default function AIChat() {
       setConversation([]);
       queryClient.invalidateQueries({ queryKey: ['/api/ai/conversation'] });
       queryClient.invalidateQueries({ queryKey: ['/api/chat/conversations'] });
-      toast({ title: "New conversation started" });
+      toast({ 
+        title: "New conversation started",
+        description: "Previous conversation saved to history"
+      });
     }
   });
 
@@ -192,7 +195,20 @@ export default function AIChat() {
       {showHistory && (
         <div className="border-b border-gray-100 dark:border-gray-800 p-4">
           <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
-            <h3 className="font-medium mb-3 text-gray-900 dark:text-white">Recent conversations</h3>
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="font-medium text-gray-900 dark:text-white">Recent conversations</h3>
+              <Button
+                onClick={() => {
+                  setShowHistory(false);
+                  queryClient.invalidateQueries({ queryKey: ['/api/ai/conversation'] });
+                }}
+                variant="ghost"
+                size="sm"
+                className="text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              >
+                Current chat
+              </Button>
+            </div>
             {savedConversations && Array.isArray(savedConversations) && savedConversations.length > 0 ? (
               <div className="space-y-2 max-h-48 overflow-y-auto">
                 {savedConversations.map((conv: SavedConversation) => (
