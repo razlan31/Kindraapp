@@ -111,6 +111,13 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
+- June 24, 2025: SOFT-LOCK MONETIZATION SYSTEM - Implemented graceful downgrade handling that preserves user data
+  - Added soft-lock approach: free users can only access their most recent connection but keep all data
+  - When premium users downgrade, they see only 1 connection but all data remains for future upgrades
+  - Enhanced connection and moments filtering to respect subscription limits
+  - Added upgrade prompts and limit notices in UI
+  - Ensures user data preservation while enforcing subscription limits
+
 - June 24, 2025: FINAL CODEBASE CLEANUP - Completed project wrap-up with performance optimizations
   - Removed excessive console logging (321 instances) for production readiness
   - Cleaned up unused route imports and simplified App.tsx routing structure

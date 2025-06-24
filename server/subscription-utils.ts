@@ -43,7 +43,8 @@ export function getUserSubscriptionStatus(user: User, connectionsCount: number):
     aiCoachingUsed: shouldResetUsage ? 0 : (user.monthlyAiCoaching || 0)
   };
   
-  // Determine limits based on plan and usage
+  // Determine limits based on plan and usage with soft-lock approach
+  // Free users can view all their data but are restricted on creation/usage
   const limits = {
     canCreateConnection: isPremium || 
       (planFeatures.connections === "unlimited" || currentUsage.connectionsUsed < planFeatures.connections),
@@ -62,6 +63,28 @@ export function getUserSubscriptionStatus(user: User, connectionsCount: number):
     usage: currentUsage,
     limits
   };
+}
+
+export function getAccessibleConnections(connections: any[], user: User): any[] {
+  const now = new Date();
+  const isTrialActive = user.trialEndDate ? new Date(user.trialEndDate) > now : false;
+  const isSubscriptionActive = user.subscriptionStatus === 'active' && 
+    user.subscriptionEndDate && new Date(user.subscriptionEndDate) > now;
+  const isPremium = isTrialActive || isSubscriptionActive;
+  
+  // Premium users can access all connections
+  if (isPremium) {
+    return connections;
+  }
+  
+  // Free users: soft-lock approach - show only the most recently created connection
+  // but preserve all data for when they upgrade again
+  const sortedConnections = connections
+    .filter(conn => !conn.isArchived) // Don't count archived connections
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  
+  // Return only the most recent connection for free users
+  return sortedConnections.slice(0, 1);
 }
 
 export function incrementUsage(user: User, type: 'insights' | 'coaching'): Partial<User> {

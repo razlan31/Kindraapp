@@ -7,7 +7,7 @@ import {
   userBadgeSchema, menstrualCycleSchema, milestoneSchema, planSchema, chatConversationSchema,
   subscriptionPlans
 } from "@shared/schema";
-import { getUserSubscriptionStatus, incrementUsage, startFreeTrial } from "./subscription-utils";
+import { getUserSubscriptionStatus, incrementUsage, startFreeTrial, getAccessibleConnections } from "./subscription-utils";
 import bcrypt from "bcryptjs";
 import session from "express-session";
 import MemoryStore from "memorystore";
@@ -501,8 +501,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/connections", isAuthenticated, async (req, res) => {
     try {
       const userId = (req.session as any).userId as number;
-      const connections = await storage.getConnectionsByUserId(userId);
-      res.status(200).json(connections);
+      const user = await storage.getUser(userId);
+      const allConnections = await storage.getConnectionsByUserId(userId);
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Apply soft-lock: free users see only their most recent connection
+      const accessibleConnections = getAccessibleConnections(allConnections, user);
+      
+      res.status(200).json(accessibleConnections);
     } catch (error) {
       console.error("Error in get connections:", error);
       res.status(500).json({ message: "Server error fetching connections" });
@@ -1095,9 +1104,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const limit = req.query.limit ? parseInt(req.query.limit as string) : undefined;
       
       console.log(`📋 GET /api/moments - Fetching for user ${userId}`);
-      const moments = await storage.getMomentsByUserId(userId, limit);
-      console.log(`✅ GET /api/moments - Found ${moments.length} moments`);
-      res.status(200).json(moments);
+      const user = await storage.getUser(userId);
+      const allMoments = await storage.getMomentsByUserId(userId, limit);
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Apply soft-lock: filter moments to only show those from accessible connections
+      const allConnections = await storage.getConnectionsByUserId(userId);
+      const accessibleConnections = getAccessibleConnections(allConnections, user);
+      const accessibleConnectionIds = accessibleConnections.map(conn => conn.id);
+      
+      const filteredMoments = allMoments.filter(moment => 
+        accessibleConnectionIds.includes(moment.connectionId)
+      );
+      
+      console.log(`✅ GET /api/moments - Found ${filteredMoments.length} accessible moments out of ${allMoments.length} total`);
+      res.status(200).json(filteredMoments);
     } catch (error) {
       console.error("❌ GET /api/moments error:", error);
       res.status(500).json({ message: "Server error fetching moments" });
