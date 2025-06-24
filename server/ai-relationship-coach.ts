@@ -31,6 +31,7 @@ export interface RelationshipContext {
 
 export class AIRelationshipCoach {
   private conversationHistory: Map<number, ChatMessage[]> = new Map();
+  private newConversationFlags: Map<number, boolean> = new Map();
   private storage: any;
 
   constructor(storage: any) {
@@ -156,27 +157,15 @@ export class AIRelationshipCoach {
     context: RelationshipContext
   ): Promise<string> {
     try {
-      // Get conversation history from database first, fallback to memory
-      let history = this.conversationHistory.get(userId) || [];
-      
-      // If no memory cache, try to load from database
-      if (history.length === 0) {
-        const conversations = await this.storage.getChatConversations(userId.toString());
-        if (conversations.length > 0) {
-          // Get the most recent conversation
-          const latestConversation = conversations[conversations.length - 1];
-          if (latestConversation.messages) {
-            const messages = typeof latestConversation.messages === 'string' 
-              ? JSON.parse(latestConversation.messages) 
-              : latestConversation.messages;
-            history = messages.map((msg: any) => ({
-              ...msg,
-              timestamp: new Date(msg.timestamp)
-            }));
-            this.conversationHistory.set(userId, history);
-          }
-        }
+      // Clear new conversation flag when user sends first message
+      if (this.newConversationFlags.get(userId) === true) {
+        console.log("🚩 Clearing new conversation flag - user sent first message");
+        this.newConversationFlags.delete(userId);
       }
+      
+      // Get conversation history from memory only (no database fallback)
+      let history = this.conversationHistory.get(userId) || [];
+      console.log("📝 Current conversation history length:", history.length);
       
       // Add user message to history
       const newUserMessage = {
@@ -607,6 +596,10 @@ COACHING APPROACH:
     console.log("🔍 Memory cache state after clear:", this.conversationHistory.has(userId));
     console.log("📝 Conversation history size:", this.conversationHistory.size);
     
+    // Set flag to prevent database restoration
+    this.newConversationFlags.set(userId, true);
+    console.log("🚩 Set new conversation flag for user:", userId);
+    
     // Double-check the clear worked
     const verifyEmpty = this.conversationHistory.get(userId);
     console.log("🔍 Double-check after delete - userId", userId, "has messages:", verifyEmpty?.length || 0);
@@ -644,7 +637,14 @@ COACHING APPROACH:
   async getConversationHistory(userId: number): Promise<ChatMessage[]> {
     console.log("🔍 Loading conversation history for user:", userId);
     console.log("🔍 Memory cache state - has user?", this.conversationHistory.has(userId));
+    console.log("🔍 New conversation flag:", this.newConversationFlags.get(userId));
     console.log("🔍 Total users in memory:", this.conversationHistory.size);
+    
+    // If user just started a new conversation, always return empty array
+    if (this.newConversationFlags.get(userId) === true) {
+      console.log("🆕 User has new conversation flag - returning empty history");
+      return [];
+    }
     
     // Only return memory cache - no database fallback for fresh conversation experience
     const memoryHistory = this.conversationHistory.get(userId);
