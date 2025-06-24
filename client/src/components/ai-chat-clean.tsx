@@ -1,9 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Send, Loader2, Clock, Plus, Trash2 } from 'lucide-react';
+import { Send, Loader2, Clock, Plus, Trash2, MessageCircle, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
+import { format } from 'date-fns';
 
 interface ChatMessage {
   role: 'user' | 'assistant';
