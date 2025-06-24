@@ -85,9 +85,17 @@ export function AIChat({ className, compact = false }: AIChatProps = {}) {
         timestamp: new Date(msg.timestamp)
       }));
       console.log("Setting conversation from API:", loadedConversation);
-      setConversation(loadedConversation);
+      
+      // Only update if the conversation is actually different
+      if (JSON.stringify(loadedConversation) !== JSON.stringify(conversation)) {
+        setConversation(loadedConversation);
+      }
     } else if (conversationData) {
       console.log("Conversation data format:", conversationData);
+      // If we get an empty response, clear the conversation
+      if ((conversationData as any).conversation && (conversationData as any).conversation.length === 0) {
+        setConversation([]);
+      }
     }
   }, [conversationData]);
 
@@ -280,10 +288,17 @@ export function AIChat({ className, compact = false }: AIChatProps = {}) {
       setConversation([]);
       setCurrentConversationId(null);
       setMessage("");
+      localStorage.removeItem('luna-ai-draft-message');
       
-      // Force clear the cache and refetch empty state
+      // Completely reset the conversation query cache
+      queryClient.resetQueries({ queryKey: ['/api/ai/conversation'] });
       queryClient.removeQueries({ queryKey: ['/api/ai/conversation'] });
       queryClient.invalidateQueries({ queryKey: ['/api/chat/conversations'] });
+      
+      // Force immediate refetch of empty conversation
+      setTimeout(() => {
+        queryClient.refetchQueries({ queryKey: ['/api/ai/conversation'] });
+      }, 100);
       
       toast({
         title: "New chat started",
