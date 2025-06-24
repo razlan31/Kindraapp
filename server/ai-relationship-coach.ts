@@ -215,12 +215,12 @@ export class AIRelationshipCoach {
       // Update conversation history in memory
       this.conversationHistory.set(userId, history);
 
-      // Save conversation to database immediately when it starts (after first exchange)
-      if (history.length === 2) {
+      // Save conversation to database immediately when it starts (after first user message)
+      if (history.length === 1) {
         try {
           const saved = await this.saveCurrentConversation(userId, history, false);
           if (saved) {
-            console.log("💾 Immediately saved new conversation after first exchange");
+            console.log("💾 Immediately saved new conversation when user started typing");
           }
         } catch (error) {
           console.error("❌ Failed to save new conversation:", error);

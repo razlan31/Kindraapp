@@ -79,8 +79,8 @@ export default function AIChat() {
       setMessage('');
       queryClient.invalidateQueries({ queryKey: ['/api/ai/conversation'] });
       
-      // Refresh conversation history after first exchange to show the new conversation
-      if (newMessages.length === 2) {
+      // Refresh conversation history after user starts typing to show the new conversation
+      if (newMessages.length === 1) {
         setTimeout(() => {
           queryClient.invalidateQueries({ queryKey: ['/api/chat/conversations'] });
         }, 500); // Small delay to ensure the save completes first
