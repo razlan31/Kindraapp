@@ -550,6 +550,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = (req.session as any).userId as number;
       console.log("User ID from session:", userId);
       
+      // Check subscription limits before allowing connection creation
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      const existingConnections = await storage.getConnectionsByUserId(userId);
+      const subscriptionStatus = getUserSubscriptionStatus(user, existingConnections.length);
+      
+      if (!subscriptionStatus.limits.canCreateConnection) {
+        return res.status(403).json({ 
+          message: "Connection limit reached. Upgrade to Premium to create unlimited connections.",
+          limit: subscriptionStatus.features.connections,
+          current: subscriptionStatus.usage.connectionsUsed,
+          upgradeRequired: true
+        });
+      }
+      
       // Validate required fields
       if (!req.body.name || req.body.name.trim() === '') {
         console.log("Validation failed: name is required");
