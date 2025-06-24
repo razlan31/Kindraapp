@@ -1671,7 +1671,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/milestones", isAuthenticated, async (req, res) => {
     try {
       const userId = (req.session as any).userId as number;
+      const user = await storage.getUser(userId);
       const connectionId = req.query.connectionId ? parseInt(req.query.connectionId as string) : null;
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
       
       let milestones;
       if (connectionId) {
@@ -1680,7 +1685,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         milestones = await storage.getMilestones(userId);
       }
       
-      res.json(milestones);
+      // Apply soft-lock: filter milestones to only show those from accessible connections
+      const allConnections = await storage.getConnectionsByUserId(userId);
+      const focusConnectionId = user.currentFocus;
+      const accessibleConnections = getAccessibleConnections(allConnections, user, focusConnectionId);
+      const accessibleConnectionIds = accessibleConnections.map(conn => conn.id);
+      
+      const filteredMilestones = milestones.filter(milestone => 
+        accessibleConnectionIds.includes(milestone.connectionId)
+      );
+      
+      res.json(filteredMilestones);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch milestones" });
     }
@@ -2452,14 +2467,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/menstrual-cycles", isAuthenticated, async (req: Request, res: Response) => {
     try {
       const userId = (req.session as any).userId!;
+      const user = await storage.getUser(userId);
       console.log("Fetching menstrual cycles for userId:", userId);
-      let cycles = await storage.getMenstrualCycles(userId);
-      console.log("Retrieved cycles:", cycles);
       
-      // Check if any cycles need automatic progression
-      cycles = await checkAndCreateAutomaticCycles(userId, cycles);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
       
-      res.json(cycles);
+      let allCycles = await storage.getMenstrualCycles(userId);
+      console.log("Retrieved cycles:", allCycles.length);
+      
+      // Apply soft-lock: filter cycles to only show those from accessible connections
+      const allConnections = await storage.getConnectionsByUserId(userId);
+      const focusConnectionId = user.currentFocus;
+      const accessibleConnections = getAccessibleConnections(allConnections, user, focusConnectionId);
+      const accessibleConnectionIds = accessibleConnections.map(conn => conn.id);
+      
+      const cycles = allCycles.filter(cycle => 
+        accessibleConnectionIds.includes(cycle.connectionId)
+      );
+      
+      console.log(`Filtered cycles: ${cycles.length} accessible out of ${allCycles.length} total`);
+      
+      // Check if any accessible cycles need automatic progression
+      const updatedCycles = await checkAndCreateAutomaticCycles(userId, cycles);
+      
+      res.json(updatedCycles);
     } catch (error: any) {
       console.error("Error fetching menstrual cycles:", error);
       res.status(500).json({ error: error.message });
