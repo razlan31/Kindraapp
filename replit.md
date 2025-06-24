@@ -111,15 +111,15 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
-- June 24, 2025: FIXED CONVERSATIONAL FLOW - Luna now asks the right questions instead of prompting user to ask her
-  - Fixed backwards conversation pattern where Luna was suggesting what user should ask instead of asking questions herself
-  - Luna now drives conversation with her own thoughtful questions about user's relationships and feelings
-  - Enhanced questioning patterns: "What do you think might help improve this?", "How are you feeling about this?"
-  - Removed any "you should ask me" or "feel free to ask" prompts - Luna takes initiative in conversation
-  - Luna maintains natural dialogue flow by asking appropriate follow-up questions based on context
-  - Enhanced love language integration with gift-giving, quality time, physical affection analysis
-  - Connected user's relationship goals and style to personalized insights with comprehensive data access
-  - Luna balances app-specific data analysis with universal relationship wisdom while driving engaging conversations
+- June 24, 2025: CORRECTED EXPERT-CLIENT RELATIONSHIP - Luna now provides direct advice instead of asking users to solve their own problems
+  - Fixed fundamental misunderstanding: Luna is the EXPERT who gives advice, not someone who asks user for solutions
+  - Luna now provides specific, actionable suggestions when asked about improvements or next steps
+  - Removed backwards questioning patterns like "What do you think would help?" - Luna tells users what would help
+  - Enhanced supportive follow-ups: "How does this sound?", "I can dive deeper", "You've got this"
+  - Luna maintains expert advisor role while being warm and conversational
+  - Users ask Luna for advice, Luna provides comprehensive insights and specific recommendations
+  - Enhanced love language integration with comprehensive data access for targeted relationship coaching
+  - Luna balances expert guidance with supportive encouragement while maintaining proper advisor-client dynamic
 
 - June 24, 2025: ENHANCED CONVERSATIONAL FLOW - Made Luna more natural, personal, and varied in responses
   - Luna now addresses users directly and personally instead of always giving elaborate answers
