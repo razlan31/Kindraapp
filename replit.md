@@ -111,12 +111,12 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
-- June 24, 2025: FIXED INSIGHTS ROUTING - Corrected /insights route to display proper analytics instead of Luna AI
-  - Fixed App.tsx routing to point /insights to home-page-original.tsx (the correct insights page)
-  - Updated bottom navigation label from "Home" to "AI" for clarity
-  - Restored single-version structure: homepage-1.tsx (AI) and home-page-original.tsx (Insights)
-  - Removed duplicate insights.tsx file that was incorrectly created
-  - Navigation now correctly separates AI chat functionality from relationship analytics
+- June 24, 2025: CREATED INSIGHTS-ORIGINAL - Saved current insights page as insights-original.tsx and removed Luna AI
+  - Created insights-original.tsx as the clean insights page without Luna AI components
+  - Updated App.tsx routing to point /insights to insights-original.tsx
+  - Removed AIChat import and component from insights page
+  - Maintained home-page-original.tsx as backup version
+  - Clean separation: homepage-1.tsx (AI only), insights-original.tsx (analytics only)
 
 - June 23, 2025: CODEBASE CLEANUP - Removed duplicate home page versions and cleaned up unnecessary components
   - Deleted insights-duplicate.tsx (duplicate of dashboard functionality)

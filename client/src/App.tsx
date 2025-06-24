@@ -23,7 +23,7 @@ import Homepage1 from "@/pages/homepage-1";
 
 import Luna from "@/pages/luna";
 import Trackings from "@/pages/trackings";
-import Insights from "@/pages/home-page-original";
+import Insights from "@/pages/insights-original";
 import Profile from "@/pages/profile";
 import Settings from "@/pages/settings";
 
