@@ -654,17 +654,23 @@ COACHING APPROACH:
         return false;
       }
       
-      // For auto-save: update existing conversation with same title
-      // For manual save: always create new conversation
-      const existingByTitle = conversations.find((conv: any) => conv.title === title);
+      // Check if this is a continuation of an existing conversation (by first message content)
+      const existingConversation = conversations.find((conv: any) => {
+        try {
+          const existingMessages = typeof conv.messages === 'string' ? JSON.parse(conv.messages) : conv.messages;
+          return existingMessages.length > 0 && existingMessages[0]?.content === messages[0]?.content;
+        } catch {
+          return false;
+        }
+      });
       
-      if (isAutoSave && existingByTitle) {
+      if (existingConversation) {
         // Update existing conversation with new messages
-        await this.storage.updateChatConversation(existingByTitle.id, {
+        await this.storage.updateChatConversation(existingConversation.id, {
           messages: messagesJson,
           updatedAt: new Date()
         });
-        console.log("💾 Auto-updated existing conversation:", title);
+        console.log("💾 Updated existing conversation:", title);
         return true;
       } else {
         // Create new conversation
