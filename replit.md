@@ -111,12 +111,12 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
-- June 24, 2025: ENHANCED CONVERSATIONAL FLOW - Made Luna always keep conversations going naturally
-  - Added conversation flow guidelines to always end responses with thoughtful questions or suggestions
-  - Enhanced follow-up question patterns for different response modes (general, data-specific, clarification)
-  - Luna now consistently asks engaging questions like "What's that been like for you?" and "Want to explore that deeper?"
-  - Improved natural conversation flow to make users feel heard and encourage sharing
-  - Balanced advice-giving with genuine curiosity and follow-up engagement
+- June 24, 2025: ENHANCED CONVERSATIONAL FLOW - Made Luna more natural, personal, and varied in responses
+  - Luna now addresses users directly and personally instead of always giving elaborate answers
+  - Added response variety: sometimes brief and direct, sometimes deeper when needed
+  - Enhanced question patterns: "How's that sitting with you?", "Want me to elaborate?", "Tell me more about that"
+  - Luna speaks TO users with "you" language rather than speaking about situations abstractly
+  - Balanced advice-giving with natural conversation flow and genuine curiosity
 
 - June 24, 2025: FIXED CONVERSATION DELETION - Resolved authorization issue preventing users from deleting chat history
   - Fixed type comparison bug in delete conversation endpoint (string vs number userId comparison)
