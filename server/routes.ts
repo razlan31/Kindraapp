@@ -3805,7 +3805,13 @@ Format as a brief analysis (2-3 sentences) focusing on what their data actually 
         return res.status(404).json({ message: "Conversation not found" });
       }
       
-      if (conversation.userId !== userId) {
+      // Fix type comparison - ensure both are numbers
+      const conversationUserId = typeof conversation.userId === 'string' 
+        ? parseInt(conversation.userId) 
+        : conversation.userId;
+      
+      if (conversationUserId !== userId) {
+        console.log(`Authorization check failed: conversation.userId=${conversationUserId}, session.userId=${userId}`);
         return res.status(403).json({ message: "Unauthorized to delete this conversation" });
       }
       

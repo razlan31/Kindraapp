@@ -111,6 +111,12 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
+- June 24, 2025: FIXED CONVERSATION DELETION - Resolved authorization issue preventing users from deleting chat history
+  - Fixed type comparison bug in delete conversation endpoint (string vs number userId comparison)
+  - Added proper type conversion and logging for authorization debugging
+  - Users can now successfully delete conversation history from Luna AI chat
+  - Enhanced error handling and debugging for future authorization issues
+
 - June 24, 2025: PERFECTED LUNA AI PERSONALITY - Enhanced Luna to be the ultimate relationship companion
   - Luna now embodies best friend, relationship expert, ChatGPT, mother, sibling, therapist, and intelligent AI
   - Enhanced multifaceted personality that switches naturally between roles based on user needs
