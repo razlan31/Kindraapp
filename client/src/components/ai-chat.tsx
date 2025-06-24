@@ -212,10 +212,17 @@ export function AIChat({ className, compact = false }: AIChatProps = {}) {
       const response = await fetch(`/api/ai/conversation/load/${conversationId}`, {
         method: 'POST',
       });
+      console.log("📂 Response status:", response.status, response.statusText);
+      
       if (!response.ok) {
-        throw new Error('Failed to load conversation');
+        const errorText = await response.text();
+        console.error("📂 Error response:", errorText);
+        throw new Error(`Failed to load conversation: ${response.status} ${errorText}`);
       }
-      return await response.json();
+      
+      const result = await response.json();
+      console.log("📂 Response data:", result);
+      return result;
     },
     onSuccess: (result: { conversation: any[] }) => {
       console.log("📂 Conversation loaded successfully:", result);
@@ -234,11 +241,12 @@ export function AIChat({ className, compact = false }: AIChatProps = {}) {
         description: "Previous conversation has been restored",
       });
     },
-    onError: (error) => {
+    onError: (error: any) => {
       console.error("Failed to load conversation:", error);
+      console.error("Error details:", error.message, error.stack);
       toast({
         title: "Failed to load conversation",
-        description: "There was an error loading the selected conversation",
+        description: error.message || "There was an error loading the selected conversation",
         variant: "destructive",
       });
     }

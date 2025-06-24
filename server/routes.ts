@@ -2748,6 +2748,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log("📂 Loading conversation", conversationId, "for user:", userId);
       
       const conversation = await storage.getChatConversation(conversationId);
+      console.log("📂 Retrieved conversation:", conversation ? "found" : "not found");
       
       if (!conversation) {
         return res.status(404).json({ message: "Conversation not found" });
@@ -2761,11 +2762,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Unauthorized to load this conversation" });
       }
       
+      // Parse messages if they're stored as string
+      let messages = conversation.messages;
+      if (typeof messages === 'string') {
+        try {
+          messages = JSON.parse(messages);
+        } catch (error) {
+          console.error("Error parsing conversation messages:", error);
+          return res.status(500).json({ message: "Invalid conversation data format" });
+        }
+      }
+      
+      console.log("📂 Parsed messages:", messages?.length || 0, "messages");
+      
       // Load conversation into AI coach memory
-      await aiCoach.loadConversation(userId, conversation.messages);
+      await aiCoach.loadConversation(userId, messages);
       console.log("📂 Conversation loaded successfully");
       
-      res.json({ message: "Conversation loaded successfully", conversation: conversation.messages });
+      res.json({ message: "Conversation loaded successfully", conversation: messages });
     } catch (error) {
       console.error("Error loading conversation:", error);
       res.status(500).json({ message: "Failed to load conversation" });
