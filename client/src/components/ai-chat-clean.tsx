@@ -202,8 +202,8 @@ export default function AIChat() {
 
       {/* History Panel */}
       {showHistory && (
-        <div className="border-b border-gray-100 dark:border-gray-800 p-4">
-          <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
+        <div className="border-b border-gray-100 dark:border-gray-800 p-2 sm:p-4">
+          <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-3 sm:p-4">
             <div className="flex items-center justify-between mb-3">
               <h3 className="font-medium text-gray-900 dark:text-white">Recent conversations</h3>
               <Button

@@ -111,6 +111,16 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
+- June 24, 2025: RESPONSIVE DESIGN OPTIMIZATION - Fixed overlapping and messy layouts across all screen sizes
+  - Optimized homepage Luna AI chat interface for better mobile/desktop viewing
+  - Fixed header sizing and spacing issues on smaller screens
+  - Improved activities page layout with proper responsive breakpoints
+  - Enhanced calendar page controls and navigation for mobile devices
+  - Fixed insights page card spacing and typography scaling
+  - Optimized bottom navigation for better touch targets and text truncation
+  - Added proper responsive padding and margin classes throughout the app
+  - Ensured all text sizes scale appropriately from mobile to desktop
+
 - June 24, 2025: PERFORMANCE OPTIMIZATION - Significantly improved app loading times by reducing API polling frequency
   - Reduced notification polling from every 3 seconds to every 30 seconds
   - Extended cache duration for conversation data from 5 to 10 minutes
