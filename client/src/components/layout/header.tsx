@@ -83,7 +83,7 @@ export function Header() {
                 // Clear any cached data and redirect to login
                 window.location.href = "/auth/login";
               } catch (error) {
-                console.error("Logout error:", error);
+        
                 // Even if logout fails, redirect to login page
                 window.location.href = "/auth/login";
               }

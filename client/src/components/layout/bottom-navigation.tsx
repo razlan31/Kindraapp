@@ -112,7 +112,6 @@ export function BottomNavigation() {
             
             <button 
               onClick={() => handleActionClick(() => {
-                console.log("🔥 FLOATING PLAN BUTTON - Clicked, opening plan modal with connection picker enabled");
                 // Open plan modal with connection picker enabled - let user select connection
                 openPlanModal();
               })}
