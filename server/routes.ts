@@ -2564,7 +2564,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/menstrual-cycles", isAuthenticated, async (req: Request, res: Response) => {
     try {
       const userId = (req.session as any).userId!;
+      const user = await storage.getUser(userId);
       const { startDate, periodEndDate, endDate, flowIntensity, symptoms, connectionId, mood, notes } = req.body;
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Check if connection is accessible for free users
+      const allConnections = await storage.getConnectionsByUserId(userId);
+      const focusConnectionId = user.currentFocus;
+      const accessibleConnections = getAccessibleConnections(allConnections, user, focusConnectionId);
+      const accessibleConnectionIds = accessibleConnections.map(conn => conn.id);
+      
+      if (!accessibleConnectionIds.includes(connectionId)) {
+        return res.status(403).json({ 
+          message: "Cannot create cycles for locked connections. Please upgrade to premium to access all connections.",
+          requiresUpgrade: true
+        });
+      }
       
       console.log("Creating menstrual cycle with data:", {
         userId,

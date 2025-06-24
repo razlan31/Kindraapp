@@ -677,8 +677,15 @@ export function MomentModal() {
               </SelectTrigger>
               <SelectContent>
                 {connections.map((connection) => (
-                  <SelectItem key={connection.id} value={connection.id.toString()}>
-                    {connection.name}
+                  <SelectItem 
+                    key={connection.id} 
+                    value={connection.id.toString()}
+                    disabled={connection.isLocked}
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className={connection.isLocked ? "text-gray-400" : ""}>{connection.name}</span>
+                      {connection.isLocked && <span className="text-xs text-gray-400">(Premium)</span>}
+                    </div>
                   </SelectItem>
                 ))}
               </SelectContent>
