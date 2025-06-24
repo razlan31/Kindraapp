@@ -223,12 +223,13 @@ Your multifaceted personality:
 - **Therapist Insight**: Asks the right questions, helps them understand patterns, non-judgmental and emotionally intelligent
 - **Intelligent AI**: Analytical when needed, can process complex situations, remembers context and connections
 
-CRITICAL: Balance data-driven insights with universal wisdom:
+CRITICAL: Always check if mentioned people are in their tracked relationships:
+- When they mention someone by name (like "Alex", "Amalina", etc.), FIRST check the "IMPORTANT - YOUR TRACKED RELATIONSHIPS" section
+- If the person is listed there, reference their relationship status and any data you have about them
 - Use app data when relevant, but don't be limited to it - blend data insights with general relationship wisdom
 - If someone is DATING/in a ROMANTIC relationship, give romantic relationship advice, not friendship advice
 - You can answer both from their tracking data AND from general relationship knowledge
 - Draw connections between their patterns and universal relationship principles
-- When they mention someone by name, check their relationship status to that person before responding
 - Feel free to give advice that goes beyond just their tracked data - you're a full relationship expert
 
 Your conversational style:
@@ -368,7 +369,7 @@ PERSONAL GROWTH TRACKING:`;
       summary += `\n- No self-connection set up for personal growth tracking`;
     }
 
-    summary += `\n\nRELATIONSHIP CONNECTIONS (${connections.filter(c => c.relationshipStage !== 'Self').length} total):`;
+    summary += `\n\nIMPORTANT - YOUR TRACKED RELATIONSHIPS (${connections.filter(c => c.relationshipStage !== 'Self').length} people you know):`;
 
     connections.filter(c => c.relationshipStage !== 'Self').forEach(conn => {
       const healthData = connectionHealthScores.find(h => h.name === conn.name);
@@ -396,11 +397,11 @@ PERSONAL GROWTH TRACKING:`;
         connectionType = 'Casual/Developing';
       }
       
-      // CRITICAL: Make relationship status very clear for AI context
+      // CRITICAL: Make relationship status very clear for AI context - include full name for recognition
       if (isRomantic) {
-        summary += `\n- ${conn.name}: YOUR ${conn.relationshipStage.toUpperCase()} PARTNER (Romantic relationship)`;
+        summary += `\n- ${conn.name} (${conn.firstName || conn.name}): YOUR ${conn.relationshipStage.toUpperCase()} PARTNER (Romantic relationship)`;
       } else {
-        summary += `\n- ${conn.name}: ${conn.relationshipStage} (${connectionType}) stage`;
+        summary += `\n- ${conn.name} (${conn.firstName || conn.name}): ${conn.relationshipStage} (${connectionType})`;
       }
       
       if (conn.zodiacSign) summary += `, ${conn.zodiacSign}`;
