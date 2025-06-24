@@ -121,6 +121,8 @@ The badges system currently has several issues that need attention:
   - Created home-page-original.tsx backup of current home page version with Luna AI at top
   - Created homepage-1.tsx version with only Luna AI chat interface (minimal version)
   - Updated routing to use homepage-1.tsx as current home page instead of insights-new.tsx
+  - Deleted insights-new.tsx and other unnecessary home page versions
+  - Final structure: homepage-1.tsx (current minimal Luna AI) + home-page-original.tsx (full analytics backup)
 
 - June 23, 2025: NAVIGATION RESTRUCTURE - Separated AI coach and reorganized app structure for better user experience
   - Created dedicated Luna AI page with full-screen chat experience
