@@ -30,6 +30,97 @@ export class AIRelationshipCoach {
     this.storage = storage;
   }
 
+  // Analyze user intent to determine response strategy
+  private analyzeIntent(message: string, context: RelationshipContext): {
+    isDataSpecific: boolean;
+    needsClarification: boolean;
+    confidence: number;
+    reasoning: string;
+  } {
+    const lowerMessage = message.toLowerCase();
+    
+    // Strong indicators for data-specific questions
+    const dataSpecificIndicators = [
+      'my relationship', 'my connection', 'my partner', 'our relationship',
+      'my data', 'my moments', 'my tracking', 'my progress',
+      'how am i doing', 'what does my', 'based on my',
+      'analyze my', 'my patterns', 'my behavior',
+      'my cycle', 'my period', 'my mood',
+      'my badges', 'my points', 'my stats'
+    ];
+    
+    // Strong indicators for general questions
+    const generalIndicators = [
+      'how to', 'what should i', 'how do i',
+      'in general', 'generally speaking', 'typically',
+      'people usually', 'most relationships', 'dating advice',
+      'relationship tips', 'communication skills',
+      'red flags', 'green flags', 'healthy relationships'
+    ];
+    
+    // Ambiguous phrases that might need clarification
+    const ambiguousIndicators = [
+      'relationship', 'dating', 'partner', 'communication',
+      'trust', 'love', 'feelings', 'emotions',
+      'conflict', 'fight', 'argue', 'problem'
+    ];
+    
+    let dataSpecificScore = 0;
+    let generalScore = 0;
+    let ambiguousScore = 0;
+    
+    // Score based on indicators
+    dataSpecificIndicators.forEach(indicator => {
+      if (lowerMessage.includes(indicator)) dataSpecificScore += 2;
+    });
+    
+    generalIndicators.forEach(indicator => {
+      if (lowerMessage.includes(indicator)) generalScore += 2;
+    });
+    
+    ambiguousIndicators.forEach(indicator => {
+      if (lowerMessage.includes(indicator)) ambiguousScore += 1;
+    });
+    
+    // Check for user context availability
+    const hasConnections = context.connections && context.connections.length > 0;
+    const hasMoments = context.recentMoments && context.recentMoments.length > 0;
+    const hasDataContext = hasConnections || hasMoments;
+    
+    // Determine intent
+    let isDataSpecific = false;
+    let needsClarification = false;
+    let confidence = 0;
+    let reasoning = "";
+    
+    if (dataSpecificScore > generalScore && dataSpecificScore > 0) {
+      isDataSpecific = true;
+      confidence = Math.min(0.9, dataSpecificScore * 0.15);
+      reasoning = "Question contains specific references to user's personal data";
+      
+      // But if no data available, suggest clarification
+      if (!hasDataContext) {
+        needsClarification = true;
+        reasoning += " but no tracking data available";
+      }
+    } else if (generalScore > dataSpecificScore && generalScore > 0) {
+      isDataSpecific = false;
+      confidence = Math.min(0.9, generalScore * 0.15);
+      reasoning = "Question appears to be asking for general relationship advice";
+    } else if (ambiguousScore > 0 && (dataSpecificScore === generalScore)) {
+      needsClarification = true;
+      confidence = 0.3;
+      reasoning = "Question is ambiguous - could be general or data-specific";
+    } else {
+      // Default to general for unclear questions
+      isDataSpecific = false;
+      confidence = 0.5;
+      reasoning = "Defaulting to general advice for unclear question";
+    }
+    
+    return { isDataSpecific, needsClarification, confidence, reasoning };
+  }
+
   async generateResponse(
     userId: number,
     userMessage: string,
@@ -66,11 +157,15 @@ export class AIRelationshipCoach {
       };
       history.push(newUserMessage);
 
+      // Analyze user intent
+      const intent = this.analyzeIntent(userMessage, context);
+      console.log(`🧠 Intent Analysis: ${intent.reasoning} (confidence: ${intent.confidence})`);
+
       // Generate relationship context summary
       const contextSummary = this.generateContextSummary(context);
 
-      // Create system prompt
-      const systemPrompt = this.createSystemPrompt(contextSummary);
+      // Create system prompt based on intent
+      const systemPrompt = this.createSystemPrompt(contextSummary, intent);
 
       // Prepare messages for OpenAI
       const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [
@@ -111,56 +206,57 @@ export class AIRelationshipCoach {
     }
   }
 
-  private createSystemPrompt(contextSummary: string): string {
-    return `You are a warm, empathetic AI relationship coach specializing in both interpersonal relationships and personal growth. Your role is to provide supportive, practical advice based on the user's specific situation and tracking data.
+  private createSystemPrompt(contextSummary: string, intent?: {
+    isDataSpecific: boolean;
+    needsClarification: boolean;
+    confidence: number;
+    reasoning: string;
+  }): string {
+    const basePersonality = `You are Luna, a warm, intelligent, and conversational AI relationship coach. You're like having a wise, supportive friend who happens to be an expert in relationships.
 
-PERSONALITY & TONE:
-- Be warm, encouraging, and non-judgmental
-- Use a conversational, supportive tone
-- Show genuine care and understanding
-- Acknowledge the user's feelings and experiences
-- Be optimistic but realistic
-- Celebrate achievements and growth patterns
+Your personality:
+- Conversational and natural, like ChatGPT but specialized in relationships
+- Warm, empathetic, and non-judgmental
+- Sometimes playful and lighthearted when appropriate
+- Ask thoughtful follow-up questions
+- Share insights and "aha moments" 
+- Use natural, flowing conversation rather than rigid advice
+- Be genuinely curious about the person's situation
+- Mix wisdom with relatability
+- Don't over-emphasize concepts like love languages unless directly relevant
+- Focus on practical, real-world relationship dynamics`;
 
-CORE EXPERTISE AREAS:
-1. INTERPERSONAL RELATIONSHIPS: Dating, committed partnerships, friendships, family dynamics
-2. PERSONAL GROWTH: Self-awareness, achievements, reflection patterns, self-care habits
-3. EMOTIONAL INTELLIGENCE: Understanding patterns, triggers, and emotional regulation
-4. LIFE BALANCE: Integrating relationship health with personal development
+    if (intent?.needsClarification) {
+      return `${basePersonality}
 
-GUIDELINES:
-- Always reference the user's specific tracking data when relevant
-- Provide actionable, practical suggestions tailored to their patterns
-- Recognize both relationship moments AND self-connection moments
-- For self-connection insights: focus on achievement patterns, reflection habits, growth opportunities
-- For relationships: emphasize communication, connection quality, and stage-appropriate advice
-- Adapt advice to relationship type (Family, Romantic, Friendship, Professional, Casual/Developing)
-- For family relationships (Mom, Dad, Sister, etc.): focus on appreciation, understanding, support, and maintaining healthy boundaries
-- For professional relationships: emphasize respect, collaboration, and appropriate boundaries
-- For romantic relationships: focus on intimacy, communication, and relationship growth
-- For friendships: emphasize mutual support, shared experiences, and loyalty
-- Avoid generic advice - make it deeply personal to their situation
-- If unclear, ask clarifying questions
-- Never provide medical, legal, or clinical psychological diagnoses
-- Encourage both healthy relationships and strong self-relationship
+The user's question could be asking for either:
+1. General relationship advice and wisdom
+2. Analysis based on their personal relationship data in the app
 
-USER'S COMPLETE CONTEXT:
+Ask a clarifying question to understand what they're looking for. Be conversational about it - something like "Are you asking for general advice about this, or would you like me to look at your specific relationship patterns in the app?"
+
+User Context (if they want data-specific insights):
+${contextSummary}`;
+    }
+
+    if (intent?.isDataSpecific) {
+      return `${basePersonality}
+
+The user is asking about their specific relationship data. Use their personal information to provide tailored insights and observations.
+
+User Context:
 ${contextSummary}
 
-SPECIAL FOCUS AREAS:
-- If they track self-moments: acknowledge their self-awareness journey and growth patterns
-- If they're achievement-focused: encourage balanced reflection and celebrate wins
-- If they're reflection-heavy: encourage action-taking and achievement celebration
-- If they lack self-tracking: gently suggest the value of personal growth documentation
-- Always connect personal growth insights to relationship health when relevant
+Focus on their actual patterns, behaviors, and relationship dynamics based on this data. Be specific and personal in your observations. Only mention concepts like love languages or zodiac signs if they're directly relevant to the conversation or question.`;
+    }
 
-Remember to:
-1. Use the user's actual tracking data in your responses
-2. Reference specific connections by name when relevant
-3. Acknowledge both relationship AND personal growth patterns
-4. Provide concrete next steps for both areas
-5. Ask follow-up questions to better understand their situation
-6. Celebrate their progress in tracking and self-awareness`;
+    return `${basePersonality}
+
+The user is asking for general relationship advice. Provide thoughtful, conversational guidance based on relationship psychology and general wisdom. You can be like ChatGPT here - knowledgeable, helpful, and engaging.
+
+Don't assume you have access to their specific relationship data unless they specifically mention it. Focus on general principles, common situations, and universal relationship wisdom.
+
+If they mention specific details about their relationships, you can reference those, but don't assume you have tracking data about them. Keep the focus on practical, real-world advice rather than theoretical concepts unless specifically asked.`;
   }
 
   private generateContextSummary(context: RelationshipContext): string {
@@ -179,9 +275,17 @@ Remember to:
     );
 
     let summary = `USER PROFILE:
-- Name: ${user.displayName || user.username}
-- Love Language: ${user.loveLanguage || 'Not specified'}
-- Zodiac Sign: ${user.zodiacSign || 'Not specified'}
+- Name: ${user.displayName || user.username}`;
+
+    // Only include love language and zodiac if they might be relevant
+    if (user.loveLanguage) {
+      summary += `\n- Love Language: ${user.loveLanguage}`;
+    }
+    if (user.zodiacSign) {
+      summary += `\n- Zodiac Sign: ${user.zodiacSign}`;
+    }
+
+    summary += `
 
 PERSONAL GROWTH TRACKING:`;
 

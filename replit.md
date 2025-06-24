@@ -111,6 +111,15 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
+- June 24, 2025: ENHANCED LUNA AI INTELLIGENCE - Implemented smart intent analysis and conversational improvements
+  - Added intent analysis system to distinguish between general questions vs app-specific data queries
+  - Luna now asks clarifying questions when user intent is unclear
+  - Enhanced conversational style to be more natural and ChatGPT-like
+  - Reduced over-emphasis on love languages - only mentioned when directly relevant
+  - Three response modes: general advice, data-specific insights, or clarification questions
+  - Improved system prompts for more balanced and contextual responses
+  - Luna now focuses on practical relationship dynamics rather than theoretical concepts
+
 - June 24, 2025: CREATED INSIGHTS-ORIGINAL - Saved current insights page as insights-original.tsx and removed Luna AI
   - Created insights-original.tsx as the clean insights page without Luna AI components
   - Updated App.tsx routing to point /insights to insights-original.tsx
