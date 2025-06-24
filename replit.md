@@ -111,6 +111,15 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
+- June 24, 2025: CONVERSATION HISTORY SYSTEM COMPLETE - Fixed conversation loading and implemented smart auto-save system
+  - Fixed conversation history loading with proper API endpoint and authorization
+  - Added automatic conversation saving every 4 messages to prevent losing chat history
+  - Implemented smart duplicate prevention system that compares message content, not just titles
+  - Auto-save updates existing conversations while manual "New Chat" creates separate entries
+  - Enhanced error handling and debugging for conversation management system
+  - Users can now seamlessly load previous conversations and continue chatting with full context
+  - Most recent conversations automatically appear in history without manual saving required
+
 - June 24, 2025: ENHANCED LUNA WITH COMPREHENSIVE ADVICE FRAMEWORK - Luna now combines personalized context awareness with depth of expert guidance
   - Luna provides BOTH data-driven personalized insights AND comprehensive relationship advice
   - Enhanced advice framework includes: root cause analysis, multiple perspectives, actionable strategies, long-term planning, and contingency advice
