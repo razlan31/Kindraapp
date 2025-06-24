@@ -2867,6 +2867,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Generate AI response
       const aiResponse = await aiCoach.generateResponse(userId, message, context);
 
+      // Increment AI coaching usage counter
+      await storage.updateUser(userId, {
+        monthlyAiCoaching: user.monthlyAiCoaching + 1
+      });
+      console.log(`🔢 AI Usage Updated: User ${userId} now has ${user.monthlyAiCoaching + 1} AI coaching messages used this month`);
+
       res.json({ 
         message: aiResponse,
         timestamp: new Date().toISOString()
