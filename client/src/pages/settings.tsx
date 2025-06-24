@@ -215,6 +215,7 @@ function Settings() {
     preferences: {
       theme: theme as "light" | "dark" | "system",
       language: "en",
+      defaultPage: "home" as "home" | "connections" | "activities" | "calendar" | "insights",
     },
   });
 
@@ -417,6 +418,38 @@ function Settings() {
                         <SelectItem value="light">Light</SelectItem>
                         <SelectItem value="dark">Dark</SelectItem>
                         <SelectItem value="minimalist">Minimalist</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <Separator />
+
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label>Default Page</Label>
+                      <p className="text-sm text-neutral-600 dark:text-neutral-400">Which page to open when you launch the app</p>
+                    </div>
+                    <Select 
+                      value={settings.preferences.defaultPage} 
+                      onValueChange={(value) => {
+                        setSettings(prev => ({
+                          ...prev,
+                          preferences: {
+                            ...prev.preferences,
+                            defaultPage: value as "home" | "connections" | "activities" | "calendar" | "insights"
+                          }
+                        }));
+                      }}
+                    >
+                      <SelectTrigger className="w-32">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="home">Home</SelectItem>
+                        <SelectItem value="connections">Connect</SelectItem>
+                        <SelectItem value="activities">Activity</SelectItem>
+                        <SelectItem value="calendar">Calendar</SelectItem>
+                        <SelectItem value="insights">Insights</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
