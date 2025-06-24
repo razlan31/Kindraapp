@@ -10,9 +10,9 @@ export default function Luna() {
       <div className="min-h-screen bg-gradient-to-br from-violet-50 to-purple-50 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
         <div className="text-center">
           <div className="text-2xl font-bold text-violet-600 dark:text-violet-400 mb-2">
-            🌙 Luna
+            🌙 Luna AI
           </div>
-          <p className="text-gray-600 dark:text-gray-400">Please log in to chat with Luna</p>
+          <p className="text-gray-600 dark:text-gray-400">Please log in to chat with Luna AI</p>
         </div>
       </div>
     );

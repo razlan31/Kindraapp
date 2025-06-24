@@ -261,7 +261,7 @@ export default function AIChat() {
               How can I help you today?
             </h2>
             <p className="text-gray-600 dark:text-gray-400 max-w-md text-sm leading-relaxed">
-              Meet Luna, the most powerful relationship AI assistant. I'm here to transform your love life with personalized insights, expert guidance, and deep understanding of your unique relationship patterns.
+              Meet Luna AI, the most powerful relationship AI assistant. I'm here to transform your love life with personalized insights, expert guidance, and deep understanding of your unique relationship patterns.
             </p>
           </div>
         ) : (
@@ -328,7 +328,7 @@ export default function AIChat() {
           {chatMutation.isPending && (
             <div className="flex items-center gap-2 mt-3 text-gray-500 dark:text-gray-400 text-sm">
               <Loader2 className="h-4 w-4 animate-spin" />
-              Luna is thinking...
+              Luna AI is thinking...
             </div>
           )}
         </form>
