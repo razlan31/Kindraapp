@@ -20,7 +20,6 @@ import SimpleForm from "./pages/simple-form";
 import Activities from "@/pages/activities";
 import Calendar from "@/pages/calendar";
 import InsightsNew from "@/pages/insights-new";
-import Home from "@/pages/home";
 
 import Luna from "@/pages/luna";
 import Trackings from "@/pages/trackings";
@@ -73,7 +72,7 @@ function Router() {
       <Route path="/onboarding/profile" component={OnboardingProfile} />
       <Route path="/onboarding/goals" component={OnboardingGoals} />
       <Route path="/onboarding/complete" component={OnboardingComplete} />
-      <Route path="/" component={Home} />
+      <Route path="/" component={InsightsNew} />
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/connections" component={Connections} />
       <Route path="/connections/add" component={ConnectionsFormNew} />
@@ -113,7 +112,7 @@ function App() {
                   <BadgeNotificationMonitor />
                   <Router />
                   <ModalsContainer />
-
+                  <FloatingAIButton />
                 </TooltipProvider>
               </ModalProvider>
             </SyncProvider>
