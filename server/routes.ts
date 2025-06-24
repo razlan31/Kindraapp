@@ -1140,12 +1140,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const accessibleConnections = getAccessibleConnections(allConnections, user, focusConnectionId);
       const accessibleConnectionIds = accessibleConnections.map(conn => conn.id);
       
-      const filteredMoments = allMoments.filter(moment => 
-        accessibleConnectionIds.includes(moment.connectionId)
-      );
+      // Add isLocked property to moments from inaccessible connections
+      const momentsWithLockStatus = allMoments.map(moment => ({
+        ...moment,
+        isLocked: !accessibleConnectionIds.includes(moment.connectionId)
+      }));
       
-      console.log(`✅ GET /api/moments - Found ${filteredMoments.length} accessible moments out of ${allMoments.length} total`);
-      res.status(200).json(filteredMoments);
+      console.log(`✅ GET /api/moments - Found ${allMoments.length} total moments (${accessibleConnectionIds.length} accessible connections)`);
+      res.status(200).json(momentsWithLockStatus);
     } catch (error) {
       console.error("❌ GET /api/moments error:", error);
       res.status(500).json({ message: "Server error fetching moments" });
