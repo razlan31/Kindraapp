@@ -254,35 +254,35 @@ export default function AIChat() {
       {/* Chat Area */}
       <div className="flex-1 overflow-y-auto">
         {conversation.length === 0 ? (
-          <div className="flex flex-col items-center justify-center min-h-[50vh] sm:min-h-[60vh] p-4 sm:p-8 text-center">
-            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br from-violet-500 to-pink-500 flex items-center justify-center mb-4 sm:mb-6">
-              <span className="text-white text-sm sm:text-lg font-semibold">L</span>
+          <div className="flex flex-col items-center justify-center min-h-[55vh] sm:min-h-[65vh] lg:min-h-[70vh] p-6 sm:p-8 lg:p-12 text-center">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 rounded-full bg-gradient-to-br from-violet-500 to-pink-500 flex items-center justify-center mb-6 sm:mb-8 lg:mb-10">
+              <span className="text-white text-lg sm:text-xl lg:text-2xl font-semibold">L</span>
             </div>
-            <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white mb-2">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-gray-900 dark:text-white mb-3 lg:mb-4">
               How can I help you today?
             </h2>
-            <p className="text-gray-600 dark:text-gray-400 max-w-xs sm:max-w-md text-xs sm:text-sm leading-relaxed px-2">
+            <p className="text-gray-600 dark:text-gray-400 max-w-sm sm:max-w-md lg:max-w-lg text-sm sm:text-base lg:text-lg leading-relaxed px-4">
               Meet Luna AI, the most powerful relationship AI assistant. I'm here to transform your love life with personalized insights, expert guidance, and deep understanding of your unique relationship patterns.
             </p>
           </div>
         ) : (
-          <div className="p-2 sm:p-4 space-y-4 sm:space-y-8">
+          <div className="p-3 sm:p-4 lg:p-6 space-y-6 sm:space-y-8 lg:space-y-10">
             {conversation.map((msg, index) => (
               <div key={index} className="max-w-none">
                 {msg.role === 'user' ? (
                   <div className="flex justify-end">
-                    <div className="bg-gray-900 dark:bg-gray-700 text-white rounded-3xl rounded-br-lg px-3 sm:px-6 py-2 sm:py-3 max-w-[85%] sm:max-w-[80%]">
-                      <p className="text-xs sm:text-sm leading-relaxed whitespace-pre-wrap">{msg.content}</p>
+                    <div className="bg-gray-900 dark:bg-gray-700 text-white rounded-3xl rounded-br-lg px-4 sm:px-6 lg:px-8 py-3 sm:py-4 lg:py-5 max-w-[80%] sm:max-w-[75%] lg:max-w-[70%]">
+                      <p className="text-sm sm:text-base lg:text-lg leading-relaxed whitespace-pre-wrap">{msg.content}</p>
                     </div>
                   </div>
                 ) : (
-                  <div className="flex gap-2 sm:gap-4">
-                    <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-gradient-to-br from-violet-500 to-pink-500 flex items-center justify-center flex-shrink-0 mt-1">
-                      <span className="text-white text-xs font-semibold">L</span>
+                  <div className="flex gap-3 sm:gap-4 lg:gap-5">
+                    <div className="w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 rounded-full bg-gradient-to-br from-violet-500 to-pink-500 flex items-center justify-center flex-shrink-0 mt-1">
+                      <span className="text-white text-sm sm:text-base lg:text-lg font-semibold">L</span>
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="prose prose-sm dark:prose-invert max-w-none">
-                        <p className="text-gray-900 dark:text-gray-100 leading-relaxed whitespace-pre-wrap text-sm sm:text-base">
+                      <div className="prose prose-sm sm:prose-base lg:prose-lg dark:prose-invert max-w-none">
+                        <p className="text-gray-900 dark:text-gray-100 leading-relaxed whitespace-pre-wrap text-sm sm:text-base lg:text-lg">
                           {msg.content}
                         </p>
                       </div>
