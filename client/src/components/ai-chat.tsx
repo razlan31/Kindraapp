@@ -275,15 +275,20 @@ export function AIChat({ className, compact = false }: AIChatProps = {}) {
   // Start new chat mutation
   const newChatMutation = useMutation({
     mutationFn: async () => {
+      console.log("🆕 Starting new chat - calling API");
       const response = await fetch('/api/ai/conversation/new', {
         method: 'POST',
       });
       if (!response.ok) {
         throw new Error('Failed to start new chat');
       }
-      return await response.json();
+      const result = await response.json();
+      console.log("✅ New chat API response:", result);
+      return result;
     },
     onSuccess: () => {
+      console.log("🧹 New chat success - clearing all state");
+      
       // Clear all conversation state immediately
       setConversation([]);
       setCurrentConversationId(null);
@@ -295,14 +300,23 @@ export function AIChat({ className, compact = false }: AIChatProps = {}) {
       queryClient.removeQueries({ queryKey: ['/api/ai/conversation'] });
       queryClient.invalidateQueries({ queryKey: ['/api/chat/conversations'] });
       
-      // Force immediate refetch of empty conversation
+      // Force immediate refetch of empty conversation with delay
       setTimeout(() => {
+        console.log("🔄 Force refetching conversation after new chat");
         queryClient.refetchQueries({ queryKey: ['/api/ai/conversation'] });
-      }, 100);
+      }, 200);
       
       toast({
         title: "New chat started",
         description: "Ready for a fresh conversation",
+      });
+    },
+    onError: (error) => {
+      console.error("❌ New chat error:", error);
+      toast({
+        title: "Error",
+        description: "Failed to start new conversation",
+        variant: "destructive",
       });
     }
   });

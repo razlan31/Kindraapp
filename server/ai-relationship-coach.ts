@@ -603,7 +603,9 @@ COACHING APPROACH:
     
     // CRITICAL: Clear memory cache completely to start fresh
     this.conversationHistory.delete(userId);
-    console.log("🧹 Cleared in-memory conversation history");
+    console.log("🧹 Cleared in-memory conversation history - userId:", userId);
+    console.log("🔍 Memory cache state after clear:", this.conversationHistory.has(userId));
+    console.log("📝 Conversation history size:", this.conversationHistory.size);
     console.log("✅ New conversation started - memory state reset");
   }
 
@@ -629,13 +631,15 @@ COACHING APPROACH:
 
   async getConversationHistory(userId: number): Promise<ChatMessage[]> {
     console.log("🔍 Loading conversation history for user:", userId);
+    console.log("🔍 Memory cache state - has user?", this.conversationHistory.has(userId));
+    console.log("🔍 Total users in memory:", this.conversationHistory.size);
     
     // Only return memory cache - no database fallback for fresh conversation experience
     const memoryHistory = this.conversationHistory.get(userId);
     console.log("📱 Memory cache has:", memoryHistory?.length || 0, "messages");
     
     if (memoryHistory && memoryHistory.length > 0) {
-      console.log("🎯 Returning from memory cache");
+      console.log("🎯 Returning from memory cache:", memoryHistory.map(m => m.role + ': ' + m.content.substring(0, 50)));
       return memoryHistory;
     }
     
