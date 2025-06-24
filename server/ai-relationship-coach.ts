@@ -674,7 +674,7 @@ COACHING APPROACH:
       } else {
         // Create new conversation
         await this.storage.createChatConversation({
-          userId,
+          userId: userId.toString(),
           title,
           messages: messagesJson
         });
