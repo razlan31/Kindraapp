@@ -133,11 +133,13 @@ export default function Connections() {
         body: JSON.stringify(data),
       });
       
+      const result = await response.json();
+      
       if (!response.ok) {
-        throw new Error('Failed to create connection');
+        throw result;
       }
       
-      return response.json();
+      return result;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/connections'] });
@@ -149,11 +151,19 @@ export default function Connections() {
       });
     },
     onError: (error: any) => {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to create connection.",
-        variant: "destructive",
-      });
+      if (error.upgradeRequired) {
+        toast({
+          title: "Connection Limit Reached",
+          description: `You've reached your limit of ${error.limit} connection${error.limit > 1 ? 's' : ''}. Upgrade to Premium for unlimited connections.`,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Error", 
+          description: error.message || "Failed to create connection. Please try again.",
+          variant: "destructive",
+        });
+      }
     },
   });
 
@@ -273,6 +283,16 @@ export default function Connections() {
               <Plus className="h-5 w-5 mr-2" />
               Add Connection
             </Button>
+            
+            {/* Soft-lock notice for free users with limited connections */}
+            {connections.length === 1 && (
+              <div className="text-center p-3 bg-blue-50 rounded-lg border border-blue-200">
+                <p className="text-sm text-blue-700">
+                  <strong>Free Plan:</strong> Showing your most recent connection. 
+                  <br />Upgrade to Premium to access all your connections.
+                </p>
+              </div>
+            )}
           </div>
         </section>
 
