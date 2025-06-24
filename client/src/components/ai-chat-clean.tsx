@@ -175,7 +175,7 @@ export default function AIChat() {
           <div className="w-7 h-7 rounded-full bg-gradient-to-br from-violet-500 to-pink-500 flex items-center justify-center">
             <span className="text-white text-xs font-semibold">L</span>
           </div>
-          <h1 className="text-lg font-medium text-gray-900 dark:text-white">Luna</h1>
+          <h1 className="text-lg font-medium text-gray-900 dark:text-white">Luna AI</h1>
         </div>
         <div className="flex items-center gap-2">
           <Button
@@ -308,7 +308,7 @@ export default function AIChat() {
                 e.target.style.height = Math.min(e.target.scrollHeight, 120) + 'px';
               }}
               onKeyDown={handleKeyDown}
-              placeholder="Ask Luna anything about your relationships..."
+              placeholder="Ask Luna AI anything about your relationships..."
               className="min-h-[60px] max-h-[120px] resize-none pr-14 border-gray-200 dark:border-gray-700 focus:border-violet-500 dark:focus:border-violet-400 rounded-2xl bg-gray-50 dark:bg-gray-900 text-base leading-relaxed"
               disabled={chatMutation.isPending}
             />

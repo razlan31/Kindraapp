@@ -31,7 +31,7 @@ export default function Luna() {
               </h1>
             </div>
             <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-              Your personal relationship coach powered by AI. Ask Luna anything about relationships, dating, communication, and personal growth.
+              Your personal relationship coach powered by AI. Ask Luna AI anything about relationships, dating, communication, and personal growth.
             </p>
           </div>
           
