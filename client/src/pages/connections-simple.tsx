@@ -539,9 +539,10 @@ function ConnectionCard({
             size="sm"
             onClick={(e) => {
               e.stopPropagation();
-              onToggleFocus();
+              !connection.isLocked && onToggleFocus();
             }}
             className="ml-2 mt-1"
+            disabled={connection.isLocked}
           >
             <Heart className={`h-4 w-4 ${isMainFocus ? 'fill-current text-primary' : ''}`} />
           </Button>
