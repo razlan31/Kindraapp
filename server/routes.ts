@@ -3262,11 +3262,11 @@ Format as a brief analysis (2-3 sentences) focusing on what their data actually 
   });
 
   // Subscription management routes
-  app.get("/api/subscription/status", googleAuthMiddleware, async (req: Request, res: Response) => {
+  app.get("/api/subscription/status", isAuthenticated, async (req: Request, res: Response) => {
     try {
-      const userId = req.user?.id;
+      const userId = (req.session as any).userId;
       if (!userId) {
-        return res.status(401).json({ message: "Unauthorized" });
+        return res.status(401).json({ message: "Authentication required" });
       }
 
       const user = await storage.getUser(userId);
@@ -3284,11 +3284,11 @@ Format as a brief analysis (2-3 sentences) focusing on what their data actually 
     }
   });
 
-  app.post("/api/subscription/start-trial", googleAuthMiddleware, async (req: Request, res: Response) => {
+  app.post("/api/subscription/start-trial", isAuthenticated, async (req: Request, res: Response) => {
     try {
-      const userId = req.user?.id;
+      const userId = (req.session as any).userId;
       if (!userId) {
-        return res.status(401).json({ message: "Unauthorized" });
+        return res.status(401).json({ message: "Authentication required" });
       }
 
       const user = await storage.getUser(userId);
@@ -3311,11 +3311,11 @@ Format as a brief analysis (2-3 sentences) focusing on what their data actually 
     }
   });
 
-  app.post("/api/subscription/create-checkout", googleAuthMiddleware, async (req: Request, res: Response) => {
+  app.post("/api/subscription/create-checkout", isAuthenticated, async (req: Request, res: Response) => {
     try {
-      const userId = req.user?.id;
+      const userId = (req.session as any).userId;
       if (!userId) {
-        return res.status(401).json({ message: "Unauthorized" });
+        return res.status(401).json({ message: "Authentication required" });
       }
 
       const { plan } = req.body;
@@ -3347,7 +3347,7 @@ Format as a brief analysis (2-3 sentences) focusing on what their data actually 
         ],
         success_url: `${req.get('origin')}/subscription/success?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${req.get('origin')}/subscription/cancel`,
-        customer_email: req.user?.email || undefined,
+        customer_email: (await storage.getUser(userId))?.email || undefined,
         metadata: {
           userId,
           plan
