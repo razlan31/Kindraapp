@@ -20,6 +20,7 @@ import { InlineConnectionModal } from "@/components/modals/inline-connection-mod
 import { SimpleConnectionForm } from "@/components/modals/simple-connection-form";
 import { calculateZodiacSign } from "@shared/zodiac-utils";
 import { useSubscription } from "@/hooks/use-subscription";
+import { PricingModal } from "@/components/subscription/pricing-modal";
 
 export default function Connections() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -44,6 +45,7 @@ export default function Connections() {
   const { mainFocusConnection, setMainFocusConnection } = useRelationshipFocus();
   const { toast } = useToast();
   const { subscriptionStatus, isPremium } = useSubscription();
+  const [showPricingModal, setShowPricingModal] = useState(false);
 
   // Fetch connections and moments
   const { data: connections = [] } = useQuery<Connection[]>({
@@ -312,7 +314,7 @@ export default function Connections() {
                   <Button 
                     size="sm" 
                     className="ml-3 bg-blue-600 hover:bg-blue-700 text-white shrink-0"
-                    onClick={() => window.location.href = '/settings?tab=subscription'}
+                    onClick={() => setShowPricingModal(true)}
                   >
                     Upgrade
                   </Button>
