@@ -299,11 +299,24 @@ export default function Connections() {
             
             {/* Soft-lock notice for free users with locked connections */}
             {connections.some((conn: any) => conn.isLocked) && (
-              <div className="text-center p-3 bg-blue-50 rounded-lg border border-blue-200">
-                <p className="text-sm text-blue-700">
-                  <strong>Free Plan:</strong> Some connections are locked. 
-                  <br />Upgrade to Premium to access all connections.
-                </p>
+              <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-700">
+                <div className="flex items-center justify-between">
+                  <div className="flex-1">
+                    <p className="text-sm text-blue-700 dark:text-blue-200">
+                      <strong>Free Plan:</strong> Some connections are locked.
+                    </p>
+                    <p className="text-xs text-blue-600 dark:text-blue-300 mt-1">
+                      Upgrade to Premium to access all connections.
+                    </p>
+                  </div>
+                  <Button 
+                    size="sm" 
+                    className="ml-3 bg-blue-600 hover:bg-blue-700 text-white shrink-0"
+                    onClick={() => window.location.href = '/settings'}
+                  >
+                    Upgrade
+                  </Button>
+                </div>
               </div>
             )}
           </div>
