@@ -338,6 +338,12 @@ export default function Activities() {
       <main className="flex-1 overflow-y-auto pb-20 h-0">
         {/* Page Title */}
         <div className="px-3 pt-3 pb-2">
+          <UpgradeBanner 
+            message="Free Plan: Activity tracking limited"
+            description="Upgrade to Premium to track moments, plans, and milestones across all your relationships."
+            variant="compact"
+          />
+          
           <div className="flex items-center justify-between mb-3">
             <h1 className="text-2xl font-bold">Activities</h1>
           </div>
