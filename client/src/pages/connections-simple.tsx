@@ -312,7 +312,7 @@ export default function Connections() {
                   <Button 
                     size="sm" 
                     className="ml-3 bg-blue-600 hover:bg-blue-700 text-white shrink-0"
-                    onClick={() => window.location.href = '/settings'}
+                    onClick={() => window.location.href = '/settings?tab=subscription'}
                   >
                     Upgrade
                   </Button>
