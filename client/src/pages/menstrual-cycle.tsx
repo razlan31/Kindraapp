@@ -494,8 +494,6 @@ export default function MenstrualCyclePage() {
     
     console.log("🔧 Using cycle data for form:", latestCycle);
     console.log("🔧 Raw periodStartDate:", latestCycle.periodStartDate);
-    console.log("🔧 formatDateSafely result:", latestCycle.periodStartDate ? 
-      (latestCycle.periodStartDate.includes('T') ? latestCycle.periodStartDate : `${latestCycle.periodStartDate}T00:00:00.000Z`).split('T')[0] : 'null');
     console.log("🔧 Cycle ID being edited:", latestCycle.id);
     
     // FIX: Extract date parts directly to avoid timezone issues

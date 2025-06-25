@@ -2544,7 +2544,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const accessibleConnectionIds = accessibleConnections.map(conn => conn.id);
       
       // Check if any cycles need automatic progression
-      const updatedCycles = await checkAndCreateAutomaticCycles(userId, allCycles);
+      // DISABLED: const updatedCycles = await checkAndCreateAutomaticCycles(userId, allCycles);
       
       // Add isLocked property to cycles from inaccessible connections
       const cyclesWithLockStatus = updatedCycles.map(cycle => ({
@@ -2695,11 +2695,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
           }
         }
         
-        // Regenerate cycles with the new pattern from the manually added cycle
-        const refreshedCycles = await storage.getMenstrualCycles(userId);
-        await checkAndCreateAutomaticCycles(userId, refreshedCycles);
+        // DISABLED: Regenerate cycles with the new pattern from the manually added cycle
+        // const refreshedCycles = await storage.getMenstrualCycles(userId);
+        // await checkAndCreateAutomaticCycles(userId, refreshedCycles);
         
-        console.log("Completed pattern inheritance update for manually added cycle");
+        console.log("Pattern inheritance disabled - no automatic cycle generation");
         
       } catch (error) {
         console.error("Error handling pattern inheritance for new cycle:", error);
@@ -2770,8 +2770,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
           });
         }
         
-        // TEMPORARILY DISABLED - causing cycles to be overridden
-        console.log("⚠️ PATTERN INHERITANCE: DISABLED to prevent cycle override after manual edits");
+        // PERMANENTLY DISABLED - causing cycles to be overridden with wrong dates
+        console.log("⚠️ PATTERN INHERITANCE: PERMANENTLY DISABLED to prevent cycle override after manual edits");
+        
+        // Stop any automatic cycle generation
+        return;
         
       } catch (error) {
         console.error("❌ PATTERN INHERITANCE: Error handling pattern inheritance:", error);
