@@ -111,6 +111,14 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
+- June 25, 2025: PATTERN INHERITANCE SYSTEM FIX - Resolved date timezone conversion issues while maintaining automatic cycle generation
+  - Fixed core issue: eliminated timezone conversion by parsing date strings directly instead of using Date constructors
+  - Maintained pattern inheritance system for automatic future cycle generation (essential for cycle tracker functionality)
+  - When user manually edits a cycle, system now correctly uses that edit as the new pattern source for future cycles
+  - Automatic cycles properly follow user's manual edits with correct dates and cycle lengths
+  - System generates up to 3 future cycles per connection within 90-day window for planning purposes
+  - Enhanced pattern inheritance to respect user control while providing helpful automation
+
 - June 24, 2025: SOFT-LOCK MONETIZATION SYSTEM - Implemented graceful downgrade handling that preserves user data
   - Added soft-lock approach: free users can only access their most recent connection but keep all data
   - When premium users downgrade, they see only 1 connection but all data remains for future upgrades
