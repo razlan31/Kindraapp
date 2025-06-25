@@ -621,6 +621,12 @@ export default function MenstrualCyclePage() {
       <Header />
       
       <main className="flex-1 overflow-y-auto pb-20">
+        <UpgradeBanner 
+          message="Free Plan: Connections locked except priority focus"
+          description="Upgrade to Premium to track cycles for all your relationships. Free users can only manage their main focus connection."
+          variant="compact"
+        />
+        
         {/* Header */}
         <section className="px-4 pt-5 pb-3">
           <div className="flex items-center justify-between mb-4">
