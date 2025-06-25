@@ -143,6 +143,7 @@ export default function Connections() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/connections'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/subscription/status'] });
       setShowAddModal(false);
       setUploadedImage(''); // Reset uploaded image
       toast({
@@ -151,16 +152,19 @@ export default function Connections() {
       });
     },
     onError: (error: any) => {
-      if (error.upgradeRequired) {
+      console.error('Connection creation error:', error);
+      
+      // Handle specific limit reached error
+      if (error?.message?.includes('limit reached') || error?.requiresUpgrade || error?.upgradeRequired) {
         toast({
           title: "Connection Limit Reached",
-          description: `You've reached your limit of ${error.limit} connection${error.limit > 1 ? 's' : ''}. Upgrade to Premium for unlimited connections.`,
+          description: "You've reached your free plan limit. Upgrade to Premium for unlimited connections.",
           variant: "destructive",
         });
       } else {
         toast({
           title: "Error", 
-          description: error.message || "Failed to create connection. Please try again.",
+          description: error?.message || "Failed to create connection. Please try again.",
           variant: "destructive",
         });
       }
@@ -195,12 +199,17 @@ export default function Connections() {
     };
 
     console.log("Final form data being sent:", data);
-    await new Promise<void>((resolve, reject) => {
-      createConnection(data, {
-        onSuccess: () => resolve(),
-        onError: (error) => reject(error)
+    try {
+      await new Promise<void>((resolve, reject) => {
+        createConnection(data, {
+          onSuccess: () => resolve(),
+          onError: (error) => reject(error)
+        });
       });
-    });
+    } catch (error) {
+      // Error is already handled by the mutation's onError
+      console.error('Connection creation failed:', error);
+    }
   };
 
   return (

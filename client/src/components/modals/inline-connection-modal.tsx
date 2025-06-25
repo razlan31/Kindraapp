@@ -56,6 +56,7 @@ export function InlineConnectionModal({
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/connections'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/subscription/status'] });
       onClose();
       setIsCustomStage(false);
       setCustomStageValue("");
