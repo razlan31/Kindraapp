@@ -2390,9 +2390,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Dynamic Pattern Inheritance System
       // Find the most recent manually edited cycle (has notes indicating manual edit)
-      // or use the most recent cycle with complete data
+      // Prioritize cycles that were actually manually edited by user, not auto-generated
       const manuallyEditedCycles = sortedCycles.filter((cycle: any) => 
-        cycle.notes && !cycle.notes.includes('Auto-generated')
+        cycle.notes && 
+        (cycle.notes.includes('Manually edited') || 
+         (!cycle.notes.includes('Auto-generated') && !cycle.notes.includes('Following edited pattern')))
       );
       
       // Determine the pattern source: most recent manual edit or most recent cycle
