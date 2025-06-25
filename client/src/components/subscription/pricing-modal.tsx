@@ -34,16 +34,25 @@ export function PricingModal({ isOpen, onClose, currentPlan = 'free', showTrialB
   });
 
   const subscribeMutation = useMutation({
-    mutationFn: (plan: string) => apiRequest('/api/subscription/create-checkout', { 
-      method: 'POST', 
-      body: { plan } 
-    }),
+    mutationFn: async (plan: string) => {
+      console.log("Creating subscription for plan:", plan);
+      const response = await apiRequest('/api/subscription/create-checkout', { 
+        method: 'POST', 
+        body: { plan } 
+      });
+      console.log("Subscription response:", response);
+      return response;
+    },
     onSuccess: (data: any) => {
+      console.log("Subscription success:", data);
       if (data.url) {
         window.location.href = data.url;
+      } else {
+        toast({ title: "Error", description: "No checkout URL received", variant: "destructive" });
       }
     },
-    onError: () => {
+    onError: (error: any) => {
+      console.error("Subscription error:", error);
       toast({ title: "Error", description: "Failed to start subscription. Please try again.", variant: "destructive" });
     }
   });

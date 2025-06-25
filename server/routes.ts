@@ -3493,16 +3493,21 @@ Format as a brief analysis (2-3 sentences) focusing on what their data actually 
   app.post("/api/subscription/create-checkout", isAuthenticated, async (req: Request, res: Response) => {
     try {
       const userId = (req.session as any).userId;
+      console.log("Checkout request - userId:", userId);
+      
       if (!userId) {
         return res.status(401).json({ message: "Authentication required" });
       }
 
       const { plan } = req.body;
+      console.log("Checkout request - plan:", plan, "Available plans:", Object.keys(subscriptionPlans));
+      
       if (!plan || !subscriptionPlans[plan as keyof typeof subscriptionPlans]) {
-        return res.status(400).json({ message: "Invalid plan" });
+        return res.status(400).json({ message: "Invalid plan", availablePlans: Object.keys(subscriptionPlans) });
       }
 
       const planData = subscriptionPlans[plan as keyof typeof subscriptionPlans];
+      console.log("Checkout request - planData:", planData);
       
       // Create Stripe checkout session
       const session = await stripe.checkout.sessions.create({
