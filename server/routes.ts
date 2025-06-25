@@ -2544,10 +2544,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const accessibleConnectionIds = accessibleConnections.map(conn => conn.id);
       
       // Check if any cycles need automatic progression
-      // DISABLED: const updatedCycles = await checkAndCreateAutomaticCycles(userId, allCycles);
+      const updatedCycles = await checkAndCreateAutomaticCycles(userId, allCycles);
       
-      // Add isLocked property to cycles from inaccessible connections
-      const cyclesWithLockStatus = allCycles.map(cycle => ({
+      // Add isLocked property to cycles from inaccessible connections  
+      const cyclesWithLockStatus = updatedCycles.map(cycle => ({
         ...cycle,
         isLocked: !accessibleConnectionIds.includes(cycle.connectionId)
       }));
@@ -2695,8 +2695,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           }
         }
         
-        // DISABLED: No automatic cycle generation - user has full control
-        console.log("Automatic cycle generation disabled - user manages cycles manually");
+        // Skip automatic regeneration for manually added cycles
+        console.log("Skipping automatic cycle regeneration to preserve manual addition");
         
       } catch (error) {
         console.error("Error handling pattern inheritance for new cycle:", error);
@@ -2767,8 +2767,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           });
         }
         
-        // DISABLED PATTERN INHERITANCE - user can edit freely without system interference
-        console.log("⚠️ PATTERN INHERITANCE: DISABLED - user has full control over cycle dates");
+        // Skip pattern inheritance to respect user's manual edits
+        console.log("⚠️ PATTERN INHERITANCE: Skipped to preserve manual edit");
         
       } catch (error) {
         console.error("❌ PATTERN INHERITANCE: Error handling pattern inheritance:", error);
