@@ -622,8 +622,8 @@ export default function MenstrualCyclePage() {
       
       <main className="flex-1 overflow-y-auto pb-20">
         <UpgradeBanner 
-          message="Free Plan: Connections locked except priority focus"
-          description="Upgrade to Premium to track cycles for all your relationships. Free users can only manage their main focus connection."
+          message="Free Plan: Only 1 connection unlocked"
+          description="You can only create cycles for connection 'ghjghjhgjg' (ID: 30). Set a main focus connection or upgrade to Premium for unlimited access."
           variant="compact"
         />
         
