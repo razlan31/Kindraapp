@@ -2445,15 +2445,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const patternStartDate_calc = new Date(patternSourceCycle.periodStartDate);
       let nextCycleStartDate;
       
-      // If pattern cycle has an end date, use it
-      if (patternSourceCycle.cycleEndDate) {
-        nextCycleStartDate = new Date(patternSourceCycle.cycleEndDate);
-        nextCycleStartDate.setDate(nextCycleStartDate.getDate() + 1);
-      } else {
-        // Calculate next cycle based on pattern start + average cycle length
-        nextCycleStartDate = new Date(patternStartDate_calc);
-        nextCycleStartDate.setDate(nextCycleStartDate.getDate() + averageCycleLength);
-      }
+      // Calculate next cycle start date from pattern source cycle
+      nextCycleStartDate = new Date(patternStartDate_calc);
+      nextCycleStartDate.setDate(nextCycleStartDate.getDate() + averageCycleLength);
 
       // Generate future cycles based on the most recent cycle
       // Start generating cycles after the current cycle ends
