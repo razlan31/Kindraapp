@@ -494,8 +494,13 @@ export default function MenstrualCyclePage() {
     
     // FIX: Extract date parts directly to avoid timezone issues
     const formatDateSafely = (dateString: string) => {
-      const date = new Date(dateString + 'T12:00:00'); // Add midday to avoid timezone shift
-      return format(date, 'yyyy-MM-dd');
+      // Handle both ISO strings and date-only strings
+      const date = new Date(dateString);
+      // Use UTC methods to avoid timezone shifting
+      const year = date.getUTCFullYear();
+      const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+      const day = String(date.getUTCDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
     };
     
     setFormData({
