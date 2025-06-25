@@ -36,10 +36,7 @@ export function PricingModal({ isOpen, onClose, currentPlan = 'free', showTrialB
   const subscribeMutation = useMutation({
     mutationFn: async (plan: string) => {
       console.log("Creating subscription for plan:", plan);
-      const response = await apiRequest('/api/subscription/create-checkout', { 
-        method: 'POST', 
-        body: { plan } 
-      });
+      const response = await apiRequest('POST', '/api/subscription/create-checkout', { plan });
       console.log("Subscription response:", response);
       return response;
     },

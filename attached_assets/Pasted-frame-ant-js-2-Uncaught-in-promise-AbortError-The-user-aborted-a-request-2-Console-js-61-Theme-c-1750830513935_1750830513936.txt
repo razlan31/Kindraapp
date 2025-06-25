@@ -1,0 +1,67 @@
+frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.
+2
+Console.js:61 Theme context initial load: light
+Console.js:61 🔥 STATE DEBUG - isSubmitting changed: false
+Console.js:61 🔥 STATE DEBUG - connectionId changed: 2 selectedConnectionId: null
+Console.js:61 Modal useEffect - selectedDate from context: null
+Console.js:61 Modal useEffect - editingMoment: null
+Console.js:61 Modal useEffect - momentModalOpen: false
+Console.js:61 🔥 MODAL OPEN - Resetting isSubmitting to false
+Console.js:61 🔥 MODAL INIT - Setting connectionId: 2 from selectedConnectionId: null
+Console.js:61 🔥 PLAN MODAL - Connection effect: 
+Object
+Console.js:61 🔥 PLAN MODAL - Form init effect: 
+Object
+Console.js:61 Theme effect running: light
+Console.js:61 Applied theme: light
+Console.js:61 Theme stored to localStorage: light
+2
+Console.js:61 Auth: Starting to load user, setting loading to true
+Console.js:61 Theme effect running: light
+Console.js:61 Applied theme: light
+Console.js:61 Theme stored to localStorage: light
+Console.js:61 getCurrentUser successful: 
+Object
+Console.js:61 getCurrentUser successful: 
+Object
+Console.js:61 Auth context setting user: 
+Object
+Console.js:61 Auth: Finally block - setting loading to false
+Console.js:61 🔥 PLAN MODAL - Form init effect: 
+Object
+Console.js:61 Focus Context Debug: 
+Object
+Console.js:61 getCurrentUser successful: 
+Object
+Console.js:61 getCurrentUser successful: 
+Object
+Console.js:61 Auth context setting user: 
+Object
+Console.js:61 Auth: Finally block - setting loading to false
+Console.js:61 Loading conversation data: 
+Object
+Console.js:61 Setting conversation from API: 
+Array(0)
+3
+frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.
+Console.js:61 Connection Data Debug: 
+Object
+Console.js:61 Connection Data Debug: 
+Object
+Console.js:61 Connection Data Debug: 
+Object
+Console.js:61 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+Console.js:61 Connection Data Debug: 
+Object
+Console.js:61 Creating subscription for plan: weekly
+Console.js:61 Subscription error: TypeError: Failed to execute 'fetch' on 'Window': '[object Object]' is not a valid HTTP method.
+    at window.fetch (frame_ant.js:2:12357)
+    at apiRequest (queryClient.ts:41:21)
+    at Object.mutationFn (pricing-modal.tsx:39:30)
+Console.js:61 Connection Data Debug: 
+Object
+Console.js:61 Connection Data Debug: 
+Object
+frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.
+﻿
+
