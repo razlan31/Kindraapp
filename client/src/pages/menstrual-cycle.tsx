@@ -474,6 +474,8 @@ export default function MenstrualCyclePage() {
     };
 
     console.log("Submit data being sent:", submitData);
+    console.log("🔧 Form startDate value:", formData.startDate);
+    console.log("🔧 editingCycle periodStartDate:", editingCycle?.periodStartDate);
 
     if (editingCycle) {
       updateCycleMutation.mutate({ id: editingCycle.id, ...submitData });
@@ -491,6 +493,9 @@ export default function MenstrualCyclePage() {
     const latestCycle = latestCycles?.find(c => c.id === cycle.id) || cycle;
     
     console.log("🔧 Using cycle data for form:", latestCycle);
+    console.log("🔧 Raw periodStartDate:", latestCycle.periodStartDate);
+    console.log("🔧 formatDateSafely result:", latestCycle.periodStartDate ? 
+      (latestCycle.periodStartDate.includes('T') ? latestCycle.periodStartDate : `${latestCycle.periodStartDate}T00:00:00.000Z`).split('T')[0] : 'null');
     
     // FIX: Extract date parts directly to avoid timezone issues
     const formatDateSafely = (dateString: string) => {
