@@ -2770,11 +2770,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           });
         }
         
-        // Refresh cycles data and trigger new pattern inheritance
-        const refreshedCycles = await storage.getMenstrualCycles(userId);
-        await checkAndCreateAutomaticCycles(userId, refreshedCycles);
-        
-        console.log("✅ PATTERN INHERITANCE: Completed pattern inheritance regeneration after manual edit");
+        // TEMPORARILY DISABLED - causing cycles to be overridden
+        console.log("⚠️ PATTERN INHERITANCE: DISABLED to prevent cycle override after manual edits");
         
       } catch (error) {
         console.error("❌ PATTERN INHERITANCE: Error handling pattern inheritance:", error);
