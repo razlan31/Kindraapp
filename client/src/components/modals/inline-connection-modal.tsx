@@ -65,11 +65,22 @@ export function InlineConnectionModal({
       });
     },
     onError: (error: any) => {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to add connection. Please try again.",
-        variant: "destructive",
-      });
+      console.error('Connection creation error:', error);
+      
+      // Handle specific limit reached error
+      if (error?.message?.includes('limit reached') || error?.requiresUpgrade) {
+        toast({
+          title: "Connection Limit Reached",
+          description: "You've reached your free plan limit. Upgrade to Premium for unlimited connections.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: error?.message || "Failed to add connection. Please try again.",
+          variant: "destructive",
+        });
+      }
     }
   });
 
