@@ -33,6 +33,11 @@ export default function Homepage1() {
       <Header />
 
       <main className="flex-1 overflow-y-auto pb-20 px-3 sm:px-4 lg:px-6 pt-4 sm:pt-6 lg:pt-8">
+        <UpgradeBanner 
+          message="Free Plan: Limited AI coaching"
+          description="Upgrade to Premium for unlimited AI coaching sessions and deeper relationship insights."
+          variant="compact"
+        />
         {/* Luna AI - Relationship Coach Only */}
         <AIChat />
       </main>
