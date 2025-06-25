@@ -45,7 +45,7 @@ export default function Connections() {
   const { mainFocusConnection, setMainFocusConnection } = useRelationshipFocus();
   const { toast } = useToast();
   const { subscriptionStatus, isPremium } = useSubscription();
-  const [showPricingModal, setShowPricingModal] = useState(false);
+
 
   // Fetch connections and moments
   const { data: connections = [] } = useQuery<Connection[]>({
@@ -419,13 +419,7 @@ export default function Connections() {
         connection={selectedConnection}
       />
 
-      {/* Pricing Modal */}
-      <PricingModal
-        isOpen={showPricingModal}
-        onClose={() => setShowPricingModal(false)}
-        currentPlan={isPremium ? 'premium' : 'free'}
-        showTrialButton={!isPremium}
-      />
+
 
       <BottomNavigation />
     </div>
