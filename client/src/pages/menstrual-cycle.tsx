@@ -492,10 +492,16 @@ export default function MenstrualCyclePage() {
     
     console.log("🔧 Using cycle data for form:", latestCycle);
     
+    // FIX: Extract date parts directly to avoid timezone issues
+    const formatDateSafely = (dateString: string) => {
+      const date = new Date(dateString + 'T12:00:00'); // Add midday to avoid timezone shift
+      return format(date, 'yyyy-MM-dd');
+    };
+    
     setFormData({
-      startDate: format(new Date(latestCycle.periodStartDate), 'yyyy-MM-dd'),
-      periodEndDate: latestCycle.periodEndDate ? format(new Date(latestCycle.periodEndDate), 'yyyy-MM-dd') : '',
-      endDate: latestCycle.cycleEndDate ? format(new Date(latestCycle.cycleEndDate), 'yyyy-MM-dd') : '',
+      startDate: formatDateSafely(latestCycle.periodStartDate),
+      periodEndDate: latestCycle.periodEndDate ? formatDateSafely(latestCycle.periodEndDate) : '',
+      endDate: latestCycle.cycleEndDate ? formatDateSafely(latestCycle.cycleEndDate) : '',
       flowIntensity: latestCycle.flowIntensity || '',
       mood: latestCycle.mood || '',
       symptoms: Array.isArray(latestCycle.symptoms) ? latestCycle.symptoms : [],
