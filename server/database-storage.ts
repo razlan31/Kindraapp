@@ -195,13 +195,26 @@ export class DatabaseStorage implements IStorage {
 
   async updateMenstrualCycle(id: number, data: Partial<MenstrualCycle>): Promise<MenstrualCycle | undefined> {
     console.log(`🔄 DB Storage: Updating cycle ${id} with data:`, data);
-    const [updatedCycle] = await db
-      .update(menstrualCycles)
-      .set({ ...data, updatedAt: new Date() })
-      .where(eq(menstrualCycles.id, id))
-      .returning();
-    console.log(`✅ DB Storage: Updated cycle result:`, updatedCycle);
-    return updatedCycle;
+    try {
+      const result = await db
+        .update(menstrualCycles)
+        .set({ ...data, updatedAt: new Date() })
+        .where(eq(menstrualCycles.id, id))
+        .returning();
+      
+      const updatedCycle = result[0];
+      console.log(`✅ DB Storage: Updated cycle result:`, updatedCycle);
+      
+      if (!updatedCycle) {
+        console.log(`❌ DB Storage: No cycle found with id ${id} to update`);
+        return undefined;
+      }
+      
+      return updatedCycle;
+    } catch (error) {
+      console.error(`❌ DB Storage: Error updating cycle ${id}:`, error);
+      throw error;
+    }
   }
 
   async deleteMenstrualCycle(id: number): Promise<boolean> {
