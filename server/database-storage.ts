@@ -185,11 +185,16 @@ export class DatabaseStorage implements IStorage {
 
   // Menstrual Cycle operations
   async getMenstrualCycles(userId: number): Promise<MenstrualCycle[]> {
-    return db.select().from(menstrualCycles).where(eq(menstrualCycles.userId, userId)).orderBy(desc(menstrualCycles.periodStartDate));
+    console.log(`🔍 DB Storage: Fetching cycles for user ${userId}`);
+    const cycles = await db.select().from(menstrualCycles).where(eq(menstrualCycles.userId, userId.toString())).orderBy(desc(menstrualCycles.periodStartDate));
+    console.log(`✅ DB Storage: Found ${cycles.length} cycles for user ${userId}`);
+    return cycles;
   }
 
   async createMenstrualCycle(cycle: InsertMenstrualCycle): Promise<MenstrualCycle> {
+    console.log(`🔧 DB Storage: Creating cycle with data:`, cycle);
     const [newCycle] = await db.insert(menstrualCycles).values(cycle).returning();
+    console.log(`✅ DB Storage: Created cycle:`, newCycle);
     return newCycle;
   }
 

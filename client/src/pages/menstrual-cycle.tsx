@@ -256,8 +256,12 @@ export default function MenstrualCyclePage() {
 
   // Create cycle mutation
   const createCycleMutation = useMutation({
-    mutationFn: (data: any) => apiRequest('/api/menstrual-cycles', 'POST', data),
-    onSuccess: () => {
+    mutationFn: async (data: any) => {
+      const response = await apiRequest('/api/menstrual-cycles', 'POST', data);
+      return response.json();
+    },
+    onSuccess: (newCycle) => {
+      console.log("✅ Create successful:", newCycle);
       queryClient.invalidateQueries({ queryKey: ['/api/menstrual-cycles'] });
       setIsDialogOpen(false);
       setCycleForPersonId(null);
@@ -267,7 +271,8 @@ export default function MenstrualCyclePage() {
         description: "Your menstrual cycle has been recorded successfully.",
       });
     },
-    onError: () => {
+    onError: (error) => {
+      console.error("❌ Create failed:", error);
       toast({
         title: "Error",
         description: "Failed to add cycle. Please try again.",
