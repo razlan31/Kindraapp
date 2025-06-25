@@ -419,6 +419,14 @@ export default function Connections() {
         connection={selectedConnection}
       />
 
+      {/* Pricing Modal */}
+      <PricingModal
+        isOpen={showPricingModal}
+        onClose={() => setShowPricingModal(false)}
+        currentPlan={isPremium ? 'premium' : 'free'}
+        showTrialButton={!isPremium}
+      />
+
       <BottomNavigation />
     </div>
   );
