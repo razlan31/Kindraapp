@@ -2441,20 +2441,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const periodLength = patternPeriodEndDate ? 
         Math.ceil((patternPeriodEndDate.getTime() - patternStartDate.getTime()) / (1000 * 60 * 60 * 24)) + 1 : 5;
 
-      // Calculate next cycle start date based on the most recent cycle's end
-      const lastStartDate = new Date(baseCycle.periodStartDate);
-      let lastCycleEndDate;
-      if (baseCycle.cycleEndDate) {
-        lastCycleEndDate = new Date(baseCycle.cycleEndDate);
+      // Calculate next cycle start date based on the pattern source cycle
+      const patternStartDate_calc = new Date(patternSourceCycle.periodStartDate);
+      let nextCycleStartDate;
+      
+      // If pattern cycle has an end date, use it
+      if (patternSourceCycle.cycleEndDate) {
+        nextCycleStartDate = new Date(patternSourceCycle.cycleEndDate);
+        nextCycleStartDate.setDate(nextCycleStartDate.getDate() + 1);
       } else {
-        // Estimate end date for current active cycle
-        lastCycleEndDate = new Date(lastStartDate);
-        lastCycleEndDate.setDate(lastCycleEndDate.getDate() + averageCycleLength - 1);
+        // Calculate next cycle based on pattern start + average cycle length
+        nextCycleStartDate = new Date(patternStartDate_calc);
+        nextCycleStartDate.setDate(nextCycleStartDate.getDate() + averageCycleLength);
       }
-
-      // Calculate next cycle start date: 1 day after the last cycle ended
-      const nextCycleStartDate = new Date(lastCycleEndDate);
-      nextCycleStartDate.setDate(nextCycleStartDate.getDate() + 1);
 
       // Generate future cycles based on the most recent cycle
       // Start generating cycles after the current cycle ends
@@ -2464,9 +2463,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log(`Generating future cycles for connection ${connectionIdNum} starting from ${currentGenerationDate.toISOString()}`);
       
       while (cycleGenerationCount < 3) {
-        // Only create cycle if the generation date is within 90 days from today
+        // Only create cycle if the generation date is within 60 days from today  
         const daysDifference = Math.ceil((currentGenerationDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-        if (daysDifference > 90) {
+        if (daysDifference > 60) {
           console.log(`Stopping cycle generation - too far in future (${daysDifference} days)`);
           break;
         }
