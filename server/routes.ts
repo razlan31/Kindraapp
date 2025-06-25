@@ -2445,18 +2445,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const patternStartDate_calc = new Date(patternSourceCycle.periodStartDate);
       let nextCycleStartDate;
       
-      // Calculate next cycle start date from pattern source cycle
-      nextCycleStartDate = new Date(patternStartDate_calc);
-      nextCycleStartDate.setDate(nextCycleStartDate.getDate() + averageCycleLength);
+      // Calculate next cycle start date: Use most recent manually edited cycle as baseline
+      // If we have a manually edited cycle, calculate next cycle from that
+      if (manuallyEditedCycles.length > 0) {
+        const editedCycle = manuallyEditedCycles[0];
+        const editedStartDate = new Date(editedCycle.periodStartDate);
+        
+        // Calculate next cycle from the manually edited cycle
+        nextCycleStartDate = new Date(editedStartDate);
+        nextCycleStartDate.setDate(nextCycleStartDate.getDate() + averageCycleLength);
+        
+        console.log(`Using manual edit baseline: ${editedStartDate.toISOString()} + ${averageCycleLength} days = ${nextCycleStartDate.toISOString()}`);
+      } else {
+        // Fallback: calculate from most recent cycle
+        nextCycleStartDate = new Date(patternStartDate_calc);
+        nextCycleStartDate.setDate(nextCycleStartDate.getDate() + averageCycleLength);
+      }
 
-      // TEMPORARILY DISABLED - Pattern inheritance logic preserved but automatic generation paused
-      // User prefers manual cycle creation with pattern inheritance available when needed
-      console.log(`Pattern inheritance ready for connection ${connectionIdNum} - automatic generation temporarily disabled`);
+      // Generate future cycles based on pattern inheritance
+      // Fixed calculation logic to prevent September/August date issues
+      let cycleGenerationCount = 0;
+      let currentGenerationDate = new Date(nextCycleStartDate);
       
-      if (false && cycleGenerationCount < 3) { // Disabled with 'false &&'
-        // Only create cycle if the generation date is within 60 days from today  
+      console.log(`Generating future cycles for connection ${connectionIdNum} starting from ${currentGenerationDate.toISOString()}`);
+      
+      while (cycleGenerationCount < 3) {
+        // Only create cycle if the generation date is within 45 days from today  
         const daysDifference = Math.ceil((currentGenerationDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-        if (daysDifference > 60) {
+        if (daysDifference > 45) {
           console.log(`Stopping cycle generation - too far in future (${daysDifference} days)`);
           break;
         }
