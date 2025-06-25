@@ -2695,8 +2695,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
           }
         }
         
-        // Skip automatic regeneration for manually added cycles
-        console.log("Skipping automatic cycle regeneration to preserve manual addition");
+        // Regenerate cycles with the new pattern from the manually added cycle
+        const refreshedCycles = await storage.getMenstrualCycles(userId);
+        await checkAndCreateAutomaticCycles(userId, refreshedCycles);
+        
+        console.log("✅ Completed pattern inheritance update for manually added cycle");
         
       } catch (error) {
         console.error("Error handling pattern inheritance for new cycle:", error);
@@ -2767,8 +2770,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
           });
         }
         
-        // Skip pattern inheritance to respect user's manual edits
-        console.log("⚠️ PATTERN INHERITANCE: Skipped to preserve manual edit");
+        // Regenerate future cycles with new pattern from manual edit
+        const refreshedCycles = await storage.getMenstrualCycles(userId);
+        await checkAndCreateAutomaticCycles(userId, refreshedCycles);
+        
+        console.log("✅ PATTERN INHERITANCE: Updated future cycles with new pattern from manual edit");
         
       } catch (error) {
         console.error("❌ PATTERN INHERITANCE: Error handling pattern inheritance:", error);
