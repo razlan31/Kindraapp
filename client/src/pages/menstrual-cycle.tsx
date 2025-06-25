@@ -280,8 +280,11 @@ export default function MenstrualCyclePage() {
   const updateCycleMutation = useMutation({
     mutationFn: ({ id, ...data }: { id: number } & any) => 
       apiRequest(`/api/menstrual-cycles/${id}`, 'PATCH', data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/menstrual-cycles'] });
+    onSuccess: async () => {
+      // Force immediate cache refresh to show updated data
+      await queryClient.invalidateQueries({ queryKey: ['/api/menstrual-cycles'] });
+      await queryClient.refetchQueries({ queryKey: ['/api/menstrual-cycles'] });
+      
       setIsDialogOpen(false);
       setEditingCycle(null);
       resetForm();
