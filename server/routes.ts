@@ -2449,14 +2449,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       nextCycleStartDate = new Date(patternStartDate_calc);
       nextCycleStartDate.setDate(nextCycleStartDate.getDate() + averageCycleLength);
 
-      // Generate future cycles based on the most recent cycle
-      // Start generating cycles after the current cycle ends
-      let cycleGenerationCount = 0;
-      let currentGenerationDate = new Date(nextCycleStartDate);
+      // TEMPORARILY DISABLED - Pattern inheritance logic preserved but automatic generation paused
+      // User prefers manual cycle creation with pattern inheritance available when needed
+      console.log(`Pattern inheritance ready for connection ${connectionIdNum} - automatic generation temporarily disabled`);
       
-      console.log(`Generating future cycles for connection ${connectionIdNum} starting from ${currentGenerationDate.toISOString()}`);
-      
-      while (cycleGenerationCount < 3) {
+      if (false && cycleGenerationCount < 3) { // Disabled with 'false &&'
         // Only create cycle if the generation date is within 60 days from today  
         const daysDifference = Math.ceil((currentGenerationDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
         if (daysDifference > 60) {
