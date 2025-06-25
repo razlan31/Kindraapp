@@ -280,20 +280,31 @@ export default function MenstrualCyclePage() {
   const updateCycleMutation = useMutation({
     mutationFn: ({ id, ...data }: { id: number } & any) => 
       apiRequest(`/api/menstrual-cycles/${id}`, 'PATCH', data),
-    onSuccess: async () => {
-      // Force immediate cache refresh to show updated data
+    onSuccess: async (updatedCycle) => {
+      console.log("✅ Update successful, refreshing data:", updatedCycle);
+      
+      // Clear all related cache entries
+      queryClient.removeQueries({ queryKey: ['/api/menstrual-cycles'] });
+      
+      // Force fresh data fetch
       await queryClient.invalidateQueries({ queryKey: ['/api/menstrual-cycles'] });
       await queryClient.refetchQueries({ queryKey: ['/api/menstrual-cycles'] });
       
+      // Close dialog and reset form
       setIsDialogOpen(false);
       setEditingCycle(null);
       resetForm();
-      toast({
-        title: "Cycle Updated",
-        description: "Your menstrual cycle has been updated successfully.",
-      });
+      
+      // Small delay to ensure cache is updated before showing success
+      setTimeout(() => {
+        toast({
+          title: "Cycle Updated",
+          description: "Your menstrual cycle has been updated successfully.",
+        });
+      }, 100);
     },
-    onError: () => {
+    onError: (error) => {
+      console.error("❌ Update failed:", error);
       toast({
         title: "Error",
         description: "Failed to update cycle. Please try again.",
@@ -468,16 +479,24 @@ export default function MenstrualCyclePage() {
   };
 
   const handleEdit = (cycle: MenstrualCycle) => {
+    console.log("🔧 Opening edit form for cycle:", cycle);
     setEditingCycle(cycle);
+    
+    // Get the most recent data from cache
+    const latestCycles = queryClient.getQueryData(['/api/menstrual-cycles']) as MenstrualCycle[];
+    const latestCycle = latestCycles?.find(c => c.id === cycle.id) || cycle;
+    
+    console.log("🔧 Using cycle data for form:", latestCycle);
+    
     setFormData({
-      startDate: format(new Date(cycle.periodStartDate), 'yyyy-MM-dd'),
-      periodEndDate: cycle.periodEndDate ? format(new Date(cycle.periodEndDate), 'yyyy-MM-dd') : '',
-      endDate: cycle.cycleEndDate ? format(new Date(cycle.cycleEndDate), 'yyyy-MM-dd') : '',
-      flowIntensity: cycle.flowIntensity || '',
-      mood: cycle.mood || '',
-      symptoms: Array.isArray(cycle.symptoms) ? cycle.symptoms : [],
-      notes: cycle.notes || '',
-      connectionId: cycle.connectionId || null
+      startDate: format(new Date(latestCycle.periodStartDate), 'yyyy-MM-dd'),
+      periodEndDate: latestCycle.periodEndDate ? format(new Date(latestCycle.periodEndDate), 'yyyy-MM-dd') : '',
+      endDate: latestCycle.cycleEndDate ? format(new Date(latestCycle.cycleEndDate), 'yyyy-MM-dd') : '',
+      flowIntensity: latestCycle.flowIntensity || '',
+      mood: latestCycle.mood || '',
+      symptoms: Array.isArray(latestCycle.symptoms) ? latestCycle.symptoms : [],
+      notes: latestCycle.notes || '',
+      connectionId: latestCycle.connectionId || null
     });
     setIsDialogOpen(true);
   };
