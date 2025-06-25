@@ -2445,22 +2445,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const patternStartDate_calc = new Date(patternSourceCycle.periodStartDate);
       let nextCycleStartDate;
       
-      // Calculate next cycle start date: Use most recent manually edited cycle as baseline
-      // If we have a manually edited cycle, calculate next cycle from that
-      if (manuallyEditedCycles.length > 0) {
-        const editedCycle = manuallyEditedCycles[0];
-        const editedStartDate = new Date(editedCycle.periodStartDate);
-        
-        // Calculate next cycle from the manually edited cycle
-        nextCycleStartDate = new Date(editedStartDate);
-        nextCycleStartDate.setDate(nextCycleStartDate.getDate() + averageCycleLength);
-        
-        console.log(`Using manual edit baseline: ${editedStartDate.toISOString()} + ${averageCycleLength} days = ${nextCycleStartDate.toISOString()}`);
-      } else {
-        // Fallback: calculate from most recent cycle
-        nextCycleStartDate = new Date(patternStartDate_calc);
-        nextCycleStartDate.setDate(nextCycleStartDate.getDate() + averageCycleLength);
-      }
+      // SMART EDIT-AWARE PATTERN INHERITANCE
+      // Always use the most recently modified cycle as the pattern baseline
+      // This ensures user edits immediately become the new pattern source
+      const sortedByModified = sortedCycles.sort((a: any, b: any) => 
+        new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+      );
+      
+      const mostRecentlyModified = sortedByModified[0];
+      const baselineDate = new Date(mostRecentlyModified.periodStartDate);
+      
+      // Calculate next cycle start from the most recently modified cycle
+      nextCycleStartDate = new Date(baselineDate);
+      nextCycleStartDate.setDate(nextCycleStartDate.getDate() + averageCycleLength);
+      
+      console.log(`Smart baseline from most recent edit: ${baselineDate.toISOString()} + ${averageCycleLength} days = ${nextCycleStartDate.toISOString()}`);
 
       // Generate future cycles based on pattern inheritance
       // Fixed calculation logic to prevent September/August date issues
@@ -2470,10 +2469,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log(`Generating future cycles for connection ${connectionIdNum} starting from ${currentGenerationDate.toISOString()}`);
       
       while (cycleGenerationCount < 3) {
-        // Only create cycle if the generation date is within 45 days from today  
+        // Only create cycle if the generation date is reasonable (within 60 days)
         const daysDifference = Math.ceil((currentGenerationDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-        if (daysDifference > 45) {
-          console.log(`Stopping cycle generation - too far in future (${daysDifference} days)`);
+        if (daysDifference > 60 || daysDifference < -30) {
+          console.log(`Stopping cycle generation - date out of reasonable range (${daysDifference} days from today)`);
           break;
         }
 
@@ -2497,9 +2496,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             periodStartDate: newCycleStartDate,
             periodEndDate: newPeriodEndDate,
             cycleEndDate: undefined, // Will be set when cycle is manually ended
-            notes: patternSourceCycle.notes && !patternSourceCycle.notes.includes('Auto-generated') 
-              ? `Following edited pattern from ${patternSourceCycle.periodStartDate.toISOString().split('T')[0]} (${averageCycleLength}-day cycle, ${periodLength}-day period)`
-              : `Auto-generated cycle ${cycleGenerationCount + 1} following ${averageCycleLength}-day pattern`,
+            notes: `Auto-generated from ${mostRecentlyModified.periodStartDate.toISOString().split('T')[0]} pattern (${averageCycleLength}-day cycle, ${periodLength}-day period)`,
             mood: null,
             symptoms: null,
             flowIntensity: null
