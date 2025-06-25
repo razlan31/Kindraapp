@@ -2571,6 +2571,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "User not found" });
       }
       
+      // Check subscription status
+      const now = new Date();
+      const isTrialActive = user.trialEndDate ? new Date(user.trialEndDate) > now : false;
+      const isSubscriptionActive = user.subscriptionStatus === 'active' && 
+        user.subscriptionEndDate && new Date(user.subscriptionEndDate) > now;
+      const isPremium = isTrialActive || isSubscriptionActive;
+      
       // Check if connection is accessible for free users
       const allConnections = await storage.getConnectionsByUserId(userId);
       const focusConnectionId = user.currentFocus;
