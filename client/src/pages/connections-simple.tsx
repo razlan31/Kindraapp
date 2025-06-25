@@ -19,6 +19,7 @@ import { ConnectionDetailedModal } from "@/components/modals/connection-detailed
 import { InlineConnectionModal } from "@/components/modals/inline-connection-modal";
 import { SimpleConnectionForm } from "@/components/modals/simple-connection-form";
 import { calculateZodiacSign } from "@shared/zodiac-utils";
+import { useSubscription } from "@/hooks/use-subscription";
 
 export default function Connections() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -228,6 +229,33 @@ export default function Connections() {
             </div>
             <Users className="h-8 w-8 text-primary" />
           </div>
+          
+          {/* Upgrade Prompt - Show when user is close to or at limits */}
+          {!isPremium && subscriptionStatus && (
+            subscriptionStatus.usage.connectionsUsed >= subscriptionStatus.features.connections || 
+            subscriptionStatus.usage.aiInsightsUsed >= subscriptionStatus.features.aiInsightsPerMonth ||
+            subscriptionStatus.usage.aiCoachingUsed >= subscriptionStatus.features.aiCoachingPerMonth
+          ) && (
+            <div className="mt-3 p-3 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 border border-purple-200 dark:border-purple-700 rounded-lg">
+              <div className="flex items-center justify-between">
+                <div className="flex-1">
+                  <h3 className="text-sm font-medium text-purple-900 dark:text-purple-100">
+                    You've reached your free plan limits
+                  </h3>
+                  <p className="text-xs text-purple-700 dark:text-purple-300 mt-1">
+                    Upgrade to Premium for unlimited connections and AI features
+                  </p>
+                </div>
+                <Button 
+                  size="sm" 
+                  className="ml-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white"
+                  onClick={() => window.location.href = '/settings'}
+                >
+                  Upgrade Now
+                </Button>
+              </div>
+            </div>
+          )}
         </section>
 
         {/* Controls Section */}
