@@ -22,7 +22,7 @@ export function PricingModal({ isOpen, onClose, currentPlan = 'free', showTrialB
   const queryClient = useQueryClient();
 
   const startTrialMutation = useMutation({
-    mutationFn: () => apiRequest('/api/subscription/start-trial', { method: 'POST' }),
+    mutationFn: () => apiRequest('/api/subscription/start-trial', 'POST'),
     onSuccess: () => {
       toast({ title: "Free trial started!", description: "Enjoy 5 days of premium features." });
       queryClient.invalidateQueries({ queryKey: ['/api/me'] });
@@ -36,7 +36,7 @@ export function PricingModal({ isOpen, onClose, currentPlan = 'free', showTrialB
   const subscribeMutation = useMutation({
     mutationFn: async (plan: string) => {
       console.log("Creating subscription for plan:", plan);
-      const response = await apiRequest('POST', '/api/subscription/create-checkout', { plan });
+      const response = await apiRequest('/api/subscription/create-checkout', 'POST', { plan });
       console.log("Subscription response:", response);
       return response;
     },
