@@ -43,6 +43,7 @@ export default function Connections() {
   const [connectionModalOpen, setConnectionModalOpen] = useState(false);
   const { mainFocusConnection, setMainFocusConnection } = useRelationshipFocus();
   const { toast } = useToast();
+  const { subscriptionStatus, isPremium } = useSubscription();
 
   // Fetch connections and moments
   const { data: connections = [] } = useQuery<Connection[]>({
