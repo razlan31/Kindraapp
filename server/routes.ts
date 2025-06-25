@@ -2547,7 +2547,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // DISABLED: const updatedCycles = await checkAndCreateAutomaticCycles(userId, allCycles);
       
       // Add isLocked property to cycles from inaccessible connections
-      const cyclesWithLockStatus = updatedCycles.map(cycle => ({
+      const cyclesWithLockStatus = allCycles.map(cycle => ({
         ...cycle,
         isLocked: !accessibleConnectionIds.includes(cycle.connectionId)
       }));
@@ -2695,11 +2695,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           }
         }
         
-        // DISABLED: Regenerate cycles with the new pattern from the manually added cycle
-        // const refreshedCycles = await storage.getMenstrualCycles(userId);
-        // await checkAndCreateAutomaticCycles(userId, refreshedCycles);
-        
-        console.log("Pattern inheritance disabled - no automatic cycle generation");
+        // DISABLED: No automatic cycle generation - user has full control
+        console.log("Automatic cycle generation disabled - user manages cycles manually");
         
       } catch (error) {
         console.error("Error handling pattern inheritance for new cycle:", error);
@@ -2770,11 +2767,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           });
         }
         
-        // PERMANENTLY DISABLED - causing cycles to be overridden with wrong dates
-        console.log("⚠️ PATTERN INHERITANCE: PERMANENTLY DISABLED to prevent cycle override after manual edits");
-        
-        // Stop any automatic cycle generation
-        return;
+        // DISABLED PATTERN INHERITANCE - user can edit freely without system interference
+        console.log("⚠️ PATTERN INHERITANCE: DISABLED - user has full control over cycle dates");
         
       } catch (error) {
         console.error("❌ PATTERN INHERITANCE: Error handling pattern inheritance:", error);
