@@ -47,7 +47,13 @@ export function PricingModal({ isOpen, onClose, currentPlan = 'free', showTrialB
     onSuccess: (data: any) => {
       console.log("Subscription success:", data);
       if (data.url) {
-        window.location.href = data.url;
+        // In preview environment, open in new tab instead of redirect
+        if (window.parent !== window) {
+          window.open(data.url, '_blank');
+          toast({ title: "Checkout opened", description: "Please complete payment in the new tab." });
+        } else {
+          window.location.href = data.url;
+        }
       } else {
         toast({ title: "Error", description: "No checkout URL received", variant: "destructive" });
       }
