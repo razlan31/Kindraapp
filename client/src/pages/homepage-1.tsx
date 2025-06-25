@@ -1,5 +1,6 @@
 import { Header } from "@/components/layout/header";
 import { BottomNavigation } from "@/components/layout/bottom-navigation";
+import { UpgradeBanner } from "@/components/subscription/upgrade-banner";
 import { useAuth } from "@/contexts/auth-context";
 import AIChat from "@/components/ai-chat-clean";
 

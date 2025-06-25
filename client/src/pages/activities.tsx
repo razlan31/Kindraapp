@@ -3,6 +3,7 @@ import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { Header } from "@/components/layout/header";
 import { BottomNavigation } from "@/components/layout/bottom-navigation";
+import { UpgradeBanner } from "@/components/subscription/upgrade-banner";
 import { MomentCard } from "@/components/dashboard/moment-card";
 import { ReflectionModal } from "@/components/modals/reflection-modal";
 import { EntryDetailModal } from "@/components/modals/entry-detail-modal";
