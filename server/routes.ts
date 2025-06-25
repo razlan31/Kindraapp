@@ -2577,10 +2577,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const accessibleConnections = getAccessibleConnections(allConnections, user, focusConnectionId);
       const accessibleConnectionIds = accessibleConnections.map(conn => conn.id);
       
+      console.log("Cycle creation debug:", {
+        userId,
+        connectionId,
+        focusConnectionId,
+        isPremium,
+        accessibleConnectionIds,
+        requestedConnection: allConnections.find(c => c.id === connectionId)
+      });
+      
       if (!accessibleConnectionIds.includes(connectionId)) {
+        const requestedConnection = allConnections.find(c => c.id === connectionId);
         return res.status(403).json({ 
-          message: "Cannot create cycles for locked connections. Please upgrade to premium to access all connections.",
-          requiresUpgrade: true
+          message: `Connection "${requestedConnection?.name || 'Unknown'}" is locked for free users. Please upgrade to premium or select your main focus connection.`,
+          requiresUpgrade: true,
+          availableConnections: accessibleConnections.map(c => ({ id: c.id, name: c.name }))
         });
       }
       
