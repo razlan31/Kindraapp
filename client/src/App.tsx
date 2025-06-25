@@ -68,6 +68,7 @@ function Router() {
       <Route path="/settings" component={Settings} />
 
       <Route path="/cycle" component={MenstrualCycle} />
+      <Route path="/menstrual-cycle" component={MenstrualCycle} />
       <Route component={NotFound} />
     </Switch>
   );

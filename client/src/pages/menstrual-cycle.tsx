@@ -22,6 +22,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { MenstrualCycle, Connection } from "@shared/schema";
 import { Header } from "@/components/layout/header";
 import { BottomNavigation } from "@/components/layout/bottom-navigation";
+import { UpgradeBanner } from "@/components/subscription/upgrade-banner";
 import { useAuth } from "@/contexts/auth-context";
 import { useModal } from "@/contexts/modal-context";
 import { DetailedPhaseCard } from "@/components/cycle/detailed-phase-card";
