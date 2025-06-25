@@ -278,8 +278,10 @@ export default function MenstrualCyclePage() {
 
   // Update cycle mutation
   const updateCycleMutation = useMutation({
-    mutationFn: ({ id, ...data }: { id: number } & any) => 
-      apiRequest(`/api/menstrual-cycles/${id}`, 'PATCH', data),
+    mutationFn: async ({ id, ...data }: { id: number } & any) => {
+      const response = await apiRequest(`/api/menstrual-cycles/${id}`, 'PATCH', data);
+      return response.json();
+    },
     onSuccess: async (updatedCycle) => {
       console.log("✅ Update successful, refreshing data:", updatedCycle);
       
@@ -295,13 +297,10 @@ export default function MenstrualCyclePage() {
       setEditingCycle(null);
       resetForm();
       
-      // Small delay to ensure cache is updated before showing success
-      setTimeout(() => {
-        toast({
-          title: "Cycle Updated",
-          description: "Your menstrual cycle has been updated successfully.",
-        });
-      }, 100);
+      toast({
+        title: "Cycle Updated",
+        description: "Your menstrual cycle has been updated successfully.",
+      });
     },
     onError: (error) => {
       console.error("❌ Update failed:", error);
