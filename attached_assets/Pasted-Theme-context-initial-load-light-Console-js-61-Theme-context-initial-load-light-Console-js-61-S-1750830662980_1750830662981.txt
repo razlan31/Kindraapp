@@ -1,0 +1,201 @@
+Theme context initial load: light
+Console.js:61 Theme context initial load: light
+Console.js:61 🔥 STATE DEBUG - isSubmitting changed: false
+Console.js:61 🔥 STATE DEBUG - connectionId changed: 2 selectedConnectionId: null
+Console.js:61 Modal useEffect - selectedDate from context: null
+Console.js:61 Modal useEffect - editingMoment: null
+Console.js:61 Modal useEffect - momentModalOpen: false
+Console.js:61 🔥 MODAL OPEN - Resetting isSubmitting to false
+Console.js:61 🔥 MODAL INIT - Setting connectionId: 2 from selectedConnectionId: null
+Console.js:61 🔥 PLAN MODAL - Connection effect: {selectedConnection: null, localSelectedConnection: null, isOpen: false}
+Console.js:61 🔥 PLAN MODAL - Form init effect: {editingMoment: false, isOpen: false, selectedConnection: null, contextSelectedDate: null, connectionsCount: 0}
+Console.js:61 Theme effect running: light
+Console.js:61 Applied theme: light
+Console.js:61 Theme stored to localStorage: light
+Console.js:61 Auth: Starting to load user, setting loading to true
+Console.js:61 Auth: Starting to load user, setting loading to true
+Console.js:61 Theme effect running: light
+Console.js:61 Applied theme: light
+Console.js:61 Theme stored to localStorage: light
+Console.js:61 getCurrentUser successful: {id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+Console.js:61 getCurrentUser successful: {id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+Console.js:61 Auth context setting user: {id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+Console.js:61 Auth: Finally block - setting loading to false
+Console.js:61 🔥 PLAN MODAL - Form init effect: {editingMoment: false, isOpen: false, selectedConnection: null, contextSelectedDate: null, connectionsCount: 20}
+Console.js:61 Focus Context Debug: {savedId: null, connectionsLength: 20, connections: Array(20)}
+Console.js:61 getCurrentUser successful: {id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+Console.js:61 getCurrentUser successful: {id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+Console.js:61 Auth context setting user: {id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+Console.js:61 Auth: Finally block - setting loading to false
+Console.js:61 Loading conversation data: {conversation: Array(0)}
+Console.js:61 Setting conversation from API: []
+frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.
+e @ frame_ant.js:2
+s @ frame_ant.js:2
+Promise.then
+e @ frame_ant.js:2
+u @ frame_ant.js:2
+Promise.then
+e @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+s @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ _app-19b30946e8be464e.js:38
+(anonymous) @ _app-19b30946e8be464e.js:25
+e @ _app-19b30946e8be464e.js:14
+t.subscribe @ _app-19b30946e8be464e.js:14
+e.consumeQueue @ _app-19b30946e8be464e.js:25
+(anonymous) @ _app-19b30946e8be464e.js:25
+n @ _app-19b30946e8be464e.js:38
+setTimeout
+(anonymous) @ _app-19b30946e8be464e.js:38
+e.scheduleQueueConsumption @ _app-19b30946e8be464e.js:25
+(anonymous) @ _app-19b30946e8be464e.js:25
+e @ _app-19b30946e8be464e.js:14
+t.subscribe @ _app-19b30946e8be464e.js:14
+(anonymous) @ _app-19b30946e8be464e.js:25
+e @ _app-19b30946e8be464e.js:14
+t.subscribe @ _app-19b30946e8be464e.js:14
+e.try @ _app-19b30946e8be464e.js:25
+e.start @ _app-19b30946e8be464e.js:25
+t.request @ _app-19b30946e8be464e.js:25
+(anonymous) @ _app-19b30946e8be464e.js:14
+(anonymous) @ _app-19b30946e8be464e.js:14
+(anonymous) @ _app-19b30946e8be464e.js:25
+(anonymous) @ _app-19b30946e8be464e.js:14
+e.execute @ _app-19b30946e8be464e.js:14
+e.getObservableFromLink @ _app-19b30946e8be464e.js:11
+e.getResultsFromLink @ _app-19b30946e8be464e.js:11
+v @ _app-19b30946e8be464e.js:11
+e.fetchQueryByPolicy @ _app-19b30946e8be464e.js:11
+v @ _app-19b30946e8be464e.js:11
+e.fetchConcastWithInfo @ _app-19b30946e8be464e.js:11
+t.fetch @ _app-19b30946e8be464e.js:14
+t.reobserveAsConcast @ _app-19b30946e8be464e.js:14
+e.executeQuery @ _app-19b30946e8be464e.js:26
+(anonymous) @ _app-19b30946e8be464e.js:14
+(anonymous) @ 7031-8fe30bcb801ee6a3.js:1
+(anonymous) @ 9303-2caefa9dd512827d.js:1
+t.trigger @ 9303-2caefa9dd512827d.js:1
+(anonymous) @ 9303-2caefa9dd512827d.js:1
+(anonymous) @ main-1e0042296cc37927.js:1
+n @ main-1e0042296cc37927.js:1
+u @ main-1e0042296cc37927.js:1
+Promise.then
+n @ main-1e0042296cc37927.js:1
+u @ main-1e0042296cc37927.js:1
+Promise.then
+n @ main-1e0042296cc37927.js:1
+u @ main-1e0042296cc37927.js:1
+Promise.then
+n @ main-1e0042296cc37927.js:1
+u @ main-1e0042296cc37927.js:1
+Promise.then
+n @ main-1e0042296cc37927.js:1
+u @ main-1e0042296cc37927.js:1
+Promise.then
+n @ main-1e0042296cc37927.js:1
+u @ main-1e0042296cc37927.js:1
+Promise.then
+n @ main-1e0042296cc37927.js:1
+u @ main-1e0042296cc37927.js:1
+Promise.then
+n @ main-1e0042296cc37927.js:1
+u @ main-1e0042296cc37927.js:1
+Promise.then
+n @ main-1e0042296cc37927.js:1
+u @ main-1e0042296cc37927.js:1
+Promise.then
+n @ main-1e0042296cc37927.js:1
+u @ main-1e0042296cc37927.js:1
+Promise.then
+n @ main-1e0042296cc37927.js:1
+u @ main-1e0042296cc37927.js:1
+Promise.then
+n @ main-1e0042296cc37927.js:1
+u @ main-1e0042296cc37927.js:1
+Promise.then
+n @ main-1e0042296cc37927.js:1
+u @ main-1e0042296cc37927.js:1
+Promise.then
+n @ main-1e0042296cc37927.js:1
+u @ main-1e0042296cc37927.js:1
+Promise.then
+n @ main-1e0042296cc37927.js:1
+u @ main-1e0042296cc37927.js:1
+Promise.then
+n @ main-1e0042296cc37927.js:1
+u @ main-1e0042296cc37927.js:1
+Promise.then
+n @ main-1e0042296cc37927.js:1
+u @ main-1e0042296cc37927.js:1
+Promise.then
+n @ main-1e0042296cc37927.js:1
+u @ main-1e0042296cc37927.js:1
+Promise.then
+n @ main-1e0042296cc37927.js:1
+u @ main-1e0042296cc37927.js:1
+Promise.then
+n @ main-1e0042296cc37927.js:1
+u @ main-1e0042296cc37927.js:1
+Promise.then
+n @ main-1e0042296cc37927.js:1
+u @ main-1e0042296cc37927.js:1
+Promise.then
+n @ main-1e0042296cc37927.js:1
+u @ main-1e0042296cc37927.js:1Understand this error
+Console.js:61 Connection Data Debug: {originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+Console.js:61 Connection Data Debug: {originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+Console.js:61 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+Mt.forEach.n.<computed> @ Console.js:61
+(anonymous) @ @radix-ui_react-dialog.js?v=3679b4a8:342
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=3679b4a8:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=3679b4a8:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=3679b4a8:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=3679b4a8:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=3679b4a8:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=3679b4a8:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=3679b4a8:19447
+commitRootImpl @ chunk-RPCDYKBN.js?v=3679b4a8:19416
+commitRoot @ chunk-RPCDYKBN.js?v=3679b4a8:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=3679b4a8:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=3679b4a8:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=3679b4a8:18627Understand this warning
+Console.js:61 Connection Data Debug: {originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+Console.js:61 Connection Data Debug: {originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+Console.js:61 Creating subscription for plan: weekly
+Console.js:61 Subscription error: TypeError: Failed to execute 'fetch' on 'Window': '/api/subscription/create-checkout' is not a valid HTTP method.
+    at window.fetch (frame_ant.js:2:12357)
+    at window.fetch (Network.js:219:37)
+    at apiRequest (queryClient.ts:41:21)
+    at Object.mutationFn (pricing-modal.tsx:39:30)
+    at Object.fn (@tanstack_react-query.js?v=3679b4a8:1189:29)
+    at run (@tanstack_react-query.js?v=3679b4a8:494:49)
+    at Object.start (@tanstack_react-query.js?v=3679b4a8:536:9)
+    at _a6.execute (@tanstack_react-query.js?v=3679b4a8:1225:56)
+Mt.forEach.n.<computed> @ Console.js:61
+onError @ pricing-modal.tsx:52
+execute @ @tanstack_react-query.js?v=3679b4a8:1254
+await in execute
+mutate @ @tanstack_react-query.js?v=3679b4a8:2630
+(anonymous) @ @tanstack_react-query.js?v=3679b4a8:3295
+onClick @ pricing-modal.tsx:219
+callCallback2 @ chunk-RPCDYKBN.js?v=3679b4a8:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=3679b4a8:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=3679b4a8:3733
+invokeGuardedCallbackAndCatchFirstError @ chunk-RPCDYKBN.js?v=3679b4a8:3736
+executeDispatch @ chunk-RPCDYKBN.js?v=3679b4a8:7014
+processDispatchQueueItemsInOrder @ chunk-RPCDYKBN.js?v=3679b4a8:7034
+processDispatchQueue @ chunk-RPCDYKBN.js?v=3679b4a8:7043
+dispatchEventsForPlugins @ chunk-RPCDYKBN.js?v=3679b4a8:7051
+(anonymous) @ chunk-RPCDYKBN.js?v=3679b4a8:7174
+batchedUpdates$1 @ chunk-RPCDYKBN.js?v=3679b4a8:18913
+batchedUpdates @ chunk-RPCDYKBN.js?v=3679b4a8:3579
+dispatchEventForPluginEventSystem @ chunk-RPCDYKBN.js?v=3679b4a8:7173
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-RPCDYKBN.js?v=3679b4a8:5478
+dispatchEvent @ chunk-RPCDYKBN.js?v=3679b4a8:5472
+dispatchDiscreteEvent @ chunk-RPCDYKBN.js?v=3679b4a8:5449Understand this error
+Console.js:61 Connection Data Debug: {originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+Console.js:61 Connection Data Debug: {originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
