@@ -874,19 +874,24 @@ export default function MenstrualCyclePage() {
               const periodLength = currentCycle?.periodEndDate ? 
                 differenceInDays(new Date(displayCycle.periodEndDate), new Date(displayCycle.periodStartDate)) + 1 : 5;
               
-              // Debug cycle tracker calculations for connection 6 (Amalina)
-              if (personId === 6) {
-                console.log(`🔍 CYCLE TRACKER DEBUG - Amalina:`, {
+              const currentPhase = currentPhaseInfo?.detailedInfo || null;
+              
+              // Debug cycle tracker calculations for connection 30
+              if (personId === 30) {
+                console.log(`🔍 CYCLE TRACKER DEBUG - Connection 30:`, {
                   avgCycleLength,
                   currentDay,
                   periodLength,
                   ovulationDay: calculateOvulationDay(avgCycleLength, personCycles),
                   currentCycleId: displayCycle?.id,
+                  currentPhase: currentPhase?.phase,
+                  currentSubPhase: currentPhase?.subPhase,
+                  currentEmoji: currentPhase?.emoji,
+                  hasPhaseInfo: !!currentPhaseInfo,
+                  hasDetailedInfo: !!currentPhaseInfo?.detailedInfo,
                   personCycles: personCycles.map(c => ({ id: c.id, start: c.periodStartDate, end: c.cycleEndDate }))
                 });
               }
-              
-              const currentPhase = currentPhaseInfo?.detailedInfo || null;
               
               // Get phase-based colors using new detailed phase system
               const phaseColors = currentPhase ? {
@@ -946,6 +951,17 @@ export default function MenstrualCyclePage() {
                         <div className="space-y-3">
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
+                              {/* Debug emoji rendering for connection 30 */}
+                              {personId === 30 && (() => {
+                                console.log(`🔍 EMOJI RENDER DEBUG:`, {
+                                  hasCurrentPhaseInfo: !!currentPhaseInfo,
+                                  hasDetailedInfo: !!currentPhaseInfo?.detailedInfo,
+                                  emoji: currentPhaseInfo?.detailedInfo?.emoji,
+                                  phase: currentPhaseInfo?.detailedInfo?.phase,
+                                  shouldShowEmoji: !!(currentPhaseInfo?.detailedInfo?.emoji)
+                                });
+                                return null;
+                              })()}
                               {currentPhaseInfo?.detailedInfo?.emoji && (
                                 <span className="text-lg">{currentPhaseInfo.detailedInfo.emoji}</span>
                               )}
