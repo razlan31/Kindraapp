@@ -2370,24 +2370,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     let allCycles = [...existingCycles];
 
-    // Helper function to identify the active cycle (contains today's date)
+    // DISABLED AUTOMATIC CYCLE GENERATION - User wants manual control
     const findActiveCycle = (cycles: any[]): any | null => {
-      return cycles.find(cycle => {
-        const cycleStart = new Date(cycle.periodStartDate);
-        cycleStart.setHours(0, 0, 0, 0);
-        
-        // If cycle has an end date, use it
-        if (cycle.cycleEndDate) {
-          const cycleEnd = new Date(cycle.cycleEndDate);
-          cycleEnd.setHours(0, 0, 0, 0);
-          return today >= cycleStart && today <= cycleEnd;
-        }
-        
-        // If no end date, estimate cycle length (default 30 days)
-        const estimatedEnd = new Date(cycleStart);
-        estimatedEnd.setDate(estimatedEnd.getDate() + 29); // 30-day cycle
-        return today >= cycleStart && today <= estimatedEnd;
-      }) || null;
+      return null; // Disable automatic cycle detection
     };
 
     // Process each connection separately
