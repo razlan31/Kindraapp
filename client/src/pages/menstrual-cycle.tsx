@@ -290,17 +290,33 @@ export default function MenstrualCyclePage() {
     onSuccess: async (updatedCycle) => {
       console.log("✅ Update successful, refreshing data:", updatedCycle);
       
+      // CRITICAL FIX: Update the editing cycle with fresh data immediately
+      setEditingCycle(updatedCycle);
+      
+      // Update form data with the fresh cycle information
+      const formatDateSafely = (dateString: string) => {
+        const isoString = dateString.includes('T') ? dateString : `${dateString}T00:00:00.000Z`;
+        const datePart = isoString.split('T')[0];
+        return datePart;
+      };
+      
+      setFormData({
+        startDate: formatDateSafely(updatedCycle.periodStartDate),
+        periodEndDate: updatedCycle.periodEndDate ? formatDateSafely(updatedCycle.periodEndDate) : '',
+        endDate: updatedCycle.cycleEndDate ? formatDateSafely(updatedCycle.cycleEndDate) : '',
+        flowIntensity: updatedCycle.flowIntensity || '',
+        mood: updatedCycle.mood || '',
+        symptoms: Array.isArray(updatedCycle.symptoms) ? updatedCycle.symptoms : [],
+        notes: updatedCycle.notes || '',
+        connectionId: updatedCycle.connectionId
+      });
+      
       // Clear all related cache entries
       queryClient.removeQueries({ queryKey: ['/api/menstrual-cycles'] });
       
       // Force fresh data fetch
       await queryClient.invalidateQueries({ queryKey: ['/api/menstrual-cycles'] });
       await queryClient.refetchQueries({ queryKey: ['/api/menstrual-cycles'] });
-      
-      // Close dialog and reset form
-      setIsDialogOpen(false);
-      setEditingCycle(null);
-      resetForm();
       
       toast({
         title: "Cycle Updated",

@@ -1,0 +1,309 @@
+Theme context initial load: minimalist
+Console.js:61 Theme context initial load: minimalist
+Console.js:61 🔥 STATE DEBUG - isSubmitting changed: false
+Console.js:61 🔥 STATE DEBUG - connectionId changed: 2 selectedConnectionId: null
+Console.js:61 Modal useEffect - selectedDate from context: null
+Console.js:61 Modal useEffect - editingMoment: null
+Console.js:61 Modal useEffect - momentModalOpen: false
+Console.js:61 🔥 MODAL OPEN - Resetting isSubmitting to false
+Console.js:61 🔥 MODAL INIT - Setting connectionId: 2 from selectedConnectionId: null
+Console.js:61 🔥 PLAN MODAL - Connection effect: {selectedConnection: null, localSelectedConnection: null, isOpen: false}
+Console.js:61 🔥 PLAN MODAL - Form init effect: {editingMoment: false, isOpen: false, selectedConnection: null, contextSelectedDate: null, connectionsCount: 0}
+Console.js:61 Theme effect running: minimalist
+Console.js:61 Applied minimalist theme (light base)
+Console.js:61 Theme stored to localStorage: minimalist
+Console.js:61 Auth: Starting to load user, setting loading to true
+Console.js:61 Auth: Starting to load user, setting loading to true
+Console.js:61 Theme effect running: minimalist
+Console.js:61 Applied minimalist theme (light base)
+Console.js:61 Theme stored to localStorage: minimalist
+Console.js:61 getCurrentUser successful: {id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+Console.js:61 getCurrentUser successful: {id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+Console.js:61 Auth context setting user: {id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+Console.js:61 Auth: Finally block - setting loading to false
+Console.js:61 🔥 PLAN MODAL - Form init effect: {editingMoment: false, isOpen: false, selectedConnection: null, contextSelectedDate: null, connectionsCount: 20}
+Console.js:61 Focus Context Debug: {savedId: '30', connectionsLength: 20, connections: Array(20)}
+Console.js:61 Found saved connection: {id: 30, userId: '8', name: 'ghjghjhgjg', profileImage: null, relationshipStage: 'Dating', …}
+Console.js:61 getCurrentUser successful: {id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+Console.js:61 getCurrentUser successful: {id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+Console.js:61 Auth context setting user: {id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+Console.js:61 Auth: Finally block - setting loading to false
+Console.js:61 Loading conversation data: {conversation: Array(0)}
+Console.js:61 Setting conversation from API: []
+frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.
+e @ frame_ant.js:2
+s @ frame_ant.js:2
+Promise.then
+e @ frame_ant.js:2
+u @ frame_ant.js:2
+Promise.then
+e @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+s @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ _app-e8cd1b69c02bbb86.js:38
+(anonymous) @ _app-e8cd1b69c02bbb86.js:25
+e @ _app-e8cd1b69c02bbb86.js:14
+t.subscribe @ _app-e8cd1b69c02bbb86.js:14
+e.consumeQueue @ _app-e8cd1b69c02bbb86.js:25
+(anonymous) @ _app-e8cd1b69c02bbb86.js:25
+n @ _app-e8cd1b69c02bbb86.js:38
+setTimeout
+(anonymous) @ _app-e8cd1b69c02bbb86.js:38
+e.scheduleQueueConsumption @ _app-e8cd1b69c02bbb86.js:25
+(anonymous) @ _app-e8cd1b69c02bbb86.js:25
+e @ _app-e8cd1b69c02bbb86.js:14
+t.subscribe @ _app-e8cd1b69c02bbb86.js:14
+(anonymous) @ _app-e8cd1b69c02bbb86.js:25
+e @ _app-e8cd1b69c02bbb86.js:14
+t.subscribe @ _app-e8cd1b69c02bbb86.js:14
+e.try @ _app-e8cd1b69c02bbb86.js:25
+e.start @ _app-e8cd1b69c02bbb86.js:25
+t.request @ _app-e8cd1b69c02bbb86.js:25
+(anonymous) @ _app-e8cd1b69c02bbb86.js:14
+(anonymous) @ _app-e8cd1b69c02bbb86.js:14
+(anonymous) @ _app-e8cd1b69c02bbb86.js:25
+(anonymous) @ _app-e8cd1b69c02bbb86.js:14
+e.execute @ _app-e8cd1b69c02bbb86.js:14
+e.getObservableFromLink @ _app-e8cd1b69c02bbb86.js:11
+e.getResultsFromLink @ _app-e8cd1b69c02bbb86.js:11
+v @ _app-e8cd1b69c02bbb86.js:11
+e.fetchQueryByPolicy @ _app-e8cd1b69c02bbb86.js:11
+v @ _app-e8cd1b69c02bbb86.js:11
+e.fetchConcastWithInfo @ _app-e8cd1b69c02bbb86.js:11
+t.fetch @ _app-e8cd1b69c02bbb86.js:14
+t.reobserveAsConcast @ _app-e8cd1b69c02bbb86.js:14
+e.executeQuery @ _app-e8cd1b69c02bbb86.js:26
+(anonymous) @ _app-e8cd1b69c02bbb86.js:14
+(anonymous) @ 7447-58fd4ae583d8d5e7.js:1
+(anonymous) @ 9303-d31bbf07f3e616c4.js:1
+t.trigger @ 9303-d31bbf07f3e616c4.js:1
+(anonymous) @ 9303-d31bbf07f3e616c4.js:1
+(anonymous) @ main-0c8f5f7f56686043.js:1
+n @ main-0c8f5f7f56686043.js:1
+u @ main-0c8f5f7f56686043.js:1
+Promise.then
+n @ main-0c8f5f7f56686043.js:1
+u @ main-0c8f5f7f56686043.js:1
+Promise.then
+n @ main-0c8f5f7f56686043.js:1
+u @ main-0c8f5f7f56686043.js:1
+Promise.then
+n @ main-0c8f5f7f56686043.js:1
+u @ main-0c8f5f7f56686043.js:1
+Promise.then
+n @ main-0c8f5f7f56686043.js:1
+u @ main-0c8f5f7f56686043.js:1
+Promise.then
+n @ main-0c8f5f7f56686043.js:1
+u @ main-0c8f5f7f56686043.js:1
+Promise.then
+n @ main-0c8f5f7f56686043.js:1
+u @ main-0c8f5f7f56686043.js:1
+Promise.then
+n @ main-0c8f5f7f56686043.js:1
+u @ main-0c8f5f7f56686043.js:1
+Promise.then
+n @ main-0c8f5f7f56686043.js:1
+u @ main-0c8f5f7f56686043.js:1
+Promise.then
+n @ main-0c8f5f7f56686043.js:1
+u @ main-0c8f5f7f56686043.js:1
+Promise.then
+n @ main-0c8f5f7f56686043.js:1
+u @ main-0c8f5f7f56686043.js:1
+Promise.then
+n @ main-0c8f5f7f56686043.js:1
+u @ main-0c8f5f7f56686043.js:1
+Promise.then
+n @ main-0c8f5f7f56686043.js:1
+u @ main-0c8f5f7f56686043.js:1
+Promise.then
+n @ main-0c8f5f7f56686043.js:1
+u @ main-0c8f5f7f56686043.js:1
+Promise.then
+n @ main-0c8f5f7f56686043.js:1
+u @ main-0c8f5f7f56686043.js:1
+Promise.then
+n @ main-0c8f5f7f56686043.js:1
+u @ main-0c8f5f7f56686043.js:1
+Promise.then
+n @ main-0c8f5f7f56686043.js:1
+u @ main-0c8f5f7f56686043.js:1
+Promise.then
+n @ main-0c8f5f7f56686043.js:1
+u @ main-0c8f5f7f56686043.js:1
+Promise.then
+n @ main-0c8f5f7f56686043.js:1
+u @ main-0c8f5f7f56686043.js:1
+Promise.then
+n @ main-0c8f5f7f56686043.js:1
+u @ main-0c8f5f7f56686043.js:1
+Promise.then
+n @ main-0c8f5f7f56686043.js:1
+u @ main-0c8f5f7f56686043.js:1
+Promise.then
+n @ main-0c8f5f7f56686043.js:1
+u @ main-0c8f5f7f56686043.js:1
+Promise.then
+n @ main-0c8f5f7f56686043.js:1
+u @ main-0c8f5f7f56686043.js:1
+Promise.then
+n @ main-0c8f5f7f56686043.js:1
+u @ main-0c8f5f7f56686043.js:1
+Promise.then
+n @ main-0c8f5f7f56686043.js:1
+u @ main-0c8f5f7f56686043.js:1
+Promise.then
+n @ main-0c8f5f7f56686043.js:1
+u @ main-0c8f5f7f56686043.js:1
+Promise.then
+n @ main-0c8f5f7f56686043.js:1
+u @ main-0c8f5f7f56686043.js:1
+Promise.then
+n @ main-0c8f5f7f56686043.js:1
+u @ main-0c8f5f7f56686043.js:1Understand this error
+frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.
+e @ frame_ant.js:2
+s @ frame_ant.js:2
+Promise.then
+e @ frame_ant.js:2
+u @ frame_ant.js:2
+Promise.then
+e @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+s @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ _app-e8cd1b69c02bbb86.js:38
+(anonymous) @ _app-e8cd1b69c02bbb86.js:25
+e @ _app-e8cd1b69c02bbb86.js:14
+t.subscribe @ _app-e8cd1b69c02bbb86.js:14
+e.consumeQueue @ _app-e8cd1b69c02bbb86.js:25
+(anonymous) @ _app-e8cd1b69c02bbb86.js:25
+n @ _app-e8cd1b69c02bbb86.js:38
+setTimeout
+(anonymous) @ _app-e8cd1b69c02bbb86.js:38
+e.scheduleQueueConsumption @ _app-e8cd1b69c02bbb86.js:25
+(anonymous) @ _app-e8cd1b69c02bbb86.js:25
+e @ _app-e8cd1b69c02bbb86.js:14
+t.subscribe @ _app-e8cd1b69c02bbb86.js:14
+(anonymous) @ _app-e8cd1b69c02bbb86.js:25
+e @ _app-e8cd1b69c02bbb86.js:14
+t.subscribe @ _app-e8cd1b69c02bbb86.js:14
+e.try @ _app-e8cd1b69c02bbb86.js:25
+e.start @ _app-e8cd1b69c02bbb86.js:25
+t.request @ _app-e8cd1b69c02bbb86.js:25
+(anonymous) @ _app-e8cd1b69c02bbb86.js:14
+(anonymous) @ _app-e8cd1b69c02bbb86.js:14
+(anonymous) @ _app-e8cd1b69c02bbb86.js:25
+(anonymous) @ _app-e8cd1b69c02bbb86.js:14
+e.execute @ _app-e8cd1b69c02bbb86.js:14
+e.getObservableFromLink @ _app-e8cd1b69c02bbb86.js:11
+(anonymous) @ _app-e8cd1b69c02bbb86.js:11
+(anonymous) @ _app-e8cd1b69c02bbb86.js:11
+(anonymous) @ _app-e8cd1b69c02bbb86.js:11
+(anonymous) @ _app-e8cd1b69c02bbb86.js:11
+s @ _app-e8cd1b69c02bbb86.js:11
+e.mutate @ _app-e8cd1b69c02bbb86.js:11
+e.mutate @ _app-e8cd1b69c02bbb86.js:11
+(anonymous) @ _app-e8cd1b69c02bbb86.js:14
+(anonymous) @ _app-e8cd1b69c02bbb86.js:40
+(anonymous) @ main-0c8f5f7f56686043.js:1
+n @ main-0c8f5f7f56686043.js:1
+u @ main-0c8f5f7f56686043.js:1
+(anonymous) @ main-0c8f5f7f56686043.js:1
+(anonymous) @ main-0c8f5f7f56686043.js:1
+n @ _app-e8cd1b69c02bbb86.js:38Understand this error
+Console.js:61 🔧 Opening edit form for cycle: {id: 157, userId: '8', connectionId: 30, periodStartDate: '2025-08-30T00:00:00.000Z', periodEndDate: '2025-09-03T00:00:00.000Z', …}
+Console.js:61 🔧 Using cycle data for form: {id: 157, userId: '8', connectionId: 30, periodStartDate: '2025-08-30T00:00:00.000Z', periodEndDate: '2025-09-03T00:00:00.000Z', …}
+Console.js:61 🔧 Raw periodStartDate: 2025-08-30T00:00:00.000Z
+Console.js:61 🔧 Cycle ID being edited: 157
+Console.js:61 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+Mt.forEach.n.<computed> @ Console.js:61
+(anonymous) @ @radix-ui_react-dialog.js?v=3679b4a8:342
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=3679b4a8:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=3679b4a8:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=3679b4a8:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=3679b4a8:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=3679b4a8:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=3679b4a8:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=3679b4a8:19447
+commitRootImpl @ chunk-RPCDYKBN.js?v=3679b4a8:19416
+commitRoot @ chunk-RPCDYKBN.js?v=3679b4a8:19277
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=3679b4a8:18895
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=3679b4a8:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=3679b4a8:18627Understand this warning
+frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.
+e @ frame_ant.js:2
+s @ frame_ant.js:2
+Promise.then
+e @ frame_ant.js:2
+u @ frame_ant.js:2
+Promise.then
+e @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+s @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ _app-e8cd1b69c02bbb86.js:38
+(anonymous) @ _app-e8cd1b69c02bbb86.js:25
+e @ _app-e8cd1b69c02bbb86.js:14
+t.subscribe @ _app-e8cd1b69c02bbb86.js:14
+e.consumeQueue @ _app-e8cd1b69c02bbb86.js:25
+(anonymous) @ _app-e8cd1b69c02bbb86.js:25
+n @ _app-e8cd1b69c02bbb86.js:38
+setTimeout
+(anonymous) @ _app-e8cd1b69c02bbb86.js:38
+e.scheduleQueueConsumption @ _app-e8cd1b69c02bbb86.js:25
+(anonymous) @ _app-e8cd1b69c02bbb86.js:25
+e @ _app-e8cd1b69c02bbb86.js:14
+t.subscribe @ _app-e8cd1b69c02bbb86.js:14
+(anonymous) @ _app-e8cd1b69c02bbb86.js:25
+e @ _app-e8cd1b69c02bbb86.js:14
+t.subscribe @ _app-e8cd1b69c02bbb86.js:14
+e.try @ _app-e8cd1b69c02bbb86.js:25
+e.start @ _app-e8cd1b69c02bbb86.js:25
+t.request @ _app-e8cd1b69c02bbb86.js:25
+(anonymous) @ _app-e8cd1b69c02bbb86.js:14
+(anonymous) @ _app-e8cd1b69c02bbb86.js:14
+(anonymous) @ _app-e8cd1b69c02bbb86.js:25
+(anonymous) @ _app-e8cd1b69c02bbb86.js:14
+e.execute @ _app-e8cd1b69c02bbb86.js:14
+e.getObservableFromLink @ _app-e8cd1b69c02bbb86.js:11
+(anonymous) @ _app-e8cd1b69c02bbb86.js:11
+(anonymous) @ _app-e8cd1b69c02bbb86.js:11
+(anonymous) @ _app-e8cd1b69c02bbb86.js:11
+(anonymous) @ _app-e8cd1b69c02bbb86.js:11
+s @ _app-e8cd1b69c02bbb86.js:11
+e.mutate @ _app-e8cd1b69c02bbb86.js:11
+e.mutate @ _app-e8cd1b69c02bbb86.js:11
+(anonymous) @ _app-e8cd1b69c02bbb86.js:14
+e.wait @ 7447-58fd4ae583d8d5e7.js:1
+u @ 8830-dd20f3f5b16ef9ba.js:1
+(anonymous) @ 8830-dd20f3f5b16ef9ba.js:1
+n @ _app-e8cd1b69c02bbb86.js:38
+setTimeout
+(anonymous) @ _app-e8cd1b69c02bbb86.js:38
+Object.assign.isScheduled @ 8830-dd20f3f5b16ef9ba.js:1
+(anonymous) @ 7447-58fd4ae583d8d5e7.js:1
+(anonymous) @ 692-ee7fd7e7528fbfcc.js:1
+(anonymous) @ 692-ee7fd7e7528fbfcc.js:1
+(anonymous) @ main-0c8f5f7f56686043.js:1
+n @ main-0c8f5f7f56686043.js:1
+u @ main-0c8f5f7f56686043.js:1
+(anonymous) @ main-0c8f5f7f56686043.js:1
+(anonymous) @ main-0c8f5f7f56686043.js:1
+G @ 692-ee7fd7e7528fbfcc.js:1
+(anonymous) @ 692-ee7fd7e7528fbfcc.js:1
+(anonymous) @ main-0c8f5f7f56686043.js:1
+n @ main-0c8f5f7f56686043.js:1
+u @ main-0c8f5f7f56686043.js:1Understand this error
+Console.js:61 Submit data being sent: {startDate: '2025-06-01', periodEndDate: '2025-06-05', endDate: null, flowIntensity: null, mood: null, …}
+Console.js:61 🔧 Form startDate value: 2025-06-01
+Console.js:61 🔧 editingCycle periodStartDate: 2025-08-30T00:00:00.000Z
+Console.js:61 ✅ Update successful, refreshing data: {id: 157, userId: '8', connectionId: 30, periodStartDate: '2025-06-01T00:00:00.000Z', periodEndDate: '2025-06-05T00:00:00.000Z', …}
