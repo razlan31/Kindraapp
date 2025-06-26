@@ -1002,7 +1002,7 @@ export default function MenstrualCyclePage() {
                           )}
                           
                           <div className={`text-xs ${phaseColors.text} opacity-80 space-y-1`}>
-                            <p>Started {format(new Date(currentCycle.periodStartDate + 'T12:00:00'), 'MMM d, yyyy')}</p>
+                            <p>Started {format(new Date(currentCycle.periodStartDate), 'MMM d, yyyy')}</p>
                             {!currentCycle.cycleEndDate && (
                               <p>Expected end: {format(calculateExpectedCycleEnd(new Date(currentCycle.periodStartDate), personCycles), 'MMM d, yyyy')} ({avgCycleLength}-day cycle)</p>
                             )}
@@ -1246,8 +1246,8 @@ export default function MenstrualCyclePage() {
                           const allSelectedCycles = cycles.filter(cycle => {
                             if (!cycle.connectionId || !selectedConnectionIds.includes(cycle.connectionId)) return false;
                             
-                            const cycleStart = new Date(cycle.periodStartDate + 'T12:00:00');
-                            const cycleEnd = cycle.cycleEndDate ? new Date(cycle.cycleEndDate + 'T12:00:00') : null;
+                            const cycleStart = new Date(cycle.periodStartDate);
+                            const cycleEnd = cycle.cycleEndDate ? new Date(cycle.cycleEndDate) : null;
                             
                             if (!cycleEnd) return false;
                             
