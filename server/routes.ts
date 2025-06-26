@@ -2468,11 +2468,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const baselineDate = new Date(baselineCycle.periodStartDate);
       
-      // Calculate next cycle start from the baseline cycle
+      // FIXED: Don't add cycle length to baseline - the baseline IS the starting point
+      // Generate cycles AFTER the baseline cycle, not FROM it
       nextCycleStartDate = new Date(baselineDate);
       nextCycleStartDate.setDate(nextCycleStartDate.getDate() + averageCycleLength);
       
-      console.log(`Final calculation: ${baselineDate.toISOString()} + ${averageCycleLength} days = ${nextCycleStartDate.toISOString()}`);
+      console.log(`Generating cycles AFTER baseline ${baselineDate.toISOString()}: first new cycle starts ${nextCycleStartDate.toISOString()}`);
 
       // Generate future cycles based on pattern inheritance
       // Fixed calculation logic to prevent September/August date issues
