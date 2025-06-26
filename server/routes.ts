@@ -2760,18 +2760,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const cycleId = parseInt(req.params.id);
       const updates = req.body;
       
-      console.log(`PATCH cycle ${cycleId} with updates:`, updates);
+      console.log(`🔥 PATCH cycle ${cycleId} with RAW updates:`, JSON.stringify(updates, null, 2));
       
       // Map frontend column names to database column names
       if (updates.startDate) {
+        console.log(`🔥 MAPPING startDate: ${updates.startDate} -> periodStartDate`);
         updates.periodStartDate = new Date(updates.startDate);
         delete updates.startDate;
       }
       if (updates.hasOwnProperty('endDate')) {
+        console.log(`🔥 MAPPING endDate: ${updates.endDate} -> cycleEndDate`);
         updates.cycleEndDate = updates.endDate ? new Date(updates.endDate) : null;
         delete updates.endDate;
       }
-      if (updates.periodEndDate) updates.periodEndDate = new Date(updates.periodEndDate);
+      if (updates.periodEndDate) {
+        console.log(`🔥 MAPPING periodEndDate: ${updates.periodEndDate}`);
+        updates.periodEndDate = new Date(updates.periodEndDate);
+      }
+      
+      console.log(`🔥 FINAL MAPPED updates before storage:`, JSON.stringify(updates, null, 2));
       
       const cycle = await storage.updateMenstrualCycle(cycleId, updates);
       
