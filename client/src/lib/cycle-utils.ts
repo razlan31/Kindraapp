@@ -227,7 +227,16 @@ export const getCyclePhaseForDay = (day: Date, connectionId: number, cycles: Men
     const normalizedCycleStart = startOfDay(cycleStart);
     const normalizedCycleEnd = startOfDay(cycleEnd);
     
-    // Clean cycle matching logic without debug output
+    // Debug for specific connection 30 and June 26th to trace emoji issue
+    if (cycle.connectionId === 30 && format(normalizedDay, 'yyyy-MM-dd') === '2025-06-26') {
+      console.log(`🔍 EMOJI DEBUG - Connection 30 on ${format(normalizedDay, 'yyyy-MM-dd')}:`, {
+        cycleId: cycle.id,
+        cycleStart: format(normalizedCycleStart, 'yyyy-MM-dd'),
+        cycleEnd: format(normalizedCycleEnd, 'yyyy-MM-dd'),
+        dayInRange: normalizedDay >= normalizedCycleStart && normalizedDay <= normalizedCycleEnd,
+        cycleNotes: cycle.notes
+      });
+    }
     
     if (normalizedDay >= normalizedCycleStart && normalizedDay <= normalizedCycleEnd) {
       
@@ -255,6 +264,22 @@ export const getCyclePhaseForDay = (day: Date, connectionId: number, cycles: Men
         [], // symptoms - could be added later
         cycle.mood
       );
+      
+      // Debug for connection 30 and June 26th
+      if (cycle.connectionId === 30 && format(normalizedDay, 'yyyy-MM-dd') === '2025-06-26') {
+        console.log(`🔍 EMOJI DEBUG - getDetailedCyclePhase result:`, {
+          dayInCycle,
+          cycleLength,
+          periodLength,
+          detailedPhase: {
+            phase: detailedPhase.phase,
+            subPhase: detailedPhase.subPhase,
+            emoji: detailedPhase.emoji,
+            color: detailedPhase.color,
+            description: detailedPhase.description
+          }
+        });
+      }
       
       return { 
         phase: detailedPhase.phase,

@@ -1069,8 +1069,16 @@ export default function Calendar() {
                       // Use the exact centralized function that was working before
                       const phaseInfo = getCyclePhaseForDay(day, connectionId, cycles);
                       
-                      if (format(day, 'yyyy-MM-dd') === '2025-05-16') {
-                        console.log(`🔍 MAY 16th: getCyclePhaseForDay returned:`, phaseInfo);
+                      if (format(day, 'yyyy-MM-dd') === '2025-06-26' && connectionId === 30) {
+                        console.log(`🔍 EMOJI DEBUG - Connection 30 on June 26th: getCyclePhaseForDay returned:`, phaseInfo);
+                        if (phaseInfo?.detailedInfo) {
+                          console.log(`🔍 EMOJI DEBUG - detailedInfo:`, {
+                            phase: phaseInfo.detailedInfo.phase,
+                            emoji: phaseInfo.detailedInfo.emoji,
+                            color: phaseInfo.detailedInfo.color,
+                            description: phaseInfo.detailedInfo.description
+                          });
+                        }
                       }
                       
                       if (phaseInfo) {
@@ -1095,8 +1103,9 @@ export default function Calendar() {
                   }
                 } else if (cyclePhases.length === 1) {
                   cycleDisplay = getCycleDisplayInfo(cyclePhases[0]);
-                  if (format(day, 'yyyy-MM-dd') === '2025-06-16') {
-                    console.log(`🔍 June 16th: single cycle display set:`, cycleDisplay);
+                  if (format(day, 'yyyy-MM-dd') === '2025-06-26') {
+                    console.log(`🔍 EMOJI DEBUG - June 26th: cyclePhases[0]:`, cyclePhases[0]);
+                    console.log(`🔍 EMOJI DEBUG - June 26th: getCycleDisplayInfo result:`, cycleDisplay);
                   }
 
                 } else if (cyclePhases.length > 1) {
@@ -1311,6 +1320,21 @@ export default function Calendar() {
                         };
                         
                         const emoji = getPhaseEmoji(phaseInfo.phase, phaseInfo.subPhase);
+                        
+                        // Debug for June 26th connection 30 emoji issue
+                        if (format(day, 'yyyy-MM-dd') === '2025-06-26' && cycle.connectionId === 30) {
+                          console.log(`🔍 EMOJI DEBUG - Final emoji rendering:`, {
+                            cycleId: cycle.id,
+                            connectionId: cycle.connectionId,
+                            phaseInfo: {
+                              phase: phaseInfo.phase,
+                              subPhase: phaseInfo.subPhase
+                            },
+                            emoji,
+                            willRender: !!emoji
+                          });
+                        }
+                        
                         if (!emoji) return null;
                         
                         return (
