@@ -111,6 +111,15 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
+- June 26, 2025: REFINED PATTERN INHERITANCE SYSTEM - Implemented intelligent active cycle pattern inheritance with manual override control
+  - **New Logic**: Active cycle (containing today's date) automatically follows latest past cycle pattern until manually edited
+  - **Active Cycle Definition**: Cycle that contains today's date, with automatic end date estimation using average cycle length
+  - **Pattern Flow**: Past cycle edits → Active cycle inherits → Next 3 months follow active cycle pattern
+  - **Manual Override**: Editing active cycle breaks inheritance and sets new pattern for future cycles
+  - **Clean Regeneration**: All pattern updates completely overwrite old patterns and regenerate next 3 months
+  - **User Control**: Users can edit historical data without affecting current patterns, but must edit active cycle to change future predictions
+  - **Performance Optimized**: Efficient pattern inheritance with clear cascade from past → active → future cycles
+
 - June 25, 2025: PATTERN INHERITANCE SYSTEM FIX - Resolved date timezone conversion issues while maintaining automatic cycle generation
   - Fixed core issue: eliminated timezone conversion by parsing date strings directly instead of using Date constructors
   - Maintained pattern inheritance system for automatic future cycle generation (essential for cycle tracker functionality)
