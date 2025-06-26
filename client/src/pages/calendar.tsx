@@ -47,7 +47,7 @@ function MenstrualCycleTracker({ selectedConnectionIds }: { selectedConnectionId
     // Find active cycle - only cycles that contain today's date (not future cycles)
     return filteredCycles.find(cycle => {
       const today = new Date();
-      const startDate = new Date(cycle.periodStartDate.includes('T') ? cycle.periodStartDate : cycle.periodStartDate + 'T12:00:00');
+      const startDate = new Date(cycle.periodStartDate);
       
       // Filter out future cycles - cycle must have started already
       if (today < startDate) return false;
@@ -218,13 +218,28 @@ export default function Calendar() {
   });
 
   // Fetch menstrual cycles with aggressive cache invalidation
-  const { data: cycles = [], refetch: refetchCycles, isLoading: cyclesLoading } = useQuery<MenstrualCycle[]>({
+  const { data: cycles = [], refetch: refetchCycles, isLoading: cyclesLoading, error: cyclesError } = useQuery<MenstrualCycle[]>({
     queryKey: ['/api/menstrual-cycles'],
     staleTime: 0,
     gcTime: 0,
     refetchOnMount: true,
     refetchOnWindowFocus: true,
   });
+
+  // Debug cycles data flow
+  useEffect(() => {
+    console.log(`🔍 CYCLES QUERY DEBUG - Data received:`, {
+      cyclesLength: cycles?.length || 0,
+      cyclesLoading,
+      cyclesError,
+      rawCycles: cycles
+    });
+    
+    if (cycles && cycles.length > 0) {
+      const connection30Cycles = cycles.filter(c => c.connectionId === 30);
+      console.log(`🔍 CYCLES QUERY - Connection 30 cycles:`, connection30Cycles);
+    }
+  }, [cycles, cyclesLoading, cyclesError]);
 
 
 

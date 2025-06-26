@@ -580,12 +580,12 @@ export default function MenstrualCyclePage() {
         const cycleEndDate = new Date(cycle.cycleEndDate);
         return cycleEndDate < today;
       })
-      .sort((a, b) => new Date(b.periodStartDate.includes('T') ? b.periodStartDate : b.periodStartDate + 'T12:00:00').getTime() - new Date(a.periodStartDate.includes('T') ? a.periodStartDate : a.periodStartDate + 'T12:00:00').getTime());
+      .sort((a, b) => new Date(b.periodStartDate + 'T12:00:00').getTime());
   };
 
   const getCycleLength = (cycle: MenstrualCycle) => {
     if (!cycle.cycleEndDate) return null;
-    return differenceInDays(new Date(cycle.cycleEndDate.includes('T') ? cycle.cycleEndDate : cycle.cycleEndDate + 'T12:00:00'), new Date(cycle.periodStartDate.includes('T') ? cycle.periodStartDate : cycle.periodStartDate + 'T12:00:00')) + 1;
+    return differenceInDays(new Date(cycle.cycleEndDate + 'T12:00:00'), new Date(cycle.periodStartDate + 'T12:00:00')) + 1;
   };
 
   const getAverageCycleLength = () => {
@@ -625,11 +625,11 @@ export default function MenstrualCyclePage() {
 
   const getCycleStage = (day: Date, cycle: MenstrualCycle) => {
     const checkDay = startOfDay(day);
-    const cycleStart = startOfDay(new Date(cycle.periodStartDate.includes('T') ? cycle.periodStartDate : cycle.periodStartDate + 'T12:00:00'));
+    const cycleStart = startOfDay(new Date(cycle.periodStartDate + 'T12:00:00'));
     
     // For predicted cycles, check if we're in the predicted period
     if ((cycle as any).isPrediction && cycle.periodEndDate) {
-      const periodStart = startOfDay(new Date(cycle.periodStartDate.includes('T') ? cycle.periodStartDate : cycle.periodStartDate + 'T12:00:00'));
+      const periodStart = startOfDay(new Date(cycle.periodStartDate + 'T12:00:00'));
       const periodEnd = startOfDay(new Date(cycle.periodEndDate));
       
       if (checkDay >= periodStart && checkDay <= periodEnd) {
@@ -844,7 +844,7 @@ export default function MenstrualCyclePage() {
               // Find active cycle - only cycles that contain today's date (not future cycles)
               const currentCycle = personCycles.find(cycle => {
                 const today = new Date();
-                const startDate = new Date(cycle.periodStartDate.includes('T') ? cycle.periodStartDate : cycle.periodStartDate + 'T12:00:00');
+                const startDate = new Date(cycle.periodStartDate + 'T12:00:00');
                 
                 // Filter out future cycles - cycle must have started already
                 if (today < startDate) return false;
@@ -1002,7 +1002,7 @@ export default function MenstrualCyclePage() {
                           )}
                           
                           <div className={`text-xs ${phaseColors.text} opacity-80 space-y-1`}>
-                            <p>Started {format(new Date(currentCycle.periodStartDate.includes('T') ? currentCycle.periodStartDate : currentCycle.periodStartDate + 'T12:00:00'), 'MMM d, yyyy')}</p>
+                            <p>Started {format(new Date(currentCycle.periodStartDate + 'T12:00:00'), 'MMM d, yyyy')}</p>
                             {!currentCycle.cycleEndDate && (
                               <p>Expected end: {format(calculateExpectedCycleEnd(new Date(currentCycle.periodStartDate), personCycles), 'MMM d, yyyy')} ({avgCycleLength}-day cycle)</p>
                             )}
@@ -1246,8 +1246,8 @@ export default function MenstrualCyclePage() {
                           const allSelectedCycles = cycles.filter(cycle => {
                             if (!cycle.connectionId || !selectedConnectionIds.includes(cycle.connectionId)) return false;
                             
-                            const cycleStart = new Date(cycle.periodStartDate.includes('T') ? cycle.periodStartDate : cycle.periodStartDate + 'T12:00:00');
-                            const cycleEnd = cycle.cycleEndDate ? new Date(cycle.cycleEndDate.includes('T') ? cycle.cycleEndDate : cycle.cycleEndDate + 'T12:00:00') : null;
+                            const cycleStart = new Date(cycle.periodStartDate + 'T12:00:00');
+                            const cycleEnd = cycle.cycleEndDate ? new Date(cycle.cycleEndDate + 'T12:00:00') : null;
                             
                             if (!cycleEnd) return false;
                             
@@ -1436,7 +1436,7 @@ export default function MenstrualCyclePage() {
                           {cycle.connectionId === null ? "You" : connections.find(c => c.id === cycle.connectionId)?.name || "Unknown"}
                         </span>
                         <span className="font-medium">
-                          {format(new Date(cycle.periodStartDate.includes('T') ? cycle.periodStartDate : cycle.periodStartDate + 'T12:00:00'), 'MMM d')} - {cycle.cycleEndDate ? format(new Date(cycle.cycleEndDate.includes('T') ? cycle.cycleEndDate : cycle.cycleEndDate + 'T12:00:00'), 'MMM d') : 'Ongoing'}
+                          {format(new Date(cycle.periodStartDate + 'T12:00:00'), 'MMM d')} - {cycle.cycleEndDate ? format(new Date(cycle.cycleEndDate + 'T12:00:00'), 'MMM d') : 'Ongoing'}
                         </span>
                         {cycle.flowIntensity && (
                           <Badge variant="outline" className="text-xs">
