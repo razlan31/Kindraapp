@@ -2767,8 +2767,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         updates.periodStartDate = new Date(updates.startDate);
         delete updates.startDate;
       }
-      if (updates.endDate) {
-        updates.cycleEndDate = new Date(updates.endDate);
+      if (updates.hasOwnProperty('endDate')) {
+        updates.cycleEndDate = updates.endDate ? new Date(updates.endDate) : null;
         delete updates.endDate;
       }
       if (updates.periodEndDate) updates.periodEndDate = new Date(updates.periodEndDate);
