@@ -822,15 +822,22 @@ export default function MenstrualCyclePage() {
               
 
               
-              // Find active cycle - either no end date, or current date is within the cycle period
+              // Find active cycle - only cycles that contain today's date (not future cycles)
               const currentCycle = personCycles.find(cycle => {
-                if (!cycle.cycleEndDate) return true; // No end date means actively ongoing
-                
                 const today = new Date();
                 const startDate = new Date(cycle.periodStartDate.includes('T') ? cycle.periodStartDate : cycle.periodStartDate + 'T12:00:00');
-                const endDate = new Date(cycle.cycleEndDate);
                 
-                // Check if today is within the cycle period
+                // Filter out future cycles - cycle must have started already
+                if (today < startDate) return false;
+                
+                if (!cycle.cycleEndDate) {
+                  // No end date - only show if cycle started in the past/today and hasn't been going for more than 45 days
+                  const daysSinceStart = Math.floor((today.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+                  return daysSinceStart <= 45; // Reasonable maximum cycle length
+                }
+                
+                const endDate = new Date(cycle.cycleEndDate);
+                // Check if today is within the completed cycle period
                 return today >= startDate && today <= endDate;
               });
               const avgCycleLength = calculateCycleLength(personCycles);

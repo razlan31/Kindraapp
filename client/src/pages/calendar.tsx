@@ -44,8 +44,24 @@ function MenstrualCycleTracker({ selectedConnectionIds }: { selectedConnectionId
       });
     });
     
-    // Find the current cycle (one without end date) - same logic as cycle tracker
-    return filteredCycles.find(cycle => !cycle.cycleEndDate);
+    // Find active cycle - only cycles that contain today's date (not future cycles)
+    return filteredCycles.find(cycle => {
+      const today = new Date();
+      const startDate = new Date(cycle.periodStartDate.includes('T') ? cycle.periodStartDate : cycle.periodStartDate + 'T12:00:00');
+      
+      // Filter out future cycles - cycle must have started already
+      if (today < startDate) return false;
+      
+      if (!cycle.cycleEndDate) {
+        // No end date - only show if cycle started in the past/today and hasn't been going for more than 45 days
+        const daysSinceStart = Math.floor((today.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+        return daysSinceStart <= 45; // Reasonable maximum cycle length
+      }
+      
+      const endDate = new Date(cycle.cycleEndDate);
+      // Check if today is within the completed cycle period
+      return today >= startDate && today <= endDate;
+    });
   };
 
   const getDaysSinceStart = (startDate: string) => {
