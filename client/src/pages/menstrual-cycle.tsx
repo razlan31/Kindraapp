@@ -1312,12 +1312,43 @@ export default function MenstrualCyclePage() {
                           }
                           
                           // Priority 2: Single connection - show accurate menstrual emoji according to legend
-                          if (allSelectedCycles.length === 0) return null;
+                          // Debug June 1st flow
+                          if (format(day, 'yyyy-MM-dd') === '2025-06-01') {
+                            console.log(`🔍 JUNE 1ST FLOW DEBUG:`, {
+                              selectedConnectionIds,
+                              selectedConnectionIdsLength: selectedConnectionIds.length,
+                              allSelectedCyclesLength: allSelectedCycles.length,
+                              multipleConnectionsCheck: selectedConnectionIds.length > 1,
+                              willShowAlphabet: selectedConnectionIds.length > 1,
+                              willShowEmoji: selectedConnectionIds.length <= 1 && allSelectedCycles.length > 0
+                            });
+                          }
+                          
+                          if (allSelectedCycles.length === 0) {
+                            if (format(day, 'yyyy-MM-dd') === '2025-06-01') {
+                              console.log(`🔍 JUNE 1ST EARLY EXIT: No cycles found in allSelectedCycles`);
+                            }
+                            return null;
+                          }
                           
                           const cycle = allSelectedCycles[0];
                           const phaseInfo = cycle.connectionId ? getCyclePhaseForDay(day, cycle.connectionId, cycles) : null;
                           
-                          if (!phaseInfo) return null;
+                          if (format(day, 'yyyy-MM-dd') === '2025-06-01') {
+                            console.log(`🔍 JUNE 1ST PHASE DEBUG:`, {
+                              cycleId: cycle.id,
+                              connectionId: cycle.connectionId,
+                              phaseInfo,
+                              phaseInfoExists: !!phaseInfo
+                            });
+                          }
+                          
+                          if (!phaseInfo) {
+                            if (format(day, 'yyyy-MM-dd') === '2025-06-01') {
+                              console.log(`🔍 JUNE 1ST PHASE EXIT: No phaseInfo returned from getCyclePhaseForDay`);
+                            }
+                            return null;
+                          }
                           
                           const getAccuratePhaseEmoji = (phase: string, subPhase?: string) => {
                             // Use exact emojis from legend - check legend component for accuracy
