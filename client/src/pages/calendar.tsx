@@ -1405,7 +1405,35 @@ export default function Calendar() {
                         
                         // Single connection or single cycle - show emoji
                         const cycle = dayActiveCycles[0];
-                        const phaseInfo = cycle.connectionId ? getCyclePhaseForDay(day, cycle.connectionId, cycles) : null;
+                        // Use the same calculation as red highlighting for consistency
+                        const phaseInfo = cycle.connectionId ? (() => {
+                          const connectionCycles = cycles.filter(c => c.connectionId === cycle.connectionId);
+                          if (connectionCycles.length === 0) return null;
+                          
+                          for (const c of connectionCycles) {
+                            const cycleStart = new Date(c.periodStartDate);
+                            const cycleEnd = c.cycleEndDate ? new Date(c.cycleEndDate) : null;
+                            if (!cycleEnd) continue;
+                            
+                            const dayStr = format(day, 'yyyy-MM-dd');
+                            const startStr = format(cycleStart, 'yyyy-MM-dd');
+                            const endStr = format(cycleEnd, 'yyyy-MM-dd');
+                            
+                            if (dayStr >= startStr && dayStr <= endStr) {
+                              const dayInCycle = differenceInDays(day, cycleStart) + 1;
+                              const cycleLength = differenceInDays(cycleEnd, cycleStart) + 1;
+                              const detailedInfo = getDetailedCyclePhase(dayInCycle, cycleLength);
+                              
+                              return {
+                                phase: detailedInfo.phase,
+                                subPhase: detailedInfo.subPhase,
+                                day: dayInCycle,
+                                detailedInfo
+                              };
+                            }
+                          }
+                          return null;
+                        })() : null;
                         
                         // Debug for June 26th connection 30 emoji issue
                         if (format(day, 'yyyy-MM-dd') === '2025-06-26' && cycle.connectionId === 30) {
