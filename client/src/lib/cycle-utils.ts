@@ -229,12 +229,14 @@ export const getCyclePhaseForDay = (day: Date, connectionId: number, cycles: Men
     
     // Debug for specific connection 30 and June 26th to trace emoji issue
     if (cycle.connectionId === 30 && format(normalizedDay, 'yyyy-MM-dd') === '2025-06-26') {
-      console.log(`🔍 EMOJI DEBUG - Connection 30 on ${format(normalizedDay, 'yyyy-MM-dd')}:`, {
+      console.log(`🔍 CYCLE UTILS DEBUG - Connection 30 on ${format(normalizedDay, 'yyyy-MM-dd')}:`, {
         cycleId: cycle.id,
         cycleStart: format(normalizedCycleStart, 'yyyy-MM-dd'),
         cycleEnd: format(normalizedCycleEnd, 'yyyy-MM-dd'),
         dayInRange: normalizedDay >= normalizedCycleStart && normalizedDay <= normalizedCycleEnd,
-        cycleNotes: cycle.notes
+        cycleNotes: cycle.notes,
+        cycleLength: cycle.cycleLength,
+        hasEndDate: !!cycle.cycleEndDate
       });
     }
     
@@ -247,6 +249,16 @@ export const getCyclePhaseForDay = (day: Date, connectionId: number, cycles: Men
       const cycleLength = cycle.cycleEndDate ? 
         differenceInDays(new Date(cycle.cycleEndDate), cycleStart) + 1 : 
         calculateCycleLength(connectionCycles);
+        
+      // Debug phase calculation for connection 30 on June 26th
+      if (cycle.connectionId === 30 && format(normalizedDay, 'yyyy-MM-dd') === '2025-06-26') {
+        console.log(`🔍 CYCLE UTILS DEBUG - Phase calculation for cycle ${cycle.id}:`, {
+          dayInCycle,
+          cycleLength,
+          periodEnd: format(periodEnd, 'yyyy-MM-dd'),
+          aboutToCallGetCycleDisplayInfo: true
+        });
+      }
       
       // Ovulation calculation now correctly shows June 14th for 28-day cycle
       

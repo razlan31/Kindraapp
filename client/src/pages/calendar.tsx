@@ -1308,6 +1308,16 @@ export default function Calendar() {
                         const cycle = dayActiveCycles[0];
                         const phaseInfo = cycle.connectionId ? getCyclePhaseForDay(day, cycle.connectionId, cycles) : null;
                         
+                        // Debug for June 26th connection 30 emoji issue
+                        if (format(day, 'yyyy-MM-dd') === '2025-06-26' && cycle.connectionId === 30) {
+                          console.log(`🔍 CALENDAR DEBUG - Single cycle emoji logic:`, {
+                            cycleId: cycle.id,
+                            connectionId: cycle.connectionId,
+                            phaseInfo,
+                            cyclesPassedToFunction: cycles.length
+                          });
+                        }
+                        
                         if (!phaseInfo) return null;
                         
                         const getPhaseEmoji = (phase: string, subPhase?: string) => {
