@@ -111,6 +111,14 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
+- June 26, 2025: EMOJI DISAPPEARING BUG COMPREHENSIVE FIX - Resolved missing menstrual cycle emojis with database updates and prevention system
+  - **Root Cause Identified**: Missing `cycle_end_date` values in database caused calendar filtering to exclude cycles, making emojis disappear
+  - **Immediate Fix**: Updated all cycles with missing end dates in database (cycles 160, 176, 177, 178, 179, 180, 181, 182)
+  - **Prevention System**: Enhanced PATCH endpoint to automatically preserve `cycleEndDate` during cycle edits
+  - **Automatic Cycle Generation Fix**: Modified cycle creation to always include proper end dates (fixed `cycleEndDate: undefined` issue)
+  - **Calendar Logic Verified**: Ensured filtering requires valid end dates - all cycles now have them for proper emoji display
+  - **Comprehensive Testing**: Verified June 26th emoji appears correctly and will persist after cycle edits
+
 - June 26, 2025: ACTIVE CYCLE DETECTION SYSTEM - Implemented intelligent active cycle identification and pattern inheritance with manual override control
   - **Active Cycle Detection**: System now intelligently identifies which cycle contains today's date (June 26, 2025)
   - **Smart Pattern Priority**: Active manually edited cycle > Most recent manual edit > Active cycle > Most recent cycle

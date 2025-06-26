@@ -2591,13 +2591,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const newPeriodEndDate = new Date(newCycleStartDate);
           newPeriodEndDate.setDate(newPeriodEndDate.getDate() + periodLength - 1);
           
+          // CRITICAL FIX: Always include cycleEndDate to prevent emoji disappearing
+          const newCycleEndDate = new Date(newCycleStartDate);
+          newCycleEndDate.setDate(newCycleEndDate.getDate() + averageCycleLength - 1);
+          
           // Create the new automatic cycle for this connection
           const newCycleData = {
             userId: userId.toString(),
             connectionId: connectionIdNum,
             periodStartDate: newCycleStartDate,
             periodEndDate: newPeriodEndDate,
-            cycleEndDate: undefined, // Will be set when cycle is manually ended
+            cycleEndDate: newCycleEndDate, // FIXED: Include proper end date for calendar filtering
             notes: completedCycles.length > 0 
               ? `Auto-generated following completed cycle pattern (${averageCycleLength}-day cycle, ${periodLength}-day period)`
               : `Auto-generated from ${baselineCycle.periodStartDate.toISOString().split('T')[0]} pattern (${averageCycleLength}-day cycle, ${periodLength}-day period)`,
