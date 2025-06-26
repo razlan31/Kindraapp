@@ -841,7 +841,9 @@ export default function MenstrualCyclePage() {
                 return today >= startDate && today <= endDate;
               });
               const avgCycleLength = calculateCycleLength(personCycles);
-              const currentDay = currentCycle ? differenceInDays(new Date(), new Date(currentCycle.periodStartDate.includes('T') ? currentCycle.periodStartDate : currentCycle.periodStartDate + 'T12:00:00')) + 1 : 0;
+              // Use the same phase calculation as calendar for consistency
+              const currentPhaseInfo = currentCycle ? getCyclePhaseForDay(new Date(), personId, cycles) : null;
+              const currentDay = currentPhaseInfo?.day || 0;
               const periodLength = currentCycle?.periodEndDate ? 
                 differenceInDays(new Date(currentCycle.periodEndDate), new Date(currentCycle.periodStartDate)) + 1 : 5;
               
@@ -857,7 +859,7 @@ export default function MenstrualCyclePage() {
                 });
               }
               
-              const currentPhase = currentCycle ? getDetailedCyclePhase(currentDay, avgCycleLength, periodLength) : null;
+              const currentPhase = currentPhaseInfo?.detailedInfo || null;
               
               // Get phase-based colors using new detailed phase system
               const phaseColors = currentPhase ? {
