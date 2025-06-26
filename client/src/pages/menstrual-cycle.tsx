@@ -580,12 +580,12 @@ export default function MenstrualCyclePage() {
         const cycleEndDate = new Date(cycle.cycleEndDate);
         return cycleEndDate < today;
       })
-      .sort((a, b) => new Date(b.periodStartDate + 'T12:00:00').getTime());
+      .sort((a, b) => new Date(b.periodStartDate).getTime());
   };
 
   const getCycleLength = (cycle: MenstrualCycle) => {
     if (!cycle.cycleEndDate) return null;
-    return differenceInDays(new Date(cycle.cycleEndDate + 'T12:00:00'), new Date(cycle.periodStartDate + 'T12:00:00')) + 1;
+    return differenceInDays(new Date(cycle.cycleEndDate), new Date(cycle.periodStartDate)) + 1;
   };
 
   const getAverageCycleLength = () => {
@@ -625,11 +625,11 @@ export default function MenstrualCyclePage() {
 
   const getCycleStage = (day: Date, cycle: MenstrualCycle) => {
     const checkDay = startOfDay(day);
-    const cycleStart = startOfDay(new Date(cycle.periodStartDate + 'T12:00:00'));
+    const cycleStart = startOfDay(new Date(cycle.periodStartDate));
     
     // For predicted cycles, check if we're in the predicted period
     if ((cycle as any).isPrediction && cycle.periodEndDate) {
-      const periodStart = startOfDay(new Date(cycle.periodStartDate + 'T12:00:00'));
+      const periodStart = startOfDay(new Date(cycle.periodStartDate));
       const periodEnd = startOfDay(new Date(cycle.periodEndDate));
       
       if (checkDay >= periodStart && checkDay <= periodEnd) {
@@ -844,7 +844,7 @@ export default function MenstrualCyclePage() {
               // Find active cycle - only cycles that contain today's date (not future cycles)
               const currentCycle = personCycles.find(cycle => {
                 const today = new Date();
-                const startDate = new Date(cycle.periodStartDate + 'T12:00:00');
+                const startDate = new Date(cycle.periodStartDate);
                 
                 // Filter out future cycles - cycle must have started already
                 if (today < startDate) return false;
@@ -1436,7 +1436,7 @@ export default function MenstrualCyclePage() {
                           {cycle.connectionId === null ? "You" : connections.find(c => c.id === cycle.connectionId)?.name || "Unknown"}
                         </span>
                         <span className="font-medium">
-                          {format(new Date(cycle.periodStartDate + 'T12:00:00'), 'MMM d')} - {cycle.cycleEndDate ? format(new Date(cycle.cycleEndDate + 'T12:00:00'), 'MMM d') : 'Ongoing'}
+                          {format(cycle.periodStartDate, 'MMM d')} - {cycle.cycleEndDate ? format(cycle.cycleEndDate, 'MMM d') : 'Ongoing'}
                         </span>
                         {cycle.flowIntensity && (
                           <Badge variant="outline" className="text-xs">
