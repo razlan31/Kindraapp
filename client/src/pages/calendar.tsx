@@ -1269,6 +1269,21 @@ export default function Calendar() {
                         const dayStr = format(day, 'yyyy-MM-dd');
                         const isDebugDate = ['2025-06-01', '2025-06-29', '2025-06-30', '2025-07-01', '2025-07-27'].includes(dayStr);
                         
+                        // CRITICAL DEBUG: Let's see what's happening with June 1st specifically
+                        if (dayStr === '2025-06-01') {
+                          console.log(`🚨 JUNE 1ST CRITICAL DEBUG:`, {
+                            dayStr,
+                            selectedConnectionIds,
+                            totalCycles: cycles.length,
+                            connection30Cycles: cycles.filter(c => c.connectionId === 30).map(c => ({
+                              id: c.id,
+                              connectionId: c.connectionId,
+                              periodStart: format(new Date(c.periodStartDate), 'yyyy-MM-dd'),
+                              cycleEnd: c.cycleEndDate ? format(new Date(c.cycleEndDate), 'yyyy-MM-dd') : null
+                            }))
+                          });
+                        }
+                        
                         if (isDebugDate) {
                           console.log(`🔍 CALENDAR RENDER DEBUG - ${dayStr}:`, {
                             menstrualFilterEnabled: filters.menstrualCycle,
@@ -1292,17 +1307,28 @@ export default function Calendar() {
                           
                           if (!cycleEnd) return false;
                           
-                          const isInRange = day >= cycleStart && day <= cycleEnd;
+                          // Fix: Use date-only comparison to avoid timezone issues
+                          const dayDateOnly = format(day, 'yyyy-MM-dd');
+                          const cycleStartDateOnly = format(cycleStart, 'yyyy-MM-dd');
+                          const cycleEndDateOnly = format(cycleEnd, 'yyyy-MM-dd');
+                          
+                          const isInRange = dayDateOnly >= cycleStartDateOnly && dayDateOnly <= cycleEndDateOnly;
                           
                           // Debug for specific dates
                           if (isDebugDate && cycle.connectionId === 30) {
                             console.log(`🔍 CYCLE FILTER DEBUG - ${dayStr} cycle ${cycle.id}:`, {
                               connectionId: cycle.connectionId,
-                              cycleStart: cycleStart.toISOString().split('T')[0],
-                              cycleEnd: cycleEnd.toISOString().split('T')[0],
-                              dayToCheck: day.toISOString().split('T')[0],
+                              cycleStart: cycleStartDateOnly,
+                              cycleEnd: cycleEndDateOnly,
+                              dayToCheck: dayDateOnly,
                               isInRange,
-                              connectionSelected: selectedConnectionIds.includes(cycle.connectionId)
+                              connectionSelected: selectedConnectionIds.includes(cycle.connectionId),
+                              CRITICAL_DEBUG: {
+                                dayStrParam: dayStr,
+                                dayParam: format(day, 'yyyy-MM-dd'),
+                                dayToCheckComputed: dayDateOnly,
+                                areTheyEqual: dayStr === dayDateOnly
+                              }
                             });
                           }
                           

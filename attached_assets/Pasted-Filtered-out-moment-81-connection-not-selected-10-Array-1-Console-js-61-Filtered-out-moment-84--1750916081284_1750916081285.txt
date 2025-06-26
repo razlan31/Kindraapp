@@ -1,0 +1,54 @@
+Filtered out moment 81 - connection not selected 10 Array(1)
+Console.js:61 Filtered out moment 84 - connection not selected 10 Array(1)
+Console.js:61 Filtered out moment 95 - connection not selected 11 Array(1)
+Console.js:61 Filtered out moment 65 - connection not selected 10 Array(1)
+Console.js:61 Filtered out moment 64 - connection not selected 10 Array(1)
+Console.js:61 Filtered out moment 94 - connection not selected 11 Array(1)
+Console.js:61 Filtered out moment 93 - connection not selected 11 Array(1)
+Console.js:61 Filtered out moment 92 - connection not selected 11 Array(1)
+Console.js:61 Filtered out moment 91 - connection not selected 11 Array(1)
+Console.js:61 Filtered out moment 68 - connection not selected 11 Array(1)
+Console.js:61 Filtered out moment 67 - connection not selected 11 Array(1)
+Console.js:61 Filtered out moment 66 - connection not selected 10 Array(1)
+Console.js:61 🗓️ Calendar State: Object
+Console.js:61 Calendar Debug - Total moments: 0 Array(0)
+Console.js:61 🔍 CALENDAR DEBUG - Connection 30 on 2025-06-01: Object
+Console.js:61 🔍 CALENDAR RENDER DEBUG - 2025-06-01: Object
+Console.js:61 🔍 CYCLE FILTER DEBUG - 2025-06-01 cycle 184: Object
+Console.js:61 🔍 CYCLE FILTER DEBUG - 2025-06-01 cycle 185: Object
+Console.js:61 🔍 CYCLE FILTER DEBUG - 2025-06-01 cycle 160: Object
+Console.js:61 🔍 NO ACTIVE CYCLES - 2025-06-01: No cycles found for this day
+Console.js:61 🔍 June 16th final styling: Object
+Console.js:61 🔍 CYCLE UTILS DEBUG - Phase calculation for cycle 160: Object
+Console.js:61 🔍 EMOJI DEBUG - getDetailedCyclePhase result: Object
+Console.js:61 🔍 EMOJI DEBUG - Connection 30 on June 26th: getCyclePhaseForDay returned: Object
+Console.js:61 🔍 EMOJI DEBUG - detailedInfo: Object
+Console.js:61 🔍 EMOJI DEBUG - June 26th: cyclePhases[0]: Object
+Console.js:61 🔍 EMOJI DEBUG - June 26th: getCycleDisplayInfo result: Object
+Console.js:61 🔍 CYCLE UTILS DEBUG - Phase calculation for cycle 160: Object
+Console.js:61 🔍 EMOJI DEBUG - getDetailedCyclePhase result: Object
+Console.js:61 🔍 CALENDAR DEBUG - Single cycle emoji logic: Object
+Console.js:61 🔍 CALENDAR DEBUG - Connection 30 on 2025-06-29: Object
+Console.js:61 🔍 CALENDAR RENDER DEBUG - 2025-06-29: Object
+Console.js:61 🔍 CYCLE FILTER DEBUG - 2025-06-29 cycle 184: Object
+Console.js:61 🔍 CYCLE FILTER DEBUG - 2025-06-29 cycle 185: Object
+Console.js:61 🔍 CYCLE FILTER DEBUG - 2025-06-29 cycle 160: Object
+Console.js:61 🔍 NO ACTIVE CYCLES - 2025-06-29: No cycles found for this day
+Console.js:61 🔍 CALENDAR DEBUG - Connection 30 on 2025-06-30: Object
+Console.js:61 🔍 CALENDAR RENDER DEBUG - 2025-06-30: Object
+Console.js:61 🔍 CYCLE FILTER DEBUG - 2025-06-30 cycle 184: Object
+Console.js:61 🔍 CYCLE FILTER DEBUG - 2025-06-30 cycle 185: Object
+Console.js:61 🔍 CYCLE FILTER DEBUG - 2025-06-30 cycle 160: Object
+Console.js:61 🔍 FOUND ACTIVE CYCLES - 2025-06-30: Object
+Console.js:61 🔍 EMOJI SELECTION DEBUG - 2025-06-30: Object
+Console.js:61 🔍 EMOJI DEBUG - Final emoji rendering for 2025-06-30: Object
+Console.js:61 🔍 CALENDAR DEBUG - Connection 30 on 2025-07-01: Object
+Console.js:61 🔍 CALENDAR RENDER DEBUG - 2025-07-01: Object
+Console.js:61 🔍 CYCLE FILTER DEBUG - 2025-07-01 cycle 184: Object
+Console.js:61 🔍 CYCLE FILTER DEBUG - 2025-07-01 cycle 185: Object
+Console.js:61 🔍 CYCLE FILTER DEBUG - 2025-07-01 cycle 160: Object
+Console.js:61 🔍 FOUND ACTIVE CYCLES - 2025-07-01: Object
+Console.js:61 🔍 EMOJI SELECTION DEBUG - 2025-07-01: Object
+Console.js:61 🔍 EMOJI DEBUG - Final emoji rendering for 2025-07-01: Object
+Console.js:61 MomentModal render - momentModalOpen: false
+frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.Understand this error
