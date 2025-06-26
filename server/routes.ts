@@ -2370,12 +2370,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     let allCycles = [...existingCycles];
 
+    // Helper function to identify the active cycle (contains today's date)
+    const findActiveCycle = (cycles: any[]): any | null => {
+      return cycles.find(cycle => {
+        const cycleStart = new Date(cycle.periodStartDate);
+        cycleStart.setHours(0, 0, 0, 0);
+        
+        // If cycle has an end date, use it
+        if (cycle.cycleEndDate) {
+          const cycleEnd = new Date(cycle.cycleEndDate);
+          cycleEnd.setHours(0, 0, 0, 0);
+          return today >= cycleStart && today <= cycleEnd;
+        }
+        
+        // If no end date, estimate cycle length (default 30 days)
+        const estimatedEnd = new Date(cycleStart);
+        estimatedEnd.setDate(estimatedEnd.getDate() + 29); // 30-day cycle
+        return today >= cycleStart && today <= estimatedEnd;
+      }) || null;
+    };
+
     // Process each connection separately
     for (const [connectionId, cyclesData] of Object.entries(cyclesByConnection)) {
       const connectionIdNum = parseInt(connectionId);
       const cycles = cyclesData as any[];
       const sortedCycles = cycles.sort((a: any, b: any) => 
         new Date(b.periodStartDate).getTime() - new Date(a.periodStartDate).getTime()
+      );
+
+      // STEP 1: Identify the active cycle (contains today's date)
+      const activeCycle = findActiveCycle(cycles);
+      console.log(`🎯 ACTIVE CYCLE for connection ${connectionIdNum}:`, 
+        activeCycle ? {
+          id: activeCycle.id,
+          startDate: activeCycle.periodStartDate,
+          endDate: activeCycle.cycleEndDate || 'estimated',
+          notes: activeCycle.notes || 'no notes'
+        } : 'NONE FOUND'
       );
 
       // Find the most recent cycle (whether active or completed)
@@ -2397,8 +2428,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
          (!cycle.notes.includes('Auto-generated') && !cycle.notes.includes('Following edited pattern')))
       );
       
-      // Determine the pattern source: most recent manual edit or most recent cycle
-      const patternSourceCycle = manuallyEditedCycles.length > 0 ? manuallyEditedCycles[0] : baseCycle;
+      // STEP 2: Determine the pattern source with active cycle priority
+      // Priority: Active cycle (if manually edited) > Most recent manual edit > Active cycle > Most recent cycle
+      let patternSourceCycle;
+      
+      if (activeCycle && activeCycle.notes && activeCycle.notes.includes('Manually edited')) {
+        // Active cycle has been manually edited - use it as pattern source
+        patternSourceCycle = activeCycle;
+        console.log(`🎯 Using ACTIVE manually edited cycle as pattern source: ${activeCycle.periodStartDate}`);
+      } else if (manuallyEditedCycles.length > 0) {
+        // Use most recent manually edited cycle
+        patternSourceCycle = manuallyEditedCycles[0];
+        console.log(`📝 Using most recent manually edited cycle as pattern source: ${patternSourceCycle.periodStartDate}`);
+      } else if (activeCycle) {
+        // Use active cycle even if not manually edited
+        patternSourceCycle = activeCycle;
+        console.log(`🎯 Using active cycle as pattern source: ${activeCycle.periodStartDate}`);
+      } else {
+        // Fallback to most recent cycle
+        patternSourceCycle = baseCycle;
+        console.log(`⏰ Using most recent cycle as fallback pattern source: ${baseCycle.periodStartDate}`);
+      }
       
       console.log(`Pattern inheritance for connection ${connectionIdNum}:`, {
         totalCycles: sortedCycles.length,
@@ -2495,12 +2545,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.log(`No completed cycles found, using standard pattern from ${baselineDate.toISOString()}`);
       }
 
-      // Generate future cycles based on pattern inheritance  
-      // CRITICAL FIX: Always start from manually edited baseline, not calculated next date
+      // STEP 3: Generate future cycles based on pattern inheritance and active cycle logic
+      // CRITICAL FIX: If there's an active cycle, generate from AFTER it ends
       let cycleGenerationCount = 0;
-      let currentGenerationDate = new Date(baselineDate);
-      // Start generating from NEXT cycle after baseline (add cycle length)
-      currentGenerationDate.setDate(currentGenerationDate.getDate() + averageCycleLength);
+      let currentGenerationDate;
+      
+      if (activeCycle && !activeCycle.cycleEndDate) {
+        // Active cycle exists but hasn't ended - calculate when it should end and start next cycle after
+        const activeStart = new Date(activeCycle.periodStartDate);
+        const estimatedActiveEnd = new Date(activeStart);
+        estimatedActiveEnd.setDate(estimatedActiveEnd.getDate() + averageCycleLength - 1);
+        
+        currentGenerationDate = new Date(estimatedActiveEnd);
+        currentGenerationDate.setDate(currentGenerationDate.getDate() + 1); // Start next day after active cycle ends
+        
+        console.log(`🎯 ACTIVE CYCLE EXISTS: Generating future cycles after active cycle ends on ${estimatedActiveEnd.toISOString().split('T')[0]}`);
+      } else {
+        // No active cycle or active cycle has ended - start from pattern source + cycle length
+        currentGenerationDate = new Date(patternSourceCycle.periodStartDate);
+        currentGenerationDate.setDate(currentGenerationDate.getDate() + averageCycleLength);
+        
+        console.log(`📅 NO ACTIVE CYCLE: Generating future cycles starting from ${currentGenerationDate.toISOString().split('T')[0]}`);
+      }
       
       console.log(`Generating future cycles for connection ${connectionIdNum} starting from ${currentGenerationDate.toISOString()}`);
       

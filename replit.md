@@ -111,14 +111,14 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
-- June 26, 2025: REFINED PATTERN INHERITANCE SYSTEM - Implemented intelligent active cycle pattern inheritance with manual override control
-  - **New Logic**: Active cycle (containing today's date) automatically follows latest past cycle pattern until manually edited
-  - **Active Cycle Definition**: Cycle that contains today's date, with automatic end date estimation using average cycle length
-  - **Pattern Flow**: Past cycle edits → Active cycle inherits → Next 3 months follow active cycle pattern
-  - **Manual Override**: Editing active cycle breaks inheritance and sets new pattern for future cycles
-  - **Clean Regeneration**: All pattern updates completely overwrite old patterns and regenerate next 3 months
-  - **User Control**: Users can edit historical data without affecting current patterns, but must edit active cycle to change future predictions
-  - **Performance Optimized**: Efficient pattern inheritance with clear cascade from past → active → future cycles
+- June 26, 2025: ACTIVE CYCLE DETECTION SYSTEM - Implemented intelligent active cycle identification and pattern inheritance with manual override control
+  - **Active Cycle Detection**: System now intelligently identifies which cycle contains today's date (June 26, 2025)
+  - **Smart Pattern Priority**: Active manually edited cycle > Most recent manual edit > Active cycle > Most recent cycle
+  - **Pattern Flow**: Active cycle edits immediately update all future cycles with new pattern
+  - **Manual Override**: Editing any cycle breaks auto-generation and establishes new pattern baseline
+  - **Future Generation Logic**: Generates cycles AFTER active cycle ends, not from arbitrary start dates
+  - **Root Cause Fixed**: Pattern inheritance no longer creates conflicting cycles with wrong baseline dates
+  - **Performance Optimized**: Clean separation between active cycle management and future cycle prediction
 
 - June 25, 2025: PATTERN INHERITANCE SYSTEM FIX - Resolved date timezone conversion issues while maintaining automatic cycle generation
   - Fixed core issue: eliminated timezone conversion by parsing date strings directly instead of using Date constructors
