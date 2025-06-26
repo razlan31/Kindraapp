@@ -2489,16 +2489,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.log(`Using completed cycle pattern: ${lastCompleted.periodStartDate.toISOString()} ended ${lastCompleted.cycleEndDate.toISOString()}`);
         console.log(`Next cycle should start: ${nextCycleStartDate.toISOString()}`);
       } else {
-        // Fallback to regular calculation
+        // CRITICAL FIX: Use manually edited baseline properly for future cycles
         nextCycleStartDate = new Date(baselineDate);
         nextCycleStartDate.setDate(nextCycleStartDate.getDate() + averageCycleLength);
         console.log(`No completed cycles found, using standard pattern from ${baselineDate.toISOString()}`);
       }
 
-      // Generate future cycles based on pattern inheritance
-      // Fixed calculation logic to prevent September/August date issues
+      // Generate future cycles based on pattern inheritance  
+      // CRITICAL FIX: Always start from manually edited baseline, not calculated next date
       let cycleGenerationCount = 0;
-      let currentGenerationDate = new Date(nextCycleStartDate);
+      let currentGenerationDate = new Date(baselineDate);
+      // Start generating from NEXT cycle after baseline (add cycle length)
+      currentGenerationDate.setDate(currentGenerationDate.getDate() + averageCycleLength);
       
       console.log(`Generating future cycles for connection ${connectionIdNum} starting from ${currentGenerationDate.toISOString()}`);
       
