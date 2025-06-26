@@ -130,7 +130,7 @@ export default function MenstrualCyclePage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingCycle, setEditingCycle] = useState<MenstrualCycle | null>(null);
   const [selectedPersonId, setSelectedPersonId] = useState<number | null>(null);
-  const [selectedPersonIds, setSelectedPersonIds] = useState<number[]>([]);
+  const [selectedConnectionIds, setSelectedConnectionIds] = useState<number[]>([]);
   const [cycleForPersonId, setCycleForPersonId] = useState<number | null>(null);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [viewMode, setViewMode] = useState<'calendar' | 'list'>('calendar');
@@ -188,13 +188,13 @@ export default function MenstrualCyclePage() {
     return persons;
   }, [connections]);
 
-  // Sync Focus Context with selectedPersonIds
+  // Sync Focus Context with selectedConnectionIds (copying calendar's working pattern)
   useEffect(() => {
-    if (mainFocusConnection && !selectedPersonIds.includes(mainFocusConnection.id)) {
-      console.log(`🔍 FOCUS SYNC - Setting selectedPersonIds to [${mainFocusConnection.id}]`);
-      setSelectedPersonIds([mainFocusConnection.id]);
+    if (mainFocusConnection && !selectedConnectionIds.includes(mainFocusConnection.id)) {
+      console.log(`🔍 FOCUS SYNC - Setting selectedConnectionIds to [${mainFocusConnection.id}]`);
+      setSelectedConnectionIds([mainFocusConnection.id]);
     }
-  }, [mainFocusConnection, selectedPersonIds]);
+  }, [mainFocusConnection, selectedConnectionIds]);
 
   // Helper to get person color
   const getPersonColor = (personId: number) => {
@@ -225,9 +225,9 @@ export default function MenstrualCyclePage() {
 
     
     // First, filter cycles to only selected persons
-    const relevantCycles = selectedPersonIds.length === 0 ? cycles : cycles.filter(cycle => {
+    const relevantCycles = selectedConnectionIds.length === 0 ? cycles : cycles.filter(cycle => {
       // Check if this cycle belongs to a selected person
-      return selectedPersonIds.some(selectedId => {
+      return selectedConnectionIds.some(selectedId => {
         if (selectedId === 0) {
           return cycle.connectionId === null; // User's cycles
         } else {
@@ -463,7 +463,7 @@ export default function MenstrualCyclePage() {
       mood: '',
       symptoms: [],
       notes: '',
-      connectionId: selectedPersonIds.length === 1 ? selectedPersonIds[0] : null
+      connectionId: selectedConnectionIds.length === 1 ? selectedConnectionIds[0] : null
     });
   };
 
@@ -481,9 +481,9 @@ export default function MenstrualCyclePage() {
     } else if (cycleForPersonId !== null) {
       // A specific person's "Start New Cycle" button was clicked
       targetPersonId = cycleForPersonId;
-    } else if (selectedPersonIds.length === 1) {
+    } else if (selectedConnectionIds.length === 1) {
       // Only one person selected, use that person
-      targetPersonId = selectedPersonIds[0];
+      targetPersonId = selectedConnectionIds[0];
     } else {
       // Multiple people selected but no specific person button clicked
       alert("Please select exactly one person to create a cycle for.");
@@ -556,9 +556,9 @@ export default function MenstrualCyclePage() {
 
   // Filter cycles based on selected persons
   const filteredCycles = useMemo(() => {
-    if (selectedPersonIds.length === 0) return cycles;
+    if (selectedConnectionIds.length === 0) return cycles;
     return cycles.filter(cycle => {
-      return selectedPersonIds.some(selectedId => {
+      return selectedConnectionIds.some(selectedId => {
         if (selectedId === 0) {
           // User's cycles (connectionId is null)
           return cycle.connectionId === null;
@@ -568,7 +568,7 @@ export default function MenstrualCyclePage() {
         }
       });
     });
-  }, [cycles, selectedPersonIds]);
+  }, [cycles, selectedConnectionIds]);
 
   const getCurrentCycle = () => filteredCycles.find(cycle => !cycle.cycleEndDate);
   const getPastCycles = () => {
@@ -722,17 +722,17 @@ export default function MenstrualCyclePage() {
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" className="w-full justify-between">
                   <span>
-                    {selectedPersonIds.length === 0 ? 'Choose connection' : 
-                     selectedPersonIds.length === 1 ? 
-                       trackablePersons.find(p => p.id === selectedPersonIds[0])?.name || 'Unknown' :
-                     `${selectedPersonIds.length} people selected`}
+                    {selectedConnectionIds.length === 0 ? 'Choose connection' : 
+                     selectedConnectionIds.length === 1 ? 
+                       trackablePersons.find(p => p.id === selectedConnectionIds[0])?.name || 'Unknown' :
+                     `${selectedConnectionIds.length} people selected`}
                   </span>
                   <ChevronDown className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-[var(--radix-dropdown-menu-trigger-width)]" sideOffset={4}>
                 <DropdownMenuItem 
-                  onClick={() => setSelectedPersonIds([])}
+                  onClick={() => setSelectedConnectionIds([])}
                   className="py-3 px-4"
                 >
                   <div className="flex items-center gap-2">
@@ -746,12 +746,12 @@ export default function MenstrualCyclePage() {
                   return (
                     <DropdownMenuCheckboxItem
                       key={person.id}
-                      checked={selectedPersonIds.includes(person.id)}
+                      checked={selectedConnectionIds.includes(person.id)}
                       onCheckedChange={(checked) => {
                         if (checked) {
-                          setSelectedPersonIds([...selectedPersonIds, person.id]);
+                          setSelectedConnectionIds([...selectedConnectionIds, person.id]);
                         } else {
-                          setSelectedPersonIds(selectedPersonIds.filter(id => id !== person.id));
+                          setSelectedConnectionIds(selectedConnectionIds.filter(id => id !== person.id));
                         }
                       }}
                       onSelect={(e) => e.preventDefault()}
@@ -818,16 +818,16 @@ export default function MenstrualCyclePage() {
         {/* Connection Cycle Tracking */}
         {(() => {
           console.log(`🔍 CYCLE TRACKER RENDER DEBUG:`, {
-            selectedPersonIds,
-            selectedPersonIdsLength: selectedPersonIds.length,
-            includes30: selectedPersonIds.includes(30),
+            selectedConnectionIds,
+            selectedConnectionIdsLength: selectedConnectionIds.length,
+            includes30: selectedConnectionIds.includes(30),
             trackablePersons: trackablePersons.map(p => ({ id: p.id, name: p.name }))
           });
           return null;
         })()}
-        {selectedPersonIds.length > 0 && (
+        {selectedConnectionIds.length > 0 && (
           <section className="px-4 py-2 space-y-4">
-            {selectedPersonIds.map((personId) => {
+            {selectedConnectionIds.map((personId) => {
               const person = trackablePersons.find(p => p.id === personId);
               if (!person) return null;
               
@@ -1130,7 +1130,7 @@ export default function MenstrualCyclePage() {
 
 
         {/* Calendar View */}
-        {viewMode === 'calendar' && selectedPersonIds.length > 0 && (
+        {viewMode === 'calendar' && selectedConnectionIds.length > 0 && (
           <section className="px-4 py-2">
             <Card className="p-4">
               <div className="flex items-center justify-between mb-4">
@@ -1244,7 +1244,7 @@ export default function MenstrualCyclePage() {
                         {(() => {
                           // Get cycles for ALL selected connections (not just ones with cycles on this specific day)
                           const allSelectedCycles = cycles.filter(cycle => {
-                            if (!cycle.connectionId || !selectedPersonIds.includes(cycle.connectionId)) return false;
+                            if (!cycle.connectionId || !selectedConnectionIds.includes(cycle.connectionId)) return false;
                             
                             const cycleStart = new Date(cycle.periodStartDate.includes('T') ? cycle.periodStartDate : cycle.periodStartDate + 'T12:00:00');
                             const cycleEnd = cycle.cycleEndDate ? new Date(cycle.cycleEndDate.includes('T') ? cycle.cycleEndDate : cycle.cycleEndDate + 'T12:00:00') : null;
@@ -1255,10 +1255,10 @@ export default function MenstrualCyclePage() {
                           });
                           
                           // For alphabet letters, check all selected connections regardless of cycle status
-                          const selectedConnections = connections.filter(c => selectedPersonIds.includes(c.id));
+                          const selectedConnections = connections.filter(c => selectedConnectionIds.includes(c.id));
                           
                           // Priority 1: Multiple connections selected - show alphabet letters for ALL selected connections
-                          if (selectedPersonIds.length > 1) {
+                          if (selectedConnectionIds.length > 1) {
                             return (
                               <div className="flex gap-0.5">
                                 {selectedConnections.slice(0, 2).map((connection, index) => {
@@ -1366,7 +1366,7 @@ export default function MenstrualCyclePage() {
                   </div>
                 </div>
                 
-                {selectedPersonIds.length > 1 && (
+                {selectedConnectionIds.length > 1 && (
                   <div className="border-t pt-2">
                     <p className="text-xs font-medium text-muted-foreground mb-2">Multiple people on same day:</p>
                     <div className="flex items-center gap-2 text-xs">
@@ -1386,10 +1386,10 @@ export default function MenstrualCyclePage() {
 
 
         {/* Stats */}
-        {selectedPersonIds.length > 0 && getAverageCycleLength() && (
+        {selectedConnectionIds.length > 0 && getAverageCycleLength() && (
           <section className="px-4 py-2">
             <Card className="p-4">
-              <h3 className="font-semibold mb-3">Cycle Statistics {selectedPersonIds.length === 0 ? 'for All People' : selectedPersonIds.length === 1 ? `for ${trackablePersons.find(p => p.id === selectedPersonIds[0])?.name || 'Unknown'}` : `for ${selectedPersonIds.length} people`}</h3>
+              <h3 className="font-semibold mb-3">Cycle Statistics {selectedConnectionIds.length === 0 ? 'for All People' : selectedConnectionIds.length === 1 ? `for ${trackablePersons.find(p => p.id === selectedConnectionIds[0])?.name || 'Unknown'}` : `for ${selectedConnectionIds.length} people`}</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div className="text-center">
                   <div className="text-2xl font-bold text-pink-600">{getAverageCycleLength()}</div>

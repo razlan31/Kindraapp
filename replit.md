@@ -111,6 +111,14 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
+- June 26, 2025: CYCLE TRACKER EMOJI RENDERING FIXED - Resolved variable naming inconsistency preventing emoji display
+  - **Root Cause**: Cycle tracker used `selectedPersonIds` while calendar used `selectedConnectionIds` 
+  - **Variable Inconsistency**: Calendar page worked perfectly because it used consistent variable naming
+  - **Comprehensive Fix**: Replaced all instances of `selectedPersonIds` with `selectedConnectionIds` throughout menstrual-cycle.tsx
+  - **Focus Context Integration**: Added useRelationshipFocus synchronization to match calendar's working pattern
+  - **Emoji Display Restored**: First day of period emojis now render correctly in cycle tracker
+  - **System Synchronization**: Cycle tracker and calendar now use identical data filtering and state management
+
 - June 26, 2025: CALENDAR EMOJI RENDERING COMPLETELY RESOLVED - Fixed final date filtering issue preventing cycle emojis from displaying
   - **Root Cause**: Date filtering logic in calendar was not properly matching cycles to dates despite correct backend data
   - **Clean Database Maintained**: Sequential pattern (June 1-28, June 29-July 26, July 27-August 23) working perfectly
