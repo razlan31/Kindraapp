@@ -1251,7 +1251,24 @@ export default function MenstrualCyclePage() {
                             
                             if (!cycleEnd) return false;
                             
-                            return day >= cycleStart && day <= cycleEnd;
+                            const dateMatch = day >= cycleStart && day <= cycleEnd;
+                            
+                            // Debug June 1st specifically
+                            if (format(day, 'yyyy-MM-dd') === '2025-06-01' && cycle.connectionId === 30) {
+                              console.log(`🔍 JUNE 1ST DEBUG - Cycle ${cycle.id}:`, {
+                                periodStartDate: cycle.periodStartDate,
+                                cycleEndDate: cycle.cycleEndDate,
+                                cycleStart: format(cycleStart, 'yyyy-MM-dd'),
+                                cycleEnd: cycleEnd ? format(cycleEnd, 'yyyy-MM-dd') : 'null',
+                                dayStr: format(day, 'yyyy-MM-dd'),
+                                dayGTEStart: day >= cycleStart,
+                                dayLTEEnd: cycleEnd ? day <= cycleEnd : false,
+                                dateMatch,
+                                isLocked: cycle.isLocked
+                              });
+                            }
+                            
+                            return dateMatch;
                           });
                           
                           // For alphabet letters, check all selected connections regardless of cycle status
