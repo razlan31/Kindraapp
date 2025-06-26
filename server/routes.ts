@@ -2374,6 +2374,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const findActiveCycle = (cycles: any[]): any | null => {
       return null; // Disable automatic cycle detection
     };
+    
+    // SKIP AUTOMATIC CYCLE GENERATION COMPLETELY
+    console.log('🚫 AUTOMATIC CYCLE GENERATION DISABLED - User wants manual control only');
+    return allCycles;
 
     // Process each connection separately
     for (const [connectionId, cyclesData] of Object.entries(cyclesByConnection)) {
@@ -2644,7 +2648,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const accessibleConnectionIds = accessibleConnections.map(conn => conn.id);
       
       // Check if any cycles need automatic progression
-      const updatedCycles = await checkAndCreateAutomaticCycles(userId, allCycles);
+      // DISABLED: No automatic cycle generation per user request
+      const updatedCycles = allCycles; // await checkAndCreateAutomaticCycles(userId, allCycles);
       
       // Add isLocked property to cycles from inaccessible connections  
       const cyclesWithLockStatus = updatedCycles.map(cycle => ({

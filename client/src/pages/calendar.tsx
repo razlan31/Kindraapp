@@ -1069,6 +1069,17 @@ export default function Calendar() {
                       // Use the exact centralized function that was working before
                       const phaseInfo = getCyclePhaseForDay(day, connectionId, cycles);
                       
+                      // Debug specific dates for connection 30
+                      const dayStr = format(day, 'yyyy-MM-dd');
+                      if (connectionId === 30 && ['2025-06-01', '2025-06-29', '2025-06-30', '2025-07-01', '2025-07-27'].includes(dayStr)) {
+                        console.log(`🔍 CALENDAR DEBUG - Connection 30 on ${dayStr}:`, {
+                          phaseInfo,
+                          menstrualFilterEnabled: filters.menstrualCycle,
+                          connectionSelected: selectedConnectionIds.includes(30),
+                          shouldShowEmoji: phaseInfo && filters.menstrualCycle
+                        });
+                      }
+                      
                       if (format(day, 'yyyy-MM-dd') === '2025-06-26' && connectionId === 30) {
                         console.log(`🔍 EMOJI DEBUG - Connection 30 on June 26th: getCyclePhaseForDay returned:`, phaseInfo);
                         if (phaseInfo?.detailedInfo) {
