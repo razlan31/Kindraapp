@@ -138,7 +138,7 @@ export default function Calendar() {
   const { mainFocusConnection, loading: focusLoading } = useRelationshipFocus();
   const queryClient = useQueryClient();
   const [location] = useLocation();
-  const [currentDate, setCurrentDate] = useState(new Date(2025, 4, 16)); // Force May 16, 2025 to test ovulation
+  const [currentDate, setCurrentDate] = useState(new Date(2025, 5, 1)); // June 1, 2025 to debug missing emojis
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
   const [dayDetailOpen, setDayDetailOpen] = useState(false);
   const [viewMode, setViewMode] = useState<'daily' | 'weekly' | 'monthly'>('monthly');
@@ -1265,6 +1265,20 @@ export default function Calendar() {
 
                       {/* Priority 3: Show cycle indicators (alphabet letters for multiple, emojis for single) */}
                       {(() => {
+                        // Debug for specific problematic dates
+                        const dayStr = format(day, 'yyyy-MM-dd');
+                        const isDebugDate = ['2025-06-01', '2025-06-29', '2025-06-30', '2025-07-01', '2025-07-27'].includes(dayStr);
+                        
+                        if (isDebugDate) {
+                          console.log(`🔍 CALENDAR RENDER DEBUG - ${dayStr}:`, {
+                            menstrualFilterEnabled: filters.menstrualCycle,
+                            momentsMilestonesCount: dayMoments.length + dayMilestones.length,
+                            shouldShowCycle: filters.menstrualCycle && (dayMoments.length + dayMilestones.length) < (viewMode === 'daily' ? 3 : 2),
+                            selectedConnectionIds,
+                            cyclesAvailable: cycles.length
+                          });
+                        }
+                        
                         if (!filters.menstrualCycle || (dayMoments.length + dayMilestones.length) >= (viewMode === 'daily' ? 3 : 2)) return null;
                         
                         // Get cycles for this day
@@ -1276,7 +1290,21 @@ export default function Calendar() {
                           
                           if (!cycleEnd) return false;
                           
-                          return day >= cycleStart && day <= cycleEnd;
+                          const isInRange = day >= cycleStart && day <= cycleEnd;
+                          
+                          // Debug for specific dates
+                          if (isDebugDate && cycle.connectionId === 30) {
+                            console.log(`🔍 CYCLE FILTER DEBUG - ${dayStr} cycle ${cycle.id}:`, {
+                              connectionId: cycle.connectionId,
+                              cycleStart: cycleStart.toISOString().split('T')[0],
+                              cycleEnd: cycleEnd.toISOString().split('T')[0],
+                              dayToCheck: day.toISOString().split('T')[0],
+                              isInRange,
+                              connectionSelected: selectedConnectionIds.includes(cycle.connectionId)
+                            });
+                          }
+                          
+                          return isInRange;
                         });
                         
                         if (dayActiveCycles.length === 0) return null;
