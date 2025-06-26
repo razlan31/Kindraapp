@@ -806,6 +806,15 @@ export default function MenstrualCyclePage() {
         </section>
 
         {/* Connection Cycle Tracking */}
+        {(() => {
+          console.log(`🔍 CYCLE TRACKER RENDER DEBUG:`, {
+            selectedPersonIds,
+            selectedPersonIdsLength: selectedPersonIds.length,
+            includes30: selectedPersonIds.includes(30),
+            trackablePersons: trackablePersons.map(p => ({ id: p.id, name: p.name }))
+          });
+          return null;
+        })()}
         {selectedPersonIds.length > 0 && (
           <section className="px-4 py-2 space-y-4">
             {selectedPersonIds.map((personId) => {
