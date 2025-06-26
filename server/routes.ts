@@ -2646,6 +2646,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let allCycles = await storage.getMenstrualCycles(userId);
       console.log("Retrieved cycles:", allCycles.length);
       
+      // Debug for user 8 - trace cycle data flow for emoji issue
+      if (userId === "8") {
+        console.log(`🔍 BACKEND DEBUG - Raw cycles from database:`, {
+          totalCycles: allCycles.length,
+          connection30Cycles: allCycles.filter(c => c.connectionId === 30).map(c => ({
+            id: c.id,
+            connectionId: c.connectionId,
+            periodStartDate: c.periodStartDate,
+            cycleEndDate: c.cycleEndDate,
+            cycleLength: c.cycleLength,
+            notes: c.notes
+          }))
+        });
+      }
+      
       // Add lock status to cycles without hiding any data
       const allConnections = await storage.getConnectionsByUserId(userId);
       const focusConnectionId = user.currentFocus;
@@ -2662,6 +2677,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }));
       
       console.log(`✅ Cycles with lock status: ${allCycles.length} total cycles (${accessibleConnectionIds.length} accessible connections)`);
+      
+      // Debug final response for user 8
+      if (userId === "8") {
+        console.log(`🔍 BACKEND DEBUG - Final response for calendar:`, {
+          totalCyclesInResponse: cyclesWithLockStatus.length,
+          connection30InResponse: cyclesWithLockStatus.filter(c => c.connectionId === 30).length,
+          connection30Details: cyclesWithLockStatus.filter(c => c.connectionId === 30).map(c => ({
+            id: c.id,
+            connectionId: c.connectionId,
+            periodStartDate: c.periodStartDate,
+            cycleEndDate: c.cycleEndDate,
+            isLocked: c.isLocked
+          }))
+        });
+      }
       
       res.json(cyclesWithLockStatus);
     } catch (error: any) {
