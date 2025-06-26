@@ -969,9 +969,14 @@ export default function MenstrualCyclePage() {
                       {currentCycle ? (
                         <div className="space-y-3">
                           <div className="flex items-center justify-between">
-                            <p className={`text-sm ${phaseColors.text}`}>
-                              Day {currentDay} of cycle
-                            </p>
+                            <div className="flex items-center gap-2">
+                              {currentPhaseInfo?.detailedInfo?.emoji && (
+                                <span className="text-lg">{currentPhaseInfo.detailedInfo.emoji}</span>
+                              )}
+                              <p className={`text-sm ${phaseColors.text}`}>
+                                Day {currentDay} of cycle
+                              </p>
+                            </div>
                             {currentPhase && (
                               <Badge className={`${currentPhase.color} text-white text-xs`}>
                                 {currentPhase.phase}
