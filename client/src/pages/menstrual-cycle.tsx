@@ -311,12 +311,14 @@ export default function MenstrualCyclePage() {
         connectionId: updatedCycle.connectionId
       });
       
-      // Clear all related cache entries
-      queryClient.removeQueries({ queryKey: ['/api/menstrual-cycles'] });
-      
-      // Force fresh data fetch
+      // Clear all related cache entries and force fresh data
       await queryClient.invalidateQueries({ queryKey: ['/api/menstrual-cycles'] });
       await queryClient.refetchQueries({ queryKey: ['/api/menstrual-cycles'] });
+      
+      // Close dialog after successful update
+      setIsDialogOpen(false);
+      setEditingCycle(null);
+      resetForm();
       
       toast({
         title: "Cycle Updated",
