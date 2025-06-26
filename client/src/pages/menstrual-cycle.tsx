@@ -855,10 +855,21 @@ export default function MenstrualCyclePage() {
                 // Use the cycle that getCyclePhaseForDay determined is correct for today
                 displayCycle = currentPhaseInfo.cycle;
                 currentDay = currentPhaseInfo.day;
+                
+                console.log(`🔍 CYCLE TRACKER - Using cycle ${displayCycle.id} for today (${format(today, 'yyyy-MM-dd')}):`, {
+                  day: currentDay,
+                  phase: currentPhaseInfo.detailedInfo?.phase,
+                  emoji: currentPhaseInfo.detailedInfo?.emoji,
+                  cycleStart: format(new Date(displayCycle.periodStartDate), 'yyyy-MM-dd'),
+                  cycleEnd: displayCycle.cycleEndDate ? format(new Date(displayCycle.cycleEndDate), 'yyyy-MM-dd') : 'ongoing'
+                });
               } else if (currentCycle) {
                 // Fallback to the originally detected current cycle
                 displayCycle = currentCycle;
                 currentDay = 0;
+                console.log(`🔍 CYCLE TRACKER - No phase info found, using fallback cycle ${currentCycle.id}`);
+              } else {
+                console.log(`🔍 CYCLE TRACKER - No cycles found for person ${personId}`);
               }
               const periodLength = currentCycle?.periodEndDate ? 
                 differenceInDays(new Date(displayCycle.periodEndDate), new Date(displayCycle.periodStartDate)) + 1 : 5;
