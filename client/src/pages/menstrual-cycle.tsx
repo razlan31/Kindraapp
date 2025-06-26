@@ -25,6 +25,7 @@ import { BottomNavigation } from "@/components/layout/bottom-navigation";
 import { UpgradeBanner } from "@/components/subscription/upgrade-banner";
 import { useAuth } from "@/contexts/auth-context";
 import { useModal } from "@/contexts/modal-context";
+import { useRelationshipFocus } from "@/contexts/relationship-focus-context";
 import { DetailedPhaseCard } from "@/components/cycle/detailed-phase-card";
 import { CycleLearningEngine } from "@/components/cycle/cycle-learning-engine";
 import { EnhancedPhaseVisualizer } from "@/components/cycle/enhanced-phase-visualizer";
@@ -123,6 +124,7 @@ export default function MenstrualCyclePage() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const { user } = useAuth();
+  const { mainFocusConnection } = useRelationshipFocus();
   // Modal context not needed for this page
   const queryClient = useQueryClient();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -185,6 +187,14 @@ export default function MenstrualCyclePage() {
     
     return persons;
   }, [connections]);
+
+  // Sync Focus Context with selectedPersonIds
+  useEffect(() => {
+    if (selectedConnectionId && !selectedPersonIds.includes(selectedConnectionId)) {
+      console.log(`🔍 FOCUS SYNC - Setting selectedPersonIds to [${selectedConnectionId}]`);
+      setSelectedPersonIds([selectedConnectionId]);
+    }
+  }, [selectedConnectionId, selectedPersonIds]);
 
   // Helper to get person color
   const getPersonColor = (personId: number) => {
