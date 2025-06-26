@@ -857,30 +857,28 @@ export default function MenstrualCyclePage() {
                   
                   // If we're in the last 3 days, try to show the next cycle instead
                   if (daysUntilEnd <= 3) {
-                    // Find the next cycle that starts after this one ends
-                    const nextCycle = personCycles.find(cycle => {
-                      const nextStart = new Date(cycle.periodStartDate);
-                      return nextStart > cycleEnd;
-                    });
+                    // Find the next cycle that starts immediately after this one ends
+                    const nextCycle = personCycles
+                      .filter(cycle => {
+                        const nextStart = new Date(cycle.periodStartDate);
+                        return nextStart > cycleEnd;
+                      })
+                      .sort((a, b) => new Date(a.periodStartDate).getTime() - new Date(b.periodStartDate).getTime())[0];
                     
                     if (nextCycle) {
                       console.log(`🔍 CYCLE TRACKER - Switching to upcoming cycle ${nextCycle.id} (starts ${format(new Date(nextCycle.periodStartDate), 'yyyy-MM-dd')}) because we're ${daysUntilEnd} days from current cycle end`);
                       displayCycle = nextCycle;
-                      // For upcoming cycle, show it as if we're on day 1 of period
-                      currentDay = 1;
-                      currentPhaseInfo = {
-                        day: 1,
-                        detailedInfo: {
-                          phase: 'menstrual',
-                          subPhase: 'early_menstrual',
-                          emoji: '🩸',
-                          color: 'bg-red-100 dark:bg-red-900/30 border-red-300 dark:border-red-500',
-                          description: 'Menstrual phase (upcoming)',
-                          dayRange: 'Days 1-5',
-                          hormonalProfile: 'Low estrogen and progesterone',
-                          recommendations: ['Rest and self-care', 'Stay hydrated', 'Light exercise']
-                        }
-                      };
+                      // For upcoming cycle, get the phase info for the first day of the period
+                      const upcomingDate = new Date(nextCycle.periodStartDate);
+                      currentPhaseInfo = getCyclePhaseForDay(upcomingDate, personId, cycles);
+                      currentDay = currentPhaseInfo?.day || 1;
+                      
+                      console.log(`🔍 CYCLE TRACKER DEBUG - Upcoming cycle phase info:`, {
+                        upcomingDate: format(upcomingDate, 'yyyy-MM-dd'),
+                        currentPhaseInfo,
+                        emoji: currentPhaseInfo?.detailedInfo?.emoji,
+                        phase: currentPhaseInfo?.detailedInfo?.phase
+                      });
                     } else {
                       // No next cycle found, use current cycle data
                       currentPhaseInfo = currentPhaseData;
