@@ -1275,7 +1275,9 @@ export default function Calendar() {
                             momentsMilestonesCount: dayMoments.length + dayMilestones.length,
                             shouldShowCycle: filters.menstrualCycle && (dayMoments.length + dayMilestones.length) < (viewMode === 'daily' ? 3 : 2),
                             selectedConnectionIds,
-                            cyclesAvailable: cycles.length
+                            cyclesAvailable: cycles.length,
+                            viewMode,
+                            maxAllowedMomentsAndMilestones: viewMode === 'daily' ? 3 : 2
                           });
                         }
                         
@@ -1307,7 +1309,24 @@ export default function Calendar() {
                           return isInRange;
                         });
                         
-                        if (dayActiveCycles.length === 0) return null;
+                        if (dayActiveCycles.length === 0) {
+                          if (isDebugDate) {
+                            console.log(`🔍 NO ACTIVE CYCLES - ${dayStr}: No cycles found for this day`);
+                          }
+                          return null;
+                        }
+                        
+                        if (isDebugDate) {
+                          console.log(`🔍 FOUND ACTIVE CYCLES - ${dayStr}:`, {
+                            cycleCount: dayActiveCycles.length,
+                            cycles: dayActiveCycles.map(c => ({
+                              id: c.id,
+                              connectionId: c.connectionId,
+                              periodStart: c.periodStartDate,
+                              cycleEnd: c.cycleEndDate
+                            }))
+                          });
+                        }
                         
                         // Multiple connections selected AND multiple cycles on this day - show alphabet letters
                         if (selectedConnectionIds.length > 1 && dayActiveCycles.length > 1) {
@@ -1360,6 +1379,15 @@ export default function Calendar() {
                         if (!phaseInfo) return null;
                         
                         const getPhaseEmoji = (phase: string, subPhase?: string) => {
+                          // Debug emoji selection
+                          if (isDebugDate) {
+                            console.log(`🔍 EMOJI SELECTION DEBUG - ${dayStr}:`, {
+                              phase,
+                              subPhase,
+                              aboutToReturn: phase === 'menstrual' ? '🩸' : phase === 'fertile' && subPhase === 'ovulation' ? '🥚' : phase === 'fertile' ? '🌸' : phase === 'follicular' ? '🌱' : phase === 'luteal' ? '🌙' : ''
+                            });
+                          }
+                          
                           if (phase === 'menstrual') return '🩸';
                           if (phase === 'fertile' && subPhase === 'ovulation') return '🥚';
                           if (phase === 'fertile') return '🌸';
@@ -1370,9 +1398,9 @@ export default function Calendar() {
                         
                         const emoji = getPhaseEmoji(phaseInfo.phase, phaseInfo.subPhase);
                         
-                        // Debug for June 26th connection 30 emoji issue
-                        if (format(day, 'yyyy-MM-dd') === '2025-06-26' && cycle.connectionId === 30) {
-                          console.log(`🔍 EMOJI DEBUG - Final emoji rendering:`, {
+                        // Debug for all problematic dates
+                        if (isDebugDate && cycle.connectionId === 30) {
+                          console.log(`🔍 EMOJI DEBUG - Final emoji rendering for ${dayStr}:`, {
                             cycleId: cycle.id,
                             connectionId: cycle.connectionId,
                             phaseInfo: {
@@ -1380,11 +1408,17 @@ export default function Calendar() {
                               subPhase: phaseInfo.subPhase
                             },
                             emoji,
-                            willRender: !!emoji
+                            willRender: !!emoji,
+                            emojiLength: emoji?.length || 0
                           });
                         }
                         
-                        if (!emoji) return null;
+                        if (!emoji) {
+                          if (isDebugDate) {
+                            console.log(`🔍 EMOJI MISSING - No emoji to render for ${dayStr}`);
+                          }
+                          return null;
+                        }
                         
                         return (
                           <span
