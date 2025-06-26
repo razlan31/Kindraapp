@@ -208,7 +208,17 @@ export const getCyclePhaseForDay = (day: Date, connectionId: number, cycles: Men
     new Date(a.periodStartDate).getTime() - new Date(b.periodStartDate).getTime()
   );
 
-  // Removed debug logging - calendar cycle patterns now working correctly
+  // Debug for connection 30 to see which cycles we're checking
+  if (connectionId === 30) {
+    console.log(`🔍 CYCLE PHASE DEBUG - Finding cycle for ${format(day, 'yyyy-MM-dd')}:`, {
+      dayChecking: format(day, 'yyyy-MM-dd'),
+      availableCycles: sortedCycles.map(c => ({
+        id: c.id,
+        start: format(new Date(c.periodStartDate), 'yyyy-MM-dd'),
+        end: c.cycleEndDate ? format(new Date(c.cycleEndDate), 'yyyy-MM-dd') : 'no end date'
+      }))
+    });
+  }
 
   // Find the cycle that this day belongs to
   for (const cycle of sortedCycles) {
@@ -228,6 +238,16 @@ export const getCyclePhaseForDay = (day: Date, connectionId: number, cycles: Men
     const normalizedCycleEnd = startOfDay(cycleEnd);
     
 
+    
+    // Debug cycle matching for connection 30
+    if (connectionId === 30) {
+      console.log(`🔍 CYCLE MATCH TEST - Cycle ${cycle.id}:`, {
+        cycleStart: format(normalizedCycleStart, 'yyyy-MM-dd'),
+        cycleEnd: format(normalizedCycleEnd, 'yyyy-MM-dd'),
+        dayToCheck: format(normalizedDay, 'yyyy-MM-dd'),
+        isMatch: normalizedDay >= normalizedCycleStart && normalizedDay <= normalizedCycleEnd
+      });
+    }
     
     if (normalizedDay >= normalizedCycleStart && normalizedDay <= normalizedCycleEnd) {
       
