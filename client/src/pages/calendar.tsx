@@ -1284,6 +1284,19 @@ export default function Calendar() {
                         const dayStr = format(day, 'yyyy-MM-dd');
                         const isDebugDate = ['2025-06-01', '2025-06-29', '2025-06-30', '2025-07-01', '2025-07-27'].includes(dayStr);
                         
+                        // CRITICAL June 1st specific debugging
+                        if (dayStr === '2025-06-01') {
+                          console.log(`🚨 JUNE 1ST EMOJI PIPELINE START:`, {
+                            menstrualFilterEnabled: filters.menstrualCycle,
+                            momentsCount: dayMoments.length,
+                            milestonesCount: dayMilestones.length,
+                            totalActivities: dayMoments.length + dayMilestones.length,
+                            maxAllowedActivities: viewMode === 'daily' ? 3 : 2,
+                            viewMode,
+                            willProceedToEmojiCheck: filters.menstrualCycle && (dayMoments.length + dayMilestones.length) < (viewMode === 'daily' ? 3 : 2)
+                          });
+                        }
+                        
                         // CRITICAL DEBUG: Let's see what's happening with June 1st specifically
                         if (dayStr === '2025-06-01') {
                           console.log(`🚨 JUNE 1ST CRITICAL DEBUG:`, {
@@ -1311,7 +1324,19 @@ export default function Calendar() {
                           });
                         }
                         
-                        if (!filters.menstrualCycle || (dayMoments.length + dayMilestones.length) >= (viewMode === 'daily' ? 3 : 2)) return null;
+                        if (!filters.menstrualCycle || (dayMoments.length + dayMilestones.length) >= (viewMode === 'daily' ? 3 : 2)) {
+                          if (isDebugDate) {
+                            console.log(`🔍 EMOJI BLOCKING CONDITION - ${dayStr}:`, {
+                              menstrualFilterEnabled: filters.menstrualCycle,
+                              momentsCount: dayMoments.length,
+                              milestonesCount: dayMilestones.length,
+                              totalActivities: dayMoments.length + dayMilestones.length,
+                              maxAllowed: viewMode === 'daily' ? 3 : 2,
+                              isBlocked: !filters.menstrualCycle || (dayMoments.length + dayMilestones.length) >= (viewMode === 'daily' ? 3 : 2)
+                            });
+                          }
+                          return null;
+                        }
                         
                         // Get cycles for this day
                         const dayActiveCycles = cycles.filter(cycle => {
