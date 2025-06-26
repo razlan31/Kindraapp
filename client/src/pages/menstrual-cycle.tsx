@@ -28,7 +28,7 @@ import { useModal } from "@/contexts/modal-context";
 import { DetailedPhaseCard } from "@/components/cycle/detailed-phase-card";
 import { CycleLearningEngine } from "@/components/cycle/cycle-learning-engine";
 import { EnhancedPhaseVisualizer } from "@/components/cycle/enhanced-phase-visualizer";
-import { getCyclePhaseForDay, getCycleDisplayInfo, calculateCycleLength, calculateOvulationDay, getDetailedCyclePhase } from "@/lib/cycle-utils";
+import { getCyclePhaseForDay, getCycleDisplayInfo, calculateCycleLength, calculateOvulationDay, getDetailedCyclePhase, calculateExpectedCycleEnd } from "@/lib/cycle-utils";
 
 const symptomsList = [
   "Cramps", "Bloating", "Headache", "Mood swings", "Fatigue", 
@@ -932,9 +932,12 @@ export default function MenstrualCyclePage() {
                             </p>
                           )}
                           
-                          <p className={`text-xs ${phaseColors.text} opacity-80`}>
-                            Started {format(new Date(currentCycle.periodStartDate.includes('T') ? currentCycle.periodStartDate : currentCycle.periodStartDate + 'T12:00:00'), 'MMM d, yyyy')}
-                          </p>
+                          <div className={`text-xs ${phaseColors.text} opacity-80 space-y-1`}>
+                            <p>Started {format(new Date(currentCycle.periodStartDate.includes('T') ? currentCycle.periodStartDate : currentCycle.periodStartDate + 'T12:00:00'), 'MMM d, yyyy')}</p>
+                            {!currentCycle.cycleEndDate && (
+                              <p>Expected end: {format(calculateExpectedCycleEnd(new Date(currentCycle.periodStartDate), personCycles), 'MMM d, yyyy')} ({avgCycleLength}-day cycle)</p>
+                            )}
+                          </div>
                           
                           <Button 
                             onClick={() => handleEdit(currentCycle)}

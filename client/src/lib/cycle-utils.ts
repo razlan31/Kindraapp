@@ -27,6 +27,12 @@ export const calculateCycleLength = (cycles: MenstrualCycle[]): number => {
   return Math.round(cycleLengths.reduce((sum, length) => sum + length, 0) / cycleLengths.length);
 };
 
+// Calculate expected cycle end date for active cycles without end dates
+export const calculateExpectedCycleEnd = (cycleStart: Date, connectionCycles: MenstrualCycle[]): Date => {
+  const avgCycleLength = calculateCycleLength(connectionCycles);
+  return addDays(cycleStart, avgCycleLength - 1);
+};
+
 // Enhanced cycle phase calculation with learning from historical data
 export const calculateOvulationDay = (cycleLength: number, historicalCycles: any[] = []): number => {
   // Learn from historical ovulation patterns if available
@@ -212,9 +218,8 @@ export const getCyclePhaseForDay = (day: Date, connectionId: number, cycles: Men
     if (cycle.cycleEndDate) {
       cycleEnd = new Date(cycle.cycleEndDate);
     } else {
-      // For active cycles, calculate expected end based on average cycle length
-      const avgCycleLength = calculateCycleLength(connectionCycles) || 28;
-      cycleEnd = addDays(cycleStart, avgCycleLength - 1);
+      // For active cycles without end dates, use expected cycle end calculation
+      cycleEnd = calculateExpectedCycleEnd(cycleStart, connectionCycles);
     }
     
     // Normalize dates to start of day BEFORE comparison to avoid timezone issues
@@ -222,16 +227,7 @@ export const getCyclePhaseForDay = (day: Date, connectionId: number, cycles: Men
     const normalizedCycleStart = startOfDay(cycleStart);
     const normalizedCycleEnd = startOfDay(cycleEnd);
     
-    // Debug logging for emoji issue investigation
-    if (cycle.connectionId === 30 && format(normalizedDay, 'yyyy-MM-dd') === '2025-06-26') {
-      console.log(`🔍 EMOJI DEBUG - Connection 30 on ${format(normalizedDay, 'yyyy-MM-dd')}:`, {
-        cycleId: cycle.id,
-        cycleStart: format(normalizedCycleStart, 'yyyy-MM-dd'),
-        cycleEnd: format(normalizedCycleEnd, 'yyyy-MM-dd'),
-        dayInRange: normalizedDay >= normalizedCycleStart && normalizedDay <= normalizedCycleEnd,
-        cycleNotes: cycle.notes
-      });
-    }
+    // Clean cycle matching logic without debug output
     
     if (normalizedDay >= normalizedCycleStart && normalizedDay <= normalizedCycleEnd) {
       
@@ -241,7 +237,7 @@ export const getCyclePhaseForDay = (day: Date, connectionId: number, cycles: Men
       // Calculate cycle length for detailed phase analysis
       const cycleLength = cycle.cycleEndDate ? 
         differenceInDays(new Date(cycle.cycleEndDate), cycleStart) + 1 : 
-        (calculateCycleLength(connectionCycles) || 28);
+        calculateCycleLength(connectionCycles);
       
       // Ovulation calculation now correctly shows June 14th for 28-day cycle
       
