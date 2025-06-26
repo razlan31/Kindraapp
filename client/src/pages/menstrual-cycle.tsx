@@ -190,11 +190,11 @@ export default function MenstrualCyclePage() {
 
   // Sync Focus Context with selectedPersonIds
   useEffect(() => {
-    if (selectedConnectionId && !selectedPersonIds.includes(selectedConnectionId)) {
-      console.log(`🔍 FOCUS SYNC - Setting selectedPersonIds to [${selectedConnectionId}]`);
-      setSelectedPersonIds([selectedConnectionId]);
+    if (mainFocusConnection && !selectedPersonIds.includes(mainFocusConnection.id)) {
+      console.log(`🔍 FOCUS SYNC - Setting selectedPersonIds to [${mainFocusConnection.id}]`);
+      setSelectedPersonIds([mainFocusConnection.id]);
     }
-  }, [selectedConnectionId, selectedPersonIds]);
+  }, [mainFocusConnection, selectedPersonIds]);
 
   // Helper to get person color
   const getPersonColor = (personId: number) => {
