@@ -846,54 +846,19 @@ export default function MenstrualCyclePage() {
               let currentPhaseInfo = null;
               let currentDay = 0;
               
-              if (currentCycle) {
-                // Check if we're close to the end of current cycle (last 3 days)
-                const today = new Date();
-                const currentPhaseData = getCyclePhaseForDay(today, personId, cycles);
-                
-                if (currentPhaseData && currentCycle.cycleEndDate) {
-                  const cycleEnd = new Date(currentCycle.cycleEndDate);
-                  const daysUntilEnd = differenceInDays(cycleEnd, today);
-                  
-                  // If we're in the last 3 days, try to show the next cycle instead
-                  if (daysUntilEnd <= 3) {
-                    // Find the next cycle that starts immediately after this one ends
-                    const nextCycle = personCycles
-                      .filter(cycle => {
-                        const nextStart = new Date(cycle.periodStartDate);
-                        return nextStart > cycleEnd;
-                      })
-                      .sort((a, b) => new Date(a.periodStartDate).getTime() - new Date(b.periodStartDate).getTime())[0];
-                    
-                    if (nextCycle) {
-                      console.log(`🔍 CYCLE TRACKER - Switching to upcoming cycle ${nextCycle.id} (starts ${format(new Date(nextCycle.periodStartDate), 'yyyy-MM-dd')}) because we're ${daysUntilEnd} days from current cycle end`);
-                      displayCycle = nextCycle;
-                      // For upcoming cycle, get the phase info for the first day of the period
-                      const upcomingDate = new Date(nextCycle.periodStartDate);
-                      currentPhaseInfo = getCyclePhaseForDay(upcomingDate, personId, cycles);
-                      currentDay = currentPhaseInfo?.day || 1;
-                      
-                      console.log(`🔍 CYCLE TRACKER DEBUG - Upcoming cycle phase info:`, {
-                        upcomingDate: format(upcomingDate, 'yyyy-MM-dd'),
-                        currentPhaseInfo,
-                        emoji: currentPhaseInfo?.detailedInfo?.emoji,
-                        phase: currentPhaseInfo?.detailedInfo?.phase
-                      });
-                    } else {
-                      // No next cycle found, use current cycle data
-                      currentPhaseInfo = currentPhaseData;
-                      currentDay = currentPhaseInfo?.day || 0;
-                    }
-                  } else {
-                    // Not close to end, use current cycle data
-                    currentPhaseInfo = currentPhaseData;
-                    currentDay = currentPhaseInfo?.day || 0;
-                  }
-                } else {
-                  // No cycle end date or phase data, use current cycle
-                  currentPhaseInfo = getCyclePhaseForDay(today, personId, cycles);
-                  currentDay = currentPhaseInfo?.day || 0;
-                }
+              const today = new Date();
+              
+              // Use the same logic as the calendar to find the correct cycle for today
+              currentPhaseInfo = getCyclePhaseForDay(today, personId, cycles);
+              
+              if (currentPhaseInfo && currentPhaseInfo.cycle) {
+                // Use the cycle that getCyclePhaseForDay determined is correct for today
+                displayCycle = currentPhaseInfo.cycle;
+                currentDay = currentPhaseInfo.day;
+              } else if (currentCycle) {
+                // Fallback to the originally detected current cycle
+                displayCycle = currentCycle;
+                currentDay = 0;
               }
               const periodLength = currentCycle?.periodEndDate ? 
                 differenceInDays(new Date(displayCycle.periodEndDate), new Date(displayCycle.periodStartDate)) + 1 : 5;
