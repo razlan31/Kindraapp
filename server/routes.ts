@@ -2646,20 +2646,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let allCycles = await storage.getMenstrualCycles(userId);
       console.log("Retrieved cycles:", allCycles.length);
       
-      // Debug for user 8 - trace cycle data flow for emoji issue
-      if (userId === "8") {
-        console.log(`🔍 BACKEND DEBUG - Raw cycles from database:`, {
-          totalCycles: allCycles.length,
-          connection30Cycles: allCycles.filter(c => c.connectionId === 30).map(c => ({
-            id: c.id,
-            connectionId: c.connectionId,
-            periodStartDate: c.periodStartDate,
-            cycleEndDate: c.cycleEndDate,
-            cycleLength: c.cycleLength,
-            notes: c.notes
-          }))
-        });
-      }
+      // Cleaned up - emoji issue resolved
       
       // Add lock status to cycles without hiding any data
       const allConnections = await storage.getConnectionsByUserId(userId);
