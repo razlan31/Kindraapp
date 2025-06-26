@@ -1,0 +1,113 @@
+🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-26: {dayChecking: '2025-06-26', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-26', isMatch: true}
+Console.js:61 🔍 CYCLE UTILS DEBUG - Phase calculation for cycle 160: {dayInCycle: 26, cycleLength: 28, periodEnd: '2025-06-04', aboutToCallGetCycleDisplayInfo: true}
+Console.js:61 🔍 EMOJI DEBUG - getDetailedCyclePhase result: {dayInCycle: 26, cycleLength: 28, periodLength: 4, detailedPhase: {…}}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-02: {dayChecking: '2025-06-02', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-02', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-03: {dayChecking: '2025-06-03', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-03', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-04: {dayChecking: '2025-06-04', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-04', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-05: {dayChecking: '2025-06-05', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-05', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-06: {dayChecking: '2025-06-06', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-06', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-07: {dayChecking: '2025-06-07', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-07', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-08: {dayChecking: '2025-06-08', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-08', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-09: {dayChecking: '2025-06-09', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-09', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-10: {dayChecking: '2025-06-10', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-10', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-11: {dayChecking: '2025-06-11', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-11', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-12: {dayChecking: '2025-06-12', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-12', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-13: {dayChecking: '2025-06-13', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-13', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-14: {dayChecking: '2025-06-14', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-14', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-15: {dayChecking: '2025-06-15', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-15', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-16: {dayChecking: '2025-06-16', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-16', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-17: {dayChecking: '2025-06-17', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-17', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-18: {dayChecking: '2025-06-18', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-18', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-19: {dayChecking: '2025-06-19', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-19', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-20: {dayChecking: '2025-06-20', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-20', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-21: {dayChecking: '2025-06-21', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-21', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-22: {dayChecking: '2025-06-22', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-22', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-23: {dayChecking: '2025-06-23', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-23', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-24: {dayChecking: '2025-06-24', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-24', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-25: {dayChecking: '2025-06-25', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-25', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-26: {dayChecking: '2025-06-26', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-26', isMatch: true}
+Console.js:61 🔍 CYCLE UTILS DEBUG - Phase calculation for cycle 160: {dayInCycle: 26, cycleLength: 28, periodEnd: '2025-06-04', aboutToCallGetCycleDisplayInfo: true}
+Console.js:61 🔍 EMOJI DEBUG - getDetailedCyclePhase result: {dayInCycle: 26, cycleLength: 28, periodLength: 4, detailedPhase: {…}}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-27: {dayChecking: '2025-06-27', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-27', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-28: {dayChecking: '2025-06-28', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-28', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-30: {dayChecking: '2025-06-30', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-30', isMatch: false}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 185: {cycleStart: '2025-06-29', cycleEnd: '2025-07-26', dayToCheck: '2025-06-30', isMatch: true}
+frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.
+e @ frame_ant.js:2
+s @ frame_ant.js:2
+Promise.then
+e @ frame_ant.js:2
+u @ frame_ant.js:2
+Promise.then
+e @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+s @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ _app-e8cd1b69c02bbb86.js:38
+(anonymous) @ _app-e8cd1b69c02bbb86.js:25
+e @ _app-e8cd1b69c02bbb86.js:14
+t.subscribe @ _app-e8cd1b69c02bbb86.js:14
+e.consumeQueue @ _app-e8cd1b69c02bbb86.js:25
+(anonymous) @ _app-e8cd1b69c02bbb86.js:25
+n @ _app-e8cd1b69c02bbb86.js:38
+setTimeout
+(anonymous) @ _app-e8cd1b69c02bbb86.js:38
+e.scheduleQueueConsumption @ _app-e8cd1b69c02bbb86.js:25
+(anonymous) @ _app-e8cd1b69c02bbb86.js:25
+e @ _app-e8cd1b69c02bbb86.js:14
+t.subscribe @ _app-e8cd1b69c02bbb86.js:14
+(anonymous) @ _app-e8cd1b69c02bbb86.js:25
+e @ _app-e8cd1b69c02bbb86.js:14
+t.subscribe @ _app-e8cd1b69c02bbb86.js:14
+e.try @ _app-e8cd1b69c02bbb86.js:25
+e.start @ _app-e8cd1b69c02bbb86.js:25
+t.request @ _app-e8cd1b69c02bbb86.js:25
+(anonymous) @ _app-e8cd1b69c02bbb86.js:14
+(anonymous) @ _app-e8cd1b69c02bbb86.js:14
+(anonymous) @ _app-e8cd1b69c02bbb86.js:25
+(anonymous) @ _app-e8cd1b69c02bbb86.js:14
+e.execute @ _app-e8cd1b69c02bbb86.js:14
+e.getObservableFromLink @ _app-e8cd1b69c02bbb86.js:11
+(anonymous) @ _app-e8cd1b69c02bbb86.js:11
+(anonymous) @ _app-e8cd1b69c02bbb86.js:11
+(anonymous) @ _app-e8cd1b69c02bbb86.js:11
+(anonymous) @ _app-e8cd1b69c02bbb86.js:11
+s @ _app-e8cd1b69c02bbb86.js:11
+e.mutate @ _app-e8cd1b69c02bbb86.js:11
+e.mutate @ _app-e8cd1b69c02bbb86.js:11
+(anonymous) @ _app-e8cd1b69c02bbb86.js:14
+e.wait @ 7447-58fd4ae583d8d5e7.js:1
+u @ 8830-dd20f3f5b16ef9ba.js:1
+(anonymous) @ 8830-dd20f3f5b16ef9ba.js:1
+n @ _app-e8cd1b69c02bbb86.js:38Understand this error

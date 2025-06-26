@@ -841,11 +841,64 @@ export default function MenstrualCyclePage() {
                 return today >= startDate && today <= endDate;
               });
               const avgCycleLength = calculateCycleLength(personCycles);
-              // Use the same phase calculation as calendar for consistency
-              const currentPhaseInfo = currentCycle ? getCyclePhaseForDay(new Date(), personId, cycles) : null;
-              const currentDay = currentPhaseInfo?.day || 0;
+              // CRITICAL FIX: For cycle tracker, show upcoming period info when near end of current cycle
+              let displayCycle = currentCycle;
+              let currentPhaseInfo = null;
+              let currentDay = 0;
+              
+              if (currentCycle) {
+                // Check if we're close to the end of current cycle (last 3 days)
+                const today = new Date();
+                const currentPhaseData = getCyclePhaseForDay(today, personId, cycles);
+                
+                if (currentPhaseData && currentCycle.cycleEndDate) {
+                  const cycleEnd = new Date(currentCycle.cycleEndDate);
+                  const daysUntilEnd = differenceInDays(cycleEnd, today);
+                  
+                  // If we're in the last 3 days, try to show the next cycle instead
+                  if (daysUntilEnd <= 3) {
+                    // Find the next cycle that starts after this one ends
+                    const nextCycle = personCycles.find(cycle => {
+                      const nextStart = new Date(cycle.periodStartDate);
+                      return nextStart > cycleEnd;
+                    });
+                    
+                    if (nextCycle) {
+                      console.log(`🔍 CYCLE TRACKER - Switching to upcoming cycle ${nextCycle.id} (starts ${format(new Date(nextCycle.periodStartDate), 'yyyy-MM-dd')}) because we're ${daysUntilEnd} days from current cycle end`);
+                      displayCycle = nextCycle;
+                      // For upcoming cycle, show it as if we're on day 1 of period
+                      currentDay = 1;
+                      currentPhaseInfo = {
+                        day: 1,
+                        detailedInfo: {
+                          phase: 'menstrual',
+                          subPhase: 'early_menstrual',
+                          emoji: '🩸',
+                          color: 'bg-red-100 dark:bg-red-900/30 border-red-300 dark:border-red-500',
+                          description: 'Menstrual phase (upcoming)',
+                          dayRange: 'Days 1-5',
+                          hormonalProfile: 'Low estrogen and progesterone',
+                          recommendations: ['Rest and self-care', 'Stay hydrated', 'Light exercise']
+                        }
+                      };
+                    } else {
+                      // No next cycle found, use current cycle data
+                      currentPhaseInfo = currentPhaseData;
+                      currentDay = currentPhaseInfo?.day || 0;
+                    }
+                  } else {
+                    // Not close to end, use current cycle data
+                    currentPhaseInfo = currentPhaseData;
+                    currentDay = currentPhaseInfo?.day || 0;
+                  }
+                } else {
+                  // No cycle end date or phase data, use current cycle
+                  currentPhaseInfo = getCyclePhaseForDay(today, personId, cycles);
+                  currentDay = currentPhaseInfo?.day || 0;
+                }
+              }
               const periodLength = currentCycle?.periodEndDate ? 
-                differenceInDays(new Date(currentCycle.periodEndDate), new Date(currentCycle.periodStartDate)) + 1 : 5;
+                differenceInDays(new Date(displayCycle.periodEndDate), new Date(displayCycle.periodStartDate)) + 1 : 5;
               
               // Debug cycle tracker calculations for connection 6 (Amalina)
               if (personId === 6) {
@@ -854,7 +907,7 @@ export default function MenstrualCyclePage() {
                   currentDay,
                   periodLength,
                   ovulationDay: calculateOvulationDay(avgCycleLength, personCycles),
-                  currentCycleId: currentCycle?.id,
+                  currentCycleId: displayCycle?.id,
                   personCycles: personCycles.map(c => ({ id: c.id, start: c.periodStartDate, end: c.cycleEndDate }))
                 });
               }
