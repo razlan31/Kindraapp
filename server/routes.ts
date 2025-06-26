@@ -2878,6 +2878,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       console.log(`🔥 FINAL MAPPED updates before storage:`, JSON.stringify(updates, null, 2));
       
+      // CRITICAL: Ensure cycleEndDate is preserved during edits to prevent emoji disappearing
+      // If no endDate is provided in the update, preserve the existing value
+      const existingCycles = await storage.getMenstrualCycles(userId);
+      const existingCycle = existingCycles.find(c => c.id === cycleId);
+      if (existingCycle && !updates.hasOwnProperty('cycleEndDate') && existingCycle.cycleEndDate) {
+        console.log(`🔥 PRESERVING existing cycleEndDate: ${existingCycle.cycleEndDate}`);
+        updates.cycleEndDate = existingCycle.cycleEndDate;
+      }
+      
       const cycle = await storage.updateMenstrualCycle(cycleId, updates);
       
       if (!cycle) {
