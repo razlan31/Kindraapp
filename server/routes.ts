@@ -2468,12 +2468,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const baselineDate = new Date(baselineCycle.periodStartDate);
       
-      // FIXED: Don't add cycle length to baseline - the baseline IS the starting point
-      // Generate cycles AFTER the baseline cycle, not FROM it
-      nextCycleStartDate = new Date(baselineDate);
-      nextCycleStartDate.setDate(nextCycleStartDate.getDate() + averageCycleLength);
+      // COMPLETE CYCLE DETECTION AND INHERITANCE
+      // 1. Find the most recent completed cycle (has cycleEndDate)
+      // 2. Generate active cycle for current month if missing
+      // 3. Generate future predicted cycles
       
-      console.log(`Generating cycles AFTER baseline ${baselineDate.toISOString()}: first new cycle starts ${nextCycleStartDate.toISOString()}`);
+      const completedCycles = sortedCycles.filter(cycle => cycle.cycleEndDate);
+      const activeCycles = sortedCycles.filter(cycle => !cycle.cycleEndDate);
+      
+      if (completedCycles.length > 0) {
+        // Use most recent completed cycle as pattern baseline
+        const lastCompleted = completedCycles.sort((a, b) => 
+          new Date(b.cycleEndDate).getTime() - new Date(a.cycleEndDate).getTime()
+        )[0];
+        
+        const lastCompletedEnd = new Date(lastCompleted.cycleEndDate);
+        nextCycleStartDate = new Date(lastCompletedEnd);
+        nextCycleStartDate.setDate(nextCycleStartDate.getDate() + 1); // Start next day after end
+        
+        console.log(`Using completed cycle pattern: ${lastCompleted.periodStartDate.toISOString()} ended ${lastCompleted.cycleEndDate.toISOString()}`);
+        console.log(`Next cycle should start: ${nextCycleStartDate.toISOString()}`);
+      } else {
+        // Fallback to regular calculation
+        nextCycleStartDate = new Date(baselineDate);
+        nextCycleStartDate.setDate(nextCycleStartDate.getDate() + averageCycleLength);
+        console.log(`No completed cycles found, using standard pattern from ${baselineDate.toISOString()}`);
+      }
 
       // Generate future cycles based on pattern inheritance
       // Fixed calculation logic to prevent September/August date issues
@@ -2482,10 +2502,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       console.log(`Generating future cycles for connection ${connectionIdNum} starting from ${currentGenerationDate.toISOString()}`);
       
-      while (cycleGenerationCount < 3) {
-        // Only create cycle if the generation date is reasonable (within 60 days)
+      while (cycleGenerationCount < 4) { // Generate more cycles for better coverage
+        // Only create cycle if the generation date is reasonable (within 90 days)
         const daysDifference = Math.ceil((currentGenerationDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-        if (daysDifference > 60 || daysDifference < -30) {
+        if (daysDifference > 90 || daysDifference < -60) {
           console.log(`Stopping cycle generation - date out of reasonable range (${daysDifference} days from today)`);
           break;
         }
@@ -2510,7 +2530,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
             periodStartDate: newCycleStartDate,
             periodEndDate: newPeriodEndDate,
             cycleEndDate: undefined, // Will be set when cycle is manually ended
-            notes: `Auto-generated from ${baselineCycle.periodStartDate.toISOString().split('T')[0]} pattern (${averageCycleLength}-day cycle, ${periodLength}-day period)`,
+            notes: completedCycles.length > 0 
+              ? `Auto-generated following completed cycle pattern (${averageCycleLength}-day cycle, ${periodLength}-day period)`
+              : `Auto-generated from ${baselineCycle.periodStartDate.toISOString().split('T')[0]} pattern (${averageCycleLength}-day cycle, ${periodLength}-day period)`,
             mood: null,
             symptoms: null,
             flowIntensity: null
