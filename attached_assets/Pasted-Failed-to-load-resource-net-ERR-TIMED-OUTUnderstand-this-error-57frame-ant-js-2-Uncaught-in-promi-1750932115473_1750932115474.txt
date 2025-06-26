@@ -1,0 +1,398 @@
+Failed to load resource: net::ERR_TIMED_OUTUnderstand this error
+57frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.
+e @ frame_ant.js:2
+s @ frame_ant.js:2Understand this error
+10frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.Understand this error
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_NETWORK_CHANGEDUnderstand this error
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_NETWORK_CHANGEDUnderstand this error
+6frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.Understand this error
+sp.replit.com/v1/m:1 
+            
+            
+           Failed to load resource: net::ERR_NETWORK_CHANGEDUnderstand this error
+_app-e8cd1b69c02bbb86.js:38 Error sending segment performance metrics TypeError: Failed to fetch
+    at frame_ant.js:2:12357
+    at _app-e8cd1b69c02bbb86.js:38:9046
+    at o (sdk.min.js:1:23763)
+    at t.<anonymous> (remote-metrics.ts:138:12)
+    at tslib.es6.js:103:23
+    at Object.next (tslib.es6.js:108:37)
+    at tslib.es6.js:80:8
+    at new Promise (<anonymous>)
+    at u (tslib.es6.js:72:27)
+    at t.send (sdk.min.js:1:22021)
+    at t.<anonymous> (remote-metrics.ts:125:16)
+    at tslib.es6.js:103:23
+    at Object.next (tslib.es6.js:108:37)
+    at tslib.es6.js:80:8
+    at new Promise (<anonymous>)
+    at u (tslib.es6.js:72:27)
+    at t.flush (sdk.min.js:1:21754)
+    at l (remote-metrics.ts:83:14)
+    at n (_app-e8cd1b69c02bbb86.js:38:2959)
+(anonymous) @ _app-e8cd1b69c02bbb86.js:38Understand this error
+frame_ant.js:2 
+            
+            
+           Uncaught (in promise) TypeError: Failed to fetch
+    at frame_ant.js:2:12357
+    at _app-e8cd1b69c02bbb86.js:38:9046
+    at o (sdk.min.js:1:23763)
+    at t.<anonymous> (remote-metrics.ts:138:12)
+    at tslib.es6.js:103:23
+    at Object.next (tslib.es6.js:108:37)
+    at tslib.es6.js:80:8
+    at new Promise (<anonymous>)
+    at u (tslib.es6.js:72:27)
+    at t.send (sdk.min.js:1:22021)
+    at t.<anonymous> (remote-metrics.ts:125:16)
+    at tslib.es6.js:103:23
+    at Object.next (tslib.es6.js:108:37)
+    at tslib.es6.js:80:8
+    at new Promise (<anonymous>)
+    at u (tslib.es6.js:72:27)
+    at t.flush (sdk.min.js:1:21754)
+    at l (remote-metrics.ts:83:14)
+    at n (_app-e8cd1b69c02bbb86.js:38:2959)Understand this error
+/data/repls/ca9e9deb-b0f0-46ea-a081-8c85171c0808/get_connection_metadata:1 
+            
+            
+           Failed to load resource: net::ERR_INTERNET_DISCONNECTEDUnderstand this error
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_INTERNET_DISCONNECTEDUnderstand this error
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_INTERNET_DISCONNECTEDUnderstand this error
+3920-e69d7138f4a2b2df.js:1 WebSocket is already in CLOSING or CLOSED state.
+send @ 3920-e69d7138f4a2b2df.js:1Understand this error
+14frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.Understand this error
+sp.replit.com/v1/t:1 
+            
+            
+           Failed to load resource: net::ERR_NETWORK_CHANGEDUnderstand this error
+sp.replit.com/v1/t:1 
+            
+            
+           Failed to load resource: net::ERR_NETWORK_CHANGEDUnderstand this error
+frame_ant.js:2 
+            
+            
+           Uncaught (in promise) TypeError: Failed to fetch
+    at frame_ant.js:2:12357
+    at _app-e8cd1b69c02bbb86.js:38:9046
+    at o (sdk.min.js:1:23763)
+    at Object.dispatch (fetch-dispatcher.ts:11:20)
+    at Object.<anonymous> (index.ts:122:12)
+    at tslib.es6.js:103:23
+    at Object.next (tslib.es6.js:108:37)
+    at tslib.es6.js:80:8
+    at new Promise (<anonymous>)
+    at u (tslib.es6.js:72:27)
+    at Object.g (index.ts:93:38)
+    at delivery.js:28:10
+    at delivery.js:11:33
+    at tslib.es6.js:103:23
+    at Object.next (tslib.es6.js:108:37)
+    at tslib.es6.js:80:8
+    at new Promise (<anonymous>)
+    at u (tslib.es6.js:72:27)
+    at delivery.js:4:36
+    at o (delivery.js:27:41)
+    at event-queue.js:325:45
+    at Array.map (<anonymous>)
+    at event-queue.js:323:41
+    at n (_app-e8cd1b69c02bbb86.js:38:2959)Understand this error
+frame_ant.js:2 
+            
+            
+           Uncaught (in promise) TypeError: Failed to fetch
+    at frame_ant.js:2:12357
+    at _app-e8cd1b69c02bbb86.js:38:9046
+    at o (sdk.min.js:1:23763)
+    at Object.dispatch (fetch-dispatcher.ts:11:20)
+    at Object.<anonymous> (index.ts:122:12)
+    at tslib.es6.js:103:23
+    at Object.next (tslib.es6.js:108:37)
+    at tslib.es6.js:80:8
+    at new Promise (<anonymous>)
+    at u (tslib.es6.js:72:27)
+    at Object.g (index.ts:93:38)
+    at delivery.js:28:10
+    at delivery.js:11:33
+    at tslib.es6.js:103:23
+    at Object.next (tslib.es6.js:108:37)
+    at tslib.es6.js:80:8
+    at new Promise (<anonymous>)
+    at u (tslib.es6.js:72:27)
+    at delivery.js:4:36
+    at o (delivery.js:27:41)
+    at event-queue.js:325:45
+    at Array.map (<anonymous>)
+    at event-queue.js:323:41
+    at n (_app-e8cd1b69c02bbb86.js:38:2959)Understand this error
+19frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.Understand this error
+sp.replit.com/v1/t:1 
+            
+            
+           Failed to load resource: net::ERR_NETWORK_CHANGEDUnderstand this error
+frame_ant.js:2 
+            
+            
+           Uncaught (in promise) TypeError: Failed to fetch
+    at frame_ant.js:2:12357
+    at _app-e8cd1b69c02bbb86.js:38:9046
+    at o (sdk.min.js:1:23763)
+    at Object.dispatch (fetch-dispatcher.ts:11:20)
+    at Object.<anonymous> (index.ts:122:12)
+    at tslib.es6.js:103:23
+    at Object.next (tslib.es6.js:108:37)
+    at tslib.es6.js:80:8
+    at new Promise (<anonymous>)
+    at u (tslib.es6.js:72:27)
+    at Object.g (index.ts:93:38)
+    at delivery.js:28:10
+    at delivery.js:11:33
+    at tslib.es6.js:103:23
+    at Object.next (tslib.es6.js:108:37)
+    at tslib.es6.js:80:8
+    at new Promise (<anonymous>)
+    at u (tslib.es6.js:72:27)
+    at delivery.js:4:36
+    at o (delivery.js:27:41)
+    at event-queue.js:325:45
+    at Array.map (<anonymous>)
+    at event-queue.js:323:41
+    at n (_app-e8cd1b69c02bbb86.js:38:2959)Understand this error
+10frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.Understand this error
+sp.replit.com/v1/t:1 
+            
+            
+           Failed to load resource: net::ERR_NETWORK_CHANGEDUnderstand this error
+frame_ant.js:2 
+            
+            
+           Uncaught (in promise) TypeError: Failed to fetch
+    at frame_ant.js:2:12357
+    at _app-e8cd1b69c02bbb86.js:38:9046
+    at o (sdk.min.js:1:23763)
+    at Object.dispatch (fetch-dispatcher.ts:11:20)
+    at Object.<anonymous> (index.ts:122:12)
+    at tslib.es6.js:103:23
+    at Object.next (tslib.es6.js:108:37)
+    at tslib.es6.js:80:8
+    at new Promise (<anonymous>)
+    at u (tslib.es6.js:72:27)
+    at Object.g (index.ts:93:38)
+    at delivery.js:28:10
+    at delivery.js:11:33
+    at tslib.es6.js:103:23
+    at Object.next (tslib.es6.js:108:37)
+    at tslib.es6.js:80:8
+    at new Promise (<anonymous>)
+    at u (tslib.es6.js:72:27)
+    at delivery.js:4:36
+    at o (delivery.js:27:41)
+    at event-queue.js:325:45
+    at Array.map (<anonymous>)
+    at event-queue.js:323:41
+    at n (_app-e8cd1b69c02bbb86.js:38:2959)Understand this error
+2frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.Understand this error
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_NETWORK_CHANGEDUnderstand this error
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1 
+            
+            
+           Failed to load resource: net::ERR_NETWORK_CHANGEDUnderstand this error
+18frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.Understand this error
+logs.browser-intake-us5-datadoghq.com/api/v2/logs?ddsource=browser&ddtags=sdk_version%3A4.46.0%2Capi%3Afetch%2Cenv%3Aproduction%2Cservice%3Awebsite%2Cversion%3A757c1074&dd-api-key=pub31a5047a3a4692afb84a423db984dc57&dd-evp-origin-version=4.46.0&dd-evp-origin=browser&dd-request-id=50237ac7-537b-46d8-9379-8cb574f0adfb:1 
+            
+            
+           Failed to load resource: net::ERR_NETWORK_CHANGEDUnderstand this error
+frame_ant.js:2 
+            
+            
+           Uncaught (in promise) TypeError: Failed to fetch
+    at frame_ant.js:2:12357
+    at _app-e8cd1b69c02bbb86.js:38:9046
+    at a (_app-e8cd1b69c02bbb86.js:26:171627)
+    at m (_app-e8cd1b69c02bbb86.js:26:169999)
+    at g (_app-e8cd1b69c02bbb86.js:26:169486)
+    at Object.send (_app-e8cd1b69c02bbb86.js:26:171887)
+    at e.flush (_app-e8cd1b69c02bbb86.js:11:79596)
+    at _app-e8cd1b69c02bbb86.js:11:79207
+    at _app-e8cd1b69c02bbb86.js:11:90625
+    at Array.forEach (<anonymous>)
+    at e.notify (_app-e8cd1b69c02bbb86.js:11:90598)
+    at f (_app-e8cd1b69c02bbb86.js:11:25818)
+    at Object.notifyBeforeAddMessage (_app-e8cd1b69c02bbb86.js:11:25999)
+    at e.push (_app-e8cd1b69c02bbb86.js:11:80139)
+    at e.addOrUpdate (_app-e8cd1b69c02bbb86.js:11:79915)
+    at e.add (_app-e8cd1b69c02bbb86.js:11:79258)
+    at Object.add (_app-e8cd1b69c02bbb86.js:11:172424)
+    at _app-e8cd1b69c02bbb86.js:11:180317
+    at _app-e8cd1b69c02bbb86.js:14:420809
+    at Array.forEach (<anonymous>)
+    at e.notify (_app-e8cd1b69c02bbb86.js:14:420782)
+    at _app-e8cd1b69c02bbb86.js:11:180099
+    at _app-e8cd1b69c02bbb86.js:14:420809
+    at Array.forEach (<anonymous>)
+    at e.notify (_app-e8cd1b69c02bbb86.js:14:420782)
+    at handleLog (_app-e8cd1b69c02bbb86.js:11:179306)
+    at e.handleLogStrategy (_app-e8cd1b69c02bbb86.js:11:175177)
+    at e.log (_app-e8cd1b69c02bbb86.js:11:171205)
+    at d (_app-e8cd1b69c02bbb86.js:6:189271)
+    at e.<anonymous> (_app-e8cd1b69c02bbb86.js:6:189219)
+    at r.value [as log] (_app-e8cd1b69c02bbb86.js:6:189165)
+    at e.info (_app-e8cd1b69c02bbb86.js:11:171367)
+    at Object.info (_app-e8cd1b69c02bbb86.js:11:181573)
+    at E (5701-347dd1721e8d6aa7.js:1:174917)
+    at onSessionTransitionChange (5701-347dd1721e8d6aa7.js:1:179460)
+    at b (5701-347dd1721e8d6aa7.js:1:177353)
+    at m.dispatchEvent (3920-e69d7138f4a2b2df.js:1:260710)
+    at a.updateSession (3920-e69d7138f4a2b2df.js:1:277340)
+    at a.onConnClosed (3920-e69d7138f4a2b2df.js:1:278377)
+    at a.onConnClosed (3920-e69d7138f4a2b2df.js:1:280564)
+    at o.onConnectionClosed (3920-e69d7138f4a2b2df.js:1:282664)
+    at o.onClose (3920-e69d7138f4a2b2df.js:1:286177)
+    at ws.onclose (3920-e69d7138f4a2b2df.js:1:254318)Understand this error
+13frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.Understand this error
+88frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.
+e @ frame_ant.js:2
+s @ frame_ant.js:2Understand this error
+stallwart.build.js:1 stallwart: failed ping 1
+_app-e8cd1b69c02bbb86.js:25 WebSocket connection to 'wss://replit.com/graphql_subscriptions' failed: 
+(anonymous) @ _app-e8cd1b69c02bbb86.js:25Understand this error
+stallwart.build.js:1 stallwart: failed ping 1
+stallwart.build.js:1 stallwart: failed ping 2
+11frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.
+e @ frame_ant.js:2
+s @ frame_ant.js:2Understand this error
+23frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.Understand this error
+workspace_iframe.html:32 Unrecognized feature: 'ambient-light-sensor'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'battery'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'execution-while-not-rendered'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'execution-while-out-of-viewport'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'layout-animations'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'legacy-image-formats'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'navigation-override'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'oversized-images'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'publickey-credentials'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'speaker-selection'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'unoptimized-images'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'unsized-media'.Understand this warning
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowfullscreen'.Understand this warning
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowpaymentrequest'.Understand this warning
+2Console.js:61 Theme context initial load: minimalist
+Console.js:61 🔥 STATE DEBUG - isSubmitting changed: false
+Console.js:61 🔥 STATE DEBUG - connectionId changed: 2 selectedConnectionId: null
+Console.js:61 Modal useEffect - selectedDate from context: null
+Console.js:61 Modal useEffect - editingMoment: null
+Console.js:61 Modal useEffect - momentModalOpen: false
+Console.js:61 🔥 MODAL OPEN - Resetting isSubmitting to false
+Console.js:61 🔥 MODAL INIT - Setting connectionId: 2 from selectedConnectionId: null
+Console.js:61 🔥 PLAN MODAL - Connection effect: Object
+Console.js:61 🔥 PLAN MODAL - Form init effect: Object
+Console.js:61 Theme effect running: minimalist
+Console.js:61 Applied minimalist theme (light base)
+Console.js:61 Theme stored to localStorage: minimalist
+2Console.js:61 Auth: Starting to load user, setting loading to true
+Console.js:61 Theme effect running: minimalist
+Console.js:61 Applied minimalist theme (light base)
+Console.js:61 Theme stored to localStorage: minimalist
+Console.js:61 🔥 PLAN MODAL - Form init effect: Object
+Console.js:61 🔥 PLAN MODAL - Form init effect: Object
+Console.js:61 Focus Context Debug: Object
+Console.js:61 Found saved connection: Object
+Console.js:61 🔍 FOCUS SYNC - Setting selectedConnectionIds to [30]
+Console.js:61 getCurrentUser successful: Object
+Console.js:61 getCurrentUser successful: Object
+Console.js:61 Auth context setting user: Object
+Console.js:61 Auth: Finally block - setting loading to false
+Console.js:61 🔍 CYCLE TRACKER RENDER DEBUG: Object
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-26: Object
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: Object
+Console.js:61 🔍 CYCLE UTILS DEBUG - Phase calculation for cycle 160: Object
+Console.js:61 🔍 EMOJI DEBUG - getDetailedCyclePhase result: Object
+Console.js:61 🔍 CYCLE TRACKER - Using cycle 160 for today (2025-06-26): Object
+Console.js:61 🔍 CYCLE TRACKER DEBUG - Connection 30: Object
+Console.js:61 🔍 EMOJI RENDER DEBUG: Object
+Console.js:61 🔍 JUNE 1ST DEBUG - Cycle 184: Object
+Console.js:61 🔍 JUNE 1ST DEBUG - Cycle 185: Object
+Console.js:61 🔍 JUNE 1ST DEBUG - Cycle 160: Object
+Console.js:61 🔍 JUNE 1ST FLOW DEBUG: Object
+Console.js:61 🔍 JUNE 1ST EARLY EXIT: No cycles found in allSelectedCycles
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-02: Object
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: Object
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-03: Object
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: Object
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-04: Object
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: Object
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-05: Object
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: Object
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-06: Object
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: Object
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-07: Object
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: Object
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-08: Object
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: Object
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-09: Object
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: Object
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-10: Object
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: Object
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-11: Object
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: Object
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-12: Object
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: Object
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-13: Object
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: Object
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-14: Object
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: Object
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-15: Object
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: Object
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-16: Object
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: Object
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-17: Object
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: Object
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-18: Object
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: Object
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-19: Object
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: Object
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-20: Object
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: Object
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-21: Object
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: Object
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-22: Object
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: Object
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-23: Object
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: Object
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-24: Object
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: Object
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-25: Object
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: Object
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-26: Object
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: Object
+Console.js:61 🔍 CYCLE UTILS DEBUG - Phase calculation for cycle 160: Object
+Console.js:61 🔍 EMOJI DEBUG - getDetailedCyclePhase result: Object
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-27: Object
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: Object
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-28: Object
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: Object
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-30: Object
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: Object
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 185: Object
+Console.js:61 getCurrentUser successful: Object
+Console.js:61 getCurrentUser successful: Object
+Console.js:61 Auth context setting user: Object
+Console.js:61 Auth: Finally block - setting loading to false
+frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.Understand this error

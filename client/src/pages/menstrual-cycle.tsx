@@ -194,7 +194,15 @@ export default function MenstrualCyclePage() {
       console.log(`🔍 FOCUS SYNC - Setting selectedConnectionIds to [${mainFocusConnection.id}]`);
       setSelectedConnectionIds([mainFocusConnection.id]);
     }
-  }, [mainFocusConnection, selectedConnectionIds]);
+  }, [mainFocusConnection]);
+
+  // Initialize with focus connection if available
+  useEffect(() => {
+    if (mainFocusConnection && selectedConnectionIds.length === 0) {
+      console.log(`🔍 INITIAL SYNC - Setting selectedConnectionIds to [${mainFocusConnection.id}]`);
+      setSelectedConnectionIds([mainFocusConnection.id]);
+    }
+  }, [mainFocusConnection, selectedConnectionIds.length]);
 
   // Helper to get person color
   const getPersonColor = (personId: number) => {
@@ -1244,7 +1252,18 @@ export default function MenstrualCyclePage() {
                         {(() => {
                           // Get cycles for ALL selected connections (not just ones with cycles on this specific day)
                           const allSelectedCycles = cycles.filter(cycle => {
-                            if (!cycle.connectionId || !selectedConnectionIds.includes(cycle.connectionId)) return false;
+                            if (!cycle.connectionId || !selectedConnectionIds.includes(cycle.connectionId)) {
+                              // Debug June 1st specifically
+                              if (format(day, 'yyyy-MM-dd') === '2025-06-01' && cycle.connectionId === 30) {
+                                console.log(`🔍 JUNE 1ST CONNECTION FILTER FAIL:`, {
+                                  cycleConnectionId: cycle.connectionId,
+                                  selectedConnectionIds,
+                                  includes30: selectedConnectionIds.includes(30),
+                                  filterResult: false
+                                });
+                              }
+                              return false;
+                            }
                             
                             const cycleStart = new Date(cycle.periodStartDate);
                             const cycleEnd = cycle.cycleEndDate ? new Date(cycle.cycleEndDate) : null;
