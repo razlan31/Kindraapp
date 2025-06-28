@@ -14,6 +14,7 @@ import Connections from "@/pages/connections-simple";
 import Activities from "@/pages/activities";
 import Calendar from "@/pages/calendar";
 import Homepage1 from "@/pages/homepage-1";
+import LandingPage from "@/pages/landing";
 import Insights from "@/pages/insights-original";
 import Profile from "@/pages/profile";
 import Settings from "@/pages/settings";
@@ -41,9 +42,9 @@ function Router() {
 
   useEffect(() => {
     if (!loading) {
-      if (!isAuthenticated && location !== "/login") {
-        setLocation("/login");
-      } else if (isAuthenticated && location === "/login") {
+      if (!isAuthenticated && !["/login", "/landing"].includes(location)) {
+        setLocation("/landing");
+      } else if (isAuthenticated && ["/login", "/landing"].includes(location)) {
         // Check for saved default page preference
         const savedDefaultPage = localStorage.getItem('kindra-default-page');
         if (savedDefaultPage && savedDefaultPage !== "home") {
@@ -65,6 +66,7 @@ function Router() {
 
   return (
     <Switch>
+      <Route path="/landing" component={LandingPage} />
       <Route path="/login" component={Login} />
       <Route path="/onboarding/welcome" component={OnboardingWelcome} />
       <Route path="/onboarding/profile" component={OnboardingProfile} />
