@@ -341,37 +341,81 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Social Proof Numbers */}
+      <section className="container mx-auto px-4 py-16 bg-white">
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div className="space-y-2">
+              <div className="text-3xl md:text-4xl font-bold text-purple-600">10K+</div>
+              <div className="text-gray-600">Active Users</div>
+            </div>
+            <div className="space-y-2">
+              <div className="text-3xl md:text-4xl font-bold text-pink-600">95%</div>
+              <div className="text-gray-600">Satisfaction Rate</div>
+            </div>
+            <div className="space-y-2">
+              <div className="text-3xl md:text-4xl font-bold text-purple-600">2M+</div>
+              <div className="text-gray-600">Moments Tracked</div>
+            </div>
+            <div className="space-y-2">
+              <div className="text-3xl md:text-4xl font-bold text-pink-600">24/7</div>
+              <div className="text-gray-600">AI Support</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Testimonials */}
-      <section className="container mx-auto px-4 py-16">
+      <section className="container mx-auto px-4 py-16 bg-gradient-to-br from-gray-50 to-purple-50">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
+            <Badge className="mb-6 bg-purple-100 text-purple-700 hover:bg-purple-100">
+              <Users className="h-4 w-4 mr-1" />
+              Success Stories
+            </Badge>
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Loved by Thousands of Users
+              Loved by Thousands of Couples
             </h2>
-            <p className="text-xl text-gray-600">
-              Real stories from people who transformed their relationships with Kindra
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Real stories from real people who transformed their relationships with Kindra's AI-powered insights.
             </p>
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
             {testimonials.map((testimonial, index) => (
-              <Card key={index} className="border-0 shadow-lg bg-white/70 backdrop-blur-sm">
+              <Card key={index} className="border-0 shadow-lg bg-white/80 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
                 <CardContent className="p-6">
                   <div className="flex items-center gap-1 mb-4">
                     {[...Array(testimonial.rating)].map((_, i) => (
-                      <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                      <Star key={i} className="h-5 w-5 fill-yellow-400 text-yellow-400" />
                     ))}
                   </div>
-                  <p className="text-gray-700 mb-4 leading-relaxed">
+                  <p className="text-gray-700 mb-6 leading-relaxed text-lg">
                     "{testimonial.content}"
                   </p>
-                  <div>
-                    <div className="font-semibold">{testimonial.name}</div>
-                    <div className="text-sm text-gray-500">{testimonial.role}</div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full flex items-center justify-center text-white font-semibold text-lg">
+                      {testimonial.name.charAt(0)}
+                    </div>
+                    <div>
+                      <div className="font-semibold text-lg">{testimonial.name}</div>
+                      <div className="text-sm text-gray-600">{testimonial.role}</div>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
             ))}
+          </div>
+          
+          <div className="text-center mt-12">
+            <Button 
+              size="lg" 
+              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-3"
+              onClick={handleGetStarted}
+            >
+              Join Thousands of Happy Couples
+              <Heart className="ml-2 h-5 w-5" />
+            </Button>
           </div>
         </div>
       </section>
