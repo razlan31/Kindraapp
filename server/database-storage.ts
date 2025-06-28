@@ -398,6 +398,16 @@ export class DatabaseStorage implements IStorage {
     return newUserBadge;
   }
 
+  async createBadge(badge: InsertBadge): Promise<Badge> {
+    const [newBadge] = await db.insert(badges).values(badge).returning();
+    return newBadge;
+  }
+
+  async addUserBadge(userBadge: InsertUserBadge): Promise<UserBadge> {
+    const [newUserBadge] = await db.insert(userBadges).values(userBadge).returning();
+    return newUserBadge;
+  }
+
   // Notification operations
   async getNotifications(userId: string): Promise<Notification[]> {
     return db.select().from(notifications)
