@@ -163,7 +163,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Add lock status to plans without hiding any data
       const allConnections = await storage.getConnectionsByUserId(userId.toString());
-      const focusConnectionId = user.currentFocus;
+      const focusConnectionId = user.currentFocus ? parseInt(user.currentFocus) : undefined;
       const accessibleConnections = getAccessibleConnections(allConnections, user, focusConnectionId);
       const accessibleConnectionIds = accessibleConnections.map(conn => conn.id);
       

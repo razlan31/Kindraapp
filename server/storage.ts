@@ -67,14 +67,14 @@ export interface IStorage {
   deleteMilestone(id: number): Promise<boolean>;
   
   // Plan operations
-  getPlans(userId: string): Promise<Plan[]>;
+  getPlans(userId: number): Promise<Plan[]>;
   getPlansByConnectionId(connectionId: number): Promise<Plan[]>;
   createPlan(plan: InsertPlan): Promise<Plan>;
   updatePlan(id: number, data: Partial<Plan>): Promise<Plan | undefined>;
   deletePlan(id: number): Promise<boolean>;
   
   // Chat conversation operations
-  getChatConversations(userId: string): Promise<ChatConversation[]>;
+  getChatConversations(userId: number): Promise<ChatConversation[]>;
   getChatConversation(id: number): Promise<ChatConversation | undefined>;
   createChatConversation(conversation: InsertChatConversation): Promise<ChatConversation>;
   updateChatConversation(id: number, data: Partial<ChatConversation>): Promise<ChatConversation | undefined>;
