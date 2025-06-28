@@ -17,6 +17,7 @@ import Homepage1 from "@/pages/homepage-1";
 import Insights from "@/pages/insights-original";
 import Profile from "@/pages/profile";
 import Settings from "@/pages/settings";
+import Subscription from "@/pages/subscription";
 import MenstrualCycle from "@/pages/menstrual-cycle";
 import ConnectionDetail from "@/pages/connection-detail";
 import ConnectionEdit from "@/pages/connection-edit";
@@ -80,6 +81,7 @@ function Router() {
       <Route path="/insights" component={Insights} />
       <Route path="/profile" component={Profile} />
       <Route path="/settings" component={Settings} />
+      <Route path="/subscription" component={Subscription} />
 
       <Route path="/cycle" component={MenstrualCycle} />
       <Route path="/menstrual-cycle" component={MenstrualCycle} />
