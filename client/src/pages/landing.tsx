@@ -136,8 +136,13 @@ export default function LandingPage() {
       </header>
 
       {/* Hero Section */}
-      <section className="container mx-auto px-4 py-16 text-center">
-        <div className="max-w-4xl mx-auto">
+      <section className="container mx-auto px-4 py-16 text-center relative overflow-hidden">
+        {/* Animated background blobs */}
+        <div className="absolute top-0 -left-4 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
+        <div className="absolute top-0 -right-4 w-72 h-72 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
+        <div className="absolute -bottom-8 left-20 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
+        
+        <div className="max-w-4xl mx-auto relative z-10">
           <Badge className="mb-6 bg-purple-100 text-purple-700 hover:bg-purple-100">
             <Sparkles className="h-4 w-4 mr-1" />
             AI-Powered Relationship Intelligence
@@ -267,8 +272,12 @@ export default function LandingPage() {
       </section>
 
       {/* Benefits Section */}
-      <section className="container mx-auto px-4 py-16 bg-white/50">
-        <div className="max-w-6xl mx-auto">
+      <section className="container mx-auto px-4 py-16 bg-white/50 relative overflow-hidden">
+        {/* Background blobs for features section */}
+        <div className="absolute top-10 right-10 w-64 h-64 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-60 animate-blob animation-delay-2000"></div>
+        <div className="absolute bottom-10 left-10 w-64 h-64 bg-green-200 rounded-full mix-blend-multiply filter blur-xl opacity-60 animate-blob animation-delay-4000"></div>
+        
+        <div className="max-w-6xl mx-auto relative z-10">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
               Everything You Need for Relationship Growth
