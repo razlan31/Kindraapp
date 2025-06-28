@@ -5,10 +5,12 @@ import { Badge } from '@/components/ui/badge';
 import { Heart, Brain, Calendar, TrendingUp, Star, Check, ArrowRight, Users, Shield, Sparkles, Moon, Sun, Zap, Play } from 'lucide-react';
 import { useLocation } from 'wouter';
 import { AnimatedFeatures } from '@/components/animated-features';
+import { PricingModal } from '@/components/subscription/pricing-modal';
 
 export default function LandingPage() {
   const [, setLocation] = useLocation();
   const [selectedPlan, setSelectedPlan] = useState<'monthly' | 'annual'>('monthly');
+  const [showPricingModal, setShowPricingModal] = useState(false);
 
   const features = [
     {
@@ -105,11 +107,17 @@ export default function LandingPage() {
   };
 
   const handlePremiumSignup = () => {
-    setLocation('/subscription');
+    setShowPricingModal(true);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-indigo-50">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-indigo-50 relative overflow-hidden">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute top-20 left-10 w-64 h-64 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl animate-blob"></div>
+        <div className="absolute top-40 right-10 w-64 h-64 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-2000"></div>
+        <div className="absolute bottom-20 left-20 w-64 h-64 bg-indigo-300 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-4000"></div>
+      </div>
       {/* Header */}
       <header className="container mx-auto px-4 py-6">
         <div className="flex items-center justify-between">
@@ -203,7 +211,26 @@ export default function LandingPage() {
           </p>
           
           <div className="relative bg-gradient-to-br from-purple-600 to-pink-600 rounded-2xl p-8 shadow-2xl">
-            <div className="bg-white rounded-xl p-8 text-left">
+            {/* Couple Illustration */}
+            <div className="absolute -top-6 -left-6 w-24 h-24">
+              <svg viewBox="0 0 150 150" className="w-full h-full">
+                {/* Couple holding hands */}
+                <circle cx="45" cy="40" r="15" fill="#FBBF24"/>
+                <circle cx="105" cy="40" r="15" fill="#F97316"/>
+                <rect x="35" y="60" width="20" height="35" rx="10" fill="#3B82F6"/>
+                <rect x="95" y="60" width="20" height="35" rx="10" fill="#EC4899"/>
+                <circle cx="40" cy="35" r="1.5" fill="#374151"/>
+                <circle cx="50" cy="35" r="1.5" fill="#374151"/>
+                <circle cx="100" cy="35" r="1.5" fill="#374151"/>
+                <circle cx="110" cy="35" r="1.5" fill="#374151"/>
+                <path d="M40 45 Q45 48 50 45" stroke="#374151" strokeWidth="1" fill="none"/>
+                <path d="M100 45 Q105 48 110 45" stroke="#374151" strokeWidth="1" fill="none"/>
+                <path d="M55 70 L95 70" stroke="#EF4444" strokeWidth="3" fill="none"/>
+                <circle cx="75" cy="65" r="3" fill="#EF4444"/>
+              </svg>
+            </div>
+            
+            <div className="bg-white rounded-xl p-8 text-left relative z-10">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
                   <Brain className="h-6 w-6 text-white" />
@@ -315,8 +342,27 @@ export default function LandingPage() {
             </div>
             
             <div className="relative">
-              <div className="bg-gradient-to-br from-indigo-100 to-purple-100 rounded-2xl p-8">
-                <div className="bg-white rounded-xl p-6 shadow-lg">
+              <div className="bg-gradient-to-br from-indigo-100 to-purple-100 rounded-2xl p-8 relative overflow-hidden">
+                {/* Character Illustration */}
+                <div className="absolute -top-8 -right-4 w-32 h-32 z-20">
+                  <svg viewBox="0 0 200 200" className="w-full h-full">
+                    {/* Woman with phone */}
+                    <circle cx="100" cy="80" r="25" fill="#F3E8FF" stroke="#9333EA" strokeWidth="2"/>
+                    <circle cx="100" cy="80" r="20" fill="#FBBF24"/>
+                    <rect x="85" y="120" width="30" height="50" rx="15" fill="#E879F9"/>
+                    <circle cx="95" cy="75" r="2" fill="#374151"/>
+                    <circle cx="105" cy="75" r="2" fill="#374151"/>
+                    <path d="M95 85 Q100 90 105 85" stroke="#374151" strokeWidth="2" fill="none"/>
+                    <rect x="70" y="95" width="15" height="25" rx="7" fill="#60A5FA"/>
+                    <rect x="115" y="95" width="15" height="25" rx="7" fill="#60A5FA"/>
+                    <rect x="75" y="92" width="8" height="12" rx="4" fill="#1F2937"/>
+                  </svg>
+                </div>
+                
+                {/* Small decorative blob */}
+                <div className="absolute top-4 left-4 w-16 h-16 bg-purple-200 rounded-full mix-blend-multiply filter blur-lg opacity-60 animate-blob"></div>
+                
+                <div className="bg-white rounded-xl p-6 shadow-lg relative z-10">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-full flex items-center justify-center">
                       <span className="text-white font-semibold">L</span>
