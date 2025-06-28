@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import * as React from "react";
 import { Header } from "@/components/layout/header";
 import { BottomNavigation } from "@/components/layout/bottom-navigation";
@@ -223,6 +223,20 @@ function Settings() {
   const [supportMessage, setSupportMessage] = useState("");
   const [supportSubject, setSupportSubject] = useState("");
 
+  // Initialize default page from localStorage
+  useEffect(() => {
+    const savedDefaultPage = localStorage.getItem('kindra-default-page');
+    if (savedDefaultPage) {
+      setSettings(prev => ({
+        ...prev,
+        preferences: {
+          ...prev.preferences,
+          defaultPage: savedDefaultPage as "home" | "connections" | "activities" | "calendar" | "insights"
+        }
+      }));
+    }
+  }, []);
+
   // Fetch archived connections
   const { data: archivedConnections = [] } = useQuery<any[]>({
     queryKey: ["/api/connections/archived"],
@@ -432,6 +446,8 @@ function Settings() {
                     <Select 
                       value={settings.preferences.defaultPage} 
                       onValueChange={(value) => {
+                        // Save to localStorage immediately
+                        localStorage.setItem('kindra-default-page', value);
                         setSettings(prev => ({
                           ...prev,
                           preferences: {
@@ -439,6 +455,10 @@ function Settings() {
                             defaultPage: value as "home" | "connections" | "activities" | "calendar" | "insights"
                           }
                         }));
+                        toast({
+                          title: "Default Page Updated",
+                          description: "Your default page preference has been saved.",
+                        });
                       }}
                     >
                       <SelectTrigger className="w-32">

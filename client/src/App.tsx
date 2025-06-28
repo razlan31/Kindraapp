@@ -43,7 +43,21 @@ function Router() {
       if (!isAuthenticated && location !== "/login") {
         setLocation("/login");
       } else if (isAuthenticated && location === "/login") {
-        setLocation("/");
+        // Check for saved default page preference
+        const savedDefaultPage = localStorage.getItem('kindra-default-page');
+        if (savedDefaultPage && savedDefaultPage !== "home") {
+          // Map setting values to actual routes
+          const routeMap: Record<string, string> = {
+            "connections": "/connections",
+            "activities": "/activities", 
+            "calendar": "/calendar",
+            "insights": "/insights"
+          };
+          const targetRoute = routeMap[savedDefaultPage] || "/";
+          setLocation(targetRoute);
+        } else {
+          setLocation("/");
+        }
       }
     }
   }, [isAuthenticated, loading, location, setLocation]);
