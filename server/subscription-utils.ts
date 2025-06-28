@@ -56,8 +56,8 @@ export function getUserSubscriptionStatus(user: User, connectionsCount: number):
   };
   
   return {
-    isPremium,
-    isTrialActive,
+    isPremium: !!isPremium,
+    isTrialActive: !!isTrialActive,
     plan,
     features: planFeatures,
     usage: currentUsage,

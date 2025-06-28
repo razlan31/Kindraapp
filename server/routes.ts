@@ -2937,9 +2937,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "User not found" });
       }
       
-      // Check AI coaching usage limits
-      const { isPremium } = await getUserSubscriptionStatus(user);
-      if (!isPremium && user.monthlyAiCoaching >= 3) {
+      // Check AI coaching usage limits using subscription utilities
+      const subscriptionStatus = getUserSubscriptionStatus(user, 0);
+      if (!subscriptionStatus.limits.canUseAiCoaching) {
         return res.status(403).json({
           message: "You've reached your monthly limit of 3 AI coaching messages. Please upgrade to premium for unlimited access.",
           requiresUpgrade: true,
@@ -4128,9 +4128,9 @@ Format as a brief analysis (2-3 sentences) focusing on what their data actually 
         return res.status(404).json({ message: "User not found" });
       }
       
-      // Check AI insights usage limits
-      const { isPremium } = await getUserSubscriptionStatus(user);
-      if (!isPremium && user.monthlyAiInsights >= 3) {
+      // Check AI insights usage limits using subscription utilities
+      const subscriptionStatus = getUserSubscriptionStatus(user, 0);
+      if (!subscriptionStatus.limits.canUseAiInsights) {
         return res.status(403).json({
           message: "You've reached your monthly limit of 3 AI insights. Please upgrade to premium for unlimited access.",
           requiresUpgrade: true,
