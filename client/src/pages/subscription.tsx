@@ -5,10 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { UsageIndicator } from "@/components/subscription/usage-indicator";
 import { PricingModal } from "@/components/subscription/pricing-modal";
-import { Crown, Star, Calendar, BarChart3, Heart, Zap } from "lucide-react";
+import { Crown, Star, Calendar, BarChart3, Heart, Zap, ArrowLeft } from "lucide-react";
+import { useLocation } from "wouter";
 
 export default function SubscriptionPage() {
   const [showPricingModal, setShowPricingModal] = useState(false);
+  const [, setLocation] = useLocation();
 
   const { data: subscriptionStatus, isLoading } = useQuery({
     queryKey: ['/api/subscription/status'],
@@ -32,6 +34,19 @@ export default function SubscriptionPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 p-4">
       <div className="max-w-4xl mx-auto space-y-6">
+        {/* Header with Back Button */}
+        <div className="flex items-center gap-4 mb-6">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setLocation('/settings')}
+            className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to Settings
+          </Button>
+        </div>
+        
         <div className="text-center space-y-2">
           <h1 className="text-3xl font-bold text-gray-900">Your Kindra Plan</h1>
           <p className="text-gray-600">Manage your subscription and track your usage</p>
