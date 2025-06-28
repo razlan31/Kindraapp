@@ -1250,6 +1250,20 @@ export default function MenstrualCyclePage() {
                         
                         {/* Cycle tracker priority system: 1) Alphabet letters for multiple connections, 2) Menstrual emojis */}
                         {(() => {
+                          // Debug June 1st connection selection state
+                          if (format(day, 'yyyy-MM-dd') === '2025-06-01') {
+                            console.log(`🔍 JUNE 1ST DEBUG - Connection Selection State:`, {
+                              selectedConnectionIds,
+                              mainFocusConnection: mainFocusConnection?.id,
+                              availableCycles: cycles.filter(c => c.connectionId === 30).map(c => ({
+                                id: c.id,
+                                connectionId: c.connectionId,
+                                periodStart: c.periodStartDate,
+                                cycleEnd: c.cycleEndDate
+                              }))
+                            });
+                          }
+                          
                           // Get cycles for ALL selected connections (not just ones with cycles on this specific day)
                           const allSelectedCycles = cycles.filter(cycle => {
                             if (!cycle.connectionId || !selectedConnectionIds.includes(cycle.connectionId)) {
