@@ -174,6 +174,17 @@ export default function MenstrualCyclePage() {
   const trackablePersons = useMemo(() => {
     const persons: Array<{ id: number; name: string; isUser: boolean; profileImage?: string | null; colorIndex: number }> = [];
     
+    // Add self as option 0 (user themselves)
+    if (user) {
+      persons.push({
+        id: 0,
+        name: user.displayName || user.username || 'You',
+        isUser: true,
+        profileImage: user.profileImageUrl,
+        colorIndex: 0
+      });
+    }
+    
     // Add all connections (assuming they could have cycles)
     connections.forEach((connection, index) => {
       persons.push({
@@ -181,12 +192,12 @@ export default function MenstrualCyclePage() {
         name: connection.name,
         isUser: false,
         profileImage: connection.profileImage,
-        colorIndex: index % personColors.length
+        colorIndex: (index + 1) % personColors.length
       });
     });
     
     return persons;
-  }, [connections]);
+  }, [connections, user]);
 
   // Sync Focus Context with selectedConnectionIds (copying calendar's working pattern)
   useEffect(() => {
@@ -782,7 +793,10 @@ export default function MenstrualCyclePage() {
                             </span>
                           </div>
                         )}
-                        {person.name}
+                        {person.isUser ? `${person.name} (ME)` : person.name}
+                        {mainFocusConnection?.id === person.id && !person.isUser && (
+                          <span className="ml-1 text-red-500">❤️</span>
+                        )}
                       </div>
                     </DropdownMenuCheckboxItem>
                   );
@@ -968,7 +982,10 @@ export default function MenstrualCyclePage() {
                         <div className="flex items-center gap-2">
                           <div className={`w-3 h-3 rounded-full ${phaseColors.accent}`}></div>
                           <h3 className={`font-medium ${phaseColors.text}`}>
-                            {person.name}'s Cycle
+                            {personId === 0 ? `${person.name} (ME)` : person.name}'s Cycle
+                            {mainFocusConnection?.id === personId && personId !== 0 && (
+                              <span className="ml-1 text-red-500">❤️</span>
+                            )}
                           </h3>
                         </div>
                         <Circle className={`h-5 w-5 ${phaseColors.accent.replace('bg-', 'text-')}`} />
