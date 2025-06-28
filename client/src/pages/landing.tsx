@@ -138,9 +138,9 @@ export default function LandingPage() {
       {/* Hero Section */}
       <section className="container mx-auto px-4 py-16 text-center relative overflow-hidden">
         {/* Animated background blobs */}
-        <div className="absolute top-0 -left-4 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
-        <div className="absolute top-0 -right-4 w-72 h-72 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
-        <div className="absolute -bottom-8 left-20 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
+        <div className="absolute top-0 -left-4 w-72 h-72 bg-gray-200 rounded-full mix-blend-multiply filter blur-xl opacity-40 animate-blob"></div>
+        <div className="absolute top-0 -right-4 w-72 h-72 bg-blue-100 rounded-full mix-blend-multiply filter blur-xl opacity-40 animate-blob animation-delay-2000"></div>
+        <div className="absolute -bottom-8 left-20 w-72 h-72 bg-slate-200 rounded-full mix-blend-multiply filter blur-xl opacity-40 animate-blob animation-delay-4000"></div>
         
         <div className="max-w-4xl mx-auto relative z-10">
           <Badge className="mb-6 bg-purple-100 text-purple-700 hover:bg-purple-100">
@@ -148,7 +148,7 @@ export default function LandingPage() {
             AI-Powered Relationship Intelligence
           </Badge>
           
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 bg-clip-text text-transparent leading-tight">
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-slate-700 via-gray-800 to-slate-900 bg-clip-text text-transparent leading-tight">
             Transform Your Love Life with AI
           </h1>
           
@@ -160,7 +160,7 @@ export default function LandingPage() {
             <Button 
               size="lg" 
               onClick={handleGetStarted}
-              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-lg px-8 py-6 rounded-xl"
+              className="bg-gradient-to-r from-slate-700 to-gray-800 hover:from-slate-800 hover:to-gray-900 text-lg px-8 py-6 rounded-xl"
             >
               Start Free Today
               <ArrowRight className="ml-2 h-5 w-5" />
@@ -169,7 +169,7 @@ export default function LandingPage() {
               variant="outline" 
               size="lg"
               onClick={handlePremiumSignup}
-              className="text-lg px-8 py-6 rounded-xl border-purple-200 text-purple-700 hover:bg-purple-50"
+              className="text-lg px-8 py-6 rounded-xl border-slate-200 text-slate-700 hover:bg-slate-50"
             >
               View Pricing
             </Button>
@@ -274,8 +274,8 @@ export default function LandingPage() {
       {/* Benefits Section */}
       <section className="container mx-auto px-4 py-16 bg-white/50 relative overflow-hidden">
         {/* Background blobs for features section */}
-        <div className="absolute top-10 right-10 w-64 h-64 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-60 animate-blob animation-delay-2000"></div>
-        <div className="absolute bottom-10 left-10 w-64 h-64 bg-green-200 rounded-full mix-blend-multiply filter blur-xl opacity-60 animate-blob animation-delay-4000"></div>
+        <div className="absolute top-10 right-10 w-64 h-64 bg-slate-100 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-2000"></div>
+        <div className="absolute bottom-10 left-10 w-64 h-64 bg-gray-100 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-4000"></div>
         
         <div className="max-w-6xl mx-auto relative z-10">
           <div className="text-center mb-16">
@@ -369,7 +369,7 @@ export default function LandingPage() {
                 </div>
                 
                 {/* Small decorative blob */}
-                <div className="absolute top-4 left-4 w-16 h-16 bg-purple-200 rounded-full mix-blend-multiply filter blur-lg opacity-60 animate-blob"></div>
+                <div className="absolute top-4 left-4 w-16 h-16 bg-slate-100 rounded-full mix-blend-multiply filter blur-lg opacity-30 animate-blob"></div>
                 
                 <div className="bg-white rounded-xl p-6 shadow-lg relative z-10">
                   <div className="flex items-center gap-3 mb-4">
