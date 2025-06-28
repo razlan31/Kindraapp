@@ -544,17 +544,24 @@ export default function MenstrualCyclePage() {
     console.log("🔧 Cycle ID being edited:", latestCycle.id);
     
     // FIX: Extract date parts directly to avoid timezone issues
-    const formatDateSafely = (dateString: string) => {
-      // Extract date parts directly from ISO string to avoid any timezone conversion
-      const isoString = dateString.includes('T') ? dateString : `${dateString}T00:00:00.000Z`;
+    const formatDateSafely = (dateValue: any): string => {
+      if (!dateValue) return '';
+      let isoString = '';
+      if (typeof dateValue === 'string') {
+        isoString = dateValue;
+      } else if (dateValue instanceof Date) {
+        isoString = dateValue.toISOString();
+      } else {
+        return '';
+      }
       const datePart = isoString.split('T')[0]; // Get just the YYYY-MM-DD part
       return datePart;
     };
     
     setFormData({
       startDate: formatDateSafely(latestCycle.periodStartDate),
-      periodEndDate: latestCycle.periodEndDate ? formatDateSafely(latestCycle.periodEndDate) : '',
-      endDate: latestCycle.cycleEndDate ? formatDateSafely(latestCycle.cycleEndDate) : '',
+      periodEndDate: formatDateSafely(latestCycle.periodEndDate),
+      endDate: formatDateSafely(latestCycle.cycleEndDate),
       flowIntensity: latestCycle.flowIntensity || '',
       mood: latestCycle.mood || '',
       symptoms: Array.isArray(latestCycle.symptoms) ? latestCycle.symptoms : [],
@@ -912,7 +919,7 @@ export default function MenstrualCyclePage() {
               } else {
                 console.log(`🔍 CYCLE TRACKER - No cycles found for person ${personId}`);
               }
-              const periodLength = currentCycle?.periodEndDate ? 
+              const periodLength = displayCycle?.periodEndDate && displayCycle?.periodStartDate ? 
                 differenceInDays(new Date(displayCycle.periodEndDate), new Date(displayCycle.periodStartDate)) + 1 : 5;
               
               const currentPhase = currentPhaseInfo?.detailedInfo || null;
