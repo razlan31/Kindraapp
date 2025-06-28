@@ -162,7 +162,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log('📋 Plans found:', allPlans.length);
       
       // Add lock status to plans without hiding any data
-      const allConnections = await storage.getConnectionsByUserId(userId);
+      const allConnections = await storage.getConnectionsByUserId(userId.toString());
       const focusConnectionId = user.currentFocus;
       const accessibleConnections = getAccessibleConnections(allConnections, user, focusConnectionId);
       const accessibleConnectionIds = accessibleConnections.map(conn => conn.id);
@@ -189,7 +189,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/plans-data", isAuthenticated, async (req: Request, res: Response) => {
     try {
       const userId = (req.session as any).userId as number;
-      const user = await storage.getUser(userId);
+      const user = await storage.getUser(userId.toString());
       const planData = { ...req.body, userId };
       
       if (!user) {
@@ -197,8 +197,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Check if connection is accessible for free users
-      const allConnections = await storage.getConnectionsByUserId(userId);
-      const focusConnectionId = user.currentFocus;
+      const allConnections = await storage.getConnectionsByUserId(userId.toString());
+      const focusConnectionId = user.currentFocus ? parseInt(user.currentFocus) : undefined;
       const accessibleConnections = getAccessibleConnections(allConnections, user, focusConnectionId);
       const accessibleConnectionIds = accessibleConnections.map(conn => conn.id);
       
