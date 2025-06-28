@@ -1284,22 +1284,20 @@ export default function MenstrualCyclePage() {
                             
                             if (!cycleEnd) return false;
                             
-                            const dateMatch = day >= cycleStart && day <= cycleEnd;
+                            // Normalize dates to midnight for accurate comparison
+                            const dayNormalized = new Date(day.getFullYear(), day.getMonth(), day.getDate());
+                            const cycleStartNormalized = new Date(cycleStart.getFullYear(), cycleStart.getMonth(), cycleStart.getDate());
+                            const cycleEndNormalized = new Date(cycleEnd.getFullYear(), cycleEnd.getMonth(), cycleEnd.getDate());
+                            
+                            const dateMatch = dayNormalized >= cycleStartNormalized && dayNormalized <= cycleEndNormalized;
                             
                             // Debug June 1st specifically
                             if (format(day, 'yyyy-MM-dd') === '2025-06-01' && cycle.connectionId === 30) {
-                              console.log(`🔍 JUNE 1ST DATE MATCH DEBUG - Cycle ${cycle.id}:`, {
-                                periodStartDate: cycle.periodStartDate,
-                                cycleEndDate: cycle.cycleEndDate,
-                                cycleStart: format(cycleStart, 'yyyy-MM-dd'),
-                                cycleEnd: cycleEnd ? format(cycleEnd, 'yyyy-MM-dd') : 'null',
-                                dayStr: format(day, 'yyyy-MM-dd'),
-                                dayTime: day.getTime(),
-                                cycleStartTime: cycleStart.getTime(),
-                                cycleEndTime: cycleEnd ? cycleEnd.getTime() : null,
-                                dayGTEStart: day >= cycleStart,
-                                dayLTEEnd: cycleEnd ? day <= cycleEnd : false,
+                              console.log(`🔍 JUNE 1ST FIXED - Cycle ${cycle.id}:`, {
                                 dateMatch,
+                                dayStr: format(dayNormalized, 'yyyy-MM-dd'),
+                                cycleStartStr: format(cycleStartNormalized, 'yyyy-MM-dd'),
+                                cycleEndStr: format(cycleEndNormalized, 'yyyy-MM-dd'),
                                 willPassFilter: dateMatch
                               });
                             }

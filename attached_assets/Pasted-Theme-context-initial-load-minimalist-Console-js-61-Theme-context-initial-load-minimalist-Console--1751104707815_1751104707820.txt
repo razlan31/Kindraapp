@@ -1,0 +1,173 @@
+Theme context initial load: minimalist
+Console.js:61 Theme context initial load: minimalist
+Console.js:61 🔥 STATE DEBUG - isSubmitting changed: false
+Console.js:61 🔥 STATE DEBUG - connectionId changed: 2 selectedConnectionId: null
+Console.js:61 Modal useEffect - selectedDate from context: null
+Console.js:61 Modal useEffect - editingMoment: null
+Console.js:61 Modal useEffect - momentModalOpen: false
+Console.js:61 🔥 MODAL OPEN - Resetting isSubmitting to false
+Console.js:61 🔥 MODAL INIT - Setting connectionId: 2 from selectedConnectionId: null
+Console.js:61 🔥 PLAN MODAL - Connection effect: {selectedConnection: null, localSelectedConnection: null, isOpen: false}
+Console.js:61 🔥 PLAN MODAL - Form init effect: {editingMoment: false, isOpen: false, selectedConnection: null, contextSelectedDate: null, connectionsCount: 0}
+Console.js:61 Theme effect running: minimalist
+Console.js:61 Applied minimalist theme (light base)
+Console.js:61 Theme stored to localStorage: minimalist
+Console.js:61 Auth: Starting to load user, setting loading to true
+Console.js:61 Auth: Starting to load user, setting loading to true
+Console.js:61 Theme effect running: minimalist
+Console.js:61 Applied minimalist theme (light base)
+Console.js:61 Theme stored to localStorage: minimalist
+Console.js:61 🔥 PLAN MODAL - Form init effect: {editingMoment: false, isOpen: false, selectedConnection: null, contextSelectedDate: null, connectionsCount: 0}
+Console.js:61 🔥 PLAN MODAL - Form init effect: {editingMoment: false, isOpen: false, selectedConnection: null, contextSelectedDate: null, connectionsCount: 20}
+Console.js:61 Focus Context Debug: {savedId: '30', connectionsLength: 20, connections: Array(20)}
+Console.js:61 Found saved connection: {id: 30, userId: '8', name: 'ghjghjhgjg', profileImage: null, relationshipStage: 'Dating', …}
+Console.js:61 🔍 FOCUS SYNC - Setting selectedConnectionIds to [30]
+Console.js:61 🔍 INITIAL SYNC - Setting selectedConnectionIds to [30]
+Console.js:61 🔍 CYCLE TRACKER RENDER DEBUG: {selectedConnectionIds: Array(1), selectedConnectionIdsLength: 1, includes30: true, trackablePersons: Array(20)}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-28: {dayChecking: '2025-06-28', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-28', isMatch: true}
+Console.js:61 🔍 CYCLE TRACKER - Using cycle 160 for today (2025-06-28): {day: 28, phase: 'luteal', emoji: '🌙', cycleStart: '2025-06-01', cycleEnd: '2025-06-28'}
+Console.js:61 🔍 CYCLE TRACKER DEBUG - Connection 30: {avgCycleLength: 28, currentDay: 28, periodLength: 5, ovulationDay: 14, currentCycleId: 160, …}
+Console.js:61 🔍 JUNE 1ST DEBUG - Connection Selection State: {selectedConnectionIds: Array(1), mainFocusConnection: 30, availableCycles: Array(3)}
+Console.js:61 🔍 JUNE 1ST DATE MATCH DEBUG - Cycle 184: {periodStartDate: '2025-07-27T00:00:00.000Z', cycleEndDate: '2025-08-23T00:00:00.000Z', cycleStart: '2025-07-27', cycleEnd: '2025-08-23', dayStr: '2025-06-01', …}
+Console.js:61 🔍 JUNE 1ST DATE MATCH DEBUG - Cycle 185: {periodStartDate: '2025-06-29T00:00:00.000Z', cycleEndDate: '2025-07-26T00:00:00.000Z', cycleStart: '2025-06-29', cycleEnd: '2025-07-26', dayStr: '2025-06-01', …}
+Console.js:61 🔍 JUNE 1ST DATE MATCH DEBUG - Cycle 160: {periodStartDate: '2025-06-01T00:00:00.000Z', cycleEndDate: '2025-06-28T00:00:00.000Z', cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayStr: '2025-06-01', …}
+Console.js:61 🔍 JUNE 1ST FLOW DEBUG: {selectedConnectionIds: Array(1), selectedConnectionIdsLength: 1, allSelectedCyclesLength: 0, multipleConnectionsCheck: false, willShowAlphabet: false, …}
+Console.js:61 🔍 JUNE 1ST EARLY EXIT: No cycles found in allSelectedCycles
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-02: {dayChecking: '2025-06-02', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-02', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-03: {dayChecking: '2025-06-03', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-03', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-04: {dayChecking: '2025-06-04', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-04', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-05: {dayChecking: '2025-06-05', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-05', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-06: {dayChecking: '2025-06-06', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-06', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-07: {dayChecking: '2025-06-07', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-07', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-08: {dayChecking: '2025-06-08', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-08', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-09: {dayChecking: '2025-06-09', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-09', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-10: {dayChecking: '2025-06-10', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-10', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-11: {dayChecking: '2025-06-11', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-11', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-12: {dayChecking: '2025-06-12', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-12', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-13: {dayChecking: '2025-06-13', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-13', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-14: {dayChecking: '2025-06-14', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-14', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-15: {dayChecking: '2025-06-15', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-15', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-16: {dayChecking: '2025-06-16', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-16', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-17: {dayChecking: '2025-06-17', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-17', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-18: {dayChecking: '2025-06-18', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-18', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-19: {dayChecking: '2025-06-19', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-19', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-20: {dayChecking: '2025-06-20', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-20', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-21: {dayChecking: '2025-06-21', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-21', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-22: {dayChecking: '2025-06-22', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-22', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-23: {dayChecking: '2025-06-23', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-23', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-24: {dayChecking: '2025-06-24', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-24', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-25: {dayChecking: '2025-06-25', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-25', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-26: {dayChecking: '2025-06-26', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-26', isMatch: true}
+Console.js:61 🔍 CYCLE UTILS DEBUG - Phase calculation for cycle 160: {dayInCycle: 26, cycleLength: 28, periodEnd: '2025-06-04', aboutToCallGetCycleDisplayInfo: true}
+Console.js:61 🔍 EMOJI DEBUG - getDetailedCyclePhase result: {dayInCycle: 26, cycleLength: 28, periodLength: 4, detailedPhase: {…}}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-27: {dayChecking: '2025-06-27', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-27', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-28: {dayChecking: '2025-06-28', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-28', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-30: {dayChecking: '2025-06-30', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-30', isMatch: false}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 185: {cycleStart: '2025-06-29', cycleEnd: '2025-07-26', dayToCheck: '2025-06-30', isMatch: true}
+Console.js:61 getCurrentUser successful: {id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+Console.js:61 getCurrentUser successful: {id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+Console.js:61 Auth context setting user: {id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+Console.js:61 Auth: Finally block - setting loading to false
+Console.js:61 🔍 CYCLE TRACKER RENDER DEBUG: {selectedConnectionIds: Array(1), selectedConnectionIdsLength: 1, includes30: true, trackablePersons: Array(20)}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-28: {dayChecking: '2025-06-28', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-28', isMatch: true}
+Console.js:61 🔍 CYCLE TRACKER - Using cycle 160 for today (2025-06-28): {day: 28, phase: 'luteal', emoji: '🌙', cycleStart: '2025-06-01', cycleEnd: '2025-06-28'}
+Console.js:61 🔍 CYCLE TRACKER DEBUG - Connection 30: {avgCycleLength: 28, currentDay: 28, periodLength: 5, ovulationDay: 14, currentCycleId: 160, …}
+Console.js:61 🔍 JUNE 1ST DEBUG - Connection Selection State: {selectedConnectionIds: Array(1), mainFocusConnection: 30, availableCycles: Array(3)}
+Console.js:61 🔍 JUNE 1ST DATE MATCH DEBUG - Cycle 184: {periodStartDate: '2025-07-27T00:00:00.000Z', cycleEndDate: '2025-08-23T00:00:00.000Z', cycleStart: '2025-07-27', cycleEnd: '2025-08-23', dayStr: '2025-06-01', …}
+Console.js:61 🔍 JUNE 1ST DATE MATCH DEBUG - Cycle 185: {periodStartDate: '2025-06-29T00:00:00.000Z', cycleEndDate: '2025-07-26T00:00:00.000Z', cycleStart: '2025-06-29', cycleEnd: '2025-07-26', dayStr: '2025-06-01', …}
+Console.js:61 🔍 JUNE 1ST DATE MATCH DEBUG - Cycle 160: {periodStartDate: '2025-06-01T00:00:00.000Z', cycleEndDate: '2025-06-28T00:00:00.000Z', cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayStr: '2025-06-01', …}
+Console.js:61 🔍 JUNE 1ST FLOW DEBUG: {selectedConnectionIds: Array(1), selectedConnectionIdsLength: 1, allSelectedCyclesLength: 0, multipleConnectionsCheck: false, willShowAlphabet: false, …}
+Console.js:61 🔍 JUNE 1ST EARLY EXIT: No cycles found in allSelectedCycles
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-02: {dayChecking: '2025-06-02', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-02', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-03: {dayChecking: '2025-06-03', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-03', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-04: {dayChecking: '2025-06-04', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-04', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-05: {dayChecking: '2025-06-05', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-05', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-06: {dayChecking: '2025-06-06', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-06', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-07: {dayChecking: '2025-06-07', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-07', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-08: {dayChecking: '2025-06-08', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-08', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-09: {dayChecking: '2025-06-09', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-09', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-10: {dayChecking: '2025-06-10', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-10', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-11: {dayChecking: '2025-06-11', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-11', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-12: {dayChecking: '2025-06-12', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-12', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-13: {dayChecking: '2025-06-13', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-13', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-14: {dayChecking: '2025-06-14', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-14', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-15: {dayChecking: '2025-06-15', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-15', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-16: {dayChecking: '2025-06-16', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-16', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-17: {dayChecking: '2025-06-17', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-17', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-18: {dayChecking: '2025-06-18', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-18', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-19: {dayChecking: '2025-06-19', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-19', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-20: {dayChecking: '2025-06-20', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-20', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-21: {dayChecking: '2025-06-21', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-21', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-22: {dayChecking: '2025-06-22', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-22', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-23: {dayChecking: '2025-06-23', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-23', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-24: {dayChecking: '2025-06-24', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-24', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-25: {dayChecking: '2025-06-25', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-25', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-26: {dayChecking: '2025-06-26', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-26', isMatch: true}
+Console.js:61 🔍 CYCLE UTILS DEBUG - Phase calculation for cycle 160: {dayInCycle: 26, cycleLength: 28, periodEnd: '2025-06-04', aboutToCallGetCycleDisplayInfo: true}
+Console.js:61 🔍 EMOJI DEBUG - getDetailedCyclePhase result: {dayInCycle: 26, cycleLength: 28, periodLength: 4, detailedPhase: {…}}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-27: {dayChecking: '2025-06-27', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-27', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-28: {dayChecking: '2025-06-28', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-28', isMatch: true}
+Console.js:61 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-06-30: {dayChecking: '2025-06-30', availableCycles: Array(3)}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-06-30', isMatch: false}
+Console.js:61 🔍 CYCLE MATCH TEST - Cycle 185: {cycleStart: '2025-06-29', cycleEnd: '2025-07-26', dayToCheck: '2025-06-30', isMatch: true}
+Console.js:61 getCurrentUser successful: {id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+Console.js:61 getCurrentUser successful: {id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+Console.js:61 Auth context setting user: {id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+Console.js:61 Auth: Finally block - setting loading to false
