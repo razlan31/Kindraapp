@@ -200,9 +200,9 @@ export default function LandingPage() {
       </section>
 
       {/* Video Demo Section */}
-      <section className="container mx-auto px-4 py-16 bg-gradient-to-br from-purple-50 to-pink-50">
+      <section className="container mx-auto px-4 py-16 bg-gradient-to-br from-slate-50 to-gray-50">
         <div className="max-w-4xl mx-auto text-center">
-          <Badge className="mb-6 bg-purple-100 text-purple-700 hover:bg-purple-100">
+          <Badge className="mb-6 bg-slate-100 text-slate-700 hover:bg-slate-100">
             <Play className="h-4 w-4 mr-1" />
             See It In Action
           </Badge>
@@ -421,10 +421,10 @@ export default function LandingPage() {
       </section>
 
       {/* Testimonials */}
-      <section className="container mx-auto px-4 py-16 bg-gradient-to-br from-gray-50 to-purple-50">
+      <section className="container mx-auto px-4 py-16 bg-gradient-to-br from-gray-50 to-slate-50">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <Badge className="mb-6 bg-purple-100 text-purple-700 hover:bg-purple-100">
+            <Badge className="mb-6 bg-slate-100 text-slate-700 hover:bg-slate-100">
               <Users className="h-4 w-4 mr-1" />
               Success Stories
             </Badge>
@@ -509,10 +509,10 @@ export default function LandingPage() {
           
           <div className="grid md:grid-cols-2 gap-8">
             {pricingPlans.map((plan, index) => (
-              <Card key={index} className={`relative border-2 ${plan.popular ? 'border-purple-500 shadow-2xl scale-105' : 'border-gray-200 shadow-lg'} bg-white`}>
+              <Card key={index} className={`relative border-2 ${plan.popular ? 'border-slate-500 shadow-2xl scale-105' : 'border-gray-200 shadow-lg'} bg-white`}>
                 {plan.popular && (
                   <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                    <Badge className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-1">
+                    <Badge className="bg-gradient-to-r from-slate-700 to-gray-800 text-white px-4 py-1">
                       <Zap className="h-3 w-3 mr-1" />
                       Most Popular
                     </Badge>
@@ -560,7 +560,7 @@ export default function LandingPage() {
       {/* CTA Section */}
       <section className="container mx-auto px-4 py-16">
         <div className="max-w-4xl mx-auto text-center">
-          <Card className="border-0 shadow-2xl bg-gradient-to-br from-purple-600 via-pink-600 to-indigo-600 text-white">
+          <Card className="border-0 shadow-2xl bg-gradient-to-br from-slate-700 via-gray-800 to-slate-900 text-white">
             <CardContent className="p-12">
               <h2 className="text-3xl md:text-4xl font-bold mb-6">
                 Ready to Transform Your Relationships?
@@ -572,7 +572,7 @@ export default function LandingPage() {
                 <Button 
                   size="lg" 
                   onClick={handleGetStarted}
-                  className="bg-white text-purple-600 hover:bg-gray-100 text-lg px-8 py-6 rounded-xl"
+                  className="bg-white text-slate-700 hover:bg-gray-100 text-lg px-8 py-6 rounded-xl"
                 >
                   Start Your Free Journey
                   <ArrowRight className="ml-2 h-5 w-5" />
