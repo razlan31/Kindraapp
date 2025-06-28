@@ -324,7 +324,7 @@ export default function AIChat() {
       {/* Input Area */}
       <div className="border-t border-gray-100 dark:border-gray-800 p-3 sm:p-4 lg:p-6">
         {/* AI Coaching Limit Warning */}
-        {user && user.monthlyAiCoaching >= 3 && user.subscriptionStatus === 'free' && (
+        {user && (user.monthlyAiCoaching ?? 0) >= 3 && user.subscriptionStatus === 'free' && (
           <div className="max-w-4xl mx-auto mb-4 p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
             <div className="flex items-center gap-3">
               <Crown className="h-5 w-5 text-amber-600 dark:text-amber-400" />
@@ -352,16 +352,16 @@ export default function AIChat() {
               }}
               onKeyDown={handleKeyDown}
               placeholder={
-                user && user.monthlyAiCoaching >= 3 && user.subscriptionStatus === 'free' 
+                user && (user.monthlyAiCoaching ?? 0) >= 3 && user.subscriptionStatus === 'free' 
                   ? "Upgrade to Premium to continue chatting with Luna AI..."
                   : "Ask Luna AI anything about your relationships..."
               }
               className="min-h-[60px] sm:min-h-[70px] lg:min-h-[80px] max-h-[120px] sm:max-h-[140px] lg:max-h-[160px] resize-none pr-14 sm:pr-16 lg:pr-18 border-gray-200 dark:border-gray-700 focus:border-violet-500 dark:focus:border-violet-400 rounded-2xl lg:rounded-3xl bg-gray-50 dark:bg-gray-900 text-base sm:text-lg lg:text-xl leading-relaxed px-4 sm:px-5 lg:px-6 py-3 sm:py-4 lg:py-5"
-              disabled={chatMutation.isPending || (user && user.monthlyAiCoaching >= 3 && user.subscriptionStatus === 'free')}
+              disabled={chatMutation.isPending || (user && (user.monthlyAiCoaching ?? 0) >= 3 && user.subscriptionStatus === 'free')}
             />
             <Button
               type="submit"
-              disabled={!message.trim() || chatMutation.isPending || (user && user.monthlyAiCoaching >= 3 && user.subscriptionStatus === 'free')}
+              disabled={!message.trim() || chatMutation.isPending || (user && (user.monthlyAiCoaching ?? 0) >= 3 && user.subscriptionStatus === 'free')}
               className="absolute right-3 sm:right-4 lg:right-5 bottom-3 sm:bottom-4 lg:bottom-5 h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 p-0 bg-violet-600 hover:bg-violet-700 disabled:bg-gray-300 dark:disabled:bg-gray-600 rounded-xl lg:rounded-2xl"
             >
               {chatMutation.isPending ? (

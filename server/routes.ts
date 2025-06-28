@@ -150,7 +150,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/plans-data", isAuthenticated, async (req: Request, res: Response) => {
     console.log('🚀 PLANS DATA ROUTE HIT - This should show if route is working');
     try {
-      const userId = (req.session as any).userId as number;
+      const userId = (req.session as any).userId as string;
       const user = await storage.getUser(userId);
       console.log('📋 GET /plans-data - Fetching for user', userId);
       
