@@ -2651,10 +2651,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // DISABLED: No automatic cycle generation per user request
       const updatedCycles = allCycles; // await checkAndCreateAutomaticCycles(userId, allCycles);
       
-      // Add isLocked property to cycles from inaccessible connections  
+      // Add isLocked property to cycles from inaccessible connections
+      // Self-connections (connectionId === null) are always unlocked for all users
       const cyclesWithLockStatus = updatedCycles.map(cycle => ({
         ...cycle,
-        isLocked: !accessibleConnectionIds.includes(cycle.connectionId)
+        isLocked: cycle.connectionId === null ? false : !accessibleConnectionIds.includes(cycle.connectionId)
       }));
       
       console.log(`✅ Cycles with lock status: ${allCycles.length} total cycles (${accessibleConnectionIds.length} accessible connections)`);
@@ -2713,7 +2714,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         requestedConnection: allConnections.find(c => c.id === connectionId)
       });
       
-      if (!accessibleConnectionIds.includes(connectionId)) {
+      // Allow self-connections (connectionId === null) for all users, check others for free users
+      if (connectionId !== null && !accessibleConnectionIds.includes(connectionId)) {
         const requestedConnection = allConnections.find(c => c.id === connectionId);
         return res.status(403).json({ 
           message: `Connection "${requestedConnection?.name || 'Unknown'}" is locked for free users. Please upgrade to premium or select your main focus connection.`,

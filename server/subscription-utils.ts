@@ -93,7 +93,7 @@ export function getConnectionsWithLockStatus(connections: any[], user: User, foc
     primaryConnection = sortedConnections[0];
   }
   
-  // Mark lock status: only the primary connection is unlocked for free users
+  // Mark lock status: primary connection + self connections are unlocked for free users
   return connections.map(conn => ({
     ...conn,
     isLocked: !isPremium && conn.id !== primaryConnection?.id
