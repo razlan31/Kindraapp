@@ -1,9 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Send, Loader2, Clock, Plus, Trash2 } from 'lucide-react';
+import { Send, Loader2, Clock, Plus, Trash2, Crown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/auth-context';
 
 interface ChatMessage {
   role: 'user' | 'assistant';
@@ -26,6 +27,7 @@ export default function AIChat() {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { user } = useAuth();
 
   // Auto-focus textarea
   useEffect(() => {
@@ -69,7 +71,14 @@ export default function AIChat() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message }),
       });
-      if (!response.ok) throw new Error('Failed to send message');
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        if (response.status === 403) {
+          throw new Error(errorData.message || 'AI coaching limit reached');
+        }
+        throw new Error(errorData.message || 'Failed to send message');
+      }
       return response.json();
     },
     onSuccess: (data) => {
@@ -87,6 +96,22 @@ export default function AIChat() {
         setTimeout(() => {
           queryClient.invalidateQueries({ queryKey: ['/api/chat/conversations'] });
         }, 500); // Small delay to ensure the save completes first
+      }
+    },
+    onError: (error: Error) => {
+      if (error.message.includes('limit')) {
+        toast({
+          title: "AI Coaching Limit Reached",
+          description: "You've used all 3 free AI coaching messages this month. Upgrade to Premium for unlimited access.",
+          variant: "destructive",
+          duration: 6000,
+        });
+      } else {
+        toast({
+          title: "Message Failed",
+          description: error.message || "Failed to send message. Please try again.",
+          variant: "destructive",
+        });
       }
     },
   });
@@ -298,6 +323,23 @@ export default function AIChat() {
 
       {/* Input Area */}
       <div className="border-t border-gray-100 dark:border-gray-800 p-3 sm:p-4 lg:p-6">
+        {/* AI Coaching Limit Warning */}
+        {user && user.monthlyAiCoaching >= 3 && user.subscriptionStatus === 'free' && (
+          <div className="max-w-4xl mx-auto mb-4 p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+            <div className="flex items-center gap-3">
+              <Crown className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+              <div className="flex-1">
+                <p className="text-sm font-medium text-amber-800 dark:text-amber-200">
+                  AI Coaching Limit Reached
+                </p>
+                <p className="text-xs text-amber-700 dark:text-amber-300 mt-1">
+                  You've used all 3 free AI coaching messages this month. Upgrade to Premium for unlimited access.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+        
         <form onSubmit={handleSubmit} className="max-w-4xl mx-auto">
           <div className="relative">
             <Textarea
@@ -309,13 +351,17 @@ export default function AIChat() {
                 e.target.style.height = Math.min(e.target.scrollHeight, 160) + 'px';
               }}
               onKeyDown={handleKeyDown}
-              placeholder="Ask Luna AI anything about your relationships..."
+              placeholder={
+                user && user.monthlyAiCoaching >= 3 && user.subscriptionStatus === 'free' 
+                  ? "Upgrade to Premium to continue chatting with Luna AI..."
+                  : "Ask Luna AI anything about your relationships..."
+              }
               className="min-h-[60px] sm:min-h-[70px] lg:min-h-[80px] max-h-[120px] sm:max-h-[140px] lg:max-h-[160px] resize-none pr-14 sm:pr-16 lg:pr-18 border-gray-200 dark:border-gray-700 focus:border-violet-500 dark:focus:border-violet-400 rounded-2xl lg:rounded-3xl bg-gray-50 dark:bg-gray-900 text-base sm:text-lg lg:text-xl leading-relaxed px-4 sm:px-5 lg:px-6 py-3 sm:py-4 lg:py-5"
-              disabled={chatMutation.isPending}
+              disabled={chatMutation.isPending || (user && user.monthlyAiCoaching >= 3 && user.subscriptionStatus === 'free')}
             />
             <Button
               type="submit"
-              disabled={!message.trim() || chatMutation.isPending}
+              disabled={!message.trim() || chatMutation.isPending || (user && user.monthlyAiCoaching >= 3 && user.subscriptionStatus === 'free')}
               className="absolute right-3 sm:right-4 lg:right-5 bottom-3 sm:bottom-4 lg:bottom-5 h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 p-0 bg-violet-600 hover:bg-violet-700 disabled:bg-gray-300 dark:disabled:bg-gray-600 rounded-xl lg:rounded-2xl"
             >
               {chatMutation.isPending ? (
