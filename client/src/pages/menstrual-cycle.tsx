@@ -1288,7 +1288,7 @@ export default function MenstrualCyclePage() {
                             
                             // Debug June 1st specifically
                             if (format(day, 'yyyy-MM-dd') === '2025-06-01' && cycle.connectionId === 30) {
-                              console.log(`🔍 JUNE 1ST DEBUG - Cycle ${cycle.id}:`, {
+                              console.log(`🔍 JUNE 1ST DATE MATCH DEBUG - Cycle ${cycle.id}:`, {
                                 periodStartDate: cycle.periodStartDate,
                                 cycleEndDate: cycle.cycleEndDate,
                                 cycleStart: format(cycleStart, 'yyyy-MM-dd'),
@@ -1297,7 +1297,7 @@ export default function MenstrualCyclePage() {
                                 dayGTEStart: day >= cycleStart,
                                 dayLTEEnd: cycleEnd ? day <= cycleEnd : false,
                                 dateMatch,
-                                isLocked: cycle.isLocked
+                                willPassFilter: dateMatch
                               });
                             }
                             
