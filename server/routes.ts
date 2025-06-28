@@ -158,7 +158,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "User not found" });
       }
       
-      const allPlans = await storage.getPlans(userId);
+      const allPlans = await storage.getPlans(parseInt(userId));
       console.log('📋 Plans found:', allPlans.length);
       
       // Add lock status to plans without hiding any data
@@ -650,7 +650,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       try {
         // First, create the connection start milestone
         const connectionStartData = {
-          userId: userId,
+          userId: userId.toString(),
           connectionId: newConnection.id,
           emoji: "💫",
           content: `Connected with ${connectionData.name}`,
@@ -679,7 +679,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const baseTime = connectionData.startDate || new Date();
           
           const stageMilestoneData = {
-            userId: userId,
+            userId: userId.toString(),
             connectionId: newConnection.id,
             emoji: stageEmoji,
             content: `Relationship started as ${connectionData.relationshipStage}`,
@@ -709,7 +709,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           birthdayDate.setFullYear(currentYear);
           
           const birthdayMilestoneData = {
-            userId,
+            userId: userId.toString(),
             connectionId: newConnection.id,
             emoji: '🎂',
             content: `${newConnection.name}'s Birthday`,
