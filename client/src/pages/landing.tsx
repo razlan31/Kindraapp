@@ -618,6 +618,12 @@ export default function LandingPage() {
           </div>
         </div>
       </footer>
+
+      {/* Pricing Modal */}
+      <PricingModal 
+        isOpen={showPricingModal} 
+        onClose={() => setShowPricingModal(false)} 
+      />
     </div>
   );
 }
