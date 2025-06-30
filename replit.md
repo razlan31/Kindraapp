@@ -111,6 +111,14 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
+- June 30, 2025: AI INSIGHTS LIMIT SYSTEM FIXED - Resolved usage tracking bugs preventing proper limit enforcement
+  - **Root Cause**: Null handling issues in usage increment logic causing silent failures when incrementing AI usage counters
+  - **Usage Increment Fix**: Added null coalescing to handle undefined monthlyAiInsights/monthlyAiCoaching values properly
+  - **Backend Logic Repair**: Fixed both AI insights and AI coaching endpoints to increment usage from 0 when fields are null
+  - **Limit Enforcement Verified**: Free tier limits (3 AI insights + 3 AI coaching per month) now properly enforced
+  - **Database Tracking**: Usage counters properly increment and reset monthly as designed
+  - **Premium Upgrade Flow**: System correctly blocks usage and prompts upgrade when limits reached
+
 - June 30, 2025: LANDING PAGE BUTTON FUNCTIONALITY FIXED - Resolved all button click issues preventing user interaction
   - **Root Cause**: Z-index layering conflicts between background elements and interactive buttons preventing click events
   - **Button Click Fix**: Increased z-index values (z-20, z-30) to ensure buttons appear above decorative background elements
