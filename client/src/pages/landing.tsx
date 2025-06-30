@@ -103,25 +103,14 @@ export default function LandingPage() {
   ];
 
   const handleGetStarted = () => {
-    console.log('Navigate to login clicked');
     setLocation('/login');
   };
 
   const handlePremiumSignup = () => {
-    console.log('Show pricing modal clicked');
     setShowPricingModal(true);
   };
 
-  const handleLunaChat = () => {
-    console.log('Chat with Luna AI clicked');
-    alert('Luna AI button clicked!');
-    setLocation('/login');
-  };
 
-  const testButton = () => {
-    alert('Test button works!');
-    console.log('Test button clicked');
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-indigo-50 relative overflow-hidden">
@@ -177,13 +166,6 @@ export default function LandingPage() {
             >
               Start Free Today
               <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-            <Button 
-              size="sm" 
-              onClick={testButton}
-              className="bg-red-500 hover:bg-red-600 text-white"
-            >
-              TEST
             </Button>
             <Button 
               variant="outline" 
@@ -362,7 +344,7 @@ export default function LandingPage() {
               
               <Button 
                 size="lg" 
-                onClick={handleLunaChat}
+                onClick={handleGetStarted}
                 className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700"
               >
                 Chat with Luna AI
