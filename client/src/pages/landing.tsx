@@ -103,11 +103,18 @@ export default function LandingPage() {
   ];
 
   const handleGetStarted = () => {
+    console.log('Navigate to login clicked');
     setLocation('/login');
   };
 
   const handlePremiumSignup = () => {
+    console.log('Show pricing modal clicked');
     setShowPricingModal(true);
+  };
+
+  const handleLunaChat = () => {
+    console.log('Chat with Luna AI clicked');
+    setLocation('/login');
   };
 
   return (
@@ -342,7 +349,7 @@ export default function LandingPage() {
               
               <Button 
                 size="lg" 
-                onClick={handleGetStarted}
+                onClick={handleLunaChat}
                 className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700"
               >
                 Chat with Luna AI
