@@ -3031,9 +3031,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Increment AI coaching usage counter
       await storage.updateUser(userId, {
-        monthlyAiCoaching: user.monthlyAiCoaching + 1
+        monthlyAiCoaching: (user.monthlyAiCoaching || 0) + 1
       });
-      console.log(`🔢 AI Usage Updated: User ${userId} now has ${user.monthlyAiCoaching + 1} AI coaching messages used this month`);
+      console.log(`🔢 AI Usage Updated: User ${userId} now has ${(user.monthlyAiCoaching || 0) + 1} AI coaching messages used this month`);
 
       res.json({ 
         message: aiResponse,
@@ -4153,7 +4153,7 @@ Format as a brief analysis (2-3 sentences) focusing on what their data actually 
       
       // Increment AI insights usage counter
       await storage.updateUser(userId, {
-        monthlyAiInsights: user.monthlyAiInsights + 1
+        monthlyAiInsights: (user.monthlyAiInsights || 0) + 1
       });
 
       res.json({ insight });
