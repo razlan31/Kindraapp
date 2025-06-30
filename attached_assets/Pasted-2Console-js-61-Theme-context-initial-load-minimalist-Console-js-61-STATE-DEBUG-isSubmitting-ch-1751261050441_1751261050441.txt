@@ -1,0 +1,49 @@
+2Console.js:61 Theme context initial load: minimalist
+Console.js:61 🔥 STATE DEBUG - isSubmitting changed: false
+Console.js:61 🔥 STATE DEBUG - connectionId changed: 2 selectedConnectionId: null
+Console.js:61 Modal useEffect - selectedDate from context: null
+Console.js:61 Modal useEffect - editingMoment: null
+Console.js:61 Modal useEffect - momentModalOpen: false
+Console.js:61 🔥 MODAL OPEN - Resetting isSubmitting to false
+Console.js:61 🔥 MODAL INIT - Setting connectionId: 2 from selectedConnectionId: null
+Console.js:61 🔥 PLAN MODAL - Connection effect: Object
+Console.js:61 🔥 PLAN MODAL - Form init effect: Object
+Console.js:61 Theme effect running: minimalist
+Console.js:61 Applied minimalist theme (light base)
+Console.js:61 Theme stored to localStorage: minimalist
+2Console.js:61 Auth: Starting to load user, setting loading to true
+Console.js:61 Theme effect running: minimalist
+Console.js:61 Applied minimalist theme (light base)
+Console.js:61 Theme stored to localStorage: minimalist
+frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.Understand this error
+ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev/api/connections:1 
+            
+            
+           Failed to load resource: the server responded with a status of 401 (Unauthorized)Understand this error
+ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev/api/me:1 
+            
+            
+           Failed to load resource: the server responded with a status of 401 (Unauthorized)Understand this error
+Console.js:61 getCurrentUser failed - response not ok
+Console.js:61 getCurrentUser successful: null
+Console.js:61 Auth context setting user: null
+Console.js:61 Auth: Finally block - setting loading to false
+Console.js:61 HTTP Error: Object
+Mt.forEach.n.<computed> @ Console.js:61Understand this error
+ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev/api/me:1 
+            
+            
+           Failed to load resource: the server responded with a status of 401 (Unauthorized)Understand this error
+Console.js:61 getCurrentUser failed - response not ok
+Console.js:61 getCurrentUser successful: null
+Console.js:61 Auth context setting user: null
+Console.js:61 Auth: Finally block - setting loading to false
+ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev/api/connections:1 
+            
+            
+           Failed to load resource: the server responded with a status of 401 (Unauthorized)Understand this error
+Console.js:61 HTTP Error: Object
+Mt.forEach.n.<computed> @ Console.js:61Understand this error
+Console.js:61 Focus Context Debug: Object
+Console.js:61 Focus Context Debug: Object
+2frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.Understand this error

@@ -114,7 +114,13 @@ export default function LandingPage() {
 
   const handleLunaChat = () => {
     console.log('Chat with Luna AI clicked');
+    alert('Luna AI button clicked!');
     setLocation('/login');
+  };
+
+  const testButton = () => {
+    alert('Test button works!');
+    console.log('Test button clicked');
   };
 
   return (
@@ -149,7 +155,7 @@ export default function LandingPage() {
         <div className="absolute top-0 -right-4 w-72 h-72 bg-blue-100 rounded-full mix-blend-multiply filter blur-xl opacity-40 animate-blob animation-delay-2000"></div>
         <div className="absolute -bottom-8 left-20 w-72 h-72 bg-slate-200 rounded-full mix-blend-multiply filter blur-xl opacity-40 animate-blob animation-delay-4000"></div>
         
-        <div className="max-w-4xl mx-auto relative z-10">
+        <div className="max-w-4xl mx-auto relative z-20">
           <Badge className="mb-6 bg-purple-100 text-purple-700 hover:bg-purple-100">
             <Sparkles className="h-4 w-4 mr-1" />
             AI-Powered Relationship Intelligence
@@ -163,7 +169,7 @@ export default function LandingPage() {
             Meet Luna AI, your personal relationship coach. Track patterns, understand emotions, and build deeper connections with the power of artificial intelligence.
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12 relative z-30">
             <Button 
               size="lg" 
               onClick={handleGetStarted}
@@ -171,6 +177,13 @@ export default function LandingPage() {
             >
               Start Free Today
               <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
+            <Button 
+              size="sm" 
+              onClick={testButton}
+              className="bg-red-500 hover:bg-red-600 text-white"
+            >
+              TEST
             </Button>
             <Button 
               variant="outline" 
@@ -284,7 +297,7 @@ export default function LandingPage() {
         <div className="absolute top-10 right-10 w-64 h-64 bg-slate-100 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-2000"></div>
         <div className="absolute bottom-10 left-10 w-64 h-64 bg-gray-100 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-4000"></div>
         
-        <div className="max-w-6xl mx-auto relative z-10">
+        <div className="max-w-6xl mx-auto relative z-20">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
               Everything You Need for Relationship Growth
