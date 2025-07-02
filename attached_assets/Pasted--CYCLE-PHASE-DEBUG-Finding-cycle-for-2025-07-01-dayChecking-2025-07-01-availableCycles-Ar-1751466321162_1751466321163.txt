@@ -1,0 +1,98 @@
+🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-07-01: {dayChecking: '2025-07-01', availableCycles: Array(3)}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-07-01', isMatch: false}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 185: {cycleStart: '2025-06-29', cycleEnd: '2025-07-26', dayToCheck: '2025-07-01', isMatch: true}
+cycle-utils.ts:213 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-07-02: {dayChecking: '2025-07-02', availableCycles: Array(3)}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-07-02', isMatch: false}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 185: {cycleStart: '2025-06-29', cycleEnd: '2025-07-26', dayToCheck: '2025-07-02', isMatch: true}
+cycle-utils.ts:213 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-07-03: {dayChecking: '2025-07-03', availableCycles: Array(3)}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-07-03', isMatch: false}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 185: {cycleStart: '2025-06-29', cycleEnd: '2025-07-26', dayToCheck: '2025-07-03', isMatch: true}
+cycle-utils.ts:213 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-07-04: {dayChecking: '2025-07-04', availableCycles: Array(3)}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-07-04', isMatch: false}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 185: {cycleStart: '2025-06-29', cycleEnd: '2025-07-26', dayToCheck: '2025-07-04', isMatch: true}
+cycle-utils.ts:213 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-07-05: {dayChecking: '2025-07-05', availableCycles: Array(3)}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-07-05', isMatch: false}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 185: {cycleStart: '2025-06-29', cycleEnd: '2025-07-26', dayToCheck: '2025-07-05', isMatch: true}
+cycle-utils.ts:213 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-07-06: {dayChecking: '2025-07-06', availableCycles: Array(3)}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-07-06', isMatch: false}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 185: {cycleStart: '2025-06-29', cycleEnd: '2025-07-26', dayToCheck: '2025-07-06', isMatch: true}
+cycle-utils.ts:213 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-07-07: {dayChecking: '2025-07-07', availableCycles: Array(3)}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-07-07', isMatch: false}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 185: {cycleStart: '2025-06-29', cycleEnd: '2025-07-26', dayToCheck: '2025-07-07', isMatch: true}
+cycle-utils.ts:213 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-07-08: {dayChecking: '2025-07-08', availableCycles: Array(3)}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-07-08', isMatch: false}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 185: {cycleStart: '2025-06-29', cycleEnd: '2025-07-26', dayToCheck: '2025-07-08', isMatch: true}
+cycle-utils.ts:213 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-07-09: {dayChecking: '2025-07-09', availableCycles: Array(3)}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-07-09', isMatch: false}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 185: {cycleStart: '2025-06-29', cycleEnd: '2025-07-26', dayToCheck: '2025-07-09', isMatch: true}
+cycle-utils.ts:213 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-07-10: {dayChecking: '2025-07-10', availableCycles: Array(3)}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-07-10', isMatch: false}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 185: {cycleStart: '2025-06-29', cycleEnd: '2025-07-26', dayToCheck: '2025-07-10', isMatch: true}
+cycle-utils.ts:213 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-07-11: {dayChecking: '2025-07-11', availableCycles: Array(3)}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-07-11', isMatch: false}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 185: {cycleStart: '2025-06-29', cycleEnd: '2025-07-26', dayToCheck: '2025-07-11', isMatch: true}
+cycle-utils.ts:213 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-07-12: {dayChecking: '2025-07-12', availableCycles: Array(3)}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-07-12', isMatch: false}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 185: {cycleStart: '2025-06-29', cycleEnd: '2025-07-26', dayToCheck: '2025-07-12', isMatch: true}
+cycle-utils.ts:213 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-07-13: {dayChecking: '2025-07-13', availableCycles: Array(3)}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-07-13', isMatch: false}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 185: {cycleStart: '2025-06-29', cycleEnd: '2025-07-26', dayToCheck: '2025-07-13', isMatch: true}
+cycle-utils.ts:213 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-07-14: {dayChecking: '2025-07-14', availableCycles: Array(3)}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-07-14', isMatch: false}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 185: {cycleStart: '2025-06-29', cycleEnd: '2025-07-26', dayToCheck: '2025-07-14', isMatch: true}
+cycle-utils.ts:213 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-07-15: {dayChecking: '2025-07-15', availableCycles: Array(3)}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-07-15', isMatch: false}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 185: {cycleStart: '2025-06-29', cycleEnd: '2025-07-26', dayToCheck: '2025-07-15', isMatch: true}
+cycle-utils.ts:213 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-07-16: {dayChecking: '2025-07-16', availableCycles: Array(3)}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-07-16', isMatch: false}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 185: {cycleStart: '2025-06-29', cycleEnd: '2025-07-26', dayToCheck: '2025-07-16', isMatch: true}
+cycle-utils.ts:213 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-07-17: {dayChecking: '2025-07-17', availableCycles: Array(3)}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-07-17', isMatch: false}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 185: {cycleStart: '2025-06-29', cycleEnd: '2025-07-26', dayToCheck: '2025-07-17', isMatch: true}
+cycle-utils.ts:213 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-07-18: {dayChecking: '2025-07-18', availableCycles: Array(3)}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-07-18', isMatch: false}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 185: {cycleStart: '2025-06-29', cycleEnd: '2025-07-26', dayToCheck: '2025-07-18', isMatch: true}
+cycle-utils.ts:213 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-07-19: {dayChecking: '2025-07-19', availableCycles: Array(3)}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-07-19', isMatch: false}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 185: {cycleStart: '2025-06-29', cycleEnd: '2025-07-26', dayToCheck: '2025-07-19', isMatch: true}
+cycle-utils.ts:213 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-07-20: {dayChecking: '2025-07-20', availableCycles: Array(3)}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-07-20', isMatch: false}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 185: {cycleStart: '2025-06-29', cycleEnd: '2025-07-26', dayToCheck: '2025-07-20', isMatch: true}
+cycle-utils.ts:213 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-07-21: {dayChecking: '2025-07-21', availableCycles: Array(3)}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-07-21', isMatch: false}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 185: {cycleStart: '2025-06-29', cycleEnd: '2025-07-26', dayToCheck: '2025-07-21', isMatch: true}
+cycle-utils.ts:213 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-07-22: {dayChecking: '2025-07-22', availableCycles: Array(3)}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-07-22', isMatch: false}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 185: {cycleStart: '2025-06-29', cycleEnd: '2025-07-26', dayToCheck: '2025-07-22', isMatch: true}
+cycle-utils.ts:213 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-07-23: {dayChecking: '2025-07-23', availableCycles: Array(3)}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-07-23', isMatch: false}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 185: {cycleStart: '2025-06-29', cycleEnd: '2025-07-26', dayToCheck: '2025-07-23', isMatch: true}
+cycle-utils.ts:213 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-07-24: {dayChecking: '2025-07-24', availableCycles: Array(3)}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-07-24', isMatch: false}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 185: {cycleStart: '2025-06-29', cycleEnd: '2025-07-26', dayToCheck: '2025-07-24', isMatch: true}
+cycle-utils.ts:213 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-07-25: {dayChecking: '2025-07-25', availableCycles: Array(3)}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-07-25', isMatch: false}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 185: {cycleStart: '2025-06-29', cycleEnd: '2025-07-26', dayToCheck: '2025-07-25', isMatch: true}
+cycle-utils.ts:213 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-07-26: {dayChecking: '2025-07-26', availableCycles: Array(3)}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-07-26', isMatch: false}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 185: {cycleStart: '2025-06-29', cycleEnd: '2025-07-26', dayToCheck: '2025-07-26', isMatch: true}
+cycle-utils.ts:213 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-07-27: {dayChecking: '2025-07-27', availableCycles: Array(3)}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-07-27', isMatch: false}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 185: {cycleStart: '2025-06-29', cycleEnd: '2025-07-26', dayToCheck: '2025-07-27', isMatch: false}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 184: {cycleStart: '2025-07-27', cycleEnd: '2025-08-23', dayToCheck: '2025-07-27', isMatch: true}
+cycle-utils.ts:213 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-07-28: {dayChecking: '2025-07-28', availableCycles: Array(3)}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-07-28', isMatch: false}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 185: {cycleStart: '2025-06-29', cycleEnd: '2025-07-26', dayToCheck: '2025-07-28', isMatch: false}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 184: {cycleStart: '2025-07-27', cycleEnd: '2025-08-23', dayToCheck: '2025-07-28', isMatch: true}
+cycle-utils.ts:213 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-07-29: {dayChecking: '2025-07-29', availableCycles: Array(3)}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-07-29', isMatch: false}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 185: {cycleStart: '2025-06-29', cycleEnd: '2025-07-26', dayToCheck: '2025-07-29', isMatch: false}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 184: {cycleStart: '2025-07-27', cycleEnd: '2025-08-23', dayToCheck: '2025-07-29', isMatch: true}
+cycle-utils.ts:213 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-07-30: {dayChecking: '2025-07-30', availableCycles: Array(3)}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-07-30', isMatch: false}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 185: {cycleStart: '2025-06-29', cycleEnd: '2025-07-26', dayToCheck: '2025-07-30', isMatch: false}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 184: {cycleStart: '2025-07-27', cycleEnd: '2025-08-23', dayToCheck: '2025-07-30', isMatch: true}
+cycle-utils.ts:213 🔍 CYCLE PHASE DEBUG - Finding cycle for 2025-07-31: {dayChecking: '2025-07-31', availableCycles: Array(3)}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 160: {cycleStart: '2025-06-01', cycleEnd: '2025-06-28', dayToCheck: '2025-07-31', isMatch: false}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 185: {cycleStart: '2025-06-29', cycleEnd: '2025-07-26', dayToCheck: '2025-07-31', isMatch: false}
+cycle-utils.ts:244 🔍 CYCLE MATCH TEST - Cycle 184: {cycleStart: '2025-07-27', cycleEnd: '2025-08-23', dayToCheck: '2025-07-31', isMatch: true}

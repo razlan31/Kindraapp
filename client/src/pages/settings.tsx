@@ -482,6 +482,11 @@ function Settings() {
                     </div>
                     <div className="flex flex-col gap-3">
                       <PWAInstallButton variant="outline" className="w-full justify-start" />
+                      {/* Debug test button */}
+                      <Button variant="outline" className="w-full justify-start">
+                        <Download className="h-4 w-4 mr-2" />
+                        Test Button (Debug)
+                      </Button>
                       <div className="text-xs text-neutral-500 dark:text-neutral-400">
                         Installing Kindra as an app provides:
                         <ul className="list-disc list-inside mt-1 space-y-1">

@@ -14,6 +14,8 @@ export function PWAInstallButton({
   size = "default", 
   className = "" 
 }: PWAInstallButtonProps) {
+  console.log('🔍 PWA Install Button - Component initialized!');
+  
   const [canInstall, setCanInstall] = useState(false);
   const [isInstalling, setIsInstalling] = useState(false);
   const [isInstalled, setIsInstalled] = useState(false);
