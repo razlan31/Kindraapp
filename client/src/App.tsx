@@ -42,8 +42,11 @@ function Router() {
   const [location, setLocation] = useLocation();
 
   useEffect(() => {
+    console.log("Router Debug - loading:", loading, "isAuthenticated:", isAuthenticated, "location:", location);
+    
     if (!loading) {
       if (!isAuthenticated && !["/login", "/landing"].includes(location)) {
+        console.log("Router: Redirecting unauthenticated user to /landing");
         setLocation("/landing");
       } else if (isAuthenticated && ["/login", "/landing"].includes(location)) {
         // Check for saved default page preference
@@ -57,23 +60,27 @@ function Router() {
             "insights": "/insights"
           };
           const targetRoute = routeMap[savedDefaultPage] || "/";
+          console.log("Router: Redirecting authenticated user to:", targetRoute);
           setLocation(targetRoute);
         } else {
+          console.log("Router: Redirecting authenticated user to home");
           setLocation("/");
         }
       }
     }
   }, [isAuthenticated, loading, location, setLocation]);
 
+  console.log("Router: Rendering routes for location:", location);
+  
   return (
     <Switch>
-      <Route path="/landing" component={TestLandingPage} />
-      <Route path="/login" component={Login} />
+      <Route path="/landing">{() => { console.log("Landing route matched"); return <TestLandingPage />; }}</Route>
+      <Route path="/login">{() => { console.log("Login route matched"); return <Login />; }}</Route>
       <Route path="/onboarding/welcome" component={OnboardingWelcome} />
       <Route path="/onboarding/profile" component={OnboardingProfile} />
       <Route path="/onboarding/goals" component={OnboardingGoals} />
       <Route path="/onboarding/complete" component={OnboardingComplete} />
-      <Route path="/" component={Homepage1} />
+      <Route path="/">{() => { console.log("Home route matched"); return <Homepage1 />; }}</Route>
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/connections" component={Connections} />
       <Route path="/connections/:id/edit" component={ConnectionEdit} />
@@ -88,7 +95,7 @@ function Router() {
 
       <Route path="/cycle" component={MenstrualCycle} />
       <Route path="/menstrual-cycle" component={MenstrualCycle} />
-      <Route component={NotFound} />
+      <Route>{() => { console.log("NotFound route matched for:", location); return <NotFound />; }}</Route>
     </Switch>
   );
 }
