@@ -103,6 +103,7 @@ export default function LandingPage() {
   ];
 
   const handleGetStarted = () => {
+    console.log('Start button clicked - navigating to login');
     setLocation('/login');
   };
 
@@ -159,7 +160,7 @@ export default function LandingPage() {
               <Button 
                 size="lg" 
                 onClick={handleGetStarted}
-                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-lg px-8 py-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300"
+                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-lg px-8 py-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 relative z-30 cursor-pointer"
               >
                 Start Free Today
                 <ArrowRight className="ml-2 h-5 w-5" />
@@ -168,7 +169,7 @@ export default function LandingPage() {
                 variant="outline" 
                 size="lg"
                 onClick={() => setShowPricingModal(true)}
-                className="text-lg px-8 py-6 rounded-2xl border-purple-200 text-purple-700 hover:bg-purple-50 transition-all duration-300"
+                className="text-lg px-8 py-6 rounded-2xl border-purple-200 text-purple-700 hover:bg-purple-50 transition-all duration-300 relative z-30 cursor-pointer"
               >
                 View Pricing
               </Button>
@@ -663,11 +664,11 @@ export default function LandingPage() {
               <p className="text-xl mb-8 opacity-90">
                 Join thousands of users who have already discovered the power of AI-driven relationship intelligence.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center relative z-30">
                 <Button 
                   size="lg" 
                   onClick={handleGetStarted}
-                  className="bg-white text-slate-700 hover:bg-gray-100 text-lg px-8 py-6 rounded-xl"
+                  className="bg-white text-slate-700 hover:bg-gray-100 text-lg px-8 py-6 rounded-xl relative z-30 cursor-pointer"
                 >
                   Start Your Free Journey
                   <ArrowRight className="ml-2 h-5 w-5" />
@@ -676,7 +677,7 @@ export default function LandingPage() {
                   variant="outline" 
                   size="lg"
                   onClick={handlePremiumSignup}
-                  className="border-white text-white hover:bg-white/10 text-lg px-8 py-6 rounded-xl"
+                  className="border-white text-white hover:bg-white/10 text-lg px-8 py-6 rounded-xl relative z-30 cursor-pointer"
                 >
                   View Premium Features
                 </Button>
