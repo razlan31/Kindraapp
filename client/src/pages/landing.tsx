@@ -2,10 +2,151 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Heart, Brain, Calendar, TrendingUp, Star, Check, ArrowRight, Users, Shield, Sparkles, Moon, Sun, Zap, Play, MessageCircle, ThumbsUp, Share2, Bookmark, MoreHorizontal } from 'lucide-react';
+import { Heart, Brain, Calendar, TrendingUp, Star, Check, ArrowRight, Users, Shield, Sparkles, Moon, Sun, Zap, Play, MessageCircle, ThumbsUp, Share2, Bookmark, MoreHorizontal, Bell } from 'lucide-react';
 import { useLocation } from 'wouter';
 import { AnimatedFeatures } from '@/components/animated-features';
 import { PricingModal } from '@/components/subscription/pricing-modal';
+
+// PWA Download Card Component
+function PWADownloadCard() {
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [canInstall, setCanInstall] = useState(false);
+  const [isInstalled, setIsInstalled] = useState(false);
+
+  React.useEffect(() => {
+    // Check if already installed
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      setIsInstalled(true);
+      return;
+    }
+
+    // Listen for the beforeinstallprompt event
+    const handleBeforeInstallPrompt = (e: any) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      setCanInstall(true);
+    };
+
+    // Listen for successful installation
+    const handleAppInstalled = () => {
+      setIsInstalled(true);
+      setCanInstall(false);
+      setDeferredPrompt(null);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    window.addEventListener('appinstalled', handleAppInstalled);
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      window.removeEventListener('appinstalled', handleAppInstalled);
+    };
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (!deferredPrompt) return;
+
+    try {
+      const result = await deferredPrompt.prompt();
+      if (result.outcome === 'accepted') {
+        setIsInstalled(true);
+        setCanInstall(false);
+      }
+      setDeferredPrompt(null);
+    } catch (error) {
+      console.error('PWA install failed:', error);
+    }
+  };
+
+  const getInstallInstructions = () => {
+    const userAgent = navigator.userAgent.toLowerCase();
+    if (userAgent.includes('iphone') || userAgent.includes('ipad')) {
+      return (
+        <div className="text-center space-y-3">
+          <p className="text-lg font-semibold">On iPhone/iPad:</p>
+          <div className="bg-blue-50 p-4 rounded-lg">
+            <p>1. Tap the <strong>Share button</strong> (□↗) in Safari</p>
+            <p>2. Select <strong>"Add to Home Screen"</strong></p>
+            <p>3. Tap <strong>"Add"</strong> to install</p>
+          </div>
+        </div>
+      );
+    }
+    if (userAgent.includes('android')) {
+      return (
+        <div className="text-center space-y-3">
+          <p className="text-lg font-semibold">On Android:</p>
+          <div className="bg-green-50 p-4 rounded-lg">
+            <p>1. Tap the <strong>menu</strong> (⋮) in your browser</p>
+            <p>2. Select <strong>"Add to Home Screen"</strong> or <strong>"Install App"</strong></p>
+            <p>3. Tap <strong>"Install"</strong></p>
+          </div>
+        </div>
+      );
+    }
+    return (
+      <div className="text-center space-y-3">
+        <p className="text-lg font-semibold">On Desktop:</p>
+        <div className="bg-purple-50 p-4 rounded-lg">
+          <p>Look for an <strong>"Install"</strong> or <strong>"Add to Home Screen"</strong> option in your browser menu</p>
+        </div>
+      </div>
+    );
+  };
+
+  if (isInstalled) {
+    return (
+      <div className="max-w-md mx-auto">
+        <Card className="border-2 border-green-200 bg-green-50">
+          <CardContent className="p-6 text-center">
+            <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Check className="h-8 w-8 text-white" />
+            </div>
+            <h3 className="text-xl font-bold text-green-800 mb-2">App Installed!</h3>
+            <p className="text-green-600">Kindra is now installed on your device</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (canInstall) {
+    return (
+      <div className="max-w-md mx-auto">
+        <Card className="border-2 border-blue-500 bg-blue-50 hover:bg-blue-100 transition-colors cursor-pointer" onClick={handleInstallClick}>
+          <CardContent className="p-6 text-center">
+            <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+              </svg>
+            </div>
+            <h3 className="text-xl font-bold text-blue-800 mb-2">Install Kindra App</h3>
+            <p className="text-blue-600 mb-4">Tap to install as a mobile app</p>
+            <div className="bg-blue-100 px-4 py-2 rounded-lg">
+              <p className="text-sm text-blue-700">One-click installation available!</p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  return (
+    <div className="max-w-md mx-auto">
+      <Card className="border-2 border-purple-200 bg-purple-50">
+        <CardContent className="p-6">
+          <div className="w-16 h-16 bg-purple-500 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+            </svg>
+          </div>
+          <h3 className="text-xl font-bold text-purple-800 mb-4">Install Kindra App</h3>
+          {getInstallInstructions()}
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
 
 export default function LandingPage() {
   const [, setLocation] = useLocation();
@@ -241,6 +382,52 @@ export default function LandingPage() {
                   </p>
                 </div>
               </div>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* PWA Download Section */}
+      <section className="py-16 bg-gradient-to-r from-blue-50 to-purple-50">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto text-center">
+            <Card className="border-0 shadow-2xl bg-white">
+              <CardContent className="p-12">
+                <div className="mb-8">
+                  <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <svg className="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+                    </svg>
+                  </div>
+                  <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                    📱 Get the Kindra Mobile App
+                  </h2>
+                  <p className="text-xl text-gray-600 mb-6">
+                    Install Kindra on your phone for the best experience - faster, offline access, and push notifications
+                  </p>
+                </div>
+
+                <PWADownloadCard />
+
+                <div className="mt-8 grid md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm text-gray-600">
+                  <div className="flex items-center gap-2">
+                    <Zap className="h-4 w-4 text-blue-500" />
+                    <span>Lightning Fast</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Shield className="h-4 w-4 text-green-500" />
+                    <span>Works Offline</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Bell className="h-4 w-4 text-purple-500" />
+                    <span>Push Notifications</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Star className="h-4 w-4 text-yellow-500" />
+                    <span>Home Screen Icon</span>
+                  </div>
+                </div>
+              </CardContent>
             </Card>
           </div>
         </div>
