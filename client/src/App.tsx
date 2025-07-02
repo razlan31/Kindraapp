@@ -15,6 +15,7 @@ import Activities from "@/pages/activities";
 import Calendar from "@/pages/calendar";
 import Homepage1 from "@/pages/homepage-1";
 import LandingPage from "@/pages/landing";
+import SocialLandingPage from "@/pages/landing-social";
 import Insights from "@/pages/insights-original";
 import Profile from "@/pages/profile";
 import Settings from "@/pages/settings";
