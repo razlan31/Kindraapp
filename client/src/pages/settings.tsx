@@ -485,9 +485,21 @@ function Settings() {
                       <div className="bg-blue-100 p-2 text-blue-800 text-sm">
                         ✅ This red section should be visible if the JSX structure is correct
                       </div>
+                      
+                      {/* Test 1: Plain button element */}
+                      <button className="w-full p-2 border border-gray-300 rounded bg-yellow-100 text-black">
+                        🟡 Plain HTML Button Test
+                      </button>
+                      
+                      {/* Test 2: Button component without icons */}
+                      <Button variant="outline" className="w-full bg-green-100">
+                        🟢 Button Component Test (No Icons)
+                      </Button>
+                      
+                      {/* Test 3: Button component with Download icon */}
                       <Button variant="outline" className="w-full justify-start bg-green-100">
                         <Download className="h-4 w-4 mr-2" />
-                        🟢 Simple Test Button
+                        🟢 Button Component Test (With Download Icon)
                       </Button>
                     </div>
                   </div>
