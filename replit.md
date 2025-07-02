@@ -111,6 +111,19 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
+- July 2, 2025: VISUAL REDESIGN COMPLETED - Enhanced app aesthetics while maintaining clean, professional design
+  - **Design System Enhancement**: Updated color palette from red/purple to modern blue/purple gradient scheme
+  - **Enhanced Typography**: Added Lexend font family and gradient text effects for better visual hierarchy
+  - **Floating UI Elements**: Implemented glass-morphism effects with backdrop blur and subtle shadows throughout the interface
+  - **Enhanced Navigation**: Redesigned bottom navigation with floating glass effect, rounded corners, and gradient active states
+  - **Header Improvements**: Added glass effect header with gradient text and modern styling
+  - **Background Enhancement**: Added subtle animated background elements (floating colored orbs) for visual depth
+  - **Animation System**: Implemented slide-in animations with staggered timing for smooth page transitions
+  - **Component Styling**: Enhanced cards, buttons, and interactive elements with modern hover effects and shadows
+  - **Color Variables**: Added comprehensive CSS custom properties for gradients, glass effects, and shadow system
+  - **Page-Specific Design**: Applied consistent visual enhancements across Homepage, Activities, and Calendar pages
+  - **Maintained Functionality**: All existing features and interactions preserved while improving visual appeal
+
 - June 30, 2025: AI INSIGHTS LIMIT SYSTEM FIXED - Resolved usage tracking bugs preventing proper limit enforcement
   - **Root Cause**: Null handling issues in usage increment logic causing silent failures when incrementing AI usage counters
   - **Usage Increment Fix**: Added null coalescing to handle undefined monthlyAiInsights/monthlyAiCoaching values properly

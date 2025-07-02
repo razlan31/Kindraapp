@@ -587,23 +587,30 @@ export default function Calendar() {
   const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
   return (
-    <div className="max-w-md mx-auto bg-white dark:bg-neutral-900 min-h-screen flex flex-col relative">
+    <div className="max-w-md mx-auto min-h-screen flex flex-col relative bg-gradient-to-br from-slate-50/50 to-indigo-50/30">
+      {/* Subtle background elements */}
+      <div className="absolute inset-0 opacity-20 pointer-events-none">
+        <div className="absolute top-24 right-8 w-20 h-20 bg-indigo-200 rounded-full mix-blend-multiply filter blur-xl animate-float"></div>
+        <div className="absolute top-48 left-12 w-24 h-24 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl animate-float animation-delay-2000"></div>
+        <div className="absolute bottom-48 right-16 w-28 h-28 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl animate-float animation-delay-4000"></div>
+      </div>
+      
       <Header />
       
-      <main className="flex-1 overflow-y-auto pb-20">
-        {/* Header */}
-        <section className="px-4 pt-5 pb-3 border-b border-border/40 bg-card/30 backdrop-blur-sm">
-          <div className="flex items-center justify-between mb-2">
+      <main className="flex-1 overflow-y-auto pb-24 relative z-10">
+        {/* Enhanced Header */}
+        <section className="px-4 pt-5 pb-4 floating-element m-4 rounded-2xl animate-slide-in-up">
+          <div className="flex items-center justify-between mb-3">
             <div>
-              <h1 className="text-2xl font-bold text-foreground">Calendar</h1>
-              <p className="text-sm text-muted-foreground">
+              <h1 className="text-2xl font-bold text-gradient">Calendar</h1>
+              <p className="text-sm text-slate-600">
                 Track your relationship moments over time
               </p>
             </div>
-            <CalendarIcon className="h-8 w-8 text-primary" />
+            <div className="w-8 h-8 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg flex items-center justify-center">
+              <CalendarIcon className="h-4 w-4 text-white" />
+            </div>
           </div>
-
-
         </section>
 
         {/* Connection Filter */}
