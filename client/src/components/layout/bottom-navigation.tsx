@@ -166,28 +166,38 @@ export function BottomNavigation() {
         </button>
       </div>
 
-      <nav className="fixed bottom-0 left-0 right-0 bg-white dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-800 z-50">
-        <div className="max-w-md mx-auto px-2">
-          <div className="grid grid-cols-5 h-14 items-center">
-            <Link href="/" className={`bottom-tab flex flex-col items-center justify-center h-full px-1 ${location === '/' ? 'active' : ''}`}>
-              <Brain className="h-4 w-4" />
-              <span className="text-[10px] mt-0.5">AI</span>
+      <nav className="fixed bottom-0 left-0 right-0 floating-element border-t-0 z-50 rounded-t-2xl">
+        <div className="max-w-md mx-auto px-4 py-2">
+          <div className="grid grid-cols-5 h-16 items-center gap-1">
+            <Link href="/" className={`bottom-tab-enhanced flex flex-col items-center justify-center h-full px-2 rounded-xl transition-all duration-300 ${location === '/' ? 'active-tab' : ''}`}>
+              <div className={`p-2 rounded-lg transition-all duration-300 ${location === '/' ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg' : ''}`}>
+                <Brain className="h-5 w-5" />
+              </div>
+              <span className={`text-[10px] mt-1 font-medium transition-colors duration-300 ${location === '/' ? 'text-blue-600' : 'text-muted-foreground'}`}>AI</span>
             </Link>
-            <Link href="/connections" className={`bottom-tab flex flex-col items-center justify-center h-full px-1 ${location === '/connections' ? 'active' : ''}`}>
-              <Users className="h-4 w-4" />
-              <span className="text-[10px] mt-0.5">Connection</span>
+            <Link href="/connections" className={`bottom-tab-enhanced flex flex-col items-center justify-center h-full px-2 rounded-xl transition-all duration-300 ${location === '/connections' ? 'active-tab' : ''}`}>
+              <div className={`p-2 rounded-lg transition-all duration-300 ${location === '/connections' ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg' : ''}`}>
+                <Users className="h-5 w-5" />
+              </div>
+              <span className={`text-[10px] mt-1 font-medium transition-colors duration-300 ${location === '/connections' ? 'text-blue-600' : 'text-muted-foreground'}`}>Connect</span>
             </Link>
-            <Link href="/activities" className={`bottom-tab flex flex-col items-center justify-center h-full px-1 ${location === '/activities' ? 'active' : ''}`}>
-              <Heart className="h-4 w-4" />
-              <span className="text-[10px] mt-0.5">Activity</span>
+            <Link href="/activities" className={`bottom-tab-enhanced flex flex-col items-center justify-center h-full px-2 rounded-xl transition-all duration-300 ${location === '/activities' ? 'active-tab' : ''}`}>
+              <div className={`p-2 rounded-lg transition-all duration-300 ${location === '/activities' ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg' : ''}`}>
+                <Heart className="h-5 w-5" />
+              </div>
+              <span className={`text-[10px] mt-1 font-medium transition-colors duration-300 ${location === '/activities' ? 'text-blue-600' : 'text-muted-foreground'}`}>Activity</span>
             </Link>
-            <Link href="/calendar" className={`bottom-tab flex flex-col items-center justify-center h-full px-1 ${location === '/calendar' ? 'active' : ''}`}>
-              <Calendar className="h-4 w-4" />
-              <span className="text-[10px] mt-0.5">Calendar</span>
+            <Link href="/calendar" className={`bottom-tab-enhanced flex flex-col items-center justify-center h-full px-2 rounded-xl transition-all duration-300 ${location === '/calendar' ? 'active-tab' : ''}`}>
+              <div className={`p-2 rounded-lg transition-all duration-300 ${location === '/calendar' ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg' : ''}`}>
+                <Calendar className="h-5 w-5" />
+              </div>
+              <span className={`text-[10px] mt-1 font-medium transition-colors duration-300 ${location === '/calendar' ? 'text-blue-600' : 'text-muted-foreground'}`}>Calendar</span>
             </Link>
-            <Link href="/insights" className={`bottom-tab flex flex-col items-center justify-center h-full px-1 ${location === '/insights' ? 'active' : ''}`}>
-              <LineChart className="h-4 w-4" />
-              <span className="text-[10px] mt-0.5">Insights</span>
+            <Link href="/insights" className={`bottom-tab-enhanced flex flex-col items-center justify-center h-full px-2 rounded-xl transition-all duration-300 ${location === '/insights' ? 'active-tab' : ''}`}>
+              <div className={`p-2 rounded-lg transition-all duration-300 ${location === '/insights' ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg' : ''}`}>
+                <LineChart className="h-5 w-5" />
+              </div>
+              <span className={`text-[10px] mt-1 font-medium transition-colors duration-300 ${location === '/insights' ? 'text-blue-600' : 'text-muted-foreground'}`}>Insights</span>
             </Link>
           </div>
         </div>

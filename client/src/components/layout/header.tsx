@@ -31,14 +31,14 @@ export function Header() {
   const initials = getInitials(displayName);
 
   return (
-    <header className="sticky top-0 z-50 bg-white dark:bg-neutral-900 px-3 sm:px-4 lg:px-6 py-3 sm:py-4 lg:py-5 border-b border-neutral-200 dark:border-neutral-800 flex items-center">
+    <header className="sticky top-0 z-50 floating-element border-b-0 px-4 py-4 flex items-center">
       <div className="flex items-center">
-        <Link href="/" className="text-xl sm:text-2xl lg:text-3xl font-heading font-bold text-primary hover:opacity-80 transition-opacity">
+        <Link href="/" className="text-2xl font-semibold text-gradient hover:opacity-80 transition-opacity tracking-tight">
           Kindra
         </Link>
       </div>
       <div className="flex-1"></div>
-      <div className="flex items-center space-x-3 sm:space-x-4 lg:space-x-5">
+      <div className="flex items-center space-x-4">
         <UserPointsDisplay />
         <NotificationBell />
         <DropdownMenu>
