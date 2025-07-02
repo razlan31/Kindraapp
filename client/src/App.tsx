@@ -67,7 +67,7 @@ function Router() {
 
   return (
     <Switch>
-      <Route path="/landing" component={LandingPage} />
+      <Route path="/landing" component={SocialLandingPage} />
       <Route path="/login" component={Login} />
       <Route path="/onboarding/welcome" component={OnboardingWelcome} />
       <Route path="/onboarding/profile" component={OnboardingProfile} />
