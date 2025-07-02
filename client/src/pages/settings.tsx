@@ -481,7 +481,11 @@ function Settings() {
                       <p className="text-sm text-neutral-600 dark:text-neutral-400">Install Kindra as a mobile app for the best experience</p>
                     </div>
                     <div className="flex flex-col gap-3">
-                      <PWAInstallButton variant="outline" className="w-full justify-start" />
+                      {/* Simple fallback PWA button for debugging */}
+                      <Button variant="outline" className="w-full justify-start">
+                        <Download className="h-4 w-4 mr-2" />
+                        Install App (Fallback)
+                      </Button>
                       {/* Debug test button */}
                       <Button variant="outline" className="w-full justify-start">
                         <Download className="h-4 w-4 mr-2" />

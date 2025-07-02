@@ -23,18 +23,29 @@ export function PWAInstallButton({
   useEffect(() => {
     // Check install status
     const checkInstallStatus = () => {
-      const canInstallValue = pwaManager.canInstall;
-      const isInstalledValue = pwaManager.isRunningAsPWA;
+      try {
+        console.log('🔍 PWA Install Button - pwaManager check:', {
+          pwaManagerExists: !!pwaManager,
+          pwaManagerType: typeof pwaManager
+        });
+        
+        const canInstallValue = pwaManager?.canInstall || false;
+        const isInstalledValue = pwaManager?.isRunningAsPWA || false;
       
-      console.log('PWA Install Button - Status Check:', {
-        canInstall: canInstallValue,
-        isInstalled: isInstalledValue,
-        hasServiceWorker: 'serviceWorker' in navigator,
-        isStandalone: window.matchMedia('(display-mode: standalone)').matches
-      });
-      
-      setCanInstall(canInstallValue);
-      setIsInstalled(isInstalledValue);
+        console.log('PWA Install Button - Status Check:', {
+          canInstall: canInstallValue,
+          isInstalled: isInstalledValue,
+          hasServiceWorker: 'serviceWorker' in navigator,
+          isStandalone: window.matchMedia('(display-mode: standalone)').matches
+        });
+        
+        setCanInstall(canInstallValue);
+        setIsInstalled(isInstalledValue);
+      } catch (error) {
+        console.error('🔍 PWA Install Button - Error in checkInstallStatus:', error);
+        setCanInstall(false);
+        setIsInstalled(false);
+      }
     };
 
     // Initial check
