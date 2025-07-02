@@ -116,6 +116,12 @@ export function PWAInstallButton({
     );
   };
 
+  console.log('PWA Install Button - Rendering with state:', {
+    canInstall,
+    isInstalled,
+    isInstalling
+  });
+
   return (
     <Button
       onClick={canInstall ? handleInstall : undefined}
