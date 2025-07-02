@@ -474,32 +474,21 @@ function Settings() {
 
                   <Separator />
 
-                  {/* PWA Install Section */}
-                  <div className="space-y-3">
+                  {/* PWA Install Section - DEBUGGING */}
+                  <div className="space-y-3 border-2 border-red-500 p-4 bg-red-50">
+                    <h3 className="text-red-800 font-bold">🔍 DEBUG: PWA SECTION</h3>
                     <div>
                       <Label>Mobile App</Label>
                       <p className="text-sm text-neutral-600 dark:text-neutral-400">Install Kindra as a mobile app for the best experience</p>
                     </div>
                     <div className="flex flex-col gap-3">
-                      {/* Simple fallback PWA button for debugging */}
-                      <Button variant="outline" className="w-full justify-start">
-                        <Download className="h-4 w-4 mr-2" />
-                        Install App (Fallback)
-                      </Button>
-                      {/* Debug test button */}
-                      <Button variant="outline" className="w-full justify-start">
-                        <Download className="h-4 w-4 mr-2" />
-                        Test Button (Debug)
-                      </Button>
-                      <div className="text-xs text-neutral-500 dark:text-neutral-400">
-                        Installing Kindra as an app provides:
-                        <ul className="list-disc list-inside mt-1 space-y-1">
-                          <li>Faster loading and better performance</li>
-                          <li>Works offline for viewing your data</li>
-                          <li>Push notifications for reminders</li>
-                          <li>Home screen icon and app-like experience</li>
-                        </ul>
+                      <div className="bg-blue-100 p-2 text-blue-800 text-sm">
+                        ✅ This red section should be visible if the JSX structure is correct
                       </div>
+                      <Button variant="outline" className="w-full justify-start bg-green-100">
+                        <Download className="h-4 w-4 mr-2" />
+                        🟢 Simple Test Button
+                      </Button>
                     </div>
                   </div>
                 </CardContent>
