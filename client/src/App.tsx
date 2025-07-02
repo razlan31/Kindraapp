@@ -15,6 +15,7 @@ import Activities from "@/pages/activities";
 import Calendar from "@/pages/calendar";
 import Homepage1 from "@/pages/homepage-1";
 import TestLandingPage from "@/pages/test-landing";
+import DebugTest from "@/pages/debug-test";
 import Insights from "@/pages/insights-original";
 import Profile from "@/pages/profile";
 import Settings from "@/pages/settings";
@@ -80,7 +81,7 @@ function Router() {
       <Route path="/onboarding/profile" component={OnboardingProfile} />
       <Route path="/onboarding/goals" component={OnboardingGoals} />
       <Route path="/onboarding/complete" component={OnboardingComplete} />
-      <Route path="/">{() => { console.log("Home route matched - showing test landing instead"); return <TestLandingPage />; }}</Route>
+      <Route path="/">{() => { console.log("Home route matched - showing debug test"); return <DebugTest />; }}</Route>
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/connections" component={Connections} />
       <Route path="/connections/:id/edit" component={ConnectionEdit} />
@@ -101,6 +102,7 @@ function Router() {
 }
 
 function App() {
+  console.log("App component rendering");
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
@@ -112,7 +114,10 @@ function App() {
                   <Toaster />
                   <BadgeNotificationMonitor />
                   <PWAStatusIndicator />
-                  <Router />
+                  <div>
+                    <h1 style={{color: 'red', padding: '20px'}}>DEBUG: App component is rendering</h1>
+                    <Router />
+                  </div>
                   <ModalsContainer />
 
                 </TooltipProvider>
