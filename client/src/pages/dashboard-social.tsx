@@ -358,7 +358,7 @@ export default function DashboardSocial() {
           
           <div className="space-y-3">
             {filteredMoments.slice(0, 5).map((moment) => {
-              const connection = connections.find(c => c.connectionId === moment.connectionId);
+              const connection = connections.find(c => c.id === moment.connectionId);
               return (
                 <div key={moment.id} className="bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-sm">
                   <div className="flex items-start gap-3">
@@ -386,7 +386,7 @@ export default function DashboardSocial() {
                       </div>
                       <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">{moment.content}</p>
                       <p className="text-xs text-gray-500 dark:text-gray-400">
-                        {new Date(moment.createdAt).toLocaleDateString()}
+                        {moment.createdAt ? new Date(moment.createdAt).toLocaleDateString() : 'Recently'}
                       </p>
                     </div>
                   </div>

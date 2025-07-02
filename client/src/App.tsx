@@ -13,6 +13,7 @@ import Dashboard from "@/pages/dashboard";
 import DashboardSocial from "@/pages/dashboard-social";
 import Connections from "@/pages/connections-simple";
 import Activities from "@/pages/activities";
+import ActivitiesSocial from "@/pages/activities-social";
 import Calendar from "@/pages/calendar";
 import Homepage1 from "@/pages/homepage-1";
 import LandingPage from "@/pages/landing";
@@ -78,7 +79,7 @@ function Router() {
       <Route path="/connections" component={Connections} />
       <Route path="/connections/:id/edit" component={ConnectionEdit} />
       <Route path="/connections/:id" component={ConnectionDetail} />
-      <Route path="/activities" component={Activities} />
+      <Route path="/activities" component={ActivitiesSocial} />
       <Route path="/calendar" component={Calendar} />
       <Route path="/badges" component={Badges} />
       <Route path="/insights" component={Insights} />
