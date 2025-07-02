@@ -80,7 +80,7 @@ function Router() {
       <Route path="/onboarding/profile" component={OnboardingProfile} />
       <Route path="/onboarding/goals" component={OnboardingGoals} />
       <Route path="/onboarding/complete" component={OnboardingComplete} />
-      <Route path="/">{() => { console.log("Home route matched"); return <Homepage1 />; }}</Route>
+      <Route path="/">{() => { console.log("Home route matched - showing test landing instead"); return <TestLandingPage />; }}</Route>
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/connections" component={Connections} />
       <Route path="/connections/:id/edit" component={ConnectionEdit} />
