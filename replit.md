@@ -111,6 +111,16 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
+- July 2, 2025: ENHANCED BUTTON COLOR DIFFERENTIATION - Improved visual distinction between action buttons with unique gradient colors
+  - **Add Moment Button**: Blue gradient (from-blue-500 to-blue-600) for positive moments
+  - **Add Conflict Button**: Red gradient (from-red-500 to-red-600) for conflict tracking
+  - **Add Intimacy Button**: Pink gradient (from-pink-500 to-pink-600) for intimacy moments
+  - **Add Plan Button**: Purple gradient (from-purple-500 to-purple-600) for planning activities
+  - **Enhanced Button Styling**: Added shadow-lg, hover:shadow-xl, and scale transform effects for better visual feedback
+  - **Consistent Design**: All activity buttons now use gradient backgrounds with hover animations
+  - **Floating Action Menu**: Maintained existing color scheme with semantic color coding (green=moments, red=conflicts, pink=intimacy, purple=plans, blue=connections)
+  - **User Experience**: Clear visual distinction helps users quickly identify different action types
+
 - July 2, 2025: VISUAL REDESIGN COMPLETED - Enhanced app aesthetics while maintaining clean, professional design
   - **Design System Enhancement**: Updated color palette from red/purple to modern blue/purple gradient scheme
   - **Enhanced Typography**: Added Lexend font family and gradient text effects for better visual hierarchy

@@ -566,7 +566,7 @@ export default function Activities() {
                   
                   openMomentModal('moment');
                 }}
-                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
+                className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transform transition-all duration-200 hover:scale-[1.02]"
               >
                 <Plus className="h-4 w-4 mr-2" />
                 Add Moment
@@ -586,7 +586,7 @@ export default function Activities() {
                   
                   openMomentModal('conflict');
                 }}
-                className="w-full bg-destructive hover:bg-destructive/90 text-destructive-foreground"
+                className="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-lg hover:shadow-xl transform transition-all duration-200 hover:scale-[1.02]"
               >
                 <Plus className="h-4 w-4 mr-2" />
                 Add Conflict
@@ -606,7 +606,7 @@ export default function Activities() {
                   
                   openMomentModal('intimacy');
                 }}
-                className="w-full bg-pink-600 hover:bg-pink-700 text-white"
+                className="w-full bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white shadow-lg hover:shadow-xl transform transition-all duration-200 hover:scale-[1.02]"
               >
                 <Plus className="h-4 w-4 mr-2" />
                 Add Intimacy
@@ -626,7 +626,7 @@ export default function Activities() {
                   
                   openPlanModal(selectedConnection || undefined);
                 }}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                className="w-full bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transform transition-all duration-200 hover:scale-[1.02]"
               >
                 <Plus className="h-4 w-4 mr-2" />
                 Add Plan
