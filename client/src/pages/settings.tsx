@@ -35,6 +35,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { UsageIndicator } from "@/components/subscription/usage-indicator";
 import { PricingModal } from "@/components/subscription/pricing-modal";
 import { useSubscription } from "@/hooks/use-subscription";
+import { PWAInstallButton, PWAStatusIndicator } from "@/components/ui/pwa-install-button";
 
 // Billing component
 function BillingSection() {
@@ -472,6 +473,28 @@ function Settings() {
                         <SelectItem value="insights">Insights</SelectItem>
                       </SelectContent>
                     </Select>
+                  </div>
+
+                  <Separator />
+
+                  {/* PWA Install Section */}
+                  <div className="space-y-3">
+                    <div>
+                      <Label>Mobile App</Label>
+                      <p className="text-sm text-neutral-600 dark:text-neutral-400">Install Kindra as a mobile app for the best experience</p>
+                    </div>
+                    <div className="flex flex-col gap-3">
+                      <PWAInstallButton variant="outline" className="w-full justify-start" />
+                      <div className="text-xs text-neutral-500 dark:text-neutral-400">
+                        Installing Kindra as an app provides:
+                        <ul className="list-disc list-inside mt-1 space-y-1">
+                          <li>Faster loading and better performance</li>
+                          <li>Works offline for viewing your data</li>
+                          <li>Push notifications for reminders</li>
+                          <li>Home screen icon and app-like experience</li>
+                        </ul>
+                      </div>
+                    </div>
                   </div>
                 </CardContent>
               </Card>

@@ -473,3 +473,84 @@ h1, h2, h3, h4, h5, h6 {
   color: hsl(var(--primary));
   border-top: 2px solid hsl(var(--primary));
 }
+
+/* PWA-specific styles */
+.pwa-mode {
+  /* Add safe area insets for notched devices */
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* PWA status bar styling */
+@media (display-mode: standalone) {
+  body {
+    /* Remove default browser UI spacing when running as PWA */
+    margin: 0;
+    padding: 0;
+    /* Support device notches and safe areas */
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+  
+  /* Hide browser-specific elements when in PWA mode */
+  .browser-only {
+    display: none !important;
+  }
+  
+  /* Enhance navigation for PWA */
+  .bottom-navigation {
+    /* Ensure navigation respects safe areas */
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+  }
+}
+
+/* PWA install banner styling */
+.pwa-install-banner {
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  color: white;
+  padding: 12px 16px;
+  font-size: 14px;
+  z-index: 9999;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Offline indicator */
+.offline-indicator {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #dc2626;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 24px;
+  font-size: 12px;
+  font-weight: 500;
+  z-index: 9999;
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translate(-50%, 100%);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, 0);
+    opacity: 1;
+  }
+}

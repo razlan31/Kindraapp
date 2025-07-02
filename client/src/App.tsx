@@ -34,6 +34,7 @@ import { MomentModal } from "./components/modals/simplified-moment-modal";
 import { PlanModal } from "./components/modals/plan-modal";
 import { MoodTrackerModal } from "./components/modals/mood-tracker-modal";
 import { BadgeNotificationMonitor } from "./components/BadgeNotificationMonitor";
+import { PWAStatusIndicator } from "./components/ui/pwa-install-button";
 import { useEffect } from "react";
 import { useLocation } from "wouter";
 
@@ -104,6 +105,7 @@ function App() {
                 <TooltipProvider>
                   <Toaster />
                   <BadgeNotificationMonitor />
+                  <PWAStatusIndicator />
                   <Router />
                   <ModalsContainer />
 
