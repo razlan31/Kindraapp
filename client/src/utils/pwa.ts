@@ -47,7 +47,8 @@ class PWAManager {
       console.log('PWA: Install prompt available');
       e.preventDefault();
       this.deferredPrompt = e as BeforeInstallPromptEvent;
-      this.showInstallPrompt();
+      console.log('PWA: Deferred prompt stored, canInstall:', this.canInstall);
+      // Don't auto-show banner, let settings page handle install
     });
 
     // Check if already installed
