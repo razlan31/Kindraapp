@@ -1,197 +1,151 @@
+// Service Worker for Kindra PWA
 const CACHE_NAME = 'kindra-v1.0.0';
-const urlsToCache = [
+const STATIC_ASSETS = [
   '/',
-  '/activities',
-  '/calendar',
-  '/insights',
-  '/connections',
   '/manifest.json',
-  '/icons/icon-192x192.png',
-  '/icons/icon-512x512.png'
+  '/icon-192.png',
+  '/icon-512.png'
 ];
 
-// Install event - cache resources
-self.addEventListener('install', event => {
-  console.log('Service Worker installing...');
+// Install event - cache static assets
+self.addEventListener('install', (event) => {
+  console.log('Service Worker: Installing');
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
-        console.log('Service Worker caching resources');
-        return cache.addAll(urlsToCache);
+        console.log('Service Worker: Caching static assets');
+        return cache.addAll(STATIC_ASSETS);
+      })
+      .then(() => {
+        console.log('Service Worker: Skip waiting');
+        return self.skipWaiting();
       })
       .catch(error => {
-        console.error('Service Worker cache failed:', error);
+        console.error('Service Worker: Cache installation failed:', error);
       })
   );
-  // Force activation of new service worker
-  self.skipWaiting();
 });
 
 // Activate event - clean up old caches
-self.addEventListener('activate', event => {
-  console.log('Service Worker activating...');
+self.addEventListener('activate', (event) => {
+  console.log('Service Worker: Activating');
   event.waitUntil(
-    caches.keys().then(cacheNames => {
-      return Promise.all(
-        cacheNames.map(cacheName => {
-          if (cacheName !== CACHE_NAME) {
-            console.log('Service Worker deleting old cache:', cacheName);
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    }).then(() => {
-      // Take control of all clients immediately
-      return self.clients.claim();
-    })
+    caches.keys()
+      .then(cacheNames => {
+        return Promise.all(
+          cacheNames.map(cacheName => {
+            if (cacheName !== CACHE_NAME) {
+              console.log('Service Worker: Deleting old cache:', cacheName);
+              return caches.delete(cacheName);
+            }
+          })
+        );
+      })
+      .then(() => {
+        console.log('Service Worker: Claiming clients');
+        return self.clients.claim();
+      })
   );
 });
 
-// Fetch event - serve from cache, fallback to network
-self.addEventListener('fetch', event => {
-  // Skip non-GET requests
+// Fetch event - serve from cache when offline
+self.addEventListener('fetch', (event) => {
+  // Only handle GET requests
   if (event.request.method !== 'GET') {
     return;
   }
 
-  // Skip API requests - always go to network for fresh data
-  if (event.request.url.includes('/api/')) {
+  // Skip chrome-extension and other non-http requests
+  if (!event.request.url.startsWith('http')) {
     return;
   }
 
   event.respondWith(
     caches.match(event.request)
-      .then(response => {
+      .then(cachedResponse => {
         // Return cached version if available
-        if (response) {
-          return response;
+        if (cachedResponse) {
+          return cachedResponse;
         }
-        
-        // Clone the request because it's a stream
-        const fetchRequest = event.request.clone();
-        
-        return fetch(fetchRequest).then(response => {
-          // Check if valid response
-          if (!response || response.status !== 200 || response.type !== 'basic') {
+
+        // Otherwise fetch from network
+        return fetch(event.request)
+          .then(response => {
+            // Don't cache if not a valid response
+            if (!response || response.status !== 200 || response.type !== 'basic') {
+              return response;
+            }
+
+            // Clone the response
+            const responseToCache = response.clone();
+
+            // Cache the response for future use
+            caches.open(CACHE_NAME)
+              .then(cache => {
+                cache.put(event.request, responseToCache);
+              });
+
             return response;
-          }
-          
-          // Clone the response because it's a stream
-          const responseToCache = response.clone();
-          
-          caches.open(CACHE_NAME)
-            .then(cache => {
-              cache.put(event.request, responseToCache);
-            });
-            
-          return response;
-        }).catch(() => {
-          // Return offline fallback for navigation requests
-          if (event.request.mode === 'navigate') {
-            return caches.match('/');
-          }
-        });
+          })
+          .catch(() => {
+            // If network fails and no cache, return offline page for navigation requests
+            if (event.request.mode === 'navigate') {
+              return caches.match('/');
+            }
+          });
       })
   );
 });
 
-// Background sync for offline functionality
-self.addEventListener('sync', event => {
-  console.log('Service Worker background sync:', event.tag);
-  
+// Background sync for offline actions
+self.addEventListener('sync', (event) => {
+  console.log('Service Worker: Background sync triggered');
   if (event.tag === 'background-sync') {
     event.waitUntil(
-      // Handle offline data sync when back online
-      syncOfflineData()
+      // Handle any offline actions here
+      Promise.resolve()
     );
   }
 });
 
-// Push notifications for relationship reminders
-self.addEventListener('push', event => {
-  console.log('Service Worker received push:', event);
+// Push notifications
+self.addEventListener('push', (event) => {
+  console.log('Service Worker: Push notification received');
   
-  const options = {
-    body: event.data ? event.data.text() : 'New relationship insight available!',
-    icon: '/icons/icon-192x192.png',
-    badge: '/icons/icon-72x72.png',
-    vibrate: [100, 50, 100],
-    data: {
-      dateOfArrival: Date.now(),
-      primaryKey: 1
-    },
-    actions: [
-      {
-        action: 'explore',
-        title: 'View Insight',
-        icon: '/icons/action-view.png'
-      },
-      {
-        action: 'close',
-        title: 'Close',
-        icon: '/icons/action-close.png'
-      }
-    ]
-  };
-  
-  event.waitUntil(
-    self.registration.showNotification('Kindra Relationship Insight', options)
-  );
+  if (event.data) {
+    const data = event.data.json();
+    const options = {
+      body: data.body,
+      icon: '/icon-192.png',
+      badge: '/icon-192.png',
+      tag: 'kindra-notification',
+      renotify: true,
+      actions: [
+        {
+          action: 'open',
+          title: 'Open App'
+        },
+        {
+          action: 'close',
+          title: 'Close'
+        }
+      ]
+    };
+
+    event.waitUntil(
+      self.registration.showNotification(data.title || 'Kindra', options)
+    );
+  }
 });
 
 // Notification click handling
-self.addEventListener('notificationclick', event => {
-  console.log('Service Worker notification click:', event);
-  
+self.addEventListener('notificationclick', (event) => {
+  console.log('Service Worker: Notification clicked');
   event.notification.close();
-  
-  if (event.action === 'explore') {
-    // Open the app to insights page
-    event.waitUntil(
-      clients.openWindow('/insights')
-    );
-  } else if (event.action === 'close') {
-    // Just close, no action needed
-    return;
-  } else {
-    // Default action - open the app
+
+  if (event.action === 'open' || !event.action) {
     event.waitUntil(
       clients.openWindow('/')
     );
   }
 });
-
-// Helper function for syncing offline data
-async function syncOfflineData() {
-  try {
-    // Check if we have pending offline moments to sync
-    const cache = await caches.open('kindra-offline-data');
-    const requests = await cache.keys();
-    
-    for (const request of requests) {
-      if (request.url.includes('offline-moment')) {
-        const response = await cache.match(request);
-        const data = await response.json();
-        
-        // Try to sync the offline moment
-        try {
-          await fetch('/api/moments', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-          });
-          
-          // Remove from offline cache after successful sync
-          await cache.delete(request);
-          console.log('Synced offline moment successfully');
-        } catch (syncError) {
-          console.log('Failed to sync offline moment, will retry later');
-        }
-      }
-    }
-  } catch (error) {
-    console.error('Background sync failed:', error);
-  }
-}

@@ -108,20 +108,17 @@ function BillingSection() {
             <UsageIndicator
               label="Connections"
               current={subscriptionStatus?.usage.connectionsUsed || 19}
-              limit={isPremium ? undefined : freePlanFeatures.connections}
-              icon="👥"
+              limit={isPremium ? "unlimited" : (freePlanFeatures.connections || 1)}
             />
             <UsageIndicator
               label="AI Insights"
               current={subscriptionStatus?.usage.aiInsightsUsed || 0}
-              limit={isPremium ? (subscriptionStatus?.features.aiInsightsPerMonth || 50) : freePlanFeatures.aiInsightsPerMonth}
-              icon="🧠"
+              limit={isPremium ? (subscriptionStatus?.features.aiInsightsPerMonth || 50) : (freePlanFeatures.aiInsightsPerMonth || 3)}
             />
             <UsageIndicator
               label="AI Coaching"
               current={subscriptionStatus?.usage.aiCoachingUsed || 0}
-              limit={isPremium ? (subscriptionStatus?.features.aiCoachingPerMonth || 100) : freePlanFeatures.aiCoachingPerMonth}
-              icon="💬"
+              limit={isPremium ? (subscriptionStatus?.features.aiCoachingPerMonth || 100) : (freePlanFeatures.aiCoachingPerMonth || 3)}
             />
           </div>
         </div>
