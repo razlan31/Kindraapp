@@ -83,11 +83,11 @@ export function MomentCard({ moment, connection, onAddReflection, onViewDetail, 
   };
 
   return (
-    <Card 
-      className="p-4 cursor-pointer hover:shadow-md transition-shadow" 
+    <div 
+      className="card-moment p-4 cursor-pointer" 
       onClick={() => onViewDetail?.(moment.id)}
     >
-      <CardContent className="p-0">
+      <div className="flex flex-col h-full">
         <div className="flex items-start space-x-3">
           <div className="flex-1">
             <div className="flex items-center justify-between mb-2">
@@ -309,22 +309,22 @@ export function MomentCard({ moment, connection, onAddReflection, onViewDetail, 
             ) : null}
           </div>
         </div>
-      </CardContent>
 
-      {/* Media Viewer Modal */}
-      {moment.mediaFiles && moment.mediaFiles.length > 0 && (
-        <MediaViewerModal
-          isOpen={mediaViewerOpen}
-          onClose={() => setMediaViewerOpen(false)}
-          mediaFiles={moment.mediaFiles.map(file => ({
-            id: file.id,
-            type: file.type as 'photo' | 'video',
-            url: file.url,
-            filename: file.filename
-          }))}
-          initialIndex={selectedMediaIndex}
-        />
-      )}
-    </Card>
+        {/* Media Viewer Modal */}
+        {moment.mediaFiles && moment.mediaFiles.length > 0 && (
+          <MediaViewerModal
+            isOpen={mediaViewerOpen}
+            onClose={() => setMediaViewerOpen(false)}
+            mediaFiles={moment.mediaFiles.map(file => ({
+              id: file.id,
+              type: file.type as 'photo' | 'video',
+              url: file.url,
+              filename: file.filename
+            }))}
+            initialIndex={selectedMediaIndex}
+          />
+        )}
+      </div>
+    </div>
   );
 }
