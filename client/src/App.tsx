@@ -10,6 +10,7 @@ import OnboardingProfile from "@/pages/onboarding/profile";
 import OnboardingGoals from "@/pages/onboarding/goals";
 import OnboardingComplete from "@/pages/onboarding/complete";
 import Dashboard from "@/pages/dashboard";
+import DashboardSocial from "@/pages/dashboard-social";
 import Connections from "@/pages/connections-simple";
 import Activities from "@/pages/activities";
 import Calendar from "@/pages/calendar";
@@ -73,7 +74,7 @@ function Router() {
       <Route path="/onboarding/goals" component={OnboardingGoals} />
       <Route path="/onboarding/complete" component={OnboardingComplete} />
       <Route path="/" component={Homepage1} />
-      <Route path="/dashboard" component={Dashboard} />
+      <Route path="/dashboard" component={DashboardSocial} />
       <Route path="/connections" component={Connections} />
       <Route path="/connections/:id/edit" component={ConnectionEdit} />
       <Route path="/connections/:id" component={ConnectionDetail} />
