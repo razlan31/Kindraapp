@@ -21,8 +21,18 @@ export function PWAInstallButton({
   useEffect(() => {
     // Check install status
     const checkInstallStatus = () => {
-      setCanInstall(pwaManager.canInstall);
-      setIsInstalled(pwaManager.isRunningAsPWA);
+      const canInstallValue = pwaManager.canInstall;
+      const isInstalledValue = pwaManager.isRunningAsPWA;
+      
+      console.log('PWA Install Button - Status Check:', {
+        canInstall: canInstallValue,
+        isInstalled: isInstalledValue,
+        hasServiceWorker: 'serviceWorker' in navigator,
+        isStandalone: window.matchMedia('(display-mode: standalone)').matches
+      });
+      
+      setCanInstall(canInstallValue);
+      setIsInstalled(isInstalledValue);
     };
 
     // Initial check
@@ -69,30 +79,52 @@ export function PWAInstallButton({
     }
   };
 
-  // Don't show button if already installed or can't install
-  if (isInstalled || (!canInstall && !isInstalling)) {
-    return null;
-  }
-
-  return (
-    <Button
-      onClick={handleInstall}
-      disabled={isInstalling || !canInstall}
-      variant={variant}
-      size={size}
-      className={`${className} transition-all duration-200`}
-    >
-      {isInstalling ? (
+  // Show different states based on installation status
+  const getButtonContent = () => {
+    if (isInstalling) {
+      return (
         <>
           <div className="animate-spin rounded-full h-4 w-4 border-2 border-current border-t-transparent mr-2" />
           Installing...
         </>
-      ) : (
+      );
+    }
+    
+    if (isInstalled) {
+      return (
         <>
           <Smartphone className="h-4 w-4 mr-2" />
+          App Installed ✓
+        </>
+      );
+    }
+    
+    if (canInstall) {
+      return (
+        <>
+          <Download className="h-4 w-4 mr-2" />
           Install App
         </>
-      )}
+      );
+    }
+    
+    return (
+      <>
+        <Smartphone className="h-4 w-4 mr-2" />
+        Install Not Available
+      </>
+    );
+  };
+
+  return (
+    <Button
+      onClick={canInstall ? handleInstall : undefined}
+      disabled={isInstalling || !canInstall || isInstalled}
+      variant={variant}
+      size={size}
+      className={`${className} transition-all duration-200`}
+    >
+      {getButtonContent()}
     </Button>
   );
 }
