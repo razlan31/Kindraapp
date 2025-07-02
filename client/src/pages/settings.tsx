@@ -37,6 +37,114 @@ import { PricingModal } from "@/components/subscription/pricing-modal";
 import { useSubscription } from "@/hooks/use-subscription";
 import { PWAInstallButton, PWAStatusIndicator } from "@/components/ui/pwa-install-button";
 
+// PWA Install Component (bypasses button rendering issues)
+function PWAInstallDiv() {
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [canInstall, setCanInstall] = useState(false);
+  const [isInstalled, setIsInstalled] = useState(false);
+
+  useEffect(() => {
+    // Check if already installed
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      setIsInstalled(true);
+      return;
+    }
+
+    // Listen for the beforeinstallprompt event
+    const handleBeforeInstallPrompt = (e: any) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      setCanInstall(true);
+    };
+
+    // Listen for successful installation
+    const handleAppInstalled = () => {
+      setIsInstalled(true);
+      setCanInstall(false);
+      setDeferredPrompt(null);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    window.addEventListener('appinstalled', handleAppInstalled);
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      window.removeEventListener('appinstalled', handleAppInstalled);
+    };
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (!deferredPrompt) return;
+
+    try {
+      const result = await deferredPrompt.prompt();
+      if (result.outcome === 'accepted') {
+        setIsInstalled(true);
+        setCanInstall(false);
+      }
+      setDeferredPrompt(null);
+    } catch (error) {
+      console.error('PWA install failed:', error);
+    }
+  };
+
+  const getInstallInstructions = () => {
+    const userAgent = navigator.userAgent.toLowerCase();
+    if (userAgent.includes('iphone') || userAgent.includes('ipad')) {
+      return "On iPhone/iPad: Tap the share button (□↗) and select 'Add to Home Screen'";
+    }
+    if (userAgent.includes('android')) {
+      return "On Android: Tap the menu (⋮) and select 'Add to Home Screen' or 'Install App'";
+    }
+    return "Look for an 'Install' or 'Add to Home Screen' option in your browser menu";
+  };
+
+  if (isInstalled) {
+    return (
+      <div className="w-full p-4 border border-green-200 bg-green-50 dark:bg-green-900/20 dark:border-green-800 rounded-lg">
+        <div className="flex items-center gap-3">
+          <div className="text-green-600 dark:text-green-400">✓</div>
+          <div>
+            <div className="font-medium text-green-800 dark:text-green-200">App Installed</div>
+            <div className="text-sm text-green-600 dark:text-green-300">Kindra is installed on your device</div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (canInstall) {
+    return (
+      <div 
+        onClick={handleInstallClick}
+        className="w-full p-4 border border-blue-200 bg-blue-50 dark:bg-blue-900/20 dark:border-blue-800 rounded-lg cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors"
+      >
+        <div className="flex items-center gap-3">
+          <Download className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+          <div>
+            <div className="font-medium text-blue-800 dark:text-blue-200">Install Kindra App</div>
+            <div className="text-sm text-blue-600 dark:text-blue-300">Tap to install as a mobile app</div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-full p-4 border border-neutral-200 bg-neutral-50 dark:bg-neutral-800 dark:border-neutral-700 rounded-lg">
+      <div className="flex items-center gap-3">
+        <Download className="h-5 w-5 text-neutral-600 dark:text-neutral-400" />
+        <div>
+          <div className="font-medium text-neutral-800 dark:text-neutral-200">Install Kindra App</div>
+          <div className="text-sm text-neutral-600 dark:text-neutral-400">
+            {getInstallInstructions()}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // Billing component
 function BillingSection() {
   const { toast } = useToast();
@@ -474,33 +582,23 @@ function Settings() {
 
                   <Separator />
 
-                  {/* PWA Install Section - DEBUGGING */}
-                  <div className="space-y-3 border-2 border-red-500 p-4 bg-red-50">
-                    <h3 className="text-red-800 font-bold">🔍 DEBUG: PWA SECTION</h3>
+                  {/* PWA Install Section */}
+                  <div className="space-y-3">
                     <div>
                       <Label>Mobile App</Label>
                       <p className="text-sm text-neutral-600 dark:text-neutral-400">Install Kindra as a mobile app for the best experience</p>
                     </div>
                     <div className="flex flex-col gap-3">
-                      <div className="bg-blue-100 p-2 text-blue-800 text-sm">
-                        ✅ This red section should be visible if the JSX structure is correct
+                      <PWAInstallDiv />
+                      <div className="text-xs text-neutral-500 dark:text-neutral-400">
+                        Installing Kindra as an app provides:
+                        <ul className="list-disc list-inside mt-1 space-y-1">
+                          <li>Faster loading and better performance</li>
+                          <li>Works offline for viewing your data</li>
+                          <li>Push notifications for reminders</li>
+                          <li>Home screen icon and app-like experience</li>
+                        </ul>
                       </div>
-                      
-                      {/* Test 1: Plain button element */}
-                      <button className="w-full p-2 border border-gray-300 rounded bg-yellow-100 text-black">
-                        🟡 Plain HTML Button Test
-                      </button>
-                      
-                      {/* Test 2: Button component without icons */}
-                      <Button variant="outline" className="w-full bg-green-100">
-                        🟢 Button Component Test (No Icons)
-                      </Button>
-                      
-                      {/* Test 3: Button component with Download icon */}
-                      <Button variant="outline" className="w-full justify-start bg-green-100">
-                        <Download className="h-4 w-4 mr-2" />
-                        🟢 Button Component Test (With Download Icon)
-                      </Button>
                     </div>
                   </div>
                 </CardContent>
