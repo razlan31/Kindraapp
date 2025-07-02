@@ -613,9 +613,9 @@ export default function Calendar() {
           </div>
         </section>
 
-        {/* Connection Filter */}
-        <section className="px-4 py-2">
-          <Card className="p-4 bg-card/50 backdrop-blur-sm">
+        {/* Enhanced Connection Filter */}
+        <section className="px-4 py-3 animate-slide-in-left" style={{ animationDelay: '0.3s' }}>
+          <div className="card-elevated p-4">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm font-medium">View Calendar For</h3>
               <span className="text-xs text-muted-foreground">
@@ -707,12 +707,12 @@ export default function Calendar() {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-          </Card>
+          </div>
         </section>
 
-        {/* Legend */}
-        <section className="px-4 py-4">
-          <Card className="p-4 bg-card/50 backdrop-blur-sm">
+        {/* Enhanced Legend */}
+        <section className="px-4 py-3 animate-slide-in-right" style={{ animationDelay: '0.4s' }}>
+          <div className="card-elevated p-4">
             <div className="flex items-center justify-between mb-2">
               <h3 className="text-sm font-medium">Legend & Filters</h3>
               <Button
@@ -894,7 +894,7 @@ export default function Calendar() {
                 </div>
               </>
             )}
-          </Card>
+          </div>
         </section>
 
         {/* Date Navigation */}
