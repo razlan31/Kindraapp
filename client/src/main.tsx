@@ -4,6 +4,7 @@ import "./index.css";
 import { ThemeProvider } from "./contexts/theme-context";
 import { AuthProvider } from "./contexts/auth-context";
 import { ModalProvider } from "./contexts/modal-context";
+import "./utils/pwa"; // Initialize PWA functionality
 
 // Override JSON.parse globally to prevent extension errors
 const originalJSONParse = JSON.parse;
