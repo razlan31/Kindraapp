@@ -73,15 +73,6 @@
   animation-delay: 4s;
 }
 
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
-
 .backdrop-blur-xl {
   backdrop-filter: blur(24px);
 }
