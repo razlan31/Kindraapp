@@ -14,7 +14,7 @@ import Connections from "@/pages/connections-simple";
 import Activities from "@/pages/activities";
 import Calendar from "@/pages/calendar";
 import Homepage1 from "@/pages/homepage-1";
-import LandingPage from "@/pages/landing";
+import LandingSimple from "@/pages/landing-simple";
 import Insights from "@/pages/insights-original";
 import Profile from "@/pages/profile";
 import Settings from "@/pages/settings";
@@ -75,14 +75,14 @@ function Router() {
 
   return (
     <Switch>
-      <Route path="/landing" component={LandingPage} />
+      <Route path="/landing" component={LandingSimple} />
       <Route path="/login" component={Login} />
       <Route path="/onboarding/welcome" component={OnboardingWelcome} />
       <Route path="/onboarding/profile" component={OnboardingProfile} />
       <Route path="/onboarding/goals" component={OnboardingGoals} />
       <Route path="/onboarding/complete" component={OnboardingComplete} />
       {/* Root route - direct component assignment */}
-      <Route path="/" component={LandingPage} />
+      <Route path="/" component={LandingSimple} />
       <Route path="/app" component={Homepage1} />
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/connections" component={Connections} />
