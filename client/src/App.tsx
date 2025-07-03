@@ -49,8 +49,8 @@ function Router() {
       if (!isAuthenticated && !["/login", "/", "/landing"].includes(location)) {
         setLocation("/");
       } 
-      // For authenticated users, redirect from auth pages to dashboard
-      else if (isAuthenticated && ["/login", "/landing"].includes(location)) {
+      // For authenticated users, redirect from login page to dashboard (but allow landing page)
+      else if (isAuthenticated && location === "/login") {
         const savedDefaultPage = localStorage.getItem('kindra-default-page');
         if (savedDefaultPage && savedDefaultPage !== "home") {
           const routeMap: Record<string, string> = {
@@ -84,8 +84,7 @@ function Router() {
       <Route path="/onboarding/profile" component={OnboardingProfile} />
       <Route path="/onboarding/goals" component={OnboardingGoals} />
       <Route path="/onboarding/complete" component={OnboardingComplete} />
-      <Route path="/" component={TestLanding} />
-      <Route path="/landing" component={LandingPage} />
+      <Route path="/" component={LandingPage} />
       <Route path="/home" component={Homepage1} />
       <Route path="/dashboard" component={DashboardSocial} />
       {/* <Route path="/dashboard-original" component={Dashboard} /> */}
