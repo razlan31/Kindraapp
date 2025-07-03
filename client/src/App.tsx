@@ -44,11 +44,12 @@ function Router() {
 
   useEffect(() => {
     if (!loading) {
+      // For non-authenticated users, only redirect if they're on protected routes
       if (!isAuthenticated && !["/login", "/", "/landing"].includes(location)) {
-        // Redirect to landing page for non-authenticated users on protected routes
         setLocation("/");
-      } else if (isAuthenticated && ["/login", "/", "/landing"].includes(location)) {
-        // Redirect authenticated users to their preferred dashboard
+      } 
+      // For authenticated users, redirect from auth pages to dashboard
+      else if (isAuthenticated && ["/login", "/landing"].includes(location)) {
         const savedDefaultPage = localStorage.getItem('kindra-default-page');
         if (savedDefaultPage && savedDefaultPage !== "home") {
           const routeMap: Record<string, string> = {
@@ -65,6 +66,15 @@ function Router() {
       }
     }
   }, [isAuthenticated, loading, location, setLocation]);
+
+  // Show loading state while authentication is being determined
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-black flex items-center justify-center">
+        <div className="animate-spin w-8 h-8 border-4 border-purple-600 border-t-transparent rounded-full"></div>
+      </div>
+    );
+  }
 
   return (
     <Switch>
