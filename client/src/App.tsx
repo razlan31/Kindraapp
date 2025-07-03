@@ -99,7 +99,12 @@ function Router() {
 
       <Route path="/cycle" component={MenstrualCycle} />
       <Route path="/menstrual-cycle" component={MenstrualCycle} />
-      <Route component={NotFound} />
+      <Route path="*">
+        {() => {
+          window.location.href = "/";
+          return null;
+        }}
+      </Route>
     </Switch>
   );
 }

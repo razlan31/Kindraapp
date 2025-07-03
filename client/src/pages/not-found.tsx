@@ -1,13 +1,8 @@
-import { useEffect } from "react";
-import { useLocation } from "wouter";
-
 export default function NotFound() {
-  const [, setLocation] = useLocation();
-  
-  useEffect(() => {
-    // Immediate redirect to root
-    setLocation("/");
-  }, [setLocation]);
+  // Force immediate redirect using window.location to bypass React routing
+  if (typeof window !== "undefined") {
+    window.location.href = "/";
+  }
   
   return null;
 }
