@@ -44,13 +44,13 @@ function Router() {
 
   useEffect(() => {
     if (!loading) {
-      if (!isAuthenticated && !["/login", "/landing"].includes(location)) {
-        setLocation("/landing");
-      } else if (isAuthenticated && ["/login", "/landing"].includes(location)) {
-        // Check for saved default page preference
+      if (!isAuthenticated && !["/login", "/", "/landing"].includes(location)) {
+        // Redirect to landing page for non-authenticated users on protected routes
+        setLocation("/");
+      } else if (isAuthenticated && ["/login", "/", "/landing"].includes(location)) {
+        // Redirect authenticated users to their preferred dashboard
         const savedDefaultPage = localStorage.getItem('kindra-default-page');
         if (savedDefaultPage && savedDefaultPage !== "home") {
-          // Map setting values to actual routes
           const routeMap: Record<string, string> = {
             "connections": "/connections",
             "activities": "/activities", 
@@ -68,7 +68,6 @@ function Router() {
 
   return (
     <Switch>
-      <Route path="/landing" component={LandingPage} />
       <Route path="/login" component={Login} />
       <Route path="/onboarding/welcome" component={OnboardingWelcome} />
       <Route path="/onboarding/profile" component={OnboardingProfile} />

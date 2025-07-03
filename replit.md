@@ -111,6 +111,15 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
+- July 3, 2025: SOCIAL MEDIA REDESIGN & LANDING PAGE FIX - Completed Instagram/TikTok-inspired UI with bigger thumbnails + fixed critical routing issues
+  - **Social Media Transformation**: Created dashboard-social.tsx and activities-social.tsx with modern social media aesthetic
+  - **Visual Enhancement**: Implemented bigger profile pictures, larger thumbnails, and Instagram/TikTok-style feed layouts
+  - **Landing Page Route Fix**: Resolved critical routing logic flaw preventing landing page visibility at root URL
+  - **Authentication Flow**: Fixed redirect loops and ensured proper landing page display for non-authenticated users
+  - **Route Optimization**: Removed duplicate routes and streamlined navigation for better user experience
+  - **Design System**: Enhanced visual hierarchy with gradient profile rings, larger interaction elements, and modern spacing
+  - **Production Ready**: Social media redesign maintains all existing functionality while providing contemporary visual appeal
+
 - June 30, 2025: AI INSIGHTS LIMIT SYSTEM FIXED - Resolved usage tracking bugs preventing proper limit enforcement
   - **Root Cause**: Null handling issues in usage increment logic causing silent failures when incrementing AI usage counters
   - **Usage Increment Fix**: Added null coalescing to handle undefined monthlyAiInsights/monthlyAiCoaching values properly
