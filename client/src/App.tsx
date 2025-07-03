@@ -42,9 +42,9 @@ function Router() {
 
   useEffect(() => {
     if (!loading) {
-      if (!isAuthenticated && !["/login", "/landing"].includes(location)) {
-        setLocation("/landing");
-      } else if (isAuthenticated && ["/login", "/landing"].includes(location)) {
+      if (!isAuthenticated && !["/login", "/landing", "/"].includes(location)) {
+        setLocation("/");
+      } else if (isAuthenticated && ["/login", "/landing", "/"].includes(location)) {
         // Check for saved default page preference
         const savedDefaultPage = localStorage.getItem('kindra-default-page');
         if (savedDefaultPage && savedDefaultPage !== "home") {
@@ -55,10 +55,10 @@ function Router() {
             "calendar": "/calendar",
             "insights": "/insights"
           };
-          const targetRoute = routeMap[savedDefaultPage] || "/";
+          const targetRoute = routeMap[savedDefaultPage] || "/app";
           setLocation(targetRoute);
         } else {
-          setLocation("/");
+          setLocation("/app");
         }
       }
     }
@@ -81,10 +81,9 @@ function Router() {
       <Route path="/onboarding/profile" component={OnboardingProfile} />
       <Route path="/onboarding/goals" component={OnboardingGoals} />
       <Route path="/onboarding/complete" component={OnboardingComplete} />
-      {/* Root route - safe conditional rendering */}
-      <Route path="/">
-        {() => isAuthenticated ? <Homepage1 /> : <LandingPage />}
-      </Route>
+      {/* Root route - direct component assignment */}
+      <Route path="/" component={LandingPage} />
+      <Route path="/app" component={Homepage1} />
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/connections" component={Connections} />
       <Route path="/connections/:id/edit" component={ConnectionEdit} />
