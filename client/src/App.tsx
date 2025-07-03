@@ -42,13 +42,14 @@ function Router() {
 
   useEffect(() => {
     if (!loading) {
-      if (!isAuthenticated && !["/login", "/landing", "/"].includes(location)) {
+      // Redirect unauthenticated users to landing page
+      if (!isAuthenticated && !["/login", "/landing", "/", "/onboarding/welcome", "/onboarding/profile", "/onboarding/goals", "/onboarding/complete"].includes(location)) {
         setLocation("/");
-      } else if (isAuthenticated && ["/login", "/landing", "/"].includes(location)) {
-        // Check for saved default page preference
+      } 
+      // Redirect authenticated users from public pages to app
+      else if (isAuthenticated && ["/login", "/landing", "/"].includes(location)) {
         const savedDefaultPage = localStorage.getItem('kindra-default-page');
         if (savedDefaultPage && savedDefaultPage !== "home") {
-          // Map setting values to actual routes
           const routeMap: Record<string, string> = {
             "connections": "/connections",
             "activities": "/activities", 

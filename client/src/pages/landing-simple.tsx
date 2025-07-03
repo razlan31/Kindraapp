@@ -38,14 +38,39 @@ export default function LandingSimple() {
             Meet Luna AI, your personal relationship coach. Track patterns, understand emotions, and build deeper connections with the power of artificial intelligence.
           </p>
           
-          <Button 
-            size="lg" 
-            onClick={handleGetStarted}
-            className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-lg px-8 py-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300"
-          >
-            Start Free Today
-            <ArrowRight className="ml-2 h-5 w-5" />
-          </Button>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+            <Button 
+              size="lg" 
+              onClick={handleGetStarted}
+              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-lg px-8 py-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300"
+            >
+              Start Free Today
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
+            <Button 
+              variant="outline"
+              size="lg" 
+              onClick={handleGetStarted}
+              className="text-lg px-8 py-6 rounded-2xl border-purple-200 text-purple-700 hover:bg-purple-50"
+            >
+              Chat with Luna AI
+            </Button>
+          </div>
+          
+          <div className="flex items-center justify-center gap-6 text-sm text-gray-500">
+            <div className="flex items-center gap-1">
+              <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+              No credit card required
+            </div>
+            <div className="flex items-center gap-1">
+              <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+              5-day free trial
+            </div>
+            <div className="flex items-center gap-1">
+              <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+              Cancel anytime
+            </div>
+          </div>
         </div>
       </section>
     </div>
