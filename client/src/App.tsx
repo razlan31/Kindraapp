@@ -9,15 +9,12 @@ import OnboardingWelcome from "@/pages/onboarding/welcome";
 import OnboardingProfile from "@/pages/onboarding/profile";
 import OnboardingGoals from "@/pages/onboarding/goals";
 import OnboardingComplete from "@/pages/onboarding/complete";
-// import Dashboard from "@/pages/dashboard"; // Temporarily disabled due to compilation errors
-import DashboardSocial from "@/pages/dashboard-social";
+import Dashboard from "@/pages/dashboard";
 import Connections from "@/pages/connections-simple";
 import Activities from "@/pages/activities";
-import ActivitiesSocial from "@/pages/activities-social";
 import Calendar from "@/pages/calendar";
 import Homepage1 from "@/pages/homepage-1";
 import LandingPage from "@/pages/landing";
-import TestLanding from "@/pages/test-landing";
 import Insights from "@/pages/insights-original";
 import Profile from "@/pages/profile";
 import Settings from "@/pages/settings";
@@ -43,56 +40,44 @@ function Router() {
   const { isAuthenticated, loading } = useAuth();
   const [location, setLocation] = useLocation();
 
-  // Temporarily disable redirects to debug routing issue
-  // useEffect(() => {
-  //   if (!loading) {
-  //     // For non-authenticated users, only redirect if they're on protected routes
-  //     if (!isAuthenticated && !["/login", "/", "/landing"].includes(location)) {
-  //       setLocation("/");
-  //     } 
-  //     // For authenticated users, redirect from login page to dashboard (but allow landing page)
-  //     else if (isAuthenticated && location === "/login") {
-  //       const savedDefaultPage = localStorage.getItem('kindra-default-page');
-  //       if (savedDefaultPage && savedDefaultPage !== "home") {
-  //         const routeMap: Record<string, string> = {
-  //           "connections": "/connections",
-  //           "activities": "/activities", 
-  //           "calendar": "/calendar",
-  //           "insights": "/insights"
-  //         };
-  //         const targetRoute = routeMap[savedDefaultPage] || "/dashboard";
-  //         setLocation(targetRoute);
-  //       } else {
-  //         setLocation("/dashboard");
-  //       }
-  //     }
-  //   }
-  // }, [isAuthenticated, loading, location, setLocation]);
-
-  // Show loading state while authentication is being determined
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 dark:bg-black flex items-center justify-center">
-        <div className="animate-spin w-8 h-8 border-4 border-purple-600 border-t-transparent rounded-full"></div>
-      </div>
-    );
-  }
+  useEffect(() => {
+    if (!loading) {
+      if (!isAuthenticated && !["/login", "/landing"].includes(location)) {
+        setLocation("/landing");
+      } else if (isAuthenticated && ["/login", "/landing"].includes(location)) {
+        // Check for saved default page preference
+        const savedDefaultPage = localStorage.getItem('kindra-default-page');
+        if (savedDefaultPage && savedDefaultPage !== "home") {
+          // Map setting values to actual routes
+          const routeMap: Record<string, string> = {
+            "connections": "/connections",
+            "activities": "/activities", 
+            "calendar": "/calendar",
+            "insights": "/insights"
+          };
+          const targetRoute = routeMap[savedDefaultPage] || "/";
+          setLocation(targetRoute);
+        } else {
+          setLocation("/");
+        }
+      }
+    }
+  }, [isAuthenticated, loading, location, setLocation]);
 
   return (
     <Switch>
+      <Route path="/landing" component={LandingPage} />
       <Route path="/login" component={Login} />
       <Route path="/onboarding/welcome" component={OnboardingWelcome} />
       <Route path="/onboarding/profile" component={OnboardingProfile} />
       <Route path="/onboarding/goals" component={OnboardingGoals} />
       <Route path="/onboarding/complete" component={OnboardingComplete} />
-      <Route path="/" component={TestLanding} />
-      <Route path="/home" component={Homepage1} />
-      <Route path="/dashboard" component={DashboardSocial} />
-      {/* <Route path="/dashboard-original" component={Dashboard} /> */}
+      <Route path="/" component={Homepage1} />
+      <Route path="/dashboard" component={Dashboard} />
       <Route path="/connections" component={Connections} />
       <Route path="/connections/:id/edit" component={ConnectionEdit} />
       <Route path="/connections/:id" component={ConnectionDetail} />
-      <Route path="/activities" component={ActivitiesSocial} />
+      <Route path="/activities" component={Activities} />
       <Route path="/calendar" component={Calendar} />
       <Route path="/badges" component={Badges} />
       <Route path="/insights" component={Insights} />
