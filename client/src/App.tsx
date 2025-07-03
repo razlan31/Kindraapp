@@ -84,7 +84,7 @@ function Router() {
       <Route path="/onboarding/profile" component={OnboardingProfile} />
       <Route path="/onboarding/goals" component={OnboardingGoals} />
       <Route path="/onboarding/complete" component={OnboardingComplete} />
-      <Route path="/" component={LandingPage} />
+      <Route path="/" component={TestLanding} />
       <Route path="/home" component={Homepage1} />
       <Route path="/dashboard" component={DashboardSocial} />
       {/* <Route path="/dashboard-original" component={Dashboard} /> */}
