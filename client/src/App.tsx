@@ -10,12 +10,13 @@ import OnboardingProfile from "@/pages/onboarding/profile";
 import OnboardingGoals from "@/pages/onboarding/goals";
 import OnboardingComplete from "@/pages/onboarding/complete";
 import Dashboard from "@/pages/dashboard";
+import DashboardSocial from "@/pages/dashboard-social";
 import Connections from "@/pages/connections-simple";
 import Activities from "@/pages/activities";
+import ActivitiesSocial from "@/pages/activities-social";
 import Calendar from "@/pages/calendar";
 import Homepage1 from "@/pages/homepage-1";
-import TestLandingPage from "@/pages/test-landing";
-import DebugTest from "@/pages/debug-test";
+import LandingPage from "@/pages/landing";
 import Insights from "@/pages/insights-original";
 import Profile from "@/pages/profile";
 import Settings from "@/pages/settings";
@@ -34,7 +35,6 @@ import { MomentModal } from "./components/modals/simplified-moment-modal";
 import { PlanModal } from "./components/modals/plan-modal";
 import { MoodTrackerModal } from "./components/modals/mood-tracker-modal";
 import { BadgeNotificationMonitor } from "./components/BadgeNotificationMonitor";
-import { PWAStatusIndicator } from "./components/ui/pwa-install-button";
 import { useEffect } from "react";
 import { useLocation } from "wouter";
 
@@ -43,11 +43,8 @@ function Router() {
   const [location, setLocation] = useLocation();
 
   useEffect(() => {
-    console.log("Router Debug - loading:", loading, "isAuthenticated:", isAuthenticated, "location:", location);
-    
     if (!loading) {
       if (!isAuthenticated && !["/login", "/landing"].includes(location)) {
-        console.log("Router: Redirecting unauthenticated user to /landing");
         setLocation("/landing");
       } else if (isAuthenticated && ["/login", "/landing"].includes(location)) {
         // Check for saved default page preference
@@ -61,32 +58,28 @@ function Router() {
             "insights": "/insights"
           };
           const targetRoute = routeMap[savedDefaultPage] || "/";
-          console.log("Router: Redirecting authenticated user to:", targetRoute);
           setLocation(targetRoute);
         } else {
-          console.log("Router: Redirecting authenticated user to home");
           setLocation("/");
         }
       }
     }
   }, [isAuthenticated, loading, location, setLocation]);
 
-  console.log("Router: Rendering routes for location:", location);
-  
   return (
     <Switch>
-      <Route path="/landing">{() => { console.log("Landing route matched"); return <TestLandingPage />; }}</Route>
-      <Route path="/login">{() => { console.log("Login route matched"); return <Login />; }}</Route>
+      <Route path="/landing" component={LandingPage} />
+      <Route path="/login" component={Login} />
       <Route path="/onboarding/welcome" component={OnboardingWelcome} />
       <Route path="/onboarding/profile" component={OnboardingProfile} />
       <Route path="/onboarding/goals" component={OnboardingGoals} />
       <Route path="/onboarding/complete" component={OnboardingComplete} />
-      <Route path="/">{() => { console.log("Home route matched - showing debug test"); return <DebugTest />; }}</Route>
-      <Route path="/dashboard" component={Dashboard} />
+      <Route path="/" component={Homepage1} />
+      <Route path="/dashboard" component={DashboardSocial} />
       <Route path="/connections" component={Connections} />
       <Route path="/connections/:id/edit" component={ConnectionEdit} />
       <Route path="/connections/:id" component={ConnectionDetail} />
-      <Route path="/activities" component={Activities} />
+      <Route path="/activities" component={ActivitiesSocial} />
       <Route path="/calendar" component={Calendar} />
       <Route path="/badges" component={Badges} />
       <Route path="/insights" component={Insights} />
@@ -96,13 +89,12 @@ function Router() {
 
       <Route path="/cycle" component={MenstrualCycle} />
       <Route path="/menstrual-cycle" component={MenstrualCycle} />
-      <Route>{() => { console.log("NotFound route matched for:", location); return <NotFound />; }}</Route>
+      <Route component={NotFound} />
     </Switch>
   );
 }
 
 function App() {
-  console.log("App component rendering");
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
@@ -113,11 +105,7 @@ function App() {
                 <TooltipProvider>
                   <Toaster />
                   <BadgeNotificationMonitor />
-                  <PWAStatusIndicator />
-                  <div>
-                    <h1 style={{color: 'red', padding: '20px'}}>DEBUG: App component is rendering</h1>
-                    <Router />
-                  </div>
+                  <Router />
                   <ModalsContainer />
 
                 </TooltipProvider>

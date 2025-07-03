@@ -332,90 +332,74 @@ export default function Activities() {
   const upcomingDates = sortedDates.filter(date => date > today).reverse(); // Reverse to show nearest first
 
   return (
-    <div className="max-w-md mx-auto min-h-screen flex flex-col relative bg-gradient-to-br from-slate-50/50 to-blue-50/30">
-      {/* Subtle background elements */}
-      <div className="absolute inset-0 opacity-20 pointer-events-none">
-        <div className="absolute top-32 left-8 w-24 h-24 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl animate-float"></div>
-        <div className="absolute top-64 right-12 w-20 h-20 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl animate-float animation-delay-2000"></div>
-        <div className="absolute bottom-64 left-16 w-28 h-28 bg-pink-200 rounded-full mix-blend-multiply filter blur-xl animate-float animation-delay-4000"></div>
-      </div>
-      
+    <div className="max-w-md mx-auto bg-white dark:bg-neutral-900 min-h-screen flex flex-col relative">
       <Header />
 
-      <main className="flex-1 overflow-y-auto pb-24 h-0 relative z-10">
-        {/* Enhanced Page Header */}
-        <div className="px-4 pt-4 pb-3">
-          <div className="animate-slide-in-up">
-            <UpgradeBanner 
-              message="Free Plan: Activity tracking limited"
-              description="Upgrade to Premium to track moments, plans, and milestones across all your relationships."
-              variant="compact"
-            />
+      <main className="flex-1 overflow-y-auto pb-20 h-0">
+        {/* Page Title */}
+        <div className="px-3 pt-3 pb-2">
+          <UpgradeBanner 
+            message="Free Plan: Activity tracking limited"
+            description="Upgrade to Premium to track moments, plans, and milestones across all your relationships."
+            variant="compact"
+          />
+          
+          <div className="flex items-center justify-between mb-3">
+            <h1 className="text-2xl font-bold">Activities</h1>
           </div>
           
-          <div className="flex items-center justify-between mb-4 animate-slide-in-left">
-            <h1 className="text-2xl font-bold text-gradient">Activities</h1>
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
-                <Activity className="h-4 w-4 text-white" />
-              </div>
-            </div>
-          </div>
-          
-          {/* Enhanced Activity Types Navigation */}
-          <div className="floating-element rounded-xl p-2 mb-4 animate-slide-in-right" style={{ animationDelay: '0.2s' }}>
-            <div className="grid grid-cols-5 gap-1">
-              <button 
-                onClick={() => setActiveTab('timeline')}
-                className={`py-3 px-2 rounded-lg text-xs font-medium transition-all duration-300 ${
-                  activeTab === 'timeline' 
-                    ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg scale-105' 
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'
-                }`}
-              >
-                Timeline
-              </button>
-              <button 
-                onClick={() => setActiveTab('moments')}
-                className={`py-3 px-2 rounded-lg text-xs font-medium transition-all duration-300 ${
-                  activeTab === 'moments' 
-                    ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg scale-105' 
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'
-                }`}
-              >
-                Moments
-              </button>
-              <button 
-                onClick={() => setActiveTab('conflicts')}
-                className={`py-3 px-2 rounded-lg text-xs font-medium transition-all duration-300 ${
-                  activeTab === 'conflicts' 
-                    ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg scale-105' 
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'
-                }`}
-              >
-                Conflicts
-              </button>
-              <button 
-                onClick={() => setActiveTab('intimacy')}
-                className={`py-3 px-2 rounded-lg text-xs font-medium transition-all duration-300 ${
-                  activeTab === 'intimacy' 
-                    ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg scale-105' 
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'
-                }`}
-              >
-                Intimacy
-              </button>
-              <button 
-                onClick={() => setActiveTab('plans')}
-                className={`py-3 px-2 rounded-lg text-xs font-medium transition-all duration-300 ${
-                  activeTab === 'plans' 
-                    ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg scale-105' 
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'
-                }`}
-              >
-                Plans
-              </button>
-            </div>
+          {/* Activity Types */}
+          <div className="grid grid-cols-5 gap-1 bg-muted rounded-lg p-1 mb-3">
+            <button 
+              onClick={() => setActiveTab('timeline')}
+              className={`py-2 px-2 rounded-md text-xs font-medium transition-colors ${
+                activeTab === 'timeline' 
+                  ? 'bg-background text-foreground shadow-sm' 
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              Timeline
+            </button>
+            <button 
+              onClick={() => setActiveTab('moments')}
+              className={`py-2 px-2 rounded-md text-xs font-medium transition-colors ${
+                activeTab === 'moments' 
+                  ? 'bg-background text-foreground shadow-sm' 
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              Moments
+            </button>
+            <button 
+              onClick={() => setActiveTab('conflicts')}
+              className={`py-2 px-2 rounded-md text-xs font-medium transition-colors ${
+                activeTab === 'conflicts' 
+                  ? 'bg-background text-foreground shadow-sm' 
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              Conflicts
+            </button>
+            <button 
+              onClick={() => setActiveTab('intimacy')}
+              className={`py-2 px-2 rounded-md text-xs font-medium transition-colors ${
+                activeTab === 'intimacy' 
+                  ? 'bg-background text-foreground shadow-sm' 
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              Intimacy
+            </button>
+            <button 
+              onClick={() => setActiveTab('plans')}
+              className={`py-2 px-2 rounded-md text-xs font-medium transition-colors ${
+                activeTab === 'plans' 
+                  ? 'bg-background text-foreground shadow-sm' 
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              Plans
+            </button>
           </div>
         </div>
 
@@ -566,7 +550,7 @@ export default function Activities() {
                   
                   openMomentModal('moment');
                 }}
-                className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transform transition-all duration-200 hover:scale-[1.02]"
+                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
               >
                 <Plus className="h-4 w-4 mr-2" />
                 Add Moment
@@ -586,7 +570,7 @@ export default function Activities() {
                   
                   openMomentModal('conflict');
                 }}
-                className="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-lg hover:shadow-xl transform transition-all duration-200 hover:scale-[1.02]"
+                className="w-full bg-destructive hover:bg-destructive/90 text-destructive-foreground"
               >
                 <Plus className="h-4 w-4 mr-2" />
                 Add Conflict
@@ -606,7 +590,7 @@ export default function Activities() {
                   
                   openMomentModal('intimacy');
                 }}
-                className="w-full bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white shadow-lg hover:shadow-xl transform transition-all duration-200 hover:scale-[1.02]"
+                className="w-full bg-pink-600 hover:bg-pink-700 text-white"
               >
                 <Plus className="h-4 w-4 mr-2" />
                 Add Intimacy
@@ -626,7 +610,7 @@ export default function Activities() {
                   
                   openPlanModal(selectedConnection || undefined);
                 }}
-                className="w-full bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transform transition-all duration-200 hover:scale-[1.02]"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white"
               >
                 <Plus className="h-4 w-4 mr-2" />
                 Add Plan

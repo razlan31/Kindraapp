@@ -12,7 +12,7 @@ import { Connection, Moment, Badge, MenstrualCycle } from "@shared/schema";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
 import { useModal } from "@/contexts/modal-context";
-import { Sparkles, Calendar, ChevronDown, Heart, Plus, Circle, TrendingUp } from "lucide-react";
+import { Sparkles, Calendar, ChevronDown, Heart, Plus, Circle, TrendingUp, X } from "lucide-react";
 import { Link } from "wouter";
 import { FocusSelector } from "@/components/relationships/focus-selector";
 import { useRelationshipFocus } from "@/contexts/relationship-focus-context";
@@ -328,48 +328,105 @@ function MenstrualCycleTracker() {
 }
 
   return (
-    <div className="max-w-md mx-auto bg-white dark:bg-neutral-900 min-h-screen flex flex-col relative">
+    <div className="max-w-md mx-auto bg-gray-50 dark:bg-black min-h-screen flex flex-col relative">
       <Header />
 
       <main className="flex-1 overflow-y-auto pb-20">
-        {/* Welcome Section */}
-        <section className="px-4 pt-5 pb-3">
-          <div className="flex items-center justify-between mb-2">
-            <h2 className="text-xl font-heading font-semibold">
-              {focusConnection ? `${focusConnection.name} Summary` : `Welcome back, ${user?.displayName || user?.username || "Friend"}!`}
-            </h2>
-            
-            {/* Connection Switcher */}
-            {connections.length > 1 && (
-              <div className="relative">
-                <select
-                  value={focusConnection?.id || "all"}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    if (value === "all") {
-                      setDashboardConnection(null);
-                    } else {
-                      const selectedConnection = connections.find(c => c.id === parseInt(value));
-                      setDashboardConnection(selectedConnection || null);
-                    }
-                  }}
-                  className="appearance-none bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg px-3 py-1.5 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
-                >
-                  <option value="all">All Connections</option>
-                  {connections.map((connection) => (
-                    <option key={connection.id} value={connection.id}>
-                      {connection.name} {mainFocusConnection?.id === connection.id ? '♥' : ''}
-                    </option>
-                  ))}
-                </select>
-                <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-neutral-500 pointer-events-none" />
+        {/* Stories-Style Header */}
+        <section className="px-4 pt-6 pb-4">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-400 via-pink-400 to-red-400 p-0.5">
+                <div className="w-full h-full rounded-full bg-white dark:bg-black flex items-center justify-center">
+                  <span className="text-lg font-bold text-gray-700 dark:text-gray-300">
+                    {user?.displayName?.[0] || user?.username?.[0] || "K"}
+                  </span>
+                </div>
               </div>
-            )}
+              <div>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                  {user?.displayName || user?.username || "Kindra"}
+                </h2>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Your relationship feed</p>
+              </div>
+            </div>
+            
+            {/* Connection Stories */}
+            <div className="flex gap-2">
+              {connections.slice(0, 3).map((connection) => (
+                <button
+                  key={connection.id}
+                  onClick={() => setDashboardConnection(connection)}
+                  className={`relative ${focusConnection?.id === connection.id ? 'ring-2 ring-purple-500' : ''}`}
+                >
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-pink-400 to-purple-400 p-0.5">
+                    {connection.profileImage ? (
+                      <img 
+                        src={connection.profileImage} 
+                        alt={connection.name}
+                        className="w-full h-full rounded-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full rounded-full bg-white dark:bg-gray-800 flex items-center justify-center">
+                        <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">
+                          {connection.name[0]}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                  {focusConnection?.id === connection.id && (
+                    <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white dark:border-black"></div>
+                  )}
+                </button>
+              ))}
+              {connections.length > 3 && (
+                <button className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                  <span className="text-xs font-semibold text-gray-500 dark:text-gray-400">
+                    +{connections.length - 3}
+                  </span>
+                </button>
+              )}
+            </div>
           </div>
           
-          <p className="text-neutral-600 dark:text-neutral-400 text-sm">
-            {focusConnection ? `Your relationship insights and activity` : `Track your relationships and emotional connections`}
-          </p>
+          {/* Active Connection Banner */}
+          {focusConnection && (
+            <div className="bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl p-4 text-white mb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-16 h-16 rounded-full bg-white/20 p-0.5">
+                  {focusConnection.profileImage ? (
+                    <img 
+                      src={focusConnection.profileImage} 
+                      alt={focusConnection.name}
+                      className="w-full h-full rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full rounded-full bg-white/30 flex items-center justify-center">
+                      <span className="text-lg font-bold text-white">
+                        {focusConnection.name[0]}
+                      </span>
+                    </div>
+                  )}
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-lg font-bold">{focusConnection.name}</h3>
+                  <p className="text-white/80 text-sm">{focusConnection.relationshipStage}</p>
+                  <div className="flex items-center gap-4 mt-1 text-xs text-white/70">
+                    <span>{totalMoments} moments</span>
+                    <span>{positiveMoments} positive</span>
+                    {intimateMoments > 0 && <span>{intimateMoments} intimate</span>}
+                  </div>
+                </div>
+                <button 
+                  onClick={() => setDashboardConnection(null)}
+                  className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+          )}
+        </section>
           
           {/* Quick Stats */}
           <div className="mt-4 grid grid-cols-3 gap-3">

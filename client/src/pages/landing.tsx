@@ -2,151 +2,10 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Heart, Brain, Calendar, TrendingUp, Star, Check, ArrowRight, Users, Shield, Sparkles, Moon, Sun, Zap, Play, MessageCircle, ThumbsUp, Share2, Bookmark, MoreHorizontal, Bell } from 'lucide-react';
+import { Heart, Brain, Calendar, TrendingUp, Star, Check, ArrowRight, Users, Shield, Sparkles, Moon, Sun, Zap, Play } from 'lucide-react';
 import { useLocation } from 'wouter';
 import { AnimatedFeatures } from '@/components/animated-features';
 import { PricingModal } from '@/components/subscription/pricing-modal';
-
-// PWA Download Card Component
-function PWADownloadCard() {
-  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
-  const [canInstall, setCanInstall] = useState(false);
-  const [isInstalled, setIsInstalled] = useState(false);
-
-  React.useEffect(() => {
-    // Check if already installed
-    if (window.matchMedia('(display-mode: standalone)').matches) {
-      setIsInstalled(true);
-      return;
-    }
-
-    // Listen for the beforeinstallprompt event
-    const handleBeforeInstallPrompt = (e: any) => {
-      e.preventDefault();
-      setDeferredPrompt(e);
-      setCanInstall(true);
-    };
-
-    // Listen for successful installation
-    const handleAppInstalled = () => {
-      setIsInstalled(true);
-      setCanInstall(false);
-      setDeferredPrompt(null);
-    };
-
-    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-    window.addEventListener('appinstalled', handleAppInstalled);
-
-    return () => {
-      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-      window.removeEventListener('appinstalled', handleAppInstalled);
-    };
-  }, []);
-
-  const handleInstallClick = async () => {
-    if (!deferredPrompt) return;
-
-    try {
-      const result = await deferredPrompt.prompt();
-      if (result.outcome === 'accepted') {
-        setIsInstalled(true);
-        setCanInstall(false);
-      }
-      setDeferredPrompt(null);
-    } catch (error) {
-      console.error('PWA install failed:', error);
-    }
-  };
-
-  const getInstallInstructions = () => {
-    const userAgent = navigator.userAgent.toLowerCase();
-    if (userAgent.includes('iphone') || userAgent.includes('ipad')) {
-      return (
-        <div className="text-center space-y-3">
-          <p className="text-lg font-semibold">On iPhone/iPad:</p>
-          <div className="bg-blue-50 p-4 rounded-lg">
-            <p>1. Tap the <strong>Share button</strong> (□↗) in Safari</p>
-            <p>2. Select <strong>"Add to Home Screen"</strong></p>
-            <p>3. Tap <strong>"Add"</strong> to install</p>
-          </div>
-        </div>
-      );
-    }
-    if (userAgent.includes('android')) {
-      return (
-        <div className="text-center space-y-3">
-          <p className="text-lg font-semibold">On Android:</p>
-          <div className="bg-green-50 p-4 rounded-lg">
-            <p>1. Tap the <strong>menu</strong> (⋮) in your browser</p>
-            <p>2. Select <strong>"Add to Home Screen"</strong> or <strong>"Install App"</strong></p>
-            <p>3. Tap <strong>"Install"</strong></p>
-          </div>
-        </div>
-      );
-    }
-    return (
-      <div className="text-center space-y-3">
-        <p className="text-lg font-semibold">On Desktop:</p>
-        <div className="bg-purple-50 p-4 rounded-lg">
-          <p>Look for an <strong>"Install"</strong> or <strong>"Add to Home Screen"</strong> option in your browser menu</p>
-        </div>
-      </div>
-    );
-  };
-
-  if (isInstalled) {
-    return (
-      <div className="max-w-md mx-auto">
-        <Card className="border-2 border-green-200 bg-green-50">
-          <CardContent className="p-6 text-center">
-            <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Check className="h-8 w-8 text-white" />
-            </div>
-            <h3 className="text-xl font-bold text-green-800 mb-2">App Installed!</h3>
-            <p className="text-green-600">Kindra is now installed on your device</p>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  if (canInstall) {
-    return (
-      <div className="max-w-md mx-auto">
-        <Card className="border-2 border-blue-500 bg-blue-50 hover:bg-blue-100 transition-colors cursor-pointer" onClick={handleInstallClick}>
-          <CardContent className="p-6 text-center">
-            <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
-              </svg>
-            </div>
-            <h3 className="text-xl font-bold text-blue-800 mb-2">Install Kindra App</h3>
-            <p className="text-blue-600 mb-4">Tap to install as a mobile app</p>
-            <div className="bg-blue-100 px-4 py-2 rounded-lg">
-              <p className="text-sm text-blue-700">One-click installation available!</p>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  return (
-    <div className="max-w-md mx-auto">
-      <Card className="border-2 border-purple-200 bg-purple-50">
-        <CardContent className="p-6">
-          <div className="w-16 h-16 bg-purple-500 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
-            </svg>
-          </div>
-          <h3 className="text-xl font-bold text-purple-800 mb-4">Install Kindra App</h3>
-          {getInstallInstructions()}
-        </CardContent>
-      </Card>
-    </div>
-  );
-}
 
 export default function LandingPage() {
   const [, setLocation] = useLocation();
@@ -255,330 +114,85 @@ export default function LandingPage() {
 
 
   return (
-    <div className="min-h-screen bg-gray-50 relative overflow-hidden">
-      {/* Social Media Style Header */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-50 backdrop-blur-md bg-white/95">
-        <div className="container mx-auto px-4 py-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-pink-500 to-orange-500 rounded-full flex items-center justify-center shadow-lg">
-                <Heart className="h-6 w-6 text-white" />
-              </div>
-              <span className="text-2xl font-bold bg-gradient-to-r from-pink-600 to-orange-600 bg-clip-text text-transparent">
-                Kindra
-              </span>
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-indigo-50 relative overflow-hidden">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute top-20 left-10 w-64 h-64 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl animate-blob"></div>
+        <div className="absolute top-40 right-10 w-64 h-64 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-2000"></div>
+        <div className="absolute bottom-20 left-20 w-64 h-64 bg-indigo-300 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-4000"></div>
+      </div>
+      {/* Header */}
+      <header className="container mx-auto px-4 py-6 relative z-50">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-gradient-to-br from-purple-600 to-pink-600 rounded-lg flex items-center justify-center">
+              <Heart className="h-5 w-5 text-white" />
             </div>
-            <div className="flex items-center gap-3">
-              <Button variant="ghost" onClick={handleGetStarted} className="text-gray-600 hover:bg-gray-100">
-                Sign In
-              </Button>
-              <Button onClick={handleGetStarted} className="bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 text-white rounded-full px-6">
-                Get Started
-              </Button>
-            </div>
+            <span className="text-xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+              Kindra
+            </span>
           </div>
+          <Button onClick={handleGetStarted} className="bg-purple-600 hover:bg-purple-700">
+            Sign In
+          </Button>
         </div>
       </header>
 
-      {/* Stories-Style Hero Section */}
-      <section className="bg-white">
-        {/* Story Highlights */}
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex gap-4 overflow-x-auto scrollbar-hide">
-            {['💕 Success Stories', '🤖 Meet Luna AI', '📊 Your Analytics', '🎯 Features', '🔒 Privacy'].map((story, index) => (
-              <div key={index} className="flex-shrink-0 text-center">
-                <div className="w-16 h-16 bg-gradient-to-br from-pink-400 to-orange-400 rounded-full p-0.5 mb-2">
-                  <div className="w-full h-full bg-white rounded-full flex items-center justify-center">
-                    <span className="text-2xl">{story.split(' ')[0]}</span>
-                  </div>
-                </div>
-                <p className="text-xs text-gray-600 max-w-[60px] leading-tight">{story.split(' ').slice(1).join(' ')}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Main Feed-Style Hero */}
-        <div className="container mx-auto px-4 pb-8">
-          <div className="max-w-lg mx-auto">
-            {/* Profile Header */}
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 bg-gradient-to-br from-pink-500 to-orange-500 rounded-full flex items-center justify-center">
-                <Heart className="h-6 w-6 text-white" />
-              </div>
-              <div className="flex-1">
-                <h3 className="font-bold text-lg">kindra.ai</h3>
-                <p className="text-gray-500 text-sm">Your AI Relationship Coach</p>
-              </div>
-              <Button variant="ghost" size="sm">
-                <MoreHorizontal className="h-5 w-5" />
+      {/* Hero Section */}
+      <section className="container mx-auto px-4 py-16 relative overflow-hidden">
+        <div className="grid lg:grid-cols-2 gap-16 items-center max-w-7xl mx-auto">
+          {/* Left Column - Content */}
+          <div className="text-left relative z-20">
+            <Badge className="mb-6 bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700 hover:bg-purple-100 border-purple-200">
+              <Sparkles className="h-4 w-4 mr-1" />
+              AI-Powered Relationship Intelligence
+            </Badge>
+            
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 bg-clip-text text-transparent leading-tight">
+              Transform Your Love Life with AI
+            </h1>
+            
+            <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+              Meet Luna AI, your personal relationship coach. Track patterns, understand emotions, and build deeper connections with the power of artificial intelligence.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-4 mb-8 relative z-30">
+              <Button 
+                size="lg" 
+                onClick={handleGetStarted}
+                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-lg px-8 py-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 relative z-30 cursor-pointer"
+              >
+                Start Free Today
+                <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
-            </div>
-
-            {/* Main Content Card */}
-            <Card className="mb-4 border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
-              <div className="bg-gradient-to-br from-pink-50 to-orange-50 p-8 text-center">
-                <h1 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-pink-600 to-orange-600 bg-clip-text text-transparent">
-                  Transform Your Love Life with AI
-                </h1>
-                <p className="text-gray-600 mb-6 leading-relaxed">
-                  Meet Luna AI, your personal relationship coach. Track patterns, understand emotions, and build deeper connections.
-                </p>
-                
-                {/* Phone Preview */}
-                <div className="relative mx-auto w-48 h-80 bg-black rounded-3xl p-2 mb-6">
-                  <div className="w-full h-full bg-white rounded-2xl overflow-hidden">
-                    <div className="bg-gradient-to-r from-pink-500 to-orange-500 h-16 flex items-center justify-center">
-                      <span className="text-white font-bold">Luna AI Chat</span>
-                    </div>
-                    <div className="p-3 space-y-2">
-                      <div className="bg-gray-100 rounded-lg p-2 text-xs">How can I support you today?</div>
-                      <div className="bg-pink-500 text-white rounded-lg p-2 text-xs ml-8">Help me understand my relationship patterns</div>
-                      <div className="bg-gray-100 rounded-lg p-2 text-xs">Based on your data, I see you're building deeper connections...</div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex gap-3 justify-center">
-                  <Button 
-                    onClick={handleGetStarted}
-                    className="bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 text-white rounded-full px-8 relative z-30 cursor-pointer"
-                  >
-                    Start Free Today
-                  </Button>
-                  <Button 
-                    variant="outline"
-                    onClick={() => setShowPricingModal(true)}
-                    className="border-pink-200 text-pink-600 hover:bg-pink-50 rounded-full px-6 relative z-30 cursor-pointer"
-                  >
-                    View Pricing
-                  </Button>
-                </div>
-              </div>
-
-              {/* Social Actions */}
-              <div className="p-4 bg-white border-t border-gray-100">
-                <div className="flex items-center justify-between">
-                  <div className="flex gap-4">
-                    <button className="flex items-center gap-2 text-gray-600 hover:text-pink-600">
-                      <ThumbsUp className="h-5 w-5" />
-                      <span className="text-sm">2.1k</span>
-                    </button>
-                    <button className="flex items-center gap-2 text-gray-600 hover:text-pink-600">
-                      <MessageCircle className="h-5 w-5" />
-                      <span className="text-sm">342</span>
-                    </button>
-                    <button className="flex items-center gap-2 text-gray-600 hover:text-pink-600">
-                      <Share2 className="h-5 w-5" />
-                    </button>
-                  </div>
-                  <button className="text-gray-600 hover:text-pink-600">
-                    <Bookmark className="h-5 w-5" />
-                  </button>
-                </div>
-                <div className="mt-3">
-                  <p className="text-sm text-gray-600">
-                    <span className="font-semibold">kindra.ai</span> Join thousands who've transformed their relationships with AI-powered insights 💕
-                  </p>
-                </div>
-              </div>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* PWA Download Section */}
-      <section className="py-16 bg-gradient-to-r from-blue-50 to-purple-50">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <Card className="border-0 shadow-2xl bg-white">
-              <CardContent className="p-12">
-                <div className="mb-8">
-                  <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <svg className="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
-                    </svg>
-                  </div>
-                  <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                    📱 Get the Kindra Mobile App
-                  </h2>
-                  <p className="text-xl text-gray-600 mb-6">
-                    Install Kindra on your phone for the best experience - faster, offline access, and push notifications
-                  </p>
-                </div>
-
-                <PWADownloadCard />
-
-                <div className="mt-8 grid md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm text-gray-600">
-                  <div className="flex items-center gap-2">
-                    <Zap className="h-4 w-4 text-blue-500" />
-                    <span>Lightning Fast</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Shield className="h-4 w-4 text-green-500" />
-                    <span>Works Offline</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Bell className="h-4 w-4 text-purple-500" />
-                    <span>Push Notifications</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Star className="h-4 w-4 text-yellow-500" />
-                    <span>Home Screen Icon</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Social Feed Features */}
-      <section className="py-8 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <div className="max-w-lg mx-auto space-y-6">
-            {features.slice(0, 3).map((feature, index) => (
-              <Card key={index} className="border border-gray-200 rounded-2xl overflow-hidden shadow-sm bg-white">
-                {/* Post Header */}
-                <div className="flex items-center gap-3 p-4">
-                  <div className="w-10 h-10 bg-gradient-to-br from-pink-500 to-orange-500 rounded-full flex items-center justify-center text-white">
-                    {feature.icon}
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-bold text-base">{feature.title}</h3>
-                    <p className="text-gray-500 text-sm">Featured • 2 hours ago</p>
-                  </div>
-                  <Button variant="ghost" size="sm">
-                    <MoreHorizontal className="h-5 w-5" />
-                  </Button>
-                </div>
-
-                {/* Post Content */}
-                <div className="px-4 pb-4">
-                  <p className="text-gray-700 mb-4">{feature.description}</p>
-                  
-                  {/* Feature Preview */}
-                  <div className="bg-gradient-to-br from-pink-50 to-orange-50 rounded-xl p-4 mb-4">
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="w-6 h-6 bg-gradient-to-br from-pink-500 to-orange-500 rounded-full flex items-center justify-center text-white">
-                        {feature.icon}
-                      </div>
-                      <span className="font-semibold text-sm">Live Demo</span>
-                    </div>
-                    <div className="text-xs text-gray-600">
-                      {index === 0 && "Luna: Based on your communication patterns, I notice you respond 40% faster to positive messages..."}
-                      {index === 1 && "Your cycle shows higher emotional sensitivity during days 14-21. Perfect time for deeper conversations."}
-                      {index === 2 && "You've had 12 positive moments this week! Your relationship satisfaction is trending upward 📈"}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Social Actions */}
-                <div className="px-4 pb-4 border-t border-gray-100 pt-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex gap-4">
-                      <button className="flex items-center gap-2 text-gray-600 hover:text-pink-600">
-                        <ThumbsUp className="h-4 w-4" />
-                        <span className="text-sm">{index === 0 ? '1.2k' : index === 1 ? '890' : '567'}</span>
-                      </button>
-                      <button className="flex items-center gap-2 text-gray-600 hover:text-pink-600">
-                        <MessageCircle className="h-4 w-4" />
-                        <span className="text-sm">{index === 0 ? '234' : index === 1 ? '156' : '89'}</span>
-                      </button>
-                      <button className="text-gray-600 hover:text-pink-600">
-                        <Share2 className="h-4 w-4" />
-                      </button>
-                    </div>
-                    <button className="text-gray-600 hover:text-pink-600">
-                      <Bookmark className="h-4 w-4" />
-                    </button>
-                  </div>
-                </div>
-              </Card>
-            ))}
-
-            {/* View More Features */}
-            <div className="text-center py-6">
               <Button 
                 variant="outline" 
+                size="lg"
                 onClick={() => setShowPricingModal(true)}
-                className="border-pink-200 text-pink-600 hover:bg-pink-50 rounded-full px-8"
+                className="text-lg px-8 py-6 rounded-2xl border-purple-200 text-purple-700 hover:bg-purple-50 transition-all duration-300 relative z-30 cursor-pointer"
               >
-                View All Features
-                <ArrowRight className="ml-2 h-4 w-4" />
+                View Pricing
               </Button>
             </div>
+            
+            <div className="flex items-center gap-6 text-sm text-gray-500">
+              <div className="flex items-center gap-1">
+                <Check className="h-4 w-4 text-green-500" />
+                No credit card required
+              </div>
+              <div className="flex items-center gap-1">
+                <Check className="h-4 w-4 text-green-500" />
+                5-day free trial
+              </div>
+              <div className="flex items-center gap-1">
+                <Check className="h-4 w-4 text-green-500" />
+                Cancel anytime
+              </div>
+            </div>
           </div>
-        </div>
-      </section>
-
-      {/* Testimonials as Social Posts */}
-      <section className="py-8 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="max-w-lg mx-auto space-y-6">
-            {testimonials.slice(0, 2).map((testimonial, index) => (
-              <Card key={index} className="border border-gray-200 rounded-2xl overflow-hidden shadow-sm bg-white">
-                {/* User Header */}
-                <div className="flex items-center gap-3 p-4">
-                  <div className="w-10 h-10 bg-gradient-to-br from-pink-400 to-orange-400 rounded-full flex items-center justify-center">
-                    <span className="text-white font-bold text-sm">{testimonial.name.charAt(0)}</span>
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-bold text-base">{testimonial.name}</h3>
-                    <p className="text-gray-500 text-sm">{testimonial.role} • 1 day ago</p>
-                  </div>
-                  <Button variant="ghost" size="sm">
-                    <MoreHorizontal className="h-5 w-5" />
-                  </Button>
-                </div>
-
-                {/* Testimonial Content */}
-                <div className="px-4 pb-4">
-                  <p className="text-gray-700 mb-4">{testimonial.content}</p>
-                  
-                  {/* Rating */}
-                  <div className="flex items-center gap-1 mb-4">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                    ))}
-                    <span className="text-sm text-gray-600 ml-2">Amazing results!</span>
-                  </div>
-                </div>
-
-                {/* Social Actions */}
-                <div className="px-4 pb-4 border-t border-gray-100 pt-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex gap-4">
-                      <button className="flex items-center gap-2 text-gray-600 hover:text-pink-600">
-                        <ThumbsUp className="h-4 w-4" />
-                        <span className="text-sm">{index === 0 ? '456' : '289'}</span>
-                      </button>
-                      <button className="flex items-center gap-2 text-gray-600 hover:text-pink-600">
-                        <MessageCircle className="h-4 w-4" />
-                        <span className="text-sm">{index === 0 ? '78' : '45'}</span>
-                      </button>
-                      <button className="text-gray-600 hover:text-pink-600">
-                        <Share2 className="h-4 w-4" />
-                      </button>
-                    </div>
-                    <button className="text-gray-600 hover:text-pink-600">
-                      <Bookmark className="h-4 w-4" />
-                    </button>
-                  </div>
-                </div>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* App Preview Section */}
-      <section className="py-12 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <div className="max-w-lg mx-auto text-center">
-            <h2 className="text-2xl font-bold mb-6 bg-gradient-to-r from-pink-600 to-orange-600 bg-clip-text text-transparent">
-              See Kindra in Action
-            </h2>
+          
+          {/* Right Column - App Preview */}
+          <div className="relative">
             {/* Background decorative elements */}
             <div className="absolute -top-12 -right-12 w-64 h-64 bg-gradient-to-br from-purple-300 to-pink-300 rounded-full opacity-20 blur-3xl animate-pulse"></div>
             <div className="absolute -bottom-12 -left-12 w-64 h-64 bg-gradient-to-br from-blue-300 to-purple-300 rounded-full opacity-15 blur-3xl animate-pulse animation-delay-2000"></div>
