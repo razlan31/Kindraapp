@@ -118,12 +118,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       await logoutUser();
       setUser(null);
       localStorage.clear();
-      // Go to logout redirect route first
-      window.location.href = "/logout-redirect";
+      // Simple redirect to root - no intermediate page needed
+      window.location.href = "/";
     } catch (error) {
       console.error("Logout failed:", error);
       localStorage.clear();
-      window.location.href = "/logout-redirect";
+      window.location.href = "/";
     }
   };
 

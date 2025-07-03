@@ -77,17 +77,7 @@ export function Header() {
                 <span>Settings</span>
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={async () => {
-              try {
-                await logout();
-                // Clear any cached data and redirect to login
-                window.location.href = "/auth/login";
-              } catch (error) {
-        
-                // Even if logout fails, redirect to login page
-                window.location.href = "/auth/login";
-              }
-            }}>
+            <DropdownMenuItem onClick={() => logout()}>
               <LogOut className="mr-2 h-4 w-4" />
               <span>Log out</span>
             </DropdownMenuItem>
