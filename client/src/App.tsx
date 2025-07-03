@@ -17,6 +17,7 @@ import ActivitiesSocial from "@/pages/activities-social";
 import Calendar from "@/pages/calendar";
 import Homepage1 from "@/pages/homepage-1";
 import LandingPage from "@/pages/landing";
+import TestLanding from "@/pages/test-landing";
 import Insights from "@/pages/insights-original";
 import Profile from "@/pages/profile";
 import Settings from "@/pages/settings";
@@ -83,7 +84,8 @@ function Router() {
       <Route path="/onboarding/profile" component={OnboardingProfile} />
       <Route path="/onboarding/goals" component={OnboardingGoals} />
       <Route path="/onboarding/complete" component={OnboardingComplete} />
-      <Route path="/" component={LandingPage} />
+      <Route path="/" component={TestLanding} />
+      <Route path="/landing" component={LandingPage} />
       <Route path="/home" component={Homepage1} />
       <Route path="/dashboard" component={DashboardSocial} />
       {/* <Route path="/dashboard-original" component={Dashboard} /> */}
