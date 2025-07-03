@@ -115,16 +115,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const logout = async () => {
     try {
-      setLoading(true); // Set loading state during logout
       await logoutUser();
       setUser(null);
-      // Add small delay to ensure state settles before navigation
-      await new Promise(resolve => setTimeout(resolve, 100));
+      // Force navigation to root immediately
+      window.location.href = "/";
     } catch (error) {
       console.error("Logout failed:", error);
-      throw error;
-    } finally {
-      setLoading(false);
+      // Even if logout fails, redirect to home
+      window.location.href = "/";
     }
   };
 
