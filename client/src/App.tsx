@@ -9,7 +9,7 @@ import OnboardingWelcome from "@/pages/onboarding/welcome";
 import OnboardingProfile from "@/pages/onboarding/profile";
 import OnboardingGoals from "@/pages/onboarding/goals";
 import OnboardingComplete from "@/pages/onboarding/complete";
-import Dashboard from "@/pages/dashboard";
+// import Dashboard from "@/pages/dashboard"; // Temporarily disabled due to compilation errors
 import DashboardSocial from "@/pages/dashboard-social";
 import Connections from "@/pages/connections-simple";
 import Activities from "@/pages/activities";
@@ -76,6 +76,7 @@ function Router() {
       <Route path="/" component={LandingPage} />
       <Route path="/home" component={Homepage1} />
       <Route path="/dashboard" component={DashboardSocial} />
+      {/* <Route path="/dashboard-original" component={Dashboard} /> */}
       <Route path="/connections" component={Connections} />
       <Route path="/connections/:id/edit" component={ConnectionEdit} />
       <Route path="/connections/:id" component={ConnectionDetail} />
