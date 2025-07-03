@@ -72,7 +72,8 @@ function Router() {
       <Route path="/onboarding/profile" component={OnboardingProfile} />
       <Route path="/onboarding/goals" component={OnboardingGoals} />
       <Route path="/onboarding/complete" component={OnboardingComplete} />
-      <Route path="/" component={Homepage1} />
+      {/* Show landing page for unauthenticated users at root, homepage for authenticated */}
+      <Route path="/" component={isAuthenticated ? Homepage1 : LandingPage} />
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/connections" component={Connections} />
       <Route path="/connections/:id/edit" component={ConnectionEdit} />
