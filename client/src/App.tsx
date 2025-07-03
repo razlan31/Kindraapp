@@ -64,6 +64,15 @@ function Router() {
     }
   }, [isAuthenticated, loading, location, setLocation]);
 
+  // Show loading spinner during authentication state changes
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin w-8 h-8 border-4 border-purple-600 border-t-transparent rounded-full"></div>
+      </div>
+    );
+  }
+
   return (
     <Switch>
       <Route path="/landing" component={LandingPage} />
@@ -72,8 +81,10 @@ function Router() {
       <Route path="/onboarding/profile" component={OnboardingProfile} />
       <Route path="/onboarding/goals" component={OnboardingGoals} />
       <Route path="/onboarding/complete" component={OnboardingComplete} />
-      {/* Show landing page for unauthenticated users at root, homepage for authenticated */}
-      <Route path="/" component={isAuthenticated ? Homepage1 : LandingPage} />
+      {/* Root route - safe conditional rendering */}
+      <Route path="/">
+        {() => isAuthenticated ? <Homepage1 /> : <LandingPage />}
+      </Route>
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/connections" component={Connections} />
       <Route path="/connections/:id/edit" component={ConnectionEdit} />
