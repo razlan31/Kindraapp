@@ -59,6 +59,21 @@ window.addEventListener('error', (event) => {
     return;
   }
 });
+
+// Override service worker registration to prevent routing cache
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js', { 
+    scope: '/',
+    updateViaCache: 'none' // Prevent service worker caching
+  }).then((registration) => {
+    console.log('Custom SW registered, preventing routing cache');
+    // Force update immediately
+    registration.update();
+  }).catch((error) => {
+    console.log('SW registration failed:', error);
+  });
+}
+
 createRoot(document.getElementById("root")!).render(
   <ThemeProvider>
     <AuthProvider>
