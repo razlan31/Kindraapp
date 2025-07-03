@@ -118,18 +118,34 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       await logoutUser();
       setUser(null);
+      
       // Clear all possible cached data
       localStorage.clear();
       sessionStorage.clear();
       queryClient.clear();
-      // Nuclear option: force complete page reload
-      window.location.replace(window.location.origin + "/?t=" + Date.now());
+      
+      // Clear service worker cache (Replit PWA)
+      if ('serviceWorker' in navigator) {
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        for (const registration of registrations) {
+          await registration.unregister();
+        }
+      }
+      
+      // Clear all browser caches
+      if ('caches' in window) {
+        const cacheNames = await caches.keys();
+        await Promise.all(cacheNames.map(name => caches.delete(name)));
+      }
+      
+      // Nuclear option: force complete page reload with cache busting
+      window.location.replace(window.location.origin + "/?nocache=" + Date.now());
     } catch (error) {
       console.error("Logout failed:", error);
       localStorage.clear();
       sessionStorage.clear();
       queryClient.clear();
-      window.location.replace(window.location.origin + "/?t=" + Date.now());
+      window.location.replace(window.location.origin + "/?nocache=" + Date.now());
     }
   };
 
