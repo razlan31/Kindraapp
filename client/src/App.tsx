@@ -57,10 +57,10 @@ function Router() {
             "calendar": "/calendar",
             "insights": "/insights"
           };
-          const targetRoute = routeMap[savedDefaultPage] || "/";
+          const targetRoute = routeMap[savedDefaultPage] || "/dashboard";
           setLocation(targetRoute);
         } else {
-          setLocation("/");
+          setLocation("/dashboard");
         }
       }
     }
@@ -74,7 +74,8 @@ function Router() {
       <Route path="/onboarding/profile" component={OnboardingProfile} />
       <Route path="/onboarding/goals" component={OnboardingGoals} />
       <Route path="/onboarding/complete" component={OnboardingComplete} />
-      <Route path="/" component={Homepage1} />
+      <Route path="/" component={LandingPage} />
+      <Route path="/home" component={Homepage1} />
       <Route path="/dashboard" component={DashboardSocial} />
       <Route path="/connections" component={Connections} />
       <Route path="/connections/:id/edit" component={ConnectionEdit} />
