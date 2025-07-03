@@ -43,30 +43,31 @@ function Router() {
   const { isAuthenticated, loading } = useAuth();
   const [location, setLocation] = useLocation();
 
-  useEffect(() => {
-    if (!loading) {
-      // For non-authenticated users, only redirect if they're on protected routes
-      if (!isAuthenticated && !["/login", "/", "/landing"].includes(location)) {
-        setLocation("/");
-      } 
-      // For authenticated users, redirect from login page to dashboard (but allow landing page)
-      else if (isAuthenticated && location === "/login") {
-        const savedDefaultPage = localStorage.getItem('kindra-default-page');
-        if (savedDefaultPage && savedDefaultPage !== "home") {
-          const routeMap: Record<string, string> = {
-            "connections": "/connections",
-            "activities": "/activities", 
-            "calendar": "/calendar",
-            "insights": "/insights"
-          };
-          const targetRoute = routeMap[savedDefaultPage] || "/dashboard";
-          setLocation(targetRoute);
-        } else {
-          setLocation("/dashboard");
-        }
-      }
-    }
-  }, [isAuthenticated, loading, location, setLocation]);
+  // Temporarily disable redirects to debug routing issue
+  // useEffect(() => {
+  //   if (!loading) {
+  //     // For non-authenticated users, only redirect if they're on protected routes
+  //     if (!isAuthenticated && !["/login", "/", "/landing"].includes(location)) {
+  //       setLocation("/");
+  //     } 
+  //     // For authenticated users, redirect from login page to dashboard (but allow landing page)
+  //     else if (isAuthenticated && location === "/login") {
+  //       const savedDefaultPage = localStorage.getItem('kindra-default-page');
+  //       if (savedDefaultPage && savedDefaultPage !== "home") {
+  //         const routeMap: Record<string, string> = {
+  //           "connections": "/connections",
+  //           "activities": "/activities", 
+  //           "calendar": "/calendar",
+  //           "insights": "/insights"
+  //         };
+  //         const targetRoute = routeMap[savedDefaultPage] || "/dashboard";
+  //         setLocation(targetRoute);
+  //       } else {
+  //         setLocation("/dashboard");
+  //       }
+  //     }
+  //   }
+  // }, [isAuthenticated, loading, location, setLocation]);
 
   // Show loading state while authentication is being determined
   if (loading) {
