@@ -43,25 +43,32 @@ function Router() {
 
   useEffect(() => {
     if (!loading) {
-      // Redirect unauthenticated users to landing page
-      if (!isAuthenticated && !["/login", "/landing", "/", "/onboarding/welcome", "/onboarding/profile", "/onboarding/goals", "/onboarding/complete"].includes(location)) {
-        setLocation("/");
-      } 
-      // Redirect authenticated users from public pages to app
-      else if (isAuthenticated && ["/login", "/landing", "/"].includes(location)) {
-        const savedDefaultPage = localStorage.getItem('kindra-default-page');
-        if (savedDefaultPage && savedDefaultPage !== "home") {
-          const routeMap: Record<string, string> = {
-            "connections": "/connections",
-            "activities": "/activities", 
-            "calendar": "/calendar",
-            "insights": "/insights"
-          };
-          const targetRoute = routeMap[savedDefaultPage] || "/app";
-          setLocation(targetRoute);
-        } else {
-          setLocation("/app");
+      // Only redirect if we're not already on an allowed route
+      if (!isAuthenticated) {
+        // Allow unauthenticated users to stay on public routes
+        const publicRoutes = ["/login", "/landing", "/", "/onboarding/welcome", "/onboarding/profile", "/onboarding/goals", "/onboarding/complete"];
+        if (!publicRoutes.includes(location)) {
+          setLocation("/");
         }
+      } else if (isAuthenticated) {
+        // Only redirect authenticated users from public pages, not from app pages
+        const publicOnlyRoutes = ["/login", "/landing"];
+        if (publicOnlyRoutes.includes(location)) {
+          const savedDefaultPage = localStorage.getItem('kindra-default-page');
+          if (savedDefaultPage && savedDefaultPage !== "home") {
+            const routeMap: Record<string, string> = {
+              "connections": "/connections",
+              "activities": "/activities", 
+              "calendar": "/calendar",
+              "insights": "/insights"
+            };
+            const targetRoute = routeMap[savedDefaultPage] || "/app";
+            setLocation(targetRoute);
+          } else {
+            setLocation("/app");
+          }
+        }
+        // Don't redirect if user is on root "/" - let them stay on landing
       }
     }
   }, [isAuthenticated, loading, location, setLocation]);
