@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { getCurrentUser, loginUser, logoutUser, registerUser } from "@/lib/auth";
+import { queryClient } from "@/lib/queryClient";
 import { User } from "@shared/schema";
 
 type AuthContextType = {
@@ -117,13 +118,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       await logoutUser();
       setUser(null);
+      // Clear all possible cached data
       localStorage.clear();
-      // Simple redirect to root - no intermediate page needed
-      window.location.href = "/";
+      sessionStorage.clear();
+      queryClient.clear();
+      // Nuclear option: force complete page reload
+      window.location.replace(window.location.origin + "/?t=" + Date.now());
     } catch (error) {
       console.error("Logout failed:", error);
       localStorage.clear();
-      window.location.href = "/";
+      sessionStorage.clear();
+      queryClient.clear();
+      window.location.replace(window.location.origin + "/?t=" + Date.now());
     }
   };
 
