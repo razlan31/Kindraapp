@@ -15,6 +15,7 @@ import Activities from "@/pages/activities";
 import Calendar from "@/pages/calendar";
 import Homepage1 from "@/pages/homepage-1";
 import LandingSimple from "@/pages/landing-simple";
+import LogoutRedirect from "@/pages/logout-redirect";
 import Insights from "@/pages/insights-original";
 import Profile from "@/pages/profile";
 import Settings from "@/pages/settings";
@@ -78,6 +79,7 @@ function Router() {
     <Switch>
       <Route path="/landing" component={LandingSimple} />
       <Route path="/login" component={Login} />
+      <Route path="/logout-redirect" component={LogoutRedirect} />
       <Route path="/onboarding/welcome" component={OnboardingWelcome} />
       <Route path="/onboarding/profile" component={OnboardingProfile} />
       <Route path="/onboarding/goals" component={OnboardingGoals} />
@@ -99,9 +101,12 @@ function Router() {
 
       <Route path="/cycle" component={MenstrualCycle} />
       <Route path="/menstrual-cycle" component={MenstrualCycle} />
-      <Route path="*">
+      <Route>
         {() => {
-          window.location.href = "/";
+          // Catch-all route - redirect any unmatched path
+          if (typeof window !== "undefined") {
+            window.location.replace("/");
+          }
           return null;
         }}
       </Route>

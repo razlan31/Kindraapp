@@ -115,15 +115,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const logout = async () => {
     try {
-      setLoading(true);
       await logoutUser();
       setUser(null);
+      localStorage.clear();
+      // Go to logout redirect route first
+      window.location.href = "/logout-redirect";
     } catch (error) {
       console.error("Logout failed:", error);
-    } finally {
-      setLoading(false);
-      // Clean redirect to landing page
-      window.location.href = "/";
+      localStorage.clear();
+      window.location.href = "/logout-redirect";
     }
   };
 
