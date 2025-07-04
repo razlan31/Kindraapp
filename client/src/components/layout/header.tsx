@@ -149,13 +149,9 @@ export function Header() {
                     type="button"
                     className="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 text-left"
                     onClick={() => {
-                      console.log("🔴 DIRECT: Bypassing everything, going direct to HTML");
-                      localStorage.clear();
-                      sessionStorage.clear();
-                      // Call logout API to destroy session
-                      fetch('/api/logout', { method: 'POST' }).catch(() => {});
-                      // Direct navigation to static HTML file
-                      window.location.href = '/logout.html';
+                      console.log("🔴 HEADER: Using auth context logout");
+                      setDropdownOpen(false);
+                      logout();
                     }}
                   >
                     <LogOut className="mr-2 h-4 w-4" />
