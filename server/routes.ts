@@ -319,6 +319,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Simple test logout for debugging
+  app.get("/api/test-logout", (req, res) => {
+    console.log("🔴 SERVER: Test logout endpoint hit");
+    req.session.destroy((err) => {
+      if (err) {
+        console.error("Session destruction error:", err);
+      }
+      console.log("🔴 SERVER: Session destroyed, redirecting to /");
+      res.redirect('/');
+    });
+  });
+
   // Nuclear logout endpoint - clears everything and redirects
   app.get("/api/nuclear-logout", (req, res) => {
     console.log("🔴 SERVER: Nuclear logout - clearing everything");

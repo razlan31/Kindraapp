@@ -71,13 +71,19 @@ function Router() {
 
 
 
-  // Add direct debugging to see what path we're on
-  if (location === '/') {
+  // Force landing page for unauthenticated users on root path
+  if (location === '/' && !isAuthenticated && !loading) {
     return <LandingPage />;
   }
 
+  // Force login page for login route
   if (location === '/login') {
     return <Login />;
+  }
+
+  // Force landing page for /landing route regardless of auth status
+  if (location === '/landing') {
+    return <LandingPage />;
   }
 
   return (
