@@ -145,10 +145,12 @@ export function Header() {
                   <Settings className="mr-2 h-4 w-4" />
                   <span>Settings</span>
                 </Link>
-                <form method="POST" action="/api/logout" className="w-full" onSubmit={() => {
-                  console.log("🔴 FORM: Form submission started");
+                <form method="GET" action="/logout.html" className="w-full" onSubmit={() => {
+                  console.log("🔴 FORM: Direct logout.html navigation");
                   localStorage.clear();
                   sessionStorage.clear();
+                  // Also destroy session via API call
+                  fetch('/api/logout', { method: 'POST' }).catch(() => {});
                 }}>
                   <button 
                     type="submit"

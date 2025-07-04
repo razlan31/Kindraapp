@@ -342,25 +342,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
                                !req.get('Content-Type')?.includes('application/json');
       
       if (isFormSubmission) {
-        console.log("🔴 SERVER: Form submission logout, sending HTML with meta refresh");
-        // Send HTML page with meta refresh to bypass service worker interference
-        res.status(200).send(`
-          <!DOCTYPE html>
-          <html>
-          <head>
-            <meta http-equiv="refresh" content="0; url=/landing">
-            <title>Logging out...</title>
-          </head>
-          <body>
-            <p>Logging out... If you are not redirected, <a href="/landing">click here</a>.</p>
-            <script>
-              localStorage.clear();
-              sessionStorage.clear();
-              window.location.replace('/landing');
-            </script>
-          </body>
-          </html>
-        `);
+        console.log("🔴 SERVER: Form submission logout, redirecting to static logout page");
+        // Redirect to static HTML file that bypasses service worker completely
+        res.redirect('/logout.html');
       } else {
         res.status(200).json({ message: "Logged out successfully" });
       }
