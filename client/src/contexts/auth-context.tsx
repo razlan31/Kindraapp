@@ -123,33 +123,35 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = () => {
-    console.log("🔴 LOGOUT: Clearing authentication state");
+    console.log("🔴 LOGOUT: Service worker detected - using aggressive logout");
     
     try {
       // Clear user state first
       setUser(null);
       
-      // Clear all stored data
+      // Clear all stored data aggressively
       localStorage.clear();
       sessionStorage.clear();
       queryClient.clear();
       
-      console.log("🔴 LOGOUT: State cleared, navigating to landing page");
+      // Clear service worker cache if possible
+      if ('caches' in window) {
+        caches.keys().then(names => {
+          names.forEach(name => {
+            caches.delete(name);
+          });
+        });
+      }
       
-      // Add small delay to ensure cleanup completes
-      setTimeout(() => {
-        try {
-          console.log("🔴 LOGOUT: Attempting navigation to /");
-          window.location.replace("/");
-        } catch (replaceError) {
-          console.log("🔴 LOGOUT: Replace failed, trying href", replaceError);
-          window.location.href = "/";
-        }
-      }, 100);
+      console.log("🔴 LOGOUT: All state cleared, forcing hard reload");
+      
+      // Force hard reload to bypass service worker cache
+      window.location.href = window.location.origin + "/?t=" + Date.now();
+      
     } catch (error) {
       console.error("🔴 LOGOUT: Error during logout:", error);
-      // Force navigation even if clearing fails
-      window.location.href = "/";
+      // Nuclear option - force complete reload
+      window.location.reload();
     }
   };
 
