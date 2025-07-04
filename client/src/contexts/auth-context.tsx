@@ -123,20 +123,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = () => {
-    console.log("🔴 LOGOUT: Testing - will probably still get 404 due to service worker");
+    console.log("🔴 LOGOUT: PWA-free logout implementation");
     
-    // Clear state immediately but expect navigation to fail
+    // Clear state first
     setUser(null);
     localStorage.clear();
     sessionStorage.clear();
     queryClient.clear();
     
-    console.log("🔴 LOGOUT: State cleared. About to test navigation (expecting service worker 404)");
+    console.log("🔴 LOGOUT: State cleared, forcing complete page reload");
     
-    // This will probably still fail due to service worker
-    window.location.href = "/";
-    
-    console.log("🔴 LOGOUT: Navigation attempted - if you see 404, service worker intercepted it");
+    // Force a complete page reload which bypasses all JavaScript routing
+    window.location.reload();
   };
 
   const refreshUser = async () => {

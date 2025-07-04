@@ -60,52 +60,21 @@ window.addEventListener('error', (event) => {
   }
 });
 
-// DISABLED: Service worker registration to prevent routing cache interference
-// if ('serviceWorker' in navigator) {
-//   navigator.serviceWorker.register('/sw.js', { 
-//     scope: '/',
-//     updateViaCache: 'none' // Prevent service worker caching
-//   }).then((registration) => {
-//     console.log('Custom SW registered, preventing routing cache');
-//     // Force update immediately
-//     registration.update();
-//   }).catch((error) => {
-//     console.log('SW registration failed:', error);
-//   });
-// }
-
-// Unregister existing service workers
+// Aggressively unregister ALL service workers to prevent PWA interference
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.getRegistrations().then((registrations) => {
     registrations.forEach((registration) => {
-      registration.unregister();
-      console.log('🔴 STARTUP: Unregistered service worker');
+      registration.unregister().then(() => {
+        console.log('🔴 PWA REMOVED: Service worker unregistered');
+      });
     });
   });
+  
+  // Also clear any service worker controlled state
+  if (navigator.serviceWorker.controller) {
+    navigator.serviceWorker.controller.postMessage('CLEAR_CACHE');
+  }
 }
-
-// Global logout interceptor to catch any logout attempts
-window.addEventListener('beforeunload', () => {
-  console.log('🔴 GLOBAL: Page unloading detected');
-});
-
-// Intercept all navigation to "/" to detect logout redirects
-const originalPushState = history.pushState;
-const originalReplaceState = history.replaceState;
-
-history.pushState = function(...args) {
-  console.log('🔴 GLOBAL: pushState called with:', args[2]);
-  return originalPushState.apply(this, args);
-};
-
-history.replaceState = function(...args) {
-  console.log('🔴 GLOBAL: replaceState called with:', args[2]);
-  return originalReplaceState.apply(this, args);
-};
-
-window.addEventListener('popstate', (event) => {
-  console.log('🔴 GLOBAL: popstate event:', window.location.pathname);
-});
 
 createRoot(document.getElementById("root")!).render(
   <ThemeProvider>
