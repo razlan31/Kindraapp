@@ -115,15 +115,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = async () => {
-    console.log("🔴 LOGOUT: Starting logout process from auth context");
-    
-    try {
-      // Call logout API first
-      await fetch('/api/logout', { method: 'POST' });
-      console.log("🔴 LOGOUT: API call completed");
-    } catch (error) {
-      console.log("🔴 LOGOUT: API call failed, continuing anyway");
-    }
+    console.log("🔴 LOGOUT: Starting logout");
     
     // Clear everything immediately
     setUser(null);
@@ -131,28 +123,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     sessionStorage.clear();
     queryClient.clear();
     
-    console.log("🔴 LOGOUT: State cleared, unregistering service worker");
+    // Call logout API in background (don't wait for it)
+    fetch('/api/logout', { method: 'POST' }).catch(() => {});
     
-    // Unregister service worker to prevent caching issues
-    if ('serviceWorker' in navigator) {
-      try {
-        const registrations = await navigator.serviceWorker.getRegistrations();
-        for (const registration of registrations) {
-          await registration.unregister();
-          console.log("🔴 LOGOUT: Service worker unregistered");
-        }
-      } catch (error) {
-        console.log("🔴 LOGOUT: Failed to unregister service worker");
-      }
-    }
-    
-    // Simple page reload - most reliable approach in Replit environment
-    console.log("🔴 LOGOUT: Reloading page to clear all application state");
-    
-    // Brief delay to ensure cleanup completes
-    setTimeout(() => {
-      window.location.reload();
-    }, 500);
+    // Force navigation to root and reload
+    console.log("🔴 LOGOUT: Navigating to root");
+    window.location.href = "/";
   };
 
   const refreshUser = async () => {
