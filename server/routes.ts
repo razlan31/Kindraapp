@@ -327,8 +327,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Server redirect endpoint to bypass service worker 404s
   app.get("/api/logout-redirect", (req, res) => {
-    console.log("🔴 SERVER: Logout redirect endpoint - bypassing service worker");
-    res.redirect(302, "/");
+    console.log("🔴 SERVER: HTML redirect to bypass service worker");
+    res.set('Content-Type', 'text/html');
+    res.send(`<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="refresh" content="0; url=/" />
+  <title>Logging out...</title>
+</head>
+<body>
+  <p>Logging out...</p>
+  <script>
+    localStorage.clear();
+    sessionStorage.clear();
+    window.location.replace('/');
+  </script>
+</body>
+</html>`);
   });
 
   app.get("/api/me", async (req, res) => {
