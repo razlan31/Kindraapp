@@ -16,7 +16,7 @@ type AuthContextType = {
     zodiacSign?: string;
     loveLanguage?: string;
   }) => Promise<void>;
-  logout: () => Promise<void>;
+  logout: () => void;
   refreshUser: () => Promise<void>;
 };
 
@@ -26,7 +26,7 @@ const AuthContext = createContext<AuthContextType>({
   loading: true,
   login: async () => {},
   register: async () => {},
-  logout: async () => {},
+  logout: () => {},
   refreshUser: async () => {},
 });
 
@@ -114,18 +114,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const logout = async () => {
-    console.log("🔴 LOGOUT: Starting client-side logout");
+  const logout = () => {
+    console.log("🔴 LOGOUT: Immediate logout");
     
-    // Clear everything immediately - no server call needed
+    // Clear everything immediately
     setUser(null);
     localStorage.clear();
     sessionStorage.clear();
     queryClient.clear();
     
-    // Direct navigation to login page - skip server entirely
-    console.log("🔴 LOGOUT: Redirecting to login");
-    window.location.href = "/login";
+    // Force page replacement to avoid service worker issues
+    window.location.replace("/login");
   };
 
   const refreshUser = async () => {
