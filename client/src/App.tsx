@@ -84,6 +84,7 @@ function Router() {
     <Switch>
       {/* Public routes - Direct rendering to avoid component resolution issues */}
       <Route path="/" component={LandingPage} />
+      <Route path="/landing" component={LandingPage} />
       <Route path="/login" component={Login} />
 
       {/* Onboarding routes */}
