@@ -10,6 +10,8 @@ import { useState, useEffect } from "react";
 export function Header() {
   const { logout, isAuthenticated } = useAuth();
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  
+  console.log("🔍 HEADER: Component rendering, isAuthenticated:", isAuthenticated);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -54,6 +56,11 @@ export function Header() {
       <div className="flex items-center space-x-3 sm:space-x-4 lg:space-x-5">
         <UserPointsDisplay />
         <NotificationBell />
+        
+        {/* Test button to verify component renders */}
+        <div className="bg-yellow-400 text-black px-2 py-1 rounded text-xs font-bold">
+          TEST
+        </div>
         
         {/* Direct logout button - guaranteed to work */}
         <button
