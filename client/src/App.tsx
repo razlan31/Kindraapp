@@ -41,6 +41,11 @@ function Router() {
   const { isAuthenticated, loading } = useAuth();
   const [location, setLocation] = useLocation();
 
+  // Force navigation to landing page immediately
+  useEffect(() => {
+    setLocation("/landing");
+  }, []);
+
   useEffect(() => {
     if (!loading) {
       // Only redirect if we're not already on an allowed route
