@@ -57,14 +57,20 @@ function Router() {
     }
   }, [location, isAuthenticated, loading, setLocation]);
 
-  // Only show loading spinner for protected routes to prevent blocking public pages
-  if (loading && isAuthenticated) {
+  // Never show loading spinner for public pages - let them render immediately
+  const publicPages = ['/', '/login', '/landing', '/landing-minimal'];
+  const isPublicPage = publicPages.includes(location);
+  
+  if (loading && !isPublicPage && isAuthenticated) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin w-8 h-8 border-4 border-purple-600 border-t-transparent rounded-full"></div>
       </div>
     );
   }
+
+  console.log('🔥 ROUTER: About to render Switch with routes, current location:', location);
+  console.log('🔥 ROUTER: Router is running, not blocked by loading spinner');
 
   return (
     <Switch>

@@ -6,6 +6,10 @@ import { useLocation } from 'wouter';
 export default function NotFound() {
   const [, setLocation] = useLocation();
 
+  console.log('🚨 NOT-FOUND: NotFound component is rendering - this means routes are not matching!');
+  console.log('🚨 NOT-FOUND: Current pathname:', window.location.pathname);
+  console.log('🚨 NOT-FOUND: Expected this should NOT be showing for "/" or "/login"');
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100">
       <div className="text-center max-w-md mx-auto px-6">

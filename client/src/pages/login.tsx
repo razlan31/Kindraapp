@@ -15,6 +15,9 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [, setLocation] = useLocation();
 
+  console.log('🟢 LOGIN: Login component rendered successfully');
+  console.log('🟢 LOGIN: Current location:', window.location.pathname);
+
   // Auto-login temporarily disabled due to infinite loop issue
   // Will be re-enabled once session persistence is fixed
 

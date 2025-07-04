@@ -13,6 +13,8 @@ export default function LandingPage() {
   const [showPricingModal, setShowPricingModal] = useState(false);
 
   console.log('🟢 LANDING: LandingPage component rendered successfully');
+  console.log('🟢 LANDING: Current location:', window.location.pathname);
+  console.log('🟢 LANDING: Component is mounting and executing');
 
   const features = [
     {
