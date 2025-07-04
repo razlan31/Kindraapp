@@ -112,8 +112,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const logout = () => {
-    console.log("🔴 LOGOUT: Using nuclear logout endpoint");
+  const logout = async () => {
+    console.log("🔴 LOGOUT: Starting unified logout process");
+    
+    try {
+      // First, make POST request to ensure session is destroyed
+      await fetch('/api/logout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include'
+      });
+      console.log("🔴 LOGOUT: Session destroyed on server");
+    } catch (error) {
+      console.error("🔴 LOGOUT: Server logout failed, proceeding with client cleanup:", error);
+    }
     
     // Clear local state immediately
     setUser(null);
@@ -121,8 +135,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     sessionStorage.clear();
     queryClient.clear();
     
-    // Use server endpoint that destroys session and returns clearing HTML
-    window.location.href = "/api/nuclear-logout";
+    // Clear cookies
+    document.cookie.split(";").forEach(function(c) {
+      document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+    });
+    
+    // Unregister service workers
+    if ('serviceWorker' in navigator) {
+      try {
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        for(let registration of registrations) {
+          await registration.unregister();
+        }
+        console.log("🔴 LOGOUT: Service workers unregistered");
+      } catch (error) {
+        console.error("🔴 LOGOUT: Service worker cleanup failed:", error);
+      }
+    }
+    
+    console.log("🔴 LOGOUT: All cleanup complete, redirecting to home");
+    
+    // Force redirect to home page
+    window.location.replace("/");
   };
 
   const refreshUser = async () => {

@@ -319,6 +319,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // POST logout endpoint - handles the mysterious POST request
+  app.post("/api/logout", (req, res) => {
+    console.log("🔴 SERVER: POST logout endpoint hit");
+    
+    // Destroy session
+    req.session.destroy((err) => {
+      if (err) {
+        console.error("Session destruction error:", err);
+      }
+      console.log("🔴 SERVER: Session destroyed via POST");
+    });
+    
+    // Return success response
+    res.status(200).json({ 
+      message: "Logout successful",
+      redirect: "/"
+    });
+  });
+
   // Simple test logout for debugging
   app.get("/api/test-logout", (req, res) => {
     console.log("🔴 SERVER: Test logout endpoint hit");

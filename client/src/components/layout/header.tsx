@@ -65,19 +65,33 @@ export function Header() {
         
         {/* Direct logout button - guaranteed to work */}
         <button
-          onClick={(e) => {
+          onClick={async (e) => {
             e.preventDefault();
             e.stopPropagation();
             console.log("🔴 DIRECT: Raw button clicked, calling logout");
-            logout();
+            setLoggingOut(true);
+            try {
+              await logout();
+            } catch (error) {
+              console.error("🔴 DIRECT: Logout failed:", error);
+              setLoggingOut(false);
+            }
           }}
-          onMouseDown={() => console.log("🔴 DIRECT: Mouse down on logout button")}
-          onMouseUp={() => console.log("🔴 DIRECT: Mouse up on logout button")}
-          className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm font-medium z-50 relative"
+          disabled={loggingOut}
+          className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm font-medium z-50 relative disabled:opacity-50"
           style={{ zIndex: 9999 }}
         >
-          <LogOut className="h-4 w-4 mr-1 inline" />
-          LOGOUT
+          {loggingOut ? (
+            <>
+              <div className="h-4 w-4 mr-1 inline animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+              LOGGING OUT
+            </>
+          ) : (
+            <>
+              <LogOut className="h-4 w-4 mr-1 inline" />
+              LOGOUT
+            </>
+          )}
         </button>
         
         {/* Nuclear option - force hard redirect */}
@@ -150,11 +164,16 @@ export function Header() {
                     type="button"
                     className="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 text-left"
                     disabled={loggingOut}
-                    onClick={() => {
+                    onClick={async () => {
                       console.log("🔴 HEADER: Using auth context logout");
                       setDropdownOpen(false);
                       setLoggingOut(true);
-                      logout();
+                      try {
+                        await logout();
+                      } catch (error) {
+                        console.error("🔴 HEADER: Logout failed:", error);
+                        setLoggingOut(false);
+                      }
                     }}
                   >
                     {loggingOut ? (
