@@ -15,7 +15,6 @@ import Activities from "@/pages/activities";
 import Calendar from "@/pages/calendar";
 import Homepage1 from "@/pages/homepage-1";
 import LandingPage from "@/pages/landing";
-import LandingMinimal from "@/pages/landing-minimal";
 import Insights from "@/pages/insights-original";
 import Profile from "@/pages/profile";
 import Settings from "@/pages/settings";
@@ -58,7 +57,7 @@ function Router() {
   }, [location, isAuthenticated, loading, setLocation]);
 
   // Public pages that should always render without auth checks
-  const publicPages = ['/', '/login', '/landing', '/landing-minimal'];
+  const publicPages = ['/', '/login', '/landing'];
   const isPublicPage = publicPages.includes(location);
   
   // Only show loading for authenticated protected routes
