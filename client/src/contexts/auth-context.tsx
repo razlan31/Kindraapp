@@ -64,19 +64,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (isMounted) {
           console.log("getCurrentUser error:", error);
           
-          // Auto-login with test credentials for development
-          try {
-            console.log("Attempting automatic login with test credentials");
-            const loggedInUser = await loginUser("testuser", "password123", true);
-            if (isMounted) {
-              console.log("Auto-login successful:", loggedInUser);
-              setUser(loggedInUser);
-            }
-          } catch (loginError) {
-            console.log("Auto-login failed:", loginError);
-            if (isMounted) {
-              setUser(null);
-            }
+          // No auto-login - let users see the welcome page
+          if (isMounted) {
+            setUser(null);
           }
         }
       } finally {
