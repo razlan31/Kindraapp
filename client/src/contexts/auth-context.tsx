@@ -123,36 +123,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = () => {
-    console.log("🔴 LOGOUT: Service worker detected - using aggressive logout");
+    console.log("🔴 LOGOUT: Testing - will probably still get 404 due to service worker");
     
-    try {
-      // Clear user state first
-      setUser(null);
-      
-      // Clear all stored data aggressively
-      localStorage.clear();
-      sessionStorage.clear();
-      queryClient.clear();
-      
-      // Clear service worker cache if possible
-      if ('caches' in window) {
-        caches.keys().then(names => {
-          names.forEach(name => {
-            caches.delete(name);
-          });
-        });
-      }
-      
-      console.log("🔴 LOGOUT: All state cleared, forcing hard reload");
-      
-      // Force hard reload to bypass service worker cache
-      window.location.href = window.location.origin + "/?t=" + Date.now();
-      
-    } catch (error) {
-      console.error("🔴 LOGOUT: Error during logout:", error);
-      // Nuclear option - force complete reload
-      window.location.reload();
-    }
+    // Clear state immediately but expect navigation to fail
+    setUser(null);
+    localStorage.clear();
+    sessionStorage.clear();
+    queryClient.clear();
+    
+    console.log("🔴 LOGOUT: State cleared. About to test navigation (expecting service worker 404)");
+    
+    // This will probably still fail due to service worker
+    window.location.href = "/";
+    
+    console.log("🔴 LOGOUT: Navigation attempted - if you see 404, service worker intercepted it");
   };
 
   const refreshUser = async () => {
