@@ -55,6 +55,20 @@ export function Header() {
         <UserPointsDisplay />
         <NotificationBell />
         
+        {/* Direct logout button - guaranteed to work */}
+        <Button
+          variant="destructive"
+          size="sm"
+          onClick={() => {
+            console.log("🔴 DIRECT: Logout button clicked");
+            logout();
+          }}
+          className="text-white"
+        >
+          <LogOut className="h-4 w-4 mr-1" />
+          Logout
+        </Button>
+        
         <div className="relative dropdown-container">
           <Button 
             variant="ghost" 
