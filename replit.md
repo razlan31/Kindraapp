@@ -111,6 +111,15 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
+- July 04, 2025: LANDING PAGE CLEANUP & LOGOUT FLOW OPTIMIZATION - Removed multiple landing page versions and improved logout UX
+  - **Root Cause**: Multiple landing page versions (landing-minimal.tsx, landing-simple.tsx) were causing routing conflicts
+  - **Clean Structure**: Kept only the main purple-themed landing.tsx as the single landing page
+  - **Routing Simplified**: Removed all references to deleted landing pages from App.tsx routing configuration
+  - **Public Pages Updated**: Cleaned up public pages list to only include the main landing page
+  - **UX Improvement**: Changed logout redirect from /login to / (landing page) for better user experience
+  - **Logout Flow**: Users now see product overview after logout instead of being immediately prompted to log back in
+  - **Production Ready**: Simplified routing structure eliminates potential conflicts and provides cleaner navigation flow
+
 - July 04, 2025: LOGOUT SYSTEM COMPLETELY FIXED - Deep root cause analysis revealed authentication context race condition causing 404s
   - **Root Cause 1**: Missing POST `/api/logout` endpoint was causing mysterious requests to fall through to Vite dev server returning HTML instead of JSON
   - **Root Cause 2**: Authentication context had problematic early return logic that skipped auth checks for public pages like `/login`, creating race conditions during logout redirect

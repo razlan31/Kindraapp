@@ -157,10 +157,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     }
     
-    console.log("🔴 LOGOUT: All cleanup complete, redirecting to login");
+    console.log("🔴 LOGOUT: All cleanup complete, redirecting to landing page");
     
-    // Direct redirect to login page
-    window.location.replace("/login");
+    // Direct redirect to landing page
+    window.location.replace("/");
   };
 
   const refreshUser = async () => {
