@@ -56,18 +56,38 @@ export function Header() {
         <NotificationBell />
         
         {/* Direct logout button - guaranteed to work */}
-        <Button
-          variant="destructive"
-          size="sm"
-          onClick={() => {
-            console.log("🔴 DIRECT: Logout button clicked");
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log("🔴 DIRECT: Raw button clicked, calling logout");
             logout();
           }}
-          className="text-white"
+          onMouseDown={() => console.log("🔴 DIRECT: Mouse down on logout button")}
+          onMouseUp={() => console.log("🔴 DIRECT: Mouse up on logout button")}
+          className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm font-medium z-50 relative"
+          style={{ zIndex: 9999 }}
         >
-          <LogOut className="h-4 w-4 mr-1" />
-          Logout
-        </Button>
+          <LogOut className="h-4 w-4 mr-1 inline" />
+          LOGOUT
+        </button>
+        
+        {/* Nuclear option - force hard redirect */}
+        <a
+          href="/landing"
+          onClick={(e) => {
+            e.preventDefault();
+            console.log("🔴 NUCLEAR: Hard redirect clicked");
+            // Clear everything and force redirect
+            localStorage.clear();
+            sessionStorage.clear();
+            window.location.href = '/landing';
+          }}
+          className="bg-orange-600 hover:bg-orange-700 text-white px-2 py-1 rounded text-xs font-medium z-50 relative"
+          style={{ zIndex: 9999 }}
+        >
+          FORCE OUT
+        </a>
         
         <div className="relative dropdown-container">
           <Button 
