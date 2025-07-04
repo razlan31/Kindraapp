@@ -123,7 +123,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = () => {
-    console.log("🔴 LOGOUT: PWA-free logout implementation");
+    console.log("🔴 LOGOUT: Using server redirect to bypass service worker");
     
     // Clear state first
     setUser(null);
@@ -131,10 +131,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     sessionStorage.clear();
     queryClient.clear();
     
-    console.log("🔴 LOGOUT: State cleared, forcing complete page reload");
+    console.log("🔴 LOGOUT: State cleared, redirecting to server endpoint");
     
-    // Force a complete page reload which bypasses all JavaScript routing
-    window.location.reload();
+    // Use server redirect instead of client-side navigation
+    window.location.href = "/api/logout-redirect";
   };
 
   const refreshUser = async () => {

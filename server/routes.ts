@@ -325,6 +325,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.status(200).send("OK");
   });
 
+  // Server redirect endpoint to bypass service worker 404s
+  app.get("/api/logout-redirect", (req, res) => {
+    console.log("🔴 SERVER: Logout redirect endpoint - bypassing service worker");
+    res.redirect(302, "/");
+  });
+
   app.get("/api/me", async (req, res) => {
     try {
       // Try Google OAuth first
