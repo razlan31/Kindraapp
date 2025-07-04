@@ -1,14 +1,27 @@
 import { useAuth } from "@/contexts/auth-context";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Bell, LogOut, Settings, User, Trophy, Calendar } from "lucide-react";
 import { Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { NotificationBell, UserPointsDisplay } from "@/components/notifications";
+import { useState, useEffect } from "react";
 
 export function Header() {
   const { logout, isAuthenticated } = useAuth();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownOpen && !(event.target as Element).closest('.dropdown-container')) {
+        setDropdownOpen(false);
+      }
+    };
+    
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [dropdownOpen]);
   
   // Use React Query to get the latest user data including profile picture
   const { data: user } = useQuery({
@@ -42,79 +55,69 @@ export function Header() {
         <UserPointsDisplay />
         <NotificationBell />
         
-        {/* Emergency logout button - bypasses dropdown */}
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => {
-            console.log("🔴 EMERGENCY: Direct logout button clicked");
-            logout();
-          }}
-          className="text-red-600 hover:text-red-700 border-red-200"
-        >
-          <LogOut className="h-4 w-4 mr-1" />
-          Logout
-        </Button>
-        
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button 
-              variant="ghost" 
-              className="relative h-9 w-9 sm:h-10 sm:w-10 lg:h-11 lg:w-11 rounded-full p-0"
-              onClick={() => console.log("🔴 HEADER: Dropdown trigger clicked")}
-            >
-              <Avatar className="h-9 w-9 sm:h-10 sm:w-10 lg:h-11 lg:w-11">
-                <AvatarImage src={user?.profileImage ?? undefined} alt={displayName} />
-                <AvatarFallback className="bg-neutral-200 dark:bg-neutral-700 text-sm sm:text-base lg:text-lg font-medium">
-                  {initials}
-                </AvatarFallback>
-              </Avatar>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" onCloseAutoFocus={() => console.log("🔴 HEADER: Dropdown closed")}>
-            <DropdownMenuItem asChild>
-              <Link href="/profile" onClick={() => console.log("🔴 HEADER: Profile link clicked")}>
-                <User className="mr-2 h-4 w-4" />
-                <span>Profile</span>
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link href="/badges">
-                <Trophy className="mr-2 h-4 w-4" />
-                <span>Badges</span>
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link href="/menstrual-cycle">
-                <Calendar className="mr-2 h-4 w-4" />
-                <span>Cycle Tracker</span>
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link href="/settings">
-                <Settings className="mr-2 h-4 w-4" />
-                <span>Settings</span>
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem 
-              onClick={(e) => {
-                console.log("🔴 HEADER: Logout menu item clicked, event:", e);
-                console.log("🔴 HEADER: About to call logout function");
-                e.preventDefault();
-                e.stopPropagation();
-                logout();
-                console.log("🔴 HEADER: Logout function called");
-              }}
-              onSelect={(e) => {
-                console.log("🔴 HEADER: Logout onSelect triggered");
-                e.preventDefault();
-              }}
-            >
-              <LogOut className="mr-2 h-4 w-4" />
-              <span>Log out</span>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className="relative dropdown-container">
+          <Button 
+            variant="ghost" 
+            className="relative h-9 w-9 sm:h-10 sm:w-10 lg:h-11 lg:w-11 rounded-full p-0"
+            onClick={() => setDropdownOpen(!dropdownOpen)}
+          >
+            <Avatar className="h-9 w-9 sm:h-10 sm:w-10 lg:h-11 lg:w-11">
+              <AvatarImage src={user?.profileImage ?? undefined} alt={displayName} />
+              <AvatarFallback className="bg-neutral-200 dark:bg-neutral-700 text-sm sm:text-base lg:text-lg font-medium">
+                {initials}
+              </AvatarFallback>
+            </Avatar>
+          </Button>
+          
+          {dropdownOpen && (
+            <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 z-50">
+              <div className="py-1">
+                <Link 
+                  href="/profile" 
+                  className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  onClick={() => setDropdownOpen(false)}
+                >
+                  <User className="mr-2 h-4 w-4" />
+                  <span>Profile</span>
+                </Link>
+                <Link 
+                  href="/badges"
+                  className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  onClick={() => setDropdownOpen(false)}
+                >
+                  <Trophy className="mr-2 h-4 w-4" />
+                  <span>Badges</span>
+                </Link>
+                <Link 
+                  href="/menstrual-cycle"
+                  className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  onClick={() => setDropdownOpen(false)}
+                >
+                  <Calendar className="mr-2 h-4 w-4" />
+                  <span>Cycle Tracker</span>
+                </Link>
+                <Link 
+                  href="/settings"
+                  className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  onClick={() => setDropdownOpen(false)}
+                >
+                  <Settings className="mr-2 h-4 w-4" />
+                  <span>Settings</span>
+                </Link>
+                <button 
+                  className="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 text-left"
+                  onClick={() => {
+                    setDropdownOpen(false);
+                    logout();
+                  }}
+                >
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Log out</span>
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </header>
   );
