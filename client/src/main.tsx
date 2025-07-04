@@ -60,17 +60,27 @@ window.addEventListener('error', (event) => {
   }
 });
 
-// Override service worker registration to prevent routing cache
+// DISABLED: Service worker registration to prevent routing cache interference
+// if ('serviceWorker' in navigator) {
+//   navigator.serviceWorker.register('/sw.js', { 
+//     scope: '/',
+//     updateViaCache: 'none' // Prevent service worker caching
+//   }).then((registration) => {
+//     console.log('Custom SW registered, preventing routing cache');
+//     // Force update immediately
+//     registration.update();
+//   }).catch((error) => {
+//     console.log('SW registration failed:', error);
+//   });
+// }
+
+// Unregister existing service workers
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/sw.js', { 
-    scope: '/',
-    updateViaCache: 'none' // Prevent service worker caching
-  }).then((registration) => {
-    console.log('Custom SW registered, preventing routing cache');
-    // Force update immediately
-    registration.update();
-  }).catch((error) => {
-    console.log('SW registration failed:', error);
+  navigator.serviceWorker.getRegistrations().then((registrations) => {
+    registrations.forEach((registration) => {
+      registration.unregister();
+      console.log('🔴 STARTUP: Unregistered service worker');
+    });
   });
 }
 
