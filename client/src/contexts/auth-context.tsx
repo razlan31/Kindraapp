@@ -115,20 +115,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = async () => {
-    console.log("🔴 LOGOUT: Starting logout");
+    console.log("🔴 LOGOUT: Starting client-side logout");
     
-    // Clear everything immediately
+    // Clear everything immediately - no server call needed
     setUser(null);
     localStorage.clear();
     sessionStorage.clear();
     queryClient.clear();
     
-    // Call logout API in background (don't wait for it)
-    fetch('/api/logout', { method: 'POST' }).catch(() => {});
-    
-    // Force navigation to root and reload
-    console.log("🔴 LOGOUT: Navigating to root");
-    window.location.href = "/";
+    // Direct navigation to login page - skip server entirely
+    console.log("🔴 LOGOUT: Redirecting to login");
+    window.location.href = "/login";
   };
 
   const refreshUser = async () => {
