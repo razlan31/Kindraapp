@@ -334,7 +334,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     // Return success response
     res.status(200).json({ 
       message: "Logout successful",
-      redirect: "/"
+      redirect: "/login"
     });
   });
 

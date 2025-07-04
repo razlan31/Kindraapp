@@ -153,10 +153,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     }
     
-    console.log("🔴 LOGOUT: All cleanup complete, redirecting to home");
+    console.log("🔴 LOGOUT: All cleanup complete, redirecting to login");
     
-    // Force redirect to home page
-    window.location.replace("/");
+    // Small delay to ensure all cleanup is processed before redirect
+    setTimeout(() => {
+      window.location.replace("/login");
+    }, 100);
   };
 
   const refreshUser = async () => {
