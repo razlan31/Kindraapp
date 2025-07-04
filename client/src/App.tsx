@@ -42,23 +42,18 @@ function Router() {
   const [location, setLocation] = useLocation();
 
   useEffect(() => {
-    // Force navigation to landing page
-    setLocation("/landing");
-  }, []);
-
-  useEffect(() => {
     if (!loading) {
       // Only redirect if we're not already on an allowed route
       if (!isAuthenticated) {
         // Allow unauthenticated users to stay on public routes
         const publicRoutes = ["/login", "/landing", "/", "/onboarding/welcome", "/onboarding/profile", "/onboarding/goals", "/onboarding/complete"];
         if (!publicRoutes.includes(location)) {
-          setLocation("/");
+          setLocation("/landing"); // Changed from "/" to "/landing"
         }
       } else if (isAuthenticated) {
-        // Only redirect authenticated users from public pages, not from app pages
-        const publicOnlyRoutes = ["/login", "/landing"];
-        if (publicOnlyRoutes.includes(location)) {
+        // Allow authenticated users to visit landing page - don't auto-redirect
+        // Only redirect from login page specifically
+        if (location === "/login") {
           const savedDefaultPage = localStorage.getItem('kindra-default-page');
           if (savedDefaultPage && savedDefaultPage !== "home") {
             const routeMap: Record<string, string> = {
@@ -73,7 +68,7 @@ function Router() {
             setLocation("/app");
           }
         }
-        // Don't redirect if user is on root "/" - let them stay on landing
+        // Don't redirect if user is on landing page - let them stay
       }
     }
   }, [isAuthenticated, loading, location, setLocation]);

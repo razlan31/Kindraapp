@@ -115,30 +115,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = () => {
-    console.log("🔴 LOGOUT: Emergency logout - bypassing everything");
+    console.log("🔴 LOGOUT: Clearing authentication state");
     
-    try {
-      // Unregister service workers first
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.getRegistrations().then(registrations => {
-          registrations.forEach(registration => registration.unregister());
-        });
-      }
-    } catch (e) {
-      console.log("Service worker cleanup error:", e);
-    }
-    
-    // Nuclear option - clear everything
+    // Clear user state first
     setUser(null);
+    
+    // Clear all stored data
     localStorage.clear();
     sessionStorage.clear();
     queryClient.clear();
     
-    // Force reload to completely bypass cache
-    window.location.href = "/login";
-    setTimeout(() => {
-      window.location.reload();
-    }, 100);
+    // Navigate to landing page instead of login
+    window.location.href = "/landing";
   };
 
   const refreshUser = async () => {
