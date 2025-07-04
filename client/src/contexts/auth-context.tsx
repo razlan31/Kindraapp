@@ -115,16 +115,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = () => {
-    console.log("🔴 LOGOUT: Immediate logout");
+    console.log("🔴 LOGOUT: Emergency logout - bypassing everything");
     
-    // Clear everything immediately
+    try {
+      // Unregister service workers first
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(registrations => {
+          registrations.forEach(registration => registration.unregister());
+        });
+      }
+    } catch (e) {
+      console.log("Service worker cleanup error:", e);
+    }
+    
+    // Nuclear option - clear everything
     setUser(null);
     localStorage.clear();
     sessionStorage.clear();
     queryClient.clear();
     
-    // Force page replacement to avoid service worker issues
-    window.location.replace("/login");
+    // Force reload to completely bypass cache
+    window.location.href = "/login";
+    setTimeout(() => {
+      window.location.reload();
+    }, 100);
   };
 
   const refreshUser = async () => {
