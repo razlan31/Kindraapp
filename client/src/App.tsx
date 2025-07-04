@@ -71,9 +71,18 @@ function Router() {
 
 
 
+  // Add direct debugging to see what path we're on
+  if (location === '/') {
+    return <LandingPage />;
+  }
+
+  if (location === '/login') {
+    return <Login />;
+  }
+
   return (
     <Switch>
-      {/* Public routes */}
+      {/* Public routes - Direct rendering to avoid component resolution issues */}
       <Route path="/" component={LandingPage} />
       <Route path="/login" component={Login} />
 
