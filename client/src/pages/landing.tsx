@@ -12,6 +12,8 @@ export default function LandingPage() {
   const [selectedPlan, setSelectedPlan] = useState<'monthly' | 'annual'>('monthly');
   const [showPricingModal, setShowPricingModal] = useState(false);
 
+  console.log('🟢 LANDING: LandingPage component rendered successfully');
+
   const features = [
     {
       icon: <Brain className="h-6 w-6" />,

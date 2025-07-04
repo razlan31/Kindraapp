@@ -42,7 +42,7 @@ function Router() {
 
   // Debug logging
   useEffect(() => {
-    console.log('Router state:', { location, isAuthenticated, loading });
+    console.log('🔍 Router state:', { location, isAuthenticated, loading, pathname: window.location.pathname });
   }, [location, isAuthenticated, loading]);
 
   // Redirect unauthenticated users trying to access protected routes
@@ -63,6 +63,12 @@ function Router() {
         <div className="animate-spin w-8 h-8 border-4 border-purple-600 border-t-transparent rounded-full"></div>
       </div>
     );
+  }
+
+  // NUCLEAR TEST: Force show landing page for root path
+  if (location === "/" && !isAuthenticated) {
+    console.log('🔥 NUCLEAR: Forcing LandingPage render for root path');
+    return <LandingPage />;
   }
 
   return (

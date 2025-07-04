@@ -37,9 +37,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Skip authentication on landing page
-    if (window.location.pathname === "/landing" || window.location.pathname === "/") {
-      console.log("Auth: Skipping authentication on landing page");
+    // Always start with no loading for public pages
+    if (window.location.pathname === "/landing" || window.location.pathname === "/" || window.location.pathname === "/login") {
+      console.log("Auth: Public page detected, setting user to null and loading to false");
       setLoading(false);
       setUser(null);
       return;
