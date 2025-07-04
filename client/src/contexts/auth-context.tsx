@@ -38,12 +38,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // For public pages, ensure no authentication needed
-    if (window.location.pathname === "/landing" || window.location.pathname === "/" || window.location.pathname === "/login") {
-      console.log("Auth: Public page detected, skipping auth check");
-      setUser(null);
-      return;
-    }
+    // Always check authentication status to avoid race conditions
+    console.log("Auth: Checking authentication status for:", window.location.pathname);
 
     let isMounted = true;
     
@@ -155,10 +151,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     
     console.log("🔴 LOGOUT: All cleanup complete, redirecting to login");
     
-    // Small delay to ensure all cleanup is processed before redirect
-    setTimeout(() => {
-      window.location.replace("/login");
-    }, 100);
+    // Direct redirect to login page
+    window.location.replace("/login");
   };
 
   const refreshUser = async () => {

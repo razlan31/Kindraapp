@@ -57,10 +57,11 @@ function Router() {
     }
   }, [location, isAuthenticated, loading, setLocation]);
 
-  // Never show loading spinner for public pages - let them render immediately
+  // Public pages that should always render without auth checks
   const publicPages = ['/', '/login', '/landing', '/landing-minimal'];
   const isPublicPage = publicPages.includes(location);
   
+  // Only show loading for authenticated protected routes
   if (loading && !isPublicPage && isAuthenticated) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -69,20 +70,17 @@ function Router() {
     );
   }
 
-
-
-  // Force landing page for unauthenticated users on root path
-  if (location === '/' && !isAuthenticated && !loading) {
-    return <LandingPage />;
-  }
-
-  // Force login page for login route
+  // Handle public routes immediately without auth state complications
   if (location === '/login') {
     return <Login />;
   }
-
-  // Force landing page for /landing route regardless of auth status
+  
   if (location === '/landing') {
+    return <LandingPage />;
+  }
+
+  // Force landing page for unauthenticated users on root path
+  if (location === '/' && !isAuthenticated && !loading) {
     return <LandingPage />;
   }
 
