@@ -125,16 +125,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logout = () => {
     console.log("🔴 LOGOUT: Clearing authentication state");
     
-    // Clear user state first
-    setUser(null);
-    
-    // Clear all stored data
-    localStorage.clear();
-    sessionStorage.clear();
-    queryClient.clear();
-    
-    // Navigate to home page instead of login
-    window.location.href = "/";
+    try {
+      // Clear user state first
+      setUser(null);
+      
+      // Clear all stored data
+      localStorage.clear();
+      sessionStorage.clear();
+      queryClient.clear();
+      
+      console.log("🔴 LOGOUT: State cleared, navigating to landing page");
+      
+      // Add small delay to ensure cleanup completes
+      setTimeout(() => {
+        try {
+          console.log("🔴 LOGOUT: Attempting navigation to /");
+          window.location.replace("/");
+        } catch (replaceError) {
+          console.log("🔴 LOGOUT: Replace failed, trying href", replaceError);
+          window.location.href = "/";
+        }
+      }, 100);
+    } catch (error) {
+      console.error("🔴 LOGOUT: Error during logout:", error);
+      // Force navigation even if clearing fails
+      window.location.href = "/";
+    }
   };
 
   const refreshUser = async () => {
