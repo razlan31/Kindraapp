@@ -323,11 +323,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
     req.session.destroy((err) => {
       if (err) {
         console.error("Session destroy error:", err);
-        return res.status(500).json({ message: "Error logging out" });
+        // Check if this is a form submission or AJAX request
+        const isFormSubmission = req.get('Content-Type')?.includes('application/x-www-form-urlencoded') || 
+                                 !req.get('Content-Type')?.includes('application/json');
+        
+        if (isFormSubmission) {
+          return res.redirect('/landing');
+        } else {
+          return res.status(500).json({ message: "Error logging out" });
+        }
       }
+      
       // Clear the session cookie
       res.clearCookie('connect.sid');
-      res.status(200).json({ message: "Logged out successfully" });
+      
+      // Check if this is a form submission or AJAX request
+      const isFormSubmission = req.get('Content-Type')?.includes('application/x-www-form-urlencoded') || 
+                               !req.get('Content-Type')?.includes('application/json');
+      
+      if (isFormSubmission) {
+        console.log("🔴 SERVER: Form submission logout, redirecting to landing");
+        res.redirect('/landing');
+      } else {
+        res.status(200).json({ message: "Logged out successfully" });
+      }
     });
   });
 

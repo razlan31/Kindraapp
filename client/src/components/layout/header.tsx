@@ -145,17 +145,21 @@ export function Header() {
                   <Settings className="mr-2 h-4 w-4" />
                   <span>Settings</span>
                 </Link>
-                <button 
-                  className="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 text-left"
-                  onClick={() => {
-                    console.log("🔴 DROPDOWN: Logout clicked in dropdown");
-                    setDropdownOpen(false);
-                    logout();
-                  }}
-                >
-                  <LogOut className="mr-2 h-4 w-4" />
-                  <span>Log out</span>
-                </button>
+                <form method="POST" action="/api/logout" className="w-full">
+                  <button 
+                    type="submit"
+                    className="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 text-left"
+                    onClick={() => {
+                      console.log("🔴 FORM: Form logout clicked");
+                      // Clear storage before form submission
+                      localStorage.clear();
+                      sessionStorage.clear();
+                    }}
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Log out</span>
+                  </button>
+                </form>
               </div>
             </div>
           )}
