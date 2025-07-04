@@ -320,9 +320,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   app.post("/api/logout", (req, res) => {
-    console.log("🔴 SERVER: Logout endpoint hit - redirecting to client-side logout");
-    // Force redirect to login page immediately without processing
-    res.redirect('/login');
+    console.log("🔴 SERVER: Logout endpoint hit - redirecting to HTML bypass");
+    // Force redirect to static HTML page that handles logout
+    res.redirect('/logout-success.html');
   });
 
   app.get("/api/me", async (req, res) => {
