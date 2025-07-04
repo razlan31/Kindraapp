@@ -38,8 +38,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // Always check authentication status to avoid race conditions
-    console.log("Auth: Checking authentication status for:", window.location.pathname);
+    const currentPath = window.location.pathname;
+    console.log("Auth: Checking authentication status for:", currentPath);
+
+    // For public pages, set user to null immediately without API call to avoid loading states
+    if (currentPath === "/login" || currentPath === "/" || currentPath === "/landing") {
+      console.log("Auth: Public page detected, setting user to null without API call");
+      setUser(null);
+      setLoading(false);
+      return;
+    }
 
     let isMounted = true;
     
@@ -47,7 +55,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (!isMounted) return;
       
       try {
-        console.log("Auth: Starting to load user, setting loading to true");
+        console.log("Auth: Starting to load user for protected route, setting loading to true");
         setLoading(true);
         const currentUser = await getCurrentUser();
         
