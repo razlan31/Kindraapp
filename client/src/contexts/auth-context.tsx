@@ -117,16 +117,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logout = async () => {
     console.log("🔴 LOGOUT: Starting logout process from auth context");
     
+    try {
+      // Call logout API first
+      await fetch('/api/logout', { method: 'POST' });
+      console.log("🔴 LOGOUT: API call completed");
+    } catch (error) {
+      console.log("🔴 LOGOUT: API call failed, continuing anyway");
+    }
+    
     // Clear everything immediately
     setUser(null);
     localStorage.clear();
     sessionStorage.clear();
     queryClient.clear();
     
-    console.log("🔴 LOGOUT: State cleared, forcing page reload");
+    console.log("🔴 LOGOUT: State cleared, implementing nuclear cache bypass");
     
-    // Immediate hard reload to root
-    window.location.href = "/";
+    // Nuclear cache bypass - force reload with cache busting
+    const timestamp = Date.now();
+    window.location.replace(`/?_=${timestamp}`);
   };
 
   const refreshUser = async () => {
