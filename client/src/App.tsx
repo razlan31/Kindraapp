@@ -69,8 +69,7 @@ function Router() {
     );
   }
 
-  console.log('🔥 ROUTER: About to render Switch with routes, current location:', location);
-  console.log('🔥 ROUTER: Router is running, not blocked by loading spinner');
+
 
   return (
     <Switch>
