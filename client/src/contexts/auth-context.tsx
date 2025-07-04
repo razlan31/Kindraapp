@@ -146,28 +146,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     }
     
-    // Force complete page replacement to landing with fallback
-    console.log("🔴 LOGOUT: Forcing navigation to landing page");
-    console.log("🔴 LOGOUT: Current URL:", window.location.href);
+    // Simple page reload - most reliable approach in Replit environment
+    console.log("🔴 LOGOUT: Reloading page to clear all application state");
     
-    // Multiple fallback approaches
-    try {
-      window.location.replace('/landing');
-      console.log("🔴 LOGOUT: Replace called");
-    } catch (error) {
-      console.log("🔴 LOGOUT: Replace failed, trying assign");
-      window.location.assign('/landing');
-    }
-    
-    // Fallback timeout in case service worker blocks navigation
+    // Brief delay to ensure cleanup completes
     setTimeout(() => {
-      if (window.location.pathname !== '/landing') {
-        console.log("🔴 LOGOUT: Navigation failed, showing manual instruction");
-        // Show user that logout completed and they need to manually navigate
-        alert('Logout completed successfully! Please manually navigate to the home page or refresh your browser.');
-        window.location.href = '/';
-      }
-    }, 2000);
+      window.location.reload();
+    }, 500);
   };
 
   const refreshUser = async () => {
