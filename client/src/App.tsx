@@ -14,8 +14,7 @@ import Connections from "@/pages/connections-simple";
 import Activities from "@/pages/activities";
 import Calendar from "@/pages/calendar";
 import Homepage1 from "@/pages/homepage-1";
-import LandingSimple from "@/pages/landing-simple";
-
+import LandingPage from "@/pages/landing";
 import Insights from "@/pages/insights-original";
 import Profile from "@/pages/profile";
 import Settings from "@/pages/settings";
@@ -43,57 +42,37 @@ function Router() {
 
   useEffect(() => {
     if (!loading) {
-      // Only redirect if we're not already on an allowed route
-      if (!isAuthenticated) {
-        // Allow unauthenticated users to stay on public routes
-        const publicRoutes = ["/login", "/landing", "/", "/onboarding/welcome", "/onboarding/profile", "/onboarding/goals", "/onboarding/complete"];
-        if (!publicRoutes.includes(location)) {
+      if (!isAuthenticated && !["/login", "/landing"].includes(location)) {
+        setLocation("/landing");
+      } else if (isAuthenticated && ["/login", "/landing"].includes(location)) {
+        // Check for saved default page preference
+        const savedDefaultPage = localStorage.getItem('kindra-default-page');
+        if (savedDefaultPage && savedDefaultPage !== "home") {
+          // Map setting values to actual routes
+          const routeMap: Record<string, string> = {
+            "connections": "/connections",
+            "activities": "/activities", 
+            "calendar": "/calendar",
+            "insights": "/insights"
+          };
+          const targetRoute = routeMap[savedDefaultPage] || "/";
+          setLocation(targetRoute);
+        } else {
           setLocation("/");
         }
-      } else if (isAuthenticated) {
-        // Only redirect authenticated users from public pages, not from app pages
-        const publicOnlyRoutes = ["/login", "/landing"];
-        if (publicOnlyRoutes.includes(location)) {
-          const savedDefaultPage = localStorage.getItem('kindra-default-page');
-          if (savedDefaultPage && savedDefaultPage !== "home") {
-            const routeMap: Record<string, string> = {
-              "connections": "/connections",
-              "activities": "/activities", 
-              "calendar": "/calendar",
-              "insights": "/insights"
-            };
-            const targetRoute = routeMap[savedDefaultPage] || "/app";
-            setLocation(targetRoute);
-          } else {
-            setLocation("/app");
-          }
-        }
-        // Don't redirect if user is on root "/" - let them stay on landing
       }
     }
   }, [isAuthenticated, loading, location, setLocation]);
 
-  // Show loading spinner during authentication state changes
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin w-8 h-8 border-4 border-purple-600 border-t-transparent rounded-full"></div>
-      </div>
-    );
-  }
-
   return (
     <Switch>
-      <Route path="/landing" component={LandingSimple} />
+      <Route path="/landing" component={LandingPage} />
       <Route path="/login" component={Login} />
-
       <Route path="/onboarding/welcome" component={OnboardingWelcome} />
       <Route path="/onboarding/profile" component={OnboardingProfile} />
       <Route path="/onboarding/goals" component={OnboardingGoals} />
       <Route path="/onboarding/complete" component={OnboardingComplete} />
-      {/* Root route - direct component assignment */}
-      <Route path="/" component={LandingSimple} />
-      <Route path="/app" component={Homepage1} />
+      <Route path="/" component={Homepage1} />
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/connections" component={Connections} />
       <Route path="/connections/:id/edit" component={ConnectionEdit} />

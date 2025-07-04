@@ -319,10 +319,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Logout endpoint completely disabled - using client-side only logout
   app.post("/api/logout", (req, res) => {
-    console.log("🔴 SERVER: Logout endpoint disabled - returning 200");
-    res.status(200).send("OK");
+    req.session.destroy((err) => {
+      if (err) {
+        return res.status(500).json({ message: "Error logging out" });
+      }
+      res.status(200).json({ message: "Logged out successfully" });
+    });
   });
 
   app.get("/api/me", async (req, res) => {

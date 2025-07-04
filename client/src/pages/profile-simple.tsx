@@ -102,11 +102,9 @@ export default function ProfilePage() {
   };
 
   const handleLogout = async () => {
-    console.log("🔴 PROFILE: Profile page logout button clicked");
     try {
       await logout();
     } catch (error) {
-      console.error("🔴 PROFILE: Logout error:", error);
       toast({
         title: "Error",
         description: "Failed to logout. Please try again.",

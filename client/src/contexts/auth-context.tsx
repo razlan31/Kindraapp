@@ -1,6 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { getCurrentUser, loginUser, logoutUser, registerUser } from "@/lib/auth";
-import { queryClient } from "@/lib/queryClient";
 import { User } from "@shared/schema";
 
 type AuthContextType = {
@@ -16,7 +15,7 @@ type AuthContextType = {
     zodiacSign?: string;
     loveLanguage?: string;
   }) => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
 };
 
@@ -26,7 +25,7 @@ const AuthContext = createContext<AuthContextType>({
   loading: true,
   login: async () => {},
   register: async () => {},
-  logout: () => {},
+  logout: async () => {},
   refreshUser: async () => {},
 });
 
@@ -114,31 +113,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const logout = () => {
-    console.log("🔴 LOGOUT: Emergency logout - bypassing everything");
-    
+  const logout = async () => {
     try {
-      // Unregister service workers first
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.getRegistrations().then(registrations => {
-          registrations.forEach(registration => registration.unregister());
-        });
-      }
-    } catch (e) {
-      console.log("Service worker cleanup error:", e);
+      await logoutUser();
+      setUser(null);
+    } catch (error) {
+      console.error("Logout failed:", error);
+      throw error;
     }
-    
-    // Nuclear option - clear everything
-    setUser(null);
-    localStorage.clear();
-    sessionStorage.clear();
-    queryClient.clear();
-    
-    // Force reload to completely bypass cache
-    window.location.href = "/login";
-    setTimeout(() => {
-      window.location.reload();
-    }, 100);
   };
 
   const refreshUser = async () => {
