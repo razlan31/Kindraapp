@@ -319,10 +319,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Logout endpoint completely disabled - using client-side only logout
   app.post("/api/logout", (req, res) => {
-    console.log("🔴 SERVER: Logout endpoint hit - redirecting to HTML bypass");
-    // Force redirect to static HTML page that handles logout
-    res.redirect('/logout-success.html');
+    console.log("🔴 SERVER: Logout endpoint disabled - returning 200");
+    res.status(200).send("OK");
   });
 
   app.get("/api/me", async (req, res) => {
