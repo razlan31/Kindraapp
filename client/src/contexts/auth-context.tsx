@@ -146,11 +146,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     }
     
-    // Force complete page replacement to landing
+    // Force complete page replacement to landing with fallback
     console.log("🔴 LOGOUT: Forcing navigation to landing page");
     console.log("🔴 LOGOUT: Current URL:", window.location.href);
-    window.location.replace('/landing');
-    console.log("🔴 LOGOUT: Replace called, should navigate to landing");
+    
+    // Multiple fallback approaches
+    try {
+      window.location.replace('/landing');
+      console.log("🔴 LOGOUT: Replace called");
+    } catch (error) {
+      console.log("🔴 LOGOUT: Replace failed, trying assign");
+      window.location.assign('/landing');
+    }
+    
+    // Fallback timeout in case service worker blocks navigation
+    setTimeout(() => {
+      if (window.location.pathname !== '/landing') {
+        console.log("🔴 LOGOUT: Navigation failed, forcing reload to root");
+        window.location.href = '/';
+      }
+    }, 1000);
   };
 
   const refreshUser = async () => {

@@ -10,6 +10,7 @@ import { useState, useEffect } from "react";
 export function Header() {
   const { logout, isAuthenticated } = useAuth();
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
   
   console.log("🔍 HEADER: Component rendering, isAuthenticated:", isAuthenticated);
 
@@ -148,14 +149,30 @@ export function Header() {
                 <button 
                     type="button"
                     className="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 text-left"
-                    onClick={() => {
+                    disabled={loggingOut}
+                    onClick={async () => {
                       console.log("🔴 HEADER: Using auth context logout");
                       setDropdownOpen(false);
-                      logout();
+                      setLoggingOut(true);
+                      try {
+                        await logout();
+                      } catch (error) {
+                        console.log("🔴 HEADER: Logout error:", error);
+                        setLoggingOut(false);
+                      }
                     }}
                   >
-                    <LogOut className="mr-2 h-4 w-4" />
-                    <span>Log out</span>
+                    {loggingOut ? (
+                      <>
+                        <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-gray-600"></div>
+                        <span>Logging out...</span>
+                      </>
+                    ) : (
+                      <>
+                        <LogOut className="mr-2 h-4 w-4" />
+                        <span>Log out</span>
+                      </>
+                    )}
                   </button>
               </div>
             </div>
