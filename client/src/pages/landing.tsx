@@ -138,57 +138,150 @@ export default function LandingPage() {
       </header>
 
       {/* Hero Section */}
-      <section className="container mx-auto px-4 py-16 text-center relative overflow-hidden">
-        {/* Animated background blobs */}
-        <div className="absolute top-0 -left-4 w-72 h-72 bg-gray-200 rounded-full mix-blend-multiply filter blur-xl opacity-40 animate-blob"></div>
-        <div className="absolute top-0 -right-4 w-72 h-72 bg-blue-100 rounded-full mix-blend-multiply filter blur-xl opacity-40 animate-blob animation-delay-2000"></div>
-        <div className="absolute -bottom-8 left-20 w-72 h-72 bg-slate-200 rounded-full mix-blend-multiply filter blur-xl opacity-40 animate-blob animation-delay-4000"></div>
-        
-        <div className="max-w-4xl mx-auto relative z-20">
-          <Badge className="mb-6 bg-purple-100 text-purple-700 hover:bg-purple-100">
-            <Sparkles className="h-4 w-4 mr-1" />
-            AI-Powered Relationship Intelligence
-          </Badge>
-          
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-slate-700 via-gray-800 to-slate-900 bg-clip-text text-transparent leading-tight">
-            Transform Your Love Life with AI
-          </h1>
-          
-          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed">
-            Meet Luna AI, your personal relationship coach. Track patterns, understand emotions, and build deeper connections with the power of artificial intelligence.
-          </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12 relative z-30">
-            <Button 
-              size="lg" 
-              onClick={handleGetStarted}
-              className="bg-gradient-to-r from-slate-700 to-gray-800 hover:from-slate-800 hover:to-gray-900 text-lg px-8 py-6 rounded-xl"
-            >
-              Start Free Today
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-            <Button 
-              variant="outline" 
-              size="lg"
-              onClick={handlePremiumSignup}
-              className="text-lg px-8 py-6 rounded-xl border-slate-200 text-slate-700 hover:bg-slate-50"
-            >
-              View Pricing
-            </Button>
+      <section className="container mx-auto px-4 py-16 relative overflow-hidden">
+        <div className="grid lg:grid-cols-2 gap-16 items-center max-w-7xl mx-auto">
+          {/* Left Column - Content */}
+          <div className="text-left relative z-20">
+            <Badge className="mb-6 bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700 hover:bg-purple-100 border-purple-200">
+              <Sparkles className="h-4 w-4 mr-1" />
+              AI-Powered Relationship Intelligence
+            </Badge>
+            
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 bg-clip-text text-transparent leading-tight">
+              Transform Your Love Life with AI
+            </h1>
+            
+            <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+              Meet Luna AI, your personal relationship coach. Track patterns, understand emotions, and build deeper connections with the power of artificial intelligence.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-4 mb-8 relative z-30">
+              <Button 
+                size="lg" 
+                onClick={handleGetStarted}
+                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-lg px-8 py-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300"
+              >
+                Start Free Today
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+              <Button 
+                variant="outline" 
+                size="lg"
+                onClick={() => setShowPricingModal(true)}
+                className="text-lg px-8 py-6 rounded-2xl border-purple-200 text-purple-700 hover:bg-purple-50 transition-all duration-300"
+              >
+                View Pricing
+              </Button>
+            </div>
+            
+            <div className="flex items-center gap-6 text-sm text-gray-500">
+              <div className="flex items-center gap-1">
+                <Check className="h-4 w-4 text-green-500" />
+                No credit card required
+              </div>
+              <div className="flex items-center gap-1">
+                <Check className="h-4 w-4 text-green-500" />
+                5-day free trial
+              </div>
+              <div className="flex items-center gap-1">
+                <Check className="h-4 w-4 text-green-500" />
+                Cancel anytime
+              </div>
+            </div>
           </div>
           
-          <div className="flex items-center justify-center gap-6 text-sm text-gray-500">
-            <div className="flex items-center gap-1">
-              <Check className="h-4 w-4 text-green-500" />
-              No credit card required
-            </div>
-            <div className="flex items-center gap-1">
-              <Check className="h-4 w-4 text-green-500" />
-              5-day free trial
-            </div>
-            <div className="flex items-center gap-1">
-              <Check className="h-4 w-4 text-green-500" />
-              Cancel anytime
+          {/* Right Column - App Preview */}
+          <div className="relative">
+            {/* Background decorative elements */}
+            <div className="absolute -top-12 -right-12 w-64 h-64 bg-gradient-to-br from-purple-300 to-pink-300 rounded-full opacity-20 blur-3xl animate-pulse"></div>
+            <div className="absolute -bottom-12 -left-12 w-64 h-64 bg-gradient-to-br from-blue-300 to-purple-300 rounded-full opacity-15 blur-3xl animate-pulse animation-delay-2000"></div>
+            
+            {/* Phone mockup */}
+            <div className="relative bg-slate-900 rounded-[3rem] p-3 shadow-2xl transform rotate-3 hover:rotate-0 transition-transform duration-500">
+              <div className="bg-white rounded-[2.5rem] overflow-hidden">
+                {/* Phone header */}
+                <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-6 text-white">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="w-3 h-3 bg-white/30 rounded-full"></div>
+                    <div className="text-xs font-medium">kindra.app</div>
+                    <div className="w-6 h-3 bg-white/30 rounded-full"></div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+                      <Brain className="h-6 w-6 text-white" />
+                    </div>
+                    <div>
+                      <div className="font-semibold">Luna AI</div>
+                      <div className="text-xs text-white/80">Your Relationship Coach</div>
+                    </div>
+                    <div className="ml-auto w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                  </div>
+                </div>
+                
+                {/* Chat messages */}
+                <div className="p-6 space-y-4 bg-gradient-to-b from-white to-purple-50">
+                  <div className="bg-gray-100 rounded-2xl rounded-bl-lg p-4 max-w-[80%]">
+                    <div className="text-sm text-gray-800">
+                      "I notice you both communicate better in the evenings. Your last 3 meaningful conversations happened after 7 PM."
+                    </div>
+                  </div>
+                  
+                  <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-2xl rounded-br-lg p-4 max-w-[80%] ml-auto">
+                    <div className="text-sm">
+                      "That's so accurate! How did you know that?"
+                    </div>
+                  </div>
+                  
+                  <div className="bg-gray-100 rounded-2xl rounded-bl-lg p-4 max-w-[80%]">
+                    <div className="text-sm text-gray-800">
+                      "I analyze your interaction patterns and emotional data. Would you like specific timing recommendations for important conversations?"
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Stats preview */}
+                <div className="p-6 bg-white">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="bg-gradient-to-br from-green-50 to-emerald-100 rounded-xl p-4 border border-green-200">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Heart className="h-4 w-4 text-green-600" />
+                        <span className="text-xs font-medium text-green-700">Connection</span>
+                      </div>
+                      <div className="text-2xl font-bold text-green-900">94%</div>
+                      <div className="w-full bg-green-200 rounded-full h-2 mt-2">
+                        <div className="bg-gradient-to-r from-green-400 to-green-600 h-2 rounded-full" style={{ width: '94%' }}></div>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 border border-blue-200">
+                      <div className="flex items-center gap-2 mb-2">
+                        <TrendingUp className="h-4 w-4 text-blue-600" />
+                        <span className="text-xs font-medium text-blue-700">Growth</span>
+                      </div>
+                      <div className="text-2xl font-bold text-blue-900">89%</div>
+                      <div className="w-full bg-blue-200 rounded-full h-2 mt-2">
+                        <div className="bg-gradient-to-r from-blue-400 to-blue-600 h-2 rounded-full" style={{ width: '89%' }}></div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Quick actions */}
+                  <div className="grid grid-cols-3 gap-2 mt-4">
+                    <div className="bg-gradient-to-r from-pink-500 to-rose-500 rounded-lg p-3 text-center">
+                      <Calendar className="h-4 w-4 text-white mx-auto mb-1" />
+                      <div className="text-xs text-white font-medium">Track</div>
+                    </div>
+                    <div className="bg-gradient-to-r from-purple-500 to-indigo-500 rounded-lg p-3 text-center">
+                      <Brain className="h-4 w-4 text-white mx-auto mb-1" />
+                      <div className="text-xs text-white font-medium">Analyze</div>
+                    </div>
+                    <div className="bg-gradient-to-r from-orange-500 to-pink-500 rounded-lg p-3 text-center">
+                      <Zap className="h-4 w-4 text-white mx-auto mb-1" />
+                      <div className="text-xs text-white font-medium">Grow</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -291,12 +384,12 @@ export default function LandingPage() {
           
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature, index) => (
-              <Card key={index} className="p-6 border-0 shadow-lg hover:shadow-xl transition-all duration-300 bg-white/70 backdrop-blur-sm">
+              <Card key={index} className="p-6 border-0 shadow-lg hover:shadow-xl transition-all duration-300 bg-white/80 backdrop-blur-sm group hover:scale-105">
                 <CardContent className="p-0">
-                  <div className="w-12 h-12 bg-gradient-to-br from-purple-100 to-pink-100 rounded-lg flex items-center justify-center mb-4 text-purple-600">
+                  <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mb-6 text-white group-hover:rotate-6 transition-transform duration-300 shadow-lg">
                     {feature.icon}
                   </div>
-                  <h3 className="text-xl font-semibold mb-3">{feature.title}</h3>
+                  <h3 className="text-xl font-bold mb-3 text-gray-900">{feature.title}</h3>
                   <p className="text-gray-600 leading-relaxed">{feature.description}</p>
                 </CardContent>
               </Card>

@@ -19,8 +19,14 @@ export async function registerUser(userData: {
   return await response.json();
 }
 
-export async function logoutUser(): Promise<void> {
-  await apiRequest("/api/logout", "POST");
+export function logoutUser(): void {
+  console.log("🔴 AUTH.TS: Client-side logout - clearing data and redirecting");
+  // Clear all data immediately
+  localStorage.clear();
+  sessionStorage.clear();
+  
+  // Force redirect to login
+  window.location.href = "/login";
 }
 
 export async function getCurrentUser(): Promise<User | null> {

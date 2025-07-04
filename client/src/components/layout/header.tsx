@@ -1,14 +1,30 @@
 import { useAuth } from "@/contexts/auth-context";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Bell, LogOut, Settings, User, Trophy, Calendar } from "lucide-react";
 import { Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { NotificationBell, UserPointsDisplay } from "@/components/notifications";
+import { useState, useEffect } from "react";
 
 export function Header() {
   const { logout, isAuthenticated } = useAuth();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
+  
+  console.log("🔍 HEADER: Component rendering, isAuthenticated:", isAuthenticated);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownOpen && !(event.target as Element).closest('.dropdown-container')) {
+        setDropdownOpen(false);
+      }
+    };
+    
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [dropdownOpen]);
   
   // Use React Query to get the latest user data including profile picture
   const { data: user } = useQuery({
@@ -41,58 +57,122 @@ export function Header() {
       <div className="flex items-center space-x-3 sm:space-x-4 lg:space-x-5">
         <UserPointsDisplay />
         <NotificationBell />
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="relative h-9 w-9 sm:h-10 sm:w-10 lg:h-11 lg:w-11 rounded-full p-0">
-              <Avatar className="h-9 w-9 sm:h-10 sm:w-10 lg:h-11 lg:w-11">
-                <AvatarImage src={user?.profileImage ?? undefined} alt={displayName} />
-                <AvatarFallback className="bg-neutral-200 dark:bg-neutral-700 text-sm sm:text-base lg:text-lg font-medium">
-                  {initials}
-                </AvatarFallback>
-              </Avatar>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem asChild>
-              <Link href="/profile">
-                <User className="mr-2 h-4 w-4" />
-                <span>Profile</span>
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link href="/badges">
-                <Trophy className="mr-2 h-4 w-4" />
-                <span>Badges</span>
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link href="/menstrual-cycle">
-                <Calendar className="mr-2 h-4 w-4" />
-                <span>Cycle Tracker</span>
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link href="/settings">
-                <Settings className="mr-2 h-4 w-4" />
-                <span>Settings</span>
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={async () => {
-              try {
-                await logout();
-                // Clear any cached data and redirect to login
-                window.location.href = "/auth/login";
-              } catch (error) {
         
-                // Even if logout fails, redirect to login page
-                window.location.href = "/auth/login";
-              }
-            }}>
-              <LogOut className="mr-2 h-4 w-4" />
-              <span>Log out</span>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        {/* Test button to verify component renders */}
+        <div className="bg-yellow-400 text-black px-2 py-1 rounded text-xs font-bold">
+          TEST
+        </div>
+        
+        {/* Direct logout button - guaranteed to work */}
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log("🔴 DIRECT: Raw button clicked, calling logout");
+            logout();
+          }}
+          onMouseDown={() => console.log("🔴 DIRECT: Mouse down on logout button")}
+          onMouseUp={() => console.log("🔴 DIRECT: Mouse up on logout button")}
+          className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm font-medium z-50 relative"
+          style={{ zIndex: 9999 }}
+        >
+          <LogOut className="h-4 w-4 mr-1 inline" />
+          LOGOUT
+        </button>
+        
+        {/* Nuclear option - force hard redirect */}
+        <a
+          href="/landing"
+          onClick={(e) => {
+            e.preventDefault();
+            console.log("🔴 NUCLEAR: Hard redirect clicked");
+            // Clear everything and force redirect
+            localStorage.clear();
+            sessionStorage.clear();
+            window.location.href = '/landing';
+          }}
+          className="bg-orange-600 hover:bg-orange-700 text-white px-2 py-1 rounded text-xs font-medium z-50 relative"
+          style={{ zIndex: 9999 }}
+        >
+          FORCE OUT
+        </a>
+        
+        <div className="relative dropdown-container">
+          <Button 
+            variant="ghost" 
+            className="relative h-9 w-9 sm:h-10 sm:w-10 lg:h-11 lg:w-11 rounded-full p-0"
+            onClick={() => setDropdownOpen(!dropdownOpen)}
+          >
+            <Avatar className="h-9 w-9 sm:h-10 sm:w-10 lg:h-11 lg:w-11">
+              <AvatarImage src={user?.profileImage ?? undefined} alt={displayName} />
+              <AvatarFallback className="bg-neutral-200 dark:bg-neutral-700 text-sm sm:text-base lg:text-lg font-medium">
+                {initials}
+              </AvatarFallback>
+            </Avatar>
+          </Button>
+          
+          {dropdownOpen && (
+            <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 z-50">
+              <div className="py-1">
+                <Link 
+                  href="/profile" 
+                  className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  onClick={() => setDropdownOpen(false)}
+                >
+                  <User className="mr-2 h-4 w-4" />
+                  <span>Profile</span>
+                </Link>
+                <Link 
+                  href="/badges"
+                  className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  onClick={() => setDropdownOpen(false)}
+                >
+                  <Trophy className="mr-2 h-4 w-4" />
+                  <span>Badges</span>
+                </Link>
+                <Link 
+                  href="/menstrual-cycle"
+                  className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  onClick={() => setDropdownOpen(false)}
+                >
+                  <Calendar className="mr-2 h-4 w-4" />
+                  <span>Cycle Tracker</span>
+                </Link>
+                <Link 
+                  href="/settings"
+                  className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  onClick={() => setDropdownOpen(false)}
+                >
+                  <Settings className="mr-2 h-4 w-4" />
+                  <span>Settings</span>
+                </Link>
+                <button 
+                    type="button"
+                    className="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 text-left"
+                    disabled={loggingOut}
+                    onClick={() => {
+                      console.log("🔴 HEADER: Using auth context logout");
+                      setDropdownOpen(false);
+                      setLoggingOut(true);
+                      logout();
+                    }}
+                  >
+                    {loggingOut ? (
+                      <>
+                        <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-gray-600"></div>
+                        <span>Logging out...</span>
+                      </>
+                    ) : (
+                      <>
+                        <LogOut className="mr-2 h-4 w-4" />
+                        <span>Log out</span>
+                      </>
+                    )}
+                  </button>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </header>
   );
