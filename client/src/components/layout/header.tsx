@@ -43,7 +43,11 @@ export function Header() {
         <NotificationBell />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="relative h-9 w-9 sm:h-10 sm:w-10 lg:h-11 lg:w-11 rounded-full p-0">
+            <Button 
+              variant="ghost" 
+              className="relative h-9 w-9 sm:h-10 sm:w-10 lg:h-11 lg:w-11 rounded-full p-0"
+              onClick={() => console.log("🔴 HEADER: Dropdown trigger clicked")}
+            >
               <Avatar className="h-9 w-9 sm:h-10 sm:w-10 lg:h-11 lg:w-11">
                 <AvatarImage src={user?.profileImage ?? undefined} alt={displayName} />
                 <AvatarFallback className="bg-neutral-200 dark:bg-neutral-700 text-sm sm:text-base lg:text-lg font-medium">
@@ -52,9 +56,9 @@ export function Header() {
               </Avatar>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
+          <DropdownMenuContent align="end" onCloseAutoFocus={() => console.log("🔴 HEADER: Dropdown closed")}>
             <DropdownMenuItem asChild>
-              <Link href="/profile">
+              <Link href="/profile" onClick={() => console.log("🔴 HEADER: Profile link clicked")}>
                 <User className="mr-2 h-4 w-4" />
                 <span>Profile</span>
               </Link>
@@ -77,10 +81,20 @@ export function Header() {
                 <span>Settings</span>
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => {
-              console.log("🔴 HEADER: Logout button clicked, calling logout()");
-              logout();
-            }}>
+            <DropdownMenuItem 
+              onClick={(e) => {
+                console.log("🔴 HEADER: Logout menu item clicked, event:", e);
+                console.log("🔴 HEADER: About to call logout function");
+                e.preventDefault();
+                e.stopPropagation();
+                logout();
+                console.log("🔴 HEADER: Logout function called");
+              }}
+              onSelect={(e) => {
+                console.log("🔴 HEADER: Logout onSelect triggered");
+                e.preventDefault();
+              }}
+            >
               <LogOut className="mr-2 h-4 w-4" />
               <span>Log out</span>
             </DropdownMenuItem>

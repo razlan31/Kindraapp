@@ -115,7 +115,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = async () => {
-    console.log("🔴 LOGOUT: Starting logout process");
+    console.log("🔴 LOGOUT: Starting logout process from auth context");
     
     // Clear everything immediately
     setUser(null);
@@ -123,19 +123,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     sessionStorage.clear();
     queryClient.clear();
     
-    try {
-      // Try to call server logout but don't wait for it
-      logoutUser().catch(err => console.log("Server logout error (non-blocking):", err));
-    } catch (error) {
-      console.log("Server logout failed (continuing anyway):", error);
-    }
+    console.log("🔴 LOGOUT: State cleared, forcing page reload");
     
-    console.log("🔴 LOGOUT: Forcing immediate redirect");
-    
-    // Immediate redirect - don't wait for server response
-    setTimeout(() => {
-      window.location.replace(window.location.origin + "/");
-    }, 100);
+    // Immediate hard reload to root
+    window.location.href = "/";
   };
 
   const refreshUser = async () => {
