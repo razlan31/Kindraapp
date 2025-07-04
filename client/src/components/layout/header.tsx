@@ -41,6 +41,21 @@ export function Header() {
       <div className="flex items-center space-x-3 sm:space-x-4 lg:space-x-5">
         <UserPointsDisplay />
         <NotificationBell />
+        
+        {/* Emergency logout button - bypasses dropdown */}
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => {
+            console.log("🔴 EMERGENCY: Direct logout button clicked");
+            logout();
+          }}
+          className="text-red-600 hover:text-red-700 border-red-200"
+        >
+          <LogOut className="h-4 w-4 mr-1" />
+          Logout
+        </Button>
+        
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button 
