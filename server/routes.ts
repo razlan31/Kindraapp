@@ -319,10 +319,65 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Logout endpoint completely disabled - using client-side only logout
-  app.post("/api/logout", (req, res) => {
-    console.log("🔴 SERVER: Logout endpoint disabled - returning 200");
-    res.status(200).send("OK");
+  // Nuclear logout endpoint - clears everything and redirects
+  app.get("/api/nuclear-logout", (req, res) => {
+    console.log("🔴 SERVER: Nuclear logout - clearing everything");
+    
+    // Destroy session first
+    req.session.destroy((err) => {
+      if (err) {
+        console.error("Session destruction error:", err);
+      }
+    });
+    
+    // Send HTML that clears storage and redirects
+    res.set('Content-Type', 'text/html; charset=utf-8');
+    res.send(`<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Logging out...</title>
+    <style>
+        body { font-family: system-ui; text-align: center; padding: 2rem; background: #f5f5f5; }
+        .logout { background: white; padding: 2rem; border-radius: 8px; display: inline-block; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .spinner { border: 3px solid #f3f3f3; border-top: 3px solid #3498db; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 0 auto 1rem; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div class="logout">
+        <div class="spinner"></div>
+        <h2>Logging out...</h2>
+        <p>Clearing all data and redirecting...</p>
+    </div>
+    <script>
+        // Nuclear storage clearing
+        try { localStorage.clear(); } catch(e) {}
+        try { sessionStorage.clear(); } catch(e) {}
+        
+        // Clear cookies
+        document.cookie.split(";").forEach(function(c) {
+            document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+        });
+        
+        // Unregister service workers
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                for(let registration of registrations) {
+                    registration.unregister();
+                }
+            });
+        }
+        
+        console.log('🔴 LOGOUT: All storage cleared, redirecting to home');
+        
+        // Redirect after brief delay
+        setTimeout(function() {
+            window.location.replace('/');
+        }, 1500);
+    </script>
+</body>
+</html>`);
   });
 
   // Server redirect endpoint to bypass service worker 404s

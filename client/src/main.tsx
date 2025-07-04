@@ -60,8 +60,9 @@ window.addEventListener('error', (event) => {
   }
 });
 
-// Aggressively unregister ALL service workers to prevent PWA interference
+// NUCLEAR SERVICE WORKER REMOVAL - Block ALL service worker functionality
 if ('serviceWorker' in navigator) {
+  // Unregister all existing service workers
   navigator.serviceWorker.getRegistrations().then((registrations) => {
     registrations.forEach((registration) => {
       registration.unregister().then(() => {
@@ -70,7 +71,14 @@ if ('serviceWorker' in navigator) {
     });
   });
   
-  // Also clear any service worker controlled state
+  // Block service worker registration by overriding the register method
+  const originalRegister = navigator.serviceWorker.register;
+  navigator.serviceWorker.register = function() {
+    console.log('🔴 BLOCKED: Service worker registration attempt prevented');
+    return Promise.reject(new Error('Service worker registration blocked'));
+  };
+  
+  // Clear any service worker controlled state
   if (navigator.serviceWorker.controller) {
     navigator.serviceWorker.controller.postMessage('CLEAR_CACHE');
   }

@@ -123,16 +123,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = () => {
-    console.log("🔴 LOGOUT: Using auth logout");
+    console.log("🔴 LOGOUT: Using nuclear logout endpoint");
     
-    // Clear local state
+    // Clear local state immediately
     setUser(null);
     localStorage.clear();
     sessionStorage.clear();
     queryClient.clear();
     
-    // Use existing auth logout route that handles session properly
-    window.location.href = "/api/auth/logout";
+    // Use server endpoint that destroys session and returns clearing HTML
+    window.location.href = "/api/nuclear-logout";
   };
 
   const refreshUser = async () => {
