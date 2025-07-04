@@ -320,35 +320,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   app.post("/api/logout", (req, res) => {
-    req.session.destroy((err) => {
-      if (err) {
-        console.error("Session destroy error:", err);
-        // Check if this is a form submission or AJAX request
-        const isFormSubmission = req.get('Content-Type')?.includes('application/x-www-form-urlencoded') || 
-                                 !req.get('Content-Type')?.includes('application/json');
-        
-        if (isFormSubmission) {
-          return res.redirect('/landing');
-        } else {
-          return res.status(500).json({ message: "Error logging out" });
-        }
-      }
-      
-      // Clear the session cookie
-      res.clearCookie('connect.sid');
-      
-      // Check if this is a form submission or AJAX request
-      const isFormSubmission = req.get('Content-Type')?.includes('application/x-www-form-urlencoded') || 
-                               !req.get('Content-Type')?.includes('application/json');
-      
-      if (isFormSubmission) {
-        console.log("🔴 SERVER: Form submission logout, redirecting to static logout page");
-        // Redirect to static HTML file that bypasses service worker completely
-        res.redirect('/logout.html');
-      } else {
-        res.status(200).json({ message: "Logged out successfully" });
-      }
-    });
+    console.log("🔴 SERVER: Logout endpoint hit - redirecting to client-side logout");
+    // Force redirect to login page immediately without processing
+    res.redirect('/login');
   });
 
   app.get("/api/me", async (req, res) => {
