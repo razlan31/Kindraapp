@@ -40,11 +40,12 @@ function Router() {
   const { isAuthenticated, loading } = useAuth();
   const [location, setLocation] = useLocation();
 
-  // Redirect unauthenticated users trying to access app routes
+  // Redirect unauthenticated users trying to access protected routes
   useEffect(() => {
-    const isAppRoute = location.startsWith('/app');
+    const protectedRoutes = ['/app', '/dashboard', '/connections', '/activities', '/calendar', '/badges', '/insights', '/profile', '/settings', '/subscription', '/cycle', '/menstrual-cycle'];
+    const isProtectedRoute = protectedRoutes.some(route => location.startsWith(route));
     
-    if (isAppRoute && !loading && !isAuthenticated) {
+    if (isProtectedRoute && !loading && !isAuthenticated) {
       setLocation('/login');
     }
   }, [location, isAuthenticated, loading, setLocation]);
@@ -60,7 +61,7 @@ function Router() {
 
   return (
     <Switch>
-      {/* Public routes - serve landing page for root */}
+      {/* Public routes */}
       <Route path="/" component={LandingPage} />
       <Route path="/login" component={Login} />
 
@@ -70,21 +71,21 @@ function Router() {
       <Route path="/onboarding/goals" component={OnboardingGoals} />
       <Route path="/onboarding/complete" component={OnboardingComplete} />
       
-      {/* Protected app routes - all under /app to bypass service worker */}
+      {/* App routes */}
       <Route path="/app" component={Homepage1} />
-      <Route path="/app/dashboard" component={Dashboard} />
-      <Route path="/app/connections" component={Connections} />
-      <Route path="/app/connections/:id/edit" component={ConnectionEdit} />
-      <Route path="/app/connections/:id" component={ConnectionDetail} />
-      <Route path="/app/activities" component={Activities} />
-      <Route path="/app/calendar" component={Calendar} />
-      <Route path="/app/badges" component={Badges} />
-      <Route path="/app/insights" component={Insights} />
-      <Route path="/app/profile" component={Profile} />
-      <Route path="/app/settings" component={Settings} />
-      <Route path="/app/subscription" component={Subscription} />
-      <Route path="/app/cycle" component={MenstrualCycle} />
-      <Route path="/app/menstrual-cycle" component={MenstrualCycle} />
+      <Route path="/dashboard" component={Dashboard} />
+      <Route path="/connections" component={Connections} />
+      <Route path="/connections/:id/edit" component={ConnectionEdit} />
+      <Route path="/connections/:id" component={ConnectionDetail} />
+      <Route path="/activities" component={Activities} />
+      <Route path="/calendar" component={Calendar} />
+      <Route path="/badges" component={Badges} />
+      <Route path="/insights" component={Insights} />
+      <Route path="/profile" component={Profile} />
+      <Route path="/settings" component={Settings} />
+      <Route path="/subscription" component={Subscription} />
+      <Route path="/cycle" component={MenstrualCycle} />
+      <Route path="/menstrual-cycle" component={MenstrualCycle} />
       
       <Route component={NotFound} />
     </Switch>
