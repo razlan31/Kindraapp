@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Logging out...</title>
-    <meta http-equiv="refresh" content="1; url=/landing">
+    <meta http-equiv="refresh" content="1; url=/">
     <style>
         body {
             font-family: system-ui, -apple-system, sans-serif;
@@ -41,7 +41,7 @@
     <div class="container">
         <div class="spinner"></div>
         <h2>Logging out...</h2>
-        <p>If you are not redirected automatically, <a href="/landing">click here</a>.</p>
+        <p>If you are not redirected automatically, <a href="/">click here</a>.</p>
     </div>
     
     <script>
@@ -56,15 +56,15 @@
         
         // Multiple redirect methods
         setTimeout(() => {
-            window.location.href = '/landing';
+            window.location.href = '/';
         }, 100);
         
         setTimeout(() => {
-            window.location.replace('/landing');
+            window.location.replace('/');
         }, 500);
         
         setTimeout(() => {
-            window.location.assign('/landing');
+            window.location.assign('/');
         }, 1000);
     </script>
 </body>
