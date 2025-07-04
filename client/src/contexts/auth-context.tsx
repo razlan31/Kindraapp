@@ -146,9 +146,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     }
     
-    // Force complete page replacement to login
-    console.log("🔴 LOGOUT: Forcing navigation to login");
-    window.location.replace('/login');
+    // Force complete page replacement to landing
+    console.log("🔴 LOGOUT: Forcing navigation to landing page");
+    console.log("🔴 LOGOUT: Current URL:", window.location.href);
+    window.location.replace('/landing');
+    console.log("🔴 LOGOUT: Replace called, should navigate to landing");
   };
 
   const refreshUser = async () => {
