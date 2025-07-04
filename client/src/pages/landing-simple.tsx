@@ -6,6 +6,8 @@ import { useLocation } from 'wouter';
 export default function LandingSimple() {
   const [, setLocation] = useLocation();
 
+  console.log("🟢 LANDING: LandingSimple component rendered");
+
   const handleGetStarted = () => {
     setLocation('/login');
   };
