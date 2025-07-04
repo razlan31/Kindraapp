@@ -41,41 +41,18 @@ function Router() {
   const { isAuthenticated, loading } = useAuth();
   const [location, setLocation] = useLocation();
 
-  // Force navigation to landing page immediately
+  // Nuclear option: Force landing page with window.location
   useEffect(() => {
-    setLocation("/landing");
-  }, []);
-
-  useEffect(() => {
-    if (!loading) {
-      // Only redirect if we're not already on an allowed route
-      if (!isAuthenticated) {
-        // Allow unauthenticated users to stay on public routes
-        const publicRoutes = ["/login", "/landing", "/", "/onboarding/welcome", "/onboarding/profile", "/onboarding/goals", "/onboarding/complete"];
-        if (!publicRoutes.includes(location)) {
-          setLocation("/landing"); // Changed from "/" to "/landing"
-        }
-      } else if (isAuthenticated) {
-        // Allow authenticated users to visit landing page - don't auto-redirect
-        // Only redirect from login page specifically
-        if (location === "/login") {
-          const savedDefaultPage = localStorage.getItem('kindra-default-page');
-          if (savedDefaultPage && savedDefaultPage !== "home") {
-            const routeMap: Record<string, string> = {
-              "connections": "/connections",
-              "activities": "/activities", 
-              "calendar": "/calendar",
-              "insights": "/insights"
-            };
-            const targetRoute = routeMap[savedDefaultPage] || "/app";
-            setLocation(targetRoute);
-          } else {
-            setLocation("/app");
-          }
-        }
-        // Don't redirect if user is on landing page - let them stay
-      }
+    console.log("🚀 FORCE LANDING: Current location:", location);
+    if (location !== "/landing") {
+      console.log("🚀 FORCE LANDING: Redirecting to landing page");
+      window.location.href = "/landing";
     }
+  }, [location]);
+
+  // Block all other redirects
+  useEffect(() => {
+    // Do nothing - let the forced navigation handle everything
   }, [isAuthenticated, loading, location, setLocation]);
 
   // Show loading spinner during authentication state changes
