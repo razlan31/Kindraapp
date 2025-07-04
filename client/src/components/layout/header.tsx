@@ -77,7 +77,10 @@ export function Header() {
                 <span>Settings</span>
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => logout()}>
+            <DropdownMenuItem onClick={() => {
+              console.log("🔴 HEADER: Logout button clicked, calling logout()");
+              logout();
+            }}>
               <LogOut className="mr-2 h-4 w-4" />
               <span>Log out</span>
             </DropdownMenuItem>

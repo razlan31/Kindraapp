@@ -115,25 +115,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = async () => {
+    console.log("🔴 LOGOUT: Starting logout process");
+    
+    // Clear everything immediately
+    setUser(null);
+    localStorage.clear();
+    sessionStorage.clear();
+    queryClient.clear();
+    
     try {
-      console.log("🔴 LOGOUT: Starting logout process");
-      await logoutUser();
-      console.log("🔴 LOGOUT: Server logout successful");
-      setUser(null);
-      localStorage.clear();
-      sessionStorage.clear();
-      queryClient.clear();
-      console.log("🔴 LOGOUT: Cleared all storage, redirecting to origin:", window.location.origin);
-      
-      // Force complete page reload to bypass all React routing
-      window.location.replace(window.location.origin);
+      // Try to call server logout but don't wait for it
+      logoutUser().catch(err => console.log("Server logout error (non-blocking):", err));
     } catch (error) {
-      console.error("🔴 LOGOUT: Failed:", error);
-      localStorage.clear();
-      sessionStorage.clear();
-      queryClient.clear();
-      window.location.replace(window.location.origin);
+      console.log("Server logout failed (continuing anyway):", error);
     }
+    
+    console.log("🔴 LOGOUT: Forcing immediate redirect");
+    
+    // Immediate redirect - don't wait for server response
+    setTimeout(() => {
+      window.location.replace(window.location.origin + "/");
+    }, 100);
   };
 
   const refreshUser = async () => {
