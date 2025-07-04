@@ -149,11 +149,6 @@ export function Header() {
                   console.log("🔴 FORM: Form submission started");
                   localStorage.clear();
                   sessionStorage.clear();
-                  // Add a delay then hard refresh to ensure redirect takes effect
-                  setTimeout(() => {
-                    console.log("🔴 FORM: Forcing page refresh");
-                    window.location.href = '/landing';
-                  }, 1000);
                 }}>
                   <button 
                     type="submit"
