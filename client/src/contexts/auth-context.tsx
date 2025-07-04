@@ -37,6 +37,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Skip authentication on landing page
+    if (window.location.pathname === "/landing" || window.location.pathname === "/") {
+      console.log("Auth: Skipping authentication on landing page");
+      setLoading(false);
+      setUser(null);
+      return;
+    }
+
     let isMounted = true;
     
     const loadUser = async () => {
@@ -125,8 +133,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     sessionStorage.clear();
     queryClient.clear();
     
-    // Navigate to landing page instead of login
-    window.location.href = "/landing";
+    // Navigate to home page instead of login
+    window.location.href = "/";
   };
 
   const refreshUser = async () => {

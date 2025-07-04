@@ -82,14 +82,14 @@ export function Header() {
         
         {/* Nuclear option - force hard redirect */}
         <a
-          href="/landing"
+          href="/"
           onClick={(e) => {
             e.preventDefault();
             console.log("🔴 NUCLEAR: Hard redirect clicked");
             // Clear everything and force redirect
             localStorage.clear();
             sessionStorage.clear();
-            window.location.href = '/landing';
+            window.location.href = '/';
           }}
           className="bg-orange-600 hover:bg-orange-700 text-white px-2 py-1 rounded text-xs font-medium z-50 relative"
           style={{ zIndex: 9999 }}

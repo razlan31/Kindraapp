@@ -103,7 +103,7 @@ export default function LandingPage() {
   ];
 
   const handleGetStarted = () => {
-    setLocation('/login');
+    setLocation('/app');
   };
 
   const handlePremiumSignup = () => {
