@@ -96,6 +96,16 @@ function Router() {
 }
 
 function App() {
+  // Nuclear option: Force immediate navigation to landing page
+  const currentPath = window.location.pathname;
+  console.log("🚀 APP START: Current path:", currentPath);
+  
+  if (currentPath !== "/landing") {
+    console.log("🚀 APP START: Forcing navigation to landing");
+    window.location.replace("/landing");
+    return <div className="min-h-screen flex items-center justify-center">Redirecting to landing page...</div>;
+  }
+
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
