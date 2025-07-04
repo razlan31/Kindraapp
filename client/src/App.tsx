@@ -40,12 +40,18 @@ function Router() {
   const { isAuthenticated, loading } = useAuth();
   const [location, setLocation] = useLocation();
 
+  // Debug logging
+  useEffect(() => {
+    console.log('Router state:', { location, isAuthenticated, loading });
+  }, [location, isAuthenticated, loading]);
+
   // Redirect unauthenticated users trying to access protected routes
   useEffect(() => {
     const protectedRoutes = ['/app', '/dashboard', '/connections', '/activities', '/calendar', '/badges', '/insights', '/profile', '/settings', '/subscription', '/cycle', '/menstrual-cycle'];
     const isProtectedRoute = protectedRoutes.some(route => location.startsWith(route));
     
     if (isProtectedRoute && !loading && !isAuthenticated) {
+      console.log('Redirecting to login from protected route:', location);
       setLocation('/login');
     }
   }, [location, isAuthenticated, loading, setLocation]);
