@@ -123,18 +123,62 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = () => {
-    console.log("🔴 LOGOUT: Using server redirect to bypass service worker");
+    console.log("🔴 LOGOUT: Starting comprehensive logout with multiple fallbacks");
     
-    // Clear state first
+    // Clear state first - comprehensive cleanup
     setUser(null);
     localStorage.clear();
     sessionStorage.clear();
     queryClient.clear();
     
-    console.log("🔴 LOGOUT: State cleared, redirecting to server endpoint");
+    // Clear browser caches
+    if ('caches' in window) {
+      caches.keys().then(names => {
+        names.forEach(name => caches.delete(name));
+      });
+    }
     
-    // Use server redirect instead of client-side navigation
-    window.location.href = "/api/logout-redirect";
+    // Clear any remaining service worker state
+    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+      navigator.serviceWorker.controller.postMessage('CLEAR_ALL');
+    }
+    
+    console.log("🔴 LOGOUT: State cleared, trying navigation methods");
+    
+    // Method 1: Server redirect (most reliable)
+    try {
+      console.log("🔴 LOGOUT: Method 1 - Server redirect");
+      window.location.href = "/api/logout-redirect";
+      return;
+    } catch (error) {
+      console.error("🔴 LOGOUT: Method 1 failed:", error);
+    }
+    
+    // Method 2: Fetch API approach (bypass router completely)
+    setTimeout(() => {
+      console.log("🔴 LOGOUT: Method 2 - Fetch API navigation");
+      fetch("/api/logout-redirect")
+        .then(response => response.text())
+        .then(html => {
+          // Replace entire document with server response
+          document.open();
+          document.write(html);
+          document.close();
+        })
+        .catch(error => {
+          console.error("🔴 LOGOUT: Method 2 failed:", error);
+          // Method 3: Force reload
+          console.log("🔴 LOGOUT: Method 3 - Force reload");
+          try {
+            window.location.replace("/");
+          } catch (error2) {
+            console.error("🔴 LOGOUT: Method 3 failed:", error2);
+            // Method 4: Last resort - hard reload
+            console.log("🔴 LOGOUT: Method 4 - Hard reload");
+            window.location.reload();
+          }
+        });
+    }, 500);
   };
 
   const refreshUser = async () => {
