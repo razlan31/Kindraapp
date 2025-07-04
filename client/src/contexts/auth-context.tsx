@@ -131,11 +131,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     sessionStorage.clear();
     queryClient.clear();
     
-    console.log("🔴 LOGOUT: State cleared, implementing nuclear cache bypass");
+    console.log("🔴 LOGOUT: State cleared, unregistering service worker");
     
-    // Nuclear cache bypass - force reload with cache busting
-    const timestamp = Date.now();
-    window.location.replace(`/?_=${timestamp}`);
+    // Unregister service worker to prevent caching issues
+    if ('serviceWorker' in navigator) {
+      try {
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        for (const registration of registrations) {
+          await registration.unregister();
+          console.log("🔴 LOGOUT: Service worker unregistered");
+        }
+      } catch (error) {
+        console.log("🔴 LOGOUT: Failed to unregister service worker");
+      }
+    }
+    
+    // Force complete page replacement to login
+    console.log("🔴 LOGOUT: Forcing navigation to login");
+    window.location.replace('/login');
   };
 
   const refreshUser = async () => {
