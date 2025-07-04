@@ -15,6 +15,7 @@ import Activities from "@/pages/activities";
 import Calendar from "@/pages/calendar";
 import Homepage1 from "@/pages/homepage-1";
 import LandingPage from "@/pages/landing";
+import LandingMinimal from "@/pages/landing-minimal";
 import Insights from "@/pages/insights-original";
 import Profile from "@/pages/profile";
 import Settings from "@/pages/settings";
@@ -65,10 +66,10 @@ function Router() {
     );
   }
 
-  // NUCLEAR TEST: Force show landing page for root path
+  // NUCLEAR TEST: Force show minimal landing page for root path
   if (location === "/" && !isAuthenticated) {
-    console.log('🔥 NUCLEAR: Forcing LandingPage render for root path');
-    return <LandingPage />;
+    console.log('🔥 NUCLEAR: Forcing LandingMinimal render for root path');
+    return <LandingMinimal />;
   }
 
   return (
