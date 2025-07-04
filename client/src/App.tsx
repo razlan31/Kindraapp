@@ -57,19 +57,13 @@ function Router() {
     }
   }, [location, isAuthenticated, loading, setLocation]);
 
-  // Show loading spinner during authentication state changes
-  if (loading) {
+  // Only show loading spinner for protected routes to prevent blocking public pages
+  if (loading && isAuthenticated) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin w-8 h-8 border-4 border-purple-600 border-t-transparent rounded-full"></div>
       </div>
     );
-  }
-
-  // NUCLEAR TEST: Force show minimal landing page for root path
-  if (location === "/" && !isAuthenticated) {
-    console.log('🔥 NUCLEAR: Forcing LandingMinimal render for root path');
-    return <LandingMinimal />;
   }
 
   return (

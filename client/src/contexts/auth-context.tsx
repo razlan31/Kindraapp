@@ -34,15 +34,13 @@ export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  // Start with loading=false for public pages to prevent spinner blocking
-  const isPublicPage = window.location.pathname === "/" || window.location.pathname === "/login" || window.location.pathname === "/landing";
-  const [loading, setLoading] = useState(!isPublicPage);
+  // Always start with loading=false to prevent spinner blocking on any page
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // Always start with no loading for public pages - IMMEDIATE SET
+    // For public pages, ensure no authentication needed
     if (window.location.pathname === "/landing" || window.location.pathname === "/" || window.location.pathname === "/login") {
-      console.log("Auth: Public page detected, setting user to null and loading to false IMMEDIATELY");
-      setLoading(false);
+      console.log("Auth: Public page detected, skipping auth check");
       setUser(null);
       return;
     }
