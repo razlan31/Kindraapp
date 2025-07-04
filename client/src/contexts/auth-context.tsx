@@ -162,10 +162,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Fallback timeout in case service worker blocks navigation
     setTimeout(() => {
       if (window.location.pathname !== '/landing') {
-        console.log("🔴 LOGOUT: Navigation failed, forcing reload to root");
+        console.log("🔴 LOGOUT: Navigation failed, showing manual instruction");
+        // Show user that logout completed and they need to manually navigate
+        alert('Logout completed successfully! Please manually navigate to the home page or refresh your browser.');
         window.location.href = '/';
       }
-    }, 1000);
+    }, 2000);
   };
 
   const refreshUser = async () => {
