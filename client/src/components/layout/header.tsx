@@ -8,10 +8,11 @@ import { NotificationBell, UserPointsDisplay } from "@/components/notifications"
 import { useState, useEffect } from "react";
 
 export function Header() {
+  console.log("🚨🚨🚨 HEADER COMPONENT IS RENDERING!!!!");
   const { logout, isAuthenticated, user } = useAuth();
   
-  // Force component refresh by logging auth state
-  console.log("🔍 HEADER: Auth state - isAuthenticated:", isAuthenticated, "user:", !!user);
+  console.log("🚨🚨🚨 HEADER: Got auth context - logout type:", typeof logout);
+  console.log("🚨🚨🚨 HEADER: isAuthenticated:", isAuthenticated, "user exists:", !!user);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
   
@@ -70,9 +71,9 @@ export function Header() {
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            console.log("🔴🔴🔴 DIRECT BUTTON CLICKED - CALLING LOGOUT");
-            console.log("🔴🔴🔴 DIRECT: Logout function type:", typeof logout);
-            console.log("🔴🔴🔴 DIRECT: Logout function:", logout.toString().substring(0, 100));
+            console.log("🚨🚨🚨 DIRECT LOGOUT BUTTON CLICKED!!!!");
+            console.log("🚨🚨🚨 DIRECT: Logout function type:", typeof logout);
+            console.log("🚨🚨🚨 DIRECT: Logout function source:", logout.toString().substring(0, 200));
             setLoggingOut(true);
             try {
               console.log("🔴🔴🔴 DIRECT: About to call logout function");
@@ -156,9 +157,9 @@ export function Header() {
                     className="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 text-left"
                     disabled={loggingOut}
                     onClick={() => {
-                      console.log("🔴🔴🔴 HEADER BUTTON CLICKED - CALLING LOGOUT");
-                      console.log("🔴🔴🔴 HEADER: Logout function type:", typeof logout);
-                      console.log("🔴🔴🔴 HEADER: Logout function:", logout.toString().substring(0, 100));
+                      console.log("🚨🚨🚨 DROPDOWN LOGOUT BUTTON CLICKED!!!!");
+                      console.log("🚨🚨🚨 DROPDOWN: Logout function type:", typeof logout);
+                      console.log("🚨🚨🚨 DROPDOWN: Logout function source:", logout.toString().substring(0, 200));
                       setDropdownOpen(false);
                       setLoggingOut(true);
                       try {
