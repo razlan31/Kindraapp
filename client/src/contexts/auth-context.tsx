@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { getCurrentUser, loginUser, logoutUser, registerUser } from "@/lib/auth";
+import { getCurrentUser, loginUser, registerUser } from "@/lib/auth";
 import { queryClient } from "@/lib/queryClient";
 import { User } from "@shared/schema";
 

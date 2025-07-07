@@ -20,13 +20,13 @@ export async function registerUser(userData: {
 }
 
 export function logoutUser(): void {
-  console.log("🔴 AUTH.TS: Client-side logout - clearing data and redirecting");
+  console.log("🔴 AUTH.TS: Client-side logout - clearing data only (navigation handled by auth context)");
   // Clear all data immediately
   localStorage.clear();
   sessionStorage.clear();
   
-  // Force redirect to login
-  window.location.href = "/login";
+  // Do not redirect here - let auth context handle navigation
+  // This prevents competing navigation calls during logout
 }
 
 export async function getCurrentUser(): Promise<User | null> {
