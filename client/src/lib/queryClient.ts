@@ -69,6 +69,15 @@ export const getQueryFn: <T>(options: {
       credentials: "include",
     });
 
+    // Log 404 errors to identify what's causing them
+    if (res.status === 404) {
+      console.error('🔴 404 ERROR:', {
+        url: queryKey[0],
+        status: res.status,
+        timestamp: new Date().toISOString()
+      });
+    }
+
     // If we get 401/404 after logout, just return null silently instead of logging errors
     if ((res.status === 401 || res.status === 404) && unauthorizedBehavior === "returnNull") {
       return null;

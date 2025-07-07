@@ -111,7 +111,7 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
-- July 07, 2025: LOGOUT 404 ERROR FINALLY RESOLVED - Fixed authentication state race condition causing post-logout API calls
+- July 07, 2025: LOGOUT 404 ERROR INVESTIGATION - Deep investigation into persistent 404 errors after logout
   - **ROOT CAUSE IDENTIFIED**: Authentication state not being set to null immediately upon logout, causing timing race condition
   - **Race Condition Problem**: Components making API calls in the brief window between logout and authentication state update
   - **Critical Fix Applied**: Modified logout function to set `setUser(null)` as the FIRST action to immediately stop all authenticated queries

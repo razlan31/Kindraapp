@@ -117,14 +117,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = () => {
+    console.log("🔴 LOGOUT START");
+    
     setUser(null);
     queryClient.cancelQueries(); // Cancel all running queries immediately
     queryClient.clear();
     localStorage.clear();
     sessionStorage.clear();
     
-    fetch("/api/logout", { method: "POST", credentials: "include" }).catch(() => {});
+    console.log("🔴 LOGOUT: State cleared, making server call");
     
+    fetch("/api/logout", { method: "POST", credentials: "include" })
+      .then(res => console.log("🔴 LOGOUT: Server response:", res.status))
+      .catch(err => console.log("🔴 LOGOUT: Server error:", err));
+    
+    console.log("🔴 LOGOUT: Redirecting to home");
     window.location.replace("/");
   };
 
