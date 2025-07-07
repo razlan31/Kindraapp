@@ -142,12 +142,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
       
       // Only redirect after server logout is complete
-      console.log("🚨🚨🚨 REDIRECTING TO HOME");
-      window.location.replace("/");
+      console.log("🚨🚨🚨 REDIRECTING TO LOGIN");
+      window.location.replace("/login");
     } catch (err) {
       console.log("🚨🚨🚨 SERVER ERROR:", err);
       // Even if server error, still redirect to prevent stuck state
-      window.location.replace("/");
+      window.location.replace("/login");
     }
   };
 
