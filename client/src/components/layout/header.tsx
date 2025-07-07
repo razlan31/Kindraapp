@@ -67,12 +67,14 @@ export function Header() {
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            console.log("🔴 DIRECT: Raw button clicked, calling logout");
+            console.log("🔴🔴🔴 DIRECT BUTTON CLICKED - CALLING LOGOUT");
             setLoggingOut(true);
             try {
+              console.log("🔴🔴🔴 DIRECT: About to call logout function");
               logout(); // Now synchronous - no await needed
+              console.log("🔴🔴🔴 DIRECT: Logout function returned");
             } catch (error) {
-              console.error("🔴 DIRECT: Logout failed:", error);
+              console.error("🔴🔴🔴 DIRECT: Logout failed:", error);
               setLoggingOut(false);
             }
           }}
@@ -149,13 +151,15 @@ export function Header() {
                     className="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 text-left"
                     disabled={loggingOut}
                     onClick={() => {
-                      console.log("🔴 HEADER: Using auth context logout");
+                      console.log("🔴🔴🔴 HEADER BUTTON CLICKED - CALLING LOGOUT");
                       setDropdownOpen(false);
                       setLoggingOut(true);
                       try {
+                        console.log("🔴🔴🔴 HEADER: About to call logout function");
                         logout(); // Now synchronous
+                        console.log("🔴🔴🔴 HEADER: Logout function returned");
                       } catch (error) {
-                        console.error("🔴 HEADER: Logout failed:", error);
+                        console.error("🔴🔴🔴 HEADER: Logout failed:", error);
                         setLoggingOut(false);
                       }
                     }}
