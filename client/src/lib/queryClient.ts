@@ -22,13 +22,23 @@ async function throwIfResNotOk(res: Response) {
     } catch (e) {
       errorMessage = res.statusText;
     }
-    console.error('HTTP Error:', {
+    console.error('🔴 HTTP ERROR DETECTED:', {
       url: res.url,
       status: res.status,
       statusText: res.statusText,
       responseText: errorMessage,
-      headers: Object.fromEntries(res.headers.entries())
+      headers: Object.fromEntries(res.headers.entries()),
+      timestamp: new Date().toISOString(),
+      stack: new Error().stack
     });
+    
+    // Special logging for 404 errors to help debug logout issues
+    if (res.status === 404) {
+      console.error('🚨 404 ERROR STACKTRACE:', new Error().stack);
+      console.error('🚨 404 REQUEST URL:', res.url);
+      console.error('🚨 404 REQUEST TIME:', new Date().toISOString());
+    }
+    
     throw new Error(errorMessage);
   }
 }
@@ -55,6 +65,7 @@ export const getQueryFn: <T>(options: {
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
+    console.log('🔍 API REQUEST:', queryKey[0], 'at', new Date().toISOString());
     const res = await fetch(queryKey[0] as string, {
       credentials: "include",
     });
