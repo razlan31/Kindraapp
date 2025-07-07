@@ -5,6 +5,7 @@ import App from "./App";
 import "./index.css";
 
 console.log("🚨🚨🚨 MAIN.TSX EXECUTING - IMPORTING APP FROM", "./App");
+console.log("🚨🚨🚨 MAIN.TSX TIMESTAMP:", new Date().toISOString());
 // Removed duplicate providers - App.tsx has its own provider chain
 
 // Override JSON.parse globally to prevent extension errors

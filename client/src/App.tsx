@@ -136,7 +136,7 @@ function Router() {
 }
 
 function App() {
-  console.log("🚨🚨🚨 APP COMPONENT RENDERING");
+  console.log("🚨🚨🚨 APP COMPONENT RENDERING - TIMESTAMP:", new Date().toISOString());
   // Normal app initialization without forced redirects
 
   return (
