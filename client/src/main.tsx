@@ -3,9 +3,9 @@
 import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";
-import { ThemeProvider } from "./contexts/theme-context";
-import { AuthProvider } from "./contexts/auth-context";
-import { ModalProvider } from "./contexts/modal-context";
+
+console.log("🚨🚨🚨 MAIN.TSX EXECUTING - IMPORTING APP FROM", "./App");
+// Removed duplicate providers - App.tsx has its own provider chain
 
 // Override JSON.parse globally to prevent extension errors
 const originalJSONParse = JSON.parse;
@@ -88,12 +88,5 @@ window.addEventListener('error', (event) => {
 
 // Allow normal Replit PWA and WebSocket functionality
 
-createRoot(document.getElementById("root")!).render(
-  <ThemeProvider>
-    <AuthProvider>
-      <ModalProvider>
-        <App />
-      </ModalProvider>
-    </AuthProvider>
-  </ThemeProvider>
-);
+console.log("🚨🚨🚨 MAIN.TSX ABOUT TO RENDER APP TO DOM");
+createRoot(document.getElementById("root")!).render(<App />);
