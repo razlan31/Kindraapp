@@ -1,0 +1,165 @@
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+chunk-RPCDYKBN.js?v=3679b4a8:521 Warning: Maximum update depth exceeded. This can happen when a component calls setState inside useEffect, but useEffect either doesn't have a dependency array, or one of the dependencies changes on every render.
+    at https://ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.d…ner/workspace/node_modules/.vite/deps/chunk-TSMXHQXX.js?v=3679b4a8:1929:13
+    at https://ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.d…space/node_modules/.vite/deps/@radix-ui_react-popover.js?v=3679b4a8:116:13
+    at Provider (https://ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.d…unner/workspace/node_modules/.vite/deps/chunk-OXZDJRWN.js?v=3679b4a8:38:15)
+    at Provider (https://ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.d…unner/workspace/node_modules/.vite/deps/chunk-OXZDJRWN.js?v=3679b4a8:38:15)
+    at Popper (https://ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.d…ner/workspace/node_modules/.vite/deps/chunk-TSMXHQXX.js?v=3679b4a8:1921:11)
+    at Popover (https://ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.d…rkspace/node_modules/.vite/deps/@radix-ui_react-popover.js?v=3679b4a8:65:5)
+    at NotificationBell (https://ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev/src/components/notifications.tsx:31:31)
+    at div
+    at header
+    at Header (https://ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev/src/components/layout/header.tsx:28:39)
+    at div
+    at Activities (https://ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev/src/pages/activities.tsx:51:46)
+    at Route (https://ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.d…/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=3679b4a8:323:16)
+    at Switch (https://ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.d…/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=3679b4a8:379:17)
+    at Router (https://ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev/src/App.tsx?v=cql0KITsvucvYgdpIBZxI:58:40)
+    at Provider (https://ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.d…unner/workspace/node_modules/.vite/deps/chunk-OXZDJRWN.js?v=3679b4a8:38:15)
+    at TooltipProvider (https://ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.d…rkspace/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=3679b4a8:64:5)
+    at ModalProvider (https://ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev/src/contexts/modal-context.tsx:57:33)
+    at SyncProvider (https://ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev/src/contexts/sync-context.tsx:21:32)
+    at RelationshipFocusProvider (https://ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev/src/contexts/relationship-focus-context.tsx:31:45)
+    at ThemeProvider (https://ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev/src/contexts/theme-context.tsx:20:33)
+    at AuthProvider (https://ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev/src/contexts/auth-context.tsx:38:32)
+    at QueryClientProvider (https://ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.d…rkspace/node_modules/.vite/deps/@tanstack_react-query.js?v=3679b4a8:2805:3)
+    at App
+    at ModalProvider (https://ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev/src/contexts/modal-context.tsx?v=cql0KITsvucvYgdpIBZxI:57:33)
+    at AuthProvider (https://ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev/src/contexts/auth-context.tsx?v=cql0KITsvucvYgdpIBZxI:38:32)
+    at ThemeProvider (https://ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev/src/contexts/theme-context.tsx?v=cql0KITsvucvYgdpIBZxI:20:33)
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+connection-detailed-modal.tsx:101 Connection Data Debug: 
+{originalConnection: null, allConnections: 20, currentConnection: null, renderKey: 0}
+﻿
