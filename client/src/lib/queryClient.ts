@@ -34,9 +34,11 @@ async function throwIfResNotOk(res: Response) {
     
     // Special logging for 404 errors to help debug logout issues
     if (res.status === 404) {
-      console.error('🚨 404 ERROR STACKTRACE:', new Error().stack);
-      console.error('🚨 404 REQUEST URL:', res.url);
-      console.error('🚨 404 REQUEST TIME:', new Date().toISOString());
+      console.error('🔥🔥🔥 404 ERROR DETECTED 🔥🔥🔥');
+      console.error('🔥 404 URL:', res.url);
+      console.error('🔥 404 METHOD:', res.method || 'GET');
+      console.error('🔥 404 TIME:', new Date().toISOString());
+      console.error('🔥 404 STACK:', new Error().stack);
     }
     
     throw new Error(errorMessage);
