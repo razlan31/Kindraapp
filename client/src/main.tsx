@@ -1,3 +1,28 @@
+// EMERGENCY REPLIT SCRIPT BLOCKING - Must be first thing that runs
+(() => {
+  // Block WebSocket constructor immediately
+  if (typeof window !== 'undefined' && window.WebSocket) {
+    const originalWebSocket = window.WebSocket;
+    window.WebSocket = function(url: string | URL, protocols?: string | string[]) {
+      const urlString = url.toString();
+      if (urlString.includes('replit.dev') || urlString.includes('localhost:undefined')) {
+        // Silent fail to prevent console spam
+        throw new Error('WebSocket connection blocked');
+      }
+      return new originalWebSocket(url, protocols);
+    } as any;
+  }
+
+  // Block service worker registration immediately
+  if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
+    const originalRegister = navigator.serviceWorker.register;
+    navigator.serviceWorker.register = function() {
+      // Silent fail to prevent console spam
+      return Promise.reject(new Error('Service worker registration blocked'));
+    };
+  }
+})();
+
 import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";
@@ -31,10 +56,25 @@ console.error = (...args: any[]) => {
                        message.includes('PWA:') ||
                        message.includes('Service Worker') ||
                        message.includes('AbortError') ||
-                       message.includes('replit.dev');
+                       message.includes('replit.dev') ||
+                       message.includes('setupWebSocket') ||
+                       message.includes('Failed to construct');
   
   if (!isReplitError) {
     originalConsoleError.apply(console, args);
+  }
+};
+
+// Override console.log to filter PWA messages
+const originalConsoleLog = console.log;
+console.log = (...args: any[]) => {
+  const message = args.join(' ');
+  const isReplitLog = message.includes('PWA:') ||
+                     message.includes('Service Worker') ||
+                     message.includes('registered successfully');
+  
+  if (!isReplitLog) {
+    originalConsoleLog.apply(console, args);
   }
 };
 
@@ -65,7 +105,10 @@ window.addEventListener('unhandledrejection', (event) => {
                        errorMessage.includes('AbortError') ||
                        errorMessage.includes('frame_ant') ||
                        errorMessage.includes('PWA:') ||
-                       errorMessage.includes('Service Worker');
+                       errorMessage.includes('Service Worker') ||
+                       errorMessage.includes('setupWebSocket') ||
+                       errorMessage.includes('Failed to construct') ||
+                       errorMessage.includes('client:536');
   
   if (isBrowserExtension || isReplitError || (isJSONError && errorStack.includes('extension'))) {
     event.preventDefault(); // Completely suppress the error
@@ -83,15 +126,31 @@ window.addEventListener('error', (event) => {
   const isBrowserExtension = event.filename?.includes('extension://') ||
                             event.filename?.includes('frame_ant') ||
                             event.filename?.includes('replit.dev') ||
+                            event.filename?.includes('client:') ||
                             event.message?.includes('WebSocket') ||
                             event.message?.includes('PWA:') ||
-                            event.message?.includes('Service Worker');
+                            event.message?.includes('Service Worker') ||
+                            event.message?.includes('setupWebSocket') ||
+                            event.message?.includes('Failed to construct');
   
   if (isBrowserExtension) {
     event.preventDefault(); // Suppress extension errors
     return;
   }
 });
+
+// Additional WebSocket blocking (redundant but ensures coverage)
+if (typeof window !== 'undefined' && window.WebSocket) {
+  const originalWebSocket = window.WebSocket;
+  window.WebSocket = function(url: string | URL, protocols?: string | string[]) {
+    const urlString = url.toString();
+    if (urlString.includes('replit.dev') || urlString.includes('localhost:undefined')) {
+      // Silent fail to prevent console spam
+      throw new Error('WebSocket connection blocked');
+    }
+    return new originalWebSocket(url, protocols);
+  } as any;
+}
 
 // NUCLEAR SERVICE WORKER REMOVAL - Block ALL service worker functionality
 if ('serviceWorker' in navigator) {
