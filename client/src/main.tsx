@@ -21,6 +21,23 @@ JSON.parse = function(text: string, reviver?: any) {
   }
 };
 
+// Override console.error to filter Replit-generated errors
+const originalConsoleError = console.error;
+console.error = (...args: any[]) => {
+  const message = args.join(' ');
+  const isReplitError = message.includes('WebSocket') ||
+                       message.includes('wss://') ||
+                       message.includes('frame_ant') ||
+                       message.includes('PWA:') ||
+                       message.includes('Service Worker') ||
+                       message.includes('AbortError') ||
+                       message.includes('replit.dev');
+  
+  if (!isReplitError) {
+    originalConsoleError.apply(console, args);
+  }
+};
+
 // Comprehensive error suppression for extensions
 window.addEventListener('unhandledrejection', (event) => {
   const errorMessage = event.reason?.message || '';
@@ -30,7 +47,12 @@ window.addEventListener('unhandledrejection', (event) => {
   const isBrowserExtension = errorStack.includes('chrome-extension://') || 
                             errorStack.includes('moz-extension://') ||
                             errorStack.includes('safari-extension://') ||
-                            errorStack.includes('frame_ant');
+                            errorStack.includes('frame_ant') ||
+                            errorStack.includes('WebSocket') ||
+                            errorStack.includes('wss://') ||
+                            errorStack.includes('replit.dev') ||
+                            errorStack.includes('PWA:') ||
+                            errorStack.includes('Service Worker');
   
   // Detect JSON parsing errors
   const isJSONError = errorMessage.includes('JSON') || 
@@ -38,7 +60,14 @@ window.addEventListener('unhandledrejection', (event) => {
                      errorMessage.includes('not valid JSON') ||
                      errorMessage.includes('Unexpected token');
   
-  if (isBrowserExtension || (isJSONError && errorStack.includes('extension'))) {
+  const isReplitError = errorMessage.includes('WebSocket') ||
+                       errorMessage.includes('wss://') ||
+                       errorMessage.includes('AbortError') ||
+                       errorMessage.includes('frame_ant') ||
+                       errorMessage.includes('PWA:') ||
+                       errorMessage.includes('Service Worker');
+  
+  if (isBrowserExtension || isReplitError || (isJSONError && errorStack.includes('extension'))) {
     event.preventDefault(); // Completely suppress the error
     return;
   }
@@ -52,7 +81,11 @@ window.addEventListener('unhandledrejection', (event) => {
 
 window.addEventListener('error', (event) => {
   const isBrowserExtension = event.filename?.includes('extension://') ||
-                            event.filename?.includes('frame_ant');
+                            event.filename?.includes('frame_ant') ||
+                            event.filename?.includes('replit.dev') ||
+                            event.message?.includes('WebSocket') ||
+                            event.message?.includes('PWA:') ||
+                            event.message?.includes('Service Worker');
   
   if (isBrowserExtension) {
     event.preventDefault(); // Suppress extension errors

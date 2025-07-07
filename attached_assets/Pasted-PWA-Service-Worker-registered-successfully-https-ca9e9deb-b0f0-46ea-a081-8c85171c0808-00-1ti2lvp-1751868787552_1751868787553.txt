@@ -1,0 +1,133 @@
+PWA: Service Worker registered successfully: https://ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev/
+ PWA: Service Worker registered successfully: https://ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev/
+ Theme context initial load: light
+theme-context.tsx:16 Theme context initial load: light
+simplified-moment-modal.tsx:54 🔥 STATE DEBUG - isSubmitting changed: false
+simplified-moment-modal.tsx:58 🔥 STATE DEBUG - connectionId changed: 2 selectedConnectionId: null
+simplified-moment-modal.tsx:78 Modal useEffect - selectedDate from context: null
+simplified-moment-modal.tsx:79 Modal useEffect - editingMoment: null
+simplified-moment-modal.tsx:80 Modal useEffect - momentModalOpen: false
+simplified-moment-modal.tsx:83 🔥 MODAL OPEN - Resetting isSubmitting to false
+simplified-moment-modal.tsx:130 🔥 MODAL INIT - Setting connectionId: 2 from selectedConnectionId: null
+plan-modal.tsx:88 🔥 PLAN MODAL - Connection effect: [object Object]
+plan-modal.tsx:108 🔥 PLAN MODAL - Form init effect: [object Object]
+theme-context.tsx:24 Theme effect running: light
+theme-context.tsx:38 Applied theme: light
+theme-context.tsx:45 Theme stored to localStorage: light
+auth-context.tsx:45 Auth: Starting to load user, setting loading to true
+ Auth: Starting to load user, setting loading to true
+ Theme effect running: light
+ Applied theme: light
+ Theme stored to localStorage: light
+auth.ts:31 getCurrentUser successful: [object Object]
+auth-context.tsx:50 getCurrentUser successful: [object Object]
+auth-context.tsx:52 Auth context setting user: [object Object]
+auth-context.tsx:75 Auth: Finally block - setting loading to false
+auth.ts:31 getCurrentUser successful: [object Object]
+ getCurrentUser successful: [object Object]
+ Auth context setting user: [object Object]
+ Auth: Finally block - setting loading to false
+plan-modal.tsx:108 🔥 PLAN MODAL - Form init effect: [object Object]
+relationship-focus-context.tsx:34 Focus Context Debug: [object Object]
+relationship-focus-context.tsx:42 Found saved connection: [object Object]
+ai-chat-clean.tsx:48 Loading conversation data: [object Object]
+ai-chat-clean.tsx:54 Setting conversation from API: 
+client:536 WebSocket connection to 'wss://ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev/?token=f4Mw_DQDq0B6' failed: 
+setupWebSocket @ client:536Understand this error
+ Application Error: [object Object]
+(anonymous) @ ca9e9deb-b0f0-46ea-a…ITsvucvYgdpIBZxI:31Understand this error
+client:536 Uncaught (in promise) SyntaxError: Failed to construct 'WebSocket': The URL 'wss://localhost:undefined/?token=f4Mw_DQDq0B6' is invalid.Understand this error
+2frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.Understand this error
+pwa.ts:11 PWA: Service Worker registered successfully: https://ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev/
+pwa.ts:25 PWA: Service Worker registered successfully: https://ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev/
+theme-context.tsx:16 Theme context initial load: light
+theme-context.tsx:16 Theme context initial load: light
+simplified-moment-modal.tsx:54 🔥 STATE DEBUG - isSubmitting changed: false
+simplified-moment-modal.tsx:58 🔥 STATE DEBUG - connectionId changed: 2 selectedConnectionId: null
+simplified-moment-modal.tsx:78 Modal useEffect - selectedDate from context: null
+simplified-moment-modal.tsx:79 Modal useEffect - editingMoment: null
+simplified-moment-modal.tsx:80 Modal useEffect - momentModalOpen: false
+simplified-moment-modal.tsx:83 🔥 MODAL OPEN - Resetting isSubmitting to false
+simplified-moment-modal.tsx:130 🔥 MODAL INIT - Setting connectionId: 2 from selectedConnectionId: null
+plan-modal.tsx:88 🔥 PLAN MODAL - Connection effect: Object
+plan-modal.tsx:108 🔥 PLAN MODAL - Form init effect: Object
+theme-context.tsx:24 Theme effect running: light
+theme-context.tsx:38 Applied theme: light
+theme-context.tsx:45 Theme stored to localStorage: light
+auth-context.tsx:45 Auth: Starting to load user, setting loading to true
+auth-context.tsx:45 Auth: Starting to load user, setting loading to true
+theme-context.tsx:24 Theme effect running: light
+theme-context.tsx:38 Applied theme: light
+theme-context.tsx:45 Theme stored to localStorage: light
+auth.ts:31 getCurrentUser successful: Object
+auth-context.tsx:50 getCurrentUser successful: Object
+auth-context.tsx:52 Auth context setting user: Object
+auth-context.tsx:75 Auth: Finally block - setting loading to false
+auth.ts:31 getCurrentUser successful: Object
+auth-context.tsx:50 getCurrentUser successful: Object
+auth-context.tsx:52 Auth context setting user: Object
+auth-context.tsx:75 Auth: Finally block - setting loading to false
+plan-modal.tsx:108 🔥 PLAN MODAL - Form init effect: Object
+relationship-focus-context.tsx:34 Focus Context Debug: Object
+relationship-focus-context.tsx:42 Found saved connection: Object
+client:536 WebSocket connection to 'wss://ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev/?token=f4Mw_DQDq0B6' failed: 
+setupWebSocket @ client:536Understand this error
+main.tsx:48 Application Error: Object
+(anonymous) @ main.tsx:48Understand this error
+client:536 Uncaught (in promise) SyntaxError: Failed to construct 'WebSocket': The URL 'wss://localhost:undefined/?token=f4Mw_DQDq0B6' is invalid.
+    at setupWebSocket (client:536:19)
+    at fallback (client:509:16)
+    at WebSocket.<anonymous> (client:555:7)Understand this error
+frame_ant.js:2 Uncaught (in promise) AbortError: The user aborted a request.
+e @ frame_ant.js:2
+s @ frame_ant.js:2
+Promise.then
+e @ frame_ant.js:2
+u @ frame_ant.js:2
+Promise.then
+e @ frame_ant.js:2
+u @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+s @ frame_ant.js:2
+(anonymous) @ frame_ant.js:2
+(anonymous) @ _app-1dfc359d2d776d85.js:38
+(anonymous) @ _app-1dfc359d2d776d85.js:25
+e @ _app-1dfc359d2d776d85.js:14
+t.subscribe @ _app-1dfc359d2d776d85.js:14
+e.consumeQueue @ _app-1dfc359d2d776d85.js:25
+(anonymous) @ _app-1dfc359d2d776d85.js:25
+n @ _app-1dfc359d2d776d85.js:38
+setTimeout
+(anonymous) @ _app-1dfc359d2d776d85.js:38
+e.scheduleQueueConsumption @ _app-1dfc359d2d776d85.js:25
+(anonymous) @ _app-1dfc359d2d776d85.js:25
+e @ _app-1dfc359d2d776d85.js:14
+t.subscribe @ _app-1dfc359d2d776d85.js:14
+(anonymous) @ _app-1dfc359d2d776d85.js:25
+e @ _app-1dfc359d2d776d85.js:14
+t.subscribe @ _app-1dfc359d2d776d85.js:14
+e.try @ _app-1dfc359d2d776d85.js:25
+e.start @ _app-1dfc359d2d776d85.js:25
+t.request @ _app-1dfc359d2d776d85.js:25
+(anonymous) @ _app-1dfc359d2d776d85.js:14
+(anonymous) @ _app-1dfc359d2d776d85.js:14
+(anonymous) @ _app-1dfc359d2d776d85.js:25
+(anonymous) @ _app-1dfc359d2d776d85.js:14
+e.execute @ _app-1dfc359d2d776d85.js:14
+e.getObservableFromLink @ _app-1dfc359d2d776d85.js:11
+(anonymous) @ _app-1dfc359d2d776d85.js:11
+(anonymous) @ _app-1dfc359d2d776d85.js:11
+(anonymous) @ _app-1dfc359d2d776d85.js:11
+(anonymous) @ _app-1dfc359d2d776d85.js:11
+s @ _app-1dfc359d2d776d85.js:11
+e.mutate @ _app-1dfc359d2d776d85.js:11
+e.mutate @ _app-1dfc359d2d776d85.js:11
+(anonymous) @ _app-1dfc359d2d776d85.js:14
+(anonymous) @ _app-1dfc359d2d776d85.js:40
+(anonymous) @ main-b1d98e5b70c3078c.js:1
+n @ main-b1d98e5b70c3078c.js:1
+u @ main-b1d98e5b70c3078c.js:1
+(anonymous) @ main-b1d98e5b70c3078c.js:1
+(anonymous) @ main-b1d98e5b70c3078c.js:1
+n @ _app-1dfc359d2d776d85.js:38Understand this error
