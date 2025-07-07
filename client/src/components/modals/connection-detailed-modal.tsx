@@ -76,7 +76,7 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
   // Listen for connection update events
   useEffect(() => {
     const handleConnectionUpdated = async () => {
-      console.log("Connection updated event received, forcing refresh...");
+      // Connection updated event received, forcing refresh...
       // Invalidate queries first
       await queryClient.invalidateQueries({ queryKey: ['/api/connections'] });
       // Force refetch
@@ -97,13 +97,7 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
     ? (allConnections as Connection[]).find(c => c.id === connection.id) || connection
     : connection;
 
-  // Debug connection data - REMOVED TO PREVENT INFINITE LOOP
-  // console.log("Connection Data Debug:", {
-  //   originalConnection: connection,
-  //   allConnections: allConnections.length,
-  //   currentConnection,
-  //   renderKey
-  // });
+  // INFINITE LOOP PREVENTION - ALL DEBUG LOGS REMOVED
 
   const handleEditSuccess = () => {
     // Force complete re-render by updating key

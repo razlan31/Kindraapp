@@ -786,14 +786,15 @@ export default function Activities() {
         moment={selectedMomentForResolution}
       />
       
-      <ConnectionDetailedModal
+      {/* TEMPORARILY DISABLED ConnectionDetailedModal DUE TO INFINITE LOOP BUG */}
+      {/* <ConnectionDetailedModal
         isOpen={connectionDetailModalOpen}
         onClose={() => {
           setConnectionDetailModalOpen(false);
           setSelectedConnectionForModal(null);
         }}
         connection={selectedConnectionForModal}
-      />
+      /> */}
 
       {/* Plan Modal */}
       <PlanModal
