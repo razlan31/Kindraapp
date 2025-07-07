@@ -60,6 +60,12 @@ function Router() {
 
   // Redirect unauthenticated users trying to access protected routes
   useEffect(() => {
+    // Skip redirect logic for public pages during logout transition
+    const publicPages = ['/', '/login', '/landing'];
+    if (publicPages.includes(location)) {
+      return; // Don't redirect public pages
+    }
+    
     const protectedRoutes = ['/app', '/dashboard', '/connections', '/activities', '/calendar', '/badges', '/insights', '/profile', '/settings', '/subscription', '/cycle', '/menstrual-cycle'];
     const isProtectedRoute = protectedRoutes.some(route => location.startsWith(route));
     
@@ -83,16 +89,20 @@ function Router() {
   }
 
   // Handle public routes immediately without auth state complications
+  // This prevents 404s during logout transitions
   if (location === '/login') {
+    console.log('🚨🚨🚨 RENDERING LOGIN PAGE DIRECTLY');
     return <Login />;
   }
   
   if (location === '/landing') {
+    console.log('🚨🚨🚨 RENDERING LANDING PAGE DIRECTLY');
     return <LandingPage />;
   }
 
   // Force landing page for unauthenticated users on root path
   if (location === '/' && !isAuthenticated && !loading) {
+    console.log('🚨🚨🚨 RENDERING LANDING PAGE FOR UNAUTHENTICATED ROOT');
     return <LandingPage />;
   }
 
