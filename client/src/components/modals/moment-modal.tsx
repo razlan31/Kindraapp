@@ -28,7 +28,7 @@ export function MomentModal() {
   // Fetch user connections
   const { data: connections = [] } = useQuery<Connection[]>({
     queryKey: ["/api/connections"],
-    enabled: momentModalOpen, // Always enabled since backend auto-authenticates
+    enabled: momentModalOpen && isAuthenticated, // Only when modal is open AND user is authenticated
   });
   
   // Form schema

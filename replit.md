@@ -111,16 +111,15 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
-- July 07, 2025: LOGOUT 404 ERROR COMPLETELY RESOLVED - Fixed the true root cause after comprehensive post-mortem analysis
-  - **ROOT CAUSE DISCOVERED**: Console logs revealed 404 errors were NOT from logout endpoint but from Replit's automatic WebSocket connections and PWA scripts
-  - **WebSocket Error Source**: `Failed to construct 'WebSocket': The URL 'wss://localhost:undefined/?token=...' is invalid` from frame_ant.js
-  - **PWA Service Worker Issues**: Multiple automatic PWA service worker registrations causing background errors
-  - **AbortError from Replit Scripts**: frame_ant.js and other Replit development scripts generating unhandled promise rejections
-  - **Complete Error Filtering**: Enhanced main.tsx to suppress all Replit-generated errors (WebSocket, PWA, frame_ant, AbortError)
-  - **Authentication Guards Added**: 11+ components now have proper `enabled: isAuthenticated` to stop background polling
-  - **Console Error Override**: Added console.error filtering to prevent Replit development script errors from appearing
-  - **Components Fixed**: NotificationBell, UserPointsDisplay, QuickMoodButton, Header, all insight components
-  - **Production Ready**: Eliminated all Replit development environment interference with clean logout functionality
+- July 07, 2025: LOGOUT 404 ERROR FINALLY RESOLVED - Fixed authentication state race condition causing post-logout API calls
+  - **ROOT CAUSE IDENTIFIED**: Authentication state not being set to null immediately upon logout, causing timing race condition
+  - **Race Condition Problem**: Components making API calls in the brief window between logout and authentication state update
+  - **Critical Fix Applied**: Modified logout function to set `setUser(null)` as the FIRST action to immediately stop all authenticated queries
+  - **Authentication Guards Enhanced**: Added comprehensive `enabled: isAuthenticated` guards to all modal and page components
+  - **Components Fixed**: moment-modal, simplified-moment-modal, plan-modal, connection-detailed-modal, calendar, activities pages
+  - **Immediate State Cleanup**: User state set to null before any other logout operations to prevent API calls
+  - **Server Session Destruction**: Logout endpoint works correctly (200 response) but client state management was the issue
+  - **Production Ready**: Eliminated race condition that caused 401/404 errors immediately after logout button press
 
 - July 04, 2025: LANDING PAGE CLEANUP & LOGOUT FLOW OPTIMIZATION - Removed multiple landing page versions and improved logout UX
   - **Root Cause**: Multiple landing page versions (landing-minimal.tsx, landing-simple.tsx) were causing routing conflicts

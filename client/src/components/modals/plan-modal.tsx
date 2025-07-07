@@ -100,7 +100,7 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
   // Fetch connections for the picker
   const { data: connections = [] } = useQuery<Connection[]>({
     queryKey: ['/api/connections'],
-    enabled: isOpen, // Only fetch when modal is open
+    enabled: isOpen && isAuthenticated, // Only fetch when modal is open AND user is authenticated
   });
 
   // Initialize form data when editing an existing plan or creating new one

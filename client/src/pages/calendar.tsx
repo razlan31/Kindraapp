@@ -209,6 +209,7 @@ export default function Calendar() {
   const { data: connections = [] } = useQuery<Connection[]>({
     queryKey: ["/api/connections"],
     staleTime: 0,
+    enabled: isAuthenticated,
   });
 
   // Fetch milestones

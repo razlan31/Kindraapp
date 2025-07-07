@@ -199,7 +199,7 @@ export function MomentModal() {
   // Fetch user connections
   const { data: connections = [] } = useQuery<Connection[]>({
     queryKey: ["/api/connections"],
-    enabled: momentModalOpen,
+    enabled: momentModalOpen && isAuthenticated,
   });
   
   // Mutation for creating/updating moments

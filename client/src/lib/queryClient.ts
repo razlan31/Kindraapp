@@ -74,6 +74,15 @@ export const getQueryFn: <T>(options: {
       return null;
     }
 
+    if (res.status === 404) {
+      console.error('🔴 404 ERROR DETECTED:', {
+        url: queryKey[0],
+        status: res.status,
+        timestamp: new Date().toISOString(),
+        stack: new Error().stack
+      });
+    }
+
     await throwIfResNotOk(res);
     
     // Handle empty responses or non-JSON content

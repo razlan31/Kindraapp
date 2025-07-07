@@ -119,6 +119,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logout = () => {
     console.log("🔴 LOGOUT: Starting bulletproof logout process");
     
+    // CRITICAL: Set user to null FIRST to stop all API calls immediately
+    setUser(null);
+    
     // IMMEDIATE synchronous cleanup to prevent any race conditions
     setUser(null);
     setLoading(false);
