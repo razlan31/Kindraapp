@@ -5,12 +5,14 @@ import { useModal } from "@/contexts/modal-context";
 import { useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Connection } from "@shared/schema";
+import { useAuth } from "@/contexts/auth-context";
 
 export function QuickMoodButton() {
   const { openMomentModal, setSelectedConnection: setModalSelectedConnection } = useModal();
   const [location] = useLocation();
   const [showConnections, setShowConnections] = useState(false);
   const [selectedConnection, setSelectedConnection] = useState<Connection | null>(null);
+  const { isAuthenticated } = useAuth();
   
   // Only show on specific pages
   const shouldShow = ["/", "/dashboard", "/moments", "/connections"].includes(location);
@@ -27,7 +29,7 @@ export function QuickMoodButton() {
   // Fetch connections
   const { data: connections = [] } = useQuery<Connection[]>({
     queryKey: ["/api/connections"],
-    enabled: shouldShow,
+    enabled: shouldShow && isAuthenticated, // Only run when authenticated and should show
   });
   
   if (!shouldShow) return null;

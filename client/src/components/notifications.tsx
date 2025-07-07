@@ -189,15 +189,20 @@ export function NotificationBell() {
 
 // Points and level display component
 export function UserPointsDisplay() {
+  const { isAuthenticated } = useAuth();
+  
   const { data: user } = useQuery({
     queryKey: ["/api/me"],
+    enabled: isAuthenticated, // Only run when authenticated
   });
 
   const { data: userBadges } = useQuery({
     queryKey: ["/api/user-badges"],
+    enabled: isAuthenticated, // Only run when authenticated
   });
 
-  if (!user) return null;
+  // Don't render anything if user is not authenticated
+  if (!isAuthenticated || !user) return null;
 
   const levelInfo = getLevelInfo(user.points || 0);
   
