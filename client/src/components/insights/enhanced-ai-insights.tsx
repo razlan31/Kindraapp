@@ -19,7 +19,7 @@ export function EnhancedAIInsights({ connections, moments, userData }: EnhancedA
   // Fetch menstrual cycle data for correlation analysis
   const { data: menstrualCycles = [] } = useQuery<MenstrualCycle[]>({
     queryKey: ['/api/menstrual-cycles'],
-    enabled: isAuthenticated, // Only fetch when authenticated
+    enabled: isAuthenticated && !!user, // Only fetch when authenticated
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 

@@ -29,7 +29,7 @@ export function QuickMoodButton() {
   // Fetch connections
   const { data: connections = [] } = useQuery<Connection[]>({
     queryKey: ["/api/connections"],
-    enabled: shouldShow && isAuthenticated, // Only run when authenticated and should show
+    enabled: shouldShow && isAuthenticated && !!user, // Only run when authenticated and should show
   });
   
   if (!shouldShow) return null;

@@ -31,11 +31,11 @@ interface Notification {
 export function NotificationBell() {
   const [isOpen, setIsOpen] = useState(false);
   const queryClient = useQueryClient();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
 
   const { data: notifications = [], isLoading } = useQuery({
     queryKey: ["/api/notifications"],
-    enabled: isAuthenticated, // Only run when authenticated
+    enabled: isAuthenticated && !!user, // Only run when authenticated
     refetchInterval: isAuthenticated ? 60000 : false, // Only poll when authenticated
     staleTime: 30000, // Consider data stale after 30 seconds
     refetchOnWindowFocus: false,
@@ -189,22 +189,22 @@ export function NotificationBell() {
 
 // Points and level display component
 export function UserPointsDisplay() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   
-  const { data: user } = useQuery({
+  const { data: userData } = useQuery({
     queryKey: ["/api/me"],
-    enabled: isAuthenticated, // Only run when authenticated
+    enabled: isAuthenticated && !!user, // Only run when authenticated
   });
 
   const { data: userBadges } = useQuery({
     queryKey: ["/api/user-badges"],
-    enabled: isAuthenticated, // Only run when authenticated
+    enabled: isAuthenticated && !!user, // Only run when authenticated
   });
 
   // Don't render anything if user is not authenticated
-  if (!isAuthenticated || !user) return null;
+  if (!isAuthenticated || !userData) return null;
 
-  const levelInfo = getLevelInfo(user.points || 0);
+  const levelInfo = getLevelInfo(userData.points || 0);
   
   // Get the latest badge
   const latestBadge = userBadges && Array.isArray(userBadges) && userBadges.length > 0 

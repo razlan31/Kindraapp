@@ -43,7 +43,7 @@ export function WeeklyRelationshipInsights({ connections, moments, userData }: W
   // Fetch weekly insights
   const { data: weeklyInsight, isLoading, refetch } = useQuery<WeeklyInsight>({
     queryKey: ['/api/weekly-insights', currentWeek],
-    enabled: isAuthenticated && moments.length >= 5, // Only fetch if authenticated and sufficient data
+    enabled: isAuthenticated && !!user && moments.length >= 5, // Only fetch if authenticated and sufficient data
     staleTime: 1000 * 60 * 60 * 24 * 7, // Cache for 1 week
     retry: 1,
   });

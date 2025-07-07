@@ -32,7 +32,7 @@ export function QuoteOfTheDay({ connections, moments, userData }: QuoteOfTheDayP
   // Fetch daily quote
   const { data: quote, isLoading, refetch } = useQuery<DailyQuote>({
     queryKey: ['/api/quote-of-the-day', today],
-    enabled: isAuthenticated && (connections.length > 0 || moments.length > 0),
+    enabled: isAuthenticated && !!user && (connections.length > 0 || moments.length > 0),
     staleTime: 1000 * 60 * 60 * 12, // 12 hours - so it refreshes twice a day
     retry: 1,
   });
