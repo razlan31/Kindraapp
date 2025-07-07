@@ -97,13 +97,7 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
     ? (allConnections as Connection[]).find(c => c.id === connection.id) || connection
     : connection;
 
-  // Debug connection data
-  console.log("Connection Data Debug:", {
-    originalConnection: connection,
-    allConnections: allConnections.length,
-    currentConnection,
-    renderKey
-  });
+  // Removed infinite loop debug log
 
   const handleEditSuccess = () => {
     // Force complete re-render by updating key
