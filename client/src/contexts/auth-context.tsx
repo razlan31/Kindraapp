@@ -117,21 +117,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = () => {
-    console.log("🔴🔴🔴 LOGOUT FUNCTION CALLED - VERSION 2");
+    console.log("🚨🚨🚨 LOGOUT FUNCTION EXECUTING - IMMEDIATE ACTION");
     
+    // Set user to null FIRST to prevent any component queries
     setUser(null);
+    console.log("🚨🚨🚨 USER STATE SET TO NULL");
+    
     queryClient.cancelQueries();
     queryClient.clear();
     localStorage.clear();
     sessionStorage.clear();
+    console.log("🚨🚨🚨 ALL DATA CLEARED");
     
-    console.log("🔴🔴🔴 MAKING SERVER LOGOUT CALL");
+    console.log("🚨🚨🚨 MAKING SERVER LOGOUT CALL");
     
     fetch("/api/logout", { method: "POST", credentials: "include" })
-      .then(res => console.log("🔴🔴🔴 SERVER RESPONSE:", res.status))
-      .catch(err => console.log("🔴🔴🔴 SERVER ERROR:", err));
+      .then(res => console.log("🚨🚨🚨 SERVER RESPONSE:", res.status))
+      .catch(err => console.log("🚨🚨🚨 SERVER ERROR:", err));
     
-    console.log("🔴🔴🔴 REDIRECTING TO HOME");
+    console.log("🚨🚨🚨 REDIRECTING TO HOME");
     window.location.replace("/");
   };
 

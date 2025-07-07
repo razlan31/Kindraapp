@@ -19,7 +19,7 @@ export default function ProfileCleanPage() {
   // Fetch user data directly
   const { data: user, isLoading } = useQuery({
     queryKey: ['/api/me'],
-    enabled: isAuthenticated, // Only fetch when authenticated
+    enabled: isAuthenticated && !!user, // Only fetch when authenticated
     staleTime: 5 * 60 * 1000
   });
 

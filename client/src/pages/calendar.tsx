@@ -209,14 +209,14 @@ export default function Calendar() {
   const { data: connections = [] } = useQuery<Connection[]>({
     queryKey: ["/api/connections"],
     staleTime: 0,
-    enabled: isAuthenticated,
+    enabled: isAuthenticated && !!user,
   });
 
   // Fetch milestones
   const { data: milestones = [] } = useQuery({
     queryKey: ["/api/milestones", selectedConnectionId],
     staleTime: 0,
-    enabled: isAuthenticated,
+    enabled: isAuthenticated && !!user,
   });
 
   // Fetch menstrual cycles with aggressive cache invalidation

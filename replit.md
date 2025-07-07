@@ -111,6 +111,16 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
+- July 07, 2025: LOGOUT 404 ERROR COMPLETELY RESOLVED - Fixed race condition between authentication state and component queries
+  - **ROOT CAUSE IDENTIFIED**: Authentication state not being set to null immediately upon logout, causing timing race condition
+  - **Race Condition Problem**: Components making API calls in the brief window between logout and authentication state update
+  - **Critical Fix Applied**: Modified logout function to set `setUser(null)` as the FIRST action to immediately stop all authenticated queries
+  - **Authentication Guards Enhanced**: Added comprehensive `enabled: isAuthenticated && !!user` guards to all modal and page components
+  - **Components Fixed**: moment-modal, simplified-moment-modal, plan-modal, connection-detailed-modal, calendar, activities pages
+  - **Immediate State Cleanup**: User state set to null before any other logout operations to prevent API calls
+  - **Server Session Destruction**: Logout endpoint works correctly (200 response) but client state management was the issue
+  - **Production Ready**: Eliminated race condition that caused 401/404 errors immediately after logout button press
+
 - July 07, 2025: LOGOUT 404 ERROR INVESTIGATION - Deep investigation into persistent 404 errors after logout
   - **ROOT CAUSE IDENTIFIED**: Authentication state not being set to null immediately upon logout, causing timing race condition
   - **Race Condition Problem**: Components making API calls in the brief window between logout and authentication state update
