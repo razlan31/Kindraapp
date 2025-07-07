@@ -49,9 +49,10 @@ function Router() {
     }
   }, [location, setLocation]);
 
-  // Debug logging (reduced to prevent console spam)
+  // Enhanced debug logging to track routing issues
   useEffect(() => {
-    console.log('🔍 Router state:', { location, isAuthenticated, loading });
+    console.log('🚨🚨🚨 ROUTER STATE:', { location, isAuthenticated, loading });
+    console.log('🚨🚨🚨 CURRENT URL PATH:', window.location.pathname);
   }, [location, isAuthenticated, loading]);
 
   // Redirect unauthenticated users trying to access protected routes
@@ -111,7 +112,12 @@ function Router() {
       <Route path="/connections" component={Connections} />
       <Route path="/connections/:id/edit" component={ConnectionEdit} />
       <Route path="/connections/:id" component={ConnectionDetail} />
-      <Route path="/activities" component={Activities} />
+      <Route path="/activities">
+        {() => {
+          console.log("🚨🚨🚨 ACTIVITIES ROUTE MATCHED - RENDERING COMPONENT");
+          return <Activities />;
+        }}
+      </Route>
       <Route path="/calendar" component={Calendar} />
       <Route path="/badges" component={Badges} />
       <Route path="/insights" component={Insights} />
