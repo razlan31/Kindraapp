@@ -33,12 +33,12 @@ export const RelationshipFocusProvider: React.FC<{ children: React.ReactNode }> 
     
     console.log('Focus Context Debug:', {
       savedId,
-      connectionsLength: connections.length,
+      connectionsLength: connections?.length || 0,
       connections
     });
     
-    if (savedId && connections.length > 0) {
-      const savedConnection = connections.find(c => c.id === parseInt(savedId));
+    if (savedId && connections && connections.length > 0) {
+      const savedConnection = connections?.find(c => c.id === parseInt(savedId));
       console.log('Found saved connection:', savedConnection);
       if (savedConnection) {
         setMainFocusConnectionObject(savedConnection);

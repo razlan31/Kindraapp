@@ -17,6 +17,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useModal } from "@/contexts/modal-context";
 import { useSync } from "@/contexts/sync-context";
+import { useAuth } from "@/contexts/auth-context";
 import { z } from "zod";
 import { 
   DropdownMenu, 
@@ -52,6 +53,7 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
   const { toast } = useToast();
   const { triggerConnectionSync } = useSync();
   const { selectedDate: contextSelectedDate, setSelectedConnection } = useModal();
+  const { isAuthenticated } = useAuth();
   const queryClient = useQueryClient();
   
   // Local connection state for picker
@@ -110,12 +112,12 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
       isOpen,
       selectedConnection,
       contextSelectedDate,
-      connectionsCount: connections.length
+      connectionsCount: connections?.length || 0
     });
     
-    if (editingMoment && isOpen && connections.length > 0) {
+    if (editingMoment && isOpen && connections && connections.length > 0) {
       // Find the connection for the editing moment
-      const momentConnection = connections.find(c => c.id === editingMoment.connectionId);
+      const momentConnection = connections?.find(c => c.id === editingMoment.connectionId);
       
       setFormData({
         title: editingMoment.title || "",
@@ -383,7 +385,7 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-full">
-                {connections.map((connection) => (
+                {connections?.map((connection) => (
                   <DropdownMenuItem
                     key={connection.id}
                     onClick={() => {

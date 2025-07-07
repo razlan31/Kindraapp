@@ -118,6 +118,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const logout = () => {
     setUser(null);
+    queryClient.cancelQueries(); // Cancel all running queries immediately
     queryClient.clear();
     localStorage.clear();
     sessionStorage.clear();

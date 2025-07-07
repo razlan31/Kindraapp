@@ -22,7 +22,7 @@ import { cn } from "@/lib/utils";
 
 export function MomentModal() {
   const { momentModalOpen, closeMomentModal, selectedConnectionId, activityType, editingMoment, selectedDate, setSelectedConnection } = useModal();
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const { triggerConnectionSync } = useSync();
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -676,7 +676,7 @@ export function MomentModal() {
                 <SelectValue placeholder="Select a connection" />
               </SelectTrigger>
               <SelectContent>
-                {connections.map((connection) => (
+                {connections?.map((connection) => (
                   <SelectItem 
                     key={connection.id} 
                     value={connection.id.toString()}
