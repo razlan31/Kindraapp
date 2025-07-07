@@ -1,0 +1,34 @@
+
+auth-context.tsx:45 Auth: Starting to load user, setting loading to true
+theme-context.tsx:24 Theme effect running: light
+theme-context.tsx:38 Applied theme: light
+theme-context.tsx:45 Theme stored to localStorage: light
+auth.ts:31 getCurrentUser successful: 
+{id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+auth-context.tsx:50 getCurrentUser successful: 
+{id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+auth-context.tsx:52 Auth context setting user: 
+{id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+auth-context.tsx:75 Auth: Finally block - setting loading to false
+auth.ts:31 getCurrentUser successful: 
+{id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+auth-context.tsx:50 getCurrentUser successful: 
+{id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+auth-context.tsx:52 Auth context setting user: 
+{id: '8', email: 'jagohtrade@gmail.com', firstName: null, lastName: null, profileImageUrl: null, …}
+auth-context.tsx:75 Auth: Finally block - setting loading to false
+plan-modal.tsx:108 🔥 PLAN MODAL - Form init effect: 
+{editingMoment: false, isOpen: false, selectedConnection: null, contextSelectedDate: null, connectionsCount: 20}
+relationship-focus-context.tsx:34 Focus Context Debug: 
+{savedId: '30', connectionsLength: 20, connections: Array(20)}
+relationship-focus-context.tsx:42 Found saved connection: 
+{id: 30, userId: '8', name: 'ghjghjhgjg', profileImage: null, relationshipStage: 'Dating', …}
+client:536 WebSocket connection to 'wss://ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev/?token=f4Mw_DQDq0B6' failed: 
+main.tsx:48 Application Error: 
+{message: "Failed to construct 'WebSocket': The URL 'wss://localhost:undefined/?token=f4Mw_DQDq0B6' is invalid.", stack: "SyntaxError: Failed to construct 'WebSocket': The …1ti2lvpbxeuft.worf.replit.dev/@vite/client:555:7)"}
+client:536 Uncaught (in promise) SyntaxError: Failed to construct 'WebSocket': The URL 'wss://localhost:undefined/?token=f4Mw_DQDq0B6' is invalid.
+    at setupWebSocket (client:536:19)
+    at fallback (client:509:16)
+    at WebSocket.<anonymous> (client:555:7)
+﻿
+

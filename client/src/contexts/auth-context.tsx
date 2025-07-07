@@ -116,7 +116,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const logout = () => {
+  const logout = async () => {
     console.log("🚨🚨🚨 LOGOUT FUNCTION EXECUTING - IMMEDIATE ACTION");
     
     // Set user to null FIRST to prevent any component queries
@@ -131,12 +131,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     
     console.log("🚨🚨🚨 MAKING SERVER LOGOUT CALL");
     
-    fetch("/api/logout", { method: "POST", credentials: "include" })
-      .then(res => console.log("🚨🚨🚨 SERVER RESPONSE:", res.status))
-      .catch(err => console.log("🚨🚨🚨 SERVER ERROR:", err));
-    
-    console.log("🚨🚨🚨 REDIRECTING TO HOME");
-    window.location.replace("/");
+    try {
+      const res = await fetch("/api/logout", { method: "POST", credentials: "include" });
+      console.log("🚨🚨🚨 SERVER RESPONSE:", res.status);
+      
+      // Only redirect after server logout is complete
+      console.log("🚨🚨🚨 REDIRECTING TO HOME");
+      window.location.replace("/");
+    } catch (err) {
+      console.log("🚨🚨🚨 SERVER ERROR:", err);
+      // Even if server error, still redirect to prevent stuck state
+      window.location.replace("/");
+    }
   };
 
   const refreshUser = async () => {

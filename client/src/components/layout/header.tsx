@@ -33,7 +33,7 @@ export function Header() {
   // Use React Query to get the latest user data including profile picture
   const { data: userData } = useQuery({
     queryKey: ['/api/me'],
-    enabled: isAuthenticated && !!useAuth().user, // Only run when authenticated AND user exists
+    enabled: isAuthenticated && !!user, // Only run when authenticated AND user exists
     staleTime: 5 * 60 * 1000, // 5 minutes
     refetchOnWindowFocus: false,
   });
