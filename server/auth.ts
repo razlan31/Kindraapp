@@ -23,13 +23,15 @@ export function getSession() {
     store: sessionStore,
     resave: false,
     saveUninitialized: false,
-    rolling: true,
+    rolling: false, // Disable rolling to prevent session timing conflicts
     cookie: {
       httpOnly: true,
       secure: false,
       maxAge: sessionTtl,
       sameSite: 'lax',
     },
+    // Immediate session destruction settings
+    unset: 'destroy',
   });
 }
 

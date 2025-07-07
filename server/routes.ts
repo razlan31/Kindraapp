@@ -319,22 +319,49 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // POST logout endpoint - handles the mysterious POST request
+  // BULLETPROOF POST logout endpoint - handles all logout scenarios
   app.post("/api/logout", (req, res) => {
-    console.log("🔴 SERVER: POST logout endpoint hit");
+    console.log("🔴 SERVER: Bulletproof logout endpoint hit");
     
-    // Destroy session
-    req.session.destroy((err) => {
-      if (err) {
-        console.error("Session destruction error:", err);
-      }
-      console.log("🔴 SERVER: Session destroyed via POST");
+    // Set headers to prevent caching and ensure proper response
+    res.set({
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0',
+      'Content-Type': 'application/json'
     });
     
-    // Return success response
+    // Destroy session immediately
+    if (req.session) {
+      req.session.destroy((err) => {
+        if (err) {
+          console.error("🔴 SERVER: Session destruction error:", err);
+        } else {
+          console.log("🔴 SERVER: Session destroyed successfully");
+        }
+      });
+    }
+    
+    // Also call passport logout if available
+    if (req.logout) {
+      req.logout((err) => {
+        if (err) {
+          console.error("🔴 SERVER: Passport logout error:", err);
+        } else {
+          console.log("🔴 SERVER: Passport logout successful");
+        }
+      });
+    }
+    
+    // Clear any cookies immediately
+    res.clearCookie('connect.sid');
+    res.clearCookie('session');
+    
+    // Return success response immediately
     res.status(200).json({ 
+      success: true,
       message: "Logout successful",
-      redirect: "/login"
+      timestamp: new Date().toISOString()
     });
   });
 

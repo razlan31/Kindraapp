@@ -40,9 +40,18 @@ function Router() {
   const { isAuthenticated, loading } = useAuth();
   const [location, setLocation] = useLocation();
 
-  // Debug logging
+  // Synchronize Wouter location with browser location to prevent state mismatches
   useEffect(() => {
-    console.log('🔍 Router state:', { location, isAuthenticated, loading, pathname: window.location.pathname });
+    const browserPath = window.location.pathname;
+    if (location !== browserPath) {
+      console.log('🔄 Router sync:', { wouter: location, browser: browserPath });
+      setLocation(browserPath);
+    }
+  }, [location, setLocation]);
+
+  // Debug logging (reduced to prevent console spam)
+  useEffect(() => {
+    console.log('🔍 Router state:', { location, isAuthenticated, loading });
   }, [location, isAuthenticated, loading]);
 
   // Redirect unauthenticated users trying to access protected routes

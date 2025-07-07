@@ -116,51 +116,61 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const logout = async () => {
-    console.log("🔴 LOGOUT: Starting unified logout process");
+  const logout = () => {
+    console.log("🔴 LOGOUT: Starting bulletproof logout process");
     
-    try {
-      // First, make POST request to ensure session is destroyed
-      await fetch('/api/logout', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include'
-      });
-      console.log("🔴 LOGOUT: Session destroyed on server");
-    } catch (error) {
-      console.error("🔴 LOGOUT: Server logout failed, proceeding with client cleanup:", error);
-    }
-    
-    // Clear local state immediately
+    // IMMEDIATE synchronous cleanup to prevent any race conditions
     setUser(null);
-    localStorage.clear();
-    sessionStorage.clear();
-    queryClient.clear();
+    setLoading(false);
     
-    // Clear cookies
-    document.cookie.split(";").forEach(function(c) {
-      document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
-    });
-    
-    // Unregister service workers
-    if ('serviceWorker' in navigator) {
-      try {
-        const registrations = await navigator.serviceWorker.getRegistrations();
-        for(let registration of registrations) {
-          await registration.unregister();
-        }
-        console.log("🔴 LOGOUT: Service workers unregistered");
-      } catch (error) {
-        console.error("🔴 LOGOUT: Service worker cleanup failed:", error);
-      }
+    // Clear all storage immediately
+    try {
+      localStorage.clear();
+      sessionStorage.clear();
+      
+      // Clear cookies synchronously
+      document.cookie.split(";").forEach(function(c) {
+        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+      });
+      
+      // Clear React Query cache synchronously
+      queryClient.clear();
+      
+      console.log("🔴 LOGOUT: All client state cleared immediately");
+    } catch (error) {
+      console.error("🔴 LOGOUT: Client cleanup warning:", error);
     }
     
-    console.log("🔴 LOGOUT: All cleanup complete, redirecting to landing page");
+    // Asynchronous cleanup that won't block navigation
+    setTimeout(async () => {
+      try {
+        // Clear server session (fire and forget)
+        fetch("/api/logout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          keepalive: true // Ensures request completes even if page unloads
+        }).catch(() => {
+          // Ignore errors - page is already redirecting
+        });
+        
+        // Cleanup service workers (fire and forget)
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.getRegistrations().then(registrations => {
+            registrations.forEach(registration => {
+              registration.unregister().catch(() => {
+                // Ignore errors - page is already redirecting
+              });
+            });
+          });
+        }
+      } catch (error) {
+        // Ignore all errors - page is already redirecting
+      }
+    }, 0);
     
-    // Direct redirect to landing page
-    window.location.replace("/");
+    // IMMEDIATE redirect without waiting for any async operations
+    console.log("🔴 LOGOUT: Redirecting to landing page immediately");
+    window.location.href = "/";
   };
 
   const refreshUser = async () => {
