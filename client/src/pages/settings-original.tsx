@@ -363,9 +363,9 @@ export default function Settings() {
     }
   });
 
-  const handleLogout = async () => {
+  const handleLogout = () => {
     try {
-      await logout();
+      logout(); // Now synchronous
       toast({
         title: "Logged out",
         description: "You have been successfully logged out.",

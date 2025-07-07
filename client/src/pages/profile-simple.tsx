@@ -101,10 +101,10 @@ export default function ProfilePage() {
     });
   };
 
-  const handleLogout = async () => {
+  const handleLogout = () => {
     console.log("🔴 PROFILE: Profile page logout button clicked");
     try {
-      await logout();
+      logout(); // Now synchronous
     } catch (error) {
       console.error("🔴 PROFILE: Logout error:", error);
       toast({

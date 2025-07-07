@@ -65,13 +65,13 @@ export function Header() {
         
         {/* Direct logout button - guaranteed to work */}
         <button
-          onClick={async (e) => {
+          onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
             console.log("🔴 DIRECT: Raw button clicked, calling logout");
             setLoggingOut(true);
             try {
-              await logout();
+              logout(); // Now synchronous - no await needed
             } catch (error) {
               console.error("🔴 DIRECT: Logout failed:", error);
               setLoggingOut(false);
@@ -164,12 +164,12 @@ export function Header() {
                     type="button"
                     className="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 text-left"
                     disabled={loggingOut}
-                    onClick={async () => {
+                    onClick={() => {
                       console.log("🔴 HEADER: Using auth context logout");
                       setDropdownOpen(false);
                       setLoggingOut(true);
                       try {
-                        await logout();
+                        logout(); // Now synchronous
                       } catch (error) {
                         console.error("🔴 HEADER: Logout failed:", error);
                         setLoggingOut(false);
