@@ -121,7 +121,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     
     // Set user to null FIRST to prevent any component queries
     setUser(null);
-    console.log("🚨🚨🚨 USER STATE SET TO NULL");
+    setLoading(false); // Ensure loading is false to allow login page to render
+    console.log("🚨🚨🚨 USER STATE SET TO NULL AND LOADING SET TO FALSE");
     
     queryClient.cancelQueries();
     queryClient.clear();
