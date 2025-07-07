@@ -37,8 +37,11 @@ import { useEffect } from "react";
 import { useLocation } from "wouter";
 
 function Router() {
+  console.log("🚨🚨🚨 ROUTER FUNCTION EXECUTING");
   const { isAuthenticated, loading } = useAuth();
   const [location, setLocation] = useLocation();
+  
+  console.log("🚨🚨🚨 ROUTER: Got auth context", { isAuthenticated, loading });
 
   // Synchronize Wouter location with browser location to prevent state mismatches
   useEffect(() => {
@@ -133,6 +136,7 @@ function Router() {
 }
 
 function App() {
+  console.log("🚨🚨🚨 APP COMPONENT RENDERING");
   // Normal app initialization without forced redirects
 
   return (
@@ -145,7 +149,10 @@ function App() {
                 <TooltipProvider>
                   <Toaster />
                   <BadgeNotificationMonitor />
-                  <Router />
+                  {(() => {
+                    console.log("🚨🚨🚨 ABOUT TO RENDER ROUTER COMPONENT");
+                    return <Router />;
+                  })()}
                   <ModalsContainer />
 
                 </TooltipProvider>
