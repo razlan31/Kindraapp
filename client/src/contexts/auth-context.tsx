@@ -142,13 +142,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         console.log("🚨🚨🚨 ERROR RESPONSE BODY:", errorText);
       }
       
-      // Only redirect after server logout is complete
-      console.log("🚨🚨🚨 REDIRECTING TO LOGIN");
-      window.location.replace("/login");
+      // Force full page reload to login to avoid any SPA routing issues
+      console.log("🚨🚨🚨 NOW REDIRECTING TO LOGIN WITH FULL RELOAD");
+      window.location.assign("/login");
+      
     } catch (err) {
       console.log("🚨🚨🚨 SERVER ERROR:", err);
       // Even if server error, still redirect to prevent stuck state
-      window.location.replace("/login");
+      window.location.assign("/login");
     }
   };
 
