@@ -30,9 +30,9 @@ export function useBadgeNotifications() {
   // Poll for notifications every 30 seconds, but only if authenticated
   const { data: notifications } = useQuery({
     queryKey: ["/api/notifications"],
-    refetchInterval: 30000,
+    refetchInterval: isAuthenticated ? 30000 : false, // Only poll when authenticated
     staleTime: 25000,
-    enabled: isAuthenticated,
+    enabled: isAuthenticated, // Only run when authenticated
   });
 
   useEffect(() => {

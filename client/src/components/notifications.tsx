@@ -9,6 +9,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { apiRequest } from "@/lib/queryClient";
 import { formatDistanceToNow } from "date-fns";
 import { getLevelInfo } from "@/lib/levelSystem";
+import { useAuth } from "@/contexts/auth-context";
 
 interface Notification {
   id: number;
@@ -30,13 +31,20 @@ interface Notification {
 export function NotificationBell() {
   const [isOpen, setIsOpen] = useState(false);
   const queryClient = useQueryClient();
+  const { isAuthenticated } = useAuth();
 
   const { data: notifications = [], isLoading } = useQuery({
     queryKey: ["/api/notifications"],
-    refetchInterval: 60000, // Refresh every 60 seconds
+    enabled: isAuthenticated, // Only run when authenticated
+    refetchInterval: isAuthenticated ? 60000 : false, // Only poll when authenticated
     staleTime: 30000, // Consider data stale after 30 seconds
     refetchOnWindowFocus: false,
   });
+
+  // Don't render anything if user is not authenticated
+  if (!isAuthenticated) {
+    return null;
+  }
 
   const markAsReadMutation = useMutation({
     mutationFn: async (notificationId: number) => {
