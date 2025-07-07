@@ -215,6 +215,7 @@ export default function Calendar() {
   const { data: milestones = [] } = useQuery({
     queryKey: ["/api/milestones", selectedConnectionId],
     staleTime: 0,
+    enabled: isAuthenticated,
   });
 
   // Fetch menstrual cycles with aggressive cache invalidation

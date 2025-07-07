@@ -1,27 +1,4 @@
-// EMERGENCY REPLIT SCRIPT BLOCKING - Must be first thing that runs
-(() => {
-  // Block WebSocket constructor immediately
-  if (typeof window !== 'undefined' && window.WebSocket) {
-    const originalWebSocket = window.WebSocket;
-    window.WebSocket = function(url: string | URL, protocols?: string | string[]) {
-      const urlString = url.toString();
-      if (urlString.includes('replit.dev') || urlString.includes('localhost:undefined')) {
-        // Silent fail to prevent console spam
-        throw new Error('WebSocket connection blocked');
-      }
-      return new originalWebSocket(url, protocols);
-    } as any;
-  }
-
-  // Block service worker registration immediately
-  if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
-    const originalRegister = navigator.serviceWorker.register;
-    navigator.serviceWorker.register = function() {
-      // Silent fail to prevent console spam
-      return Promise.reject(new Error('Service worker registration blocked'));
-    };
-  }
-})();
+// Allow Replit PWA functionality to work normally
 
 import { createRoot } from "react-dom/client";
 import App from "./App";
@@ -46,37 +23,7 @@ JSON.parse = function(text: string, reviver?: any) {
   }
 };
 
-// Override console.error to filter Replit-generated errors
-const originalConsoleError = console.error;
-console.error = (...args: any[]) => {
-  const message = args.join(' ');
-  const isReplitError = message.includes('WebSocket') ||
-                       message.includes('wss://') ||
-                       message.includes('frame_ant') ||
-                       message.includes('PWA:') ||
-                       message.includes('Service Worker') ||
-                       message.includes('AbortError') ||
-                       message.includes('replit.dev') ||
-                       message.includes('setupWebSocket') ||
-                       message.includes('Failed to construct');
-  
-  if (!isReplitError) {
-    originalConsoleError.apply(console, args);
-  }
-};
-
-// Override console.log to filter PWA messages
-const originalConsoleLog = console.log;
-console.log = (...args: any[]) => {
-  const message = args.join(' ');
-  const isReplitLog = message.includes('PWA:') ||
-                     message.includes('Service Worker') ||
-                     message.includes('registered successfully');
-  
-  if (!isReplitLog) {
-    originalConsoleLog.apply(console, args);
-  }
-};
+// Remove console overrides - let Replit PWA function normally
 
 // Comprehensive error suppression for extensions
 window.addEventListener('unhandledrejection', (event) => {
@@ -139,42 +86,7 @@ window.addEventListener('error', (event) => {
   }
 });
 
-// Additional WebSocket blocking (redundant but ensures coverage)
-if (typeof window !== 'undefined' && window.WebSocket) {
-  const originalWebSocket = window.WebSocket;
-  window.WebSocket = function(url: string | URL, protocols?: string | string[]) {
-    const urlString = url.toString();
-    if (urlString.includes('replit.dev') || urlString.includes('localhost:undefined')) {
-      // Silent fail to prevent console spam
-      throw new Error('WebSocket connection blocked');
-    }
-    return new originalWebSocket(url, protocols);
-  } as any;
-}
-
-// NUCLEAR SERVICE WORKER REMOVAL - Block ALL service worker functionality
-if ('serviceWorker' in navigator) {
-  // Unregister all existing service workers
-  navigator.serviceWorker.getRegistrations().then((registrations) => {
-    registrations.forEach((registration) => {
-      registration.unregister().then(() => {
-        console.log('🔴 PWA REMOVED: Service worker unregistered');
-      });
-    });
-  });
-  
-  // Block service worker registration by overriding the register method
-  const originalRegister = navigator.serviceWorker.register;
-  navigator.serviceWorker.register = function() {
-    console.log('🔴 BLOCKED: Service worker registration attempt prevented');
-    return Promise.reject(new Error('Service worker registration blocked'));
-  };
-  
-  // Clear any service worker controlled state
-  if (navigator.serviceWorker.controller) {
-    navigator.serviceWorker.controller.postMessage('CLEAR_CACHE');
-  }
-}
+// Allow normal Replit PWA and WebSocket functionality
 
 createRoot(document.getElementById("root")!).render(
   <ThemeProvider>

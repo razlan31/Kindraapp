@@ -185,14 +185,17 @@ export default function Activities() {
   // Fetch data
   const { data: connections = [] } = useQuery<Connection[]>({
     queryKey: ['/api/connections'],
+    enabled: isAuthenticated,
   });
 
   const { data: moments = [] } = useQuery<Moment[]>({
     queryKey: ['/api/moments'],
+    enabled: isAuthenticated,
   });
 
   const { data: plans = [] } = useQuery<Plan[]>({
     queryKey: ['/api/plans'],
+    enabled: isAuthenticated,
   });
 
   // Save tab selection
