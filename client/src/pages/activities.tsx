@@ -334,6 +334,8 @@ export default function Activities() {
   const pastDates = sortedDates.filter(date => date <= today);
   const upcomingDates = sortedDates.filter(date => date > today).reverse(); // Reverse to show nearest first
 
+  console.log("🚨🚨🚨 ACTIVITIES PAGE RENDERING - ABOUT TO RENDER HEADER");
+  
   return (
     <div className="max-w-md mx-auto bg-white dark:bg-neutral-900 min-h-screen flex flex-col relative">
       <Header />
