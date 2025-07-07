@@ -65,22 +65,17 @@ export const getQueryFn: <T>(options: {
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
-    console.log('🔍 API REQUEST:', queryKey[0], 'at', new Date().toISOString());
     const res = await fetch(queryKey[0] as string, {
       credentials: "include",
     });
 
-    if (unauthorizedBehavior === "returnNull" && res.status === 401) {
+    // If we get 401/404 after logout, just return null silently instead of logging errors
+    if ((res.status === 401 || res.status === 404) && unauthorizedBehavior === "returnNull") {
       return null;
     }
 
-    if (res.status === 404) {
-      console.error('🔴 404 ERROR DETECTED:', {
-        url: queryKey[0],
-        status: res.status,
-        timestamp: new Date().toISOString(),
-        stack: new Error().stack
-      });
+    if (unauthorizedBehavior === "returnNull" && res.status === 401) {
+      return null;
     }
 
     await throwIfResNotOk(res);

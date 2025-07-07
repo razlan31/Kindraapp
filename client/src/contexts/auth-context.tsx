@@ -117,63 +117,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = () => {
-    console.log("🔴 LOGOUT: Starting bulletproof logout process");
-    
-    // CRITICAL: Set user to null FIRST to stop all API calls immediately
     setUser(null);
+    queryClient.clear();
+    localStorage.clear();
+    sessionStorage.clear();
     
-    // IMMEDIATE synchronous cleanup to prevent any race conditions
-    setUser(null);
-    setLoading(false);
+    fetch("/api/logout", { method: "POST", credentials: "include" }).catch(() => {});
     
-    // Clear all storage immediately
-    try {
-      localStorage.clear();
-      sessionStorage.clear();
-      
-      // Clear cookies synchronously
-      document.cookie.split(";").forEach(function(c) {
-        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
-      });
-      
-      // Clear React Query cache synchronously
-      queryClient.clear();
-      
-      console.log("🔴 LOGOUT: All client state cleared immediately");
-    } catch (error) {
-      console.error("🔴 LOGOUT: Client cleanup warning:", error);
-    }
-    
-    // Asynchronous cleanup that won't block navigation
-    setTimeout(async () => {
-      try {
-        // Clear server session (fire and forget)
-        fetch("/api/logout", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          keepalive: true // Ensures request completes even if page unloads
-        }).catch(() => {
-          // Ignore errors - page is already redirecting
-        });
-        
-        // Cleanup service workers (fire and forget)
-        if ('serviceWorker' in navigator) {
-          navigator.serviceWorker.getRegistrations().then(registrations => {
-            registrations.forEach(registration => {
-              registration.unregister().catch(() => {
-                // Ignore errors - page is already redirecting
-              });
-            });
-          });
-        }
-      } catch (error) {
-        // Ignore all errors - page is already redirecting
-      }
-    }, 0);
-    
-    // IMMEDIATE redirect without waiting for any async operations
-    console.log("🔴 LOGOUT: Redirecting to landing page immediately");
-    window.location.href = "/";
+    window.location.replace("/");
   };
 
   const refreshUser = async () => {
