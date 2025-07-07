@@ -133,7 +133,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     
     try {
       const res = await fetch("/api/logout", { method: "POST", credentials: "include" });
-      console.log("🚨🚨🚨 SERVER RESPONSE:", res.status);
+      console.log("🚨🚨🚨 SERVER RESPONSE:", res.status, res.statusText);
+      
+      if (!res.ok) {
+        console.log("🚨🚨🚨 SERVER ERROR - Response not OK:", res.status, res.statusText);
+        const errorText = await res.text();
+        console.log("🚨🚨🚨 ERROR RESPONSE BODY:", errorText);
+      }
       
       // Only redirect after server logout is complete
       console.log("🚨🚨🚨 REDIRECTING TO HOME");

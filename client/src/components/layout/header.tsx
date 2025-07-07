@@ -13,6 +13,18 @@ export function Header() {
   
   console.log("🚨🚨🚨 HEADER: Got auth context - logout type:", typeof logout);
   console.log("🚨🚨🚨 HEADER: isAuthenticated:", isAuthenticated, "user exists:", !!user);
+  
+  const handleLogout = async () => {
+    console.log("🚨🚨🚨 HEADER: Logout button clicked");
+    setLoggingOut(true);
+    try {
+      await logout();
+    } catch (error) {
+      console.error("🚨🚨🚨 HEADER: Logout error:", error);
+    } finally {
+      setLoggingOut(false);
+    }
+  };
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
   
@@ -68,22 +80,7 @@ export function Header() {
         
         {/* Direct logout button - guaranteed to work */}
         <button
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            console.log("🚨🚨🚨 DIRECT LOGOUT BUTTON CLICKED!!!!");
-            console.log("🚨🚨🚨 DIRECT: Logout function type:", typeof logout);
-            console.log("🚨🚨🚨 DIRECT: Logout function source:", logout.toString().substring(0, 200));
-            setLoggingOut(true);
-            try {
-              console.log("🔴🔴🔴 DIRECT: About to call logout function");
-              logout(); // Now synchronous - no await needed
-              console.log("🔴🔴🔴 DIRECT: Logout function returned");
-            } catch (error) {
-              console.error("🔴🔴🔴 DIRECT: Logout failed:", error);
-              setLoggingOut(false);
-            }
-          }}
+          onClick={handleLogout}
           disabled={loggingOut}
           className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm font-medium z-50 relative disabled:opacity-50"
           style={{ zIndex: 9999 }}
@@ -156,21 +153,7 @@ export function Header() {
                     type="button"
                     className="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 text-left"
                     disabled={loggingOut}
-                    onClick={() => {
-                      console.log("🚨🚨🚨 DROPDOWN LOGOUT BUTTON CLICKED!!!!");
-                      console.log("🚨🚨🚨 DROPDOWN: Logout function type:", typeof logout);
-                      console.log("🚨🚨🚨 DROPDOWN: Logout function source:", logout.toString().substring(0, 200));
-                      setDropdownOpen(false);
-                      setLoggingOut(true);
-                      try {
-                        console.log("🔴🔴🔴 HEADER: About to call logout function");
-                        logout(); // Now synchronous
-                        console.log("🔴🔴🔴 HEADER: Logout function returned");
-                      } catch (error) {
-                        console.error("🔴🔴🔴 HEADER: Logout failed:", error);
-                        setLoggingOut(false);
-                      }
-                    }}
+                    onClick={handleLogout}
                   >
                     {loggingOut ? (
                       <>
