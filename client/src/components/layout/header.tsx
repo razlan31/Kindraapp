@@ -8,7 +8,10 @@ import { NotificationBell, UserPointsDisplay } from "@/components/notifications"
 import { useState, useEffect } from "react";
 
 export function Header() {
-  const { logout, isAuthenticated } = useAuth();
+  const { logout, isAuthenticated, user } = useAuth();
+  
+  // Force component refresh by logging auth state
+  console.log("🔍 HEADER: Auth state - isAuthenticated:", isAuthenticated, "user:", !!user);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
   
@@ -27,7 +30,7 @@ export function Header() {
   }, [dropdownOpen]);
   
   // Use React Query to get the latest user data including profile picture
-  const { data: user } = useQuery({
+  const { data: userData } = useQuery({
     queryKey: ['/api/me'],
     enabled: isAuthenticated && !!useAuth().user, // Only run when authenticated AND user exists
     staleTime: 5 * 60 * 1000, // 5 minutes
@@ -42,7 +45,7 @@ export function Header() {
       .toUpperCase();
   };
   
-  const displayName = user?.displayName || user?.username || '';
+  const displayName = userData?.displayName || userData?.username || '';
   const initials = getInitials(displayName);
 
   return (
@@ -68,6 +71,8 @@ export function Header() {
             e.preventDefault();
             e.stopPropagation();
             console.log("🔴🔴🔴 DIRECT BUTTON CLICKED - CALLING LOGOUT");
+            console.log("🔴🔴🔴 DIRECT: Logout function type:", typeof logout);
+            console.log("🔴🔴🔴 DIRECT: Logout function:", logout.toString().substring(0, 100));
             setLoggingOut(true);
             try {
               console.log("🔴🔴🔴 DIRECT: About to call logout function");
@@ -104,7 +109,7 @@ export function Header() {
             onClick={() => setDropdownOpen(!dropdownOpen)}
           >
             <Avatar className="h-9 w-9 sm:h-10 sm:w-10 lg:h-11 lg:w-11">
-              <AvatarImage src={user?.profileImage ?? undefined} alt={displayName} />
+              <AvatarImage src={userData?.profileImage ?? undefined} alt={displayName} />
               <AvatarFallback className="bg-neutral-200 dark:bg-neutral-700 text-sm sm:text-base lg:text-lg font-medium">
                 {initials}
               </AvatarFallback>
@@ -152,6 +157,8 @@ export function Header() {
                     disabled={loggingOut}
                     onClick={() => {
                       console.log("🔴🔴🔴 HEADER BUTTON CLICKED - CALLING LOGOUT");
+                      console.log("🔴🔴🔴 HEADER: Logout function type:", typeof logout);
+                      console.log("🔴🔴🔴 HEADER: Logout function:", logout.toString().substring(0, 100));
                       setDropdownOpen(false);
                       setLoggingOut(true);
                       try {
