@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Connection, Moment } from "@shared/schema";
+import { useAuth } from "@/contexts/auth-context";
 import { Calendar, TrendingUp, Heart, Users, BarChart3, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -27,6 +28,7 @@ interface WeeklyInsight {
 
 export function WeeklyRelationshipInsights({ connections, moments, userData }: WeeklyInsightsProps) {
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const { isAuthenticated } = useAuth();
 
   // Get current week identifier for caching
   const getCurrentWeek = () => {
@@ -41,7 +43,7 @@ export function WeeklyRelationshipInsights({ connections, moments, userData }: W
   // Fetch weekly insights
   const { data: weeklyInsight, isLoading, refetch } = useQuery<WeeklyInsight>({
     queryKey: ['/api/weekly-insights', currentWeek],
-    enabled: moments.length >= 5, // Only fetch if sufficient data
+    enabled: isAuthenticated && moments.length >= 5, // Only fetch if authenticated and sufficient data
     staleTime: 1000 * 60 * 60 * 24 * 7, // Cache for 1 week
     retry: 1,
   });

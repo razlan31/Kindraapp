@@ -2,6 +2,7 @@ import { TrendingUp, Users, AlertCircle, Clock, Target, Brain, Zap, TrendingDown
 import { Connection, Moment, MenstrualCycle } from "@shared/schema";
 import { generateAnalyticsInsights, AnalyticsInsight } from "@/lib/relationship-analytics";
 import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "@/contexts/auth-context";
 
 interface ConnectionAIInsightsProps {
   connection: Connection;
@@ -13,9 +14,12 @@ interface ConnectionAIInsightsProps {
 }
 
 export function ConnectionAIInsights({ connection, moments, userData }: ConnectionAIInsightsProps) {
+  const { isAuthenticated } = useAuth();
+  
   // Fetch menstrual cycle data for correlation analysis
   const { data: menstrualCycles = [] } = useQuery<MenstrualCycle[]>({
     queryKey: ['/api/menstrual-cycles'],
+    enabled: isAuthenticated, // Only fetch when authenticated
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 

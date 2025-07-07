@@ -8,15 +8,18 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
+import { useAuth } from "@/contexts/auth-context";
 
 export default function ProfileCleanPage() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [isEditing, setIsEditing] = useState(false);
+  const { isAuthenticated } = useAuth();
 
   // Fetch user data directly
   const { data: user, isLoading } = useQuery({
     queryKey: ['/api/me'],
+    enabled: isAuthenticated, // Only fetch when authenticated
     staleTime: 5 * 60 * 1000
   });
 

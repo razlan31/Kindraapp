@@ -4,6 +4,7 @@ import { Quote, RefreshCw, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Connection, Moment } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
+import { useAuth } from "@/contexts/auth-context";
 
 interface QuoteOfTheDayProps {
   connections: Connection[];
@@ -23,6 +24,7 @@ interface DailyQuote {
 
 export function QuoteOfTheDay({ connections, moments, userData }: QuoteOfTheDayProps) {
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const { isAuthenticated } = useAuth();
 
   // Get today's date as a string to use as cache key
   const today = new Date().toISOString().split('T')[0];
@@ -30,7 +32,7 @@ export function QuoteOfTheDay({ connections, moments, userData }: QuoteOfTheDayP
   // Fetch daily quote
   const { data: quote, isLoading, refetch } = useQuery<DailyQuote>({
     queryKey: ['/api/quote-of-the-day', today],
-    enabled: connections.length > 0 || moments.length > 0,
+    enabled: isAuthenticated && (connections.length > 0 || moments.length > 0),
     staleTime: 1000 * 60 * 60 * 12, // 12 hours - so it refreshes twice a day
     retry: 1,
   });

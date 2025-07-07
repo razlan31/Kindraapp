@@ -70,7 +70,7 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
   // Use fresh connection data from the connections list
   const { data: allConnections = [], refetch: refetchConnections } = useQuery<Connection[]>({
     queryKey: ["/api/connections"],
-    enabled: isOpen,
+    enabled: isOpen, // Modal queries are already protected by auth context
   });
 
   // Listen for connection update events
