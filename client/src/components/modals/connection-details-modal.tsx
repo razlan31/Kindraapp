@@ -264,12 +264,12 @@ export function ConnectionDetailsModal({ isOpen, onClose, connection }: Connecti
         connection={connection}
       />
 
-      {/* Detailed Modal */}
-      <ConnectionDetailedModal
+      {/* TEMPORARILY DISABLED ConnectionDetailedModal DUE TO INFINITE LOOP BUG */}
+      {/* <ConnectionDetailedModal
         isOpen={showDetailedModal}
         onClose={() => setShowDetailedModal(false)}
         connection={connection}
-      />
+      /> */}
     </Dialog>
   );
 }

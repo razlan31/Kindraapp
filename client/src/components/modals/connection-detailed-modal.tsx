@@ -92,11 +92,9 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
     };
   }, [refetchConnections, queryClient]);
 
-  // Always use the most up-to-date connection data
-  const currentConnection = connection?.id 
-    ? (allConnections as Connection[]).find(c => c.id === connection.id) || connection
-    : connection;
-
+  // INFINITE LOOP PREVENTION - SIMPLIFIED CONNECTION LOGIC
+  const currentConnection = connection;
+  
   // INFINITE LOOP PREVENTION - ALL DEBUG LOGS REMOVED
 
   const handleEditSuccess = () => {
