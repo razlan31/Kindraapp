@@ -142,8 +142,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         console.log("🚨🚨🚨 ERROR RESPONSE BODY:", errorText);
       }
       
-      // Force full page reload to login to avoid any SPA routing issues
+      // Add debugging to track exact navigation
+      console.log("🚨🚨🚨 CURRENT URL BEFORE REDIRECT:", window.location.href);
       console.log("🚨🚨🚨 NOW REDIRECTING TO LOGIN WITH FULL RELOAD");
+      console.log("🚨🚨🚨 TARGET URL:", window.location.origin + "/login");
+      
+      // Force full page reload to login to avoid any SPA routing issues
       window.location.assign("/login");
       
     } catch (err) {

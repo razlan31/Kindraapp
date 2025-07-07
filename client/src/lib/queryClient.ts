@@ -38,7 +38,11 @@ async function throwIfResNotOk(res: Response) {
       console.error('🔥 404 URL:', res.url);
       console.error('🔥 404 METHOD:', res.method || 'GET');
       console.error('🔥 404 TIME:', new Date().toISOString());
+      console.error('🔥 404 RESPONSE:', errorMessage);
       console.error('🔥 404 STACK:', new Error().stack);
+      
+      // Also log to console for user visibility
+      alert(`404 ERROR: ${res.url} - ${errorMessage}`);
     }
     
     throw new Error(errorMessage);
