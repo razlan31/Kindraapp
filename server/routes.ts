@@ -444,6 +444,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
 </html>`);
   });
 
+  // Server-side logout and redirect - cannot be intercepted by service workers
+  app.get("/api/logout-and-redirect", (req, res) => {
+    console.log("🔴 SERVER: Logout and redirect endpoint");
+    
+    // Destroy session
+    req.session.destroy((err) => {
+      if (err) {
+        console.error("Session destroy error:", err);
+      }
+    });
+    
+    // Clear cookies
+    res.clearCookie('connect.sid');
+    res.clearCookie('session');
+    
+    // Server-side redirect - bypasses service worker
+    res.redirect(302, '/login');
+  });
+
   // Server redirect endpoint to bypass service worker 404s
   app.get("/api/logout-redirect", (req, res) => {
     console.log("🔴 SERVER: HTML redirect to bypass service worker");

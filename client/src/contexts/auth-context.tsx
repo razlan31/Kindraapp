@@ -117,46 +117,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = () => {
-    console.log("🔴 SERVICE WORKER BYPASS LOGOUT START");
-    console.log('🔍 TRACKING: logout() called from', new Error().stack);
+    console.log("🔴 SERVER-SIDE REDIRECT LOGOUT");
     
-    // Clear all storage immediately
+    // Clear storage and state immediately
     localStorage.clear();
     sessionStorage.clear();
-    console.log("🔴 STORAGE CLEARED");
-    
-    // Clear user state immediately to stop any ongoing requests
     setUser(null);
-    console.log("🔴 USER STATE CLEARED");
     
-    // Attempt server logout (but don't wait for it)
-    try {
-      const xhr = new XMLHttpRequest();
-      xhr.open('POST', '/api/logout', false);
-      xhr.setRequestHeader('Content-Type', 'application/json');
-      xhr.send();
-      console.log("🔴 SERVER LOGOUT:", xhr.status);
-    } catch (e) {
-      console.log("🔴 SERVER LOGOUT ERROR (IGNORED):", e);
-    }
-    
-    // NUCLEAR OPTION: Bypass service worker with location.replace
-    console.log("🔴 NUCLEAR REDIRECT - BYPASSING SERVICE WORKER");
-    try {
-      // Try multiple redirect methods to bypass service worker
-      window.location.replace("/login");
-    } catch (e1) {
-      try {
-        window.location.assign("/login");  
-      } catch (e2) {
-        try {
-          window.location.href = "/login";
-        } catch (e3) {
-          // Last resort - reload to home
-          window.location.reload();
-        }
-      }
-    }
+    // Use server-side redirect that service worker cannot intercept
+    window.location.href = "/api/logout-and-redirect";
   };
 
   const refreshUser = async () => {
