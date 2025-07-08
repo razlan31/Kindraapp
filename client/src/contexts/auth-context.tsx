@@ -117,14 +117,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = () => {
-    // Truly synchronous logout - no fetch calls
-    setUser(null);
-    setLoading(false);
-    queryClient.clear();
+    // Skip all React state updates - go directly to page reload
     localStorage.clear();
     sessionStorage.clear();
     
-    // Immediate redirect - no server calls
+    // Immediate full page reload to logout page - bypasses all React timing
     window.location.href = "/logout";
   };
 
