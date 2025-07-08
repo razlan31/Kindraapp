@@ -55,16 +55,21 @@ app.use((req, res, next) => {
   // Serve public files for downloads
   app.use('/files', express.static(path.join(import.meta.dirname, '../public')));
   
+  // Register API routes first with explicit priority
+  const server = await registerRoutes(app);
+
+  // Add API route protection middleware to prevent Vite from intercepting
+  app.use('/api/*', (req, res, next) => {
+    // If we reach here, the API route wasn't found - return 404 JSON
+    res.status(404).json({ error: 'API endpoint not found', path: req.path });
+  });
+
   // importantly only setup vite in development and after
   // setting up all the other routes so the catch-all route
   // doesn't interfere with the other routes
-  let server;
   if (app.get("env") === "development") {
-    // Register routes FIRST, then Vite middleware
-    server = await registerRoutes(app);
     await setupVite(app, server);
   } else {
-    server = await registerRoutes(app);
     serveStatic(app);
   }
 
