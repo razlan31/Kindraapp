@@ -117,35 +117,46 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = () => {
-    console.log("🔴 SYNCHRONOUS LOGOUT START");
+    console.log("🔴 SERVICE WORKER BYPASS LOGOUT START");
     console.log('🔍 TRACKING: logout() called from', new Error().stack);
-    console.log('🔍 TRACKING: Current URL before logout:', window.location.href);
     
-    // Clear storage synchronously
+    // Clear all storage immediately
     localStorage.clear();
     sessionStorage.clear();
     console.log("🔴 STORAGE CLEARED");
     
-    // Synchronous server logout using XMLHttpRequest
+    // Clear user state immediately to stop any ongoing requests
+    setUser(null);
+    console.log("🔴 USER STATE CLEARED");
+    
+    // Attempt server logout (but don't wait for it)
     try {
       const xhr = new XMLHttpRequest();
-      xhr.open('POST', '/api/logout', false); // false = synchronous
+      xhr.open('POST', '/api/logout', false);
       xhr.setRequestHeader('Content-Type', 'application/json');
       xhr.send();
-      console.log("🔴 SYNCHRONOUS SERVER LOGOUT COMPLETE:", xhr.status);
-      console.log('🔍 TRACKING: Server logout response received');
+      console.log("🔴 SERVER LOGOUT:", xhr.status);
     } catch (e) {
       console.log("🔴 SERVER LOGOUT ERROR (IGNORED):", e);
-      console.log('🔍 TRACKING: Server logout error (continuing anyway)');
     }
     
-    // Immediate synchronous redirect
-    console.log("🔴 REDIRECTING TO LOGIN NOW");
-    console.log('🔍 TRACKING: About to set window.location.href to /login');
-    console.log('🔍 TRACKING: Current pathname before redirect:', window.location.pathname);
-    window.location.href = "/login";
-    console.log('🔍 TRACKING: window.location.href set - this should not appear if redirect worked');
-    // Code after redirect won't execute
+    // NUCLEAR OPTION: Bypass service worker with location.replace
+    console.log("🔴 NUCLEAR REDIRECT - BYPASSING SERVICE WORKER");
+    try {
+      // Try multiple redirect methods to bypass service worker
+      window.location.replace("/login");
+    } catch (e1) {
+      try {
+        window.location.assign("/login");  
+      } catch (e2) {
+        try {
+          window.location.href = "/login";
+        } catch (e3) {
+          // Last resort - reload to home
+          window.location.reload();
+        }
+      }
+    }
   };
 
   const refreshUser = async () => {

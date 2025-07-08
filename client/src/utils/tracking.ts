@@ -58,4 +58,37 @@ Object.defineProperty(window.location, 'href', {
   }
 });
 
+// Track service worker events
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.addEventListener('message', (event) => {
+    console.log('🔍 TRACKING: Service worker message:', event.data);
+  });
+  
+  navigator.serviceWorker.getRegistrations().then((registrations) => {
+    console.log('🔍 TRACKING: Active service workers:', registrations.length);
+    registrations.forEach((registration, index) => {
+      console.log(`🔍 TRACKING: SW ${index}:`, registration.scope);
+    });
+  });
+}
+
+// Track fetch requests to catch service worker interceptions
+const originalFetch = window.fetch;
+window.fetch = function(...args) {
+  console.log('🔍 TRACKING: Fetch request:', args[0]);
+  return originalFetch.apply(this, args).catch((error) => {
+    console.log('🔍 TRACKING: Fetch error:', error, 'for request:', args[0]);
+    throw error;
+  });
+};
+
+// Track any 404 errors in network requests
+window.addEventListener('error', (event) => {
+  console.log('🔍 TRACKING: Global error:', event.error);
+});
+
+window.addEventListener('unhandledrejection', (event) => {
+  console.log('🔍 TRACKING: Unhandled rejection:', event.reason);
+});
+
 console.log('🔍 TRACKING: Window tracking initialized');
