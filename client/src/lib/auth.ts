@@ -31,13 +31,15 @@ export function logoutUser(): void {
 
 export async function getCurrentUser(): Promise<User | null> {
   try {
-    const response = await fetch('/api/me');
+    const response = await fetch('/api/me', {
+      credentials: 'include'
+    });
     if (response.ok) {
       const user = await response.json();
       console.log('getCurrentUser successful:', user);
       return user;
     }
-    console.log('getCurrentUser failed - response not ok');
+    console.log('getCurrentUser failed - response not ok, status:', response.status);
     return null;
   } catch (error) {
     console.error('getCurrentUser error:', error);

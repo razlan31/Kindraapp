@@ -130,6 +130,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
   await setupAuth(app);
 
   // Current user endpoint - works without authentication for public access
+  app.get("/api/me", async (req: Request, res: Response) => {
+    try {
+      console.log("Current user check - session userId:", (req.session as any)?.userId);
+      console.log("Current user check - passport authenticated:", req.isAuthenticated ? req.isAuthenticated() : false);
+      
+      // Check both authentication methods
+      let userId = null;
+      if (req.isAuthenticated && req.isAuthenticated() && req.user) {
+        userId = (req.user as any).id;
+        // Sync session with passport user
+        (req.session as any).userId = userId;
+      } else if ((req.session as any)?.userId) {
+        userId = (req.session as any).userId;
+      }
+      
+      if (!userId) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const user = await storage.getUser(userId.toString());
+      if (!user) {
+        // Clear invalid session
+        delete (req.session as any).userId;
+        return res.status(401).json({ message: "User not found" });
+      }
+
+      console.log("Current user found:", user.id);
+      res.json(user);
+    } catch (error) {
+      console.error("Error fetching current user:", error);
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
+  // Current user endpoint - works without authentication for public access
   app.post("/api/current-user", async (req: Request, res: Response) => {
     try {
       console.log("Current user check - session userId:", (req.session as any)?.userId);
