@@ -58,11 +58,7 @@ app.use((req, res, next) => {
   // Register API routes first with explicit priority
   const server = await registerRoutes(app);
 
-  // Add API route protection middleware to prevent Vite from intercepting
-  app.use('/api/*', (req, res, next) => {
-    // If we reach here, the API route wasn't found - return 404 JSON
-    res.status(404).json({ error: 'API endpoint not found', path: req.path });
-  });
+  // Remove this middleware - it's causing the problem by intercepting valid API routes
 
   // importantly only setup vite in development and after
   // setting up all the other routes so the catch-all route
