@@ -136,9 +136,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
     
     // Immediate synchronous redirect
-    console.log("🔴 REDIRECTING TO LOGIN");
+    console.log("🔴 REDIRECTING TO LOGIN NOW");
     window.location.href = "/login";
-    console.log("🔴 REDIRECT COMMAND EXECUTED");
+    // Code after redirect won't execute
   };
 
   const refreshUser = async () => {
