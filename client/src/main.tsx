@@ -4,6 +4,9 @@ import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";
 
+console.log('🔥🔥🔥 MAIN.TSX LOADING - Current URL:', window.location.href);
+console.log('🔥🔥🔥 MAIN.TSX LOADING - Pathname:', window.location.pathname);
+
 console.log("🚨🚨🚨 MAIN.TSX EXECUTING - IMPORTING APP FROM", "./App");
 console.log("🚨🚨🚨 MAIN.TSX TIMESTAMP:", new Date().toISOString());
 // Removed duplicate providers - App.tsx has its own provider chain
