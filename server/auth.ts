@@ -71,15 +71,23 @@ export async function setupAuth(app: Express) {
   }));
 
   passport.serializeUser((user: any, done) => {
+    console.log("Serializing user:", user.id);
     done(null, user.id);
   });
 
   passport.deserializeUser(async (id: string, done) => {
     try {
+      console.log("Deserializing user ID:", id);
       const user = await storage.getUser(id);
+      if (!user) {
+        console.log("User not found during deserialization:", id);
+        return done(null, false);
+      }
+      console.log("User deserialized successfully:", user.id);
       done(null, user);
     } catch (error) {
-      done(error);
+      console.error("Error deserializing user:", error);
+      done(null, false); // Don't fail, just return false for unauthenticated
     }
   });
 
@@ -91,6 +99,11 @@ export async function setupAuth(app: Express) {
   app.get("/api/auth/google/callback",
     passport.authenticate("google", { failureRedirect: "/login" }),
     (req, res) => {
+      // Store user ID in session for custom auth middleware compatibility
+      if (req.user) {
+        (req.session as any).userId = (req.user as any).id;
+        console.log("User logged in, session userId set:", (req.user as any).id);
+      }
       res.redirect("/"); // Redirect to main app after successful login
     }
   );

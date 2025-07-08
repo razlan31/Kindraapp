@@ -107,13 +107,17 @@ declare module "express-session" {
   }
 }
 
-// Auth middleware
-const isAuthenticated = (req: Request & { session: any }, res: Response, next: Function) => {
-  if (req.session?.userId) {
-    console.log("Auth middleware: User authenticated with ID", (req.session as any).userId);
+// Auth middleware - use Passport's built-in authentication check
+const isAuthenticated = (req: Request, res: Response, next: Function) => {
+  // Check both Passport authentication and custom session
+  if (req.isAuthenticated && req.isAuthenticated()) {
+    console.log("Auth middleware: User authenticated via Passport");
+    next();
+  } else if ((req.session as any)?.userId) {
+    console.log("Auth middleware: User authenticated with session ID", (req.session as any).userId);
     next();
   } else {
-    console.log("Auth middleware: No user session found");
+    console.log("Auth middleware: No user authentication found");
     res.status(401).json({ message: "Authentication required" });
   }
 };
@@ -124,6 +128,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Setup Google OAuth authentication
   await setupAuth(app);
+
+  // Current user endpoint - works without authentication for public access
+  app.post("/api/current-user", async (req: Request, res: Response) => {
+    try {
+      console.log("Current user check - session userId:", (req.session as any)?.userId);
+      console.log("Current user check - passport authenticated:", req.isAuthenticated ? req.isAuthenticated() : false);
+      
+      // Check both authentication methods
+      let userId = null;
+      if (req.isAuthenticated && req.isAuthenticated() && req.user) {
+        userId = (req.user as any).id;
+        // Sync session with passport user
+        (req.session as any).userId = userId;
+      } else if ((req.session as any)?.userId) {
+        userId = (req.session as any).userId;
+      }
+      
+      if (!userId) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const user = await storage.getUser(userId.toString());
+      if (!user) {
+        // Clear invalid session
+        delete (req.session as any).userId;
+        return res.status(401).json({ message: "User not found" });
+      }
+
+      console.log("Current user found:", user.id);
+      res.json(user);
+    } catch (error) {
+      console.error("Error fetching current user:", error);
+      res.status(500).json({ message: "Server error" });
+    }
+  });
 
   // Plan routes - use non-api route to bypass ALL Vite middleware conflicts  
   // Stats endpoint
