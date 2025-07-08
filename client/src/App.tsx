@@ -40,6 +40,9 @@ function AppRoutes() {
         <Route path="/login">
           {() => user ? <Homepage1 /> : <Login />}
         </Route>
+        <Route path="/auth/login">
+          {() => user ? <Homepage1 /> : <Login />}
+        </Route>
         
         {/* Protected routes */}
         {user ? (
