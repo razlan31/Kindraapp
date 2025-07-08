@@ -33,6 +33,7 @@ function AppRoutes() {
   }
 
   console.log('🔥 APP RENDER - Current path:', window.location.pathname, 'User:', !!user);
+  console.log('🔥 APP RENDER - Full URL:', window.location.href);
   
   return (
     <div className="min-h-screen bg-background">
