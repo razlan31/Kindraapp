@@ -91,6 +91,11 @@ export function MilestoneModal({ isOpen, onClose, connectionId, editingMilestone
       if (!response.ok) {
         const errorData = await response.json();
         console.log("📋 CLIENT DEBUG - Server error response:", errorData);
+        toast({
+          title: "Error",
+          description: "Failed to create milestone. Please try again.",
+          variant: "destructive",
+        });
         throw new Error("Failed to create milestone");
       }
 
@@ -124,6 +129,11 @@ export function MilestoneModal({ isOpen, onClose, connectionId, editingMilestone
       });
 
       if (!response.ok) {
+        toast({
+          title: "Error", 
+          description: "Failed to update milestone. Please try again.",
+          variant: "destructive",
+        });
         throw new Error("Failed to update milestone");
       }
 

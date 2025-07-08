@@ -62,8 +62,8 @@ export function ConflictResolutionModal({ isOpen, onClose, moment }: ConflictRes
       console.error('Failed to update conflict resolution:', error);
       toast({
         title: "Error",
-        description: "Failed to update conflict resolution",
-        variant: "destructive"
+        description: "Failed to update conflict resolution. Please try again.",
+        variant: "destructive",
       });
     } finally {
       setIsSubmitting(false);

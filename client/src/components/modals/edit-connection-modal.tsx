@@ -84,6 +84,11 @@ export function EditConnectionModal({ isOpen, onClose, connection, onEditSuccess
       console.log("Response headers:", response.headers);
       
       if (!response.ok) {
+        toast({
+          title: "Error",
+          description: "Failed to update connection. Please try again.",
+          variant: "destructive",
+        });
         throw new Error('Failed to update connection');
       }
       

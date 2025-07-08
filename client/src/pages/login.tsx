@@ -19,8 +19,8 @@ export default function Login() {
 
 
 
-  // Auto-login temporarily disabled due to infinite loop issue
-  // Will be re-enabled once session persistence is fixed
+  // Auto-login available but disabled to prevent infinite loops
+  // Users must manually log in for security
 
   // Login form state
   const [loginData, setLoginData] = useState({

@@ -111,7 +111,14 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection, onUpdate
           tags: data.tags
         }),
       });
-      if (!response.ok) throw new Error('Failed to update entry');
+      if (!response.ok) {
+        toast({
+          title: "Error",
+          description: "Failed to update entry. Please try again.",
+          variant: "destructive",
+        });
+        throw new Error('Failed to update entry');
+      }
       return response.json();
     },
     onSuccess: () => {
@@ -131,7 +138,14 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection, onUpdate
       const response = await fetch(`/api/moments/${id}`, {
         method: 'DELETE',
       });
-      if (!response.ok) throw new Error('Failed to delete entry');
+      if (!response.ok) {
+        toast({
+          title: "Error", 
+          description: "Failed to delete entry. Please try again.",
+          variant: "destructive",
+        });
+        throw new Error('Failed to delete entry');
+      }
       return response.json();
     },
     onSuccess: () => {
@@ -177,7 +191,14 @@ export function EntryDetailModal({ isOpen, onClose, moment, connection, onUpdate
         }),
       });
       
-      if (!response.ok) throw new Error('Failed to update');
+      if (!response.ok) {
+        toast({
+          title: "Error",
+          description: "Failed to update. Please try again.", 
+          variant: "destructive",
+        });
+        throw new Error('Failed to update');
+      }
       
       toast({ title: "Entry updated successfully!" });
       setIsEditing(false);

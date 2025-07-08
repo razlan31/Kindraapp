@@ -702,9 +702,9 @@ export default function LandingPage() {
             </div>
             
             <div className="flex items-center gap-6 text-sm text-gray-500">
-              <a href="#" className="hover:text-gray-700 transition-colors">Privacy Policy</a>
-              <a href="#" className="hover:text-gray-700 transition-colors">Terms of Service</a>
-              <a href="#" className="hover:text-gray-700 transition-colors">Support</a>
+              <button onClick={() => setLocation('/privacy')} className="hover:text-gray-700 transition-colors">Privacy Policy</button>
+              <button onClick={() => setLocation('/terms')} className="hover:text-gray-700 transition-colors">Terms of Service</button>
+              <button onClick={() => setLocation('/settings')} className="hover:text-gray-700 transition-colors">Support</button>
             </div>
           </div>
           

@@ -21,8 +21,14 @@ export default function Homepage1() {
   if (!user) {
     return (
       <div className="max-w-md mx-auto bg-white dark:bg-neutral-900 min-h-screen flex items-center justify-center">
-        <div className="text-center">
+        <div className="text-center space-y-4">
           <p className="text-neutral-600 dark:text-neutral-400">Please log in to continue</p>
+          <button 
+            onClick={() => window.location.href = '/login'}
+            className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded"
+          >
+            Go to Login
+          </button>
         </div>
       </div>
     );

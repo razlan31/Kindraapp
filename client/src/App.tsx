@@ -14,6 +14,8 @@ import LandingPage from "@/pages/landing";
 import Insights from "@/pages/insights-original";
 import Settings from "@/pages/settings";
 import MenstrualCycle from "@/pages/menstrual-cycle";
+import Privacy from "@/pages/privacy";
+import Terms from "@/pages/terms";
 import { AuthProvider, useAuth } from "./contexts/auth-context";
 import { RelationshipFocusProvider } from "./contexts/relationship-focus-context";
 import { ModalProvider } from "./contexts/modal-context";
@@ -49,6 +51,8 @@ function AppRoutes() {
         <Route path="/insights" component={Insights} />
         <Route path="/settings" component={Settings} />
         <Route path="/menstrual-cycle" component={MenstrualCycle} />
+        <Route path="/privacy" component={Privacy} />
+        <Route path="/terms" component={Terms} />
         
         {/* Catch all route */}
         <Route path="*" component={NotFound} />

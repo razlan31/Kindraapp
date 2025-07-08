@@ -810,7 +810,7 @@ export default function MenstrualCyclePage() {
                 })}
                 <Separator className="my-1" />
                 <DropdownMenuItem 
-                  onClick={() => {/* Connection modal functionality removed */}}
+                  onClick={() => setLocation('/connections')}
                   className="py-3 px-4"
                 >
                   <div className="flex items-center gap-2 text-blue-600">
