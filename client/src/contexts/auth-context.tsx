@@ -118,6 +118,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const logout = () => {
     console.log("🔴 SYNCHRONOUS LOGOUT START");
+    console.log('🔍 TRACKING: logout() called from', new Error().stack);
+    console.log('🔍 TRACKING: Current URL before logout:', window.location.href);
     
     // Clear storage synchronously
     localStorage.clear();
@@ -131,13 +133,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       xhr.setRequestHeader('Content-Type', 'application/json');
       xhr.send();
       console.log("🔴 SYNCHRONOUS SERVER LOGOUT COMPLETE:", xhr.status);
+      console.log('🔍 TRACKING: Server logout response received');
     } catch (e) {
       console.log("🔴 SERVER LOGOUT ERROR (IGNORED):", e);
+      console.log('🔍 TRACKING: Server logout error (continuing anyway)');
     }
     
     // Immediate synchronous redirect
     console.log("🔴 REDIRECTING TO LOGIN NOW");
+    console.log('🔍 TRACKING: About to set window.location.href to /login');
+    console.log('🔍 TRACKING: Current pathname before redirect:', window.location.pathname);
     window.location.href = "/login";
+    console.log('🔍 TRACKING: window.location.href set - this should not appear if redirect worked');
     // Code after redirect won't execute
   };
 

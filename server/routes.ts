@@ -322,6 +322,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // BULLETPROOF POST logout endpoint - handles all logout scenarios
   app.post("/api/logout", (req, res) => {
     console.log("🔴 SERVER: Bulletproof logout endpoint hit");
+    console.log('🔍 TRACKING: SERVER logout POST request received at', new Date().toISOString());
+    console.log('🔍 TRACKING: SERVER logout request URL:', req.url);
+    console.log('🔍 TRACKING: SERVER logout request method:', req.method);
+    console.log('🔍 TRACKING: SERVER logout request headers:', JSON.stringify(req.headers, null, 2));
     
     // Set headers to prevent caching and ensure proper response
     res.set({
@@ -358,11 +362,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.clearCookie('session');
     
     // Return success response immediately
+    console.log('🔍 TRACKING: SERVER logout returning success response');
     res.status(200).json({ 
       success: true,
       message: "Logout successful",
       timestamp: new Date().toISOString()
     });
+    console.log('🔍 TRACKING: SERVER logout response sent successfully');
   });
 
   // Simple test logout for debugging

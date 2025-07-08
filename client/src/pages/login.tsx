@@ -14,6 +14,10 @@ export default function Login() {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [, setLocation] = useLocation();
+  
+  // TRACKING: Login page rendered
+  console.log('🔍 TRACKING: Login page rendered at', new Date().toISOString());
+  console.log('🔍 TRACKING: Login page URL:', window.location.href);
 
 
 

@@ -1,4 +1,7 @@
 import { Switch, Route } from "wouter";
+
+// TRACKING: App.tsx initialization
+console.log('🔍 TRACKING: App.tsx loaded at', new Date().toISOString());
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";

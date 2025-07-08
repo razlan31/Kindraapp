@@ -3,6 +3,7 @@
 import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";
+import "./utils/tracking";  // TRACKING: Load comprehensive tracking
 
 console.log("🚨🚨🚨 MAIN.TSX EXECUTING - IMPORTING APP FROM", "./App");
 console.log("🚨🚨🚨 MAIN.TSX TIMESTAMP:", new Date().toISOString());
