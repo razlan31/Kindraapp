@@ -4,6 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
+import LogoutPage from "@/pages/logout-page";
 import Login from "@/pages/login";
 import OnboardingWelcome from "@/pages/onboarding/welcome";
 import OnboardingProfile from "@/pages/onboarding/profile";
@@ -90,6 +91,10 @@ function Router() {
 
   // Handle public routes immediately without auth state complications
   // This prevents 404s during logout transitions
+  if (location === '/logout') {
+    return <LogoutPage />;
+  }
+  
   if (location === '/login') {
     console.log('🚨🚨🚨 RENDERING LOGIN PAGE DIRECTLY');
     return <Login />;

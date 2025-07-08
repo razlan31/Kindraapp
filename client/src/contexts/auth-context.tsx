@@ -116,45 +116,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const logout = async () => {
-    console.log("🚨🚨🚨 LOGOUT FUNCTION EXECUTING - IMMEDIATE ACTION");
-    
-    // Set user to null FIRST to prevent any component queries
+  const logout = () => {
+    // Immediate synchronous logout - no async operations
     setUser(null);
-    setLoading(false); // Ensure loading is false to allow login page to render
-    console.log("🚨🚨🚨 USER STATE SET TO NULL AND LOADING SET TO FALSE");
-    
-    queryClient.cancelQueries();
+    setLoading(false);
     queryClient.clear();
     localStorage.clear();
     sessionStorage.clear();
-    console.log("🚨🚨🚨 ALL DATA CLEARED");
     
-    console.log("🚨🚨🚨 MAKING SERVER LOGOUT CALL");
+    // Background server cleanup (fire and forget)
+    fetch("/api/logout", { method: "POST", credentials: "include" }).catch(() => {});
     
-    try {
-      const res = await fetch("/api/logout", { method: "POST", credentials: "include" });
-      console.log("🚨🚨🚨 SERVER RESPONSE:", res.status, res.statusText);
-      
-      if (!res.ok) {
-        console.log("🚨🚨🚨 SERVER ERROR - Response not OK:", res.status, res.statusText);
-        const errorText = await res.text();
-        console.log("🚨🚨🚨 ERROR RESPONSE BODY:", errorText);
-      }
-      
-      // Add debugging to track exact navigation
-      console.log("🚨🚨🚨 CURRENT URL BEFORE REDIRECT:", window.location.href);
-      console.log("🚨🚨🚨 NOW REDIRECTING TO LOGIN WITH FULL RELOAD");
-      console.log("🚨🚨🚨 TARGET URL:", window.location.origin + "/login");
-      
-      // Use replace instead of assign to prevent back button issues
-      window.location.replace("/login");
-      
-    } catch (err) {
-      console.log("🚨🚨🚨 SERVER ERROR:", err);
-      // Even if server error, still redirect to prevent stuck state
-      window.location.assign("/login");
-    }
+    // Navigate to dedicated logout page that handles cleanup and redirect
+    window.location.href = "/logout";
   };
 
   const refreshUser = async () => {
