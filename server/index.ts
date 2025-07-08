@@ -58,6 +58,16 @@ app.use((req, res, next) => {
   // Register API routes first with explicit priority
   const server = await registerRoutes(app);
 
+  // Add React Router fallback BEFORE Vite setup
+  app.get('*', (req, res, next) => {
+    // Skip API routes
+    if (req.path.startsWith('/api/')) {
+      return next();
+    }
+    // Serve index.html for all other routes (React Router handling)
+    res.sendFile(path.resolve(import.meta.dirname, '../client/index.html'));
+  });
+
   // importantly only setup vite in development and after
   // setting up all the other routes so the catch-all route
   // doesn't interfere with the other routes
