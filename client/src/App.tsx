@@ -46,7 +46,12 @@ function AppRoutes() {
         {/* Protected routes */}
         {user ? (
           <>
-            <Route path="/auth/login" component={Homepage1} />
+            <Route path="/auth/login">
+              {() => {
+                console.log('🔥 AUTHENTICATED USER - /auth/login route triggered');
+                return <Homepage1 />;
+              }}
+            </Route>
             <Route path="/home" component={Homepage1} />
             <Route path="/dashboard" component={Dashboard} />
             <Route path="/connections" component={Connections} />
@@ -69,7 +74,12 @@ function AppRoutes() {
           </>
         ) : (
           <>
-            <Route path="/auth/login" component={Login} />
+            <Route path="/auth/login">
+              {() => {
+                console.log('🔥 UNAUTHENTICATED USER - /auth/login route triggered');
+                return <Login />;
+              }}
+            </Route>
             {/* Redirect all other routes to login when not authenticated */}
             <Route path="*" component={Login} />
           </>
