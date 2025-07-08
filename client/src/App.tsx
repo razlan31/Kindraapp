@@ -32,8 +32,7 @@ function AppRoutes() {
     );
   }
 
-  console.log('🔥 APP RENDER - Current path:', window.location.pathname, 'User:', !!user);
-  console.log('🔥 APP RENDER - Full URL:', window.location.href);
+  // Remove debug logs
   
   return (
     <div className="min-h-screen bg-background">
@@ -47,12 +46,7 @@ function AppRoutes() {
         {/* Protected routes */}
         {user ? (
           <>
-            <Route path="/auth/login">
-              {() => {
-                console.log('🔥 AUTH/LOGIN ROUTE HIT - AUTHENTICATED USER');
-                return <Homepage1 />;
-              }}
-            </Route>
+            <Route path="/auth/login" component={Homepage1} />
             <Route path="/home" component={Homepage1} />
             <Route path="/dashboard" component={Dashboard} />
             <Route path="/connections" component={Connections} />
@@ -75,12 +69,7 @@ function AppRoutes() {
           </>
         ) : (
           <>
-            <Route path="/auth/login">
-              {() => {
-                console.log('🔥 AUTH/LOGIN ROUTE HIT - UNAUTHENTICATED USER');
-                return <Login />;
-              }}
-            </Route>
+            <Route path="/auth/login" component={Login} />
             {/* Redirect all other routes to login when not authenticated */}
             <Route path="*" component={Login} />
           </>
