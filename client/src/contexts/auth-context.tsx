@@ -117,12 +117,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = () => {
-    // Skip all React state updates - go directly to page reload
+    console.log("🔴 SYNCHRONOUS LOGOUT START");
+    
+    // Clear storage synchronously
     localStorage.clear();
     sessionStorage.clear();
+    console.log("🔴 STORAGE CLEARED");
     
-    // Immediate full page reload to logout page - bypasses all React timing
-    window.location.href = "/logout";
+    // Synchronous server logout using XMLHttpRequest
+    try {
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', '/api/logout', false); // false = synchronous
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.send();
+      console.log("🔴 SYNCHRONOUS SERVER LOGOUT COMPLETE:", xhr.status);
+    } catch (e) {
+      console.log("🔴 SERVER LOGOUT ERROR (IGNORED):", e);
+    }
+    
+    // Immediate synchronous redirect
+    console.log("🔴 REDIRECTING TO LOGIN");
+    window.location.href = "/login";
+    console.log("🔴 REDIRECT COMMAND EXECUTED");
   };
 
   const refreshUser = async () => {
