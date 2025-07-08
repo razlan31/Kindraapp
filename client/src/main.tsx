@@ -4,7 +4,8 @@ import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";
 
-// Remove debug logs
+console.log('🔥 MAIN.TSX TIMESTAMP:', Date.now());
+console.log('🔥 MAIN.TSX URL:', window.location.href);
 
 console.log("🚨🚨🚨 MAIN.TSX EXECUTING - IMPORTING APP FROM", "./App");
 console.log("🚨🚨🚨 MAIN.TSX TIMESTAMP:", new Date().toISOString());
