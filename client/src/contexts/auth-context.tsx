@@ -116,16 +116,33 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const logout = () => {
-    console.log("🔴 SERVER-SIDE REDIRECT LOGOUT");
-    
-    // Clear storage and state immediately
-    localStorage.clear();
-    sessionStorage.clear();
-    setUser(null);
-    
-    // Use server-side redirect that service worker cannot intercept
-    window.location.href = "/api/logout-and-redirect";
+  const logout = async () => {
+    try {
+      // Clear user state first to stop any authenticated requests
+      setUser(null);
+      
+      // Make proper API call to logout endpoint
+      await fetch('/api/logout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      // Clear storage after successful logout
+      localStorage.clear();
+      sessionStorage.clear();
+      
+      // Use React Query to invalidate all cached data
+      queryClient.clear();
+      
+    } catch (error) {
+      console.error("Logout error:", error);
+      // Even if server logout fails, clear local state
+      localStorage.clear();
+      sessionStorage.clear();
+      queryClient.clear();
+    }
   };
 
   const refreshUser = async () => {

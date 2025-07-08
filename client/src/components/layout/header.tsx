@@ -15,19 +15,14 @@ export function Header() {
   console.log("🚨🚨🚨 HEADER: isAuthenticated:", isAuthenticated, "user exists:", !!user);
   
   const handleLogout = async () => {
-    console.log("🚨🚨🚨 HEADER: Logout button clicked");
-    console.log('🔍 TRACKING: Header handleLogout called at', new Date().toISOString());
-    console.log('🔍 TRACKING: About to call logout() from auth context');
     setLoggingOut(true);
     try {
       await logout();
-      console.log('🔍 TRACKING: logout() call completed successfully');
+      // After logout, the AuthProvider will handle navigation based on auth state
     } catch (error) {
-      console.error("🚨🚨🚨 HEADER: Logout error:", error);
-      console.log('🔍 TRACKING: logout() call failed with error:', error);
+      console.error("Logout error:", error);
     } finally {
       setLoggingOut(false);
-      console.log('🔍 TRACKING: handleLogout finally block executed');
     }
   };
   const [dropdownOpen, setDropdownOpen] = useState(false);
