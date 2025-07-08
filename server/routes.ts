@@ -199,6 +199,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // User data export endpoint
+  app.get("/api/user/export", isAuthenticated, async (req: Request, res: Response) => {
+    try {
+      const session = req.session as any;
+      const userId = session.userId!;
+
+      const user = await storage.getUser(userId);
+      const connections = await storage.getConnectionsByUserId(userId);
+      const moments = await storage.getMomentsByUserId(userId);
+      const badges = await storage.getUserBadges(userId);
+
+      const exportData = {
+        user: {
+          id: user.id,
+          email: user.email,
+          displayName: user.displayName,
+          zodiacSign: user.zodiacSign,
+          loveLanguage: user.loveLanguage,
+          createdAt: user.createdAt
+        },
+        connections,
+        moments,
+        badges,
+        exportDate: new Date().toISOString()
+      };
+
+      res.setHeader('Content-Type', 'application/json');
+      res.setHeader('Content-Disposition', 'attachment; filename="kindra-data-export.json"');
+      res.json(exportData);
+    } catch (error) {
+      console.error("Error exporting user data:", error);
+      res.status(500).json({ error: "Failed to export user data" });
+    }
+  });
+
   // Plan routes - use non-api route to bypass ALL Vite middleware conflicts  
   // Stats endpoint
   app.get("/api/stats", isAuthenticated, async (req: Request, res: Response) => {
