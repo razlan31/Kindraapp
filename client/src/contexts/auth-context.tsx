@@ -16,7 +16,7 @@ type AuthContextType = {
     zodiacSign?: string;
     loveLanguage?: string;
   }) => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
 };
 
@@ -26,7 +26,7 @@ const AuthContext = createContext<AuthContextType>({
   loading: true,
   login: async () => {},
   register: async () => {},
-  logout: () => {},
+  logout: async () => {},
   refreshUser: async () => {},
 });
 
@@ -117,32 +117,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = async () => {
-    try {
-      // Clear user state first to stop any authenticated requests
-      setUser(null);
-      
-      // Make proper API call to logout endpoint
-      await fetch('/api/logout', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      
-      // Clear storage after successful logout
-      localStorage.clear();
-      sessionStorage.clear();
-      
-      // Use React Query to invalidate all cached data
-      queryClient.clear();
-      
-    } catch (error) {
-      console.error("Logout error:", error);
-      // Even if server logout fails, clear local state
-      localStorage.clear();
-      sessionStorage.clear();
-      queryClient.clear();
-    }
+    // Clear user state immediately - this triggers navigation via routing
+    setUser(null);
+    
+    // Clear all local data
+    localStorage.clear();
+    sessionStorage.clear();
+    queryClient.clear();
+    
+    // Logout from server (but don't wait for it)
+    fetch('/api/logout', { method: 'POST' }).catch(() => {});
   };
 
   const refreshUser = async () => {
