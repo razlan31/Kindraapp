@@ -752,3 +752,5 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
     </Dialog>
   );
 }
+
+export default PlanModal;

@@ -279,3 +279,5 @@ export function MoodTrackerModal({ isOpen, onClose, connection }: MoodTrackerMod
     </Dialog>
   );
 }
+
+export default MoodTrackerModal;

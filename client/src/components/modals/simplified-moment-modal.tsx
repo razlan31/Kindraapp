@@ -1128,3 +1128,5 @@ export function MomentModal() {
     </Dialog>
   );
 }
+
+export default MomentModal;
