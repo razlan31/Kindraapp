@@ -5,6 +5,13 @@ import { useLocation } from 'wouter';
 
 export default function NotFound() {
   const [, setLocation] = useLocation();
+  
+  // Log when 404 page is rendered to track the source
+  console.error('🚨🚨🚨 NOT FOUND PAGE RENDERED 🚨🚨🚨');
+  console.error('🚨 Current URL:', window.location.href);
+  console.error('🚨 Current pathname:', window.location.pathname);
+  console.error('🚨 Timestamp:', new Date().toISOString());
+  console.error('🚨 Stack trace:', new Error().stack);
 
 
 

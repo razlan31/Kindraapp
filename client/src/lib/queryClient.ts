@@ -32,17 +32,19 @@ async function throwIfResNotOk(res: Response) {
       stack: new Error().stack
     });
     
-    // Special logging for 404 errors to help debug logout issues
+    // Enhanced 404 debugging - capture ALL details
     if (res.status === 404) {
       console.error('🔥🔥🔥 404 ERROR DETECTED 🔥🔥🔥');
       console.error('🔥 404 URL:', res.url);
       console.error('🔥 404 METHOD:', res.method || 'GET');
       console.error('🔥 404 TIME:', new Date().toISOString());
       console.error('🔥 404 RESPONSE:', errorMessage);
+      console.error('🔥 404 CURRENT LOCATION:', window.location.href);
+      console.error('🔥 404 PATHNAME:', window.location.pathname);
       console.error('🔥 404 STACK:', new Error().stack);
       
-      // Also log to console for user visibility
-      alert(`404 ERROR: ${res.url} - ${errorMessage}`);
+      // Immediate alert with ALL details
+      alert(`404 ERROR FOUND!\nURL: ${res.url}\nMethod: ${res.method || 'GET'}\nLocation: ${window.location.href}\nResponse: ${errorMessage}`);
     }
     
     throw new Error(errorMessage);
