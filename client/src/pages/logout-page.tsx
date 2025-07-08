@@ -20,14 +20,23 @@ export default function LogoutPage() {
       });
     }
     
-    // Server logout in background
+    // Server logout with immediate redirect regardless of result
     fetch("/api/logout", { 
       method: "POST", 
       credentials: "include" 
+    }).catch(() => {
+      // Ignore errors
     }).finally(() => {
-      // Force complete page reload after server cleanup
-      window.location.replace("/login");
+      // Always redirect after 100ms regardless of server response
+      setTimeout(() => {
+        window.location.replace("/login");
+      }, 100);
     });
+    
+    // Fallback redirect if server takes too long
+    setTimeout(() => {
+      window.location.replace("/login");
+    }, 1000);
   }, []);
 
   return (
