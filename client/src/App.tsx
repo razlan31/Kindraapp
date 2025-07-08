@@ -43,47 +43,18 @@ function AppRoutes() {
           {() => user ? <Homepage1 /> : <Login />}
         </Route>
         
-        {/* Protected routes */}
-        {user ? (
-          <>
-            <Route path="/auth/login">
-              {() => {
-                console.log('🔥 AUTHENTICATED USER - /auth/login route triggered');
-                return <Homepage1 />;
-              }}
-            </Route>
-            <Route path="/home" component={Homepage1} />
-            <Route path="/dashboard" component={Dashboard} />
-            <Route path="/connections" component={Connections} />
-            <Route path="/activities" component={Activities} />
-            <Route path="/calendar" component={Calendar} />
-            <Route path="/insights" component={Insights} />
-            <Route path="/settings" component={Settings} />
-            <Route path="/menstrual-cycle" component={MenstrualCycle} />
-            
-            {/* Default authenticated route */}
-            <Route path="*">
-              {(params) => {
-                const path = params.path;
-                if (path && path.startsWith('/')) {
-                  return <NotFound />;
-                }
-                return <Homepage1 />;
-              }}
-            </Route>
-          </>
-        ) : (
-          <>
-            <Route path="/auth/login">
-              {() => {
-                console.log('🔥 UNAUTHENTICATED USER - /auth/login route triggered');
-                return <Login />;
-              }}
-            </Route>
-            {/* Redirect all other routes to login when not authenticated */}
-            <Route path="*" component={Login} />
-          </>
-        )}
+        <Route path="/auth/login" component={Login} />
+        <Route path="/home" component={user ? Homepage1 : Login} />
+        <Route path="/dashboard" component={user ? Dashboard : Login} />
+        <Route path="/connections" component={user ? Connections : Login} />
+        <Route path="/activities" component={user ? Activities : Login} />
+        <Route path="/calendar" component={user ? Calendar : Login} />
+        <Route path="/insights" component={user ? Insights : Login} />
+        <Route path="/settings" component={user ? Settings : Login} />
+        <Route path="/menstrual-cycle" component={user ? MenstrualCycle : Login} />
+        
+        {/* Catch all route */}
+        <Route path="*" component={user ? Homepage1 : Login} />
       </Switch>
       
       <ModalsContainer />
