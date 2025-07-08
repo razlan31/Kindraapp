@@ -57,14 +57,6 @@ app.use((req, res, next) => {
   
   // Register API routes first with explicit priority
   const server = await registerRoutes(app);
-  
-  // Debug middleware for /auth/login
-  app.get('/auth/login', (req, res, next) => {
-    console.log('🔥 SERVER: /auth/login route hit, passing to Vite...');
-    next();
-  });
-
-  // Remove this middleware - it's causing the problem by intercepting valid API routes
 
   // importantly only setup vite in development and after
   // setting up all the other routes so the catch-all route
