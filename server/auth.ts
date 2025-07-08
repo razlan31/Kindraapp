@@ -116,6 +116,30 @@ export async function setupAuth(app: Express) {
       res.redirect("/");
     });
   });
+
+  // POST logout endpoint for frontend
+  app.post("/api/logout", (req, res) => {
+    console.log("🔍 TRACKING: SERVER logout starting");
+    req.logout((err) => {
+      if (err) {
+        console.error("Logout error:", err);
+        return res.status(500).json({ success: false, message: "Logout failed" });
+      }
+      
+      // Clear session
+      req.session.destroy((err) => {
+        if (err) {
+          console.error("🔴 SERVER: Session destruction failed:", err);
+        } else {
+          console.log("🔴 SERVER: Session destroyed successfully");
+        }
+      });
+      
+      console.log("🔍 TRACKING: SERVER logout returning success response");
+      res.json({ success: true, message: "Logout successful" });
+      console.log("🔍 TRACKING: SERVER logout response sent successfully");
+    });
+  });
 }
 
 // Authentication middleware
