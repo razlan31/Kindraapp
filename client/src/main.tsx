@@ -92,5 +92,15 @@ window.addEventListener('error', (event) => {
 
 // Allow normal Replit PWA and WebSocket functionality
 
+// Disable service worker to prevent caching issues
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then(function(registrations) {
+    for(let registration of registrations) {
+      registration.unregister();
+      console.log('🔥 UNREGISTERED SERVICE WORKER');
+    }
+  });
+}
+
 console.log("🚨🚨🚨 MAIN.TSX ABOUT TO RENDER APP TO DOM");
 createRoot(document.getElementById("root")!).render(<App />);
