@@ -140,7 +140,8 @@ function Router() {
       <Route path="/cycle" component={MenstrualCycle} />
       <Route path="/menstrual-cycle" component={MenstrualCycle} />
       
-      <Route component={NotFound} />
+      {/* Explicit 404 route instead of catch-all to prevent logout conflicts */}
+      <Route path="*" component={NotFound} />
     </Switch>
   );
 }

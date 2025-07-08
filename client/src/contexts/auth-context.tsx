@@ -147,8 +147,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       console.log("🚨🚨🚨 NOW REDIRECTING TO LOGIN WITH FULL RELOAD");
       console.log("🚨🚨🚨 TARGET URL:", window.location.origin + "/login");
       
-      // Force full page reload to login to avoid any SPA routing issues
-      window.location.assign("/login");
+      // Use replace instead of assign to prevent back button issues
+      window.location.replace("/login");
       
     } catch (err) {
       console.log("🚨🚨🚨 SERVER ERROR:", err);
