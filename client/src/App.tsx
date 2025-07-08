@@ -40,13 +40,11 @@ function AppRoutes() {
         <Route path="/login">
           {() => user ? <Homepage1 /> : <Login />}
         </Route>
-        <Route path="/auth/login">
-          {() => user ? <Homepage1 /> : <Login />}
-        </Route>
         
         {/* Protected routes */}
         {user ? (
           <>
+            <Route path="/auth/login" component={Homepage1} />
             <Route path="/home" component={Homepage1} />
             <Route path="/dashboard" component={Dashboard} />
             <Route path="/connections" component={Connections} />
@@ -68,8 +66,11 @@ function AppRoutes() {
             </Route>
           </>
         ) : (
-          /* Redirect all other routes to login when not authenticated */
-          <Route path="*" component={Login} />
+          <>
+            <Route path="/auth/login" component={Login} />
+            {/* Redirect all other routes to login when not authenticated */}
+            <Route path="*" component={Login} />
+          </>
         )}
       </Switch>
       
