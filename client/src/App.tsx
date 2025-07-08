@@ -37,24 +37,21 @@ function AppRoutes() {
   return (
     <div className="min-h-screen bg-background">
       <Switch>
-        {/* Public routes */}
+        {/* All routes - no authentication checking in routing */}
         <Route path="/" component={LandingPage} />
-        <Route path="/login">
-          {() => user ? <Homepage1 /> : <Login />}
-        </Route>
-        
+        <Route path="/login" component={Login} />
         <Route path="/auth/login" component={Login} />
-        <Route path="/home" component={user ? Homepage1 : Login} />
-        <Route path="/dashboard" component={user ? Dashboard : Login} />
-        <Route path="/connections" component={user ? Connections : Login} />
-        <Route path="/activities" component={user ? Activities : Login} />
-        <Route path="/calendar" component={user ? Calendar : Login} />
-        <Route path="/insights" component={user ? Insights : Login} />
-        <Route path="/settings" component={user ? Settings : Login} />
-        <Route path="/menstrual-cycle" component={user ? MenstrualCycle : Login} />
+        <Route path="/home" component={Homepage1} />
+        <Route path="/dashboard" component={Dashboard} />
+        <Route path="/connections" component={Connections} />
+        <Route path="/activities" component={Activities} />
+        <Route path="/calendar" component={Calendar} />
+        <Route path="/insights" component={Insights} />
+        <Route path="/settings" component={Settings} />
+        <Route path="/menstrual-cycle" component={MenstrualCycle} />
         
         {/* Catch all route */}
-        <Route path="*" component={user ? Homepage1 : Login} />
+        <Route path="*" component={NotFound} />
       </Switch>
       
       <ModalsContainer />
