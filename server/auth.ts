@@ -45,6 +45,12 @@ export async function setupAuth(app: Express) {
   const currentDomain = process.env.REPLIT_DOMAINS?.split(',')[0] || 'localhost:5000';
   const baseUrl = currentDomain.startsWith('http') ? currentDomain : `https://${currentDomain}`;
   
+  console.log('OAuth Configuration:', {
+    currentDomain,
+    baseUrl,
+    callbackURL: `${baseUrl}/api/auth/google/callback`
+  });
+  
   passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID!,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
