@@ -118,7 +118,7 @@ export async function setupAuth(app: Express) {
 
   // Auth routes
   app.get("/api/auth/google", (req, res, next) => {
-    console.log("🔍 Initiating Google OAuth flow");
+    console.log("🔍 ===== GOOGLE OAUTH FLOW INITIATED =====");
     console.log("🔍 Request hostname:", req.hostname);
     console.log("🔍 Request headers host:", req.headers.host);
     console.log("🔍 Request protocol:", req.protocol);
@@ -127,6 +127,7 @@ export async function setupAuth(app: Express) {
     console.log("🔍 Full request URL:", `${req.protocol}://${req.headers.host}${req.originalUrl}`);
     console.log("🔍 X-Forwarded-Proto:", req.headers['x-forwarded-proto']);
     console.log("🔍 X-Forwarded-Host:", req.headers['x-forwarded-host']);
+    console.log("🔍 User-Agent:", req.headers['user-agent']);
     console.log("🔍 All request headers:", JSON.stringify(req.headers, null, 2));
     
     // Force HTTPS redirect if the request is HTTP

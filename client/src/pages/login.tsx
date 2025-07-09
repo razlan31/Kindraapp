@@ -39,7 +39,13 @@ export default function Login() {
   });
 
   const handleGoogleLogin = () => {
-    window.location.href = "/api/auth/google";
+    console.log("🔍 CLIENT: Redirecting to Google OAuth");
+    console.log("🔍 CLIENT: Current domain:", window.location.hostname);
+    console.log("🔍 CLIENT: Target URL:", "/api/auth/google");
+    
+    // Clear any potential caching
+    const timestamp = Date.now();
+    window.location.href = `/api/auth/google?t=${timestamp}`;
   };
 
   const handleLogin = async (e: React.FormEvent) => {
