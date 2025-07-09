@@ -48,9 +48,9 @@ export async function setupAuth(app: Express) {
   
   // Fixed callback URL based on domain detection - always use HTTPS
   const getCallbackURL = () => {
-    // Always use the production domain for OAuth callbacks
-    // This ensures consistent callback URL regardless of how the app is accessed
-    return 'https://kindra-jagohtrade.replit.app/api/auth/google/callback';
+    // Use the actual Replit domain from environment variable
+    const replitDomain = process.env.REPLIT_DOMAINS || 'kindra-jagohtrade.replit.app';
+    return `https://${replitDomain}/api/auth/google/callback`;
   };
 
   const callbackURL = getCallbackURL();
@@ -138,7 +138,8 @@ export async function setupAuth(app: Express) {
     }
     
     // Manual OAuth URL construction to bypass Passport's protocol detection
-    const redirectUri = 'https://kindra-jagohtrade.replit.app/api/auth/google/callback';
+    const replitDomain = process.env.REPLIT_DOMAINS || 'kindra-jagohtrade.replit.app';
+    const redirectUri = `https://${replitDomain}/api/auth/google/callback`;
     const clientId = process.env.GOOGLE_CLIENT_ID!;
     const scope = 'profile email';
     const responseType = 'code';
@@ -161,9 +162,13 @@ export async function setupAuth(app: Express) {
   });
 
   app.get("/api/auth/google/callback", async (req, res, next) => {
-    console.log("🔍 Google OAuth callback received");
+    console.log("🔍 ===== GOOGLE OAUTH CALLBACK RECEIVED =====");
     console.log("🔍 Query params:", req.query);
     console.log("🔍 Full URL:", req.url);
+    console.log("🔍 Request protocol:", req.protocol);
+    console.log("🔍 Request host:", req.headers.host);
+    console.log("🔍 Request hostname:", req.hostname);
+    console.log("🔍 Full request URL:", `${req.protocol}://${req.headers.host}${req.originalUrl}`);
     console.log("🔍 Callback request headers:", JSON.stringify(req.headers, null, 2));
     
     // Force HTTPS redirect if the request is HTTP
@@ -175,8 +180,12 @@ export async function setupAuth(app: Express) {
     
     // Check if there's an error in the callback
     if (req.query.error) {
-      console.error("❌ OAuth error from Google:", req.query.error);
-      console.error("❌ OAuth error description:", req.query.error_description);
+      console.error("❌ ===== GOOGLE OAUTH ERROR =====");
+      console.error("❌ Error code:", req.query.error);
+      console.error("❌ Error description:", req.query.error_description);
+      console.error("❌ Error URI:", req.query.error_uri);
+      console.error("❌ Full error query:", req.query);
+      console.error("❌ The redirect URI Google received was likely:", `${req.protocol}://${req.headers.host}/api/auth/google/callback`);
       return res.redirect("/login?error=oauth_error");
     }
     
@@ -205,7 +214,7 @@ export async function setupAuth(app: Express) {
           client_secret: process.env.GOOGLE_CLIENT_SECRET!,
           code: code as string,
           grant_type: 'authorization_code',
-          redirect_uri: 'https://kindra-jagohtrade.replit.app/api/auth/google/callback',
+          redirect_uri: `https://${process.env.REPLIT_DOMAINS || 'kindra-jagohtrade.replit.app'}/api/auth/google/callback`,
         }),
       });
       
