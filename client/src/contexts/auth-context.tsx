@@ -42,7 +42,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     console.log("Auth: Checking authentication status for:", currentPath);
 
     // For public pages, set user to null immediately without API call to avoid loading states
-    if (currentPath === "/login" || currentPath === "/" || currentPath === "/landing") {
+    if (currentPath === "/login" || currentPath === "/" || currentPath === "/landing" || currentPath === "/app") {
       console.log("Auth: Public page detected, setting user to null without API call");
       setUser(null);
       setLoading(false);
@@ -86,7 +86,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, []);  // Added empty dependency array to prevent infinite re-renders
 
   const login = async (username: string, password: string, rememberMe?: boolean) => {
     try {
