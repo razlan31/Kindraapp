@@ -105,6 +105,7 @@ export default function LandingPage() {
   ];
 
   const handleGetStarted = () => {
+    console.log('Landing: handleGetStarted called, navigating to /login');
     setLocation('/login');
   };
 

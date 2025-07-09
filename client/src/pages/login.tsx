@@ -16,6 +16,7 @@ export default function Login() {
   const [, setLocation] = useLocation();
   
   // Login page loaded successfully
+  console.log('Login: Login page component loaded successfully');
 
 
 
