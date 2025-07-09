@@ -48,18 +48,8 @@ export async function setupAuth(app: Express) {
   
   // Fixed callback URL based on domain detection - always use HTTPS
   const getCallbackURL = () => {
-    // Check if we're in production deployment
-    if (process.env.REPLIT_DEPLOYMENT === 'production') {
-      return 'https://kindra-jagohtrade.replit.app/api/auth/google/callback';
-    }
-    
-    // Check environment domains
-    const domain = process.env.REPLIT_DOMAINS?.split(',')[0];
-    if (domain) {
-      return `https://${domain}/api/auth/google/callback`;
-    }
-    
-    // Default to production
+    // Always use the production domain for OAuth callbacks
+    // This ensures consistent callback URL regardless of how the app is accessed
     return 'https://kindra-jagohtrade.replit.app/api/auth/google/callback';
   };
 
@@ -134,45 +124,14 @@ export async function setupAuth(app: Express) {
     console.log("🔍 Full request URL:", `${req.protocol}://${req.headers.host}${req.originalUrl}`);
     console.log("🔍 All request headers:", JSON.stringify(req.headers, null, 2));
     
-    // Create a custom callback URL based on the actual request
-    const actualHost = req.headers.host;
-    // Always use HTTPS for OAuth callbacks (required by Google)
-    const actualProtocol = 'https';
-    const dynamicCallbackURL = `${actualProtocol}://${actualHost}/api/auth/google/callback`;
+    // Force HTTPS redirect if the request is HTTP
+    if (req.protocol === 'http') {
+      const httpsUrl = `https://${req.headers.host}${req.originalUrl}`;
+      console.log("🔄 Redirecting HTTP to HTTPS:", httpsUrl);
+      return res.redirect(httpsUrl);
+    }
     
-    console.log("🔍 Dynamic callback URL:", dynamicCallbackURL);
-    
-    // Create a new strategy with the correct callback URL
-    const dynamicStrategy = new GoogleStrategy({
-      clientID: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-      callbackURL: dynamicCallbackURL
-    }, async (accessToken, refreshToken, profile, done) => {
-      try {
-        const googleId = profile.id;
-        const email = profile.emails?.[0]?.value;
-        const firstName = profile.name?.givenName;
-        const lastName = profile.name?.familyName;
-        const profileImageUrl = profile.photos?.[0]?.value;
-
-        await storage.upsertUser({
-          id: googleId,
-          email,
-          firstName,
-          lastName,
-          profileImageUrl,
-        });
-
-        const user = await storage.getUser(googleId);
-        return done(null, user);
-      } catch (error) {
-        return done(error);
-      }
-    });
-    
-    // Use the dynamic strategy for this specific request
-    passport.use('google-dynamic', dynamicStrategy);
-    passport.authenticate('google-dynamic', { scope: ["profile", "email"] })(req, res, next);
+    passport.authenticate("google", { scope: ["profile", "email"] })(req, res, next);
   });
 
   app.get("/api/auth/google/callback", (req, res, next) => {
@@ -181,6 +140,13 @@ export async function setupAuth(app: Express) {
     console.log("🔍 Full URL:", req.url);
     console.log("🔍 Callback request headers:", JSON.stringify(req.headers, null, 2));
     
+    // Force HTTPS redirect if the request is HTTP
+    if (req.protocol === 'http') {
+      const httpsUrl = `https://${req.headers.host}${req.originalUrl}`;
+      console.log("🔄 Redirecting HTTP callback to HTTPS:", httpsUrl);
+      return res.redirect(httpsUrl);
+    }
+    
     // Check if there's an error in the callback
     if (req.query.error) {
       console.error("❌ OAuth error from Google:", req.query.error);
@@ -188,8 +154,7 @@ export async function setupAuth(app: Express) {
       return res.redirect("/login?error=oauth_error");
     }
     
-    // Use the dynamic strategy for callback as well
-    passport.authenticate("google-dynamic", { 
+    passport.authenticate("google", { 
       failureRedirect: "/login",
       failureMessage: true 
     }, (err, user, info) => {

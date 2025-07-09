@@ -8,6 +8,16 @@ const app = express();
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: false, limit: '10mb' }));
 
+// Force HTTPS for OAuth routes to prevent redirect_uri_mismatch
+app.use('/api/auth', (req, res, next) => {
+  if (req.protocol === 'http') {
+    const httpsUrl = `https://${req.headers.host}${req.originalUrl}`;
+    console.log("🔄 Forcing HTTPS redirect for auth route:", httpsUrl);
+    return res.redirect(301, httpsUrl);
+  }
+  next();
+});
+
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
