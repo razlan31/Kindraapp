@@ -42,14 +42,21 @@ export async function setupAuth(app: Express) {
   app.use(passport.session());
 
   // Get the current domain from environment variables
-  const currentDomain = process.env.REPLIT_DOMAINS?.split(',')[0] || 'localhost:5000';
+  const currentDomain = process.env.REPLIT_DOMAINS?.split(',')[0] || 'ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev';
   const baseUrl = currentDomain.startsWith('http') ? currentDomain : `https://${currentDomain}`;
   
   console.log('OAuth Configuration:', {
     currentDomain,
     baseUrl,
-    callbackURL: `${baseUrl}/api/auth/google/callback`
+    callbackURL: `${baseUrl}/api/auth/google/callback`,
+    clientID: process.env.GOOGLE_CLIENT_ID ? 'SET' : 'NOT SET',
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET ? 'SET' : 'NOT SET'
   });
+  
+  if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
+    console.error('❌ GOOGLE_CLIENT_ID or GOOGLE_CLIENT_SECRET not set in environment');
+    throw new Error('Google OAuth credentials not configured');
+  }
   
   passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID!,
@@ -102,21 +109,39 @@ export async function setupAuth(app: Express) {
   });
 
   // Auth routes
-  app.get("/api/auth/google", 
-    passport.authenticate("google", { scope: ["profile", "email"] })
-  );
+  app.get("/api/auth/google", (req, res, next) => {
+    console.log("🔍 Initiating Google OAuth flow");
+    passport.authenticate("google", { scope: ["profile", "email"] })(req, res, next);
+  });
 
-  app.get("/api/auth/google/callback",
-    passport.authenticate("google", { failureRedirect: "/login" }),
-    (req, res) => {
-      // Store user ID in session for custom auth middleware compatibility
-      if (req.user) {
-        (req.session as any).userId = (req.user as any).id;
-        console.log("User logged in, session userId set:", (req.user as any).id);
+  app.get("/api/auth/google/callback", (req, res, next) => {
+    console.log("🔍 Google OAuth callback received");
+    passport.authenticate("google", { 
+      failureRedirect: "/login",
+      failureMessage: true 
+    }, (err, user, info) => {
+      if (err) {
+        console.error("❌ OAuth authentication error:", err);
+        return res.redirect("/login?error=oauth_error");
       }
-      res.redirect("/"); // Redirect to main app after successful login
-    }
-  );
+      if (!user) {
+        console.error("❌ OAuth authentication failed:", info);
+        return res.redirect("/login?error=oauth_failed");
+      }
+      
+      req.logIn(user, (err) => {
+        if (err) {
+          console.error("❌ Login session error:", err);
+          return res.redirect("/login?error=session_error");
+        }
+        
+        // Store user ID in session for custom auth middleware compatibility
+        (req.session as any).userId = user.id;
+        console.log("✅ User logged in successfully, session userId set:", user.id);
+        res.redirect("/"); // Redirect to main app after successful login
+      });
+    })(req, res, next);
+  });
 
   app.get("/api/auth/logout", (req, res) => {
     req.logout((err) => {
