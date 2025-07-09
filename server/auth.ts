@@ -1,5 +1,4 @@
-import passport from "passport";
-import { Strategy as GoogleStrategy } from "passport-google-oauth20";
+// Removed Passport.js imports - using manual OAuth only
 import session from "express-session";
 import connectPg from "connect-pg-simple";
 import type { Express, RequestHandler } from "express";
@@ -35,11 +34,10 @@ export function getSession() {
   });
 }
 
-// Configure Google OAuth strategy
+// Configure manual OAuth setup
 export async function setupAuth(app: Express) {
   app.use(getSession());
-  app.use(passport.initialize());
-  app.use(passport.session());
+  // Removed Passport.js initialization - using manual OAuth only
 
   if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
     console.error('❌ GOOGLE_CLIENT_ID or GOOGLE_CLIENT_SECRET not set in environment');
@@ -65,56 +63,7 @@ export async function setupAuth(app: Express) {
     proxyEnabled: true
   });
 
-  passport.use(new GoogleStrategy({
-    clientID: process.env.GOOGLE_CLIENT_ID!,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    callbackURL: callbackURL,
-    proxy: true  // Important: Tell Passport to trust the proxy for HTTPS detection
-  },
-  async (accessToken, refreshToken, profile, done) => {
-    try {
-      const googleId = profile.id;
-      const email = profile.emails?.[0]?.value;
-      const firstName = profile.name?.givenName;
-      const lastName = profile.name?.familyName;
-      const profileImageUrl = profile.photos?.[0]?.value;
-
-      // Upsert user in database
-      await storage.upsertUser({
-        id: googleId,
-        email,
-        firstName,
-        lastName,
-        profileImageUrl,
-      });
-
-      const user = await storage.getUser(googleId);
-      return done(null, user);
-    } catch (error) {
-      return done(error);
-    }
-  }));
-
-  passport.serializeUser((user: any, done) => {
-    console.log("Serializing user:", user.id);
-    done(null, user.id);
-  });
-
-  passport.deserializeUser(async (id: string, done) => {
-    try {
-      console.log("Deserializing user ID:", id);
-      const user = await storage.getUser(id);
-      if (!user) {
-        console.log("User not found during deserialization:", id);
-        return done(null, false);
-      }
-      console.log("User deserialized successfully:", user.id);
-      done(null, user);
-    } catch (error) {
-      console.error("Error deserializing user:", error);
-      done(null, false); // Don't fail, just return false for unauthenticated
-    }
-  });
+  // Removed Passport.js implementation - using manual OAuth only
 
   // Auth routes
   app.get("/api/auth/google", (req, res, next) => {
