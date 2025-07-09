@@ -215,7 +215,10 @@ export function PricingModal({ isOpen, onClose, currentPlan = 'free', showTrialB
         <div className="flex flex-col gap-3 mt-6">
           {showTrialButton && currentPlan === 'free' && (
             <Button 
-              onClick={() => startTrialMutation.mutate()}
+              onClick={() => {
+                console.log('Pricing modal: Free trial button clicked, navigating to /login');
+                window.location.href = '/login';
+              }}
               disabled={startTrialMutation.isPending}
               className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
               size="lg"
@@ -226,7 +229,10 @@ export function PricingModal({ isOpen, onClose, currentPlan = 'free', showTrialB
 
           {selectedPlan !== 'free' && selectedPlan !== currentPlan && (
             <Button 
-              onClick={() => subscribeMutation.mutate(selectedPlan)}
+              onClick={() => {
+                console.log('Pricing modal: Premium subscription button clicked, navigating to /login');
+                window.location.href = '/login';
+              }}
               disabled={subscribeMutation.isPending}
               className="w-full"
               size="lg"
