@@ -220,7 +220,7 @@ export function PricingModal({ isOpen, onClose, currentPlan = 'free', showTrialB
               className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
               size="lg"
             >
-              {startTrialMutation.isPending ? "Starting Trial..." : "Start 5-Day Free Trial"}
+              {startTrialMutation.isPending ? "Starting Trial..." : "Sign In / Sign Up"}
             </Button>
           )}
 
@@ -231,7 +231,7 @@ export function PricingModal({ isOpen, onClose, currentPlan = 'free', showTrialB
               className="w-full"
               size="lg"
             >
-              {subscribeMutation.isPending ? "Processing..." : `Subscribe to ${subscriptionPlans[selectedPlan as keyof typeof subscriptionPlans].name}`}
+              {subscribeMutation.isPending ? "Processing..." : "Sign In / Sign Up"}
             </Button>
           )}
 
