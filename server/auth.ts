@@ -61,13 +61,15 @@ export async function setupAuth(app: Express) {
     REPLIT_DOMAINS: process.env.REPLIT_DOMAINS,
     callbackURL,
     clientID: process.env.GOOGLE_CLIENT_ID ? 'SET' : 'NOT SET',
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET ? 'SET' : 'NOT SET'
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET ? 'SET' : 'NOT SET',
+    proxyEnabled: true
   });
 
   passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID!,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    callbackURL: callbackURL
+    callbackURL: callbackURL,
+    proxy: true  // Important: Tell Passport to trust the proxy for HTTPS detection
   },
   async (accessToken, refreshToken, profile, done) => {
     try {
@@ -120,8 +122,11 @@ export async function setupAuth(app: Express) {
     console.log("🔍 Request hostname:", req.hostname);
     console.log("🔍 Request headers host:", req.headers.host);
     console.log("🔍 Request protocol:", req.protocol);
+    console.log("🔍 Request secure:", req.secure);
     console.log("🔍 Request original URL:", req.originalUrl);
     console.log("🔍 Full request URL:", `${req.protocol}://${req.headers.host}${req.originalUrl}`);
+    console.log("🔍 X-Forwarded-Proto:", req.headers['x-forwarded-proto']);
+    console.log("🔍 X-Forwarded-Host:", req.headers['x-forwarded-host']);
     console.log("🔍 All request headers:", JSON.stringify(req.headers, null, 2));
     
     // Force HTTPS redirect if the request is HTTP
@@ -130,6 +135,9 @@ export async function setupAuth(app: Express) {
       console.log("🔄 Redirecting HTTP to HTTPS:", httpsUrl);
       return res.redirect(301, httpsUrl);
     }
+    
+    // Double check that the configured callback URL is HTTPS
+    console.log("🔍 Final OAuth strategy callback URL:", callbackURL);
     
     passport.authenticate("google", { scope: ["profile", "email"] })(req, res, next);
   });
