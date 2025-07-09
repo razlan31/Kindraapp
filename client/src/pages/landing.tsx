@@ -81,7 +81,7 @@ export default function LandingPage() {
         "Limited insights",
         "Community support"
       ],
-      cta: "Get Started Free",
+      cta: "Sign In / Sign Up",
       popular: false
     },
     {
@@ -99,7 +99,7 @@ export default function LandingPage() {
         "Export your data",
         "Advanced privacy controls"
       ],
-      cta: "Start Premium Trial",
+      cta: "Sign In / Sign Up",
       popular: true
     }
   ];
