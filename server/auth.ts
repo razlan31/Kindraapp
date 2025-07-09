@@ -41,43 +41,44 @@ export async function setupAuth(app: Express) {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  // Get the current domain from environment variables or request headers
-  const currentDomain = process.env.REPLIT_DOMAINS?.split(',')[0] || 'ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev';
-  
-  // Check if we're running in production (kindra-jagohtrade.replit.app)
-  const isProduction = process.env.NODE_ENV === 'production' || process.env.REPLIT_DEPLOYMENT === 'production';
-  const productionDomain = 'kindra-jagohtrade.replit.app';
-  
-  const finalDomain = isProduction ? productionDomain : currentDomain;
-  const baseUrl = finalDomain.startsWith('http') ? finalDomain : `https://${finalDomain}`;
-  
-  console.log('OAuth Configuration:', {
-    currentDomain,
-    baseUrl,
-    callbackURL: `${baseUrl}/api/auth/google/callback`,
-    clientID: process.env.GOOGLE_CLIENT_ID ? 'SET' : 'NOT SET',
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET ? 'SET' : 'NOT SET'
-  });
-  
   if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
     console.error('❌ GOOGLE_CLIENT_ID or GOOGLE_CLIENT_SECRET not set in environment');
     throw new Error('Google OAuth credentials not configured');
   }
   
-  // Log the exact strategy configuration for debugging
-  const strategyConfig = {
+  // Fixed callback URL based on domain detection
+  const getCallbackURL = () => {
+    // Check if we're in production deployment
+    if (process.env.REPLIT_DEPLOYMENT === 'production') {
+      return 'https://kindra-jagohtrade.replit.app/api/auth/google/callback';
+    }
+    
+    // Check environment domains
+    const domain = process.env.REPLIT_DOMAINS?.split(',')[0];
+    if (domain) {
+      return `https://${domain}/api/auth/google/callback`;
+    }
+    
+    // Default to production
+    return 'https://kindra-jagohtrade.replit.app/api/auth/google/callback';
+  };
+
+  const callbackURL = getCallbackURL();
+  
+  console.log('🔍 OAuth Configuration:', {
+    NODE_ENV: process.env.NODE_ENV,
+    REPLIT_DEPLOYMENT: process.env.REPLIT_DEPLOYMENT,
+    REPLIT_DOMAINS: process.env.REPLIT_DOMAINS,
+    callbackURL,
+    clientID: process.env.GOOGLE_CLIENT_ID ? 'SET' : 'NOT SET',
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET ? 'SET' : 'NOT SET'
+  });
+
+  passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID!,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    callbackURL: `${baseUrl}/api/auth/google/callback`
-  };
-  
-  console.log('🔍 Google Strategy Config:', {
-    clientID: strategyConfig.clientID,
-    clientSecret: strategyConfig.clientSecret ? 'SET' : 'NOT SET',
-    callbackURL: strategyConfig.callbackURL
-  });
-  
-  passport.use(new GoogleStrategy(strategyConfig,
+    callbackURL: callbackURL
+  },
   async (accessToken, refreshToken, profile, done) => {
     try {
       const googleId = profile.id;
@@ -126,6 +127,12 @@ export async function setupAuth(app: Express) {
   // Auth routes
   app.get("/api/auth/google", (req, res, next) => {
     console.log("🔍 Initiating Google OAuth flow");
+    console.log("🔍 Request hostname:", req.hostname);
+    console.log("🔍 Request headers host:", req.headers.host);
+    console.log("🔍 Request protocol:", req.protocol);
+    console.log("🔍 Request original URL:", req.originalUrl);
+    console.log("🔍 Full request URL:", `${req.protocol}://${req.headers.host}${req.originalUrl}`);
+    
     passport.authenticate("google", { scope: ["profile", "email"] })(req, res, next);
   });
 
