@@ -6,6 +6,7 @@ import "./index.css";
 
 console.log('🔥 MAIN.TSX TIMESTAMP:', Date.now());
 console.log('🔥 MAIN.TSX URL:', window.location.href);
+console.log('🔥 CACHE BUSTER:', '2025-01-09-v2');
 
 console.log("🚨🚨🚨 MAIN.TSX EXECUTING - IMPORTING APP FROM", "./App");
 console.log("🚨🚨🚨 MAIN.TSX TIMESTAMP:", new Date().toISOString());
@@ -98,6 +99,16 @@ if ('serviceWorker' in navigator) {
     for(let registration of registrations) {
       registration.unregister();
       console.log('🔥 UNREGISTERED SERVICE WORKER');
+    }
+  });
+}
+
+// Clear all caches to force fresh load
+if ('caches' in window) {
+  caches.keys().then(function(names) {
+    for (let name of names) {
+      caches.delete(name);
+      console.log('🔥 CLEARED CACHE:', name);
     }
   });
 }
