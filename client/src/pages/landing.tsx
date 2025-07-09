@@ -106,6 +106,7 @@ export default function LandingPage() {
 
   const handleGetStarted = () => {
     console.log('Landing: handleGetStarted called, navigating to /login');
+    console.log('Landing: Current timestamp:', Date.now());
     setLocation('/login');
   };
 
