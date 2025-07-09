@@ -125,10 +125,10 @@ export async function setupAuth(app: Express) {
     console.log("🔍 All request headers:", JSON.stringify(req.headers, null, 2));
     
     // Force HTTPS redirect if the request is HTTP
-    if (req.protocol === 'http') {
+    if (req.protocol === 'http' && req.headers.host !== 'localhost:5000') {
       const httpsUrl = `https://${req.headers.host}${req.originalUrl}`;
       console.log("🔄 Redirecting HTTP to HTTPS:", httpsUrl);
-      return res.redirect(httpsUrl);
+      return res.redirect(301, httpsUrl);
     }
     
     passport.authenticate("google", { scope: ["profile", "email"] })(req, res, next);
@@ -141,10 +141,10 @@ export async function setupAuth(app: Express) {
     console.log("🔍 Callback request headers:", JSON.stringify(req.headers, null, 2));
     
     // Force HTTPS redirect if the request is HTTP
-    if (req.protocol === 'http') {
+    if (req.protocol === 'http' && req.headers.host !== 'localhost:5000') {
       const httpsUrl = `https://${req.headers.host}${req.originalUrl}`;
       console.log("🔄 Redirecting HTTP callback to HTTPS:", httpsUrl);
-      return res.redirect(httpsUrl);
+      return res.redirect(301, httpsUrl);
     }
     
     // Check if there's an error in the callback

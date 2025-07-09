@@ -5,14 +5,16 @@ import { storage } from "./database-storage";
 import path from "path";
 
 const app = express();
+app.set('trust proxy', 1); // Trust first proxy for HTTPS detection
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: false, limit: '10mb' }));
 
-// Force HTTPS for OAuth routes to prevent redirect_uri_mismatch
-app.use('/api/auth', (req, res, next) => {
-  if (req.protocol === 'http') {
+// Force HTTPS for all requests to prevent redirect_uri_mismatch
+app.use((req, res, next) => {
+  // Check if request is HTTP and not from localhost
+  if (req.protocol === 'http' && req.headers.host !== 'localhost:5000') {
     const httpsUrl = `https://${req.headers.host}${req.originalUrl}`;
-    console.log("🔄 Forcing HTTPS redirect for auth route:", httpsUrl);
+    console.log("🔄 Forcing HTTPS redirect:", httpsUrl);
     return res.redirect(301, httpsUrl);
   }
   next();
