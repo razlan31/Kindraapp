@@ -41,9 +41,15 @@ export async function setupAuth(app: Express) {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  // Get the current domain from environment variables
+  // Get the current domain from environment variables or request headers
   const currentDomain = process.env.REPLIT_DOMAINS?.split(',')[0] || 'ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev';
-  const baseUrl = currentDomain.startsWith('http') ? currentDomain : `https://${currentDomain}`;
+  
+  // Check if we're running in production (kindra-jagohtrade.replit.app)
+  const isProduction = process.env.NODE_ENV === 'production' || process.env.REPLIT_DEPLOYMENT === 'production';
+  const productionDomain = 'kindra-jagohtrade.replit.app';
+  
+  const finalDomain = isProduction ? productionDomain : currentDomain;
+  const baseUrl = finalDomain.startsWith('http') ? finalDomain : `https://${finalDomain}`;
   
   console.log('OAuth Configuration:', {
     currentDomain,

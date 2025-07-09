@@ -111,6 +111,13 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
+- July 09, 2025: OAUTH REDIRECT URI MISMATCH RESOLVED - Identified root cause of authentication failure
+  - **Root Cause**: OAuth callback receiving production domain (kindra-jagohtrade.replit.app) instead of development domain
+  - **OAuth Error**: redirect_uri_mismatch because Google expects configured URI but receives different domain
+  - **Solution**: User needs to add both development and production callback URLs to Google OAuth app configuration
+  - **Required URIs**: `https://kindra-jagohtrade.replit.app/api/auth/google/callback` AND `https://ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev/api/auth/google/callback`
+  - **Status**: Server configuration correct, waiting for user to update Google OAuth app with both domains
+
 - July 09, 2025: MIGRATION TO DATABASE STORAGE COMPLETED - Successfully resolved authentication issues by fixing type system conflicts
   - **Root Cause Resolved**: Type mismatches between database schema (string IDs) and storage implementation (number IDs) were causing authentication failures
   - **Complete Migration**: Successfully migrated from MemStorage to DatabaseStorage with proper string ID handling throughout the system
