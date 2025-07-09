@@ -107,12 +107,14 @@ export default function LandingPage() {
   const handleGetStarted = () => {
     console.log('Landing: handleGetStarted called, navigating to /login');
     console.log('Landing: Current timestamp:', Date.now());
-    setLocation('/login');
+    console.log('Landing: BUTTON TEXT UPDATE - Sign In / Sign Up');
+    window.location.href = '/login';
   };
 
   const handlePremiumSignup = () => {
     console.log('Landing: handlePremiumSignup called, navigating to /login');
-    setLocation('/login');
+    console.log('Landing: PREMIUM BUTTON - Sign In / Sign Up');
+    window.location.href = '/login';
   };
 
 
@@ -137,7 +139,7 @@ export default function LandingPage() {
             </span>
           </div>
           <Button onClick={handleGetStarted} className="bg-purple-600 hover:bg-purple-700">
-            Sign In
+            Sign In / Sign Up
           </Button>
         </div>
       </header>
