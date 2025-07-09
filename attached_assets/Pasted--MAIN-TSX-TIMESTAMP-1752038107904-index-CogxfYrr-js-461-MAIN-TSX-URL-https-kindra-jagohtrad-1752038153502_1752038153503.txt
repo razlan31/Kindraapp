@@ -1,0 +1,46 @@
+🔥 MAIN.TSX TIMESTAMP: 1752038107904
+index-CogxfYrr.js:461 🔥 MAIN.TSX URL: https://kindra-jagohtrade.replit.app/
+index-CogxfYrr.js:461 🚨🚨🚨 MAIN.TSX EXECUTING - IMPORTING APP FROM ./App
+index-CogxfYrr.js:461 🚨🚨🚨 MAIN.TSX TIMESTAMP: 2025-07-09T05:15:07.918Z
+index-CogxfYrr.js:461 🚨🚨🚨 MAIN.TSX ABOUT TO RENDER APP TO DOM
+index-CogxfYrr.js:452 Theme context initial load: light
+index-CogxfYrr.js:461 🔥 STATE DEBUG - isSubmitting changed: false
+index-CogxfYrr.js:461 🔥 STATE DEBUG - connectionId changed: 2 selectedConnectionId: null
+index-CogxfYrr.js:461 Modal useEffect - selectedDate from context: null
+index-CogxfYrr.js:461 Modal useEffect - editingMoment: null
+index-CogxfYrr.js:461 Modal useEffect - momentModalOpen: false
+index-CogxfYrr.js:461 🔥 MODAL OPEN - Resetting isSubmitting to false
+index-CogxfYrr.js:461 🔥 MODAL INIT - Setting connectionId: 2 from selectedConnectionId: null
+index-CogxfYrr.js:444 🔥 PLAN MODAL - Connection effect: Object
+index-CogxfYrr.js:444 🔥 PLAN MODAL - Form init effect: Object
+index-CogxfYrr.js:452 Theme effect running: light
+index-CogxfYrr.js:452 Applied theme: light
+index-CogxfYrr.js:452 Theme stored to localStorage: light
+index-CogxfYrr.js:398 Auth: Checking authentication status for: /
+index-CogxfYrr.js:398 Auth: Public page detected, setting user to null without API call
+index-CogxfYrr.js:444 🔥 PLAN MODAL - Form init effect: Object
+/api/connections:1  Failed to load resource: the server responded with a status of 401 ()Understand this error
+index-CogxfYrr.js:444 🔥 PLAN MODAL - Form init effect: Object
+index-CogxfYrr.js:444 Focus Context Debug: Object
+kindra-jagohtrade.replit.app/:1 Unchecked runtime.lastError: The message port closed before a response was received.Understand this error
+kindra-jagohtrade.replit.app/:1 Unchecked runtime.lastError: The message port closed before a response was received.Understand this error
+index-CogxfYrr.js:398 🚨🚨🚨 NOT FOUND PAGE RENDERED 🚨🚨🚨
+PF @ index-CogxfYrr.js:398Understand this error
+index-CogxfYrr.js:398 🚨 Current URL: https://kindra-jagohtrade.replit.app/app
+PF @ index-CogxfYrr.js:398Understand this error
+index-CogxfYrr.js:398 🚨 Current pathname: /app
+PF @ index-CogxfYrr.js:398Understand this error
+index-CogxfYrr.js:398 🚨 Timestamp: 2025-07-09T05:15:10.938Z
+PF @ index-CogxfYrr.js:398Understand this error
+index-CogxfYrr.js:398 🚨 Stack trace: Error
+    at PF (https://kindra-jagohtrade.replit.app/assets/index-CogxfYrr.js:398:59569)
+    at px (https://kindra-jagohtrade.replit.app/assets/index-CogxfYrr.js:38:17018)
+    at JS (https://kindra-jagohtrade.replit.app/assets/index-CogxfYrr.js:40:44058)
+    at GS (https://kindra-jagohtrade.replit.app/assets/index-CogxfYrr.js:40:39790)
+    at DA (https://kindra-jagohtrade.replit.app/assets/index-CogxfYrr.js:40:39718)
+    at af (https://kindra-jagohtrade.replit.app/assets/index-CogxfYrr.js:40:39570)
+    at i0 (https://kindra-jagohtrade.replit.app/assets/index-CogxfYrr.js:40:36683)
+    at oi (https://kindra-jagohtrade.replit.app/assets/index-CogxfYrr.js:38:3279)
+    at https://kindra-jagohtrade.replit.app/assets/index-CogxfYrr.js:40:34263
+PF @ index-CogxfYrr.js:398Understand this error
+app:1 Unchecked runtime.lastError: The message port closed before a response was received.Understand this error

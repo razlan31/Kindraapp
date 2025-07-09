@@ -111,6 +111,14 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
+- July 09, 2025: FIXED PRODUCTION ROUTING ISSUE - Resolved 404 error on production site by adding missing /app route
+  - **Root Cause**: Production URL was accessing `/app` route but routing only configured for `/` root path
+  - **Solution**: Added `<Route path="/app" component={LandingPage} />` to App.tsx routing configuration
+  - **Button Text Update**: Updated all landing page buttons to show "Sign In / Sign Up" instead of "Sign In"
+  - **404 Fix**: Production site now correctly serves landing page at both `/` and `/app` paths
+  - **Cache Busting**: Added debugging logs and cache-busting mechanisms to track deployment issues
+  - **Navigation Enhancement**: Changed button navigation to use `window.location.href` for more reliable routing
+
 - July 09, 2025: SUCCESSFUL PRODUCTION DEPLOYMENT - Kindra app successfully deployed to production
   - **Production URL**: https://kindra-jagohtrade.replit.app
   - **Deployment Type**: Autoscale (4 vCPU / 8 GiB RAM / 3 Max instances)

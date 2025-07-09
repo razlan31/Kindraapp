@@ -41,6 +41,7 @@ function AppRoutes() {
       <Switch>
         {/* All routes - no authentication checking in routing */}
         <Route path="/" component={LandingPage} />
+        <Route path="/app" component={LandingPage} />
         <Route path="/login" component={Login} />
         <Route path="/auth/login" component={Login} />
         <Route path="/home" component={Homepage1} />
