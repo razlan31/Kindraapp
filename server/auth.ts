@@ -38,6 +38,14 @@ export function getSession() {
 export async function setupAuth(app: Express) {
   app.use(getSession());
   // Removed Passport.js initialization - using manual OAuth only
+  
+  console.log("🔥 FORCING MANUAL OAUTH ONLY - NO PASSPORT.JS");
+  
+  // Clear any existing routes that might conflict
+  app._router.stack = app._router.stack.filter((layer: any) => {
+    const routePath = layer.route?.path;
+    return routePath !== '/api/auth/google' && routePath !== '/api/auth/google/callback';
+  });
 
   if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
     console.error('❌ GOOGLE_CLIENT_ID or GOOGLE_CLIENT_SECRET not set in environment');
@@ -87,8 +95,9 @@ export async function setupAuth(app: Express) {
     }
     
     // Manual OAuth URL construction to bypass Passport's protocol detection
-    const replitDomain = process.env.REPLIT_DOMAINS || 'kindra-jagohtrade.replit.app';
-    const redirectUri = `https://${replitDomain}/api/auth/google/callback`;
+    // Force HTTPS and use the actual request domain for proper routing
+    const requestDomain = req.headers.host || 'kindra-jagohtrade.replit.app';
+    const redirectUri = `https://${requestDomain}/api/auth/google/callback`;
     const clientId = process.env.GOOGLE_CLIENT_ID!;
     const scope = 'profile email';
     const responseType = 'code';
@@ -163,7 +172,7 @@ export async function setupAuth(app: Express) {
           client_secret: process.env.GOOGLE_CLIENT_SECRET!,
           code: code as string,
           grant_type: 'authorization_code',
-          redirect_uri: `https://${process.env.REPLIT_DOMAINS || 'kindra-jagohtrade.replit.app'}/api/auth/google/callback`,
+          redirect_uri: `https://${req.headers.host || 'kindra-jagohtrade.replit.app'}/api/auth/google/callback`,
         }),
       });
       
