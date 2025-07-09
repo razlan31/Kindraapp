@@ -116,6 +116,16 @@ export async function setupAuth(app: Express) {
 
   app.get("/api/auth/google/callback", (req, res, next) => {
     console.log("🔍 Google OAuth callback received");
+    console.log("🔍 Query params:", req.query);
+    console.log("🔍 Full URL:", req.url);
+    
+    // Check if there's an error in the callback
+    if (req.query.error) {
+      console.error("❌ OAuth error from Google:", req.query.error);
+      console.error("❌ OAuth error description:", req.query.error_description);
+      return res.redirect("/login?error=oauth_error");
+    }
+    
     passport.authenticate("google", { 
       failureRedirect: "/login",
       failureMessage: true 
