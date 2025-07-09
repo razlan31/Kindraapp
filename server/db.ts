@@ -6,8 +6,7 @@ import * as schema from "@shared/schema";
 // Configure WebSocket for Neon
 neonConfig.webSocketConstructor = ws;
 
-// Disable connection pooling to avoid WebSocket issues during development
-neonConfig.poolQueryVectorSize = 1;
+// Configure secure WebSocket connection for production
 neonConfig.useSecureWebSocket = true;
 neonConfig.pipelineConnect = false;
 
