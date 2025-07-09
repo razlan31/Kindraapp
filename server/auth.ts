@@ -46,7 +46,7 @@ export async function setupAuth(app: Express) {
     throw new Error('Google OAuth credentials not configured');
   }
   
-  // Fixed callback URL based on domain detection
+  // Fixed callback URL based on domain detection - always use HTTPS
   const getCallbackURL = () => {
     // Check if we're in production deployment
     if (process.env.REPLIT_DEPLOYMENT === 'production') {
@@ -136,7 +136,8 @@ export async function setupAuth(app: Express) {
     
     // Create a custom callback URL based on the actual request
     const actualHost = req.headers.host;
-    const actualProtocol = req.headers['x-forwarded-proto'] || req.protocol || 'https';
+    // Always use HTTPS for OAuth callbacks (required by Google)
+    const actualProtocol = 'https';
     const dynamicCallbackURL = `${actualProtocol}://${actualHost}/api/auth/google/callback`;
     
     console.log("🔍 Dynamic callback URL:", dynamicCallbackURL);
