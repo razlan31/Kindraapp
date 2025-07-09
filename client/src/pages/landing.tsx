@@ -155,6 +155,8 @@ export default function LandingPage() {
             <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 bg-clip-text text-transparent leading-tight">
               Transform Your Love Life with AI
             </h1>
+            {/* Cache buster identifier */}
+            <div className="hidden" data-version="v4-final-2025-01-09-production"></div>
             
             <p className="text-xl text-gray-600 mb-8 leading-relaxed">
               Meet Luna AI, your personal relationship coach. Track patterns, understand emotions, and build deeper connections with the power of artificial intelligence.

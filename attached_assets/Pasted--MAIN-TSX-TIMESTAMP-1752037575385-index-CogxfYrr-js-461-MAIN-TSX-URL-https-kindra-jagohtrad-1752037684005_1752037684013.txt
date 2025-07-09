@@ -1,0 +1,47 @@
+🔥 MAIN.TSX TIMESTAMP: 1752037575385
+index-CogxfYrr.js:461 🔥 MAIN.TSX URL: https://kindra-jagohtrade.replit.app/
+index-CogxfYrr.js:461 🚨🚨🚨 MAIN.TSX EXECUTING - IMPORTING APP FROM ./App
+index-CogxfYrr.js:461 🚨🚨🚨 MAIN.TSX TIMESTAMP: 2025-07-09T05:06:15.385Z
+index-CogxfYrr.js:461 🚨🚨🚨 MAIN.TSX ABOUT TO RENDER APP TO DOM
+index-CogxfYrr.js:452 Theme context initial load: light
+index-CogxfYrr.js:461 🔥 STATE DEBUG - isSubmitting changed: false
+index-CogxfYrr.js:461 🔥 STATE DEBUG - connectionId changed: 2 selectedConnectionId: null
+index-CogxfYrr.js:461 Modal useEffect - selectedDate from context: null
+index-CogxfYrr.js:461 Modal useEffect - editingMoment: null
+index-CogxfYrr.js:461 Modal useEffect - momentModalOpen: false
+index-CogxfYrr.js:461 🔥 MODAL OPEN - Resetting isSubmitting to false
+index-CogxfYrr.js:461 🔥 MODAL INIT - Setting connectionId: 2 from selectedConnectionId: null
+index-CogxfYrr.js:444 🔥 PLAN MODAL - Connection effect: {selectedConnection: null, localSelectedConnection: null, isOpen: false}
+index-CogxfYrr.js:444 🔥 PLAN MODAL - Form init effect: {editingMoment: false, isOpen: false, selectedConnection: null, contextSelectedDate: null, connectionsCount: 0}
+index-CogxfYrr.js:452 Theme effect running: light
+index-CogxfYrr.js:452 Applied theme: light
+index-CogxfYrr.js:452 Theme stored to localStorage: light
+index-CogxfYrr.js:398 Auth: Checking authentication status for: /
+index-CogxfYrr.js:398 Auth: Public page detected, setting user to null without API call
+index-CogxfYrr.js:444 🔥 PLAN MODAL - Form init effect: {editingMoment: false, isOpen: false, selectedConnection: null, contextSelectedDate: null, connectionsCount: 0}
+frame_ant.js:2  GET https://kindra-jagohtrade.replit.app/api/connections 401 (Unauthorized)
+window.fetch @ frame_ant.js:2
+(anonymous) @ index-CogxfYrr.js:48
+i @ index-CogxfYrr.js:48
+b @ index-CogxfYrr.js:48
+start @ index-CogxfYrr.js:48
+fetch @ index-CogxfYrr.js:48
+ec @ index-CogxfYrr.js:48
+onSubscribe @ index-CogxfYrr.js:48
+subscribe @ index-CogxfYrr.js:48
+(anonymous) @ index-CogxfYrr.js:48
+pS @ index-CogxfYrr.js:38
+Gf @ index-CogxfYrr.js:40
+To @ index-CogxfYrr.js:40
+i0 @ index-CogxfYrr.js:40
+oi @ index-CogxfYrr.js:38
+IA @ index-CogxfYrr.js:40
+hi @ index-CogxfYrr.js:40
+YS @ index-CogxfYrr.js:40
+N @ index-CogxfYrr.js:25
+S @ index-CogxfYrr.js:25Understand this error
+index-CogxfYrr.js:444 🔥 PLAN MODAL - Form init effect: {editingMoment: false, isOpen: false, selectedConnection: null, contextSelectedDate: null, connectionsCount: 0}
+index-CogxfYrr.js:444 Focus Context Debug: {savedId: null, connectionsLength: 0, connections: null}
+kindra-jagohtrade.replit.app/:1 Unchecked runtime.lastError: The message port closed before a response was received.Understand this error
+kindra-jagohtrade.replit.app/:1 Unchecked runtime.lastError: The message port closed before a response was received.Understand this error
+kindra-jagohtrade.replit.app/:1 Unchecked runtime.lastError: The message port closed before a response was received.Understand this error

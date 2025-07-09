@@ -3,10 +3,11 @@
 import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";
+import './cache-buster';
 
 console.log('🔥 MAIN.TSX TIMESTAMP:', Date.now());
 console.log('🔥 MAIN.TSX URL:', window.location.href);
-console.log('🔥 CACHE BUSTER:', '2025-01-09-v2');
+console.log('🔥 CACHE BUSTER:', '2025-01-09-v3-final');
 
 console.log("🚨🚨🚨 MAIN.TSX EXECUTING - IMPORTING APP FROM", "./App");
 console.log("🚨🚨🚨 MAIN.TSX TIMESTAMP:", new Date().toISOString());
@@ -111,6 +112,12 @@ if ('caches' in window) {
       console.log('🔥 CLEARED CACHE:', name);
     }
   });
+}
+
+// Force hard reload if cached
+if (performance.navigation.type === 1) {
+  console.log('🔥 FORCE REFRESH DETECTED');
+  window.location.reload(true);
 }
 
 console.log("🚨🚨🚨 MAIN.TSX ABOUT TO RENDER APP TO DOM");
