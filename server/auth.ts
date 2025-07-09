@@ -132,14 +132,53 @@ export async function setupAuth(app: Express) {
     console.log("🔍 Request protocol:", req.protocol);
     console.log("🔍 Request original URL:", req.originalUrl);
     console.log("🔍 Full request URL:", `${req.protocol}://${req.headers.host}${req.originalUrl}`);
+    console.log("🔍 All request headers:", JSON.stringify(req.headers, null, 2));
     
-    passport.authenticate("google", { scope: ["profile", "email"] })(req, res, next);
+    // Create a custom callback URL based on the actual request
+    const actualHost = req.headers.host;
+    const actualProtocol = req.headers['x-forwarded-proto'] || req.protocol || 'https';
+    const dynamicCallbackURL = `${actualProtocol}://${actualHost}/api/auth/google/callback`;
+    
+    console.log("🔍 Dynamic callback URL:", dynamicCallbackURL);
+    
+    // Create a new strategy with the correct callback URL
+    const dynamicStrategy = new GoogleStrategy({
+      clientID: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      callbackURL: dynamicCallbackURL
+    }, async (accessToken, refreshToken, profile, done) => {
+      try {
+        const googleId = profile.id;
+        const email = profile.emails?.[0]?.value;
+        const firstName = profile.name?.givenName;
+        const lastName = profile.name?.familyName;
+        const profileImageUrl = profile.photos?.[0]?.value;
+
+        await storage.upsertUser({
+          id: googleId,
+          email,
+          firstName,
+          lastName,
+          profileImageUrl,
+        });
+
+        const user = await storage.getUser(googleId);
+        return done(null, user);
+      } catch (error) {
+        return done(error);
+      }
+    });
+    
+    // Use the dynamic strategy for this specific request
+    passport.use('google-dynamic', dynamicStrategy);
+    passport.authenticate('google-dynamic', { scope: ["profile", "email"] })(req, res, next);
   });
 
   app.get("/api/auth/google/callback", (req, res, next) => {
     console.log("🔍 Google OAuth callback received");
     console.log("🔍 Query params:", req.query);
     console.log("🔍 Full URL:", req.url);
+    console.log("🔍 Callback request headers:", JSON.stringify(req.headers, null, 2));
     
     // Check if there's an error in the callback
     if (req.query.error) {
@@ -148,7 +187,8 @@ export async function setupAuth(app: Express) {
       return res.redirect("/login?error=oauth_error");
     }
     
-    passport.authenticate("google", { 
+    // Use the dynamic strategy for callback as well
+    passport.authenticate("google-dynamic", { 
       failureRedirect: "/login",
       failureMessage: true 
     }, (err, user, info) => {
