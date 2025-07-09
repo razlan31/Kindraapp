@@ -58,11 +58,20 @@ export async function setupAuth(app: Express) {
     throw new Error('Google OAuth credentials not configured');
   }
   
-  passport.use(new GoogleStrategy({
+  // Log the exact strategy configuration for debugging
+  const strategyConfig = {
     clientID: process.env.GOOGLE_CLIENT_ID!,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     callbackURL: `${baseUrl}/api/auth/google/callback`
-  },
+  };
+  
+  console.log('🔍 Google Strategy Config:', {
+    clientID: strategyConfig.clientID,
+    clientSecret: strategyConfig.clientSecret ? 'SET' : 'NOT SET',
+    callbackURL: strategyConfig.callbackURL
+  });
+  
+  passport.use(new GoogleStrategy(strategyConfig,
   async (accessToken, refreshToken, profile, done) => {
     try {
       const googleId = profile.id;
