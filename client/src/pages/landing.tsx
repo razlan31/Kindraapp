@@ -111,7 +111,8 @@ export default function LandingPage() {
   };
 
   const handlePremiumSignup = () => {
-    setShowPricingModal(true);
+    console.log('Landing: handlePremiumSignup called, navigating to /login');
+    setLocation('/login');
   };
 
 
@@ -165,7 +166,7 @@ export default function LandingPage() {
                 onClick={handleGetStarted}
                 className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-lg px-8 py-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300"
               >
-                Start Free Today
+                Sign In / Sign Up
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
               <Button 
@@ -567,7 +568,7 @@ export default function LandingPage() {
               className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-3"
               onClick={handleGetStarted}
             >
-              Join Thousands of Happy Couples
+              Sign In / Sign Up
               <Heart className="ml-2 h-5 w-5" />
             </Button>
           </div>
