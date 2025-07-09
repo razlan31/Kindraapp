@@ -136,13 +136,30 @@ export async function setupAuth(app: Express) {
       return res.redirect(301, httpsUrl);
     }
     
-    // Double check that the configured callback URL is HTTPS
-    console.log("🔍 Final OAuth strategy callback URL:", callbackURL);
+    // Manual OAuth URL construction to bypass Passport's protocol detection
+    const redirectUri = 'https://kindra-jagohtrade.replit.app/api/auth/google/callback';
+    const clientId = process.env.GOOGLE_CLIENT_ID!;
+    const scope = 'profile email';
+    const responseType = 'code';
+    const state = 'random_state_' + Math.random();
     
-    passport.authenticate("google", { scope: ["profile", "email"] })(req, res, next);
+    const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
+      `client_id=${encodeURIComponent(clientId)}&` +
+      `redirect_uri=${encodeURIComponent(redirectUri)}&` +
+      `response_type=${encodeURIComponent(responseType)}&` +
+      `scope=${encodeURIComponent(scope)}&` +
+      `state=${encodeURIComponent(state)}`;
+    
+    console.log("🔍 Manual OAuth URL:", googleAuthUrl);
+    console.log("🔍 Redirect URI being sent:", redirectUri);
+    
+    // Store state in session for verification
+    (req.session as any).oauthState = state;
+    
+    res.redirect(googleAuthUrl);
   });
 
-  app.get("/api/auth/google/callback", (req, res, next) => {
+  app.get("/api/auth/google/callback", async (req, res, next) => {
     console.log("🔍 Google OAuth callback received");
     console.log("🔍 Query params:", req.query);
     console.log("🔍 Full URL:", req.url);
@@ -162,31 +179,82 @@ export async function setupAuth(app: Express) {
       return res.redirect("/login?error=oauth_error");
     }
     
-    passport.authenticate("google", { 
-      failureRedirect: "/login",
-      failureMessage: true 
-    }, (err, user, info) => {
-      if (err) {
-        console.error("❌ OAuth authentication error:", err);
-        return res.redirect("/login?error=oauth_error");
-      }
-      if (!user) {
-        console.error("❌ OAuth authentication failed:", info);
-        return res.redirect("/login?error=oauth_failed");
+    const { code, state } = req.query;
+    
+    // Verify state to prevent CSRF
+    if (state !== (req.session as any).oauthState) {
+      console.error("❌ Invalid OAuth state");
+      return res.redirect("/login?error=invalid_state");
+    }
+    
+    if (!code) {
+      console.error("❌ No authorization code received");
+      return res.redirect("/login?error=no_code");
+    }
+    
+    try {
+      // Exchange code for tokens
+      const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+          client_id: process.env.GOOGLE_CLIENT_ID!,
+          client_secret: process.env.GOOGLE_CLIENT_SECRET!,
+          code: code as string,
+          grant_type: 'authorization_code',
+          redirect_uri: 'https://kindra-jagohtrade.replit.app/api/auth/google/callback',
+        }),
+      });
+      
+      const tokens = await tokenResponse.json();
+      
+      if (!tokenResponse.ok) {
+        console.error("❌ Token exchange failed:", tokens);
+        return res.redirect("/login?error=token_exchange_failed");
       }
       
-      req.logIn(user, (err) => {
-        if (err) {
-          console.error("❌ Login session error:", err);
-          return res.redirect("/login?error=session_error");
-        }
-        
-        // Store user ID in session for custom auth middleware compatibility
-        (req.session as any).userId = user.id;
-        console.log("✅ User logged in successfully, session userId set:", user.id);
-        res.redirect("/"); // Redirect to main app after successful login
+      // Get user info
+      const userResponse = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+        headers: {
+          'Authorization': `Bearer ${tokens.access_token}`,
+        },
       });
-    })(req, res, next);
+      
+      const googleUser = await userResponse.json();
+      
+      if (!userResponse.ok) {
+        console.error("❌ User info fetch failed:", googleUser);
+        return res.redirect("/login?error=user_info_failed");
+      }
+      
+      // Upsert user in database
+      await storage.upsertUser({
+        id: googleUser.id,
+        email: googleUser.email,
+        firstName: googleUser.given_name,
+        lastName: googleUser.family_name,
+        profileImageUrl: googleUser.picture,
+      });
+      
+      const user = await storage.getUser(googleUser.id);
+      
+      if (!user) {
+        console.error("❌ User not found after creation");
+        return res.redirect("/login?error=user_creation_failed");
+      }
+      
+      // Set up session
+      (req.session as any).userId = user.id;
+      console.log("✅ User logged in successfully, session userId set:", user.id);
+      
+      res.redirect("/"); // Redirect to main app after successful login
+      
+    } catch (error) {
+      console.error("❌ OAuth callback error:", error);
+      return res.redirect("/login?error=callback_error");
+    }
   });
 
   app.get("/api/auth/logout", (req, res) => {
