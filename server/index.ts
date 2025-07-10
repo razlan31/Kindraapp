@@ -1,4 +1,5 @@
 import express, { type Request, Response, NextFunction } from "express";
+import session from "express-session";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { storage } from "./database-storage";
@@ -8,6 +9,18 @@ const app = express();
 app.set('trust proxy', 1); // Trust first proxy for HTTPS detection
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: false, limit: '10mb' }));
+
+// Configure sessions
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'kindra-session-secret-' + Date.now(),
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: false, // Set to true in production with HTTPS
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  }
+}));
 
 // Only force HTTPS for OAuth callback URLs to prevent redirect_uri_mismatch
 app.use((req, res, next) => {
