@@ -375,8 +375,8 @@ export default function LandingPage() {
       {/* Benefits Section */}
       <section className="container mx-auto px-4 py-16 bg-white/50 relative overflow-hidden">
         {/* Background blobs for features section */}
-        <div className="absolute top-10 right-10 w-64 h-64 bg-slate-100 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-2000"></div>
-        <div className="absolute bottom-10 left-10 w-64 h-64 bg-gray-100 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-4000"></div>
+        <div className="absolute top-10 right-10 w-32 h-32 bg-slate-100 rounded-full mix-blend-multiply filter blur-xl opacity-20"></div>
+        <div className="absolute bottom-10 left-10 w-32 h-32 bg-gray-100 rounded-full mix-blend-multiply filter blur-xl opacity-20"></div>
         
         <div className="max-w-6xl mx-auto relative z-20">
           <div className="text-center mb-16">
@@ -390,9 +390,9 @@ export default function LandingPage() {
           
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature, index) => (
-              <Card key={index} className="p-6 border-0 shadow-lg hover:shadow-xl transition-all duration-300 bg-white/80 backdrop-blur-sm group hover:scale-105">
+              <Card key={index} className="p-6 border-0 shadow-lg hover:shadow-xl transition-shadow duration-200 bg-white/80 backdrop-blur-sm group">
                 <CardContent className="p-0">
-                  <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mb-6 text-white group-hover:rotate-6 transition-transform duration-300 shadow-lg">
+                  <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mb-6 text-white shadow-lg">
                     {feature.icon}
                   </div>
                   <h3 className="text-xl font-bold mb-3 text-gray-900">{feature.title}</h3>
