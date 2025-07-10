@@ -39,7 +39,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     const currentPath = window.location.pathname;
-    console.log("Auth: Checking authentication status for:", currentPath);
+    console.log("🔥 AUTH CONTEXT v2025-01-09-FINAL: Checking authentication status for:", currentPath);
+    console.log("🔥 AUTH CONTEXT: NO PUBLIC PAGE DETECTION - ALWAYS CALL getCurrentUser()");
 
     let isMounted = true;
     
@@ -47,23 +48,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (!isMounted) return;
       
       try {
-        console.log("Auth: Starting to load user, setting loading to true");
+        console.log("🔥 AUTH CONTEXT: Starting to load user, setting loading to true");
         setLoading(true);
         const currentUser = await getCurrentUser();
         
         if (isMounted) {
-          console.log("getCurrentUser successful:", currentUser);
+          console.log("🔥 AUTH CONTEXT: getCurrentUser successful:", currentUser);
           setUser(currentUser);
-          console.log("Auth context setting user:", currentUser);
+          console.log("🔥 AUTH CONTEXT: Auth context setting user:", currentUser);
         }
       } catch (error) {
         if (isMounted) {
-          console.log("getCurrentUser error:", error);
+          console.log("🔥 AUTH CONTEXT: getCurrentUser error:", error);
           setUser(null);
         }
       } finally {
         if (isMounted) {
-          console.log("Auth: Finally block - setting loading to false");
+          console.log("🔥 AUTH CONTEXT: Finally block - setting loading to false");
           setLoading(false);
         }
       }
