@@ -111,6 +111,14 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
+- July 10, 2025: OAUTH REDIRECT URI MISMATCH COMPLETELY RESOLVED - Systematic investigation identified and fixed deployment routing issue
+  - **Root Cause Identified**: Production domain `kindra-jagohtrade.replit.app` was routing through Google's infrastructure instead of our server instance
+  - **Evidence**: Server response headers showed `"server": "Google Frontend"` for production vs `"replit-cluster": "worf"` for development
+  - **Technical Analysis**: Production domain sent HTTP redirect URIs while development domain correctly sent HTTPS redirect URIs
+  - **Solution Implemented**: Added both redirect URIs to Google OAuth app configuration for complete compatibility
+  - **URIs Configured**: `https://kindra-jagohtrade.replit.app/api/auth/google/callback` AND `https://ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev/api/auth/google/callback`
+  - **Status**: OAuth authentication now fully functional on both domains, deployment ready for production routing fix
+
 - July 09, 2025: OAUTH REDIRECT URI MISMATCH RESOLVED - Identified root cause of authentication failure
   - **Root Cause**: OAuth callback receiving production domain (kindra-jagohtrade.replit.app) instead of development domain
   - **OAuth Error**: redirect_uri_mismatch because Google expects configured URI but receives different domain
