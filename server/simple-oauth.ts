@@ -76,6 +76,8 @@ export function setupSimpleOAuth(app: Express) {
       (req.session as any).authenticated = true;
       
       console.log("✅ User authenticated:", googleUser.email);
+      console.log("📝 Session data set:", { userId: googleUser.id, authenticated: true });
+      console.log("🔄 Redirecting to home with session...");
       res.redirect("/?auth=success");
       
     } catch (error) {
@@ -95,7 +97,15 @@ export function setupSimpleOAuth(app: Express) {
   app.get("/api/me", async (req, res) => {
     const userId = (req.session as any)?.userId;
     
+    console.log("🔍 /api/me check - Session data:", {
+      hasSession: !!req.session,
+      userId: userId,
+      sessionId: req.sessionID,
+      authenticated: (req.session as any)?.authenticated
+    });
+    
     if (!userId) {
+      console.log("❌ No userId found in session");
       return res.status(401).json({ message: "Not authenticated" });
     }
 
