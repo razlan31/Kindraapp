@@ -9,24 +9,17 @@ app.set('trust proxy', 1); // Trust first proxy for HTTPS detection
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: false, limit: '10mb' }));
 
-// Force HTTPS for all requests to prevent redirect_uri_mismatch
+// Only force HTTPS for OAuth callback URLs to prevent redirect_uri_mismatch
 app.use((req, res, next) => {
-  // Check if request is HTTP and not from localhost
-  if (req.protocol === 'http' && req.headers.host !== 'localhost:5000') {
+  // Only redirect OAuth callback URLs to HTTPS, and only if they're not already HTTPS
+  if (req.path.startsWith('/api/auth/google/callback') && 
+      req.protocol === 'http' && 
+      req.headers.host && 
+      req.headers.host.includes('replit.dev')) {
     const httpsUrl = `https://${req.headers.host}${req.originalUrl}`;
-    console.log("🔄 Forcing HTTPS redirect:", httpsUrl);
+    console.log("🔄 OAuth callback HTTPS redirect:", httpsUrl);
     return res.redirect(301, httpsUrl);
   }
-  
-  // Add headers to ensure proper routing for production domain
-  console.log("🔍 PRODUCTION ROUTING DEBUG:", {
-    host: req.headers.host,
-    protocol: req.protocol,
-    secure: req.secure,
-    forwardedProto: req.headers['x-forwarded-proto'],
-    userAgent: req.headers['user-agent'],
-    originalUrl: req.originalUrl
-  });
   
   next();
 });
