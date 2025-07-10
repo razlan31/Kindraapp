@@ -5,9 +5,7 @@ import { storage } from "./storage";
 export function setupSimpleOAuth(app: Express) {
   const CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;
   const CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET!;
-  const REDIRECT_URI = process.env.NODE_ENV === 'production' 
-    ? `https://kindra-jagohtrade.replit.app/api/auth/google/callback`
-    : `https://ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev/api/auth/google/callback`;
+  const REDIRECT_URI = `https://kindra-jagohtrade.replit.app/api/auth/google/callback`;
 
   // Start OAuth flow
   app.get("/api/auth/google", (req, res) => {
