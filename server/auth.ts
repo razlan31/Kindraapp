@@ -111,9 +111,9 @@ export async function setupAuth(app: Express) {
     }
     
     // Manual OAuth URL construction to bypass Passport's protocol detection
-    // Force HTTPS and use the actual request domain for proper routing
-    const requestDomain = req.headers.host || 'kindra-jagohtrade.replit.app';
-    const redirectUri = `https://${requestDomain}/api/auth/google/callback`;
+    // Always use the production domain from environment - never localhost
+    const productionDomain = process.env.REPLIT_DOMAINS || 'kindra-jagohtrade.replit.app';
+    const redirectUri = `https://${productionDomain}/api/auth/google/callback`;
     const clientId = process.env.GOOGLE_CLIENT_ID!;
     const scope = 'profile email';
     const responseType = 'code';
@@ -188,7 +188,7 @@ export async function setupAuth(app: Express) {
           client_secret: process.env.GOOGLE_CLIENT_SECRET!,
           code: code as string,
           grant_type: 'authorization_code',
-          redirect_uri: `https://${req.headers.host || 'kindra-jagohtrade.replit.app'}/api/auth/google/callback`,
+          redirect_uri: `https://${process.env.REPLIT_DOMAINS || 'kindra-jagohtrade.replit.app'}/api/auth/google/callback`,
         }),
       });
       

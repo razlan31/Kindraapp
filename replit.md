@@ -111,6 +111,14 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
+- July 10, 2025: OAUTH REDIRECT URI MISMATCH COMPLETELY RESOLVED - Fixed domain detection causing Google OAuth callback failures
+  - **Root Cause**: OAuth redirect URI was using request domain (localhost:5000) instead of production domain during authentication flow
+  - **Technical Investigation**: Manual OAuth URL construction was using `req.headers.host` which returned localhost during testing
+  - **Evidence**: Logs showed "redirect_uri=https://localhost:5000/api/auth/google/callback" instead of production domain
+  - **Solution**: Updated OAuth URL construction to always use `process.env.REPLIT_DOMAINS` instead of request headers
+  - **Result**: OAuth now correctly sends production domain in redirect URI: `https://ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev/api/auth/google/callback`
+  - **Status**: OAuth redirect URI mismatch resolved - Google authentication flow now uses correct production domain
+
 - July 10, 2025: SERVER ACCESSIBILITY ISSUE COMPLETELY RESOLVED - Fixed HTTPS redirect middleware blocking external access to application
   - **Root Cause**: Blanket HTTPS redirect middleware was creating redirect loops for external access attempts
   - **Technical Investigation**: Server was running correctly on port 5000 but external domain access was blocked by improper redirect logic
