@@ -34,13 +34,11 @@ function AppRoutes() {
     );
   }
 
-  // Remove debug logs
-  
   return (
     <div className="min-h-screen bg-background">
       <Switch>
-        {/* All routes - no authentication checking in routing */}
-        <Route path="/" component={LandingPage} />
+        {/* Show homepage for authenticated users on root path */}
+        <Route path="/" component={user ? Homepage1 : LandingPage} />
         <Route path="/app" component={LandingPage} />
         <Route path="/login" component={Login} />
         <Route path="/auth/login" component={Login} />

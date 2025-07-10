@@ -242,7 +242,9 @@ export async function setupAuth(app: Express) {
   });
 
   app.get("/api/auth/logout", (req, res) => {
-    req.logout((err) => {
+    // Clear session data
+    delete (req.session as any).userId;
+    req.session.destroy((err) => {
       if (err) {
         console.error("Logout error:", err);
       }
@@ -253,20 +255,18 @@ export async function setupAuth(app: Express) {
   // POST logout endpoint for frontend
   app.post("/api/logout", (req, res) => {
     console.log("🔍 TRACKING: SERVER logout starting");
-    req.logout((err) => {
+    
+    // Clear session data
+    delete (req.session as any).userId;
+    
+    // Clear session
+    req.session.destroy((err) => {
       if (err) {
-        console.error("Logout error:", err);
+        console.error("🔴 SERVER: Session destruction failed:", err);
         return res.status(500).json({ success: false, message: "Logout failed" });
+      } else {
+        console.log("🔴 SERVER: Session destroyed successfully");
       }
-      
-      // Clear session
-      req.session.destroy((err) => {
-        if (err) {
-          console.error("🔴 SERVER: Session destruction failed:", err);
-        } else {
-          console.log("🔴 SERVER: Session destroyed successfully");
-        }
-      });
       
       console.log("🔍 TRACKING: SERVER logout returning success response");
       res.json({ success: true, message: "Logout successful" });
@@ -277,7 +277,8 @@ export async function setupAuth(app: Express) {
 
 // Authentication middleware
 export const isAuthenticated: RequestHandler = (req, res, next) => {
-  if (req.isAuthenticated()) {
+  // Check session-based authentication
+  if ((req.session as any)?.userId) {
     return next();
   }
   res.status(401).json({ message: "Authentication required" });

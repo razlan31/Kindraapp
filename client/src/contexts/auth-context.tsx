@@ -41,21 +41,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const currentPath = window.location.pathname;
     console.log("Auth: Checking authentication status for:", currentPath);
 
-    // For public pages, set user to null immediately without API call to avoid loading states
-    if (currentPath === "/login" || currentPath === "/" || currentPath === "/landing" || currentPath === "/app") {
-      console.log("Auth: Public page detected, setting user to null without API call");
-      setUser(null);
-      setLoading(false);
-      return;
-    }
-
     let isMounted = true;
     
     const loadUser = async () => {
       if (!isMounted) return;
       
       try {
-        console.log("Auth: Starting to load user for protected route, setting loading to true");
+        console.log("Auth: Starting to load user, setting loading to true");
         setLoading(true);
         const currentUser = await getCurrentUser();
         
@@ -67,11 +59,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       } catch (error) {
         if (isMounted) {
           console.log("getCurrentUser error:", error);
-          
-          // No auto-login - let users see the welcome page
-          if (isMounted) {
-            setUser(null);
-          }
+          setUser(null);
         }
       } finally {
         if (isMounted) {
