@@ -75,10 +75,18 @@ export function setupSimpleOAuth(app: Express) {
       (req.session as any).userId = googleUser.id;
       (req.session as any).authenticated = true;
       
-      console.log("✅ User authenticated:", googleUser.email);
-      console.log("📝 Session data set:", { userId: googleUser.id, authenticated: true });
-      console.log("🔄 Redirecting to home with session...");
-      res.redirect("/?auth=success");
+      // Force session save before redirect
+      req.session.save((err) => {
+        if (err) {
+          console.error("Session save error:", err);
+          return res.redirect("/login?error=session_failed");
+        }
+        
+        console.log("✅ User authenticated:", googleUser.email);
+        console.log("📝 Session data saved:", { userId: googleUser.id, authenticated: true });
+        console.log("🔄 Redirecting to home with session...");
+        res.redirect("/?auth=success");
+      });
       
     } catch (error) {
       console.error("OAuth callback error:", error);

@@ -33,14 +33,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   });
 
   useEffect(() => {
+    console.log('Auth context: Effect triggered', { currentUser, error, isLoading });
     if (currentUser) {
       console.log('Auth context: User loaded successfully:', currentUser.email);
       setUser(currentUser);
     } else if (error) {
       console.log('Auth context: No user found or error:', error);
       setUser(null);
+    } else if (!isLoading) {
+      console.log('Auth context: No user data and not loading');
+      setUser(null);
     }
-  }, [currentUser, error]);
+  }, [currentUser, error, isLoading]);
 
   const logout = () => {
     console.log('Auth context: Logging out user');
