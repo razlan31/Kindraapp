@@ -17,6 +17,17 @@ app.use((req, res, next) => {
     console.log("🔄 Forcing HTTPS redirect:", httpsUrl);
     return res.redirect(301, httpsUrl);
   }
+  
+  // Add headers to ensure proper routing for production domain
+  console.log("🔍 PRODUCTION ROUTING DEBUG:", {
+    host: req.headers.host,
+    protocol: req.protocol,
+    secure: req.secure,
+    forwardedProto: req.headers['x-forwarded-proto'],
+    userAgent: req.headers['user-agent'],
+    originalUrl: req.originalUrl
+  });
+  
   next();
 });
 

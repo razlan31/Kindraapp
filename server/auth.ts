@@ -73,6 +73,22 @@ export async function setupAuth(app: Express) {
 
   // Removed Passport.js implementation - using manual OAuth only
 
+  // Test endpoint to verify domain routing
+  app.get("/api/test", (req, res) => {
+    const timestamp = new Date().toISOString();
+    const response = {
+      timestamp,
+      domain: req.headers.host,
+      protocol: req.protocol,
+      secure: req.secure,
+      forwardedProto: req.headers['x-forwarded-proto'],
+      serverInstance: "MANUAL_OAUTH_ONLY",
+      message: "Server instance confirmed"
+    };
+    console.log("🔍 TEST ENDPOINT HIT:", JSON.stringify(response, null, 2));
+    res.json(response);
+  });
+
   // Auth routes
   app.get("/api/auth/google", (req, res, next) => {
     console.log("🔍 ===== GOOGLE OAUTH FLOW INITIATED =====");
