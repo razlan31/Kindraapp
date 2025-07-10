@@ -14,7 +14,7 @@ import MemoryStore from "memorystore";
 import Stripe from "stripe";
 import { AIRelationshipCoach, type RelationshipContext } from "./ai-relationship-coach";
 import { ensureUserConnection } from "./user-connection-utils";
-import { setupAuth, isAuthenticated as googleAuthMiddleware } from "./auth";
+import { setupSimpleOAuth } from "./simple-oauth";
 import nodemailer from "nodemailer";
 
 // Initialize Stripe
@@ -126,8 +126,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Initialize AI coach with storage dependency
   const aiCoach = new AIRelationshipCoach(storage);
   
-  // Setup Google OAuth authentication
-  await setupAuth(app);
+  // Setup simple OAuth authentication
+  setupSimpleOAuth(app);
 
   // Current user endpoint - works without authentication for public access
   app.get("/api/me", async (req: Request, res: Response) => {

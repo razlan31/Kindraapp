@@ -105,16 +105,13 @@ export default function LandingPage() {
   ];
 
   const handleGetStarted = () => {
-    console.log('Landing: handleGetStarted called, navigating to /login');
-    console.log('Landing: Current timestamp:', Date.now());
-    console.log('Landing: BUTTON TEXT UPDATE - Sign In / Sign Up');
-    window.location.href = '/login';
+    console.log('Landing: Starting Google OAuth authentication');
+    window.location.href = '/api/auth/google';
   };
 
   const handlePremiumSignup = () => {
-    console.log('Landing: handlePremiumSignup called, navigating to /login');
-    console.log('Landing: PREMIUM BUTTON - Sign In / Sign Up');
-    window.location.href = '/login';
+    console.log('Landing: Starting premium Google OAuth authentication');
+    window.location.href = '/api/auth/google';
   };
 
 

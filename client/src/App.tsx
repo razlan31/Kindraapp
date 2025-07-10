@@ -24,9 +24,9 @@ import { ThemeProvider } from "./contexts/theme-context";
 import ModalsContainer from "./components/modals/modals-container";
 
 function AppRoutes() {
-  const { user, loading } = useAuth();
+  const { user, isLoading } = useAuth();
   
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="h-screen flex items-center justify-center">
         <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full" />
@@ -37,24 +37,32 @@ function AppRoutes() {
   return (
     <div className="min-h-screen bg-background">
       <Switch>
-        {/* Show homepage for authenticated users on root path */}
-        <Route path="/" component={user ? Homepage1 : LandingPage} />
-        <Route path="/app" component={LandingPage} />
-        <Route path="/login" component={Login} />
-        <Route path="/auth/login" component={Login} />
-        <Route path="/home" component={Homepage1} />
-        <Route path="/dashboard" component={Dashboard} />
-        <Route path="/connections" component={Connections} />
-        <Route path="/activities" component={Activities} />
-        <Route path="/calendar" component={Calendar} />
-        <Route path="/insights" component={Insights} />
-        <Route path="/settings" component={Settings} />
-        <Route path="/menstrual-cycle" component={MenstrualCycle} />
-        <Route path="/privacy" component={Privacy} />
-        <Route path="/terms" component={Terms} />
-        
-        {/* Catch all route */}
-        <Route path="*" component={NotFound} />
+        {!user ? (
+          <>
+            <Route path="/" component={LandingPage} />
+            <Route path="/app" component={LandingPage} />
+            <Route path="/login" component={Login} />
+            <Route path="/auth/login" component={Login} />
+            <Route path="/privacy" component={Privacy} />
+            <Route path="/terms" component={Terms} />
+            <Route component={LandingPage} />
+          </>
+        ) : (
+          <>
+            <Route path="/" component={Homepage1} />
+            <Route path="/home" component={Homepage1} />
+            <Route path="/dashboard" component={Dashboard} />
+            <Route path="/connections" component={Connections} />
+            <Route path="/activities" component={Activities} />
+            <Route path="/calendar" component={Calendar} />
+            <Route path="/insights" component={Insights} />
+            <Route path="/settings" component={Settings} />
+            <Route path="/menstrual-cycle" component={MenstrualCycle} />
+            <Route path="/privacy" component={Privacy} />
+            <Route path="/terms" component={Terms} />
+            <Route component={NotFound} />
+          </>
+        )}
       </Switch>
       
       <ModalsContainer />
