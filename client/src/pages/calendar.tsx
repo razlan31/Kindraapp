@@ -133,7 +133,7 @@ function MenstrualCycleTracker({ selectedConnectionIds }: { selectedConnectionId
 }
 
 export default function Calendar() {
-  const { user } = useAuth();
+  const { user, isLoading, isAuthenticated } = useAuth();
   const { openMomentModal, setSelectedConnection, momentModalOpen, closeMomentModal, planModalOpen, closePlanModal } = useModal();
   const { mainFocusConnection, loading: focusLoading } = useRelationshipFocus();
   const queryClient = useQueryClient();
@@ -143,6 +143,32 @@ export default function Calendar() {
   const [dayDetailOpen, setDayDetailOpen] = useState(false);
   const [viewMode, setViewMode] = useState<'daily' | 'weekly' | 'monthly'>('monthly');
   const [datePickerOpen, setDatePickerOpen] = useState(false);
+  
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full" />
+      </div>
+    );
+  }
+  
+  // Show login prompt if not authenticated
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <p className="text-neutral-600">Please log in to access the calendar</p>
+          <button 
+            onClick={() => window.location.href = '/login'}
+            className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded"
+          >
+            Go to Login
+          </button>
+        </div>
+      </div>
+    );
+  }
   
   // Entry detail modal state
   const [selectedEntry, setSelectedEntry] = useState<Moment | null>(null);
@@ -209,14 +235,14 @@ export default function Calendar() {
   const { data: connections = [] } = useQuery<Connection[]>({
     queryKey: ["/api/connections"],
     staleTime: 0,
-    enabled: isAuthenticated && !!user,
+    enabled: isAuthenticated,
   });
 
   // Fetch milestones
   const { data: milestones = [] } = useQuery({
     queryKey: ["/api/milestones", selectedConnectionId],
     staleTime: 0,
-    enabled: isAuthenticated && !!user,
+    enabled: isAuthenticated,
   });
 
   // Fetch menstrual cycles with aggressive cache invalidation

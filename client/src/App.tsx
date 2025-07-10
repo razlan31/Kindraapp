@@ -16,6 +16,10 @@ import Settings from "@/pages/settings";
 import MenstrualCycle from "@/pages/menstrual-cycle";
 import Privacy from "@/pages/privacy";
 import Terms from "@/pages/terms";
+import OnboardingWelcome from "@/pages/onboarding/welcome";
+import OnboardingProfile from "@/pages/onboarding/profile";
+import OnboardingGoals from "@/pages/onboarding/goals";
+import OnboardingComplete from "@/pages/onboarding/complete";
 import { AuthProvider, useAuth } from "./contexts/auth-context";
 import { RelationshipFocusProvider } from "./contexts/relationship-focus-context";
 import { ModalProvider } from "./contexts/modal-context";
@@ -34,6 +38,9 @@ function AppRoutes() {
     );
   }
 
+  // Check if user needs onboarding
+  const needsOnboarding = user && !user.displayName;
+
   return (
     <div className="min-h-screen bg-background">
       <Switch>
@@ -46,6 +53,15 @@ function AppRoutes() {
             <Route path="/privacy" component={Privacy} />
             <Route path="/terms" component={Terms} />
             <Route component={LandingPage} />
+          </>
+        ) : needsOnboarding ? (
+          <>
+            <Route path="/" component={OnboardingWelcome} />
+            <Route path="/onboarding/welcome" component={OnboardingWelcome} />
+            <Route path="/onboarding/profile" component={OnboardingProfile} />
+            <Route path="/onboarding/goals" component={OnboardingGoals} />
+            <Route path="/onboarding/complete" component={OnboardingComplete} />
+            <Route component={OnboardingWelcome} />
           </>
         ) : (
           <>
