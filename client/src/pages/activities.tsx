@@ -36,7 +36,7 @@ import {
 import { format } from "date-fns";
 
 export default function Activities() {
-  console.log("🚨🚨🚨 ACTIVITIES COMPONENT FUNCTION EXECUTING");
+  // Activities component loaded
   const { user, isAuthenticated, loading } = useAuth();
   const { openMomentModal, openPlanModal, closePlanModal, planModalOpen, setSelectedConnection: setModalConnection, editingMoment, registerConnectionChangeListener } = useModal();
   const { mainFocusConnection, loading: focusLoading } = useRelationshipFocus();

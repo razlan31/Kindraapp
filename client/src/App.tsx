@@ -21,20 +21,7 @@ import OnboardingProfile from "@/pages/onboarding/profile";
 import OnboardingGoals from "@/pages/onboarding/goals";
 import OnboardingComplete from "@/pages/onboarding/complete";
 
-function OnboardingRouter() {
-  return (
-    <div className="min-h-screen bg-background">
-      <Switch>
-        <Route path="/" component={OnboardingWelcome} />
-        <Route path="/onboarding/welcome" component={OnboardingWelcome} />
-        <Route path="/onboarding/profile" component={OnboardingProfile} />
-        <Route path="/onboarding/goals" component={OnboardingGoals} />
-        <Route path="/onboarding/complete" component={OnboardingComplete} />
-        <Route component={OnboardingWelcome} />
-      </Switch>
-    </div>
-  );
-}
+// Removed OnboardingRouter to eliminate duplicate routing
 import { AuthProvider, useAuth } from "./contexts/auth-context";
 import { RelationshipFocusProvider } from "./contexts/relationship-focus-context";
 import { ModalProvider } from "./contexts/modal-context";
@@ -56,37 +43,53 @@ function AppRoutes() {
   // Check if user needs onboarding
   const needsOnboarding = user && !user.displayName;
 
+  // Render different app sections based on authentication state
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Switch>
+          <Route path="/" component={LandingPage} />
+          <Route path="/app" component={LandingPage} />
+          <Route path="/login" component={Login} />
+          <Route path="/auth/login" component={Login} />
+          <Route path="/privacy" component={Privacy} />
+          <Route path="/terms" component={Terms} />
+          <Route component={LandingPage} />
+        </Switch>
+      </div>
+    );
+  }
+
+  if (needsOnboarding) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Switch>
+          <Route path="/" component={OnboardingWelcome} />
+          <Route path="/onboarding/welcome" component={OnboardingWelcome} />
+          <Route path="/onboarding/profile" component={OnboardingProfile} />
+          <Route path="/onboarding/goals" component={OnboardingGoals} />
+          <Route path="/onboarding/complete" component={OnboardingComplete} />
+          <Route component={OnboardingWelcome} />
+        </Switch>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <Switch>
-        {!user ? (
-          <>
-            <Route path="/" component={LandingPage} />
-            <Route path="/app" component={LandingPage} />
-            <Route path="/login" component={Login} />
-            <Route path="/auth/login" component={Login} />
-            <Route path="/privacy" component={Privacy} />
-            <Route path="/terms" component={Terms} />
-            <Route component={LandingPage} />
-          </>
-        ) : needsOnboarding ? (
-          <OnboardingRouter />
-        ) : (
-          <>
-            <Route path="/" component={Homepage1} />
-            <Route path="/home" component={Homepage1} />
-            <Route path="/dashboard" component={Dashboard} />
-            <Route path="/connections" component={Connections} />
-            <Route path="/activities" component={Activities} />
-            <Route path="/calendar" component={Calendar} />
-            <Route path="/insights" component={Insights} />
-            <Route path="/settings" component={Settings} />
-            <Route path="/menstrual-cycle" component={MenstrualCycle} />
-            <Route path="/privacy" component={Privacy} />
-            <Route path="/terms" component={Terms} />
-            <Route component={NotFound} />
-          </>
-        )}
+        <Route path="/" component={Homepage1} />
+        <Route path="/home" component={Homepage1} />
+        <Route path="/dashboard" component={Dashboard} />
+        <Route path="/connections" component={Connections} />
+        <Route path="/activities" component={Activities} />
+        <Route path="/calendar" component={Calendar} />
+        <Route path="/insights" component={Insights} />
+        <Route path="/settings" component={Settings} />
+        <Route path="/menstrual-cycle" component={MenstrualCycle} />
+        <Route path="/privacy" component={Privacy} />
+        <Route path="/terms" component={Terms} />
+        <Route component={NotFound} />
       </Switch>
       
       <ModalsContainer />
