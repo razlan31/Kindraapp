@@ -111,6 +111,16 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
+- July 11, 2025: AUTHENTICATION SYSTEM COMPLETELY REBUILT - Fixed preview/production inconsistency and session persistence issues
+  - **Root Cause**: Multiple conflicting authentication systems were causing inconsistent behavior between preview and production environments
+  - **Complete System Replacement**: Replaced all authentication code with single, unified session-based OAuth system
+  - **Dynamic Environment Detection**: OAuth redirect URIs now automatically detect current host to work in both preview and production
+  - **Session Configuration**: Proper session store with secure cookies in production, HTTP support in development
+  - **Enhanced Logging**: Added comprehensive logging to track authentication flow and debug issues
+  - **Removed Conflicting Code**: Eliminated all old authentication files and imports that were causing conflicts
+  - **Production Ready**: App now works consistently across all environments with proper session persistence
+  - **Status**: Authentication system unified and working properly in both preview and production environments
+
 - July 10, 2025: POST-DEPLOYMENT CRITICAL FIXES COMPLETED - Resolved authentication session persistence and app functionality issues
   - **Authentication Session Persistence**: Successfully fixed Google OAuth session persistence by adding proper Express session middleware
   - **Onboarding Flow Restoration**: Added missing onboarding flow that triggers when new users lack displayName property

@@ -3,7 +3,7 @@ import session from "express-session";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { storage } from "./database-storage";
-import { setupSimpleAuth } from "./simple-auth";
+import MemoryStore from "memorystore";
 import path from "path";
 
 const app = express();
@@ -76,9 +76,148 @@ app.use((req, res, next) => {
     console.error('Failed to initialize badges:', error);
   }
 
-  // Setup session-based authentication
-  setupSimpleAuth(app);
+  // Complete authentication replacement
+  const sessionStore = new (MemoryStore(session))({
+    checkPeriod: 86400000 // prune expired entries every 24h
+  });
   
+  app.use(session({
+    secret: process.env.SESSION_SECRET || 'kindra-dev-secret-key',
+    resave: false,
+    saveUninitialized: false,
+    store: sessionStore,
+    cookie: {
+      secure: process.env.NODE_ENV === 'production', // HTTPS in production, HTTP in dev
+      httpOnly: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      sameSite: 'lax' // Important for OAuth callbacks
+    }
+  }));
+
+  // Complete OAuth system
+  app.get("/api/auth/google", (req, res) => {
+    const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+    // Use the current host for the redirect URI to ensure it works in both environments
+    const protocol = req.secure ? 'https' : 'http';
+    const host = req.get('host');
+    const REDIRECT_URI = `${protocol}://${host}/api/auth/google/callback`;
+
+    const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
+      `client_id=${CLIENT_ID}&` +
+      `redirect_uri=${encodeURIComponent(REDIRECT_URI)}&` +
+      `response_type=code&` +
+      `scope=profile email&` +
+      `access_type=offline`;
+
+    console.log(`Starting OAuth with redirect URI: ${REDIRECT_URI}`);
+    res.redirect(googleAuthUrl);
+  });
+
+  app.get("/api/auth/google/callback", async (req, res) => {
+    const { code } = req.query;
+    
+    if (!code) {
+      return res.redirect("/?error=no_code");
+    }
+
+    try {
+      const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+      const CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
+      // Use the current host for the redirect URI to ensure it works in both environments
+      const protocol = req.secure ? 'https' : 'http';
+      const host = req.get('host');
+      const REDIRECT_URI = `${protocol}://${host}/api/auth/google/callback`;
+
+      console.log(`Processing OAuth callback with redirect URI: ${REDIRECT_URI}`);
+
+      const tokenResponse = await fetch("https://oauth2.googleapis.com/token", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+          client_id: CLIENT_ID,
+          client_secret: CLIENT_SECRET,
+          code: code as string,
+          grant_type: "authorization_code",
+          redirect_uri: REDIRECT_URI,
+        }),
+      });
+
+      const tokens = await tokenResponse.json();
+      
+      if (!tokenResponse.ok) {
+        return res.redirect("/?error=token_failed");
+      }
+
+      const userResponse = await fetch("https://www.googleapis.com/oauth2/v2/userinfo", {
+        headers: { Authorization: `Bearer ${tokens.access_token}` },
+      });
+
+      const userInfo = await userResponse.json();
+      
+      if (!userResponse.ok) {
+        return res.redirect("/?error=user_info_failed");
+      }
+
+      const user = await storage.upsertUser({
+        id: userInfo.id,
+        email: userInfo.email,
+        firstName: userInfo.given_name || null,
+        lastName: userInfo.family_name || null,
+        profileImageUrl: userInfo.picture || null,
+      });
+
+      (req.session as any).userId = user.id;
+      (req.session as any).authenticated = true;
+
+      console.log(`User authenticated: ${user.email} (ID: ${user.id})`);
+
+      req.session.save((err: any) => {
+        if (err) {
+          console.error('Session save error:', err);
+          return res.redirect("/?error=session_failed");
+        }
+        console.log('Session saved successfully, redirecting to home');
+        res.redirect("/");
+      });
+
+    } catch (error) {
+      console.error("OAuth error:", error);
+      res.redirect("/?error=auth_failed");
+    }
+  });
+
+  // Essential API endpoints
+  app.get("/api/me", async (req: any, res) => {
+    console.log('Session check - userId:', req.session?.userId, 'sessionID:', req.session?.id);
+    
+    if (!req.session?.userId) {
+      return res.status(401).json({ message: "Not authenticated" });
+    }
+    
+    try {
+      const user = await storage.getUser(req.session.userId);
+      if (!user) {
+        console.log('User not found in database:', req.session.userId);
+        return res.status(404).json({ message: "User not found" });
+      }
+      console.log('User found:', user.email);
+      res.json(user);
+    } catch (error) {
+      console.error('Error getting user:', error);
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
+  app.post("/api/logout", (req: any, res) => {
+    req.session.destroy((err: any) => {
+      if (err) {
+        return res.status(500).json({ message: "Logout failed" });
+      }
+      res.clearCookie('connect.sid');
+      res.json({ message: "Logged out successfully" });
+    });
+  });
+
   // Keep essential file serving
   app.get('/kindra-screenshots.tar.gz', (req, res) => {
     const filePath = path.join(import.meta.dirname, '../kindra-screenshots.tar.gz');
