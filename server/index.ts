@@ -3,6 +3,7 @@ import session from "express-session";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { storage } from "./database-storage";
+import { setupSimpleAuth } from "./simple-auth";
 import path from "path";
 
 const app = express();
@@ -75,16 +76,18 @@ app.use((req, res, next) => {
     console.error('Failed to initialize badges:', error);
   }
 
-  // Direct download endpoint
+  // Setup session-based authentication
+  setupSimpleAuth(app);
+  
+  // Keep essential file serving
   app.get('/kindra-screenshots.tar.gz', (req, res) => {
     const filePath = path.join(import.meta.dirname, '../kindra-screenshots.tar.gz');
     res.download(filePath, 'kindra-screenshots.tar.gz');
   });
   
-  // Serve public files for downloads
   app.use('/files', express.static(path.join(import.meta.dirname, '../public')));
   
-  // Register API routes first with explicit priority
+  // Register API routes
   const server = await registerRoutes(app);
 
   // importantly only setup vite in development and after

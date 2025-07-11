@@ -147,7 +147,7 @@ export default function Calendar() {
   // Show loading state
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="w-full max-w-sm sm:max-w-md lg:max-w-lg mx-auto bg-white dark:bg-neutral-900 min-h-screen flex items-center justify-center">
         <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full" />
       </div>
     );
@@ -156,11 +156,11 @@ export default function Calendar() {
   // Show login prompt if not authenticated
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="w-full max-w-sm sm:max-w-md lg:max-w-lg mx-auto bg-white dark:bg-neutral-900 min-h-screen flex items-center justify-center">
         <div className="text-center space-y-4">
           <p className="text-neutral-600">Please log in to access the calendar</p>
           <button 
-            onClick={() => window.location.href = '/login'}
+            onClick={() => window.location.href = '/api/auth/google'}
             className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded"
           >
             Go to Login

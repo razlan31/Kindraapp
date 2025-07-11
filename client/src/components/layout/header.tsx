@@ -8,27 +8,20 @@ import { NotificationBell, UserPointsDisplay } from "@/components/notifications"
 import { useState, useEffect } from "react";
 
 export function Header() {
-  console.log("🚨🚨🚨 HEADER COMPONENT IS RENDERING!!!!");
   const { logout, isAuthenticated, user } = useAuth();
-  
-  console.log("🚨🚨🚨 HEADER: Got auth context - logout type:", typeof logout);
-  console.log("🚨🚨🚨 HEADER: isAuthenticated:", isAuthenticated, "user exists:", !!user);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
   
   const handleLogout = async () => {
     setLoggingOut(true);
     try {
       await logout();
-      // After logout, the AuthProvider will handle navigation based on auth state
     } catch (error) {
       console.error("Logout error:", error);
     } finally {
       setLoggingOut(false);
     }
   };
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [loggingOut, setLoggingOut] = useState(false);
-  
-  console.log("🔍 HEADER: Component rendering, isAuthenticated:", isAuthenticated);
 
   // Close dropdown when clicking outside
   useEffect(() => {

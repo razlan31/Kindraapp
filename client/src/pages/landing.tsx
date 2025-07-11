@@ -7,6 +7,7 @@ import { useLocation } from 'wouter';
 import { AnimatedFeatures } from '@/components/animated-features';
 import { PricingModal } from '@/components/subscription/pricing-modal';
 
+
 export default function LandingPage() {
   const [, setLocation] = useLocation();
   const [selectedPlan, setSelectedPlan] = useState<'monthly' | 'annual'>('monthly');

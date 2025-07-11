@@ -5,9 +5,9 @@ import { useAuth } from "@/contexts/auth-context";
 import AIChat from "@/components/ai-chat-clean";
 
 export default function Homepage1() {
-  const { user, loading } = useAuth();
+  const { user, isLoading } = useAuth();
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="max-w-md mx-auto bg-white dark:bg-neutral-900 min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -24,7 +24,7 @@ export default function Homepage1() {
         <div className="text-center space-y-4">
           <p className="text-neutral-600 dark:text-neutral-400">Please log in to continue</p>
           <button 
-            onClick={() => window.location.href = '/login'}
+            onClick={() => window.location.href = '/api/auth/google'}
             className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded"
           >
             Go to Login
