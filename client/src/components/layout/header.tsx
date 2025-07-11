@@ -66,33 +66,6 @@ export function Header() {
         <UserPointsDisplay />
         <NotificationBell />
         
-        {/* Test button to verify component renders */}
-        <div className="bg-yellow-400 text-black px-2 py-1 rounded text-xs font-bold">
-          TEST
-        </div>
-        
-        {/* Direct logout button - guaranteed to work */}
-        <button
-          onClick={handleLogout}
-          disabled={loggingOut}
-          className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm font-medium z-50 relative disabled:opacity-50"
-          style={{ zIndex: 9999 }}
-        >
-          {loggingOut ? (
-            <>
-              <div className="h-4 w-4 mr-1 inline animate-spin rounded-full border-2 border-white border-t-transparent"></div>
-              LOGGING OUT
-            </>
-          ) : (
-            <>
-              <LogOut className="h-4 w-4 mr-1 inline" />
-              LOGOUT
-            </>
-          )}
-        </button>
-        
-
-        
         <div className="relative dropdown-container">
           <Button 
             variant="ghost" 
