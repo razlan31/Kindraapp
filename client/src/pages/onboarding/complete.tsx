@@ -118,7 +118,7 @@ export default function CompleteOnboarding() {
   const onboardingData = JSON.parse(localStorage.getItem("onboarding_data") || "{}");
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 to-purple-50 dark:from-neutral-900 dark:to-neutral-800 p-4 overflow-hidden">
+    <div className="fixed inset-0 flex items-center justify-center bg-gradient-to-br from-pink-50 to-purple-50 dark:from-neutral-900 dark:to-neutral-800 p-4 z-50">
       <Card className="w-full max-w-lg">
         <CardHeader className="text-center space-y-4">
           <div className="mx-auto w-16 h-16 bg-green-500 rounded-full flex items-center justify-center">

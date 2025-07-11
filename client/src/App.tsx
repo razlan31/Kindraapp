@@ -20,6 +20,21 @@ import OnboardingWelcome from "@/pages/onboarding/welcome";
 import OnboardingProfile from "@/pages/onboarding/profile";
 import OnboardingGoals from "@/pages/onboarding/goals";
 import OnboardingComplete from "@/pages/onboarding/complete";
+
+function OnboardingRouter() {
+  return (
+    <div className="min-h-screen bg-background">
+      <Switch>
+        <Route path="/" component={OnboardingWelcome} />
+        <Route path="/onboarding/welcome" component={OnboardingWelcome} />
+        <Route path="/onboarding/profile" component={OnboardingProfile} />
+        <Route path="/onboarding/goals" component={OnboardingGoals} />
+        <Route path="/onboarding/complete" component={OnboardingComplete} />
+        <Route component={OnboardingWelcome} />
+      </Switch>
+    </div>
+  );
+}
 import { AuthProvider, useAuth } from "./contexts/auth-context";
 import { RelationshipFocusProvider } from "./contexts/relationship-focus-context";
 import { ModalProvider } from "./contexts/modal-context";
@@ -55,14 +70,7 @@ function AppRoutes() {
             <Route component={LandingPage} />
           </>
         ) : needsOnboarding ? (
-          <>
-            <Route path="/" component={OnboardingWelcome} />
-            <Route path="/onboarding/welcome" component={OnboardingWelcome} />
-            <Route path="/onboarding/profile" component={OnboardingProfile} />
-            <Route path="/onboarding/goals" component={OnboardingGoals} />
-            <Route path="/onboarding/complete" component={OnboardingComplete} />
-            <Route component={OnboardingWelcome} />
-          </>
+          <OnboardingRouter />
         ) : (
           <>
             <Route path="/" component={Homepage1} />

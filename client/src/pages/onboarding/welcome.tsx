@@ -7,7 +7,7 @@ export default function Welcome() {
   const [, setLocation] = useLocation();
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 to-purple-50 dark:from-neutral-900 dark:to-neutral-800 p-4">
+    <div className="fixed inset-0 flex items-center justify-center bg-gradient-to-br from-pink-50 to-purple-50 dark:from-neutral-900 dark:to-neutral-800 p-4 z-50">
       <Card className="w-full max-w-2xl">
         <CardHeader className="text-center space-y-6">
           <div className="mx-auto w-16 h-16 bg-primary rounded-full flex items-center justify-center">
