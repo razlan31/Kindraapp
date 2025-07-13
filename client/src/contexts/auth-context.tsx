@@ -16,9 +16,10 @@ interface User {
 
 interface AuthContextType {
   user: User | null;
-  isLoading: boolean;
+  loading: boolean;
   isAuthenticated: boolean;
   logout: () => void;
+  refreshUser: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -26,15 +27,24 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
 
-  const { data: currentUser, isLoading, error } = useQuery({
+  const { data: currentUser, isLoading, error, refetch } = useQuery({
     queryKey: ['/api/me'],
     retry: false,
     staleTime: 5 * 60 * 1000, // 5 minutes
+    queryFn: async () => {
+      const response = await fetch('/api/me', {
+        credentials: 'include'
+      });
+      if (!response.ok) {
+        throw new Error(`${response.status}: ${response.statusText}`);
+      }
+      return response.json();
+    }
   });
 
   useEffect(() => {
     console.log('Auth context: Effect triggered', { currentUser, error, isLoading });
-    if (currentUser) {
+    if (currentUser && typeof currentUser === 'object' && currentUser.id) {
       console.log('Auth context: User loaded successfully:', currentUser.email);
       setUser(currentUser);
     } else if (error) {
@@ -45,6 +55,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(null);
     }
   }, [currentUser, error, isLoading]);
+
+  const refreshUser = () => {
+    console.log('Auth context: Refreshing user data');
+    refetch();
+  };
 
   const logout = () => {
     console.log('Auth context: Logging out user');
@@ -62,9 +77,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const value: AuthContextType = {
     user,
-    isLoading,
+    loading: isLoading,
     isAuthenticated: !!user,
     logout,
+    refreshUser,
   };
 
   return (
