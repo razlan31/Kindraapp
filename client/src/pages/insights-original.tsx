@@ -38,7 +38,8 @@ import {
 import { useState, useEffect } from "react";
 
 export default function Insights() {
-  const { user, loading, isAuthenticated } = useAuth();
+  const { user, loading } = useAuth();
+  const isAuthenticated = !!user;
   
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -153,6 +154,48 @@ export default function Insights() {
     Math.ceil((new Date().getTime() - firstMomentDate.getTime()) / (1000 * 60 * 60 * 24)) : 0;
 
 
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="max-w-md mx-auto bg-white dark:bg-neutral-900 min-h-screen flex flex-col relative">
+        <Header />
+        <main className="flex-1 overflow-y-auto pb-20 px-4 pt-6 flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-4"></div>
+            <p className="text-neutral-600 dark:text-neutral-400">Loading insights...</p>
+          </div>
+        </main>
+        <BottomNavigation />
+      </div>
+    );
+  }
+
+  // Not authenticated
+  if (!isAuthenticated) {
+    return (
+      <div className="max-w-md mx-auto bg-white dark:bg-neutral-900 min-h-screen flex flex-col relative">
+        <Header />
+        <main className="flex-1 overflow-y-auto pb-20 px-4 pt-6 flex items-center justify-center">
+          <div className="text-center space-y-4">
+            <p className="text-neutral-600 dark:text-neutral-400">Please sign in to view your insights</p>
+            <div className="space-y-2">
+              <button 
+                onClick={() => window.location.href = '/api/auth/google'}
+                className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg font-medium"
+              >
+                Sign In with Google
+              </button>
+              <p className="text-xs text-neutral-500">
+                Or visit: <code className="bg-neutral-100 px-1 rounded">/api/auth/google</code>
+              </p>
+            </div>
+          </div>
+        </main>
+        <BottomNavigation />
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-md mx-auto bg-white dark:bg-neutral-900 min-h-screen flex flex-col relative">
