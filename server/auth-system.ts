@@ -35,14 +35,14 @@ export function setupSession(app: Express) {
   });
   
   app.use(session({
-    secret: process.env.SESSION_SECRET || 'kindra-development-secret-' + Date.now(),
+    secret: process.env.SESSION_SECRET || 'kindra-development-secret-fixed',
     store: sessionStore,
     resave: false,
-    saveUninitialized: true, // Create session for every request
+    saveUninitialized: false, // Don't create session for every request
     rolling: true, // Extend session on activity
     cookie: {
       secure: false, // Always false for development - HTTPS handled by proxy
-      httpOnly: false, // Allow client access for debugging
+      httpOnly: true, // Secure cookies
       maxAge: sessionTtl,
       sameSite: 'lax',
       path: '/',
