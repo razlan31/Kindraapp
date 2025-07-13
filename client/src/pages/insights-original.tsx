@@ -38,14 +38,23 @@ import {
 import { useState, useEffect } from "react";
 
 export default function Insights() {
-  const { user, isLoading, isAuthenticated } = useAuth();
+  const { user, loading, isAuthenticated } = useAuth();
   
   // Redirect to login if not authenticated
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
+    if (!loading && !isAuthenticated) {
       window.location.href = "/api/auth/google";
     }
-  }, [isLoading, isAuthenticated]);
+  }, [loading, isAuthenticated]);
+
+  // Show loading state if still loading or not authenticated
+  if (loading || !isAuthenticated) {
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full" />
+      </div>
+    );
+  }
 
   // Collapsible state management with localStorage persistence
   const [isInsightsExpanded, setIsInsightsExpanded] = useState(true);
@@ -73,16 +82,7 @@ export default function Insights() {
     localStorage.setItem('analytics-section-expanded', isAnalyticsExpanded.toString());
   }, [isAnalyticsExpanded]);
 
-  console.log("InsightsNew - user:", !!user, "user ID:", user?.id, "loading:", isLoading);
-
-  // Show loading state if still loading or not authenticated
-  if (isLoading || !isAuthenticated) {
-    return (
-      <div className="h-screen flex items-center justify-center">
-        <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full" />
-      </div>
-    );
-  }
+  console.log("InsightsNew - user:", !!user, "user ID:", user?.id, "loading:", loading);
 
   // Fetch connections
   const { data: connections = [] } = useQuery<Connection[]>({
@@ -100,8 +100,8 @@ export default function Insights() {
     momentsLength: moments.length,
     momentsLoading,
     momentsError,
-    userEnabled: !isLoading && !!user,
-    isLoading
+    userEnabled: !loading && !!user,
+    loading
   });
 
   // Prepare emotion data for charts
@@ -152,42 +152,7 @@ export default function Insights() {
   const trackingDays = firstMomentDate ? 
     Math.ceil((new Date().getTime() - firstMomentDate.getTime()) / (1000 * 60 * 60 * 24)) : 0;
 
-  // Loading state
-  if (isLoading) {
-    return (
-      <div className="max-w-md mx-auto bg-white dark:bg-neutral-900 min-h-screen flex flex-col relative">
-        <Header />
-        <main className="flex-1 overflow-y-auto pb-20 px-4 pt-6 flex items-center justify-center">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-4"></div>
-            <p className="text-neutral-600 dark:text-neutral-400">Loading insights...</p>
-          </div>
-        </main>
-        <BottomNavigation />
-      </div>
-    );
-  }
 
-  // Not authenticated
-  if (!user) {
-    return (
-      <div className="max-w-md mx-auto bg-white dark:bg-neutral-900 min-h-screen flex flex-col relative">
-        <Header />
-        <main className="flex-1 overflow-y-auto pb-20 px-4 pt-6 flex items-center justify-center">
-          <div className="text-center space-y-4">
-            <p className="text-neutral-600 dark:text-neutral-400">Please log in to view insights</p>
-            <button 
-              onClick={() => window.location.href = '/api/auth/google'}
-              className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded"
-            >
-              Go to Login
-            </button>
-          </div>
-        </main>
-        <BottomNavigation />
-      </div>
-    );
-  }
 
   return (
     <div className="max-w-md mx-auto bg-white dark:bg-neutral-900 min-h-screen flex flex-col relative">
