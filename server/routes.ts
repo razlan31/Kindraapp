@@ -14,7 +14,7 @@ import MemoryStore from "memorystore";
 import Stripe from "stripe";
 import { AIRelationshipCoach, type RelationshipContext } from "./ai-relationship-coach";
 import { ensureUserConnection } from "./user-connection-utils";
-// Authentication handled in index.ts now
+// Authentication handled in index.ts now - auth.ts removed to eliminate conflicts
 import nodemailer from "nodemailer";
 
 // Initialize Stripe
@@ -112,8 +112,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Initialize AI coach with storage dependency
   const aiCoach = new AIRelationshipCoach(storage);
 
-  // Current user endpoint - works without authentication for public access
-  app.post("/api/current-user", async (req: Request, res: Response) => {
+  // Current user endpoint - GET method for frontend auth context
+  app.get("/api/me", async (req: Request, res: Response) => {
     try {
       console.log("Current user check - session userId:", (req.session as any)?.userId);
       console.log("Current user check - passport authenticated:", req.isAuthenticated ? req.isAuthenticated() : false);

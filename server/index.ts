@@ -76,31 +76,14 @@ app.use((req, res, next) => {
     console.error('Failed to initialize badges:', error);
   }
 
-  // Complete authentication replacement
-  const sessionStore = new (MemoryStore(session))({
-    checkPeriod: 86400000 // prune expired entries every 24h
-  });
-  
-  app.use(session({
-    secret: process.env.SESSION_SECRET || 'kindra-dev-secret-key',
-    resave: false,
-    saveUninitialized: false,
-    store: sessionStore,
-    cookie: {
-      secure: process.env.NODE_ENV === 'production', // HTTPS in production, HTTP in dev
-      httpOnly: true,
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-      sameSite: 'lax' // Important for OAuth callbacks
-    }
-  }));
+  // REMOVE DUPLICATE SESSION SETUP - Already configured at top of file
 
-  // Complete OAuth system
+  // Complete OAuth system - Use production domain for proper OAuth callback
   app.get("/api/auth/google", (req, res) => {
     const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
-    // Use the current host for the redirect URI to ensure it works in both environments
-    const protocol = req.secure ? 'https' : 'http';
-    const host = req.get('host');
-    const REDIRECT_URI = `${protocol}://${host}/api/auth/google/callback`;
+    // Always use production domain for OAuth to prevent redirect_uri_mismatch
+    const replitDomain = process.env.REPLIT_DOMAINS || 'ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev';
+    const REDIRECT_URI = `https://${replitDomain}/api/auth/google/callback`;
 
     const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
       `client_id=${CLIENT_ID}&` +
@@ -123,10 +106,9 @@ app.use((req, res, next) => {
     try {
       const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
       const CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
-      // Use the current host for the redirect URI to ensure it works in both environments
-      const protocol = req.secure ? 'https' : 'http';
-      const host = req.get('host');
-      const REDIRECT_URI = `${protocol}://${host}/api/auth/google/callback`;
+      // Always use production domain for OAuth to prevent redirect_uri_mismatch
+      const replitDomain = process.env.REPLIT_DOMAINS || 'ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev';
+      const REDIRECT_URI = `https://${replitDomain}/api/auth/google/callback`;
 
       console.log(`Processing OAuth callback with redirect URI: ${REDIRECT_URI}`);
 
@@ -186,37 +168,7 @@ app.use((req, res, next) => {
     }
   });
 
-  // Essential API endpoints
-  app.get("/api/me", async (req: any, res) => {
-    console.log('Session check - userId:', req.session?.userId, 'sessionID:', req.session?.id);
-    
-    if (!req.session?.userId) {
-      return res.status(401).json({ message: "Not authenticated" });
-    }
-    
-    try {
-      const user = await storage.getUser(req.session.userId);
-      if (!user) {
-        console.log('User not found in database:', req.session.userId);
-        return res.status(404).json({ message: "User not found" });
-      }
-      console.log('User found:', user.email);
-      res.json(user);
-    } catch (error) {
-      console.error('Error getting user:', error);
-      res.status(500).json({ message: "Server error" });
-    }
-  });
-
-  app.post("/api/logout", (req: any, res) => {
-    req.session.destroy((err: any) => {
-      if (err) {
-        return res.status(500).json({ message: "Logout failed" });
-      }
-      res.clearCookie('connect.sid');
-      res.json({ message: "Logged out successfully" });
-    });
-  });
+  // Register all other routes
 
   // Keep essential file serving
   app.get('/kindra-screenshots.tar.gz', (req, res) => {
