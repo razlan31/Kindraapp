@@ -111,14 +111,15 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
-- July 13, 2025: AUTHENTICATION SYSTEM DEBUGGING - Identified root cause: Users need to authenticate via Google OAuth first
-  - **Root Cause**: Frontend authentication guards are working correctly, but users need to authenticate via `/api/auth/google` first
-  - **OAuth Flow**: Working correctly - redirects to Google OAuth and handles callback properly
-  - **Session Management**: PostgreSQL sessions are being created and managed correctly
-  - **Frontend Fix**: Updated auth context to use explicit credentials: 'include' for API calls
-  - **Status**: Authentication system is functional - users just need to go through OAuth flow first
-  - **Session Persistence RESOLVED**: Fixed session-cookie binding by correcting cookie configuration (httpOnly, sameSite, path settings)
-  - **Cookie Handling WORKING**: Sessions now properly persist across requests with same session ID reuse
+- July 13, 2025: AUTHENTICATION SYSTEM COMPLETELY REBUILT - Fixed preview/production inconsistency and session persistence issues
+  - **Root Cause**: Multiple conflicting authentication systems were causing inconsistent behavior between preview and production environments
+  - **Complete System Replacement**: Replaced all authentication code with single, unified session-based OAuth system
+  - **Dynamic Environment Detection**: OAuth redirect URIs now automatically detect current host to work in both preview and production
+  - **Session Configuration**: Proper session store with secure cookies in production, HTTP support in development
+  - **Enhanced Logging**: Added comprehensive logging to track authentication flow and debug issues
+  - **Removed Conflicting Code**: Eliminated all old authentication files and imports that were causing conflicts
+  - **Production Ready**: App now works consistently across all environments with proper session persistence
+  - **Status**: Authentication system unified and working properly in both preview and production environments
   - **Session Persistence RESOLVED**: Fixed session-cookie binding by correcting cookie configuration (httpOnly, sameSite, path settings)
   - **Cookie Handling WORKING**: Sessions now properly persist across requests with same session ID reuse
   - **OAuth Flow FUNCTIONAL**: Google OAuth initiation working correctly with proper redirect URIs and callback processing
