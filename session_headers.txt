@@ -3,7 +3,8 @@ X-Powered-By: Express
 Content-Type: application/json; charset=utf-8
 Content-Length: 31
 ETag: W/"1f-+6QzNnV5epxAIN04tcijgCAz6Yw"
-Date: Sun, 13 Jul 2025 14:42:29 GMT
+Set-Cookie: connect.sid=s%3AhuYepjADQxNyjLaNsP31Dsc_l8yeFh6d.QFhPVe1nfIoebCzdiiUTNBJzob51gHoGan2frr2zY9w; Path=/; Expires=Sun, 20 Jul 2025 14:43:09 GMT; SameSite=Lax
+Date: Sun, 13 Jul 2025 14:43:09 GMT
 Connection: keep-alive
 Keep-Alive: timeout=5
 

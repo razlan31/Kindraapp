@@ -6,7 +6,9 @@ import { setupAuthentication } from "./auth-system";
 import path from "path";
 
 const app = express();
-app.set('trust proxy', 1); // Trust first proxy for HTTPS detection
+
+// Trust proxy for proper cookie handling in production
+app.set('trust proxy', 1);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: false, limit: '10mb' }));
 

@@ -42,11 +42,10 @@ export function setupSession(app: Express) {
     rolling: true, // Extend session on activity
     cookie: {
       secure: false, // Always false for development - HTTPS handled by proxy
-      httpOnly: false, // Allow client-side access for debugging
+      httpOnly: false, // Allow client access for debugging
       maxAge: sessionTtl,
       sameSite: 'lax',
       path: '/',
-      domain: undefined, // Let browser set domain
     },
     name: 'connect.sid', // Explicit session name
   }));
@@ -158,6 +157,7 @@ export function setupOAuthRoutes(app: Express) {
           return res.redirect("/?error=session_failed");
         }
         console.log('✅ Session saved successfully, redirecting to home');
+        console.log('✅ Session after save:', { userId: req.session.userId, sessionId: req.session.id });
         res.redirect("/");
       });
       
@@ -180,6 +180,18 @@ export function setupApiRoutes(app: Express) {
       const userId = req.session.userId;
       
       console.log(`🔍 Session check - userId: ${userId}, sessionID: ${req.session.id}`);
+      console.log(`🔍 Session exists: ${!!req.session}, cookie header: ${req.headers.cookie}`);
+      
+      // Force session to be saved if it doesn't exist
+      if (!req.session.id) {
+        req.session.save((err) => {
+          if (err) {
+            console.error('Session save error:', err);
+          } else {
+            console.log('Session saved, new ID:', req.session.id);
+          }
+        });
+      }
       
       if (!userId) {
         return res.status(401).json({ message: "Not authenticated" });
