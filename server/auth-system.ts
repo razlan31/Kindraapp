@@ -1,0 +1,224 @@
+import { type Express, type Request, type Response, type NextFunction } from "express";
+import session from "express-session";
+import connectPg from "connect-pg-simple";
+import { storage } from "./database-storage";
+
+declare module "express-session" {
+  interface SessionData {
+    userId?: string;
+    authenticated?: boolean;
+  }
+}
+
+// Session configuration
+export function setupSession(app: Express) {
+  console.log("🔐 Setting up session middleware");
+  
+  const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 7 days
+  
+  // Use PostgreSQL for session storage
+  const pgStore = connectPg(session);
+  const sessionStore = new pgStore({
+    conString: process.env.DATABASE_URL,
+    createTableIfMissing: true,
+    ttl: sessionTtl / 1000, // Convert to seconds
+    tableName: "sessions", // Use existing sessions table
+  });
+  
+  app.use(session({
+    secret: process.env.SESSION_SECRET || 'kindra-development-secret-' + Date.now(),
+    store: sessionStore,
+    resave: false,
+    saveUninitialized: false,
+    rolling: true, // Extend session on activity
+    cookie: {
+      secure: process.env.NODE_ENV === 'production', // HTTPS in production
+      httpOnly: true,
+      maxAge: sessionTtl,
+      sameSite: 'lax',
+    },
+  }));
+}
+
+// OAuth routes
+export function setupOAuthRoutes(app: Express) {
+  console.log("🔐 Setting up OAuth routes");
+  
+  // Google OAuth initiation
+  app.get("/api/auth/google", (req: Request, res: Response) => {
+    const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+    
+    if (!CLIENT_ID) {
+      console.error("❌ GOOGLE_CLIENT_ID not configured");
+      return res.status(500).json({ error: "OAuth not configured" });
+    }
+    
+    // Always use production domain for OAuth callback
+    const replitDomain = process.env.REPLIT_DOMAINS || 'ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev';
+    const REDIRECT_URI = `https://${replitDomain}/api/auth/google/callback`;
+    
+    const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
+      `client_id=${CLIENT_ID}&` +
+      `redirect_uri=${encodeURIComponent(REDIRECT_URI)}&` +
+      `response_type=code&` +
+      `scope=profile email&` +
+      `access_type=offline`;
+    
+    console.log(`🚀 Starting OAuth with redirect URI: ${REDIRECT_URI}`);
+    res.redirect(googleAuthUrl);
+  });
+  
+  // Google OAuth callback
+  app.get("/api/auth/google/callback", async (req: Request, res: Response) => {
+    const { code } = req.query;
+    
+    if (!code) {
+      console.error("❌ No authorization code received");
+      return res.redirect("/?error=no_code");
+    }
+    
+    try {
+      const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+      const CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
+      
+      if (!CLIENT_ID || !CLIENT_SECRET) {
+        console.error("❌ Google OAuth credentials not configured");
+        return res.redirect("/?error=oauth_config");
+      }
+      
+      // Always use production domain for OAuth callback
+      const replitDomain = process.env.REPLIT_DOMAINS || 'ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev';
+      const REDIRECT_URI = `https://${replitDomain}/api/auth/google/callback`;
+      
+      console.log(`🔄 Processing OAuth callback with redirect URI: ${REDIRECT_URI}`);
+      
+      // Exchange code for tokens
+      const tokenResponse = await fetch("https://oauth2.googleapis.com/token", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+          client_id: CLIENT_ID,
+          client_secret: CLIENT_SECRET,
+          code: code as string,
+          grant_type: "authorization_code",
+          redirect_uri: REDIRECT_URI,
+        }),
+      });
+      
+      const tokens = await tokenResponse.json();
+      
+      if (!tokenResponse.ok) {
+        console.error("❌ Token exchange failed:", tokens);
+        return res.redirect("/?error=token_failed");
+      }
+      
+      // Get user info from Google
+      const userResponse = await fetch("https://www.googleapis.com/oauth2/v2/userinfo", {
+        headers: { Authorization: `Bearer ${tokens.access_token}` },
+      });
+      
+      const userInfo = await userResponse.json();
+      
+      if (!userResponse.ok) {
+        console.error("❌ User info request failed:", userInfo);
+        return res.redirect("/?error=user_info_failed");
+      }
+      
+      // Upsert user in database
+      const user = await storage.upsertUser({
+        id: userInfo.id,
+        email: userInfo.email,
+        firstName: userInfo.given_name || null,
+        lastName: userInfo.family_name || null,
+        profileImageUrl: userInfo.picture || null,
+      });
+      
+      // Set session
+      req.session.userId = user.id;
+      req.session.authenticated = true;
+      
+      console.log(`✅ User authenticated: ${user.email} (ID: ${user.id})`);
+      
+      // Save session and redirect
+      req.session.save((err) => {
+        if (err) {
+          console.error('❌ Session save error:', err);
+          return res.redirect("/?error=session_failed");
+        }
+        console.log('✅ Session saved successfully, redirecting to home');
+        res.redirect("/");
+      });
+      
+    } catch (error) {
+      console.error("❌ OAuth error:", error);
+      res.redirect("/?error=auth_failed");
+    }
+  });
+}
+
+// API routes
+export function setupApiRoutes(app: Express) {
+  console.log("🔐 Setting up API routes");
+  
+  // Current user endpoint
+  app.get("/api/me", async (req: Request, res: Response) => {
+    try {
+      const userId = req.session.userId;
+      
+      console.log(`🔍 Session check - userId: ${userId}, sessionID: ${req.session.id}`);
+      
+      if (!userId) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+      
+      const user = await storage.getUser(userId);
+      if (!user) {
+        // Clear invalid session
+        req.session.userId = undefined;
+        req.session.authenticated = false;
+        return res.status(401).json({ message: "User not found" });
+      }
+      
+      console.log(`✅ Current user found: ${user.email}`);
+      res.json(user);
+    } catch (error) {
+      console.error("❌ Error fetching current user:", error);
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+  
+  // Logout endpoint
+  app.post("/api/logout", (req: Request, res: Response) => {
+    console.log("🚪 Logout request received");
+    
+    req.session.destroy((err) => {
+      if (err) {
+        console.error("❌ Session destroy error:", err);
+        return res.status(500).json({ message: "Logout failed" });
+      }
+      
+      res.clearCookie('connect.sid');
+      console.log("✅ User logged out successfully");
+      res.json({ message: "Logged out successfully" });
+    });
+  });
+}
+
+// Authentication middleware
+export function isAuthenticated(req: Request, res: Response, next: NextFunction) {
+  if (!req.session.userId) {
+    return res.status(401).json({ message: "Authentication required" });
+  }
+  next();
+}
+
+// Complete authentication setup
+export function setupAuthentication(app: Express) {
+  console.log("🔐 Setting up complete authentication system");
+  
+  setupSession(app);
+  setupOAuthRoutes(app);
+  setupApiRoutes(app);
+  
+  console.log("✅ Authentication system setup complete");
+}

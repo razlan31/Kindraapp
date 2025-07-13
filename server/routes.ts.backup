@@ -509,7 +509,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Try session-based auth
-      const session = req.session;
+      const session = req.session as any;
       console.log("Auth check - session:", session?.userId ? "exists" : "missing", "userId:", session?.userId);
       if (session?.userId) {
         console.log("Looking up user with ID:", req.session.userId);
