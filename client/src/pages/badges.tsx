@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Trophy, Lock, Star, Award, Target, Calendar, Heart, MessageCircle, UserPlus, Zap, ArrowLeft } from "lucide-react";
 import { BottomNavigation } from "@/components/layout/bottom-navigation";
 import { Header } from "@/components/layout/header";
+import { useAuth } from "@/contexts/auth-context";
 
 interface Badge {
   id: number;
@@ -158,14 +159,33 @@ function CategorySection({ title, badges, userBadges, icon }: {
 export default function BadgesPage() {
   const [activeTab, setActiveTab] = useState("all");
   const [, setLocation] = useLocation();
+  const { user, loading, isAuthenticated } = useAuth();
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!loading && !isAuthenticated) {
+      window.location.href = "/api/auth/google";
+    }
+  }, [loading, isAuthenticated]);
+
+  // Show loading state if still loading or not authenticated
+  if (loading || !isAuthenticated) {
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full" />
+      </div>
+    );
+  }
 
   const { data: userBadges = [], isLoading: userBadgesLoading } = useQuery<UserBadge[]>({
     queryKey: ["/api/badges"],
+    enabled: isAuthenticated && !!user,
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   const { data: allBadges = [], isLoading: allBadgesLoading } = useQuery<Badge[]>({
     queryKey: ["/api/badges/all"],
+    enabled: isAuthenticated && !!user,
     staleTime: 30 * 60 * 1000, // 30 minutes - badges rarely change
     select: (data) => data || [], // Optimize empty state
   });

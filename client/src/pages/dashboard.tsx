@@ -21,16 +21,32 @@ import { useToast } from "@/hooks/use-toast";
 import { SubscriptionBanner } from "@/components/subscription/subscription-banner";
 
 export default function Dashboard() {
-  const { user, loading } = useAuth();
+  const { user, loading, isAuthenticated } = useAuth();
   const { openMomentModal, openConnectionModal, setSelectedConnection } = useModal();
   const [insight, setInsight] = useState<string>("");
   const [dashboardConnection, setDashboardConnection] = useState<Connection | null>(null);
   const { mainFocusConnection } = useRelationshipFocus();
 
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!loading && !isAuthenticated) {
+      window.location.href = "/api/auth/google";
+    }
+  }, [loading, isAuthenticated]);
+
+  // Show loading state if still loading or not authenticated
+  if (loading || !isAuthenticated) {
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full" />
+      </div>
+    );
+  }
+
   // Fetch connections
   const { data: connections = [] } = useQuery<Connection[]>({
     queryKey: ["/api/connections"],
-    enabled: !loading && !!user,
+    enabled: isAuthenticated && !!user,
     staleTime: 10 * 60 * 1000, // 10 minutes
     refetchOnWindowFocus: false,
   });

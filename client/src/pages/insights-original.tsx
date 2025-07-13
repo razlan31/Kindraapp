@@ -38,8 +38,15 @@ import {
 import { useState, useEffect } from "react";
 
 export default function Insights() {
-  const { user, isLoading } = useAuth();
+  const { user, isLoading, isAuthenticated } = useAuth();
   
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      window.location.href = "/api/auth/google";
+    }
+  }, [isLoading, isAuthenticated]);
+
   // Collapsible state management with localStorage persistence
   const [isInsightsExpanded, setIsInsightsExpanded] = useState(true);
   const [isAnalyticsExpanded, setIsAnalyticsExpanded] = useState(true);
@@ -68,16 +75,25 @@ export default function Insights() {
 
   console.log("InsightsNew - user:", !!user, "user ID:", user?.id, "loading:", isLoading);
 
+  // Show loading state if still loading or not authenticated
+  if (isLoading || !isAuthenticated) {
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full" />
+      </div>
+    );
+  }
+
   // Fetch connections
   const { data: connections = [] } = useQuery<Connection[]>({
     queryKey: ["/api/connections"],
-    enabled: !isLoading && !!user,
+    enabled: isAuthenticated && !!user,
   });
 
   // Fetch moments
   const { data: moments = [], isLoading: momentsLoading, error: momentsError } = useQuery<Moment[]>({
     queryKey: ["/api/moments"],
-    enabled: !isLoading && !!user,
+    enabled: isAuthenticated && !!user,
   });
 
   console.log("InsightsNew - moments query:", {

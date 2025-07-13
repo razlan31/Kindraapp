@@ -51,6 +51,22 @@ export default function Activities() {
     return (savedTab as any) || 'moments';
   });
 
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!loading && !isAuthenticated) {
+      window.location.href = "/api/auth/google";
+    }
+  }, [loading, isAuthenticated]);
+
+  // Show loading state if still loading or not authenticated
+  if (loading || !isAuthenticated) {
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full" />
+      </div>
+    );
+  }
+
   // Connection modal state
   const [connectionModalOpen, setConnectionModalOpen] = useState(false);
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);

@@ -123,7 +123,7 @@ const compressImage = (file: File): Promise<string> => {
 export default function MenstrualCyclePage() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
-  const { user } = useAuth();
+  const { user, loading, isAuthenticated } = useAuth();
   const { mainFocusConnection } = useRelationshipFocus();
   // Modal context not needed for this page
   const queryClient = useQueryClient();
@@ -136,6 +136,22 @@ export default function MenstrualCyclePage() {
   const [viewMode, setViewMode] = useState<'calendar' | 'list'>('calendar');
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const startDateRef = useRef<HTMLInputElement>(null);
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!loading && !isAuthenticated) {
+      window.location.href = "/api/auth/google";
+    }
+  }, [loading, isAuthenticated]);
+
+  // Show loading state if still loading or not authenticated
+  if (loading || !isAuthenticated) {
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full" />
+      </div>
+    );
+  }
 
   // Note: Date picker auto-opening is browser behavior that's difficult to prevent consistently
 
@@ -154,11 +170,13 @@ export default function MenstrualCyclePage() {
   // Fetch connections
   const { data: connections = [] } = useQuery<Connection[]>({
     queryKey: ['/api/connections'],
+    enabled: isAuthenticated && !!user,
   });
 
   // Fetch cycles
   const { data: cycles = [], isLoading } = useQuery<MenstrualCycle[]>({
     queryKey: ['/api/menstrual-cycles'],
+    enabled: isAuthenticated && !!user,
   });
 
   // Color palette for visual distinction

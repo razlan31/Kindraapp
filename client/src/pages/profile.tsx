@@ -29,6 +29,13 @@ export default function ProfilePage() {
     refetchOnMount: true,
     refetchOnWindowFocus: true
   });
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!loading && (!user || typeof user !== 'object' || !user.id)) {
+      window.location.href = "/api/auth/google";
+    }
+  }, [loading, user]);
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
