@@ -52,6 +52,10 @@ app.use((req, res, next) => {
     console.error('Failed to initialize badges:', error);
   }
 
+  // Setup JSON parsing middleware
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
+
   // Setup authentication system BEFORE registering routes
   setupAuthentication(app);
 

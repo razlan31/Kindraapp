@@ -161,21 +161,7 @@ export default function BadgesPage() {
   const [, setLocation] = useLocation();
   const { user, loading, isAuthenticated } = useAuth();
 
-  // Redirect to login if not authenticated
-  useEffect(() => {
-    if (!loading && !isAuthenticated) {
-      window.location.href = "/api/auth/google";
-    }
-  }, [loading, isAuthenticated]);
 
-  // Show loading state if still loading or not authenticated
-  if (loading || !isAuthenticated) {
-    return (
-      <div className="h-screen flex items-center justify-center">
-        <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full" />
-      </div>
-    );
-  }
 
   const { data: userBadges = [], isLoading: userBadgesLoading } = useQuery<UserBadge[]>({
     queryKey: ["/api/badges"],
