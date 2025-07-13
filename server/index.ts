@@ -50,8 +50,11 @@ app.use((req, res, next) => {
     console.error('Failed to initialize badges:', error);
   }
 
-  // Setup authentication system
+  // Setup authentication system BEFORE registering routes
   setupAuthentication(app);
+
+  // Register API routes BEFORE Vite middleware
+  const server = await registerRoutes(app);
 
   // Keep essential file serving
   app.get('/kindra-screenshots.tar.gz', (req, res) => {
@@ -60,9 +63,6 @@ app.use((req, res, next) => {
   });
   
   app.use('/files', express.static(path.join(import.meta.dirname, '../public')));
-  
-  // Register API routes
-  const server = await registerRoutes(app);
 
   // importantly only setup vite in development and after
   // setting up all the other routes so the catch-all route

@@ -25,18 +25,30 @@ export function setupSession(app: Express) {
     tableName: "sessions", // Use existing sessions table
   });
   
+  // Test session store connection
+  sessionStore.on('connect', () => {
+    console.log('🔐 Session store connected to PostgreSQL');
+  });
+  
+  sessionStore.on('error', (err) => {
+    console.error('❌ Session store error:', err);
+  });
+  
   app.use(session({
     secret: process.env.SESSION_SECRET || 'kindra-development-secret-' + Date.now(),
     store: sessionStore,
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: true, // Create session for every request
     rolling: true, // Extend session on activity
     cookie: {
-      secure: process.env.NODE_ENV === 'production', // HTTPS in production
-      httpOnly: true,
+      secure: false, // Always false for development - HTTPS handled by proxy
+      httpOnly: false, // Allow client-side access for debugging
       maxAge: sessionTtl,
       sameSite: 'lax',
+      path: '/',
+      domain: undefined, // Let browser set domain
     },
+    name: 'connect.sid', // Explicit session name
   }));
 }
 
@@ -160,6 +172,8 @@ export function setupOAuthRoutes(app: Express) {
 export function setupApiRoutes(app: Express) {
   console.log("🔐 Setting up API routes");
   
+
+
   // Current user endpoint
   app.get("/api/me", async (req: Request, res: Response) => {
     try {
