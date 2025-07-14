@@ -33,11 +33,11 @@ export function setupAuthentication(app: Express) {
     rolling: true,
     cookie: {
       secure: false, // Development mode
-      httpOnly: false, // Allow JavaScript access for debugging
+      httpOnly: true, // Secure: prevent JavaScript access
       maxAge: sessionTtl,
       sameSite: 'lax' as const,
       path: '/',
-      domain: undefined, // Let browser determine domain for maximum compatibility
+      domain: process.env.NODE_ENV === 'production' ? undefined : undefined, // No domain restriction for localhost
     },
     name: 'connect.sid',
   }));
