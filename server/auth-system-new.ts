@@ -29,7 +29,7 @@ export function setupAuthentication(app: Express) {
     secret: process.env.SESSION_SECRET || 'kindra-production-secret',
     store: sessionStore,
     resave: false,
-    saveUninitialized: true, // Create session for all requests
+    saveUninitialized: false, // Don't create session for all requests
     rolling: true,
     cookie: {
       secure: false, // Development mode
