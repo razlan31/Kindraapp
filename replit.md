@@ -120,6 +120,16 @@ The badges system currently has several issues that need attention:
   - **Session Cookie**: Now properly created and accessible on localhost domain for frontend requests
   - **Verification**: curl tests confirm session cookie transmission works correctly between OAuth callback and API requests
   - **Status**: Authentication system fully functional - session cookies properly transmitted from OAuth completion to frontend requests
+  
+- July 14, 2025: AUTHENTICATION ROOT CAUSE IDENTIFIED AND FIXED - React Query global configuration was silently returning null for 401 responses
+  - **Root Cause**: React Query global config used `getQueryFn({ on401: "returnNull" })` which silently returned null for 401 responses
+  - **Auth Context Working**: Used custom queryFn that properly throws errors on 401, bypassing global config
+  - **Pages Failing**: Used global React Query config that returned null instead of throwing 401 errors
+  - **Dashboard Working**: Used manual fetch that bypassed React Query global configuration entirely
+  - **Solution**: Changed global config to `getQueryFn({ on401: "throw" })` to make 401 responses throw errors properly
+  - **Status**: Fixed React Query configuration to properly handle authentication errors across all pages
+  - **Production Status**: Authentication working correctly, user successfully logged in as lenprodigy@gmail.com
+  - **JavaScript Fix**: Fixed undefined user variable in enhanced-ai-insights.tsx by properly destructuring user from useAuth hook
 
 - July 14, 2025: AUTHENTICATION ROOT CAUSE IDENTIFIED AND FIXED - React Query global configuration was silently returning null for 401 responses
   - **Root Cause**: React Query global config used `getQueryFn({ on401: "returnNull" })` which silently returned null for 401 responses

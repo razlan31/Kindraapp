@@ -14,7 +14,7 @@ interface EnhancedAIInsightsProps {
 }
 
 export function EnhancedAIInsights({ connections, moments, userData }: EnhancedAIInsightsProps) {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   
   // Fetch menstrual cycle data for correlation analysis
   const { data: menstrualCycles = [] } = useQuery<MenstrualCycle[]>({
