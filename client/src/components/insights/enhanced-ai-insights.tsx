@@ -20,8 +20,34 @@ export function EnhancedAIInsights({ connections, moments, userData }: EnhancedA
     connectionsLength: connections?.length,
     momentsLength: moments?.length,
     authenticated: isAuthenticated,
-    userDataPresent: !!userData
+    userDataPresent: !!userData,
+    userAvailable: !!user
   });
+  
+  // Guard clause - don't render if user is not available
+  if (!isAuthenticated || !user) {
+    return (
+      <div className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-2xl p-6 border border-purple-100 dark:border-purple-800">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="p-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl">
+            <Brain className="h-5 w-5 text-white" />
+          </div>
+          <div>
+            <h3 className="font-semibold text-lg bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+              Advanced Relationship Analytics
+            </h3>
+            <p className="text-sm text-muted-foreground">
+              Loading...
+            </p>
+          </div>
+        </div>
+        <div className="text-center py-8 text-muted-foreground">
+          <Brain className="h-8 w-8 mx-auto mb-2 opacity-50" />
+          <p className="text-sm">Loading analytics engine...</p>
+        </div>
+      </div>
+    );
+  }
   
   // Fetch menstrual cycle data for correlation analysis
   const { data: menstrualCycles = [] } = useQuery<MenstrualCycle[]>({
