@@ -111,7 +111,13 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
-- July 14, 2025: AUTHENTICATION ROOT CAUSE IDENTIFIED - Session cookie not being included in React app requests
+- July 14, 2025: AUTHENTICATION ROOT CAUSE IDENTIFIED AND FIXED - React Query global configuration was silently returning null for 401 responses
+  - **Root Cause**: React Query global config used `getQueryFn({ on401: "returnNull" })` which silently returned null for 401 responses
+  - **Auth Context Working**: Used custom queryFn that properly throws errors on 401, bypassing global config
+  - **Pages Failing**: Used global React Query config that returned null instead of throwing 401 errors
+  - **Dashboard Working**: Used manual fetch that bypassed React Query global configuration entirely
+  - **Solution**: Changed global config to `getQueryFn({ on401: "throw" })` to make 401 responses throw errors properly
+  - **Status**: Fixed React Query configuration to properly handle authentication errors across all pages
   - **Root Cause**: OAuth callback creates session cookie but React app requests don't include it
   - **Backend Working**: Authentication system correctly creates and validates sessions
   - **Frontend Issue**: React app makes requests without session cookie, creating new sessions each time
