@@ -37,6 +37,7 @@ export function setupAuthentication(app: Express) {
       maxAge: sessionTtl,
       sameSite: 'lax' as const,
       path: '/',
+      domain: undefined, // Let browser determine domain for maximum compatibility
     },
     name: 'connect.sid',
   }));
@@ -140,13 +141,14 @@ export function setupAuthentication(app: Express) {
         console.log(`🔍 Session ID: ${req.sessionID}`);
         console.log(`🔍 Session data after save: ${JSON.stringify(req.session)}`);
         
-        // Set proper cookie headers
+        // Force cookie to be accessible to all requests
         res.cookie('connect.sid', req.sessionID, {
           secure: false,
           httpOnly: true,
           maxAge: sessionTtl,
           sameSite: 'lax',
           path: '/',
+          domain: undefined, // Let browser determine domain
         });
         
         console.log('✅ OAuth success, redirecting to /?auth=success');

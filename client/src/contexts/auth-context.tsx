@@ -70,9 +70,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const handleAuthSuccess = () => {
       console.log('Auth context: Authentication success detected, refreshing user data');
+      // Force immediate refetch with delay to ensure cookie is set
       setTimeout(() => {
         refetch();
-      }, 100);
+      }, 500); // Increased delay to ensure cookie accessibility
     };
 
     // Check for auth success in URL
