@@ -33,7 +33,7 @@ export function setupAuthentication(app: Express) {
     rolling: true,
     cookie: {
       secure: false, // Development mode
-      httpOnly: true, // Secure: prevent JavaScript access
+      httpOnly: false, // Allow JavaScript access for debugging
       maxAge: sessionTtl,
       sameSite: 'lax' as const,
       path: '/',
@@ -246,8 +246,14 @@ export function setupAuthentication(app: Express) {
 
 // Authentication middleware
 export function isAuthenticated(req: Request, res: Response, next: NextFunction) {
+  console.log(`🔍 Session check - userId: ${req.session.userId}, sessionID: ${req.sessionID}`);
+  console.log(`🔍 Session exists: ${!!req.session}, cookie header: ${req.headers.cookie}`);
+  
   if (!req.session.userId) {
+    console.log("❌ Authentication failed: No userId in session");
     return res.status(401).json({ message: "Authentication required" });
   }
+  
+  console.log(`✅ Authentication successful: ${req.session.userId}`);
   next();
 }
