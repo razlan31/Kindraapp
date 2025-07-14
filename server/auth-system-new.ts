@@ -40,6 +40,11 @@ export function setupAuthentication(app: Express) {
       domain: undefined, // No domain restriction for localhost
     },
     name: 'connect.sid',
+    genid: () => {
+      const id = require('crypto').randomBytes(32).toString('hex');
+      console.log(`🔍 Generated session ID: ${id}`);
+      return id;
+    },
   }));
 
   // OAuth initiation
@@ -142,13 +147,14 @@ export function setupAuthentication(app: Express) {
         console.log(`🔍 Session data after save: ${JSON.stringify(req.session)}`);
         
         // Set cookie manually to ensure it's accessible
-        res.cookie('connect.sid', `s:${req.sessionID}`, {
-          signed: false, // Don't double-sign
+        res.cookie('connect.sid', req.sessionID, {
+          signed: true, // Use session signing
           httpOnly: true,
           maxAge: sessionTtl,
           sameSite: 'lax',
           secure: false,
-          path: '/'
+          path: '/',
+          domain: undefined, // Let browser determine domain
         });
         
         console.log('✅ OAuth success, redirecting to /?auth=success');

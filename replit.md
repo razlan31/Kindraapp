@@ -111,6 +111,14 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
+- July 14, 2025: AUTHENTICATION ROOT CAUSE IDENTIFIED - Session cookie not being included in React app requests
+  - **Root Cause**: OAuth callback creates session cookie but React app requests don't include it
+  - **Backend Working**: Authentication system correctly creates and validates sessions
+  - **Frontend Issue**: React app makes requests without session cookie, creating new sessions each time
+  - **Evidence**: curl tests with persistent cookies work perfectly, React app requests fail
+  - **Solution**: React app needs to properly include session cookie from OAuth flow
+  - **Status**: Authentication system working correctly, investigating React cookie handling
+
 - July 13, 2025: AUTHENTICATION SYSTEM COMPLETELY REBUILT - Fixed preview/production inconsistency and session persistence issues
   - **Root Cause**: Multiple conflicting authentication systems were causing inconsistent behavior between preview and production environments
   - **Complete System Replacement**: Replaced all authentication code with single, unified session-based OAuth system
