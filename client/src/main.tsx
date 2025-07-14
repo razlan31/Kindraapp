@@ -7,7 +7,7 @@ import './cache-buster';
 
 console.log('🔥 MAIN.TSX TIMESTAMP:', Date.now());
 console.log('🔥 MAIN.TSX URL:', window.location.href);
-console.log('🔥 CACHE BUSTER:', '2025-01-09-v5-auth-fixed');
+console.log('🔥 CACHE BUSTER:', '2025-01-09-v6-auth-fixed-final');
 
 console.log("🚨🚨🚨 MAIN.TSX EXECUTING - IMPORTING APP FROM", "./App");
 console.log("🚨🚨🚨 MAIN.TSX TIMESTAMP:", new Date().toISOString());

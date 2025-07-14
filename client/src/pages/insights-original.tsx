@@ -38,6 +38,7 @@ import {
 import { useState, useEffect } from "react";
 
 export default function Insights() {
+  // CACHE-BUSTER: 2025-01-09-v6-auth-fixed-final
   const { user, loading } = useAuth();
   const isAuthenticated = !!user;
   
