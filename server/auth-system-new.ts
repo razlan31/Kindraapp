@@ -53,6 +53,10 @@ export function setupAuthentication(app: Express) {
     const domain = process.env.REPLIT_DOMAINS?.split(',')[0] || 'ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev';
     const REDIRECT_URI = `https://${domain}/api/auth/google/callback`;
     
+    console.log(`🔍 OAuth domain: ${domain}`);
+    console.log(`🔍 Current request host: ${req.get('host')}`);
+    console.log(`🔍 Request protocol: ${req.protocol}`);
+    
     const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
       `client_id=${CLIENT_ID}&` +
       `redirect_uri=${encodeURIComponent(REDIRECT_URI)}&` +
@@ -140,6 +144,7 @@ export function setupAuthentication(app: Express) {
         console.log('✅ Session saved successfully');
         console.log(`🔍 Session ID: ${req.sessionID}`);
         console.log(`🔍 Session data after save: ${JSON.stringify(req.session)}`);
+        console.log(`🔍 Response headers about to be sent: ${JSON.stringify(res.getHeaders())}`);
         
         console.log('✅ OAuth success, redirecting to /?auth=success');
         res.redirect("/?auth=success");
