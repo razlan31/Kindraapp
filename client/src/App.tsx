@@ -16,6 +16,8 @@ import Settings from "@/pages/settings";
 import MenstrualCycle from "@/pages/menstrual-cycle";
 import Privacy from "@/pages/privacy";
 import Terms from "@/pages/terms";
+import ProfilePage from "@/pages/profile-simple";
+import BadgesPage from "@/pages/badges";
 import OnboardingWelcome from "@/pages/onboarding/welcome";
 import OnboardingProfile from "@/pages/onboarding/profile";
 import OnboardingGoals from "@/pages/onboarding/goals";
@@ -89,6 +91,8 @@ function AppRoutes() {
         <Route path="/insights" component={Insights} />
         <Route path="/settings" component={Settings} />
         <Route path="/menstrual-cycle" component={MenstrualCycle} />
+        <Route path="/profile" component={ProfilePage} />
+        <Route path="/badges" component={BadgesPage} />
         <Route path="/privacy" component={Privacy} />
         <Route path="/terms" component={Terms} />
         <Route component={NotFound} />
