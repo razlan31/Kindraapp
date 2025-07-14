@@ -49,9 +49,9 @@ export function setupAuthentication(app: Express) {
       return res.status(500).json({ error: "OAuth not configured" });
     }
     
-    // Use current request host for OAuth to avoid domain mismatch
-    const currentHost = req.get('host');
-    const protocol = req.protocol;
+    // Use localhost for development to match React app domain
+    const currentHost = process.env.NODE_ENV === 'development' ? 'localhost:5000' : req.get('host');
+    const protocol = process.env.NODE_ENV === 'development' ? 'http' : req.protocol;
     const REDIRECT_URI = `${protocol}://${currentHost}/api/auth/google/callback`;
     
     console.log(`🔍 OAuth using current request host: ${currentHost}`);
@@ -85,9 +85,9 @@ export function setupAuthentication(app: Express) {
         return res.redirect("/?error=oauth_config");
       }
       
-      // Use current request host for OAuth to avoid domain mismatch
-      const currentHost = req.get('host');
-      const protocol = req.protocol;
+      // Use localhost for development to match React app domain
+      const currentHost = process.env.NODE_ENV === 'development' ? 'localhost:5000' : req.get('host');
+      const protocol = process.env.NODE_ENV === 'development' ? 'http' : req.protocol;
       const REDIRECT_URI = `${protocol}://${currentHost}/api/auth/google/callback`;
       
       // Exchange code for tokens
