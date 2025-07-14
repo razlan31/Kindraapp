@@ -72,6 +72,7 @@ export default function Insights() {
 
   console.log("InsightsNew - user:", !!user, "user ID:", user?.id, "loading:", loading);
   console.log("InsightsNew - isAuthenticated:", isAuthenticated, "timestamp:", Date.now());
+  console.log("InsightsNew - connections:", connections?.length, "moments:", moments?.length);
   
   // Fetch connections
   const { data: connections = [] } = useQuery<Connection[]>({
@@ -210,6 +211,9 @@ export default function Insights() {
     );
   }
 
+  console.log("InsightsNew - About to render main content");
+  console.log("InsightsNew - emotionData:", emotionData?.length, "connectionStrengths:", connectionStrengths?.length);
+  
   return (
     <div className="max-w-md mx-auto bg-white dark:bg-neutral-900 min-h-screen flex flex-col relative">
       <Header />

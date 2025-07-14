@@ -13,6 +13,12 @@ export interface AnalyticsInsight {
 
 // Advanced pattern detection for relationship insights
 export function generateAnalyticsInsights(moments: Moment[], connections: Connection[], menstrualCycles?: MenstrualCycle[]): AnalyticsInsight[] {
+  console.log("generateAnalyticsInsights - Starting with:", {
+    momentsLength: moments?.length,
+    connectionsLength: connections?.length,
+    menstrualCyclesLength: menstrualCycles?.length
+  });
+  
   const insights: AnalyticsInsight[] = [];
   
   if (moments.length < 5) {
@@ -49,35 +55,46 @@ export function generateAnalyticsInsights(moments: Moment[], connections: Connec
     }];
   }
   
-  // Emotional pattern analysis across all relationships
-  const emotionalPatterns = analyzeEmotionalPatterns(moments);
-  if (emotionalPatterns) {
-    insights.push(emotionalPatterns);
+  try {
+    // Emotional pattern analysis across all relationships
+    const emotionalPatterns = analyzeEmotionalPatterns(moments);
+    if (emotionalPatterns) {
+      insights.push(emotionalPatterns);
+    }
+    console.log("generateAnalyticsInsights - Emotional patterns:", insights.length);
+    
+    // Communication frequency analysis
+    const communicationInsights = analyzeCommunicationFrequency(moments, connections);
+    insights.push(...communicationInsights);
+    console.log("generateAnalyticsInsights - Communication insights:", insights.length);
+    
+    // Relationship stage correlation analysis
+    const stageInsights = analyzeRelationshipStages(moments, connections);
+    insights.push(...stageInsights);
+    console.log("generateAnalyticsInsights - Stage insights:", insights.length);
+    
+    // Time-based pattern detection
+    const temporalInsights = analyzeTemporalPatterns(moments);
+    insights.push(...temporalInsights);
+    console.log("generateAnalyticsInsights - Temporal insights:", insights.length);
+    
+    // Behavioral trend prediction
+    const predictiveInsights = generatePredictiveAnalysis(moments, connections);
+    insights.push(...predictiveInsights);
+    console.log("generateAnalyticsInsights - Predictive insights:", insights.length);
+    
+    // Menstrual cycle correlation analysis
+    if (menstrualCycles && menstrualCycles.length > 0) {
+      const cycleInsights = analyzeMenstrualCycleCorrelations(moments, connections, menstrualCycles);
+      insights.push(...cycleInsights);
+      console.log("generateAnalyticsInsights - Cycle insights:", insights.length);
+    }
+    
+    return insights.slice(0, 6);
+  } catch (error) {
+    console.error("generateAnalyticsInsights - Error:", error);
+    return [];
   }
-  
-  // Communication frequency analysis
-  const communicationInsights = analyzeCommunicationFrequency(moments, connections);
-  insights.push(...communicationInsights);
-  
-  // Relationship stage correlation analysis
-  const stageInsights = analyzeRelationshipStages(moments, connections);
-  insights.push(...stageInsights);
-  
-  // Time-based pattern detection
-  const temporalInsights = analyzeTemporalPatterns(moments);
-  insights.push(...temporalInsights);
-  
-  // Behavioral trend prediction
-  const predictiveInsights = generatePredictiveAnalysis(moments, connections);
-  insights.push(...predictiveInsights);
-  
-  // Menstrual cycle correlation analysis
-  if (menstrualCycles && menstrualCycles.length > 0) {
-    const cycleInsights = analyzeMenstrualCycleCorrelations(moments, connections, menstrualCycles);
-    insights.push(...cycleInsights);
-  }
-  
-  return insights.slice(0, 6);
 }
 
 function analyzeEmotionalPatterns(moments: Moment[]): AnalyticsInsight | null {
@@ -92,6 +109,8 @@ function analyzeEmotionalPatterns(moments: Moment[]): AnalyticsInsight | null {
   };
   
   const total = moments.length;
+  if (total === 0) return null;
+  
   const positiveRatio = emotionCounts.positive / total;
   const negativeRatio = emotionCounts.negative / total;
   
@@ -200,7 +219,7 @@ function analyzeCommunicationFrequency(moments: Moment[], connections: Connectio
   const connectionStats = connections.map(conn => ({
     connection: conn,
     momentCount: connectionMoments[conn.id]?.length || 0,
-    percentage: ((connectionMoments[conn.id]?.length || 0) / moments.length) * 100
+    percentage: moments.length > 0 ? ((connectionMoments[conn.id]?.length || 0) / moments.length) * 100 : 0
   })).sort((a, b) => b.momentCount - a.momentCount);
   
   // Detect attention imbalances

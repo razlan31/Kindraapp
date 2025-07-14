@@ -16,6 +16,13 @@ interface EnhancedAIInsightsProps {
 export function EnhancedAIInsights({ connections, moments, userData }: EnhancedAIInsightsProps) {
   const { isAuthenticated, user } = useAuth();
   
+  console.log("EnhancedAIInsights - Rendering with:", {
+    connectionsLength: connections?.length,
+    momentsLength: moments?.length,
+    authenticated: isAuthenticated,
+    userDataPresent: !!userData
+  });
+  
   // Fetch menstrual cycle data for correlation analysis
   const { data: menstrualCycles = [] } = useQuery<MenstrualCycle[]>({
     queryKey: ['/api/menstrual-cycles'],
@@ -145,6 +152,8 @@ export function EnhancedAIInsights({ connections, moments, userData }: EnhancedA
     }
   };
 
+  console.log("EnhancedAIInsights - Final allInsights:", allInsights?.length);
+  
   return (
     <div className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-2xl p-6 border border-purple-100 dark:border-purple-800">
       <div className="flex items-center gap-3 mb-6">
