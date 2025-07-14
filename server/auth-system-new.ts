@@ -149,6 +149,7 @@ export function setupAuthentication(app: Express) {
           path: '/',
         });
         
+        console.log('✅ OAuth success, redirecting to /?auth=success');
         res.redirect("/?auth=success");
       });
       

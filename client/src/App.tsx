@@ -32,6 +32,8 @@ import ModalsContainer from "./components/modals/modals-container";
 function AppRoutes() {
   const { user, isLoading } = useAuth();
   
+  console.log('App: Routing decision', { user: user ? user.email : 'null', isLoading });
+  
   if (isLoading) {
     return (
       <div className="h-screen flex items-center justify-center">

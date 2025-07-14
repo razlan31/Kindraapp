@@ -33,6 +33,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     staleTime: 0,
     cacheTime: 0,
     queryFn: async () => {
+      console.log('Auth context: Making /api/me request');
       const response = await fetch('/api/me', {
         credentials: 'include',
         cache: 'no-cache',
@@ -41,10 +42,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           'Pragma': 'no-cache'
         }
       });
+      console.log('Auth context: /api/me response', response.status, response.statusText);
       if (!response.ok) {
         throw new Error(`${response.status}: ${response.statusText}`);
       }
-      return response.json();
+      const data = await response.json();
+      console.log('Auth context: User data received', data.email || 'no email');
+      return data;
     }
   });
 
@@ -79,6 +83,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       window.history.replaceState({}, document.title, window.location.pathname);
     }
   }, [refetch]);
+
+  // Debug logging
+  useEffect(() => {
+    console.log('Auth context: Debug state', {
+      currentUser: currentUser ? 'loaded' : 'null',
+      isLoading,
+      error: error ? error.message : 'none',
+      user: user ? user.email : 'null'
+    });
+  }, [currentUser, isLoading, error, user]);
 
   const refreshUser = () => {
     console.log('Auth context: Refreshing user data');
