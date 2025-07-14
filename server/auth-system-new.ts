@@ -29,7 +29,7 @@ export function setupAuthentication(app: Express) {
     secret: process.env.SESSION_SECRET || 'kindra-production-secret',
     store: sessionStore,
     resave: false,
-    saveUninitialized: false, // Only save sessions when they contain data
+    saveUninitialized: true, // Create session for all requests
     rolling: true,
     cookie: {
       secure: false, // Development mode
@@ -37,7 +37,7 @@ export function setupAuthentication(app: Express) {
       maxAge: sessionTtl,
       sameSite: 'lax' as const,
       path: '/',
-      domain: process.env.NODE_ENV === 'production' ? undefined : undefined, // No domain restriction for localhost
+      domain: undefined, // No domain restriction for localhost
     },
     name: 'connect.sid',
   }));
@@ -141,6 +141,16 @@ export function setupAuthentication(app: Express) {
         console.log(`🔍 Session ID: ${req.sessionID}`);
         console.log(`🔍 Session data after save: ${JSON.stringify(req.session)}`);
         
+        // Set cookie manually to ensure it's accessible
+        res.cookie('connect.sid', `s:${req.sessionID}`, {
+          signed: false, // Don't double-sign
+          httpOnly: true,
+          maxAge: sessionTtl,
+          sameSite: 'lax',
+          secure: false,
+          path: '/'
+        });
+        
         console.log('✅ OAuth success, redirecting to /?auth=success');
         res.redirect("/?auth=success");
       });
@@ -190,6 +200,16 @@ export function setupAuthentication(app: Express) {
       console.error("❌ Test auth error:", error);
       res.status(500).json({ error: "Test authentication failed" });
     }
+  });
+
+  // Debug cookies endpoint
+  app.get("/api/debug/cookies", (req: Request, res: Response) => {
+    res.json({
+      cookies: req.headers.cookie,
+      sessionId: req.sessionID,
+      sessionData: req.session,
+      headers: req.headers
+    });
   });
 
   // Current user API
