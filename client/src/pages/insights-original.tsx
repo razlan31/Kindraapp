@@ -94,52 +94,77 @@ export default function Insights() {
   });
 
   // Prepare emotion data for charts
-  const emotionCounts = moments.reduce((acc: Record<string, number>, moment) => {
-    if (!acc[moment.emoji]) {
-      acc[moment.emoji] = 0;
-    }
-    acc[moment.emoji]++;
-    return acc;
-  }, {});
+  let emotionCounts: Record<string, number> = {};
+  let emotionData: Array<{emoji: string, count: number}> = [];
+  
+  try {
+    emotionCounts = moments.reduce((acc: Record<string, number>, moment) => {
+      if (moment.emoji) {
+        if (!acc[moment.emoji]) {
+          acc[moment.emoji] = 0;
+        }
+        acc[moment.emoji]++;
+      }
+      return acc;
+    }, {});
 
-  const emotionData = Object.keys(emotionCounts).map(emoji => ({
-    emoji,
-    count: emotionCounts[emoji]
-  })).sort((a, b) => b.count - a.count).slice(0, 6);
+    emotionData = Object.keys(emotionCounts).map(emoji => ({
+      emoji,
+      count: emotionCounts[emoji]
+    })).sort((a, b) => b.count - a.count).slice(0, 6);
+  } catch (error) {
+    console.error('Error preparing emotion data:', error);
+    emotionData = [];
+  }
 
   // Connection with strongest positive patterns
-  const connectionStrengths = connections.map(connection => {
-    const connectionMoments = moments.filter(m => m.connectionId === connection.id);
-    
-    // Count positive engagement patterns
-    const positivePatterns = connectionMoments.filter(m => 
-      m.tags?.some(tag => [
-        'Quality Time', 'Affection', 'Support', 'Trust Building',
-        'Deep Conversation', 'Vulnerability', 'Conflict Resolution',
-        'Understanding', 'Emotional Intimacy', 'Acts of Service'
-      ].includes(tag))
-    ).length;
+  let connectionStrengths: Array<{id: string, name: string, positivePatterns: number, totalMoments: number, healthScore: number}> = [];
+  
+  try {
+    connectionStrengths = connections.map(connection => {
+      const connectionMoments = moments.filter(m => m.connectionId === connection.id);
+      
+      // Count positive engagement patterns
+      const positivePatterns = connectionMoments.filter(m => 
+        m.tags?.some(tag => [
+          'Quality Time', 'Affection', 'Support', 'Trust Building',
+          'Deep Conversation', 'Vulnerability', 'Conflict Resolution',
+          'Understanding', 'Emotional Intimacy', 'Acts of Service'
+        ].includes(tag))
+      ).length;
 
-    const totalMoments = connectionMoments.length;
-    const positiveRatio = totalMoments > 0 ? positivePatterns / totalMoments : 0;
+      const totalMoments = connectionMoments.length;
+      const positiveRatio = totalMoments > 0 ? positivePatterns / totalMoments : 0;
 
-    return {
-      id: connection.id,
-      name: connection.name,
-      positivePatterns,
-      totalMoments,
-      healthScore: Math.round(positiveRatio * 100)
-    };
-  }).sort((a, b) => b.healthScore - a.healthScore);
+      return {
+        id: connection.id,
+        name: connection.name,
+        positivePatterns,
+        totalMoments,
+        healthScore: Math.round(positiveRatio * 100)
+      };
+    }).sort((a, b) => b.healthScore - a.healthScore);
+  } catch (error) {
+    console.error('Error calculating connection strengths:', error);
+    connectionStrengths = [];
+  }
 
   // Calculate days since first moment
-  const firstMomentDate = moments.length > 0 ? 
-    new Date(moments.slice().sort((a, b) => 
-      new Date(a.createdAt || "").valueOf() - new Date(b.createdAt || "").valueOf()
-    )[0].createdAt || "") : undefined;
+  let firstMomentDate: Date | undefined;
+  let trackingDays = 0;
   
-  const trackingDays = firstMomentDate ? 
-    Math.ceil((new Date().getTime() - firstMomentDate.getTime()) / (1000 * 60 * 60 * 24)) : 0;
+  try {
+    firstMomentDate = moments.length > 0 ? 
+      new Date(moments.slice().sort((a, b) => 
+        new Date(a.createdAt || "").valueOf() - new Date(b.createdAt || "").valueOf()
+      )[0].createdAt || "") : undefined;
+    
+    trackingDays = firstMomentDate ? 
+      Math.ceil((new Date().getTime() - firstMomentDate.getTime()) / (1000 * 60 * 60 * 24)) : 0;
+  } catch (error) {
+    console.error('Error calculating tracking days:', error);
+    trackingDays = 0;
+  }
 
 
 

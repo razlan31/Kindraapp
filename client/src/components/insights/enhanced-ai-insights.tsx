@@ -25,14 +25,25 @@ export function EnhancedAIInsights({ connections, moments, userData }: EnhancedA
 
   // Calculate current week number for rotation
   const getCurrentWeek = () => {
-    const startOfYear = new Date(new Date().getFullYear(), 0, 1);
-    const today = new Date();
-    const daysDiff = Math.floor((today.getTime() - startOfYear.getTime()) / (1000 * 60 * 60 * 24));
-    return Math.floor(daysDiff / 7);
+    try {
+      const startOfYear = new Date(new Date().getFullYear(), 0, 1);
+      const today = new Date();
+      const daysDiff = Math.floor((today.getTime() - startOfYear.getTime()) / (1000 * 60 * 60 * 24));
+      return Math.floor(daysDiff / 7);
+    } catch (error) {
+      console.error('Error calculating current week:', error);
+      return 0;
+    }
   };
 
   // Generate advanced insights using the new analytics engine with cycle data
-  const allAdvancedInsights = generateAnalyticsInsights(moments, connections, menstrualCycles);
+  let allAdvancedInsights: AnalyticsInsight[] = [];
+  try {
+    allAdvancedInsights = generateAnalyticsInsights(moments, connections, menstrualCycles);
+  } catch (error) {
+    console.error('Error generating analytics insights:', error);
+    allAdvancedInsights = [];
+  }
   
   // Add some basic insights for when we don't have enough data for advanced analytics
   const basicInsights: AnalyticsInsight[] = [];
@@ -48,42 +59,55 @@ export function EnhancedAIInsights({ connections, moments, userData }: EnhancedA
       actionItems: ["Log your first relationship moment", "Add connections to begin analysis"]
     });
   } else if (moments.length < 10) {
-    const emotionalPatterns = moments.reduce((acc: Record<string, number>, moment) => {
-      acc[moment.emoji] = (acc[moment.emoji] || 0) + 1;
-      return acc;
-    }, {});
-    
-    const dominantPattern = Object.entries(emotionalPatterns)
-      .sort(([,a], [,b]) => b - a)[0];
-    
-    basicInsights.push({
-      title: "Early Pattern Recognition",
-      description: `Your ${moments.length} moments reveal early relationship patterns. The ${dominantPattern[0]} emotion appears most frequently, suggesting this represents a core aspect of your relationship experiences.`,
-      type: 'neutral',
-      confidence: 75,
-      category: 'pattern',
-      dataPoints: [`${moments.length} moments analyzed`, `${dominantPattern[0]} dominant pattern`],
-      actionItems: [`${dominantPattern[1]} instances of primary emotion`, "Early behavioral indicators visible"]
-    });
+    try {
+      const emotionalPatterns = moments.reduce((acc: Record<string, number>, moment) => {
+        if (moment.emoji) {
+          acc[moment.emoji] = (acc[moment.emoji] || 0) + 1;
+        }
+        return acc;
+      }, {});
+      
+      const dominantPattern = Object.entries(emotionalPatterns)
+        .sort(([,a], [,b]) => b - a)[0];
+      
+      if (dominantPattern) {
+        basicInsights.push({
+          title: "Early Pattern Recognition",
+          description: `Your ${moments.length} moments reveal early relationship patterns. The ${dominantPattern[0]} emotion appears most frequently, suggesting this represents a core aspect of your relationship experiences.`,
+          type: 'neutral',
+          confidence: 75,
+          category: 'pattern',
+          dataPoints: [`${moments.length} moments analyzed`, `${dominantPattern[0]} dominant pattern`],
+          actionItems: [`${dominantPattern[1]} instances of primary emotion`, "Early behavioral indicators visible"]
+        });
+      }
+    } catch (error) {
+      console.error('Error analyzing emotional patterns:', error);
+    }
   }
   
   // Combine all insights and apply weekly rotation
   const combinedInsights = [...allAdvancedInsights, ...basicInsights];
   let allInsights: AnalyticsInsight[] = [];
   
-  if (combinedInsights.length > 3) {
-    const currentWeek = getCurrentWeek();
-    const rotationIndex = currentWeek % Math.ceil(combinedInsights.length / 3);
-    const startIndex = rotationIndex * 3;
-    allInsights = combinedInsights.slice(startIndex, startIndex + 3);
-    
-    // If we don't have enough insights in this rotation, fill from beginning
-    if (allInsights.length < 3) {
-      const remaining = 3 - allInsights.length;
-      allInsights = [...allInsights, ...combinedInsights.slice(0, remaining)];
+  try {
+    if (combinedInsights.length > 3) {
+      const currentWeek = getCurrentWeek();
+      const rotationIndex = currentWeek % Math.ceil(combinedInsights.length / 3);
+      const startIndex = rotationIndex * 3;
+      allInsights = combinedInsights.slice(startIndex, startIndex + 3);
+      
+      // If we don't have enough insights in this rotation, fill from beginning
+      if (allInsights.length < 3) {
+        const remaining = 3 - allInsights.length;
+        allInsights = [...allInsights, ...combinedInsights.slice(0, remaining)];
+      }
+    } else {
+      allInsights = combinedInsights.slice(0, 6);
     }
-  } else {
-    allInsights = combinedInsights.slice(0, 6);
+  } catch (error) {
+    console.error('Error processing insights rotation:', error);
+    allInsights = combinedInsights.slice(0, 3);
   }
   
   const getCategoryIcon = (category: string) => {
