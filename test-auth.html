@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Authentication Test</title>
+</head>
+<body>
+    <h1>Authentication Test</h1>
+    <button onclick="testAuth()">Test Authentication</button>
+    <button onclick="loginTest()">Login with Test User</button>
+    <div id="result"></div>
+
+    <script>
+        async function testAuth() {
+            try {
+                const response = await fetch('/api/me', {
+                    credentials: 'include',
+                    cache: 'no-cache'
+                });
+                const data = await response.json();
+                document.getElementById('result').innerHTML = 
+                    `<h2>Current User:</h2><pre>${JSON.stringify(data, null, 2)}</pre>`;
+            } catch (error) {
+                document.getElementById('result').innerHTML = 
+                    `<h2>Error:</h2><pre>${error.message}</pre>`;
+            }
+        }
+
+        async function loginTest() {
+            try {
+                const response = await fetch('/api/auth/test', {
+                    method: 'POST',
+                    credentials: 'include',
+                    cache: 'no-cache'
+                });
+                const data = await response.json();
+                document.getElementById('result').innerHTML = 
+                    `<h2>Login Result:</h2><pre>${JSON.stringify(data, null, 2)}</pre>`;
+                
+                // Test authentication after login
+                setTimeout(testAuth, 500);
+            } catch (error) {
+                document.getElementById('result').innerHTML = 
+                    `<h2>Login Error:</h2><pre>${error.message}</pre>`;
+            }
+        }
+    </script>
+</body>
+</html>

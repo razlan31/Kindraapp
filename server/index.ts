@@ -126,6 +126,13 @@ app.use((req, res, next) => {
     }
   });
 
+  // Serve test page in development
+  if (process.env.NODE_ENV === 'development') {
+    app.get('/test-auth', (req, res) => {
+      res.sendFile('test-auth.html', { root: process.cwd() });
+    });
+  }
+
   server.listen({
     port,
     host: "0.0.0.0",
