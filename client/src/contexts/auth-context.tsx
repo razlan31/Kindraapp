@@ -72,8 +72,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const handleAuthSuccess = () => {
       console.log('Auth context: Authentication success detected, refreshing user data');
+      console.log('Auth context: Current document cookies after OAuth:', document.cookie);
+      console.log('Auth context: Window location after OAuth:', window.location.href);
+      
       // Force immediate refetch with delay to ensure cookie is set
       setTimeout(() => {
+        console.log('Auth context: Delayed cookie check:', document.cookie);
         refetch();
       }, 500); // Increased delay to ensure cookie accessibility
     };

@@ -49,13 +49,14 @@ export function setupAuthentication(app: Express) {
       return res.status(500).json({ error: "OAuth not configured" });
     }
     
-    // Use production domain for OAuth
-    const domain = process.env.REPLIT_DOMAINS?.split(',')[0] || 'ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev';
-    const REDIRECT_URI = `https://${domain}/api/auth/google/callback`;
+    // Use current request host for OAuth to avoid domain mismatch
+    const currentHost = req.get('host');
+    const protocol = req.protocol;
+    const REDIRECT_URI = `${protocol}://${currentHost}/api/auth/google/callback`;
     
-    console.log(`🔍 OAuth domain: ${domain}`);
-    console.log(`🔍 Current request host: ${req.get('host')}`);
-    console.log(`🔍 Request protocol: ${req.protocol}`);
+    console.log(`🔍 OAuth using current request host: ${currentHost}`);
+    console.log(`🔍 OAuth redirect URI: ${REDIRECT_URI}`);
+    console.log(`🔍 This ensures cookie domain matches request domain`);
     
     const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
       `client_id=${CLIENT_ID}&` +
@@ -84,8 +85,10 @@ export function setupAuthentication(app: Express) {
         return res.redirect("/?error=oauth_config");
       }
       
-      const domain = process.env.REPLIT_DOMAINS?.split(',')[0] || 'ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev';
-      const REDIRECT_URI = `https://${domain}/api/auth/google/callback`;
+      // Use current request host for OAuth to avoid domain mismatch
+      const currentHost = req.get('host');
+      const protocol = req.protocol;
+      const REDIRECT_URI = `${protocol}://${currentHost}/api/auth/google/callback`;
       
       // Exchange code for tokens
       const tokenResponse = await fetch("https://oauth2.googleapis.com/token", {
@@ -145,6 +148,10 @@ export function setupAuthentication(app: Express) {
         console.log(`🔍 Session ID: ${req.sessionID}`);
         console.log(`🔍 Session data after save: ${JSON.stringify(req.session)}`);
         console.log(`🔍 Response headers about to be sent: ${JSON.stringify(res.getHeaders())}`);
+        
+        // Debug: Check if session cookie is being set in response
+        const cookieHeader = res.getHeader('Set-Cookie');
+        console.log(`🔍 Set-Cookie header: ${cookieHeader}`);
         
         console.log('✅ OAuth success, redirecting to /?auth=success');
         res.redirect("/?auth=success");

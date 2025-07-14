@@ -51,12 +51,18 @@ export async function apiRequest(
   method: string,
   data?: unknown | undefined,
 ): Promise<Response> {
+  console.log(`🔍 API Request to ${url} (method: ${method})`);
+  console.log(`🔍 Document cookies before request: ${document.cookie}`);
+  
   const res = await fetch(url, {
     method,
     headers: data ? { "Content-Type": "application/json" } : {},
     body: data ? JSON.stringify(data) : undefined,
     credentials: "include",
   });
+
+  console.log(`🔍 Response status: ${res.status}`);
+  console.log(`🔍 Response headers: ${JSON.stringify(Array.from(res.headers.entries()))}`);
 
   await throwIfResNotOk(res);
   return res;
@@ -68,9 +74,15 @@ export const getQueryFn: <T>(options: {
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
+    console.log(`🔍 Query Request to ${queryKey[0]}`);
+    console.log(`🔍 Document cookies before query: ${document.cookie}`);
+    
     const res = await fetch(queryKey[0] as string, {
       credentials: "include",
     });
+
+    console.log(`🔍 Query Response status: ${res.status}`);
+    console.log(`🔍 Query Response headers: ${JSON.stringify(Array.from(res.headers.entries()))}`);
 
     // Log 404 errors to identify what's causing them
     if (res.status === 404) {
