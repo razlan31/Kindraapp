@@ -28,12 +28,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
 
   const { data: currentUser, isLoading, error, refetch } = useQuery({
-    queryKey: ['/api/me'],
+    queryKey: ['/api/me', Date.now()], // FIXED: Cache bust with timestamp
     retry: false,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 0,
+    cacheTime: 0,
     queryFn: async () => {
-      const response = await fetch('/api/me', {
-        credentials: 'include'
+      const response = await fetch(`/api/me?t=${Date.now()}`, {
+        credentials: 'include',
+        cache: 'no-cache',
+        headers: {
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache'
+        }
       });
       if (!response.ok) {
         throw new Error(`${response.status}: ${response.statusText}`);

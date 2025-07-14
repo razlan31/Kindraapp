@@ -70,6 +70,7 @@ export default function Insights() {
   }, [isAnalyticsExpanded]);
 
   console.log("InsightsNew - user:", !!user, "user ID:", user?.id, "loading:", loading);
+  console.log("InsightsNew - isAuthenticated:", isAuthenticated, "timestamp:", Date.now());
 
   // Fetch connections
   const { data: connections = [] } = useQuery<Connection[]>({
