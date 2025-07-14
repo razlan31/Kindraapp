@@ -29,11 +29,11 @@ export function setupAuthentication(app: Express) {
     secret: process.env.SESSION_SECRET || 'kindra-production-secret',
     store: sessionStore,
     resave: false,
-    saveUninitialized: true, // FIXED: Must be true to create session cookies
+    saveUninitialized: false, // Only save sessions when they contain data
     rolling: true,
     cookie: {
       secure: false, // Development mode
-      httpOnly: true,
+      httpOnly: false, // Allow JavaScript access for debugging
       maxAge: sessionTtl,
       sameSite: 'lax' as const,
       path: '/',
@@ -140,16 +140,6 @@ export function setupAuthentication(app: Express) {
         console.log('✅ Session saved successfully');
         console.log(`🔍 Session ID: ${req.sessionID}`);
         console.log(`🔍 Session data after save: ${JSON.stringify(req.session)}`);
-        
-        // Force cookie to be accessible to all requests
-        res.cookie('connect.sid', req.sessionID, {
-          secure: false,
-          httpOnly: true,
-          maxAge: sessionTtl,
-          sameSite: 'lax',
-          path: '/',
-          domain: undefined, // Let browser determine domain
-        });
         
         console.log('✅ OAuth success, redirecting to /?auth=success');
         res.redirect("/?auth=success");

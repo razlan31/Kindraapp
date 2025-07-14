@@ -34,6 +34,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     cacheTime: 0,
     queryFn: async () => {
       console.log('Auth context: Making /api/me request');
+      console.log('Auth context: Document cookies:', document.cookie);
       const response = await fetch('/api/me', {
         credentials: 'include',
         cache: 'no-cache',
@@ -43,6 +44,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
       });
       console.log('Auth context: /api/me response', response.status, response.statusText);
+      console.log('Auth context: Response headers:', Object.fromEntries(response.headers.entries()));
       if (!response.ok) {
         throw new Error(`${response.status}: ${response.statusText}`);
       }
