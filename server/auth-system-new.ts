@@ -217,6 +217,195 @@ export function setupAuthentication(app: Express) {
     });
   });
 
+  // Auth test page
+  app.get("/auth-test", (req: Request, res: Response) => {
+    res.send(`
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .button {
+            background-color: #4285f4;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .button:hover {
+            background-color: #357ae8;
+        }
+        .results {
+            background-color: white;
+            padding: 20px;
+            border-radius: 4px;
+            margin: 20px 0;
+            border: 1px solid #ddd;
+        }
+        .error {
+            color: #d32f2f;
+            background-color: #ffebee;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .success {
+            color: #2e7d32;
+            background-color: #e8f5e9;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        pre {
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Authentication Test Page</h1>
+    
+    <div class="results">
+        <h3>Current Status</h3>
+        <p><strong>Current cookies:</strong> <span id="current-cookies">Loading...</span></p>
+        <p><strong>Session test result:</strong> <span id="session-result">Not tested</span></p>
+    </div>
+    
+    <div>
+        <a href="/api/auth/google" class="button">Login with Google OAuth</a>
+        <button onclick="testAuth()" class="button">Test Authentication</button>
+        <button onclick="checkSession()" class="button">Check Current Session</button>
+        <button onclick="testApiCall()" class="button">Test API Call</button>
+    </div>
+    
+    <div id="results" class="results">
+        <h3>Test Results</h3>
+        <div id="output">No tests run yet.</div>
+    </div>
+
+    <script>
+        // Update current cookies display
+        function updateCookies() {
+            document.getElementById('current-cookies').textContent = document.cookie || 'No cookies found';
+        }
+        
+        // Test authentication endpoint
+        async function testAuth() {
+            try {
+                const response = await fetch('/api/auth/test', {
+                    method: 'POST',
+                    credentials: 'include'
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById('session-result').innerHTML = '<span class="success">✅ Authentication successful</span>';
+                    document.getElementById('output').innerHTML = 
+                        '<div class="success">Test Authentication Successful</div>' +
+                        '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                } else {
+                    document.getElementById('session-result').innerHTML = '<span class="error">❌ Authentication failed</span>';
+                    document.getElementById('output').innerHTML = 
+                        '<div class="error">Test Authentication Failed</div>' +
+                        '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                }
+                
+                updateCookies();
+            } catch (error) {
+                document.getElementById('output').innerHTML = '<div class="error">Error: ' + error.message + '</div>';
+            }
+        }
+        
+        // Check current session
+        async function checkSession() {
+            try {
+                const response = await fetch('/api/me', {
+                    credentials: 'include'
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById('output').innerHTML = 
+                        '<div class="success">✅ Session Valid - User Authenticated</div>' +
+                        '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                } else {
+                    document.getElementById('output').innerHTML = 
+                        '<div class="error">❌ Session Invalid</div>' +
+                        '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                }
+                
+                updateCookies();
+            } catch (error) {
+                document.getElementById('output').innerHTML = '<div class="error">Error: ' + error.message + '</div>';
+            }
+        }
+        
+        // Test API call
+        async function testApiCall() {
+            try {
+                const response = await fetch('/api/connections', {
+                    credentials: 'include'
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById('output').innerHTML = 
+                        '<div class="success">✅ API Call Successful</div>' +
+                        '<pre>' + JSON.stringify(data.slice(0, 2), null, 2) + '</pre>' +
+                        '<p>Total connections: ' + data.length + '</p>';
+                } else {
+                    document.getElementById('output').innerHTML = 
+                        '<div class="error">❌ API Call Failed</div>' +
+                        '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                }
+                
+                updateCookies();
+            } catch (error) {
+                document.getElementById('output').innerHTML = '<div class="error">Error: ' + error.message + '</div>';
+            }
+        }
+        
+        // Initialize
+        updateCookies();
+        
+        // Check for OAuth success in URL
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('auth') === 'success') {
+            document.getElementById('output').innerHTML = 
+                '<div class="success">✅ OAuth callback completed successfully!</div>' +
+                '<p>Now testing session...</p>';
+            // Automatically test session after OAuth success
+            setTimeout(checkSession, 1000);
+        }
+        
+        // Refresh cookies every 2 seconds
+        setInterval(updateCookies, 2000);
+    </script>
+</body>
+</html>
+    `);
+  });
+
   // Current user API
   app.get("/api/me", async (req: Request, res: Response) => {
     try {
