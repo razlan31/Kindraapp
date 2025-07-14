@@ -71,17 +71,26 @@ export default function Insights() {
 
   console.log("InsightsNew - user:", !!user, "user ID:", user?.id, "loading:", loading);
   console.log("InsightsNew - isAuthenticated:", isAuthenticated, "timestamp:", Date.now());
+  
+  // Add authentication redirect like activities page
+  useEffect(() => {
+    if (!loading && !isAuthenticated) {
+      window.location.href = "/api/auth/google";
+    }
+  }, [loading, isAuthenticated]);
 
-  // Fetch connections
+  // Fetch connections (using calendar's working pattern)
   const { data: connections = [] } = useQuery<Connection[]>({
     queryKey: ["/api/connections"],
-    enabled: isAuthenticated && !!user,
+    enabled: isAuthenticated,
+    staleTime: 0,
   });
 
-  // Fetch moments
+  // Fetch moments (using calendar's working pattern)
   const { data: moments = [], isLoading: momentsLoading, error: momentsError } = useQuery<Moment[]>({
     queryKey: ["/api/moments"],
-    enabled: isAuthenticated && !!user,
+    enabled: isAuthenticated,
+    staleTime: 0,
   });
 
   console.log("InsightsNew - moments query:", {
