@@ -153,6 +153,9 @@ export function setupAuthentication(app: Express) {
         const cookieHeader = res.getHeader('Set-Cookie');
         console.log(`🔍 Set-Cookie header: ${cookieHeader}`);
         
+        // Enhanced debugging: Force check the session immediately
+        console.log(`🔍 IMMEDIATE SESSION CHECK - sessionID: ${req.sessionID}, userId: ${req.session.userId}`);
+        
         console.log('✅ OAuth success, redirecting to /?auth=success');
         res.redirect("/?auth=success");
       });
