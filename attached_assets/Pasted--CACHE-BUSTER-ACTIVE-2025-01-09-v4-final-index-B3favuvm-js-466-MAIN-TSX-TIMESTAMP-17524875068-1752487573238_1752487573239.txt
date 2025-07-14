@@ -1,0 +1,103 @@
+🔥 CACHE BUSTER ACTIVE: 2025-01-09-v4-final
+index-B3favuvm.js:466 🔥 MAIN.TSX TIMESTAMP: 1752487506827
+index-B3favuvm.js:466 🔥 MAIN.TSX URL: https://kindra-jagohtrade.replit.app/
+index-B3favuvm.js:466 🔥 CACHE BUSTER: 2025-01-09-v6-auth-fixed-final
+index-B3favuvm.js:466 🚨🚨🚨 MAIN.TSX EXECUTING - IMPORTING APP FROM ./App
+index-B3favuvm.js:466 🚨🚨🚨 MAIN.TSX TIMESTAMP: 2025-07-14T10:05:06.828Z
+index-B3favuvm.js:466 🚨🚨🚨 MAIN.TSX ABOUT TO RENDER APP TO DOM
+index-B3favuvm.js:457 Theme context initial load: light
+index-B3favuvm.js:466 App: Routing decision Object
+index-B3favuvm.js:48 🔍 Query Request to /api/connections
+index-B3favuvm.js:48 🔍 Document cookies before query: 
+index-B3favuvm.js:457 Theme effect running: light
+index-B3favuvm.js:457 Applied theme: light
+index-B3favuvm.js:457 Theme stored to localStorage: light
+index-B3favuvm.js:403 Auth context: Making /api/me request
+index-B3favuvm.js:403 Auth context: Document cookies: 
+index-B3favuvm.js:403 Auth context: Effect triggered Object
+index-B3favuvm.js:403 Auth context: Debug state Object
+index-B3favuvm.js:403 Auth context: /api/me response 200 
+index-B3favuvm.js:403 Auth context: Response headers: Object
+index-B3favuvm.js:403 Auth context: User data received lenprodigy@gmail.com
+index-B3favuvm.js:466 App: Routing decision Object
+index-B3favuvm.js:403 Auth context: Effect triggered Object
+index-B3favuvm.js:403 Auth context: User loaded successfully: lenprodigy@gmail.com
+index-B3favuvm.js:403 Auth context: Debug state Object
+index-B3favuvm.js:466 App: Routing decision Object
+index-B3favuvm.js:48 🔍 Query Request to /api/user-badges
+index-B3favuvm.js:48 🔍 Document cookies before query: 
+index-B3favuvm.js:48 🔍 Query Request to /api/notifications
+index-B3favuvm.js:48 🔍 Document cookies before query: 
+index-B3favuvm.js:48 🔍 Query Request to /api/subscription/status
+index-B3favuvm.js:48 🔍 Document cookies before query: 
+index-B3favuvm.js:48 🔍 Query Request to /api/ai/conversation
+index-B3favuvm.js:48 🔍 Document cookies before query: 
+index-B3favuvm.js:466 🔥 STATE DEBUG - isSubmitting changed: false
+index-B3favuvm.js:466 🔥 STATE DEBUG - connectionId changed: 2 selectedConnectionId: null
+index-B3favuvm.js:466 Modal useEffect - selectedDate from context: null
+index-B3favuvm.js:466 Modal useEffect - editingMoment: null
+index-B3favuvm.js:466 Modal useEffect - momentModalOpen: false
+index-B3favuvm.js:466 🔥 MODAL OPEN - Resetting isSubmitting to false
+index-B3favuvm.js:466 🔥 MODAL INIT - Setting connectionId: 2 from selectedConnectionId: null
+index-B3favuvm.js:449 🔥 PLAN MODAL - Connection effect: Object
+index-B3favuvm.js:449 🔥 PLAN MODAL - Form init effect: Object
+index-B3favuvm.js:403 Auth context: Debug state Object
+kindra-jagohtrade.replit.app/:1 Unchecked runtime.lastError: The message port closed before a response was received.Understand this error
+index-B3favuvm.js:48 🔍 Query Response status: 200
+index-B3favuvm.js:48 🔍 Query Response headers: [["alt-svc","h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"],["cache-control","private"],["content-length","292"],["content-type","application/json; charset=utf-8"],["date","Mon, 14 Jul 2025 10:05:07 GMT"],["etag","W/\"124-Zvk6RMSa2Fb7Q39jkCBP6Z03QBI\""],["expires","Mon, 14 Jul 2025 09:58:53 GMT"],["server","Google Frontend"],["strict-transport-security","max-age=63072000; includeSubDomains"],["via","1.1 google"],["x-cloud-trace-context","fcdec12e652b8e9deb376e57e47816ff"],["x-powered-by","Express"]]
+kindra-jagohtrade.replit.app/:1 Unchecked runtime.lastError: The message port closed before a response was received.Understand this error
+index-B3favuvm.js:449 🔥 PLAN MODAL - Form init effect: Object
+index-B3favuvm.js:449 Focus Context Debug: Object
+index-B3favuvm.js:48 🔍 Query Response status: 200
+index-B3favuvm.js:48 🔍 Query Response headers: [["alt-svc","h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"],["cache-control","private"],["content-length","2"],["content-type","application/json; charset=utf-8"],["date","Mon, 14 Jul 2025 10:05:07 GMT"],["etag","W/\"2-l9Fw4VUO7kr8CvBlt4zaMCqXZ0w\""],["expires","Mon, 14 Jul 2025 09:58:54 GMT"],["server","Google Frontend"],["strict-transport-security","max-age=63072000; includeSubDomains"],["via","1.1 google"],["x-cloud-trace-context","481ef1185e80d4f9eb376e57e47811ad"],["x-powered-by","Express"]]
+index-B3favuvm.js:48 🔍 Query Response status: 200
+index-B3favuvm.js:48 🔍 Query Response headers: [["alt-svc","h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"],["cache-control","private"],["content-length","19"],["content-type","application/json; charset=utf-8"],["date","Mon, 14 Jul 2025 10:05:07 GMT"],["etag","W/\"13-GUfnA9CY/U6kilDCansEMuAkUl0\""],["expires","Mon, 14 Jul 2025 09:58:54 GMT"],["server","Google Frontend"],["strict-transport-security","max-age=63072000; includeSubDomains"],["via","1.1 google"],["x-cloud-trace-context","eece67a863a10d94eb376e57e4781576"],["x-powered-by","Express"]]
+index-B3favuvm.js:457 Loading conversation data: Object
+index-B3favuvm.js:457 Setting conversation from API: Array(0)
+api/user-badges:1  Failed to load resource: the server responded with a status of 500 ()Understand this error
+index-B3favuvm.js:48 🔍 Query Response status: 500
+index-B3favuvm.js:48 🔍 Query Response headers: [["alt-svc","h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"],["content-length","47"],["content-type","application/json; charset=utf-8"],["date","Mon, 14 Jul 2025 10:05:07 GMT"],["etag","W/\"2f-02LHMnXph/Ng9Wn8P01NkrK5sdQ\""],["server","Google Frontend"],["strict-transport-security","max-age=63072000; includeSubDomains"],["via","1.1 google"],["x-cloud-trace-context","d651488eecf75b15eb376e57e4781a1b"],["x-powered-by","Express"]]
+index-B3favuvm.js:48 🔴 HTTP ERROR DETECTED: Object
+Rk @ index-B3favuvm.js:48Understand this error
+index-B3favuvm.js:48 🔍 Query Response status: 200
+index-B3favuvm.js:48 🔍 Query Response headers: [["alt-svc","h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"],["cache-control","private"],["content-length","425"],["content-type","application/json; charset=utf-8"],["date","Mon, 14 Jul 2025 10:05:07 GMT"],["etag","W/\"1a9-iEqBNaDtsH0TPD24/cNZWg+DamY\""],["expires","Mon, 14 Jul 2025 09:58:54 GMT"],["server","Google Frontend"],["strict-transport-security","max-age=63072000; includeSubDomains"],["via","1.1 google"],["x-cloud-trace-context","20e24051ed1ca69feb376e57e478106a"],["x-powered-by","Express"]]
+index-B3favuvm.js:457 InsightsNew - user: true user ID: 112219214732360855619 loading: false
+index-B3favuvm.js:457 InsightsNew - isAuthenticated: true timestamp: 1752487508909
+index-B3favuvm.js:457 InsightsNew - moments query: Object
+index-B3favuvm.js:447 AI Insights Debug: Object
+index-B3favuvm.js:447 Starting insights generation: Object
+index-B3favuvm.js:447 Generated insights count: 1
+index-B3favuvm.js:447 Generated insights preview: Array(1)
+index-B3favuvm.js:447 Final insights check: Object
+index-B3favuvm.js:457 InsightsNew - user: true user ID: 112219214732360855619 loading: false
+index-B3favuvm.js:457 InsightsNew - isAuthenticated: true timestamp: 1752487508920
+index-B3favuvm.js:457 InsightsNew - moments query: Object
+index-B3favuvm.js:447 AI Insights Debug: Object
+index-B3favuvm.js:447 Starting insights generation: Object
+index-B3favuvm.js:447 Generated insights count: 1
+index-B3favuvm.js:447 Generated insights preview: Array(1)
+index-B3favuvm.js:447 Final insights check: Object
+index-B3favuvm.js:40 ReferenceError: user is not defined
+    at fW (index-B3favuvm.js:457:90648)
+    at wx (index-B3favuvm.js:38:17018)
+    at sk (index-B3favuvm.js:40:44058)
+    at tk (index-B3favuvm.js:40:39790)
+    at FA (index-B3favuvm.js:40:39718)
+    at cf (index-B3favuvm.js:40:39570)
+    at Qp (index-B3favuvm.js:40:35934)
+    at u0 (index-B3favuvm.js:40:36738)
+    at ci (index-B3favuvm.js:38:3279)
+    at index-B3favuvm.js:40:34263
+Fp @ index-B3favuvm.js:40Understand this error
+index-B3favuvm.js:38 Uncaught ReferenceError: user is not defined
+    at fW (index-B3favuvm.js:457:90648)
+    at wx (index-B3favuvm.js:38:17018)
+    at sk (index-B3favuvm.js:40:44058)
+    at tk (index-B3favuvm.js:40:39790)
+    at FA (index-B3favuvm.js:40:39718)
+    at cf (index-B3favuvm.js:40:39570)
+    at Qp (index-B3favuvm.js:40:35934)
+    at u0 (index-B3favuvm.js:40:36738)
+    at ci (index-B3favuvm.js:38:3279)
+    at index-B3favuvm.js:40:34263Understand this error
+insights:1 Unchecked runtime.lastError: The message port closed before a response was received.Understand this error

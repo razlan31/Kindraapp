@@ -33,7 +33,7 @@ export function setupAuthentication(app: Express) {
     rolling: true,
     cookie: {
       secure: false, // Development mode
-      httpOnly: false, // Allow JavaScript access for debugging
+      httpOnly: true, // Secure cookies for production
       maxAge: sessionTtl,
       sameSite: 'lax' as const,
       path: '/',
