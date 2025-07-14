@@ -202,7 +202,7 @@ export function setupAuthentication(app: Express) {
   // Current user API
   app.get("/api/me", async (req: Request, res: Response) => {
     try {
-      console.log(`🔍 Session check - userId: ${req.session.userId}, sessionID: ${req.sessionID}, timestamp: ${req.query.t}`);
+      console.log(`🔍 Session check - userId: ${req.session.userId}, sessionID: ${req.sessionID}`);
       console.log(`🔍 Session exists: ${!!req.session}, cookie header: ${req.headers.cookie}`);
       
       const userId = req.session.userId;

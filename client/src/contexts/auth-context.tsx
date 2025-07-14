@@ -28,12 +28,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
 
   const { data: currentUser, isLoading, error, refetch } = useQuery({
-    queryKey: ['/api/me', Date.now()], // FIXED: Cache bust with timestamp
+    queryKey: ['/api/me'],
     retry: false,
     staleTime: 0,
     cacheTime: 0,
     queryFn: async () => {
-      const response = await fetch(`/api/me?t=${Date.now()}`, {
+      const response = await fetch('/api/me', {
         credentials: 'include',
         cache: 'no-cache',
         headers: {
@@ -61,6 +61,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(null);
     }
   }, [currentUser, error, isLoading]);
+
+  // Listen for authentication success and refresh user data
+  useEffect(() => {
+    const handleAuthSuccess = () => {
+      console.log('Auth context: Authentication success detected, refreshing user data');
+      setTimeout(() => {
+        refetch();
+      }, 100);
+    };
+
+    // Check for auth success in URL
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('auth') === 'success') {
+      handleAuthSuccess();
+      // Clean up URL
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, [refetch]);
 
   const refreshUser = () => {
     console.log('Auth context: Refreshing user data');
