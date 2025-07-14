@@ -1,0 +1,110 @@
+index-Pp67x1ZG.js:466 🔥 CACHE BUSTER ACTIVE: 2025-01-09-v4-final
+index-Pp67x1ZG.js:466 🔥 MAIN.TSX TIMESTAMP: 1752486268917
+index-Pp67x1ZG.js:466 🔥 MAIN.TSX URL: https://kindra-jagohtrade.replit.app/
+index-Pp67x1ZG.js:466 🔥 CACHE BUSTER: 2025-01-09-v5-auth-fixed
+index-Pp67x1ZG.js:466 🚨🚨🚨 MAIN.TSX EXECUTING - IMPORTING APP FROM ./App
+index-Pp67x1ZG.js:466 🚨🚨🚨 MAIN.TSX TIMESTAMP: 2025-07-14T09:44:28.917Z
+index-Pp67x1ZG.js:466 🚨🚨🚨 MAIN.TSX ABOUT TO RENDER APP TO DOM
+index-Pp67x1ZG.js:457 Theme context initial load: light
+index-Pp67x1ZG.js:466 App: Routing decision Object
+index-Pp67x1ZG.js:457 Theme effect running: light
+index-Pp67x1ZG.js:457 Applied theme: light
+index-Pp67x1ZG.js:457 Theme stored to localStorage: light
+index-Pp67x1ZG.js:403 Auth context: Making /api/me request
+index-Pp67x1ZG.js:403 Auth context: Document cookies: 
+index-Pp67x1ZG.js:403 Auth context: Effect triggered Object
+index-Pp67x1ZG.js:403 Auth context: Debug state Object
+api/connections:1  Failed to load resource: the server responded with a status of 500 ()
+index-Pp67x1ZG.js:48 🔴 HTTP ERROR DETECTED: Object
+Rk @ index-Pp67x1ZG.js:48
+index-Pp67x1ZG.js:449 Focus Context Debug: Object
+kindra-jagohtrade.replit.app/:1 Unchecked runtime.lastError: The message port closed before a response was received.
+index-Pp67x1ZG.js:449 Focus Context Debug: Object
+kindra-jagohtrade.replit.app/:1 Unchecked runtime.lastError: The message port closed before a response was received.
+index-Pp67x1ZG.js:403 Auth context: /api/me response 200 
+index-Pp67x1ZG.js:403 Auth context: Response headers: Object
+index-Pp67x1ZG.js:403 Auth context: User data received lenprodigy@gmail.com
+index-Pp67x1ZG.js:466 App: Routing decision Object
+index-Pp67x1ZG.js:403 Auth context: Effect triggered Object
+index-Pp67x1ZG.js:403 Auth context: User loaded successfully: lenprodigy@gmail.com
+index-Pp67x1ZG.js:403 Auth context: Debug state Object
+index-Pp67x1ZG.js:466 App: Routing decision Object
+index-Pp67x1ZG.js:466 🔥 STATE DEBUG - isSubmitting changed: false
+index-Pp67x1ZG.js:466 🔥 STATE DEBUG - connectionId changed: 2 selectedConnectionId: null
+index-Pp67x1ZG.js:466 Modal useEffect - selectedDate from context: null
+index-Pp67x1ZG.js:466 Modal useEffect - editingMoment: null
+index-Pp67x1ZG.js:466 Modal useEffect - momentModalOpen: false
+index-Pp67x1ZG.js:466 🔥 MODAL OPEN - Resetting isSubmitting to false
+index-Pp67x1ZG.js:466 🔥 MODAL INIT - Setting connectionId: 2 from selectedConnectionId: null
+index-Pp67x1ZG.js:449 🔥 PLAN MODAL - Connection effect: Object
+index-Pp67x1ZG.js:449 🔥 PLAN MODAL - Form init effect: Object
+index-Pp67x1ZG.js:403 Auth context: Debug state Object
+api/ai/conversation:1  Failed to load resource: the server responded with a status of 500 ()
+index-Pp67x1ZG.js:48 🔴 HTTP ERROR DETECTED: Object
+Rk @ index-Pp67x1ZG.js:48
+api/user-badges:1  Failed to load resource: the server responded with a status of 500 ()
+index-Pp67x1ZG.js:48 🔴 HTTP ERROR DETECTED: Object
+Rk @ index-Pp67x1ZG.js:48
+api/subscription/status:1  Failed to load resource: the server responded with a status of 500 ()
+index-Pp67x1ZG.js:48 🔴 HTTP ERROR DETECTED: Object
+Rk @ index-Pp67x1ZG.js:48
+api/notifications:1  Failed to load resource: the server responded with a status of 500 ()
+api/connections:1  Failed to load resource: the server responded with a status of 500 ()
+index-Pp67x1ZG.js:48 🔴 HTTP ERROR DETECTED: Object
+Rk @ index-Pp67x1ZG.js:48
+index-Pp67x1ZG.js:48 🔴 HTTP ERROR DETECTED: Object
+Rk @ index-Pp67x1ZG.js:48
+index-Pp67x1ZG.js:449 🔥 PLAN MODAL - Form init effect: Object
+index-Pp67x1ZG.js:449 Focus Context Debug: Object
+index-Pp67x1ZG.js:457 InsightsNew - user: true user ID: 112219214732360855619 loading: false
+index-Pp67x1ZG.js:457 InsightsNew - isAuthenticated: true timestamp: 1752486271370
+index-Pp67x1ZG.js:457 InsightsNew - moments query: Object
+index-Pp67x1ZG.js:447 AI Insights Debug: Object
+index-Pp67x1ZG.js:447 Starting insights generation: Object
+index-Pp67x1ZG.js:447 Generated insights count: 1
+index-Pp67x1ZG.js:447 Generated insights preview: Array(1)
+index-Pp67x1ZG.js:447 Final insights check: Object
+index-Pp67x1ZG.js:457 InsightsNew - user: true user ID: 112219214732360855619 loading: false
+index-Pp67x1ZG.js:457 InsightsNew - isAuthenticated: true timestamp: 1752486271375
+index-Pp67x1ZG.js:457 InsightsNew - moments query: Object
+index-Pp67x1ZG.js:447 AI Insights Debug: Object
+index-Pp67x1ZG.js:447 Starting insights generation: Object
+index-Pp67x1ZG.js:447 Generated insights count: 1
+index-Pp67x1ZG.js:447 Generated insights preview: Array(1)
+index-Pp67x1ZG.js:447 Final insights check: Object
+index-Pp67x1ZG.js:40 ReferenceError: user is not defined
+    at fW (index-Pp67x1ZG.js:457:90644)
+    at wx (index-Pp67x1ZG.js:38:17018)
+    at sk (index-Pp67x1ZG.js:40:44058)
+    at tk (index-Pp67x1ZG.js:40:39790)
+    at FA (index-Pp67x1ZG.js:40:39718)
+    at cf (index-Pp67x1ZG.js:40:39570)
+    at Qp (index-Pp67x1ZG.js:40:35934)
+    at u0 (index-Pp67x1ZG.js:40:36738)
+    at ci (index-Pp67x1ZG.js:38:3279)
+    at index-Pp67x1ZG.js:40:34263
+Fp @ index-Pp67x1ZG.js:40
+index-Pp67x1ZG.js:40 ReferenceError: user is not defined
+    at uW (index-Pp67x1ZG.js:457:83965)
+    at wx (index-Pp67x1ZG.js:38:17018)
+    at sk (index-Pp67x1ZG.js:40:44058)
+    at tk (index-Pp67x1ZG.js:40:39790)
+    at FA (index-Pp67x1ZG.js:40:39718)
+    at cf (index-Pp67x1ZG.js:40:39570)
+    at Qp (index-Pp67x1ZG.js:40:35934)
+    at u0 (index-Pp67x1ZG.js:40:36738)
+    at ci (index-Pp67x1ZG.js:38:3279)
+    at index-Pp67x1ZG.js:40:34263
+Fp @ index-Pp67x1ZG.js:40
+index-Pp67x1ZG.js:38 Uncaught ReferenceError: user is not defined
+    at fW (index-Pp67x1ZG.js:457:90644)
+    at wx (index-Pp67x1ZG.js:38:17018)
+    at sk (index-Pp67x1ZG.js:40:44058)
+    at tk (index-Pp67x1ZG.js:40:39790)
+    at FA (index-Pp67x1ZG.js:40:39718)
+    at cf (index-Pp67x1ZG.js:40:39570)
+    at Qp (index-Pp67x1ZG.js:40:35934)
+    at u0 (index-Pp67x1ZG.js:40:36738)
+    at ci (index-Pp67x1ZG.js:38:3279)
+    at index-Pp67x1ZG.js:40:34263
+insights:1 Unchecked runtime.lastError: The message port closed before a response was received.
