@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { TrendingUp, Heart, AlertCircle, Calendar, Users, Target } from 'lucide-react';
 import type { Connection, Moment } from '@shared/schema';
 

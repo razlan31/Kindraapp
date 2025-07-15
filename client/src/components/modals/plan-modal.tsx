@@ -203,7 +203,7 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
       handleClose();
     },
     onError: (error) => {
-      console.error('Error saving plan:', error);
+
       toast({
         title: "Error",
         description: editingMoment ? "Failed to update plan. Please try again." : "Failed to create plan. Please try again.",
@@ -299,7 +299,7 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
         handleClose();
       })
       .catch(error => {
-        console.error('Error creating milestone:', error);
+
         toast({
           title: "Error",
           description: "Failed to create milestone. Please try again.",
@@ -328,14 +328,14 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
       createPlanMutation.mutate(validatedData);
     } catch (error) {
       if (error instanceof z.ZodError) {
-        console.error("🔥 PLAN VALIDATION - Zod error:", error.errors);
+
         toast({
           title: "Validation error",
           description: error.errors[0]?.message || "Please check your input.",
           variant: "destructive",
         });
       } else {
-        console.error("🔥 PLAN VALIDATION - General error:", error);
+
         toast({
           title: "Error",
           description: "Failed to create plan. Please try again.",

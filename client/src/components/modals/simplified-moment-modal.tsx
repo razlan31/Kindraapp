@@ -281,7 +281,7 @@ export function MomentModal() {
   });
 
   const handleError = (error: any) => {
-    console.error("Error with moment:", error);
+
     console.log("🔥 HANDLE ERROR - Resetting isSubmitting to false");
     setIsSubmitting(false);
     toast({
