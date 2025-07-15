@@ -465,16 +465,29 @@ export function setupAuthentication(app: Express) {
   });
 }
 
-// Authentication middleware
+// TESTING ITEM #11: Authentication middleware with timeout handling to prevent sequelize cancellation
 export function isAuthenticated(req: Request, res: Response, next: NextFunction) {
+  console.log('🧪 TESTING ITEM #11: Authentication middleware timeout handling starting...');
+  
+  // Set timeout specifically for authentication middleware to prevent sequelize cancellation
+  const authTimeout = setTimeout(() => {
+    console.error('🚨 ITEM #11: Authentication middleware timeout after 1.5 seconds');
+    if (!res.headersSent) {
+      res.status(408).json({ error: "Authentication timeout" });
+    }
+  }, 1500); // 1.5 second timeout for auth middleware (even shorter than request timeout)
+
   console.log(`🔍 Session check - userId: ${req.session.userId}, sessionID: ${req.sessionID}`);
   console.log(`🔍 Session exists: ${!!req.session}, cookie header: ${req.headers.cookie}`);
   
   if (!req.session.userId) {
+    clearTimeout(authTimeout);
     console.log("❌ Authentication failed: No userId in session");
     return res.status(401).json({ message: "Authentication required" });
   }
   
+  clearTimeout(authTimeout);
   console.log(`✅ Authentication successful: ${req.session.userId}`);
+  console.log('🧪 TESTING ITEM #11: Authentication middleware timeout handling completed successfully');
   next();
 }
