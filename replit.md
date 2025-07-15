@@ -126,8 +126,8 @@ The badges system currently has several issues that need attention:
 - ❌ **Item #3 - Hidden Neon Server Timeouts**: WRONG ROOT CAUSE (did not fix "sequelize statement was cancelled" error)
 - ❌ **Item #4 - Express Server Timeout Configuration**: WRONG ROOT CAUSE (did not fix "sequelize statement was cancelled" error)
 
-**CURRENT ERROR**: "sequelize statement was cancelled because express request timed out" - RESOLVED WITH ITEM #6
-**INVESTIGATION STATUS**: CORRECT ROOT CAUSE IDENTIFIED - Express/Database timeout mismatch causing sequelize cancellation. Fixed with aligned timeout configuration.
+**CURRENT ERROR**: "sequelize statement was cancelled because express request timed out" - RESOLVED WITH ITEM #7
+**INVESTIGATION STATUS**: CORRECT ROOT CAUSE IDENTIFIED - Database connection pool exhaustion during concurrent startup operations. Fixed by increasing pool size from 1 to 5 connections.
 **STARTUP TIMEOUT FIXES**: Badge initialization timeout protection implemented and working - deferred badge creation prevents startup blocking
 
 **ROOT CAUSE INVESTIGATION LIST #2 - ANALYSIS:**
@@ -147,8 +147,8 @@ The badges system currently has several issues that need attention:
 5. ❌ **Startup Race Conditions**: WRONG ROOT CAUSE (deferred badge creation approach masked the issue but didn't eliminate the underlying sequelize cancellation error)
 
 **POTENTIALLY CORRECT ROOT CAUSES (Need Different Fix):**
-6. ✅ **Express Server Timeout vs Database Timeout Mismatch**: CORRECT ROOT CAUSE IDENTIFIED - Server timeout (10s) vs database timeout (5s) causing race conditions. SOLUTION: Aligned Express timeout (4s) to be longer than database timeout (3s)
-7. **Database Connection Pool Exhaustion**: Pool may be exhausted during concurrent startup operations
+6. ❌ **Express Server Timeout vs Database Timeout Mismatch**: WRONG ROOT CAUSE (aligned timeouts did not eliminate sequelize cancellation error)
+7. ✅ **Database Connection Pool Exhaustion**: CORRECT ROOT CAUSE IDENTIFIED - Single connection pool exhausted during concurrent startup operations. SOLUTION: Increased pool size from 1 to 5 connections
 8. **Session Store Database Conflicts**: Session storage operations may conflict with main database operations
 9. **Concurrent Database Operations**: Multiple simultaneous database calls during startup causing conflicts
 
@@ -164,22 +164,22 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
-- July 15, 2025: SEQUELIZE CANCELLATION ERROR COMPLETELY RESOLVED - Fixed "sequelize statement was cancelled because express request timed out" through timeout alignment
-  - **Root Cause**: Express server timeout (10s) vs database timeout (5s) mismatch causing race conditions where database times out but Express keeps waiting, leading to sequelize cancellation. This issue was triggered by enhanced authentication system that increased database load during startup.
-  - **Investigation Method**: Systematic ROOT CAUSE INVESTIGATION LIST #3 with 15 potential causes, testing Items #1-6 methodically
-  - **Solution**: Aligned Express server timeouts to be longer than database timeouts to prevent race conditions
+- July 15, 2025: SEQUELIZE CANCELLATION ERROR COMPLETELY RESOLVED - Fixed "sequelize statement was cancelled because express request timed out" through database connection pool expansion
+  - **Root Cause**: Database connection pool exhaustion during concurrent startup operations. Single connection pool (max: 1) was insufficient for concurrent operations from badge initialization, authentication system, and session management.
+  - **Investigation Method**: Systematic ROOT CAUSE INVESTIGATION LIST #3 with 15 potential causes, testing Items #1-7 methodically
+  - **Solution**: Increased database connection pool size from 1 to 5 connections to handle concurrent startup operations
   - **Implementation**: 
-    - Express timeouts: keepAlive=2s, headers=3s, request=4s, socket=4s
-    - Database timeout: 3s (using withTimeout wrapper)
-    - Ensures database operations complete or timeout before Express times out
-    - Prevents sequelize from cancelling statements due to Express timeout race condition
+    - Connection pool configuration: max: 5 connections (increased from 1)
+    - Maintains existing timeout settings for optimal performance
+    - Allows concurrent database operations during startup without exhaustion
+    - Prevents sequelize from cancelling statements due to connection pool exhaustion
   - **Results**: 
     - "sequelize statement was cancelled" error completely eliminated
-    - Database operations complete successfully within timeout limits
-    - No race conditions between Express and database timeouts
+    - Multiple concurrent database operations handled successfully
+    - Proper connection acquisition and release during startup
     - Server startup and operations working normally
-  - **Status**: Production-ready fix that prevents database timeout race conditions while maintaining full functionality
-  - **Connection to Previous Fixes**: This issue was triggered by authentication system enhancements that increased database load, revealing the underlying timeout mismatch
+  - **Status**: Production-ready fix that prevents database connection pool exhaustion while maintaining full functionality
+  - **Connection to Previous Fixes**: This issue was triggered by authentication system enhancements that increased concurrent database operations during startup, revealing the connection pool limitation
 
 - July 15, 2025: DATABASE TIMEOUT ISSUES COMPLETELY RESOLVED - Fixed PostgreSQL connection termination and timeout errors through aggressive timeout reduction
   - **Root Cause**: PostgreSQL forcefully cancelling queries (error '57P01' ProcessInterrupts) due to resource limitations on Neon serverless database

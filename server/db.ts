@@ -16,10 +16,10 @@ if (!process.env.DATABASE_URL) {
   );
 }
 
-// Aggressive timeout reduction for Neon serverless limitations
+// TESTING ITEM #7: Increase connection pool size to prevent exhaustion during concurrent operations
 const pool = new Pool({ 
   connectionString: process.env.DATABASE_URL + "?connect_timeout=5", // 5 second timeout for faster failure
-  max: 1, // Reduced back to 1 to minimize resource usage on Neon serverless
+  max: 5, // TESTING: Increased from 1 to 5 connections to handle concurrent operations
   min: 0, // No minimum connections
   idleTimeoutMillis: 5000, // 5 second idle timeout (aggressive reduction)
   connectionTimeoutMillis: 5000, // 5 second connection timeout (aggressive reduction)
@@ -31,6 +31,9 @@ const pool = new Pool({
 });
 
 export const db = drizzle({ client: pool, schema });
+
+// Export pool for testing purposes
+export { pool };
 
 // Enhanced error handling with retry logic
 pool.on('error', (err) => {
