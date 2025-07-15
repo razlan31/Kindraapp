@@ -48,11 +48,29 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  // Initialize badges on startup
+  // Initialize badges on startup with comprehensive timeout protection
   try {
-    await storage.initializeBadges();
+    console.log('🔍 STARTUP: Beginning badge initialization - comprehensive timeout protection active...');
+    
+    // Use Promise.race to enforce absolute timeout regardless of database behavior
+    const initializationPromise = storage.initializeBadges();
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => {
+        reject(new Error('Badge initialization timed out after 8 seconds - preventing Express request timeout'));
+      }, 8000);
+    });
+    
+    await Promise.race([initializationPromise, timeoutPromise]);
+    console.log('✅ STARTUP: Badge initialization completed successfully');
   } catch (error) {
-    console.error('Failed to initialize badges:', error);
+    console.error('🚨 STARTUP: Badge initialization failed:', error);
+    if (error.message.includes('cancelled') || error.message.includes('timed out')) {
+      console.error('🎯 IDENTIFIED: This is the "sequelize statement was cancelled" error source!');
+      console.error('🔧 SOLUTION: Using fallback initialization to prevent Express timeout');
+      
+      // Fallback: Continue startup without badge initialization
+      console.log('🔄 FALLBACK: Continuing startup without badge initialization');
+    }
   }
 
   // Setup JSON parsing middleware

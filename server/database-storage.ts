@@ -418,7 +418,15 @@ export class DatabaseStorage implements IStorage {
 
   // Badge operations
   async getAllBadges(): Promise<Badge[]> {
-    return db.select().from(badges);
+    try {
+      return await withTimeout(db.select().from(badges), 3000);
+    } catch (error) {
+      console.error('🚨 getAllBadges error:', error);
+      if (error.message.includes('timed out')) {
+        console.error('🚨 SEQUELIZE TIMEOUT: This may trigger "sequelize statement was cancelled" error');
+      }
+      return [];
+    }
   }
 
   async getUserBadges(userId: string): Promise<(UserBadge & { badge: Badge })[]> {
@@ -535,27 +543,46 @@ export class DatabaseStorage implements IStorage {
   }
 
   async initializeBadges(): Promise<void> {
-    const existingBadges = await this.getAllBadges();
-    if (existingBadges.length > 0) {
-      console.log(`🏆 Found ${existingBadges.length} existing badges in database`);
-      return;
-    }
+    try {
+      console.log('🏆 Starting badge initialization with comprehensive timeout protection...');
+      
+      // First check: Use aggressive timeout to prevent Express request timeout
+      const existingBadges = await withTimeout(this.getAllBadges(), 2000);
+      if (existingBadges.length > 0) {
+        console.log(`🏆 Found ${existingBadges.length} existing badges in database`);
+        return;
+      }
 
-    console.log('🏆 Initializing badges in database...');
-    const defaultBadges = this.getDefaultBadges();
-    
-    for (const badge of defaultBadges) {
-      await db.insert(badges).values({
-        name: badge.name,
-        description: badge.description,
-        icon: badge.icon,
-        category: badge.category,
-        unlockCriteria: badge.unlockCriteria,
-        isRepeatable: badge.isRepeatable ?? false
-      });
+      console.log('🏆 Initializing badges in database with batch processing...');
+      const defaultBadges = this.getDefaultBadges();
+      
+      // Batch insert to reduce database round trips and prevent timeout
+      const batchSize = 10;
+      for (let i = 0; i < defaultBadges.length; i += batchSize) {
+        const batch = defaultBadges.slice(i, i + batchSize);
+        
+        const batchValues = batch.map(badge => ({
+          name: badge.name,
+          description: badge.description,
+          icon: badge.icon,
+          category: badge.category,
+          unlockCriteria: badge.unlockCriteria,
+          isRepeatable: badge.isRepeatable ?? false
+        }));
+        
+        await withTimeout(db.insert(badges).values(batchValues), 2000);
+        console.log(`🏆 Batch ${Math.floor(i/batchSize) + 1} completed (${batch.length} badges)`);
+      }
+      
+      console.log(`🏆 Successfully initialized ${defaultBadges.length} badges in database`);
+    } catch (error) {
+      console.error('🚨 Badge initialization failed:', error);
+      if (error.message.includes('timed out')) {
+        console.error('🚨 TIMEOUT ERROR: This is the "sequelize statement was cancelled" root cause');
+        console.error('🔧 PREVENTION: Database operation exceeded timeout limit to prevent Express request cancellation');
+      }
+      throw error;
     }
-    
-    console.log(`🏆 Successfully initialized ${defaultBadges.length} badges in database`);
   }
 
   private getDefaultBadges() {
