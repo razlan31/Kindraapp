@@ -19,13 +19,8 @@ export default function ProfilePage() {
   const queryClient = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // 🧪 TESTING ITEM #4: Authentication State Issues - Add debugging
-  console.log('🧪 TESTING ITEM #4: Profile page render', { 
-    user: user ? user.email : 'null', 
-    loading, 
-    userExists: !!user,
-    userId: user?.id 
-  });
+  // Profile page debugging (remove excessive logging for performance)
+  // console.log('Profile page render', { user: user ? user.email : 'null', loading });
 
   // Profile form state
   const [displayName, setDisplayName] = useState("");
@@ -135,7 +130,6 @@ export default function ProfilePage() {
   };
 
   if (loading) {
-    console.log('🧪 TESTING ITEM #4: Profile page showing loading state');
     return (
       <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900 pb-20 flex items-center justify-center">
         <div className="text-center">
@@ -147,12 +141,10 @@ export default function ProfilePage() {
   }
 
   if (!user) {
-    console.log('🧪 TESTING ITEM #4: Profile page showing user not found');
     return (
       <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900 pb-20 flex items-center justify-center">
         <div className="text-center">
           <p className="text-neutral-600 dark:text-neutral-400">User not found</p>
-          <p className="text-sm text-neutral-500 mt-2">Debug: loading={loading.toString()}, user={user ? 'exists' : 'null'}</p>
         </div>
       </div>
     );
