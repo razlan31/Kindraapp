@@ -12,8 +12,8 @@ app.set('trust proxy', 1);
 
 // Increase timeout for slow database operations
 app.use((req, res, next) => {
-  req.setTimeout(120000); // 2 minute timeout
-  res.setTimeout(120000); // 2 minute timeout
+  req.setTimeout(30000); // 30 second timeout
+  res.setTimeout(30000); // 30 second timeout
   next();
 });
 

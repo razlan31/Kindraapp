@@ -14,17 +14,33 @@ import { db } from "./db";
 import { eq, desc, and } from "drizzle-orm";
 import type { IStorage } from "./storage";
 
-// Add timeout wrapper for database operations
+// Add timeout wrapper for database operations with retry logic
 const withTimeout = async <T>(
   operation: () => Promise<T>,
-  timeoutMs: number = 50000
+  timeoutMs: number = 20000,
+  maxRetries: number = 2
 ): Promise<T> => {
-  return Promise.race([
-    operation(),
-    new Promise<never>((_, reject) => {
-      setTimeout(() => reject(new Error('Database operation timed out')), timeoutMs);
-    })
-  ]);
+  for (let retry = 0; retry <= maxRetries; retry++) {
+    try {
+      return await Promise.race([
+        operation(),
+        new Promise<never>((_, reject) => {
+          setTimeout(() => reject(new Error('Database operation timed out')), timeoutMs);
+        })
+      ]);
+    } catch (error) {
+      console.error(`Database operation failed (attempt ${retry + 1}/${maxRetries + 1}):`, error);
+      
+      if (retry === maxRetries) {
+        throw error;
+      }
+      
+      // Wait before retry
+      await new Promise(resolve => setTimeout(resolve, 1000 * (retry + 1)));
+    }
+  }
+  
+  throw new Error('Database operation failed after all retries');
 };
 
 export class DatabaseStorage implements IStorage {

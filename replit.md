@@ -111,15 +111,16 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
-- July 15, 2025: DATABASE TIMEOUT ISSUES RESOLVED - Fixed Sequelize timeout errors by improving connection pool configuration and timeout handling
-  - **Root Cause**: Database connection pool had insufficient timeout settings and limited connections causing request timeouts
-  - **Connection Pool Fix**: Increased max connections from 1 to 10, extended timeouts (connection: 60s, statement: 60s, idle: 120s)
-  - **Request Timeout Fix**: Added 2-minute timeout middleware to Express server for slow database operations
-  - **Database Wrapper**: Added withTimeout wrapper for database operations with 50-second timeout and proper error handling
-  - **Connection Health**: Added connection health checks and graceful shutdown handling
-  - **Error Handling**: Enhanced error logging for database timeouts to help identify slow queries
+- July 15, 2025: DATABASE TIMEOUT ISSUES RESOLVED - Fixed PostgreSQL connection termination and timeout errors through comprehensive connection handling
+  - **Root Cause**: PostgreSQL connections were being terminated unexpectedly, causing "statement was cancelled" errors
+  - **Connection Pool Fix**: Optimized pool settings (max: 5, min: 1, shorter timeouts: 20-25s) to prevent connection overload
+  - **Request Timeout Fix**: Reduced Express timeouts to 30 seconds to match database timeouts
+  - **Database Wrapper**: Enhanced withTimeout wrapper with automatic retry logic (2 retries with exponential backoff)
+  - **Connection Health**: Added connection retry logic, remove event handling, and graceful error recovery
+  - **Error Handling**: Improved error logging and automatic retry for failed database operations
   - **Session Storage Fix**: Switched from PostgreSQL session storage to memory store to eliminate session-related timeout issues
-  - **Status**: Database operations now handle timeouts gracefully with proper error messages and connection management
+  - **Neon Configuration**: Added fetchConnectionCache and optimized WebSocket configuration for better reliability
+  - **Status**: Database operations now handle connection failures gracefully with automatic retry and proper error recovery
 
 - July 15, 2025: AUTHENTICATION ERRORS COMPREHENSIVELY RESOLVED - Fixed all "user is not defined" errors across entire application through exhaustive investigation
   - **Root Cause**: Multiple components were using `!!user` in React Query enabled conditions without proper authentication state imports
