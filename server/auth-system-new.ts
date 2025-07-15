@@ -132,7 +132,9 @@ export function setupAuthentication(app: Express) {
         return res.redirect("/?error=user_info_failed");
       }
       
-      // Create or update user
+      // Create or update user with timeout monitoring
+      console.log('🧪 TESTING ITEM #4: Starting OAuth user upsert operation...');
+      const upsertStart = Date.now();
       const user = await storage.upsertUser({
         id: userInfo.id,
         email: userInfo.email,
@@ -140,6 +142,8 @@ export function setupAuthentication(app: Express) {
         lastName: userInfo.family_name || null,
         profileImageUrl: userInfo.picture || null,
       });
+      const upsertTime = Date.now() - upsertStart;
+      console.log(`🧪 TESTING ITEM #4: OAuth user upsert completed in ${upsertTime}ms`);
       
       // Set session data
       req.session.userId = user.id;

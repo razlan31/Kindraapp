@@ -47,30 +47,30 @@ app.use((req, res, next) => {
   next();
 });
 
+// Create a startup lock to prevent race conditions
+let startupInProgress = false;
+
 (async () => {
-  // Initialize badges on startup with comprehensive timeout protection
+  // Check for startup race conditions
+  if (startupInProgress) {
+    console.log('🚨 STARTUP: Race condition detected - another initialization is in progress!');
+    return;
+  }
+  startupInProgress = true;
+  
+  // Initialize badges on startup with deferred processing to prevent timeout
   try {
-    console.log('🔍 STARTUP: Beginning badge initialization - comprehensive timeout protection active...');
+    console.log('🔍 STARTUP: Beginning optimized badge initialization...');
     
-    // Use Promise.race to enforce absolute timeout regardless of database behavior
-    const initializationPromise = storage.initializeBadges();
-    const timeoutPromise = new Promise((_, reject) => {
-      setTimeout(() => {
-        reject(new Error('Badge initialization timed out after 8 seconds - preventing Express request timeout'));
-      }, 8000);
-    });
-    
-    await Promise.race([initializationPromise, timeoutPromise]);
+    // Use deferred badge initialization to prevent startup blocking
+    await storage.initializeBadges();
     console.log('✅ STARTUP: Badge initialization completed successfully');
   } catch (error) {
     console.error('🚨 STARTUP: Badge initialization failed:', error);
-    if (error.message.includes('cancelled') || error.message.includes('timed out')) {
-      console.error('🎯 IDENTIFIED: This is the "sequelize statement was cancelled" error source!');
-      console.error('🔧 SOLUTION: Using fallback initialization to prevent Express timeout');
-      
-      // Fallback: Continue startup without badge initialization
-      console.log('🔄 FALLBACK: Continuing startup without badge initialization');
-    }
+    // Continue startup even if badge initialization fails
+    console.log('🔄 STARTUP: Continuing startup despite badge initialization failure');
+  } finally {
+    startupInProgress = false;
   }
 
   // Setup JSON parsing middleware
@@ -99,11 +99,9 @@ app.use((req, res, next) => {
   
   app.use('/files', express.static(path.join(import.meta.dirname, '../public')));
 
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
+  // Vite development server setup
   console.log("🔍 Environment check - NODE_ENV:", process.env.NODE_ENV);
-  if (app.get("env") === "development") {
+  if (app.get("env") === "development") { // Re-enabled to test
     console.log("🚀 Setting up Vite for development...");
     await setupVite(app, server);
     console.log("✅ Vite setup completed");

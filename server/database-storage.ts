@@ -11,7 +11,7 @@ import {
   ChatConversation, InsertChatConversation, chatConversations
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, desc, and } from "drizzle-orm";
+import { eq, desc, and, count } from "drizzle-orm";
 import type { IStorage } from "./storage";
 
 // Database timeout wrapper to prevent Express request cancellation
@@ -543,21 +543,53 @@ export class DatabaseStorage implements IStorage {
   }
 
   async initializeBadges(): Promise<void> {
+    console.log('🏆 Starting optimized badge initialization...');
+    
     try {
-      console.log('🏆 Starting badge initialization with comprehensive timeout protection...');
+      // PERFORMANCE FIX: Use super fast query with minimal timeout
+      const existingBadges = await withTimeout(
+        db.select({ count: count() }).from(badges),
+        500 // Ultra-fast timeout for count check
+      );
       
-      // First check: Use aggressive timeout to prevent Express request timeout
-      const existingBadges = await withTimeout(this.getAllBadges(), 2000);
-      if (existingBadges.length > 0) {
-        console.log(`🏆 Found ${existingBadges.length} existing badges in database`);
+      if (existingBadges[0].count > 0) {
+        console.log(`🏆 Found ${existingBadges[0].count} existing badges in database`);
         return;
       }
+      
+      console.log('🏆 No badges found, deferring badge creation to avoid startup timeout...');
+      
+      // PERFORMANCE FIX: Defer badge creation to avoid startup timeout
+      // Create badges asynchronously after server startup
+      setImmediate(() => {
+        this.createBadgesAsync().catch(error => {
+          console.error('🚨 Deferred badge creation failed:', error);
+        });
+      });
+      
+      console.log('🏆 Badge initialization deferred to prevent startup timeout');
+      
+    } catch (error) {
+      console.error('🚨 Badge initialization failed:', error);
+      console.log('🔄 Deferring badge creation to prevent startup blocking...');
+      
+      // Always defer on error to prevent startup blocking
+      setImmediate(() => {
+        this.createBadgesAsync().catch(error => {
+          console.error('🚨 Deferred badge creation failed:', error);
+        });
+      });
+    }
+  }
 
-      console.log('🏆 Initializing badges in database with batch processing...');
+  private async createBadgesAsync(): Promise<void> {
+    console.log('🏆 Starting deferred badge creation...');
+    
+    try {
       const defaultBadges = this.getDefaultBadges();
       
-      // Batch insert to reduce database round trips and prevent timeout
-      const batchSize = 10;
+      // Create badges in optimized batches
+      const batchSize = 25; // Larger batches for better performance
       for (let i = 0; i < defaultBadges.length; i += batchSize) {
         const batch = defaultBadges.slice(i, i + batchSize);
         
@@ -570,18 +602,18 @@ export class DatabaseStorage implements IStorage {
           isRepeatable: badge.isRepeatable ?? false
         }));
         
-        await withTimeout(db.insert(badges).values(batchValues), 2000);
-        console.log(`🏆 Batch ${Math.floor(i/batchSize) + 1} completed (${batch.length} badges)`);
+        await withTimeout(
+          db.insert(badges).values(batchValues),
+          5000 // Longer timeout for deferred operations
+        );
+        
+        console.log(`🏆 Deferred batch ${Math.floor(i/batchSize) + 1}/${Math.ceil(defaultBadges.length/batchSize)} completed (${batch.length} badges)`);
       }
       
-      console.log(`🏆 Successfully initialized ${defaultBadges.length} badges in database`);
+      console.log(`🏆 Successfully created ${defaultBadges.length} badges asynchronously`);
     } catch (error) {
-      console.error('🚨 Badge initialization failed:', error);
-      if (error.message.includes('timed out')) {
-        console.error('🚨 TIMEOUT ERROR: This is the "sequelize statement was cancelled" root cause');
-        console.error('🔧 PREVENTION: Database operation exceeded timeout limit to prevent Express request cancellation');
-      }
-      throw error;
+      console.error('🚨 Deferred badge creation failed:', error);
+      // Don't throw - this is deferred and shouldn't block anything
     }
   }
 
