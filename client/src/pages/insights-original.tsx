@@ -229,7 +229,7 @@ export default function Insights() {
 
 
         {/* Quote of the Day Section */}
-        {user && (
+        {user && isAuthenticated && (
           <QuoteOfTheDay 
             connections={connections} 
             moments={moments} 
@@ -271,7 +271,7 @@ export default function Insights() {
           {isInsightsExpanded && (
             <div className="transition-all duration-200 ease-in-out space-y-6">
               {/* Traditional Insights */}
-              {user && (
+              {user && isAuthenticated && (
                 <AIInsights 
                   connections={connections} 
                   moments={moments} 
@@ -283,7 +283,7 @@ export default function Insights() {
               )}
               
               {/* Enhanced Advanced Analytics */}
-              {user && (
+              {user && isAuthenticated && (
                 <EnhancedAIInsights 
                   connections={connections} 
                   moments={moments} 
