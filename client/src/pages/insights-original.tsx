@@ -170,8 +170,8 @@ export default function Insights() {
 
 
 
-  // Loading state
-  if (loading) {
+  // Loading state - wait for authentication AND data loading
+  if (loading || momentsLoading) {
     return (
       <div className="max-w-md mx-auto bg-white dark:bg-neutral-900 min-h-screen flex flex-col relative">
         <Header />
