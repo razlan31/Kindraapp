@@ -23,7 +23,10 @@ export function setupAuthentication(app: Express) {
   const sessionStore = new MemStore({
     checkPeriod: 86400000, // prune expired entries every 24h
     ttl: sessionTtl,
-    max: 100000, // max number of sessions
+    max: 1000, // Reduce max sessions to prevent memory issues
+    dispose: (key: string, value: any) => {
+      console.log(`Session disposed: ${key}`);
+    }
   });
 
   // Session middleware with fixed configuration

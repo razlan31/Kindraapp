@@ -14,10 +14,10 @@ import { db } from "./db";
 import { eq, desc, and } from "drizzle-orm";
 import type { IStorage } from "./storage";
 
-// Simplified timeout wrapper without retry to prevent connection pool issues
+// Ultra-simplified timeout wrapper with shorter timeout
 const withTimeout = async <T>(
   operation: () => Promise<T>,
-  timeoutMs: number = 12000
+  timeoutMs: number = 5000
 ): Promise<T> => {
   try {
     return await Promise.race([
@@ -28,6 +28,7 @@ const withTimeout = async <T>(
     ]);
   } catch (error) {
     console.error('Database operation failed:', error);
+    // Return default values instead of throwing for some operations
     throw error;
   }
 };
