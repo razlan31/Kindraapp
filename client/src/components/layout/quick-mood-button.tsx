@@ -12,7 +12,7 @@ export function QuickMoodButton() {
   const [location] = useLocation();
   const [showConnections, setShowConnections] = useState(false);
   const [selectedConnection, setSelectedConnection] = useState<Connection | null>(null);
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   
   // Only show on specific pages
   const shouldShow = ["/", "/dashboard", "/moments", "/connections"].includes(location);

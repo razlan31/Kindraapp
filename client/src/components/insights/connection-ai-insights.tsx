@@ -14,7 +14,7 @@ interface ConnectionAIInsightsProps {
 }
 
 export function ConnectionAIInsights({ connection, moments, userData }: ConnectionAIInsightsProps) {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   
   // Fetch menstrual cycle data for correlation analysis
   const { data: menstrualCycles = [] } = useQuery<MenstrualCycle[]>({

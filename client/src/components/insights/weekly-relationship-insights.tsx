@@ -28,7 +28,7 @@ interface WeeklyInsight {
 
 export function WeeklyRelationshipInsights({ connections, moments, userData }: WeeklyInsightsProps) {
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
 
   // Get current week identifier for caching
   const getCurrentWeek = () => {
