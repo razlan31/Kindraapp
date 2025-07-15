@@ -14,18 +14,17 @@ interface EnhancedAIInsightsProps {
 }
 
 export function EnhancedAIInsights({ connections, moments, userData }: EnhancedAIInsightsProps) {
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated } = useAuth();
   
   console.log("EnhancedAIInsights - Rendering with:", {
     connectionsLength: connections?.length,
     momentsLength: moments?.length,
     authenticated: isAuthenticated,
-    userDataPresent: !!userData,
-    userAvailable: !!user
+    userDataPresent: !!userData
   });
   
-  // Guard clause - don't render if user is not available
-  if (!isAuthenticated || !user) {
+  // Guard clause - don't render if not authenticated
+  if (!isAuthenticated) {
     return (
       <div className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-2xl p-6 border border-purple-100 dark:border-purple-800">
         <div className="flex items-center gap-3 mb-6">
@@ -52,7 +51,7 @@ export function EnhancedAIInsights({ connections, moments, userData }: EnhancedA
   // Fetch menstrual cycle data for correlation analysis
   const { data: menstrualCycles = [] } = useQuery<MenstrualCycle[]>({
     queryKey: ['/api/menstrual-cycles'],
-    enabled: isAuthenticated && !!user, // Only fetch when authenticated
+    enabled: isAuthenticated, // Only fetch when authenticated
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
