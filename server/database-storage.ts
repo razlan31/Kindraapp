@@ -14,6 +14,15 @@ import { db } from "./db";
 import { eq, desc, and } from "drizzle-orm";
 import type { IStorage } from "./storage";
 
+// Database timeout wrapper to prevent Express request cancellation
+const withTimeout = async <T>(promise: Promise<T>, timeoutMs: number = 5000): Promise<T> => {
+  const timeoutPromise = new Promise<never>((_, reject) => {
+    setTimeout(() => reject(new Error(`Database operation timed out after ${timeoutMs}ms`)), timeoutMs);
+  });
+  
+  return Promise.race([promise, timeoutPromise]);
+};
+
 // No timeout wrapper - let database handle its own timeouts
 // This eliminates artificial timeout conflicts
 
@@ -21,7 +30,7 @@ export class DatabaseStorage implements IStorage {
   // User operations
   async getUser(id: string): Promise<User | undefined> {
     try {
-      const [user] = await db.select().from(users).where(eq(users.id, id));
+      const [user] = await withTimeout(db.select().from(users).where(eq(users.id, id)));
       return user;
     } catch (error) {
       console.error('Database error in getUser:', error);

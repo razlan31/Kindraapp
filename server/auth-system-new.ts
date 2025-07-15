@@ -18,15 +18,20 @@ export function setupAuthentication(app: Express) {
   // Session configuration
   const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 7 days
   
-  // Use memory store for sessions to avoid database timeout issues
+  // Simplified memory store configuration to prevent session timeout issues
   const MemStore = MemoryStore(session);
   const sessionStore = new MemStore({
-    checkPeriod: 86400000, // prune expired entries every 24h
+    checkPeriod: 300000, // prune expired entries every 5 minutes (reduced from 24h)
     ttl: sessionTtl,
-    max: 1000, // Reduce max sessions to prevent memory issues
+    max: 100, // Reduced max sessions to prevent memory issues
     dispose: (key: string, value: any) => {
-      console.log(`Session disposed: ${key}`);
+      console.log(`🗑️ Session disposed: ${key}`);
     }
+  });
+  
+  // Monitor session store for timeout issues
+  sessionStore.on('error', (err) => {
+    console.error('🚨 Session store error:', err);
   });
 
   // Session middleware with fixed configuration

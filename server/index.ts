@@ -65,6 +65,14 @@ app.use((req, res, next) => {
   // Register API routes BEFORE Vite middleware
   const server = await registerRoutes(app);
 
+  // Configure Express server timeouts to prevent request cancellation
+  server.keepAliveTimeout = 5000; // 5 second keep-alive
+  server.headersTimeout = 6000; // 6 second headers timeout (must be > keepAliveTimeout)
+  server.requestTimeout = 10000; // 10 second request timeout
+  server.timeout = 10000; // 10 second socket timeout
+
+  console.log('🕐 Express server timeouts configured: keepAlive=5s, headers=6s, request=10s, socket=10s');
+
   // Keep essential file serving
   app.get('/kindra-screenshots.tar.gz', (req, res) => {
     const filePath = path.join(import.meta.dirname, '../kindra-screenshots.tar.gz');
