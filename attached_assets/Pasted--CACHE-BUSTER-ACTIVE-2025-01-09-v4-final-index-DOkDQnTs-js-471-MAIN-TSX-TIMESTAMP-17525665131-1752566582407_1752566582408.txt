@@ -1,0 +1,85 @@
+🔥 CACHE BUSTER ACTIVE: 2025-01-09-v4-final
+index-DOkDQnTs.js:471 🔥 MAIN.TSX TIMESTAMP: 1752566513170
+index-DOkDQnTs.js:471 🔥 MAIN.TSX URL: https://kindra-jagohtrade.replit.app/?auth=success
+index-DOkDQnTs.js:471 🔥 CACHE BUSTER: 2025-01-09-v6-auth-fixed-final
+index-DOkDQnTs.js:471 🚨🚨🚨 MAIN.TSX EXECUTING - IMPORTING APP FROM ./App
+index-DOkDQnTs.js:471 🚨🚨🚨 MAIN.TSX TIMESTAMP: 2025-07-15T08:01:53.170Z
+index-DOkDQnTs.js:471 🚨🚨🚨 MAIN.TSX ABOUT TO RENDER APP TO DOM
+index-DOkDQnTs.js:462 Theme context initial load: light
+index-DOkDQnTs.js:471 App: Routing decision Object
+index-DOkDQnTs.js:48 🔍 Query Request to /api/connections
+index-DOkDQnTs.js:48 🔍 Document cookies before query: 
+index-DOkDQnTs.js:462 Theme effect running: light
+index-DOkDQnTs.js:462 Applied theme: light
+index-DOkDQnTs.js:462 Theme stored to localStorage: light
+index-DOkDQnTs.js:408 Auth context: Making /api/me request
+index-DOkDQnTs.js:408 Auth context: Document cookies: 
+index-DOkDQnTs.js:408 Auth context: Effect triggered Object
+index-DOkDQnTs.js:408 Auth context: Authentication success detected, refreshing user data
+index-DOkDQnTs.js:408 Auth context: Current document cookies after OAuth: 
+index-DOkDQnTs.js:408 Auth context: Window location after OAuth: https://kindra-jagohtrade.replit.app/?auth=success
+index-DOkDQnTs.js:408 Auth context: Debug state Object
+kindra-jagohtrade.replit.app/:1 Unchecked runtime.lastError: The message port closed before a response was received.Understand this error
+kindra-jagohtrade.replit.app/:1 Unchecked runtime.lastError: The message port closed before a response was received.Understand this error
+index-DOkDQnTs.js:48 🔍 Query Response status: 200
+index-DOkDQnTs.js:48 🔍 Query Response headers: [["alt-svc","h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"],["content-length","292"],["content-type","application/json; charset=utf-8"],["date","Tue, 15 Jul 2025 08:01:53 GMT"],["etag","W/\"124-Zvk6RMSa2Fb7Q39jkCBP6Z03QBI\""],["server","Google Frontend"],["strict-transport-security","max-age=63072000; includeSubDomains"],["via","1.1 google"],["x-cloud-trace-context","b1052a2e522fdca691bca02c59228c9c"],["x-powered-by","Express"]]
+index-DOkDQnTs.js:454 Focus Context Debug: Object
+index-DOkDQnTs.js:408 Auth context: Delayed cookie check: 
+index-DOkDQnTs.js:408 Auth context: /api/me response 200 
+index-DOkDQnTs.js:408 Auth context: Response headers: Object
+index-DOkDQnTs.js:408 Auth context: User data received lenprodigy@gmail.com
+index-DOkDQnTs.js:471 App: Routing decision Object
+index-DOkDQnTs.js:48 🔍 Query Request to /api/user-badges
+index-DOkDQnTs.js:48 🔍 Document cookies before query: 
+index-DOkDQnTs.js:48 🔍 Query Request to /api/notifications
+index-DOkDQnTs.js:48 🔍 Document cookies before query: 
+index-DOkDQnTs.js:48 🔍 Query Request to /api/subscription/status
+index-DOkDQnTs.js:48 🔍 Document cookies before query: 
+index-DOkDQnTs.js:48 🔍 Query Request to /api/ai/conversation
+index-DOkDQnTs.js:48 🔍 Document cookies before query: 
+index-DOkDQnTs.js:454 🔥 PLAN MODAL - Connection effect: Object
+index-DOkDQnTs.js:454 🔥 PLAN MODAL - Form init effect: Object
+index-DOkDQnTs.js:408 Auth context: Effect triggered Object
+index-DOkDQnTs.js:408 Auth context: User loaded successfully: lenprodigy@gmail.com
+index-DOkDQnTs.js:408 Auth context: Debug state Object
+index-DOkDQnTs.js:471 App: Routing decision Object
+index-DOkDQnTs.js:408 Auth context: Debug state Object
+api/user-badges:1  Failed to load resource: the server responded with a status of 500 ()Understand this error
+index-DOkDQnTs.js:48 🔍 Query Response status: 500
+index-DOkDQnTs.js:48 🔍 Query Response headers: [["alt-svc","h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"],["content-length","47"],["content-type","application/json; charset=utf-8"],["date","Tue, 15 Jul 2025 08:01:54 GMT"],["etag","W/\"2f-02LHMnXph/Ng9Wn8P01NkrK5sdQ\""],["server","Google Frontend"],["strict-transport-security","max-age=63072000; includeSubDomains"],["via","1.1 google"],["x-cloud-trace-context","7650580344fcb6d691bca02c5922890d"],["x-powered-by","Express"]]
+index-DOkDQnTs.js:48 🔴 HTTP ERROR DETECTED: Object
+$S @ index-DOkDQnTs.js:48Understand this error
+index-DOkDQnTs.js:48 🔍 Query Response status: 200
+index-DOkDQnTs.js:48 🔍 Query Response headers: [["alt-svc","h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"],["cache-control","private"],["content-length","19"],["content-type","application/json; charset=utf-8"],["date","Tue, 15 Jul 2025 08:01:54 GMT"],["etag","W/\"13-GUfnA9CY/U6kilDCansEMuAkUl0\""],["expires","Tue, 15 Jul 2025 05:11:49 GMT"],["server","Google Frontend"],["strict-transport-security","max-age=63072000; includeSubDomains"],["via","1.1 google"],["x-cloud-trace-context","b3eb89b20fa54bcf91bca02c59228624"],["x-powered-by","Express"]]
+index-DOkDQnTs.js:462 Loading conversation data: Object
+index-DOkDQnTs.js:462 Setting conversation from API: Array(0)
+index-DOkDQnTs.js:48 🔍 Query Response status: 200
+index-DOkDQnTs.js:48 🔍 Query Response headers: [["alt-svc","h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"],["cache-control","private"],["content-length","2"],["content-type","application/json; charset=utf-8"],["date","Tue, 15 Jul 2025 08:01:54 GMT"],["etag","W/\"2-l9Fw4VUO7kr8CvBlt4zaMCqXZ0w\""],["expires","Tue, 15 Jul 2025 05:11:49 GMT"],["server","Google Frontend"],["strict-transport-security","max-age=63072000; includeSubDomains"],["via","1.1 google"],["x-cloud-trace-context","eecf628e06889eeb91bca02c59228cc6"],["x-powered-by","Express"]]
+index-DOkDQnTs.js:48 🔍 Query Response status: 200
+index-DOkDQnTs.js:48 🔍 Query Response headers: [["alt-svc","h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"],["cache-control","private"],["content-length","425"],["content-type","application/json; charset=utf-8"],["date","Tue, 15 Jul 2025 08:01:54 GMT"],["etag","W/\"1a9-iEqBNaDtsH0TPD24/cNZWg+DamY\""],["expires","Tue, 15 Jul 2025 05:11:49 GMT"],["server","Google Frontend"],["strict-transport-security","max-age=63072000; includeSubDomains"],["via","1.1 google"],["x-cloud-trace-context","68b4ebacae07570191bca02c59228975"],["x-powered-by","Express"]]
+index-DOkDQnTs.js:471 🧪 TESTING ITEM #4: Profile page render Object
+index-DOkDQnTs.js:471 🧪 TESTING ITEM #4: Profile page render Object
+index-DOkDQnTs.js:40 ReferenceError: Separator is not defined
+    at YW (index-DOkDQnTs.js:471:22544)
+    at Sx (index-DOkDQnTs.js:38:17018)
+    at lS (index-DOkDQnTs.js:40:44058)
+    at aS (index-DOkDQnTs.js:40:39790)
+    at UA (index-DOkDQnTs.js:40:39718)
+    at hf (index-DOkDQnTs.js:40:39570)
+    at Jp (index-DOkDQnTs.js:40:35934)
+    at p0 (index-DOkDQnTs.js:40:36738)
+    at fi (index-DOkDQnTs.js:38:3279)
+    at index-DOkDQnTs.js:40:34263
+Up @ index-DOkDQnTs.js:40Understand this error
+index-DOkDQnTs.js:38 Uncaught ReferenceError: Separator is not defined
+    at YW (index-DOkDQnTs.js:471:22544)
+    at Sx (index-DOkDQnTs.js:38:17018)
+    at lS (index-DOkDQnTs.js:40:44058)
+    at aS (index-DOkDQnTs.js:40:39790)
+    at UA (index-DOkDQnTs.js:40:39718)
+    at hf (index-DOkDQnTs.js:40:39570)
+    at Jp (index-DOkDQnTs.js:40:35934)
+    at p0 (index-DOkDQnTs.js:40:36738)
+    at fi (index-DOkDQnTs.js:38:3279)
+    at index-DOkDQnTs.js:40:34263Understand this error
+profile:1 Unchecked runtime.lastError: The message port closed before a response was received.Understand this error
