@@ -15,15 +15,15 @@ if (!process.env.DATABASE_URL) {
   );
 }
 
-// Use minimal pool configuration to reduce connection issues
+// Ultra-minimal pool configuration - let Neon handle timeouts
 const pool = new Pool({ 
   connectionString: process.env.DATABASE_URL,
   max: 1, // Single connection
   min: 0, // No minimum
-  idleTimeoutMillis: 30000, // 30 second idle timeout
-  connectionTimeoutMillis: 5000, // 5 second connection timeout
-  statementTimeout: 5000, // 5 second statement timeout
-  queryTimeout: 5000, // 5 second query timeout
+  idleTimeoutMillis: 0, // No idle timeout
+  connectionTimeoutMillis: 0, // No connection timeout
+  statementTimeout: 0, // No statement timeout
+  queryTimeout: 0, // No query timeout
   allowExitOnIdle: true,
 });
 

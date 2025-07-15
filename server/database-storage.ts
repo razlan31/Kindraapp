@@ -14,110 +14,82 @@ import { db } from "./db";
 import { eq, desc, and } from "drizzle-orm";
 import type { IStorage } from "./storage";
 
-// Ultra-simplified timeout wrapper with shorter timeout
-const withTimeout = async <T>(
-  operation: () => Promise<T>,
-  timeoutMs: number = 5000
-): Promise<T> => {
-  try {
-    return await Promise.race([
-      operation(),
-      new Promise<never>((_, reject) => {
-        setTimeout(() => reject(new Error('Database operation timed out')), timeoutMs);
-      })
-    ]);
-  } catch (error) {
-    console.error('Database operation failed:', error);
-    // Return default values instead of throwing for some operations
-    throw error;
-  }
-};
+// No timeout wrapper - let database handle its own timeouts
+// This eliminates artificial timeout conflicts
 
 export class DatabaseStorage implements IStorage {
   // User operations
   async getUser(id: string): Promise<User | undefined> {
     try {
-      const [user] = await withTimeout(() => 
-        db.select().from(users).where(eq(users.id, id))
-      );
+      const [user] = await db.select().from(users).where(eq(users.id, id));
       return user;
     } catch (error) {
-      console.error('Database timeout in getUser:', error);
-      throw error;
+      console.error('Database error in getUser:', error);
+      return undefined; // Return undefined instead of throwing
     }
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
     try {
-      const [user] = await withTimeout(() => 
-        db.select().from(users).where(eq(users.username, username))
-      );
+      const [user] = await db.select().from(users).where(eq(users.username, username));
       return user;
     } catch (error) {
-      console.error('Database timeout in getUserByUsername:', error);
-      throw error;
+      console.error('Database error in getUserByUsername:', error);
+      return undefined; // Return undefined instead of throwing
     }
   }
 
   async getUserByEmail(email: string): Promise<User | undefined> {
     try {
-      const [user] = await withTimeout(() => 
-        db.select().from(users).where(eq(users.email, email))
-      );
+      const [user] = await db.select().from(users).where(eq(users.email, email));
       return user;
     } catch (error) {
-      console.error('Database timeout in getUserByEmail:', error);
-      throw error;
+      console.error('Database error in getUserByEmail:', error);
+      return undefined; // Return undefined instead of throwing
     }
   }
 
   async createUser(user: InsertUser): Promise<User> {
     try {
-      const [newUser] = await withTimeout(() => 
-        db.insert(users).values(user).returning()
-      );
+      const [newUser] = await db.insert(users).values(user).returning();
       return newUser;
     } catch (error) {
-      console.error('Database timeout in createUser:', error);
-      throw error;
+      console.error('Database error in createUser:', error);
+      throw error; // Keep throwing for create operations
     }
   }
 
   async updateUser(id: string, data: Partial<User>): Promise<User | undefined> {
     try {
-      const [updatedUser] = await withTimeout(() => 
-        db
-          .update(users)
-          .set({ ...data, updatedAt: new Date() })
-          .where(eq(users.id, id))
-          .returning()
-      );
+      const [updatedUser] = await db
+        .update(users)
+        .set({ ...data, updatedAt: new Date() })
+        .where(eq(users.id, id))
+        .returning();
       return updatedUser;
     } catch (error) {
-      console.error('Database timeout in updateUser:', error);
-      throw error;
+      console.error('Database error in updateUser:', error);
+      return undefined; // Return undefined instead of throwing
     }
   }
 
   async getUserByStripeSubscriptionId(subscriptionId: string): Promise<User | undefined> {
     try {
-      const [user] = await withTimeout(() => 
-        db.select().from(users).where(eq(users.stripeSubscriptionId, subscriptionId))
-      );
+      const [user] = await db.select().from(users).where(eq(users.stripeSubscriptionId, subscriptionId));
       return user;
     } catch (error) {
-      console.error('Database timeout in getUserByStripeSubscriptionId:', error);
-      throw error;
+      console.error('Database error in getUserByStripeSubscriptionId:', error);
+      return undefined; // Return undefined instead of throwing
     }
   }
 
   // Connection operations with subscription awareness
   async getConnections(userId: string): Promise<Connection[]> {
     try {
-      return await withTimeout(() => this.getConnectionsByUserId(userId));
+      return await this.getConnectionsByUserId(userId);
     } catch (error) {
-      console.error('Database timeout in getConnections:', error);
-      throw error;
+      console.error('Database error in getConnections:', error);
+      return []; // Return empty array instead of throwing
     }
   }
 
@@ -125,34 +97,32 @@ export class DatabaseStorage implements IStorage {
     try {
       const query = db.select().from(moments).where(eq(moments.userId, userId)).orderBy(desc(moments.createdAt));
       if (limit) {
-        return await withTimeout(() => query.limit(limit));
+        return await query.limit(limit);
       }
-      return await withTimeout(() => query);
+      return await query;
     } catch (error) {
-      console.error('Database timeout in getMoments:', error);
-      throw error;
+      console.error('Database error in getMoments:', error);
+      return []; // Return empty array instead of throwing
     }
   }
 
   async upsertUser(user: UpsertUser): Promise<User> {
     try {
-      const [upsertedUser] = await withTimeout(() => 
-        db
-          .insert(users)
-          .values(user)
-          .onConflictDoUpdate({
-            target: users.id,
-            set: {
-              ...user,
-              updatedAt: new Date(),
-            },
-          })
-          .returning()
-      );
+      const [upsertedUser] = await db
+        .insert(users)
+        .values(user)
+        .onConflictDoUpdate({
+          target: users.id,
+          set: {
+            ...user,
+            updatedAt: new Date(),
+          },
+        })
+        .returning();
       return upsertedUser;
     } catch (error) {
-      console.error('Database timeout in upsertUser:', error);
-      throw error;
+      console.error('Database error in upsertUser:', error);
+      throw error; // Keep throwing for create operations
     }
   }
 

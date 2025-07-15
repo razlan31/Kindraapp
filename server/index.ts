@@ -10,12 +10,7 @@ const app = express();
 // Trust proxy for proper cookie handling in production
 app.set('trust proxy', 1);
 
-// Set very short timeout for database operations
-app.use((req, res, next) => {
-  req.setTimeout(10000); // 10 second timeout
-  res.setTimeout(10000); // 10 second timeout
-  next();
-});
+// Remove artificial timeouts - let operations complete naturally
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: false, limit: '10mb' }));
