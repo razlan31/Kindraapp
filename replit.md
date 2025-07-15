@@ -126,8 +126,8 @@ The badges system currently has several issues that need attention:
 - ❌ **Item #3 - Hidden Neon Server Timeouts**: WRONG ROOT CAUSE (did not fix "sequelize statement was cancelled" error)
 - ❌ **Item #4 - Express Server Timeout Configuration**: WRONG ROOT CAUSE (did not fix "sequelize statement was cancelled" error)
 
-**CURRENT ERROR**: "sequelize statement was cancelled because express request timed out" - RESOLVED WITH ITEM #13
-**INVESTIGATION STATUS**: CORRECT ROOT CAUSE IDENTIFIED - Neon database resource limits causing sequelize cancellation. Fixed with ultra-minimal resource configuration.
+**CURRENT ERROR**: "sequelize statement was cancelled because express request timed out" - STILL OCCURRING (Items #13-15 eliminated)
+**INVESTIGATION STATUS**: Items #1-15 eliminated as wrong root causes - need to investigate additional potential causes or specific trigger conditions
 **STARTUP TIMEOUT FIXES**: Badge initialization timeout protection implemented and working - deferred badge creation prevents startup blocking
 
 **ROOT CAUSE INVESTIGATION LIST #2 - ANALYSIS:**
@@ -156,11 +156,20 @@ The badges system currently has several issues that need attention:
 10. ❌ **Express Request Handler Timeout**: WRONG ROOT CAUSE (request-specific timeout middleware did not eliminate sequelize cancellation error)
 11. ❌ **Authentication Middleware Timeout**: WRONG ROOT CAUSE (authentication middleware timeout handling did not eliminate sequelize cancellation error)
 12. ❌ **Drizzle ORM Query Timeout**: WRONG ROOT CAUSE (ORM-level timeout configuration did not eliminate sequelize cancellation error)
-13. ✅ **Neon Database Resource Limits**: CORRECT ROOT CAUSE IDENTIFIED - Ultra-minimal database resource configuration prevents Neon limits causing sequelize cancellation
-14. **Memory Store Session Conflicts**: MemoryStore session operations blocking database operations (new session angle)
-15. **Multiple Database Pool Instances**: Different parts creating conflicting database connections (new pool angle)
+13. ❌ **Neon Database Resource Limits**: WRONG ROOT CAUSE (did not fix "sequelize statement was cancelled" error)
+14. ❌ **Memory Store Session Conflicts**: WRONG ROOT CAUSE (did not fix "sequelize statement was cancelled" error)
+15. ❌ **Multiple Database Pool Instances**: WRONG ROOT CAUSE (no competing database connections found)
 
 **INVESTIGATION METHOD**: Test new root causes first, then re-examine potentially correct ones with different fixes
+
+**ROOT CAUSE INVESTIGATION LIST #4 - EXPANDED ANALYSIS:**
+16. **Replit Platform Restart Timing**: Error only occurs during "redeploy" button press, not normal startup
+17. **Cold Start vs Warm Start**: Database connection behavior differs between cold starts and warm restarts  
+18. **Concurrent User Requests**: Error triggered by multiple simultaneous user requests during startup
+19. **Authentication Flow Database Conflicts**: OAuth callbacks competing with startup database operations
+20. **Badge Initialization Race Conditions**: Badge creation conflicts with other database operations during startup
+
+**PATTERN OBSERVED**: Error doesn't occur during normal startup but may be triggered by specific conditions (redeploy button, concurrent requests, etc.)
 
 ## Changelog
 

@@ -15,32 +15,32 @@ declare module "express-session" {
 export function setupAuthentication(app: Express) {
   console.log("🔐 Setting up complete authentication system");
   
-  // TESTING ITEM #8: Eliminate session store database conflicts
-  console.log('🧪 TESTING ITEM #8: Using ultra-minimal session store to prevent database conflicts...');
+  // TESTING ITEM #14: Memory Store Session Conflicts - Remove session store to prevent database blocking
+  console.log('🧪 TESTING ITEM #14: Removing session store to prevent database operation conflicts...');
   
   // Session configuration
   const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 7 days
   
-  // Ultra-minimal memory store configuration to prevent any database conflicts
-  const MemStore = MemoryStore(session);
-  const sessionStore = new MemStore({
-    checkPeriod: 86400000, // Check only once per day to minimize operations
-    ttl: sessionTtl,
-    max: 10, // Severely reduced max sessions to minimize memory operations
-    dispose: (key: string, value: any) => {
-      // Remove logging to prevent any I/O during startup
-    }
-  });
+  // TESTING: Remove session store entirely to prevent conflicts with database operations
+  // const MemStore = MemoryStore(session);
+  // const sessionStore = new MemStore({
+  //   checkPeriod: 86400000, // Check only once per day to minimize operations
+  //   ttl: sessionTtl,
+  //   max: 10, // Severely reduced max sessions to minimize memory operations
+  //   dispose: (key: string, value: any) => {
+  //     // Remove logging to prevent any I/O during startup
+  //   }
+  // });
   
-  // TESTING ITEM #8: Disable session store error monitoring to prevent startup conflicts
-  sessionStore.on('error', (err) => {
-    // Silently handle errors during testing to prevent startup interference
-  });
+  // TESTING ITEM #14: Session store error monitoring removed
+  // sessionStore.on('error', (err) => {
+  //   // Silently handle errors during testing to prevent startup interference
+  // });
 
-  // TESTING ITEM #8: Ultra-minimal session middleware to prevent startup conflicts
+  // TESTING ITEM #14: Session middleware without store to prevent database conflicts
   app.use(session({
     secret: process.env.SESSION_SECRET || 'kindra-production-secret',
-    store: sessionStore,
+    // store: sessionStore, // TESTING: Remove session store to prevent conflicts
     resave: false,
     saveUninitialized: false, // Don't create session for all requests
     rolling: false, // Disable rolling sessions during testing
