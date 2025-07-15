@@ -121,9 +121,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const value: AuthContextType = {
-    user,
+    user: currentUser || null,
     loading: isLoading,
-    isAuthenticated: !!user,
+    isAuthenticated: !!(currentUser && currentUser.id),
     logout,
     refreshUser,
   };
