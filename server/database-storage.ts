@@ -123,20 +123,34 @@ export class DatabaseStorage implements IStorage {
 
   async upsertUser(user: UpsertUser): Promise<User> {
     try {
-      const [upsertedUser] = await db
-        .insert(users)
-        .values(user)
-        .onConflictDoUpdate({
-          target: users.id,
-          set: {
-            ...user,
-            updatedAt: new Date(),
-          },
-        })
-        .returning();
-      return upsertedUser;
+      // TESTING ITEM #16: OAuth Callback Database Conflicts - Add timeout protection to upsertUser
+      console.log('🧪 TESTING ITEM #16: Starting OAuth upsertUser operation with timeout protection...');
+      
+      const upsertedUser = await withDrizzleTimeout(
+        db
+          .insert(users)
+          .values(user)
+          .onConflictDoUpdate({
+            target: users.id,
+            set: {
+              ...user,
+              updatedAt: new Date(),
+            },
+          })
+          .returning(),
+        5000 // 5 second timeout for OAuth operations
+      );
+      
+      console.log('✅ TESTING ITEM #16: OAuth upsertUser operation completed successfully');
+      return upsertedUser[0];
     } catch (error) {
-      console.error('Database error in upsertUser:', error);
+      console.error('🚨 TESTING ITEM #16: OAuth upsertUser operation failed:', error);
+      
+      // TESTING: Check if this is the sequelize cancellation error
+      if (error.message.includes('sequelize statement was cancelled')) {
+        console.error('🚨 CRITICAL: Found sequelize cancellation in OAuth upsertUser operation!');
+      }
+      
       throw error; // Keep throwing for create operations
     }
   }

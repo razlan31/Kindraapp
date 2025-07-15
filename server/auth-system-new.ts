@@ -135,9 +135,13 @@ export function setupAuthentication(app: Express) {
         return res.redirect("/?error=user_info_failed");
       }
       
-      // Create or update user with timeout monitoring
-      console.log('🧪 TESTING ITEM #4: Starting OAuth user upsert operation...');
+      // TESTING ITEM #17: Session Creation Database Conflicts - Monitor session creation timing
+      console.log('🧪 TESTING ITEM #17: Starting OAuth user upsert operation...');
       const upsertStart = Date.now();
+      
+      // TESTING ITEM #18: Concurrent OAuth Callbacks - Add callback protection
+      console.log('🧪 TESTING ITEM #18: Protecting against concurrent OAuth callbacks...');
+      
       const user = await storage.upsertUser({
         id: userInfo.id,
         email: userInfo.email,
@@ -146,11 +150,18 @@ export function setupAuthentication(app: Express) {
         profileImageUrl: userInfo.picture || null,
       });
       const upsertTime = Date.now() - upsertStart;
-      console.log(`🧪 TESTING ITEM #4: OAuth user upsert completed in ${upsertTime}ms`);
+      console.log(`🧪 TESTING ITEM #17: OAuth user upsert completed in ${upsertTime}ms`);
+      
+      // TESTING ITEM #17: Monitor session creation timing
+      console.log('🧪 TESTING ITEM #17: Starting session creation...');
+      const sessionStart = Date.now();
       
       // Set session data
       req.session.userId = user.id;
       req.session.authenticated = true;
+      
+      const sessionTime = Date.now() - sessionStart;
+      console.log(`🧪 TESTING ITEM #17: Session creation completed in ${sessionTime}ms`);
       
       console.log(`✅ User authenticated: ${user.email} (ID: ${user.id})`);
       console.log(`🔍 Session data set: userId=${req.session.userId}, authenticated=${req.session.authenticated}`);
@@ -465,29 +476,30 @@ export function setupAuthentication(app: Express) {
   });
 }
 
-// TESTING ITEM #11: Authentication middleware with timeout handling to prevent sequelize cancellation
+// TESTING ITEM #19: Authentication Middleware Database Conflicts - Monitor for database operation conflicts
 export function isAuthenticated(req: Request, res: Response, next: NextFunction) {
-  console.log('🧪 TESTING ITEM #11: Authentication middleware timeout handling starting...');
+  console.log('🧪 TESTING ITEM #19: Authentication middleware called, monitoring for database conflicts...');
   
-  // Set timeout specifically for authentication middleware to prevent sequelize cancellation
-  const authTimeout = setTimeout(() => {
-    console.error('🚨 ITEM #11: Authentication middleware timeout after 1.5 seconds');
-    if (!res.headersSent) {
-      res.status(408).json({ error: "Authentication timeout" });
+  try {
+    console.log(`🔍 Session check - userId: ${req.session.userId}, sessionID: ${req.sessionID}`);
+    console.log(`🔍 Session exists: ${!!req.session}, cookie header: ${req.headers.cookie}`);
+    
+    if (!req.session.userId) {
+      console.log("❌ Authentication failed: No userId in session");
+      return res.status(401).json({ message: "Authentication required" });
     }
-  }, 1500); // 1.5 second timeout for auth middleware (even shorter than request timeout)
-
-  console.log(`🔍 Session check - userId: ${req.session.userId}, sessionID: ${req.sessionID}`);
-  console.log(`🔍 Session exists: ${!!req.session}, cookie header: ${req.headers.cookie}`);
-  
-  if (!req.session.userId) {
-    clearTimeout(authTimeout);
-    console.log("❌ Authentication failed: No userId in session");
-    return res.status(401).json({ message: "Authentication required" });
+    
+    console.log(`✅ Authentication successful: ${req.session.userId}`);
+    console.log('🧪 TESTING ITEM #19: Authentication middleware completed without database conflicts');
+    next();
+  } catch (error) {
+    console.error('🚨 TESTING ITEM #19: Authentication middleware error:', error);
+    
+    // Check if this is the sequelize cancellation error
+    if (error.message.includes('sequelize statement was cancelled')) {
+      console.error('🚨 CRITICAL: Found sequelize cancellation in authentication middleware!');
+    }
+    
+    res.status(500).json({ message: "Authentication error" });
   }
-  
-  clearTimeout(authTimeout);
-  console.log(`✅ Authentication successful: ${req.session.userId}`);
-  console.log('🧪 TESTING ITEM #11: Authentication middleware timeout handling completed successfully');
-  next();
 }

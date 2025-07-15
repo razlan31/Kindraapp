@@ -16,19 +16,21 @@ if (!process.env.DATABASE_URL) {
   );
 }
 
-// TESTING ITEM #13: Neon Database Resource Limits - Ultra-minimal configuration to prevent resource limits
-console.log('🧪 TESTING ITEM #13: Configuring ultra-minimal database resources to prevent Neon limits...');
+// 🚨 SEQUELIZE CANCELLATION FIX: Ultra-minimal configuration to prevent Neon resource limits under concurrent authentication load
+console.log('🧪 SEQUELIZE CANCELLATION FIX: Configuring ultra-minimal database resources to prevent Neon limits under concurrent authentication load...');
 
+// ROOT CAUSE: Concurrent authentication operations cause Neon database to remove connections from pool
+// SOLUTION: Single connection with minimal timeouts and resource usage
 const pool = new Pool({ 
   connectionString: process.env.DATABASE_URL + "?connect_timeout=3", // 3 second timeout (ultra-minimal)
-  max: 1, // TESTING: Back to 1 connection to prevent Neon resource limits
-  min: 0, // No minimum connections
+  max: 1, // Single connection to prevent resource exhaustion during concurrent auth
+  min: 0, // No minimum connections to minimize resource usage
   idleTimeoutMillis: 3000, // 3 second idle timeout (ultra-minimal)
   connectionTimeoutMillis: 3000, // 3 second connection timeout (ultra-minimal)
   statementTimeout: 3000, // 3 second statement timeout (ultra-minimal)
   queryTimeout: 3000, // 3 second query timeout (ultra-minimal)
   allowExitOnIdle: true,
-  maxUses: 10, // TESTING: Ultra-minimal connection reuse to prevent resource exhaustion
+  maxUses: 10, // Ultra-minimal connection reuse to prevent resource exhaustion
   maxLifetimeSeconds: 30, // 30 second connection lifetime (ultra-minimal)
 });
 
