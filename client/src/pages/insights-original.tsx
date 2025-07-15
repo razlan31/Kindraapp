@@ -39,8 +39,14 @@ import { useState, useEffect } from "react";
 
 export default function Insights() {
   // CACHE-BUSTER: 2025-01-09-v6-auth-fixed-final
-  const { user, loading } = useAuth();
-  const isAuthenticated = !!user;
+  const { user, loading, isAuthenticated } = useAuth();
+  
+  console.log("Insights - Debug auth state:", { 
+    user: !!user, 
+    loading, 
+    isAuthenticated, 
+    userObject: user 
+  });
   
 
 
