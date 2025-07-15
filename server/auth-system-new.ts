@@ -49,12 +49,12 @@ export function setupAuthentication(app: Express) {
       return res.status(500).json({ error: "OAuth not configured" });
     }
     
-    // Use localhost for development to match React app domain
-    const currentHost = process.env.NODE_ENV === 'development' ? 'localhost:5000' : req.get('host');
-    const protocol = process.env.NODE_ENV === 'development' ? 'http' : req.protocol;
-    const REDIRECT_URI = `${protocol}://${currentHost}/api/auth/google/callback`;
+    // Use current request host for OAuth callback
+    const host = req.get('host') || 'localhost:5000';
+    const protocol = req.secure || req.headers['x-forwarded-proto'] === 'https' ? 'https' : 'http';
+    const REDIRECT_URI = `${protocol}://${host}/api/auth/google/callback`;
     
-    console.log(`🔍 OAuth using current request host: ${currentHost}`);
+    console.log(`🔍 OAuth using current request host: ${host}`);
     console.log(`🔍 OAuth redirect URI: ${REDIRECT_URI}`);
     console.log(`🔍 This ensures cookie domain matches request domain`);
     
@@ -85,10 +85,10 @@ export function setupAuthentication(app: Express) {
         return res.redirect("/?error=oauth_config");
       }
       
-      // Use localhost for development to match React app domain
-      const currentHost = process.env.NODE_ENV === 'development' ? 'localhost:5000' : req.get('host');
-      const protocol = process.env.NODE_ENV === 'development' ? 'http' : req.protocol;
-      const REDIRECT_URI = `${protocol}://${currentHost}/api/auth/google/callback`;
+      // Use current request host for OAuth callback
+      const host = req.get('host') || 'localhost:5000';
+      const protocol = req.secure || req.headers['x-forwarded-proto'] === 'https' ? 'https' : 'http';
+      const REDIRECT_URI = `${protocol}://${host}/api/auth/google/callback`;
       
       // Exchange code for tokens
       const tokenResponse = await fetch("https://oauth2.googleapis.com/token", {
