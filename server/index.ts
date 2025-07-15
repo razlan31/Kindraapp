@@ -9,6 +9,14 @@ const app = express();
 
 // Trust proxy for proper cookie handling in production
 app.set('trust proxy', 1);
+
+// Increase timeout for slow database operations
+app.use((req, res, next) => {
+  req.setTimeout(60000); // 60 second timeout
+  res.setTimeout(60000); // 60 second timeout
+  next();
+});
+
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: false, limit: '10mb' }));
 

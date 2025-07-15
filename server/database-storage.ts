@@ -14,11 +14,31 @@ import { db } from "./db";
 import { eq, desc, and } from "drizzle-orm";
 import type { IStorage } from "./storage";
 
+// Add timeout wrapper for database operations
+const withTimeout = async <T>(
+  operation: () => Promise<T>,
+  timeoutMs: number = 25000
+): Promise<T> => {
+  return Promise.race([
+    operation(),
+    new Promise<never>((_, reject) => {
+      setTimeout(() => reject(new Error('Database operation timed out')), timeoutMs);
+    })
+  ]);
+};
+
 export class DatabaseStorage implements IStorage {
   // User operations
   async getUser(id: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.id, id));
-    return user;
+    try {
+      const [user] = await withTimeout(() => 
+        db.select().from(users).where(eq(users.id, id))
+      );
+      return user;
+    } catch (error) {
+      console.error('Database timeout in getUser:', error);
+      throw error;
+    }
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
@@ -52,15 +72,25 @@ export class DatabaseStorage implements IStorage {
 
   // Connection operations with subscription awareness
   async getConnections(userId: string): Promise<Connection[]> {
-    return this.getConnectionsByUserId(userId);
+    try {
+      return await withTimeout(() => this.getConnectionsByUserId(userId));
+    } catch (error) {
+      console.error('Database timeout in getConnections:', error);
+      throw error;
+    }
   }
 
   async getMoments(userId: string, limit?: number): Promise<Moment[]> {
-    const query = db.select().from(moments).where(eq(moments.userId, userId)).orderBy(desc(moments.createdAt));
-    if (limit) {
-      return query.limit(limit);
+    try {
+      const query = db.select().from(moments).where(eq(moments.userId, userId)).orderBy(desc(moments.createdAt));
+      if (limit) {
+        return await withTimeout(() => query.limit(limit));
+      }
+      return await withTimeout(() => query);
+    } catch (error) {
+      console.error('Database timeout in getMoments:', error);
+      throw error;
     }
-    return query;
   }
 
   async upsertUser(user: UpsertUser): Promise<User> {
