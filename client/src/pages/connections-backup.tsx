@@ -13,9 +13,10 @@ import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { AddConnectionModal } from "@/components/modals/add-connection-modal";
+import { useAuth } from "@/contexts/auth-context";
 
 export default function Connections() {
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStage, setFilterStage] = useState<string | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -26,13 +27,13 @@ export default function Connections() {
   // Fetch connections
   const { data: connections = [], isLoading } = useQuery<Connection[]>({
     queryKey: ["/api/connections"],
-    enabled: !!user,
+    enabled: isAuthenticated && !!user,
   });
 
   // Fetch moments to calculate emoji data and flag counts
   const { data: moments = [] } = useQuery<Moment[]>({
     queryKey: ["/api/moments"],
-    enabled: !!user,
+    enabled: isAuthenticated && !!user,
   });
 
   // Create connection mutation

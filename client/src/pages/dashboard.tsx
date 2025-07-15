@@ -184,14 +184,14 @@ export default function Dashboard() {
 
 // Menstrual Cycle Tracker Component
 function MenstrualCycleTracker() {
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
   // Fetch menstrual cycles
   const { data: cycles = [], isLoading } = useQuery<MenstrualCycle[]>({
     queryKey: ['/api/menstrual-cycles'],
-    enabled: !!user,
+    enabled: isAuthenticated && !!user,
   });
 
   // Create cycle mutation
