@@ -14,7 +14,7 @@ interface EnhancedAIInsightsProps {
 }
 
 export function EnhancedAIInsights({ connections, moments, userData }: EnhancedAIInsightsProps) {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   
   console.log("EnhancedAIInsights - Rendering with:", {
     connectionsLength: connections?.length,
