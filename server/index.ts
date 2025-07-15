@@ -47,6 +47,27 @@ app.use((req, res, next) => {
   next();
 });
 
+// TESTING ITEM #9: Serialize database operations to prevent concurrent conflicts
+console.log('🧪 TESTING ITEM #9: Serializing database operations to prevent concurrent conflicts...');
+
+// Database operation queue to prevent concurrency issues
+let databaseOperationQueue: Promise<any> = Promise.resolve();
+
+// Serialize all database operations
+const serializeDatabaseOperation = async <T>(operation: () => Promise<T>): Promise<T> => {
+  databaseOperationQueue = databaseOperationQueue.then(async () => {
+    console.log('🔄 SERIALIZED: Starting database operation...');
+    const result = await operation();
+    console.log('✅ SERIALIZED: Database operation completed');
+    return result;
+  }).catch(error => {
+    console.error('🚨 SERIALIZED: Database operation failed:', error);
+    throw error;
+  });
+  
+  return databaseOperationQueue;
+};
+
 // Create a startup lock to prevent race conditions
 let startupInProgress = false;
 
@@ -58,15 +79,17 @@ let startupInProgress = false;
   }
   startupInProgress = true;
   
-  // Initialize badges on startup with deferred processing to prevent timeout
+  // TESTING ITEM #9: Serialize badge initialization to prevent concurrent conflicts
   try {
-    console.log('🔍 STARTUP: Beginning optimized badge initialization...');
+    console.log('🔍 STARTUP: Beginning serialized badge initialization...');
     
-    // Use deferred badge initialization to prevent startup blocking
-    await storage.initializeBadges();
-    console.log('✅ STARTUP: Badge initialization completed successfully');
+    // Use serialized badge initialization to prevent concurrent database operations
+    await serializeDatabaseOperation(async () => {
+      return await storage.initializeBadges();
+    });
+    console.log('✅ STARTUP: Serialized badge initialization completed successfully');
   } catch (error) {
-    console.error('🚨 STARTUP: Badge initialization failed:', error);
+    console.error('🚨 STARTUP: Serialized badge initialization failed:', error);
     // Continue startup even if badge initialization fails
     console.log('🔄 STARTUP: Continuing startup despite badge initialization failure');
   } finally {
@@ -77,11 +100,16 @@ let startupInProgress = false;
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
-  // Setup authentication system BEFORE registering routes
-  setupAuthentication(app);
+  // TESTING ITEM #9: Serialize authentication setup to prevent concurrent database operations
+  await serializeDatabaseOperation(async () => {
+    setupAuthentication(app);
+    return Promise.resolve();
+  });
 
-  // Register API routes BEFORE Vite middleware
-  const server = await registerRoutes(app);
+  // TESTING ITEM #9: Serialize route registration to prevent concurrent database operations
+  const server = await serializeDatabaseOperation(async () => {
+    return await registerRoutes(app);
+  });
 
   // TESTING ITEM #6: Align Express timeouts with database timeouts to prevent mismatch
   server.keepAliveTimeout = 2000; // 2 second keep-alive (shorter than DB timeout)
