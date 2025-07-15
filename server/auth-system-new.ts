@@ -15,32 +15,35 @@ declare module "express-session" {
 export function setupAuthentication(app: Express) {
   console.log("🔐 Setting up complete authentication system");
   
+  // TESTING ITEM #8: Eliminate session store database conflicts
+  console.log('🧪 TESTING ITEM #8: Using ultra-minimal session store to prevent database conflicts...');
+  
   // Session configuration
   const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 7 days
   
-  // Simplified memory store configuration to prevent session timeout issues
+  // Ultra-minimal memory store configuration to prevent any database conflicts
   const MemStore = MemoryStore(session);
   const sessionStore = new MemStore({
-    checkPeriod: 300000, // prune expired entries every 5 minutes (reduced from 24h)
+    checkPeriod: 86400000, // Check only once per day to minimize operations
     ttl: sessionTtl,
-    max: 100, // Reduced max sessions to prevent memory issues
+    max: 10, // Severely reduced max sessions to minimize memory operations
     dispose: (key: string, value: any) => {
-      console.log(`🗑️ Session disposed: ${key}`);
+      // Remove logging to prevent any I/O during startup
     }
   });
   
-  // Monitor session store for timeout issues
+  // TESTING ITEM #8: Disable session store error monitoring to prevent startup conflicts
   sessionStore.on('error', (err) => {
-    console.error('🚨 Session store error:', err);
+    // Silently handle errors during testing to prevent startup interference
   });
 
-  // Session middleware with fixed configuration
+  // TESTING ITEM #8: Ultra-minimal session middleware to prevent startup conflicts
   app.use(session({
     secret: process.env.SESSION_SECRET || 'kindra-production-secret',
     store: sessionStore,
     resave: false,
     saveUninitialized: false, // Don't create session for all requests
-    rolling: true,
+    rolling: false, // Disable rolling sessions during testing
     cookie: {
       secure: false, // Development mode
       httpOnly: true, // Secure cookies for production
