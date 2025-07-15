@@ -32,7 +32,7 @@ interface RelationshipCalendarProps {
 }
 
 export function RelationshipCalendar({ selectedConnection }: RelationshipCalendarProps) {
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const [date, setDate] = useState<Date>(new Date());
   const [month, setMonth] = useState<Date>(new Date());
   const [showMilestoneModal, setShowMilestoneModal] = useState(false);
@@ -41,19 +41,19 @@ export function RelationshipCalendar({ selectedConnection }: RelationshipCalenda
   // Get all moments
   const { data: moments = [] } = useQuery<Moment[]>({
     queryKey: ["/api/moments"],
-    enabled: !!user,
+    enabled: isAuthenticated && !!user,
   });
   
   // Get all connections
   const { data: connections = [] } = useQuery<Connection[]>({
     queryKey: ["/api/connections"],
-    enabled: !!user,
+    enabled: isAuthenticated && !!user,
   });
   
   // Get all menstrual cycles
   const { data: cycles = [] } = useQuery<MenstrualCycle[]>({
     queryKey: ["/api/menstrual-cycles"],
-    enabled: !!user,
+    enabled: isAuthenticated && !!user,
   });
   
   // Get milestone data
@@ -67,7 +67,7 @@ export function RelationshipCalendar({ selectedConnection }: RelationshipCalenda
       const data = await response.json();
       return data;
     },
-    enabled: !!user,
+    enabled: isAuthenticated && !!user,
   });
   
   // Filter moments if a connection is selected

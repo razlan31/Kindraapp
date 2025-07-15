@@ -16,7 +16,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export default function ConnectionsNew() {
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const { setSelectedConnection } = useModal();
   const { setMainFocusConnection } = useRelationshipFocus();
   const [searchTerm, setSearchTerm] = useState("");
@@ -33,13 +33,13 @@ export default function ConnectionsNew() {
   // Fetch connections
   const { data: connections = [], isLoading } = useQuery<Connection[]>({
     queryKey: ["/api/connections"],
-    enabled: !!user,
+    enabled: isAuthenticated && !!user,
   });
 
   // Fetch moments to calculate emoji data and flag counts
   const { data: moments = [] } = useQuery<Moment[]>({
     queryKey: ["/api/moments"],
-    enabled: !!user,
+    enabled: isAuthenticated && !!user,
   });
 
   // Filter connections based on search term and stage filter

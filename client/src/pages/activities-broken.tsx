@@ -202,7 +202,7 @@ export default function Activities() {
     queryKey: ["/api/moments"],
     staleTime: 30000, // Cache for 30 seconds
     refetchOnWindowFocus: false, // Reduce unnecessary refetches
-    enabled: !!user,
+    enabled: isAuthenticated && !!user,
   });
 
 
@@ -210,14 +210,14 @@ export default function Activities() {
   // Fetch connections
   const { data: connections = [] } = useQuery<Connection[]>({
     queryKey: ["/api/connections"],
-    enabled: !!user,
+    enabled: isAuthenticated && !!user,
   });
 
   // Fetch milestones
   const { data: milestones = [] } = useQuery({
     queryKey: ["/api/milestones", selectedConnection],
     staleTime: 0,
-    enabled: !!user,
+    enabled: isAuthenticated && !!user,
   });
 
   // Get plans from moments with "Plan" tag

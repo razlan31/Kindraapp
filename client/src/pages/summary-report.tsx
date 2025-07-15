@@ -17,7 +17,7 @@ import { FlagExplanation } from "@/components/ui/flag-explanation";
 type ReportPeriod = "week" | "month" | "all";
 
 export default function SummaryReport() {
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const [period, setPeriod] = useState<ReportPeriod>("week");
   const [selectedConnection, setSelectedConnection] = useState<number | null>(null);
   const [selectedConnections, setSelectedConnections] = useState<number[]>([]);
@@ -25,22 +25,22 @@ export default function SummaryReport() {
   // Fetch user data
   const { data: moments = [], isLoading: momentsLoading } = useQuery<Moment[]>({
     queryKey: ["/api/moments"],
-    enabled: !!user,
+    enabled: isAuthenticated && !!user,
   });
 
   const { data: connections = [] } = useQuery<Connection[]>({
     queryKey: ["/api/connections"],
-    enabled: !!user,
+    enabled: isAuthenticated && !!user,
   });
 
   const { data: badges = [] } = useQuery<Badge[]>({
     queryKey: ["/api/badges"],
-    enabled: !!user,
+    enabled: isAuthenticated && !!user,
   });
 
   const { data: userBadges = [] } = useQuery({
     queryKey: ["/api/user-badges"],
-    enabled: !!user,
+    enabled: isAuthenticated && !!user,
   });
 
   // Calculate date ranges based on selected period

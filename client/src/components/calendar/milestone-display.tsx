@@ -15,7 +15,7 @@ type MilestoneDisplayProps = {
 };
 
 export function MilestoneDisplay({ date, onAddMilestone }: MilestoneDisplayProps) {
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const { mainFocusConnection } = useRelationshipFocus();
   
   const { data: milestones = [] } = useQuery({
@@ -26,7 +26,7 @@ export function MilestoneDisplay({ date, onAddMilestone }: MilestoneDisplayProps
         : '';
       return apiRequest<Milestone[]>(`/api/milestones${queryString}`);
     },
-    enabled: !!user,
+    enabled: isAuthenticated && !!user,
   });
   
   // Filter milestones for this specific date

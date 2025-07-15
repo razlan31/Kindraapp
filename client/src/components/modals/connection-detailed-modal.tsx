@@ -9,7 +9,7 @@ import { format } from 'date-fns';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth } from '@/contexts/auth-context';
 import { EditConnectionModal } from './edit-connection-modal';
 import { ConnectionAIInsights } from '@/components/insights/connection-ai-insights';
 import type { Connection, Moment } from '@shared/schema';
