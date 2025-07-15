@@ -14,8 +14,8 @@ import { db } from "./db";
 import { eq, desc, and, count } from "drizzle-orm";
 import type { IStorage } from "./storage";
 
-// Database timeout wrapper to prevent Express request cancellation
-const withTimeout = async <T>(promise: Promise<T>, timeoutMs: number = 5000): Promise<T> => {
+// TESTING ITEM #6: Database timeout wrapper aligned with Express server timeouts
+const withTimeout = async <T>(promise: Promise<T>, timeoutMs: number = 3000): Promise<T> => {
   const timeoutPromise = new Promise<never>((_, reject) => {
     setTimeout(() => reject(new Error(`Database operation timed out after ${timeoutMs}ms`)), timeoutMs);
   });
@@ -545,11 +545,14 @@ export class DatabaseStorage implements IStorage {
   async initializeBadges(): Promise<void> {
     console.log('🏆 Starting optimized badge initialization...');
     
+    // TESTING ITEM #6: Test if aligned timeouts prevent sequelize cancellation
+    console.log('🧪 TESTING ITEM #6: Using aligned timeouts to prevent sequelize cancellation...');
+    
     try {
-      // PERFORMANCE FIX: Use super fast query with minimal timeout
+      // Use aligned 3s timeout instead of 500ms to test if this prevents sequelize cancellation  
       const existingBadges = await withTimeout(
         db.select({ count: count() }).from(badges),
-        500 // Ultra-fast timeout for count check
+        3000 // Use aligned timeout matching Express server timeout
       );
       
       if (existingBadges[0].count > 0) {
@@ -571,6 +574,9 @@ export class DatabaseStorage implements IStorage {
       
     } catch (error) {
       console.error('🚨 Badge initialization failed:', error);
+      if (error.message.includes('cancelled')) {
+        console.error('🎯 TESTING ITEM #6: Sequelize cancellation still occurred despite aligned timeouts!');
+      }
       console.log('🔄 Deferring badge creation to prevent startup blocking...');
       
       // Always defer on error to prevent startup blocking

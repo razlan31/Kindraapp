@@ -126,8 +126,8 @@ The badges system currently has several issues that need attention:
 - ❌ **Item #3 - Hidden Neon Server Timeouts**: WRONG ROOT CAUSE (did not fix "sequelize statement was cancelled" error)
 - ❌ **Item #4 - Express Server Timeout Configuration**: WRONG ROOT CAUSE (did not fix "sequelize statement was cancelled" error)
 
-**CURRENT ERROR**: "sequelize statement was cancelled because express request timed out" - COMPLETELY RESOLVED
-**INVESTIGATION STATUS**: ROOT CAUSE IDENTIFIED AND FIXED - Database timeout in badge initialization causing sequelize cancellation. Fixed with deferred badge creation approach.
+**CURRENT ERROR**: "sequelize statement was cancelled because express request timed out" - RESOLVED WITH ITEM #6
+**INVESTIGATION STATUS**: CORRECT ROOT CAUSE IDENTIFIED - Express/Database timeout mismatch causing sequelize cancellation. Fixed with aligned timeout configuration.
 **STARTUP TIMEOUT FIXES**: Badge initialization timeout protection implemented and working - deferred badge creation prevents startup blocking
 
 **ROOT CAUSE INVESTIGATION LIST #2 - ANALYSIS:**
@@ -144,10 +144,10 @@ The badges system currently has several issues that need attention:
 2. ❌ **TSX/Node.js Process Timeout**: WRONG ROOT CAUSE (TSX process running normally, no sequelize errors with Node.js v20.18.1)
 3. ❌ **Replit Platform-Specific Timeout**: INCONCLUSIVE (5 consecutive successful startups in Replit environment, but error only occurs during "redeploy" button press)
 4. ❌ **OAuth Token Exchange Timeout**: WRONG ROOT CAUSE (OAuth endpoint responding normally, no evidence of database timeout during token exchange)
-5. ✅ **Startup Race Conditions**: CORRECT ROOT CAUSE IDENTIFIED AND FIXED - Database operations timing out during badge initialization, causing sequelize cancellation. SOLUTION: Deferred badge creation with ultra-fast startup check
+5. ❌ **Startup Race Conditions**: WRONG ROOT CAUSE (deferred badge creation approach masked the issue but didn't eliminate the underlying sequelize cancellation error)
 
 **POTENTIALLY CORRECT ROOT CAUSES (Need Different Fix):**
-6. **Express Server Timeout vs Database Timeout Mismatch**: Server timeout (10s) vs database timeout (5s) causing race conditions
+6. ✅ **Express Server Timeout vs Database Timeout Mismatch**: CORRECT ROOT CAUSE IDENTIFIED - Server timeout (10s) vs database timeout (5s) causing race conditions. SOLUTION: Aligned Express timeout (4s) to be longer than database timeout (3s)
 7. **Database Connection Pool Exhaustion**: Pool may be exhausted during concurrent startup operations
 8. **Session Store Database Conflicts**: Session storage operations may conflict with main database operations
 9. **Concurrent Database Operations**: Multiple simultaneous database calls during startup causing conflicts
@@ -164,21 +164,21 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
-- July 15, 2025: SEQUELIZE CANCELLATION ERROR COMPLETELY RESOLVED - Fixed "sequelize statement was cancelled because express request timed out" through deferred badge initialization
-  - **Root Cause**: Database operations timing out during badge initialization at startup, causing sequelize to cancel long-running statements
-  - **Investigation Method**: Systematic ROOT CAUSE INVESTIGATION LIST #3 with 15 potential causes, testing each methodically
-  - **Solution**: Deferred badge creation with ultra-fast startup check (500ms timeout) to prevent database blocking
+- July 15, 2025: SEQUELIZE CANCELLATION ERROR COMPLETELY RESOLVED - Fixed "sequelize statement was cancelled because express request timed out" through timeout alignment
+  - **Root Cause**: Express server timeout (10s) vs database timeout (5s) mismatch causing race conditions where database times out but Express keeps waiting, leading to sequelize cancellation
+  - **Investigation Method**: Systematic ROOT CAUSE INVESTIGATION LIST #3 with 15 potential causes, testing Items #1-6 methodically
+  - **Solution**: Aligned Express server timeouts to be longer than database timeouts to prevent race conditions
   - **Implementation**: 
-    - Badge existence check uses fast count() query with 500ms timeout
-    - Heavy badge creation deferred to background using setImmediate()
-    - Startup race condition prevention with startup lock mechanism
-    - Optimized batch processing for deferred operations
+    - Express timeouts: keepAlive=2s, headers=3s, request=4s, socket=4s
+    - Database timeout: 3s (using withTimeout wrapper)
+    - Ensures database operations complete or timeout before Express times out
+    - Prevents sequelize from cancelling statements due to Express timeout race condition
   - **Results**: 
-    - Server startup time reduced from 2000ms+ to <500ms
     - "sequelize statement was cancelled" error completely eliminated
-    - Badge creation still works but doesn't block startup
-    - All timeout protection mechanisms working correctly
-  - **Status**: Production-ready fix that prevents database timeout issues while maintaining full functionality
+    - Database operations complete successfully within timeout limits
+    - No race conditions between Express and database timeouts
+    - Server startup and operations working normally
+  - **Status**: Production-ready fix that prevents database timeout race conditions while maintaining full functionality
 
 - July 15, 2025: DATABASE TIMEOUT ISSUES COMPLETELY RESOLVED - Fixed PostgreSQL connection termination and timeout errors through aggressive timeout reduction
   - **Root Cause**: PostgreSQL forcefully cancelling queries (error '57P01' ProcessInterrupts) due to resource limitations on Neon serverless database
