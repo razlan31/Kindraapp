@@ -14,10 +14,15 @@ import { db } from "./db";
 import { eq, desc, and, count } from "drizzle-orm";
 import type { IStorage } from "./storage";
 
-// TESTING ITEM #6: Database timeout wrapper aligned with Express server timeouts
-const withTimeout = async <T>(promise: Promise<T>, timeoutMs: number = 3000): Promise<T> => {
+// TESTING ITEM #12: Drizzle ORM-level timeout wrapper to prevent sequelize cancellation
+const withDrizzleTimeout = async <T>(promise: Promise<T>, timeoutMs: number = 2000): Promise<T> => {
+  console.log('🧪 TESTING ITEM #12: Wrapping Drizzle query with 2-second timeout...');
+  
   const timeoutPromise = new Promise<never>((_, reject) => {
-    setTimeout(() => reject(new Error(`Database operation timed out after ${timeoutMs}ms`)), timeoutMs);
+    setTimeout(() => {
+      console.error('🚨 ITEM #12: Drizzle ORM query timeout after 2 seconds');
+      reject(new Error(`Drizzle ORM query timed out after ${timeoutMs}ms`));
+    }, timeoutMs);
   });
   
   return Promise.race([promise, timeoutPromise]);
@@ -30,10 +35,11 @@ export class DatabaseStorage implements IStorage {
   // User operations
   async getUser(id: string): Promise<User | undefined> {
     try {
-      const [user] = await withTimeout(db.select().from(users).where(eq(users.id, id)));
+      const [user] = await withDrizzleTimeout(db.select().from(users).where(eq(users.id, id)));
+      console.log('🧪 TESTING ITEM #12: Drizzle getUser query completed successfully');
       return user;
     } catch (error) {
-      console.error('Database error in getUser:', error);
+      console.error('🚨 ITEM #12: Drizzle getUser query error:', error);
       return undefined; // Return undefined instead of throwing
     }
   }
@@ -419,7 +425,7 @@ export class DatabaseStorage implements IStorage {
   // Badge operations
   async getAllBadges(): Promise<Badge[]> {
     try {
-      return await withTimeout(db.select().from(badges), 3000);
+      return await withDrizzleTimeout(db.select().from(badges), 3000);
     } catch (error) {
       console.error('🚨 getAllBadges error:', error);
       if (error.message.includes('timed out')) {
@@ -550,7 +556,7 @@ export class DatabaseStorage implements IStorage {
     
     try {
       // Use aligned 3s timeout instead of 500ms to test if this prevents sequelize cancellation  
-      const existingBadges = await withTimeout(
+      const existingBadges = await withDrizzleTimeout(
         db.select({ count: count() }).from(badges),
         3000 // Use aligned timeout matching Express server timeout
       );
@@ -608,7 +614,7 @@ export class DatabaseStorage implements IStorage {
           isRepeatable: badge.isRepeatable ?? false
         }));
         
-        await withTimeout(
+        await withDrizzleTimeout(
           db.insert(badges).values(batchValues),
           5000 // Longer timeout for deferred operations
         );

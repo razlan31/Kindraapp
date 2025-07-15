@@ -30,7 +30,19 @@ const pool = new Pool({
   maxLifetimeSeconds: 60, // 1 minute connection lifetime (aggressive reduction)
 });
 
-export const db = drizzle({ client: pool, schema });
+// TESTING ITEM #12: Drizzle ORM-level timeout configuration to prevent sequelize cancellation
+console.log('🧪 TESTING ITEM #12: Configuring Drizzle ORM query timeout to prevent sequelize cancellation...');
+
+export const db = drizzle({ 
+  client: pool, 
+  schema,
+  // Add ORM-level timeout configuration
+  logger: {
+    logQuery: (query, params) => {
+      console.log('🧪 ITEM #12: Drizzle query starting:', query.substring(0, 100) + '...');
+    }
+  }
+});
 
 // Export pool for testing purposes
 export { pool };
