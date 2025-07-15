@@ -111,6 +111,13 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
+- July 15, 2025: OAUTH CONFIGURATION ISSUE IDENTIFIED - Google OAuth app redirect URI mismatch prevents authentication
+  - **Root Cause**: OAuth redirect URI using localhost:5000 but Google OAuth app only configured for production domain
+  - **Evidence**: OAuth redirect working but authentication failing due to callback URL mismatch
+  - **Solution Required**: User must add `http://localhost:5000/api/auth/google/callback` to Google OAuth app authorized redirect URIs
+  - **Current Status**: Authentication system correctly configured, waiting for OAuth app configuration update
+  - **Next Steps**: Add localhost callback URL to Google Cloud Console OAuth app configuration
+
 - July 14, 2025: AUTHENTICATION ROOT CAUSE IDENTIFIED AND FIXED - Session cookie transmission issue resolved through domain mismatch fix
   - **FINAL ROOT CAUSE**: OAuth callback was using production domain (`ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev`) while frontend made requests to localhost:5000
   - **DOMAIN MISMATCH**: Session cookie created on production domain was not accessible to localhost requests, causing authentication failure
