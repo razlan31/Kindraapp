@@ -16,18 +16,18 @@ if (!process.env.DATABASE_URL) {
   );
 }
 
-// Optimized pool configuration for concurrent operations
+// Aggressive timeout reduction for Neon serverless limitations
 const pool = new Pool({ 
-  connectionString: process.env.DATABASE_URL + "?connect_timeout=15", // Reduced timeout for faster responses
-  max: 3, // Allow up to 3 concurrent connections for better concurrency
+  connectionString: process.env.DATABASE_URL + "?connect_timeout=5", // 5 second timeout for faster failure
+  max: 1, // Reduced back to 1 to minimize resource usage on Neon serverless
   min: 0, // No minimum connections
-  idleTimeoutMillis: 10000, // 10 second idle timeout (reduced from 30s)
-  connectionTimeoutMillis: 15000, // 15 second connection timeout (reduced from 30s)
-  statementTimeout: 10000, // 10 second statement timeout (reduced from 30s)
-  queryTimeout: 10000, // 10 second query timeout (reduced from 30s)
+  idleTimeoutMillis: 5000, // 5 second idle timeout (aggressive reduction)
+  connectionTimeoutMillis: 5000, // 5 second connection timeout (aggressive reduction)
+  statementTimeout: 5000, // 5 second statement timeout (aggressive reduction)
+  queryTimeout: 5000, // 5 second query timeout (aggressive reduction)
   allowExitOnIdle: true,
-  maxUses: 1000, // Limit connection reuse to prevent resource exhaustion
-  maxLifetimeSeconds: 300, // 5 minute connection lifetime
+  maxUses: 100, // Reduced connection reuse to prevent resource exhaustion
+  maxLifetimeSeconds: 60, // 1 minute connection lifetime (aggressive reduction)
 });
 
 export const db = drizzle({ client: pool, schema });
