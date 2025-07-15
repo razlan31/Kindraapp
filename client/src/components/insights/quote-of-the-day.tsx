@@ -24,7 +24,7 @@ interface DailyQuote {
 
 export function QuoteOfTheDay({ connections, moments, userData }: QuoteOfTheDayProps) {
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
 
   // Get today's date as a string to use as cache key
   const today = new Date().toISOString().split('T')[0];

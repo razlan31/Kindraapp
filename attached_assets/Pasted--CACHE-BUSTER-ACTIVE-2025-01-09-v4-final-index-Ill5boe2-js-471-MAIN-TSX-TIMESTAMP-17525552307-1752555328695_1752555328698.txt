@@ -1,0 +1,134 @@
+🔥 CACHE BUSTER ACTIVE: 2025-01-09-v4-final
+index-Ill5boe2.js:471 🔥 MAIN.TSX TIMESTAMP: 1752555230776
+index-Ill5boe2.js:471 🔥 MAIN.TSX URL: https://kindra-jagohtrade.replit.app/
+index-Ill5boe2.js:471 🔥 CACHE BUSTER: 2025-01-09-v6-auth-fixed-final
+index-Ill5boe2.js:471 🚨🚨🚨 MAIN.TSX EXECUTING - IMPORTING APP FROM ./App
+index-Ill5boe2.js:471 🚨🚨🚨 MAIN.TSX TIMESTAMP: 2025-07-15T04:53:50.776Z
+index-Ill5boe2.js:471 🚨🚨🚨 MAIN.TSX ABOUT TO RENDER APP TO DOM
+index-Ill5boe2.js:462 Theme context initial load: light
+index-Ill5boe2.js:471 App: Routing decision Object
+index-Ill5boe2.js:48 🔍 Query Request to /api/connections
+index-Ill5boe2.js:48 🔍 Document cookies before query: 
+index-Ill5boe2.js:462 Theme effect running: light
+index-Ill5boe2.js:462 Applied theme: light
+index-Ill5boe2.js:462 Theme stored to localStorage: light
+index-Ill5boe2.js:408 Auth context: Making /api/me request
+index-Ill5boe2.js:408 Auth context: Document cookies: 
+index-Ill5boe2.js:408 Auth context: Effect triggered Object
+index-Ill5boe2.js:408 Auth context: Debug state Object
+kindra-jagohtrade.replit.app/:1 Unchecked runtime.lastError: The message port closed before a response was received.Understand this error
+kindra-jagohtrade.replit.app/:1 Unchecked runtime.lastError: The message port closed before a response was received.Understand this error
+index-Ill5boe2.js:408 Auth context: /api/me response 200 
+index-Ill5boe2.js:408 Auth context: Response headers: Object
+index-Ill5boe2.js:408 Auth context: User data received lenprodigy@gmail.com
+index-Ill5boe2.js:471 App: Routing decision Object
+index-Ill5boe2.js:48 🔍 Query Request to /api/user-badges
+index-Ill5boe2.js:48 🔍 Document cookies before query: 
+index-Ill5boe2.js:48 🔍 Query Request to /api/notifications
+index-Ill5boe2.js:48 🔍 Document cookies before query: 
+index-Ill5boe2.js:48 🔍 Query Request to /api/subscription/status
+index-Ill5boe2.js:48 🔍 Document cookies before query: 
+index-Ill5boe2.js:48 🔍 Query Request to /api/ai/conversation
+index-Ill5boe2.js:48 🔍 Document cookies before query: 
+index-Ill5boe2.js:471 🔥 STATE DEBUG - isSubmitting changed: false
+index-Ill5boe2.js:471 🔥 STATE DEBUG - connectionId changed: 2 selectedConnectionId: null
+index-Ill5boe2.js:471 Modal useEffect - selectedDate from context: null
+index-Ill5boe2.js:471 Modal useEffect - editingMoment: null
+index-Ill5boe2.js:471 Modal useEffect - momentModalOpen: false
+index-Ill5boe2.js:471 🔥 MODAL OPEN - Resetting isSubmitting to false
+index-Ill5boe2.js:471 🔥 MODAL INIT - Setting connectionId: 2 from selectedConnectionId: null
+index-Ill5boe2.js:454 🔥 PLAN MODAL - Connection effect: Object
+index-Ill5boe2.js:454 🔥 PLAN MODAL - Form init effect: Object
+index-Ill5boe2.js:408 Auth context: Effect triggered Object
+index-Ill5boe2.js:408 Auth context: User loaded successfully: lenprodigy@gmail.com
+index-Ill5boe2.js:408 Auth context: Debug state Object
+index-Ill5boe2.js:471 App: Routing decision Object
+index-Ill5boe2.js:454 🔥 PLAN MODAL - Form init effect: Object
+index-Ill5boe2.js:408 Auth context: Debug state Object
+index-Ill5boe2.js:48 🔍 Query Response status: 200
+index-Ill5boe2.js:48 🔍 Query Response headers: [["alt-svc","h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"],["cache-control","private"],["content-length","292"],["content-type","application/json; charset=utf-8"],["date","Tue, 15 Jul 2025 04:53:51 GMT"],["etag","W/\"124-Zvk6RMSa2Fb7Q39jkCBP6Z03QBI\""],["expires","Mon, 14 Jul 2025 09:58:53 GMT"],["server","Google Frontend"],["strict-transport-security","max-age=63072000; includeSubDomains"],["via","1.1 google"],["x-cloud-trace-context","42be3e9040f0583a9e060735d2d8b3f3"],["x-powered-by","Express"]]
+index-Ill5boe2.js:454 🔥 PLAN MODAL - Form init effect: Object
+index-Ill5boe2.js:454 Focus Context Debug: Object
+api/user-badges:1  Failed to load resource: the server responded with a status of 500 ()Understand this error
+index-Ill5boe2.js:48 🔍 Query Response status: 500
+index-Ill5boe2.js:48 🔍 Query Response headers: [["alt-svc","h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"],["content-length","47"],["content-type","application/json; charset=utf-8"],["date","Tue, 15 Jul 2025 04:53:51 GMT"],["etag","W/\"2f-02LHMnXph/Ng9Wn8P01NkrK5sdQ\""],["server","Google Frontend"],["strict-transport-security","max-age=63072000; includeSubDomains"],["via","1.1 google"],["x-cloud-trace-context","3dde47668ca30addd4d25e2cee4d4fa3"],["x-powered-by","Express"]]
+index-Ill5boe2.js:48 🔴 HTTP ERROR DETECTED: Object
+$k @ index-Ill5boe2.js:48Understand this error
+index-Ill5boe2.js:48 🔍 Query Response status: 200
+index-Ill5boe2.js:48 🔍 Query Response headers: [["alt-svc","h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"],["cache-control","private"],["content-length","19"],["content-type","application/json; charset=utf-8"],["date","Tue, 15 Jul 2025 04:53:51 GMT"],["etag","W/\"13-GUfnA9CY/U6kilDCansEMuAkUl0\""],["expires","Mon, 14 Jul 2025 09:58:54 GMT"],["server","Google Frontend"],["strict-transport-security","max-age=63072000; includeSubDomains"],["via","1.1 google"],["x-cloud-trace-context","4a386a58394c2810d4d25e2cee4d498a"],["x-powered-by","Express"]]
+index-Ill5boe2.js:462 Loading conversation data: Object
+index-Ill5boe2.js:462 Setting conversation from API: Array(0)
+index-Ill5boe2.js:48 🔍 Query Response status: 200
+index-Ill5boe2.js:48 🔍 Query Response headers: [["alt-svc","h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"],["cache-control","private"],["content-length","2"],["content-type","application/json; charset=utf-8"],["date","Tue, 15 Jul 2025 04:53:51 GMT"],["etag","W/\"2-l9Fw4VUO7kr8CvBlt4zaMCqXZ0w\""],["expires","Mon, 14 Jul 2025 09:58:54 GMT"],["server","Google Frontend"],["strict-transport-security","max-age=63072000; includeSubDomains"],["via","1.1 google"],["x-cloud-trace-context","0f4012fcc9ad81a5d4d25e2cee4d42f0"],["x-powered-by","Express"]]
+index-Ill5boe2.js:48 🔍 Query Response status: 200
+index-Ill5boe2.js:48 🔍 Query Response headers: [["alt-svc","h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"],["cache-control","private"],["content-length","425"],["content-type","application/json; charset=utf-8"],["date","Tue, 15 Jul 2025 04:53:51 GMT"],["etag","W/\"1a9-iEqBNaDtsH0TPD24/cNZWg+DamY\""],["expires","Mon, 14 Jul 2025 09:58:54 GMT"],["server","Google Frontend"],["strict-transport-security","max-age=63072000; includeSubDomains"],["via","1.1 google"],["x-cloud-trace-context","19a0053c4c9ebb4dd4d25e2cee4d463d"],["x-powered-by","Express"]]
+index-Ill5boe2.js:462 Insights - Debug auth state: Object
+index-Ill5boe2.js:462 InsightsNew - user: true user ID: 112219214732360855619 loading: false
+index-Ill5boe2.js:462 InsightsNew - isAuthenticated: true timestamp: 1752555235686
+index-Ill5boe2.js:462 InsightsNew - connections: 1 moments: 0
+index-Ill5boe2.js:462 InsightsNew - moments query: Object
+index-Ill5boe2.js:48 🔍 Query Request to /api/user-badges
+index-Ill5boe2.js:48 🔍 Document cookies before query: 
+index-Ill5boe2.js:48 🔍 Query Request to /api/moments
+index-Ill5boe2.js:48 🔍 Document cookies before query: 
+insights:1 Unchecked runtime.lastError: The message port closed before a response was received.Understand this error
+api/user-badges:1  Failed to load resource: the server responded with a status of 500 ()Understand this error
+index-Ill5boe2.js:48 🔍 Query Response status: 500
+index-Ill5boe2.js:48 🔍 Query Response headers: [["alt-svc","h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"],["content-length","47"],["content-type","application/json; charset=utf-8"],["date","Tue, 15 Jul 2025 04:53:55 GMT"],["etag","W/\"2f-02LHMnXph/Ng9Wn8P01NkrK5sdQ\""],["server","Google Frontend"],["strict-transport-security","max-age=63072000; includeSubDomains"],["via","1.1 google"],["x-cloud-trace-context","388e2c0a1ee52acbd4d25e2cee4d4f03"],["x-powered-by","Express"]]
+index-Ill5boe2.js:48 🔴 HTTP ERROR DETECTED: Object
+$k @ index-Ill5boe2.js:48Understand this error
+index-Ill5boe2.js:48 🔍 Query Response status: 200
+index-Ill5boe2.js:48 🔍 Query Response headers: [["alt-svc","h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"],["cache-control","private"],["content-length","2"],["content-type","application/json; charset=utf-8"],["date","Tue, 15 Jul 2025 04:53:56 GMT"],["etag","W/\"2-l9Fw4VUO7kr8CvBlt4zaMCqXZ0w\""],["expires","Mon, 14 Jul 2025 09:58:57 GMT"],["server","Google Frontend"],["strict-transport-security","max-age=63072000; includeSubDomains"],["via","1.1 google"],["x-cloud-trace-context","522c4bec9f0c2158d4d25e2cee4d459d"],["x-powered-by","Express"]]
+index-Ill5boe2.js:462 Insights - Debug auth state: Object
+index-Ill5boe2.js:462 InsightsNew - user: true user ID: 112219214732360855619 loading: false
+index-Ill5boe2.js:462 InsightsNew - isAuthenticated: true timestamp: 1752555236206
+index-Ill5boe2.js:462 InsightsNew - connections: 1 moments: 0
+index-Ill5boe2.js:462 InsightsNew - moments query: Object
+index-Ill5boe2.js:462 InsightsNew - About to render main content
+index-Ill5boe2.js:462 InsightsNew - emotionData: 0 connectionStrengths: 1
+index-Ill5boe2.js:452 AI Insights Debug: Object
+index-Ill5boe2.js:452 Starting insights generation: Object
+index-Ill5boe2.js:452 Generated insights count: 1
+index-Ill5boe2.js:452 Generated insights preview: Array(1)
+index-Ill5boe2.js:452 Final insights check: Object
+index-Ill5boe2.js:462 EnhancedAIInsights - Rendering with: Object
+index-Ill5boe2.js:462 generateAnalyticsInsights - Starting with: Object
+index-Ill5boe2.js:462 EnhancedAIInsights - Final allInsights: 2
+index-Ill5boe2.js:462 Insights - Debug auth state: Object
+index-Ill5boe2.js:462 InsightsNew - user: true user ID: 112219214732360855619 loading: false
+index-Ill5boe2.js:462 InsightsNew - isAuthenticated: true timestamp: 1752555236224
+index-Ill5boe2.js:462 InsightsNew - connections: 1 moments: 0
+index-Ill5boe2.js:462 InsightsNew - moments query: Object
+index-Ill5boe2.js:462 InsightsNew - About to render main content
+index-Ill5boe2.js:462 InsightsNew - emotionData: 0 connectionStrengths: 1
+index-Ill5boe2.js:452 AI Insights Debug: Object
+index-Ill5boe2.js:452 Starting insights generation: Object
+index-Ill5boe2.js:452 Generated insights count: 1
+index-Ill5boe2.js:452 Generated insights preview: Array(1)
+index-Ill5boe2.js:452 Final insights check: Object
+index-Ill5boe2.js:462 EnhancedAIInsights - Rendering with: Object
+index-Ill5boe2.js:462 generateAnalyticsInsights - Starting with: Object
+index-Ill5boe2.js:462 EnhancedAIInsights - Final allInsights: 2
+index-Ill5boe2.js:40 ReferenceError: user is not defined
+    at mW (index-Ill5boe2.js:462:92842)
+    at kx (index-Ill5boe2.js:38:17018)
+    at lk (index-Ill5boe2.js:40:44058)
+    at ak (index-Ill5boe2.js:40:39790)
+    at UA (index-Ill5boe2.js:40:39718)
+    at hf (index-Ill5boe2.js:40:39570)
+    at Jp (index-Ill5boe2.js:40:35934)
+    at p0 (index-Ill5boe2.js:40:36738)
+    at ui (index-Ill5boe2.js:38:3279)
+    at index-Ill5boe2.js:40:34263
+Up @ index-Ill5boe2.js:40Understand this error
+index-Ill5boe2.js:38 Uncaught ReferenceError: user is not defined
+    at mW (index-Ill5boe2.js:462:92842)
+    at kx (index-Ill5boe2.js:38:17018)
+    at lk (index-Ill5boe2.js:40:44058)
+    at ak (index-Ill5boe2.js:40:39790)
+    at UA (index-Ill5boe2.js:40:39718)
+    at hf (index-Ill5boe2.js:40:39570)
+    at Jp (index-Ill5boe2.js:40:35934)
+    at p0 (index-Ill5boe2.js:40:36738)
+    at ui (index-Ill5boe2.js:38:3279)
+    at index-Ill5boe2.js:40:34263Understand this error
