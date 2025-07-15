@@ -16,16 +16,18 @@ if (!process.env.DATABASE_URL) {
   );
 }
 
-// Optimized pool configuration with proper timeouts for Neon serverless
+// Optimized pool configuration for concurrent operations
 const pool = new Pool({ 
-  connectionString: process.env.DATABASE_URL + "?connect_timeout=30", // 30 second timeout for cold starts
-  max: 1, // Single connection to match Neon serverless limits
+  connectionString: process.env.DATABASE_URL + "?connect_timeout=15", // Reduced timeout for faster responses
+  max: 3, // Allow up to 3 concurrent connections for better concurrency
   min: 0, // No minimum connections
-  idleTimeoutMillis: 30000, // 30 second idle timeout
-  connectionTimeoutMillis: 30000, // 30 second connection timeout
-  statementTimeout: 30000, // 30 second statement timeout
-  queryTimeout: 30000, // 30 second query timeout
+  idleTimeoutMillis: 10000, // 10 second idle timeout (reduced from 30s)
+  connectionTimeoutMillis: 15000, // 15 second connection timeout (reduced from 30s)
+  statementTimeout: 10000, // 10 second statement timeout (reduced from 30s)
+  queryTimeout: 10000, // 10 second query timeout (reduced from 30s)
   allowExitOnIdle: true,
+  maxUses: 1000, // Limit connection reuse to prevent resource exhaustion
+  maxLifetimeSeconds: 300, // 5 minute connection lifetime
 });
 
 export const db = drizzle({ client: pool, schema });
@@ -39,15 +41,27 @@ pool.on('error', (err) => {
   }
 });
 
-// Enhanced connection logging
+// Enhanced connection logging with pool statistics
 pool.on('connect', (client) => {
   console.log('Database connected successfully');
   console.log(`Connection details: processID=${client.processID}, backend=${client.connectionParameters?.host}`);
+  console.log(`Pool stats: total=${pool.totalCount}, idle=${pool.idleCount}, waiting=${pool.waitingCount}`);
 });
 
-// Add connection end logging
+// Add connection end logging with pool statistics
 pool.on('remove', (client) => {
   console.log('Database connection removed from pool');
+  console.log(`Pool stats after removal: total=${pool.totalCount}, idle=${pool.idleCount}, waiting=${pool.waitingCount}`);
+});
+
+// Add connection acquisition logging
+pool.on('acquire', (client) => {
+  console.log(`Connection acquired: processID=${client?.processID || 'null'}, pool waiting=${pool.waitingCount}`);
+});
+
+// Add connection release logging
+pool.on('release', (client) => {
+  console.log(`Connection released: processID=${client?.processID || 'null'}, pool idle=${pool.idleCount}`);
 });
 
 // Enhanced health check with timeout handling
