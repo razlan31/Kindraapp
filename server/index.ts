@@ -10,10 +10,10 @@ const app = express();
 // Trust proxy for proper cookie handling in production
 app.set('trust proxy', 1);
 
-// Increase timeout for slow database operations
+// Set reasonable timeout for database operations
 app.use((req, res, next) => {
-  req.setTimeout(30000); // 30 second timeout
-  res.setTimeout(30000); // 30 second timeout
+  req.setTimeout(20000); // 20 second timeout
+  res.setTimeout(20000); // 20 second timeout
   next();
 });
 

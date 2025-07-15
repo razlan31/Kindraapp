@@ -14,33 +14,22 @@ import { db } from "./db";
 import { eq, desc, and } from "drizzle-orm";
 import type { IStorage } from "./storage";
 
-// Add timeout wrapper for database operations with retry logic
+// Simplified timeout wrapper without retry to prevent connection pool issues
 const withTimeout = async <T>(
   operation: () => Promise<T>,
-  timeoutMs: number = 20000,
-  maxRetries: number = 2
+  timeoutMs: number = 12000
 ): Promise<T> => {
-  for (let retry = 0; retry <= maxRetries; retry++) {
-    try {
-      return await Promise.race([
-        operation(),
-        new Promise<never>((_, reject) => {
-          setTimeout(() => reject(new Error('Database operation timed out')), timeoutMs);
-        })
-      ]);
-    } catch (error) {
-      console.error(`Database operation failed (attempt ${retry + 1}/${maxRetries + 1}):`, error);
-      
-      if (retry === maxRetries) {
-        throw error;
-      }
-      
-      // Wait before retry
-      await new Promise(resolve => setTimeout(resolve, 1000 * (retry + 1)));
-    }
+  try {
+    return await Promise.race([
+      operation(),
+      new Promise<never>((_, reject) => {
+        setTimeout(() => reject(new Error('Database operation timed out')), timeoutMs);
+      })
+    ]);
+  } catch (error) {
+    console.error('Database operation failed:', error);
+    throw error;
   }
-  
-  throw new Error('Database operation failed after all retries');
 };
 
 export class DatabaseStorage implements IStorage {
@@ -70,8 +59,15 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getUserByEmail(email: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.email, email));
-    return user;
+    try {
+      const [user] = await withTimeout(() => 
+        db.select().from(users).where(eq(users.email, email))
+      );
+      return user;
+    } catch (error) {
+      console.error('Database timeout in getUserByEmail:', error);
+      throw error;
+    }
   }
 
   async createUser(user: InsertUser): Promise<User> {
@@ -87,17 +83,31 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateUser(id: string, data: Partial<User>): Promise<User | undefined> {
-    const [updatedUser] = await db
-      .update(users)
-      .set({ ...data, updatedAt: new Date() })
-      .where(eq(users.id, id))
-      .returning();
-    return updatedUser;
+    try {
+      const [updatedUser] = await withTimeout(() => 
+        db
+          .update(users)
+          .set({ ...data, updatedAt: new Date() })
+          .where(eq(users.id, id))
+          .returning()
+      );
+      return updatedUser;
+    } catch (error) {
+      console.error('Database timeout in updateUser:', error);
+      throw error;
+    }
   }
 
   async getUserByStripeSubscriptionId(subscriptionId: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.stripeSubscriptionId, subscriptionId));
-    return user;
+    try {
+      const [user] = await withTimeout(() => 
+        db.select().from(users).where(eq(users.stripeSubscriptionId, subscriptionId))
+      );
+      return user;
+    } catch (error) {
+      console.error('Database timeout in getUserByStripeSubscriptionId:', error);
+      throw error;
+    }
   }
 
   // Connection operations with subscription awareness

@@ -8,9 +8,8 @@ neonConfig.webSocketConstructor = ws;
 neonConfig.useSecureWebSocket = true;
 neonConfig.pipelineConnect = false;
 
-// Add connection retry configuration
-neonConfig.fetchConnectionCache = true;
-neonConfig.fetchEndpoint = (host) => `https://${host}/sql`;
+// Disable connection caching to prevent stale connections
+neonConfig.fetchConnectionCache = false;
 
 if (!process.env.DATABASE_URL) {
   throw new Error(
@@ -20,14 +19,14 @@ if (!process.env.DATABASE_URL) {
 
 const pool = new Pool({ 
   connectionString: process.env.DATABASE_URL,
-  max: 5, // Reduce connections to prevent overload
-  min: 1, // Keep minimum connections
-  idleTimeoutMillis: 30000, // 30 second idle timeout
-  connectionTimeoutMillis: 20000, // 20 second connection timeout
-  statementTimeout: 25000, // 25 second statement timeout
-  queryTimeout: 25000, // 25 second query timeout
-  maxUses: 1000, // Max uses per connection
-  allowExitOnIdle: false, // Don't exit on idle
+  max: 1, // Single connection to prevent pool issues
+  min: 0, // No minimum connections
+  idleTimeoutMillis: 0, // No idle timeout
+  connectionTimeoutMillis: 10000, // 10 second connection timeout
+  statementTimeout: 15000, // 15 second statement timeout
+  queryTimeout: 15000, // 15 second query timeout
+  maxUses: Infinity, // No connection reuse limit
+  allowExitOnIdle: true, // Allow exit on idle
 });
 
 export const db = drizzle({ client: pool, schema });
@@ -59,18 +58,20 @@ process.on('SIGINT', async () => {
   process.exit(0);
 });
 
-// Add connection retry logic
-const createConnectionWithRetry = async (retries = 3) => {
-  for (let i = 0; i < retries; i++) {
-    try {
-      const client = await pool.connect();
-      return client;
-    } catch (error) {
-      console.error(`Connection attempt ${i + 1} failed:`, error);
-      if (i === retries - 1) throw error;
-      await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)));
-    }
+// Health check function
+const healthCheck = async () => {
+  try {
+    const client = await pool.connect();
+    await client.query('SELECT 1');
+    client.release();
+    return true;
+  } catch (error) {
+    console.error('Health check failed:', error);
+    return false;
   }
 };
+
+// Export health check for monitoring
+export { healthCheck };
 
 export { pool };

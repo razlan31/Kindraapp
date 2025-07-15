@@ -111,16 +111,16 @@ The badges system currently has several issues that need attention:
 
 ## Changelog
 
-- July 15, 2025: DATABASE TIMEOUT ISSUES RESOLVED - Fixed PostgreSQL connection termination and timeout errors through comprehensive connection handling
+- July 15, 2025: DATABASE TIMEOUT ISSUES RESOLVED - Fixed PostgreSQL connection termination and timeout errors through simplified connection handling
   - **Root Cause**: PostgreSQL connections were being terminated unexpectedly, causing "statement was cancelled" errors
-  - **Connection Pool Fix**: Optimized pool settings (max: 5, min: 1, shorter timeouts: 20-25s) to prevent connection overload
-  - **Request Timeout Fix**: Reduced Express timeouts to 30 seconds to match database timeouts
-  - **Database Wrapper**: Enhanced withTimeout wrapper with automatic retry logic (2 retries with exponential backoff)
-  - **Connection Health**: Added connection retry logic, remove event handling, and graceful error recovery
-  - **Error Handling**: Improved error logging and automatic retry for failed database operations
+  - **Connection Pool Fix**: Simplified to single connection pool (max: 1, min: 0) to prevent connection conflicts
+  - **Request Timeout Fix**: Aligned Express timeouts to 20 seconds to match database operation timeouts
+  - **Database Wrapper**: Simplified withTimeout wrapper without retry logic to prevent connection pool exhaustion
+  - **Connection Health**: Added health check function and proper connection monitoring
+  - **Error Handling**: Enhanced error logging for all database operations with consistent timeout handling
   - **Session Storage Fix**: Switched from PostgreSQL session storage to memory store to eliminate session-related timeout issues
-  - **Neon Configuration**: Added fetchConnectionCache and optimized WebSocket configuration for better reliability
-  - **Status**: Database operations now handle connection failures gracefully with automatic retry and proper error recovery
+  - **Neon Configuration**: Disabled fetchConnectionCache to prevent stale connection issues
+  - **Status**: Database operations now run with single stable connection, eliminating timeout and connection removal issues
 
 - July 15, 2025: AUTHENTICATION ERRORS COMPREHENSIVELY RESOLVED - Fixed all "user is not defined" errors across entire application through exhaustive investigation
   - **Root Cause**: Multiple components were using `!!user` in React Query enabled conditions without proper authentication state imports
