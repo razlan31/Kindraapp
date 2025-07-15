@@ -223,14 +223,16 @@ export default function Insights() {
 
 
         {/* Quote of the Day Section */}
-        <QuoteOfTheDay 
-          connections={connections} 
-          moments={moments} 
-          userData={{
-            zodiacSign: user?.zodiacSign || undefined,
-            loveLanguage: user?.loveLanguage || undefined
-          }}
-        />
+        {user && (
+          <QuoteOfTheDay 
+            connections={connections} 
+            moments={moments} 
+            userData={{
+              zodiacSign: user?.zodiacSign || undefined,
+              loveLanguage: user?.loveLanguage || undefined
+            }}
+          />
+        )}
 
         {/* AI Insights Section */}
         <div className="space-y-4">
@@ -263,24 +265,28 @@ export default function Insights() {
           {isInsightsExpanded && (
             <div className="transition-all duration-200 ease-in-out space-y-6">
               {/* Traditional Insights */}
-              <AIInsights 
-                connections={connections} 
-                moments={moments} 
-                userData={{
-                  zodiacSign: user?.zodiacSign || undefined,
-                  loveLanguage: user?.loveLanguage || undefined
-                }}
-              />
+              {user && (
+                <AIInsights 
+                  connections={connections} 
+                  moments={moments} 
+                  userData={{
+                    zodiacSign: user?.zodiacSign || undefined,
+                    loveLanguage: user?.loveLanguage || undefined
+                  }}
+                />
+              )}
               
               {/* Enhanced Advanced Analytics */}
-              <EnhancedAIInsights 
-                connections={connections} 
-                moments={moments} 
-                userData={{
-                  zodiacSign: user?.zodiacSign || undefined,
-                  loveLanguage: user?.loveLanguage || undefined
-                }}
-              />
+              {user && (
+                <EnhancedAIInsights 
+                  connections={connections} 
+                  moments={moments} 
+                  userData={{
+                    zodiacSign: user?.zodiacSign || undefined,
+                    loveLanguage: user?.loveLanguage || undefined
+                  }}
+                />
+              )}
             </div>
           )}
         </div>
