@@ -21,7 +21,7 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 
 export function MomentModal() {
   const { momentModalOpen, closeMomentModal, selectedConnectionId, mainFocusConnection, setSelectedConnection } = useModal();
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   

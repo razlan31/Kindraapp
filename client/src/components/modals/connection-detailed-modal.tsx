@@ -9,6 +9,7 @@ import { format } from 'date-fns';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/hooks/useAuth';
 import { EditConnectionModal } from './edit-connection-modal';
 import { ConnectionAIInsights } from '@/components/insights/connection-ai-insights';
 import type { Connection, Moment } from '@shared/schema';
@@ -66,6 +67,7 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
   const [editMode, setEditMode] = useState(false);
   const [editData, setEditData] = useState<Partial<Connection>>({});
   const { toast } = useToast();
+  const { isAuthenticated, user } = useAuth();
 
   // Use fresh connection data from the connections list
   const { data: allConnections = [], refetch: refetchConnections } = useQuery<Connection[]>({
@@ -115,7 +117,7 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
   });
 
   // Fetch user data for insights
-  const { data: user } = useQuery({
+  const { data: userData } = useQuery({
     queryKey: ["/api/me"],
     enabled: isOpen && !!connection,
   });

@@ -6,7 +6,7 @@ import MoodTrackerModal from "./mood-tracker-modal";
 import PlanModal from "./plan-modal";
 
 export default function ModalsContainer() {
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const {
     momentModalOpen,
     moodTrackerModalOpen,
@@ -20,7 +20,7 @@ export default function ModalsContainer() {
   // Fetch connections for modal use
   const { data: connections = [] } = useQuery({
     queryKey: ["/api/connections"],
-    enabled: !!user,
+    enabled: isAuthenticated && !!user,
   });
 
   return (

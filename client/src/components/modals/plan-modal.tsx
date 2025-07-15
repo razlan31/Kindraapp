@@ -53,7 +53,7 @@ export function PlanModal({ isOpen, onClose, selectedConnection, selectedDate, s
   const { toast } = useToast();
   const { triggerConnectionSync } = useSync();
   const { selectedDate: contextSelectedDate, setSelectedConnection } = useModal();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const queryClient = useQueryClient();
   
   // Local connection state for picker
