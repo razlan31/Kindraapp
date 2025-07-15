@@ -11,22 +11,27 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
+import { useTheme } from "@/contexts/theme-context";
+import { useLocation } from "wouter";
 import { User, Settings, Target, Camera, Shield, LogOut } from "lucide-react";
 
 export default function ProfilePage() {
   const { user, loading, logout } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { theme, setTheme } = useTheme();
+  const [location, setLocation] = useLocation();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Profile page debugging (remove excessive logging for performance)
   // console.log('Profile page render', { user: user ? user.email : 'null', loading });
 
-  // Profile form state
+  // Profile form state with error handling
   const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
   const [zodiacSign, setZodiacSign] = useState("");
   const [loveLanguage, setLoveLanguage] = useState("");
+  const [formError, setFormError] = useState<string | null>(null);
   
   // New relationship-focused fields
   const [relationshipGoals, setRelationshipGoals] = useState("");
@@ -39,17 +44,23 @@ export default function ProfilePage() {
   const [privateMode, setPrivateMode] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
 
-  // Update form fields when user data loads
+  // Update form fields when user data loads with error handling
   useEffect(() => {
-    if (user) {
-      setDisplayName(user.displayName || "");
-      setEmail(user.email || "");
-      setZodiacSign(user.zodiacSign || "");
-      setLoveLanguage(user.loveLanguage || "");
-      setRelationshipGoals(user.relationshipGoals || "");
-      setCurrentFocus(user.currentFocus || "");
-      setRelationshipStyle(user.relationshipStyle || "");
-      setPersonalNotes(user.personalNotes || "");
+    try {
+      if (user) {
+        setDisplayName(user.displayName || "");
+        setEmail(user.email || "");
+        setZodiacSign(user.zodiacSign || "");
+        setLoveLanguage(user.loveLanguage || "");
+        setRelationshipGoals(user.relationshipGoals || "");
+        setCurrentFocus(user.currentFocus || "");
+        setRelationshipStyle(user.relationshipStyle || "");
+        setPersonalNotes(user.personalNotes || "");
+        setFormError(null);
+      }
+    } catch (error) {
+      setFormError("Error loading profile data");
+      console.error("Profile data loading error:", error);
     }
   }, [user]);
 
@@ -75,20 +86,25 @@ export default function ProfilePage() {
   // Update profile mutation
   const updateProfileMutation = useMutation({
     mutationFn: async (data: any) => {
-      return apiRequest(`/api/users/${user?.id}`, {
+      if (!user?.id) {
+        throw new Error("User ID is required for profile update");
+      }
+      return apiRequest(`/api/users/${user.id}`, {
         method: 'PATCH',
         body: JSON.stringify(data),
       });
     },
     onSuccess: () => {
+      setFormError(null);
       toast({
         title: "Profile updated",
         description: "Your profile has been successfully updated.",
       });
-      queryClient.invalidateQueries({ queryKey: ["/api/me"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
     },
     onError: (error: any) => {
       console.error('Profile update error:', error);
+      setFormError(error.message || "Failed to update profile");
       toast({
         title: "Error",
         description: "Failed to update profile. Please try again.",
@@ -112,22 +128,33 @@ export default function ProfilePage() {
   };
 
   const handleSaveProfile = () => {
-    updateProfileMutation.mutate({
-      displayName,
-      email,
-      zodiacSign,
-      loveLanguage,
-      relationshipGoals,
-      currentFocus,
-      relationshipStyle,
-      personalNotes,
-    });
+    try {
+      if (!displayName.trim()) {
+        setFormError("Display name is required");
+        return;
+      }
+      
+      updateProfileMutation.mutate({
+        displayName,
+        email,
+        zodiacSign,
+        loveLanguage,
+        relationshipGoals,
+        currentFocus,
+        relationshipStyle,
+        personalNotes,
+      });
+    } catch (error) {
+      setFormError("Error saving profile");
+      console.error("Save profile error:", error);
+    }
   };
 
   const handleLogout = () => {
     // Removed console logging for performance
     try {
       logout(); // Now synchronous
+      setLocation('/'); // Navigate to home after logout
     } catch (error) {
       console.error("🔴 PROFILE: Logout error:", error);
       toast({
@@ -154,6 +181,12 @@ export default function ProfilePage() {
       <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900 pb-20 flex items-center justify-center">
         <div className="text-center">
           <p className="text-neutral-600 dark:text-neutral-400">User not found</p>
+          <button 
+            onClick={() => window.location.href = '/api/login'} 
+            className="mt-4 px-4 py-2 bg-primary text-white rounded hover:bg-primary/90"
+          >
+            Go to Login
+          </button>
         </div>
       </div>
     );
@@ -161,7 +194,20 @@ export default function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900 pb-20">
-      <div className="max-w-2xl mx-auto p-4 space-y-6">
+      <div className="max-w-2xl mx-auto p-4 space-y-6" style={{ minHeight: '100vh' }}>
+        {/* Form Error Display */}
+        {formError && (
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
+            <p className="text-sm">{formError}</p>
+            <button 
+              onClick={() => setFormError(null)}
+              className="text-xs text-red-600 hover:text-red-800 mt-1"
+            >
+              Dismiss
+            </button>
+          </div>
+        )}
+        
         {/* Header */}
         <div className="text-center pt-6 pb-4">
           <h1 className="text-2xl font-bold text-neutral-900 dark:text-neutral-100">Profile & Settings</h1>
