@@ -11,6 +11,7 @@ import { getUserSubscriptionStatus, incrementUsage, startFreeTrial, getAccessibl
 import bcrypt from "bcryptjs";
 import session from "express-session";
 import MemoryStore from "memorystore";
+import connectPgSimple from "connect-pg-simple";
 import Stripe from "stripe";
 import { AIRelationshipCoach, type RelationshipContext } from "./ai-relationship-coach";
 import { ensureUserConnection } from "./user-connection-utils";

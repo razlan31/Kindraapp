@@ -2,6 +2,7 @@ import { type Express, type Request, type Response, type NextFunction } from "ex
 import session from "express-session";
 import connectPg from "connect-pg-simple";
 import { storage } from "./database-storage";
+import MemoryStore from "memorystore";
 
 declare module "express-session" {
   interface SessionData {
@@ -16,12 +17,13 @@ export function setupAuthentication(app: Express) {
   
   // Session configuration
   const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 7 days
-  const pgStore = connectPg(session);
-  const sessionStore = new pgStore({
-    conString: process.env.DATABASE_URL,
-    createTableIfMissing: false,
-    ttl: sessionTtl / 1000, // Convert to seconds
-    tableName: "sessions",
+  
+  // Use memory store for sessions to avoid database timeout issues
+  const MemStore = MemoryStore(session);
+  const sessionStore = new MemStore({
+    checkPeriod: 86400000, // prune expired entries every 24h
+    ttl: sessionTtl,
+    max: 100000, // max number of sessions
   });
 
   // Session middleware with fixed configuration
