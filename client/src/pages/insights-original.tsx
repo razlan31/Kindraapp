@@ -76,13 +76,13 @@ export default function Insights() {
   // Fetch connections
   const { data: connections = [] } = useQuery<Connection[]>({
     queryKey: ["/api/connections"],
-    enabled: isAuthenticated && !!user,
+    enabled: isAuthenticated,
   });
 
   // Fetch moments
   const { data: moments = [], isLoading: momentsLoading, error: momentsError } = useQuery<Moment[]>({
     queryKey: ["/api/moments"],
-    enabled: isAuthenticated && !!user,
+    enabled: isAuthenticated,
   });
 
   console.log("InsightsNew - connections:", connections?.length, "moments:", moments?.length);
