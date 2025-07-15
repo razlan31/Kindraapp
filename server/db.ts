@@ -16,18 +16,20 @@ if (!process.env.DATABASE_URL) {
   );
 }
 
-// TESTING ITEM #7: Increase connection pool size to prevent exhaustion during concurrent operations
+// TESTING ITEM #13: Neon Database Resource Limits - Ultra-minimal configuration to prevent resource limits
+console.log('🧪 TESTING ITEM #13: Configuring ultra-minimal database resources to prevent Neon limits...');
+
 const pool = new Pool({ 
-  connectionString: process.env.DATABASE_URL + "?connect_timeout=5", // 5 second timeout for faster failure
-  max: 5, // TESTING: Increased from 1 to 5 connections to handle concurrent operations
+  connectionString: process.env.DATABASE_URL + "?connect_timeout=3", // 3 second timeout (ultra-minimal)
+  max: 1, // TESTING: Back to 1 connection to prevent Neon resource limits
   min: 0, // No minimum connections
-  idleTimeoutMillis: 5000, // 5 second idle timeout (aggressive reduction)
-  connectionTimeoutMillis: 5000, // 5 second connection timeout (aggressive reduction)
-  statementTimeout: 5000, // 5 second statement timeout (aggressive reduction)
-  queryTimeout: 5000, // 5 second query timeout (aggressive reduction)
+  idleTimeoutMillis: 3000, // 3 second idle timeout (ultra-minimal)
+  connectionTimeoutMillis: 3000, // 3 second connection timeout (ultra-minimal)
+  statementTimeout: 3000, // 3 second statement timeout (ultra-minimal)
+  queryTimeout: 3000, // 3 second query timeout (ultra-minimal)
   allowExitOnIdle: true,
-  maxUses: 100, // Reduced connection reuse to prevent resource exhaustion
-  maxLifetimeSeconds: 60, // 1 minute connection lifetime (aggressive reduction)
+  maxUses: 10, // TESTING: Ultra-minimal connection reuse to prevent resource exhaustion
+  maxLifetimeSeconds: 30, // 30 second connection lifetime (ultra-minimal)
 });
 
 // TESTING ITEM #12: Drizzle ORM-level timeout configuration to prevent sequelize cancellation
@@ -47,12 +49,22 @@ export const db = drizzle({
 // Export pool for testing purposes
 export { pool };
 
-// Enhanced error handling with retry logic
+// TESTING ITEM #13: Enhanced error handling with Neon resource limit monitoring
 pool.on('error', (err) => {
-  console.error('Database pool error:', err);
+  console.error('🚨 ITEM #13: Database pool error:', err);
+  
   // Handle specific PostgreSQL ProcessInterrupts errors
   if (err.code === '57P01') {
-    console.error('PostgreSQL ProcessInterrupts detected - connection terminated by server');
+    console.error('🚨 ITEM #13: PostgreSQL ProcessInterrupts detected - connection terminated by server');
+  }
+  
+  // TESTING: Monitor for Neon resource limit errors
+  if (err.message.includes('connection limit') || err.message.includes('resource limit')) {
+    console.error('🚨 ITEM #13: Neon resource limit detected - this may cause sequelize cancellation');
+  }
+  
+  if (err.message.includes('timeout') || err.message.includes('timed out')) {
+    console.error('🚨 ITEM #13: Database timeout detected - potential resource exhaustion');
   }
 });
 
