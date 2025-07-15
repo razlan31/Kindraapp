@@ -49,14 +49,7 @@ export function MomentModal() {
   const [momentType, setMomentType] = useState<string>("positive");
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  // Debug state changes
-  useEffect(() => {
-    console.log("🔥 STATE DEBUG - isSubmitting changed:", isSubmitting);
-  }, [isSubmitting]);
-  
-  useEffect(() => {
-    console.log("🔥 STATE DEBUG - connectionId changed:", connectionId, "selectedConnectionId:", selectedConnectionId);
-  }, [connectionId, selectedConnectionId]);
+
   const [mediaFiles, setMediaFiles] = useState<MediaFile[]>([]);
   const [isIntimate, setIsIntimate] = useState<boolean>(false);
   const [reflection, setReflection] = useState('');
@@ -75,21 +68,14 @@ export function MomentModal() {
 
   // Initialize form with existing data when editing
   useEffect(() => {
-    console.log("Modal useEffect - selectedDate from context:", selectedDate);
-    console.log("Modal useEffect - editingMoment:", editingMoment);
-    console.log("Modal useEffect - momentModalOpen:", momentModalOpen);
-    
     // Reset submitting state when modal opens
-    console.log("🔥 MODAL OPEN - Resetting isSubmitting to false");
     setIsSubmitting(false);
     
     // For new entries, FORCE default to May 25th for testing
     if (!editingMoment && momentModalOpen) {
       if (selectedDate) {
-        console.log("Setting localSelectedDate to selectedDate:", selectedDate);
         setLocalSelectedDate(selectedDate);
       } else {
-        console.log("No selectedDate provided, using current date");
         setLocalSelectedDate(new Date());
       }
     }
@@ -127,7 +113,7 @@ export function MomentModal() {
     } else {
       // Reset form for new entries
       const initialConnectionId = selectedConnectionId || 2;
-      console.log("🔥 MODAL INIT - Setting connectionId:", initialConnectionId, "from selectedConnectionId:", selectedConnectionId);
+
       setConnectionId(initialConnectionId);
       setEmoji(activityType === 'conflict' ? '⚡' : activityType === 'intimacy' ? '💗' : '😊');
       setContent("");

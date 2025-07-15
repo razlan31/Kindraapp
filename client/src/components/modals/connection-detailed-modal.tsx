@@ -135,7 +135,7 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
       });
       onClose();
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast({
         title: "Error",
         description: error.message || "Failed to delete connection",
@@ -160,7 +160,7 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
       });
       onClose();
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast({
         title: "Error",
         description: error.message || "Failed to archive connection",
@@ -190,7 +190,7 @@ export function ConnectionDetailedModal({ isOpen, onClose, connection }: Connect
       setEditMode(false);
       toast({ title: 'Connection updated successfully!' });
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast({ 
         title: 'Error updating connection', 
         description: error.message,

@@ -65,7 +65,7 @@ export function InlineConnectionModal({
         description: "New connection has been successfully added.",
       });
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       console.error('Connection creation error:', error);
       
       // Handle specific limit reached error

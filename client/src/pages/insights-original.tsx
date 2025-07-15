@@ -41,12 +41,7 @@ export default function Insights() {
   // CACHE-BUSTER: 2025-01-09-v6-auth-fixed-final
   const { user, loading, isAuthenticated } = useAuth();
   
-  console.log("Insights - Debug auth state:", { 
-    user: !!user, 
-    loading, 
-    isAuthenticated, 
-    userObject: user 
-  });
+
   
 
 
@@ -76,8 +71,7 @@ export default function Insights() {
     localStorage.setItem('analytics-section-expanded', isAnalyticsExpanded.toString());
   }, [isAnalyticsExpanded]);
 
-  console.log("InsightsNew - user:", !!user, "user ID:", user?.id, "loading:", loading);
-  console.log("InsightsNew - isAuthenticated:", isAuthenticated, "timestamp:", Date.now());
+
   
   // Fetch connections
   const { data: connections = [] } = useQuery<Connection[]>({
@@ -91,15 +85,7 @@ export default function Insights() {
     enabled: isAuthenticated,
   });
 
-  console.log("InsightsNew - connections:", connections?.length, "moments:", moments?.length);
 
-  console.log("InsightsNew - moments query:", {
-    momentsLength: moments.length,
-    momentsLoading,
-    momentsError,
-    userEnabled: !loading && !!user,
-    loading
-  });
 
   // Prepare emotion data for charts
   let emotionCounts: Record<string, number> = {};

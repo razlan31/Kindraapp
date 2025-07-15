@@ -27,7 +27,7 @@ export const cycleCache = {
    * Use this for critical updates where stale data must be eliminated
    */
   clearAndRefetch: async () => {
-    console.log('🔄 Clearing all cycle cache data');
+
     
     // Remove all cycle queries from cache completely
     queryClient.removeQueries({ queryKey: ['/api/menstrual-cycles'] });
@@ -38,7 +38,7 @@ export const cycleCache = {
     await queryClient.invalidateQueries({ queryKey: ['/api/menstrual-cycles'] });
     await queryClient.refetchQueries({ queryKey: ['/api/menstrual-cycles'] });
     
-    console.log('✅ Cache cleared and data refetched');
+
   },
 
   /**
@@ -47,7 +47,7 @@ export const cycleCache = {
    */
   verifyDeletion: async (cycleId: number): Promise<boolean> => {
     try {
-      console.log(`🔍 Verifying deletion of cycle ${cycleId}`);
+
       
       // Force a fresh fetch from server
       await queryClient.invalidateQueries({ queryKey: ['/api/menstrual-cycles'] });
@@ -59,10 +59,10 @@ export const cycleCache = {
       const stillExists = cycles.some((cycle: any) => cycle.id === cycleId);
       
       if (stillExists) {
-        console.log(`❌ Verification failed: Cycle ${cycleId} still exists`);
+
         return false;
       } else {
-        console.log(`✅ Verification passed: Cycle ${cycleId} successfully deleted`);
+
         return true;
       }
     } catch (error) {

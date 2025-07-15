@@ -11,16 +11,16 @@ let syncHandler: ((connectionId: number, activityType: string) => void) | null =
 
 export function SyncProvider({ children }: { children: ReactNode }) {
   const triggerConnectionSync = useCallback((connectionId: number, activityType: string) => {
-    console.log("🔄 SYNC CONTEXT - Triggering sync:", connectionId, activityType);
+
     if (syncHandler) {
       syncHandler(connectionId, activityType);
     } else {
-      console.log("🔄 SYNC CONTEXT - No handler registered");
+
     }
   }, []);
 
   const registerSyncHandler = useCallback((handler: (connectionId: number, activityType: string) => void) => {
-    console.log("🔄 SYNC CONTEXT - Registering sync handler");
+
     syncHandler = handler;
   }, []);
 

@@ -67,12 +67,7 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [connectionChangeListener, setConnectionChangeListener] = useState<((connectionId: number | null) => void) | undefined>(undefined);
 
   const openMomentModal = (activityType: 'moment' | 'conflict' | 'intimacy' | 'plan' = 'moment', moment?: Moment, date?: Date) => {
-    console.log("openMomentModal called with:", { activityType, moment: !!moment, date });
-    console.log("Date details:", date ? { 
-      iso: date.toISOString(), 
-      dateString: date.toDateString(),
-      valueOf: date.valueOf()
-    } : 'No date provided');
+
     
     if (activityType === 'plan') {
       // For plans, open the plan modal instead
@@ -83,14 +78,11 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       setActivityType(activityType);
       setEditingMoment(moment || null);
       setSelectedDate(date || null);
-      console.log("Setting momentModalOpen to true");
+
       setMomentModalOpen(true);
     }
     
-    console.log("Modal state after setting:", { 
-      selectedDate: date || null, 
-      modalOpen: activityType === 'plan' ? 'plan' : 'moment'
-    });
+
   };
 
   const closeMomentModal = () => {

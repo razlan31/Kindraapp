@@ -75,7 +75,7 @@ export default function Activities() {
   // Register listener for connection changes from modals
   useEffect(() => {
     registerConnectionChangeListener((connectionId: number | null) => {
-      console.log("Activity page received connection change:", connectionId);
+
       if (connectionId) {
         // Update activity page filter to match modal selection
         setSelectedConnections([connectionId]);
@@ -121,19 +121,19 @@ export default function Activities() {
 
   // Register sync handler for connection activity updates
   useEffect(() => {
-    console.log("🔄 SYNC CONTEXT - Activities page effect running, registering sync handler");
+
     
     const handleConnectionActivity = (connectionId: number, activityType: string) => {
-      console.log("🔄 SYNC CONTEXT - Activities page received sync:", connectionId, activityType);
+
       
       // Update connection filters to ONLY show the connection that had activity
       setSelectedConnections(prev => {
-        console.log("🔄 SYNC CONTEXT - Processing connection:", connectionId, "current filters:", prev);
+
         
         if (connectionId) {
-          console.log("🔄 SYNC CONTEXT - Setting filter to only show connection:", connectionId);
+
           const updated = [connectionId]; // Only show the connection that was just used
-          console.log("🔄 SYNC CONTEXT - Updated filters:", updated);
+
           setHasUserSelectedConnection(true); // Mark as user-selected to maintain filter
           return updated;
         }
@@ -145,13 +145,13 @@ export default function Activities() {
       queryClient.invalidateQueries({ queryKey: ['/api/plans'] });
     };
 
-    console.log("🔄 SYNC CONTEXT - About to register handler");
+
     registerSyncHandler(handleConnectionActivity);
-    console.log("🔄 SYNC CONTEXT - Handler registered successfully");
+
     
     // Cleanup handler on unmount
     return () => {
-      console.log("🔄 SYNC CONTEXT - Activities page unregistering sync handler");
+
     };
   }, [registerSyncHandler, queryClient]);
 
