@@ -15,12 +15,28 @@ app.set('trust proxy', 1);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: false, limit: '10mb' }));
 
-// Request logging middleware
+// TESTING ITEM #10: Express request handler timeout middleware
+console.log('🧪 TESTING ITEM #10: Adding request handler timeout middleware to prevent sequelize cancellation...');
 
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
   let capturedJsonResponse: Record<string, any> | undefined = undefined;
+
+  // TESTING ITEM #10: Set specific timeout for each request to prevent sequelize cancellation
+  if (path.startsWith("/api")) {
+    const requestTimeout = setTimeout(() => {
+      console.error(`🚨 ITEM #10: Request timeout detected for ${req.method} ${path} after 2.5 seconds`);
+      if (!res.headersSent) {
+        res.status(408).json({ error: "Request timeout" });
+      }
+    }, 2500); // 2.5 second timeout per request (shorter than database timeout)
+    
+    // Clear timeout when request completes
+    res.on("finish", () => {
+      clearTimeout(requestTimeout);
+    });
+  }
 
   const originalResJson = res.json;
   res.json = function (bodyJson, ...args) {
