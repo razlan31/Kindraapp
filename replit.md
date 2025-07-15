@@ -138,6 +138,14 @@ The badges system currently has several issues that need attention:
 5. **Neon Database Resource Limits**: Database hitting connection or query limits during high load
 6. **Authentication Middleware Timeout**: Auth checks may be timing out during database verification
 7. **Concurrent Database Operations**: Multiple simultaneous database calls during startup causing conflicts
+8. **Vite Development Server Interference**: Vite middleware may be intercepting requests before they reach Express handlers
+9. **Express Server Timeout vs Database Timeout Mismatch**: Server timeout (10s) vs database timeout (5s) causing race conditions
+10. **Memory Store Session Conflicts**: MemoryStore session operations may be blocking database operations
+11. **TSX/Node.js Process Timeout**: The TSX compiler process may be timing out during hot reloads
+12. **Replit Platform-Specific Timeout**: Replit infrastructure may be imposing timeouts during redeploy operations
+13. **Multiple Database Pool Instances**: Different parts of the app may be creating conflicting database connections
+14. **OAuth Token Exchange Timeout**: Google OAuth callback may be timing out during token exchange
+15. **Startup Race Conditions**: Multiple initialization processes racing during server startup
 
 **INVESTIGATION METHOD**: Test each item systematically to identify the actual root cause
 
