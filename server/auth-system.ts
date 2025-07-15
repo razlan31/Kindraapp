@@ -64,9 +64,14 @@ export function setupOAuthRoutes(app: Express) {
       return res.status(500).json({ error: "OAuth not configured" });
     }
     
-    // Always use production domain for OAuth callback
-    const replitDomain = process.env.REPLIT_DOMAINS || 'ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev';
-    const REDIRECT_URI = `https://${replitDomain}/api/auth/google/callback`;
+    // Use current request host for OAuth callback
+    const host = req.get('host') || 'localhost:5000';
+    const protocol = req.secure || req.headers['x-forwarded-proto'] === 'https' ? 'https' : 'http';
+    const REDIRECT_URI = `${protocol}://${host}/api/auth/google/callback`;
+    
+    console.log(`🔍 OAuth using current request host: ${host}`);
+    console.log(`🔍 OAuth redirect URI: ${REDIRECT_URI}`);
+    console.log(`🔍 This ensures cookie domain matches request domain`);
     
     const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
       `client_id=${CLIENT_ID}&` +
@@ -75,7 +80,7 @@ export function setupOAuthRoutes(app: Express) {
       `scope=profile email&` +
       `access_type=offline`;
     
-    console.log(`🚀 Starting OAuth with redirect URI: ${REDIRECT_URI}`);
+    console.log(`🚀 OAuth redirect to: ${REDIRECT_URI}`);
     res.redirect(googleAuthUrl);
   });
   
@@ -97,9 +102,10 @@ export function setupOAuthRoutes(app: Express) {
         return res.redirect("/?error=oauth_config");
       }
       
-      // Always use production domain for OAuth callback
-      const replitDomain = process.env.REPLIT_DOMAINS || 'ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev';
-      const REDIRECT_URI = `https://${replitDomain}/api/auth/google/callback`;
+      // Use current request host for OAuth callback
+      const host = req.get('host') || 'localhost:5000';
+      const protocol = req.secure || req.headers['x-forwarded-proto'] === 'https' ? 'https' : 'http';
+      const REDIRECT_URI = `${protocol}://${host}/api/auth/google/callback`;
       
       console.log(`🔄 Processing OAuth callback with redirect URI: ${REDIRECT_URI}`);
       
