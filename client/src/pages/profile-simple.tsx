@@ -11,7 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
-import { User, Settings, Target, Camera } from "lucide-react";
+import { User, Settings, Target, Camera, Shield, LogOut } from "lucide-react";
 
 export default function ProfilePage() {
   const { user, loading, logout } = useAuth();
