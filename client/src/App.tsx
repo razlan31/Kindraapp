@@ -34,7 +34,7 @@ import ModalsContainer from "./components/modals/modals-container";
 function AppRoutes() {
   const { user, isLoading } = useAuth();
   
-  console.log('App: Routing decision', { user: user ? user.email : 'null', isLoading });
+  // Removed console logging for performance
   
   if (isLoading) {
     return (

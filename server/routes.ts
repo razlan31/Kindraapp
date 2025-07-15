@@ -694,6 +694,65 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // User profile update endpoint (for profile page frontend)
+  app.patch("/api/users/:id", isAuthenticated, async (req, res) => {
+    try {
+      const userId = req.session.userId as string;
+      const requestedUserId = req.params.id;
+      
+      // Security check - users can only update their own profile
+      if (userId !== requestedUserId) {
+        return res.status(403).json({ message: "Unauthorized to update this user profile" });
+      }
+      
+      const updateData = req.body;
+      
+      // Validate the update data - includes all profile fields
+      const allowedFields = [
+        'displayName', 'email', 'zodiacSign', 'loveLanguage', 'profileImage',
+        'relationshipGoals', 'currentFocus', 'relationshipStyle', 'personalNotes'
+      ];
+      const filteredData = Object.keys(updateData)
+        .filter(key => allowedFields.includes(key))
+        .reduce((obj, key) => {
+          obj[key] = updateData[key];
+          return obj;
+        }, {} as any);
+      
+      const updatedUser = await storage.updateUser(userId, filteredData);
+      
+      if (!updatedUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Sync the self-connection with updated profile data
+      const userConnections = await storage.getConnectionsByUserId(userId);
+      const selfConnection = userConnections.find(conn => conn.relationshipStage === 'Self');
+      
+      if (selfConnection) {
+        const connectionUpdateData: any = {};
+        
+        // Map user fields to connection fields
+        if (filteredData.displayName) connectionUpdateData.name = filteredData.displayName;
+        if (filteredData.zodiacSign) connectionUpdateData.zodiacSign = filteredData.zodiacSign;
+        if (filteredData.loveLanguage) connectionUpdateData.loveLanguage = filteredData.loveLanguage;
+        if (filteredData.profileImage) connectionUpdateData.profileImage = filteredData.profileImage;
+        
+        if (Object.keys(connectionUpdateData).length > 0) {
+          await storage.updateConnection(selfConnection.id, connectionUpdateData);
+        }
+      }
+      
+      // Remove password from response
+      const { password, ...userWithoutPassword } = updatedUser;
+      
+      res.status(200).json(userWithoutPassword);
+    } catch (error) {
+      console.error("Error updating user profile:", error);
+      res.status(500).json({ message: "Failed to update user profile" });
+    }
+  });
+
   // Create user connection for existing users
   app.post("/api/me/connection", isAuthenticated, async (req, res) => {
     try {

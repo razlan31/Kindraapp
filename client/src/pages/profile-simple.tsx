@@ -46,6 +46,10 @@ export default function ProfilePage() {
       setEmail(user.email || "");
       setZodiacSign(user.zodiacSign || "");
       setLoveLanguage(user.loveLanguage || "");
+      setRelationshipGoals(user.relationshipGoals || "");
+      setCurrentFocus(user.currentFocus || "");
+      setRelationshipStyle(user.relationshipStyle || "");
+      setPersonalNotes(user.personalNotes || "");
     }
   }, [user]);
 
@@ -84,6 +88,7 @@ export default function ProfilePage() {
       queryClient.invalidateQueries({ queryKey: ["/api/me"] });
     },
     onError: (error: any) => {
+      console.error('Profile update error:', error);
       toast({
         title: "Error",
         description: "Failed to update profile. Please try again.",
@@ -112,11 +117,15 @@ export default function ProfilePage() {
       email,
       zodiacSign,
       loveLanguage,
+      relationshipGoals,
+      currentFocus,
+      relationshipStyle,
+      personalNotes,
     });
   };
 
   const handleLogout = () => {
-    console.log("🔴 PROFILE: Profile page logout button clicked");
+    // Removed console logging for performance
     try {
       logout(); // Now synchronous
     } catch (error) {
@@ -171,8 +180,8 @@ export default function ProfilePage() {
           <CardContent className="space-y-4">
             <div className="flex items-center gap-4">
               <div className="w-20 h-20 rounded-full bg-neutral-200 dark:bg-neutral-700 flex items-center justify-center overflow-hidden">
-                {user.profileImage ? (
-                  <img src={user.profileImage} alt="Profile" className="w-full h-full object-cover" />
+                {user.profileImageUrl || user.profileImage ? (
+                  <img src={user.profileImageUrl || user.profileImage} alt="Profile" className="w-full h-full object-cover" />
                 ) : (
                   <User className="h-8 w-8 text-neutral-400" />
                 )}

@@ -13,7 +13,7 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<Theme>(() => {
     const stored = localStorage.getItem("theme") as Theme;
-    console.log('Theme context initial load:', stored || "light");
+    // Removed console logging for performance
     return stored || "light";
   });
 
@@ -21,7 +21,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const root = window.document.documentElement;
-    console.log('Theme effect running:', theme);
+    // Removed console logging for performance
     
     // Remove previous theme classes
     root.classList.remove("light", "dark", "minimalist");
@@ -31,18 +31,18 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     if (theme === "minimalist") {
       root.classList.add("minimalist");
       effectiveTheme = "light"; // minimalist is based on light theme
-      console.log('Applied minimalist theme (light base)');
+      // Removed console logging for performance
     } else {
       effectiveTheme = theme as "light" | "dark";
       root.classList.add(effectiveTheme);
-      console.log('Applied theme:', effectiveTheme);
+      // Removed console logging for performance
     }
     
     setActualTheme(effectiveTheme);
     
     // Store theme preference
     localStorage.setItem("theme", theme);
-    console.log('Theme stored to localStorage:', theme);
+    // Removed console logging for performance
   }, [theme]);
 
 
