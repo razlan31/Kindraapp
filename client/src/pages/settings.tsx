@@ -106,7 +106,7 @@ function BillingSection() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <UsageIndicator
               label="Connections"
-              current={subscriptionStatus?.usage.connectionsUsed || 19}
+              current={actualConnectionCount}
               limit={isPremium ? undefined : freePlanFeatures.connections}
               icon="👥"
             />
@@ -253,11 +253,20 @@ function Settings() {
     }
   }, []);
 
+  // Fetch active connections 
+  const { data: connections = [] } = useQuery<any[]>({
+    queryKey: ["/api/connections"],
+    enabled: isAuthenticated && !!user,
+  });
+
   // Fetch archived connections
   const { data: archivedConnections = [] } = useQuery<any[]>({
     queryKey: ["/api/connections/archived"],
     enabled: isAuthenticated && !!user,
   });
+
+  // Calculate actual connection count excluding self-connections
+  const actualConnectionCount = connections.filter(conn => conn.relationshipStage !== 'Self').length;
 
   // Restore connection mutation
   const restoreConnectionMutation = useMutation({
