@@ -88,35 +88,48 @@ export function setupSession(app: Express) {
   console.log('🧪 1. Express setup');
   console.log('🧪 2. Session middleware (about to be applied)');
   
-  // TESTING #16: Session regeneration on each request (70% confidence)
-  console.log('🧪 TESTING #16: Session regeneration on each request...');
-  console.log('🧪 Session config regeneration settings:', {
-    resave: sessionConfig.resave,
-    saveUninitialized: sessionConfig.saveUninitialized,
-    rolling: sessionConfig.rolling
+  // FIXING ROOT CAUSES #10 & #11: Express session middleware cookie parsing
+  console.log('🔧 FIXING ROOT CAUSES #10 & #11: Express session middleware cookie parsing...');
+  console.log('🔧 Issue: express-session not parsing cookies from requests');
+  console.log('🔧 Solution: Ensure proper cookie parsing middleware order');
+  
+  // Fix #11: Add cookie parser middleware BEFORE session middleware
+  const cookieParser = require('cookie-parser');
+  app.use(cookieParser(sessionSecret));
+  console.log('🔧 Added cookie-parser middleware before session middleware');
+  
+  // Fix #10: Enhanced session configuration for proper cookie parsing
+  const enhancedSessionConfig = {
+    ...sessionConfig,
+    // Ensure session uses the same secret as cookie parser
+    secret: sessionSecret,
+    // Force session to check for existing sessions
+    resave: true, // Check session store on every request
+    saveUninitialized: false, // Don't create sessions until needed
+    // Enhanced cookie configuration for proper parsing
+    cookie: {
+      ...sessionConfig.cookie,
+      signed: true, // Ensure cookies are signed
+      httpOnly: true,
+      secure: false, // Development mode
+      maxAge: sessionTtl,
+      sameSite: 'lax'
+    }
+  };
+  
+  console.log('🔧 Enhanced session config for proper cookie parsing:', {
+    resave: enhancedSessionConfig.resave,
+    saveUninitialized: enhancedSessionConfig.saveUninitialized,
+    cookieSigned: enhancedSessionConfig.cookie.signed
   });
   
-  // TESTING #11: Express session middleware parsing order (85% confidence)
-  console.log('🧪 TESTING #11: Express session middleware parsing order...');
-  console.log('🧪 Middleware order: session middleware being applied now');
+  app.use(session(enhancedSessionConfig));
   
-  app.use(session(sessionConfig));
-  
-  // TESTING #16: Add middleware to monitor session regeneration
+  // Add debugging middleware to verify cookie parsing fix
   app.use((req, res, next) => {
-    const originalSessionId = req.session?.id;
-    console.log('🧪 #16 Session ID before processing:', originalSessionId);
-    
-    // Override session.regenerate to detect when it's called
-    const originalRegenerate = req.session?.regenerate;
-    if (req.session && originalRegenerate) {
-      req.session.regenerate = function(callback) {
-        console.log('🚨 #16 CONFIRMED: Session regeneration detected!');
-        console.log('🚨 #16 Session regeneration called - this is causing ID mismatch');
-        return originalRegenerate.call(this, callback);
-      };
-    }
-    
+    console.log('🔍 POST-FIX: Session ID:', req.session?.id);
+    console.log('🔍 POST-FIX: Cookies parsed:', Object.keys(req.cookies || {}));
+    console.log('🔍 POST-FIX: Signed cookies:', Object.keys(req.signedCookies || {}));
     next();
   });
 }

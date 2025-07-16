@@ -3,6 +3,7 @@ import session from "express-session";
 import connectPg from "connect-pg-simple";
 import { storage } from "./database-storage";
 import MemoryStore from "memorystore";
+import cookieParser from "cookie-parser";
 
 declare module "express-session" {
   interface SessionData {
@@ -11,40 +12,31 @@ declare module "express-session" {
   }
 }
 
-// Complete authentication system rebuild
+// Complete authentication system rebuild - APPLYING ROOT CAUSE FIXES #10 & #11
 export function setupAuthentication(app: Express) {
   console.log("🔐 Setting up complete authentication system");
   
-  // TESTING ITEM #14: Memory Store Session Conflicts - Remove session store to prevent database blocking
-  console.log('🧪 TESTING ITEM #14: Removing session store to prevent database operation conflicts...');
+  // FIXING ROOT CAUSES #10 & #11: Express session middleware cookie parsing
+  console.log('🔧 FIXING ROOT CAUSES #10 & #11: Express session middleware cookie parsing...');
+  console.log('🔧 Issue: express-session not parsing cookies from requests');
+  console.log('🔧 Solution: Ensure proper cookie parsing middleware order');
   
   // Session configuration
   const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 7 days
+  const sessionSecret = process.env.SESSION_SECRET || 'kindra-production-secret';
   
-  // TESTING: Remove session store entirely to prevent conflicts with database operations
-  // const MemStore = MemoryStore(session);
-  // const sessionStore = new MemStore({
-  //   checkPeriod: 86400000, // Check only once per day to minimize operations
-  //   ttl: sessionTtl,
-  //   max: 10, // Severely reduced max sessions to minimize memory operations
-  //   dispose: (key: string, value: any) => {
-  //     // Remove logging to prevent any I/O during startup
-  //   }
-  // });
+  // Fix #11: Add cookie parser middleware BEFORE session middleware
+  app.use(cookieParser(sessionSecret));
+  console.log('🔧 Added cookie-parser middleware before session middleware');
   
-  // TESTING ITEM #14: Session store error monitoring removed
-  // sessionStore.on('error', (err) => {
-  //   // Silently handle errors during testing to prevent startup interference
-  // });
-
-  // TESTING ITEM #14: Session middleware without store to prevent database conflicts
-  app.use(session({
-    secret: process.env.SESSION_SECRET || 'kindra-production-secret',
-    // store: sessionStore, // TESTING: Remove session store to prevent conflicts
-    resave: false,
-    saveUninitialized: false, // Don't create session for all requests
-    rolling: false, // Disable rolling sessions during testing
+  // Fix #10: Enhanced session configuration for proper cookie parsing
+  const enhancedSessionConfig = {
+    secret: sessionSecret,
+    resave: true, // Check session store on every request to find existing sessions
+    saveUninitialized: false, // Don't create sessions until needed
+    rolling: false, // Disable rolling sessions
     cookie: {
+      signed: true, // Ensure cookies are signed for proper parsing
       secure: false, // Development mode
       httpOnly: true, // Secure cookies for production
       maxAge: sessionTtl,
@@ -53,7 +45,23 @@ export function setupAuthentication(app: Express) {
       domain: undefined, // No domain restriction for localhost
     },
     name: 'connect.sid',
-  }));
+  };
+  
+  console.log('🔧 Enhanced session config for proper cookie parsing:', {
+    resave: enhancedSessionConfig.resave,
+    saveUninitialized: enhancedSessionConfig.saveUninitialized,
+    cookieSigned: enhancedSessionConfig.cookie.signed
+  });
+  
+  app.use(session(enhancedSessionConfig));
+  
+  // Add debugging middleware to verify cookie parsing fix
+  app.use((req, res, next) => {
+    console.log('🔍 POST-FIX: Session ID:', req.session?.id);
+    console.log('🔍 POST-FIX: Cookies parsed:', Object.keys(req.cookies || {}));
+    console.log('🔍 POST-FIX: Signed cookies:', Object.keys(req.signedCookies || {}));
+    next();
+  });
 
   // OAuth initiation
   app.get("/api/auth/google", (req: Request, res: Response) => {
