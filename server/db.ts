@@ -16,81 +16,38 @@ if (!process.env.DATABASE_URL) {
   );
 }
 
-// 🚨 SEQUELIZE CANCELLATION FIX: Ultra-minimal configuration to prevent Neon resource limits under concurrent authentication load
-console.log('🧪 SEQUELIZE CANCELLATION FIX: Configuring ultra-minimal database resources to prevent Neon limits under concurrent authentication load...');
-
-// ROOT CAUSE: Concurrent authentication operations cause Neon database to remove connections from pool
-// SOLUTION: Single connection with minimal timeouts and resource usage
+// Optimized database connection pool configuration
 const pool = new Pool({ 
-  connectionString: process.env.DATABASE_URL + "?connect_timeout=3", // 3 second timeout (ultra-minimal)
-  max: 1, // Single connection to prevent resource exhaustion during concurrent auth
-  min: 0, // No minimum connections to minimize resource usage
-  idleTimeoutMillis: 3000, // 3 second idle timeout (ultra-minimal)
-  connectionTimeoutMillis: 3000, // 3 second connection timeout (ultra-minimal)
-  statementTimeout: 3000, // 3 second statement timeout (ultra-minimal)
-  queryTimeout: 3000, // 3 second query timeout (ultra-minimal)
+  connectionString: process.env.DATABASE_URL + "?connect_timeout=10",
+  max: 3, // Improved concurrency
+  min: 0, 
+  idleTimeoutMillis: 10000, // 10 second idle timeout
+  connectionTimeoutMillis: 10000, // 10 second connection timeout
+  statementTimeout: 15000, // 15 second statement timeout
+  queryTimeout: 15000, // 15 second query timeout
   allowExitOnIdle: true,
-  maxUses: 10, // Ultra-minimal connection reuse to prevent resource exhaustion
-  maxLifetimeSeconds: 30, // 30 second connection lifetime (ultra-minimal)
+  maxUses: 1000, // Better connection reuse
+  maxLifetimeSeconds: 300, // 5 minute connection lifetime
 });
 
-// TESTING ITEM #12: Drizzle ORM-level timeout configuration to prevent sequelize cancellation
-console.log('🧪 TESTING ITEM #12: Configuring Drizzle ORM query timeout to prevent sequelize cancellation...');
+// Database configuration - clean and optimized
 
 export const db = drizzle({ 
   client: pool, 
-  schema,
-  // Add ORM-level timeout configuration
-  logger: {
-    logQuery: (query, params) => {
-      console.log('🧪 ITEM #12: Drizzle query starting:', query.substring(0, 100) + '...');
-    }
-  }
+  schema
 });
 
 // Export pool for testing purposes
 export { pool };
 
-// TESTING ITEM #13: Enhanced error handling with Neon resource limit monitoring
+// Database error monitoring
 pool.on('error', (err) => {
-  console.error('🚨 ITEM #13: Database pool error:', err);
-  
-  // Handle specific PostgreSQL ProcessInterrupts errors
-  if (err.code === '57P01') {
-    console.error('🚨 ITEM #13: PostgreSQL ProcessInterrupts detected - connection terminated by server');
-  }
-  
-  // TESTING: Monitor for Neon resource limit errors
-  if (err.message.includes('connection limit') || err.message.includes('resource limit')) {
-    console.error('🚨 ITEM #13: Neon resource limit detected - this may cause sequelize cancellation');
-  }
-  
-  if (err.message.includes('timeout') || err.message.includes('timed out')) {
-    console.error('🚨 ITEM #13: Database timeout detected - potential resource exhaustion');
-  }
+  console.error('Database pool error:', err);
 });
 
-// Enhanced connection logging with pool statistics
-pool.on('connect', (client) => {
+// Simple connection logging
+pool.on('connect', () => {
   console.log('Database connected successfully');
-  console.log(`Connection details: processID=${client.processID}, backend=${client.connectionParameters?.host}`);
-  console.log(`Pool stats: total=${pool.totalCount}, idle=${pool.idleCount}, waiting=${pool.waitingCount}`);
-});
-
-// Add connection end logging with pool statistics
-pool.on('remove', (client) => {
-  console.log('Database connection removed from pool');
-  console.log(`Pool stats after removal: total=${pool.totalCount}, idle=${pool.idleCount}, waiting=${pool.waitingCount}`);
-});
-
-// Add connection acquisition logging
-pool.on('acquire', (client) => {
-  console.log(`Connection acquired: processID=${client?.processID || 'null'}, pool waiting=${pool.waitingCount}`);
-});
-
-// Add connection release logging
-pool.on('release', (client) => {
-  console.log(`Connection released: processID=${client?.processID || 'null'}, pool idle=${pool.idleCount}`);
 });
 
 // Enhanced health check with timeout handling

@@ -14,19 +14,8 @@ import { db } from "./db";
 import { eq, desc, and, count } from "drizzle-orm";
 import type { IStorage } from "./storage";
 
-// TESTING ITEM #12: Drizzle ORM-level timeout wrapper to prevent sequelize cancellation
-const withDrizzleTimeout = async <T>(promise: Promise<T>, timeoutMs: number = 2000): Promise<T> => {
-  console.log('🧪 TESTING ITEM #12: Wrapping Drizzle query with 2-second timeout...');
-  
-  const timeoutPromise = new Promise<never>((_, reject) => {
-    setTimeout(() => {
-      console.error('🚨 ITEM #12: Drizzle ORM query timeout after 2 seconds');
-      reject(new Error(`Drizzle ORM query timed out after ${timeoutMs}ms`));
-    }, timeoutMs);
-  });
-  
-  return Promise.race([promise, timeoutPromise]);
-};
+// FIXED: Removed artificial timeout wrapper that was causing database failures
+// Let database handle its own timeouts naturally
 
 // No timeout wrapper - let database handle its own timeouts
 // This eliminates artificial timeout conflicts
@@ -35,11 +24,10 @@ export class DatabaseStorage implements IStorage {
   // User operations
   async getUser(id: string): Promise<User | undefined> {
     try {
-      const [user] = await withDrizzleTimeout(db.select().from(users).where(eq(users.id, id)));
-      console.log('🧪 TESTING ITEM #12: Drizzle getUser query completed successfully');
+      const [user] = await db.select().from(users).where(eq(users.id, id));
       return user;
     } catch (error) {
-      console.error('🚨 ITEM #12: Drizzle getUser query error:', error);
+      console.error('Database error in getUser:', error);
       return undefined; // Return undefined instead of throwing
     }
   }
@@ -123,34 +111,21 @@ export class DatabaseStorage implements IStorage {
 
   async upsertUser(user: UpsertUser): Promise<User> {
     try {
-      // TESTING ITEM #16: OAuth Callback Database Conflicts - Add timeout protection to upsertUser
-      console.log('🧪 TESTING ITEM #16: Starting OAuth upsertUser operation with timeout protection...');
+      const [upsertedUser] = await db
+        .insert(users)
+        .values(user)
+        .onConflictDoUpdate({
+          target: users.id,
+          set: {
+            ...user,
+            updatedAt: new Date(),
+          },
+        })
+        .returning();
       
-      const upsertedUser = await withDrizzleTimeout(
-        db
-          .insert(users)
-          .values(user)
-          .onConflictDoUpdate({
-            target: users.id,
-            set: {
-              ...user,
-              updatedAt: new Date(),
-            },
-          })
-          .returning(),
-        5000 // 5 second timeout for OAuth operations
-      );
-      
-      console.log('✅ TESTING ITEM #16: OAuth upsertUser operation completed successfully');
-      return upsertedUser[0];
+      return upsertedUser;
     } catch (error) {
-      console.error('🚨 TESTING ITEM #16: OAuth upsertUser operation failed:', error);
-      
-      // TESTING: Check if this is the sequelize cancellation error
-      if (error.message.includes('sequelize statement was cancelled')) {
-        console.error('🚨 CRITICAL: Found sequelize cancellation in OAuth upsertUser operation!');
-      }
-      
+      console.error('Database error in upsertUser:', error);
       throw error; // Keep throwing for create operations
     }
   }
@@ -439,12 +414,9 @@ export class DatabaseStorage implements IStorage {
   // Badge operations
   async getAllBadges(): Promise<Badge[]> {
     try {
-      return await withDrizzleTimeout(db.select().from(badges), 3000);
+      return await db.select().from(badges);
     } catch (error) {
-      console.error('🚨 getAllBadges error:', error);
-      if (error.message.includes('timed out')) {
-        console.error('🚨 SEQUELIZE TIMEOUT: This may trigger "sequelize statement was cancelled" error');
-      }
+      console.error('Database error in getAllBadges:', error);
       return [];
     }
   }
@@ -569,11 +541,7 @@ export class DatabaseStorage implements IStorage {
     console.log('🧪 TESTING ITEM #6: Using aligned timeouts to prevent sequelize cancellation...');
     
     try {
-      // Use aligned 3s timeout instead of 500ms to test if this prevents sequelize cancellation  
-      const existingBadges = await withDrizzleTimeout(
-        db.select({ count: count() }).from(badges),
-        3000 // Use aligned timeout matching Express server timeout
-      );
+      const existingBadges = await db.select({ count: count() }).from(badges);
       
       if (existingBadges[0].count > 0) {
         console.log(`🏆 Found ${existingBadges[0].count} existing badges in database`);
@@ -628,10 +596,7 @@ export class DatabaseStorage implements IStorage {
           isRepeatable: badge.isRepeatable ?? false
         }));
         
-        await withDrizzleTimeout(
-          db.insert(badges).values(batchValues),
-          5000 // Longer timeout for deferred operations
-        );
+        await db.insert(badges).values(batchValues);
         
         console.log(`🏆 Deferred batch ${Math.floor(i/batchSize) + 1}/${Math.ceil(defaultBadges.length/batchSize)} completed (${batch.length} badges)`);
       }
