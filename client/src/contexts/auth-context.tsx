@@ -47,6 +47,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.get('auth') === 'success') {
         console.log('🔍 INVESTIGATION #39: OAuth callback detected, waiting for session cookie propagation');
+        
+        // CRITICAL FIX: Use session transfer mechanism
+        const transferKey = urlParams.get('transfer');
+        if (transferKey) {
+          console.log('🔍 CRITICAL FIX: Session transfer key detected:', transferKey);
+          try {
+            const transferResponse = await fetch(`/api/auth/transfer/${transferKey}`, {
+              credentials: 'include',
+              cache: 'no-cache'
+            });
+            
+            if (transferResponse.ok) {
+              const transferData = await transferResponse.json();
+              console.log('🔍 CRITICAL FIX: Session transfer successful:', transferData);
+              
+              // Clean up URL parameters
+              const cleanUrl = window.location.pathname;
+              window.history.replaceState({}, document.title, cleanUrl);
+            } else {
+              console.error('❌ Session transfer failed:', await transferResponse.text());
+            }
+          } catch (error) {
+            console.error('❌ Session transfer error:', error);
+          }
+        }
+        
         // Wait for session cookie to be available after OAuth redirect
         await new Promise(resolve => setTimeout(resolve, 300));
         console.log('🔍 INVESTIGATION #39: Post-OAuth wait complete, document.cookie:', document.cookie);

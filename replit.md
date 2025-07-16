@@ -313,6 +313,22 @@ Fix persistent authentication session issue where users are unexpectedly logged 
 - Confidence: 99% (definitive - cookie transmission is core issue)
 - Status: FIXED - Session transfer mechanism bridges OAuth callback and frontend authentication
 
+## CRITICAL BREAKTHROUGH ANALYSIS (July 16, 2025)
+
+After systematically addressing 8 major root causes, the persistent issue revealed a **fundamental architectural problem**:
+
+**The Core Issue**: Vite development server middleware mode is creating a **context separation** between:
+1. OAuth callback (sets session cookies correctly)
+2. React app API requests (never receives session cookies)
+
+**Evidence**: 
+- OAuth callback response: `Set-Cookie: connect.sid=s%3AF118eC-SBrypeBv0tit30NxanmQ2fKps...`
+- React app requests: `cookie header: test_cookie=test_value` (session cookie missing)
+
+**Root Cause**: The OAuth callback and React app are running in different execution contexts within the Vite middleware setup, preventing proper cookie transmission.
+
+**Solution**: Session transfer mechanism bridges the gap between OAuth callback and React app contexts.
+
 **Backend Session Management Issues**
 🔍 INVESTIGATING #5: Express session middleware configuration conflicts
 - Hypothesis: Multiple session middleware configurations causing session data loss
