@@ -82,31 +82,11 @@ export function setupAuthentication(app: Express) {
   
   app.use(session(enhancedSessionConfig));
   
-  // Add debugging middleware to verify cookie parsing fix
+  // Graceful expired session handling middleware
   app.use((req, res, next) => {
-    console.log('🔍 POST-FIX: Session ID:', req.session?.id);
-    console.log('🔍 POST-FIX: Cookies parsed:', Object.keys(req.cookies || {}));
-    console.log('🔍 POST-FIX: Signed cookies:', Object.keys(req.signedCookies || {}));
-    
-    // INVESTIGATION #1: Session serialization/deserialization failure
-    if (req.session?.id) {
-      console.log('🔍 INVESTIGATION #1: Session data check:', {
-        sessionId: req.session.id,
-        userId: req.session.userId,
-        authenticated: req.session.authenticated,
-        hasSessionData: !!req.session
-      });
-    }
-    
-    // INVESTIGATION #3: Session store save/load timing
-    if (req.session?.id && req.headers.cookie) {
+    // Only handle expired sessions for API requests
+    if (req.path.startsWith('/api/') && req.headers.cookie) {
       const cookieSessionId = req.headers.cookie.match(/connect\.sid=([^;]+)/)?.[1];
-      console.log('🔍 INVESTIGATION #3: Session store timing check:', {
-        sessionIdInMemory: req.session.id,
-        sessionIdFromCookie: cookieSessionId,
-        sessionStoreWorking: req.session.id === req.sessionID,
-        sessionDataAvailable: !!req.session.userId
-      });
       
       // GRACEFUL EXPIRED SESSION HANDLING
       if (cookieSessionId && req.session.id !== cookieSessionId.replace(/^s%3A/, '').split('.')[0]) {

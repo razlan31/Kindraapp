@@ -36,15 +36,9 @@ import { useEffect } from "react";
 function AppRoutes() {
   const { user, isLoading } = useAuth();
   
-  // INVESTIGATION #4: Frontend cookie transmission failure diagnostic
+  // Clean application startup
   useEffect(() => {
-    const runDiagnostic = async () => {
-      console.log('🔍 INVESTIGATION #4: Running frontend cookie diagnostic...');
-      const results = diagnoseCookieTransmission();
-      console.log('🔍 INVESTIGATION #4: Cookie diagnostic results:', results);
-    };
-    
-    runDiagnostic();
+    console.log('🚀 Kindra application starting...');
   }, []);
   
   // Removed console logging for performance

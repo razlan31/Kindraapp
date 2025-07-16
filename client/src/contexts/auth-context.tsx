@@ -32,10 +32,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     retry: false,
     staleTime: 5 * 60 * 1000, // Cache for 5 minutes
     cacheTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
+    refetchInterval: false, // Disable automatic refetching
+    refetchOnWindowFocus: false, // Disable refetch on window focus
+    refetchOnReconnect: false, // Disable refetch on reconnect
     queryFn: async () => {
-      // INVESTIGATION #4: Frontend cookie transmission failure
-      console.log('🔍 INVESTIGATION #4: Auth context checking cookies:', document.cookie);
-      console.log('🔍 INVESTIGATION #4: About to fetch /api/me with credentials: include');
+      console.log('🔍 AUTH: Checking authentication status...');
       
       const response = await fetch('/api/me', {
         credentials: 'include',
@@ -46,15 +47,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
       });
       
-      console.log('🔍 INVESTIGATION #4: /api/me response status:', response.status);
-      console.log('🔍 INVESTIGATION #4: /api/me response headers:', Array.from(response.headers.entries()));
+      console.log('🔍 AUTH: Response status:', response.status);
+      
+      // Check for session renewal
+      if (response.headers.get('X-Session-Renewed') === 'true') {
+        console.log('🧹 AUTH: Session renewed, expired cookies cleared');
+        // Session was renewed, but we're still not authenticated
+        // This means the expired cookie was cleared and we need to authenticate
+        throw new Error('Session renewed - authentication required');
+      }
       
       if (!response.ok) {
-        console.log('🔍 INVESTIGATION #4: Authentication failed - checking if cookies present');
-        console.log('🔍 INVESTIGATION #4: Document cookies at failure time:', document.cookie);
+        console.log('🔍 AUTH: Not authenticated, status:', response.status);
         throw new Error(`${response.status}: ${response.statusText}`);
       }
+      
       const data = await response.json();
+      console.log('🔍 AUTH: Authentication successful for user:', data.email);
       return data;
     }
   });
@@ -69,18 +78,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [currentUser, error, isLoading]);
 
-  // INVESTIGATION #8: Auth context refetch timing
+  // OAuth callback success handling
   useEffect(() => {
     const handleAuthSuccess = () => {
-      console.log('🔍 INVESTIGATION #8: Auth success detected, checking cookies before refetch');
-      console.log('🔍 INVESTIGATION #8: Document cookies at auth success:', document.cookie);
+      console.log('🔐 OAuth authentication successful, refreshing user data...');
       
-      // Extended delay to ensure cookie is fully set
+      // Allow time for session cookie to be set before refetching
       setTimeout(() => {
-        console.log('🔍 INVESTIGATION #8: About to refetch after auth success');
-        console.log('🔍 INVESTIGATION #8: Document cookies before refetch:', document.cookie);
         refetch();
-      }, 1000); // Increased delay from 500ms to 1000ms
+      }, 1000);
     };
 
     // Check for auth success in URL
