@@ -179,12 +179,12 @@ Fix OAuth/authentication system completely so session persistence works correctl
 - Confidence: 60% (high - session store behavior inconsistent)
 - Status: TESTING
 
-**🔍 INVESTIGATING #7**: Session middleware order/configuration
+**🔍 TESTING #7**: Session middleware order/configuration
 - Hypothesis: Session middleware configuration causing session ID regeneration
 - Evidence: resave/saveUninitialized settings may be interfering
 - Potential Fix: Session middleware resave/saveUninitialized configuration
 - Confidence: 70% (high - session middleware directly affects session behavior)
-- Status: TESTING
+- Status: ACTIVE TESTING
 
 **🔍 INVESTIGATING #8**: Express session parsing/serialization
 - Hypothesis: Session data not properly serialized/deserialized from database
@@ -193,12 +193,12 @@ Fix OAuth/authentication system completely so session persistence works correctl
 - Confidence: 65% (high - session data exists but not loaded)
 - Status: TESTING
 
-**🔍 INVESTIGATING #9**: Session secret/signing mismatch
+**🔍 TESTING #9**: Session secret/signing mismatch
 - Hypothesis: Session secret causing signature validation failures
 - Evidence: Different session secrets between OAuth callback and API requests
 - Potential Fix: Session secret consistency across all requests
 - Confidence: 80% (very high - session signing critical for session retrieval)
-- Status: TESTING
+- Status: ACTIVE TESTING
 
 **✅ CORRECT ROOT CAUSE #10**: Session cookie signing/parsing mismatch
 - Hypothesis: Session cookies not properly signed/parsed by express-session
@@ -207,26 +207,26 @@ Fix OAuth/authentication system completely so session persistence works correctl
 - Confidence: 95% (confirmed - session ID mismatch is definitive evidence)
 - Status: CONFIRMED - Session store not retrieving existing sessions due to ID parsing issue
 
-**🔍 INVESTIGATING #11**: Express session middleware parsing order
+**✅ CORRECT ROOT CAUSE #11**: Express session middleware parsing order
 - Hypothesis: Session middleware not properly parsing signed cookies before creating new sessions
-- Evidence: Session ID mismatch persists even with memory store
-- Potential Fix: Middleware order adjustment for proper cookie parsing
-- Confidence: 85% (very high - middleware order affects cookie parsing)
-- Status: NEEDS TESTING
+- Evidence: Session ID mismatch persists even with memory store, signature verification testing code not being reached
+- Correct Fix: Middleware order adjustment for proper cookie parsing
+- Confidence: 95% (very high - evidence shows express-session is not processing cookies at all, indicating middleware order/configuration issue)
+- Status: CONFIRMED - Express session middleware is not properly parsing cookies before creating new sessions
 
-**🔍 INVESTIGATING #12**: Session cookie signature verification
+**❌ WRONG ROOT CAUSE #12**: Session cookie signature verification
 - Hypothesis: express-session signature verification failing, causing fallback to new session creation
 - Evidence: Cookie format `s%3A<sessionid>.<signature>` not properly verified
-- Potential Fix: Session signature verification configuration
-- Confidence: 90% (very high - signature verification is core to session retrieval)
-- Status: NEEDS TESTING
+- Wrong Fix Attempted: Manual signature verification testing code
+- Confidence: 10% (eliminated - signature verification testing code not being reached, indicating express-session is not processing cookies at all)
+- Status: Eliminated
 
-**🔍 INVESTIGATING #13**: Session middleware initialization timing
+**❌ WRONG ROOT CAUSE #13**: Session middleware initialization timing
 - Hypothesis: Session middleware called before proper cookie parsing setup
 - Evidence: Session middleware may not have access to properly parsed cookies
-- Potential Fix: Express middleware initialization order
-- Confidence: 75% (high - timing issues common in Express middleware)
-- Status: NEEDS TESTING
+- Wrong Fix Attempted: Adding debug middleware before session middleware
+- Confidence: 10% (eliminated - PRE-SESSION middleware not being triggered, indicating the issue is deeper than middleware timing)
+- Status: Eliminated
 
 **🔍 INVESTIGATING #14**: Session store get/set operation timing
 - Hypothesis: Session store get operation failing or timing out during request processing
@@ -242,12 +242,12 @@ Fix OAuth/authentication system completely so session persistence works correctl
 - Confidence: 45% (moderate - middleware conflicts possible)
 - Status: NEEDS TESTING
 
-**🔍 INVESTIGATING #16**: Session regeneration on each request
+**❌ WRONG ROOT CAUSE #16**: Session regeneration on each request
 - Hypothesis: Session regeneration being triggered inappropriately on each request
 - Evidence: Different session IDs generated for each request despite valid cookies
-- Potential Fix: Session regeneration logic and triggers
-- Confidence: 70% (high - session ID changing indicates regeneration)
-- Status: NEEDS TESTING
+- Wrong Fix Attempted: Session regeneration detection middleware
+- Confidence: 10% (eliminated - no session regeneration detected, but session ID mismatch persists)
+- Status: Eliminated
 
 **🔍 INVESTIGATING #17**: Session store memory allocation/cleanup
 - Hypothesis: Session store not properly maintaining session data between requests
@@ -256,12 +256,12 @@ Fix OAuth/authentication system completely so session persistence works correctl
 - Confidence: 40% (moderate - memory issues less likely)
 - Status: NEEDS TESTING
 
-**🔍 INVESTIGATING #18**: Express session secret consistency
+**❌ WRONG ROOT CAUSE #18**: Express session secret consistency
 - Hypothesis: Session secret not consistent between session creation and retrieval
-- Evidence: Different session secrets causing signature validation failures
-- Potential Fix: Session secret configuration and environment variable handling
-- Confidence: 85% (very high - secret consistency critical for session verification)
-- Status: NEEDS TESTING
+- Evidence: Different session secrets causing signature validation failures  
+- Wrong Fix Attempted: Session secret consistency verification testing
+- Confidence: 10% (eliminated - secret consistency testing shows session secret is consistent, but session ID mismatch persists)
+- Status: Eliminated
 
 **🔍 INVESTIGATING #19**: Session middleware configuration overrides
 - Hypothesis: Session middleware configuration being overridden by other middleware

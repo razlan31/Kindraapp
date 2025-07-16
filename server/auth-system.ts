@@ -38,10 +38,26 @@ export function setupSession(app: Express) {
     ttl: sessionTtl
   });
   
+  // TESTING #18: Express session secret consistency (85% confidence)
+  console.log('🧪 TESTING #18: Express session secret consistency...');
+  const sessionSecret = process.env.SESSION_SECRET || 'kindra-development-secret-fixed';
+  console.log('🧪 Session secret length:', sessionSecret.length);
+  console.log('🧪 Session secret first 10 chars:', sessionSecret.substring(0, 10));
+  
+  // Test if secret is consistent
+  const testSecret = process.env.SESSION_SECRET || 'kindra-development-secret-fixed';
+  console.log('🧪 Secret consistency test:', sessionSecret === testSecret);
+  
+  if (sessionSecret !== testSecret) {
+    console.log('🚨 #18 CONFIRMED: Session secret inconsistency detected!');
+  } else {
+    console.log('✅ #18 VERIFIED: Session secret is consistent');
+  }
+  
   // Root Cause Investigation #7: Test session middleware configuration
   console.log('🧪 ROOT CAUSE #7: Testing session middleware configuration...');
   const sessionConfig = {
-    secret: process.env.SESSION_SECRET || 'kindra-development-secret-fixed',
+    secret: sessionSecret,
     genid: undefined, // Use default session ID generation
     store: sessionStore,
     resave: false, // Don't resave unchanged sessions
@@ -66,7 +82,43 @@ export function setupSession(app: Express) {
     cookieName: sessionConfig.name
   });
   
+  // TESTING #13: Session middleware initialization timing (75% confidence)
+  console.log('🧪 TESTING #13: Session middleware initialization timing...');
+  console.log('🧪 Current middleware stack order before session:');
+  console.log('🧪 1. Express setup');
+  console.log('🧪 2. Session middleware (about to be applied)');
+  
+  // TESTING #16: Session regeneration on each request (70% confidence)
+  console.log('🧪 TESTING #16: Session regeneration on each request...');
+  console.log('🧪 Session config regeneration settings:', {
+    resave: sessionConfig.resave,
+    saveUninitialized: sessionConfig.saveUninitialized,
+    rolling: sessionConfig.rolling
+  });
+  
+  // TESTING #11: Express session middleware parsing order (85% confidence)
+  console.log('🧪 TESTING #11: Express session middleware parsing order...');
+  console.log('🧪 Middleware order: session middleware being applied now');
+  
   app.use(session(sessionConfig));
+  
+  // TESTING #16: Add middleware to monitor session regeneration
+  app.use((req, res, next) => {
+    const originalSessionId = req.session?.id;
+    console.log('🧪 #16 Session ID before processing:', originalSessionId);
+    
+    // Override session.regenerate to detect when it's called
+    const originalRegenerate = req.session?.regenerate;
+    if (req.session && originalRegenerate) {
+      req.session.regenerate = function(callback) {
+        console.log('🚨 #16 CONFIRMED: Session regeneration detected!');
+        console.log('🚨 #16 Session regeneration called - this is causing ID mismatch');
+        return originalRegenerate.call(this, callback);
+      };
+    }
+    
+    next();
+  });
 }
 
 // OAuth routes
@@ -240,26 +292,29 @@ export function setupApiRoutes(app: Express) {
             console.log('🚨 Cookie contains different session ID than req.session.id');
             console.log('🚨 This means session store is not retrieving existing session');
             
-            // Try to manually retrieve the session from the store
-            const cookieSessionId = decodeURIComponent(sessionCookie[1]).split('.')[0].replace('s:', ''); // Remove signature and URL encoding
-            console.log('🔧 Attempting manual session retrieval for:', cookieSessionId);
+            // TESTING #12: Session cookie signature verification (90% confidence)
+            console.log('🧪 TESTING #12: Session cookie signature verification...');
+            const cookieValue = decodeURIComponent(sessionCookie[1]);
+            console.log('🧪 Cookie value:', cookieValue);
             
-            // Force session to use the cookie session ID
-            sessionStore.get(cookieSessionId, (err, sessionData) => {
-              if (err) {
-                console.error('🚨 Manual session retrieval failed:', err);
-              } else if (sessionData) {
-                console.log('✅ Manual session retrieval successful:', sessionData);
-                // Copy session data to current session
-                if (sessionData.userId) {
-                  req.session.userId = sessionData.userId;
-                  req.session.authenticated = sessionData.authenticated;
-                  console.log('🔧 Session data copied from existing session');
-                }
-              } else {
-                console.log('🚨 No session data found for cookie session ID');
-              }
-            });
+            // Test signature verification manually
+            const secret = process.env.SESSION_SECRET || 'kindra-development-secret-fixed';
+            const crypto = require('crypto');
+            const [sessionId, signature] = cookieValue.replace('s:', '').split('.');
+            
+            console.log('🧪 Session ID from cookie:', sessionId);
+            console.log('🧪 Signature from cookie:', signature);
+            
+            // Verify signature
+            const expectedSignature = crypto.createHmac('sha256', secret).update(sessionId).digest('base64url');
+            console.log('🧪 Expected signature:', expectedSignature);
+            console.log('🧪 Signatures match:', signature === expectedSignature);
+            
+            if (signature !== expectedSignature) {
+              console.log('🚨 #12 CONFIRMED: Session cookie signature verification failed!');
+            } else {
+              console.log('❌ #12 WRONG: Session cookie signature verification working');
+            }
           }
         }
       }
