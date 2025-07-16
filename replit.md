@@ -138,98 +138,143 @@ Fix OAuth/authentication system completely so session persistence works correctl
 ### Investigation Items
 
 **❌ WRONG ROOT CAUSE #1**: Session timeout/expiration
+- Hypothesis: Sessions expiring too quickly, causing authentication loss
 - Evidence: 7-day TTL active, sessions not expiring
+- Wrong Fix Attempted: Extending session TTL to 30 days
+- Confidence: 5% (eliminated - sessions not expiring)
 - Status: Eliminated
 
 **❌ WRONG ROOT CAUSE #2**: Database connectivity issues
+- Hypothesis: Database connection failures preventing session retrieval
 - Evidence: Sessions properly stored in database, badge system working
+- Wrong Fix Attempted: Database connection pooling improvements
+- Confidence: 10% (eliminated - database operations working)
 - Status: Eliminated
 
 **❌ WRONG ROOT CAUSE #3**: Cookie domain/protocol mismatch
-- Evidence: Cookies sent correctly with proper domain
+- Hypothesis: Cookies not sent due to domain/protocol mismatch
+- Evidence: Cookies sent correctly with proper domain (curl headers show cookies)
+- Wrong Fix Attempted: Cookie domain and sameSite configuration changes
+- Confidence: 15% (eliminated - cookies transmitted correctly)
 - Status: Eliminated
 
 **❌ WRONG ROOT CAUSE #4**: React Query cache invalidation
+- Hypothesis: Frontend cache preventing authentication state updates
 - Evidence: Fixed with 5-minute staleTime, but auth still fails
-- Status: Eliminated (was contributing factor, not root cause)
+- Wrong Fix Attempted: React Query cache staleTime and retry configuration
+- Confidence: 25% (eliminated - was contributing factor, not root cause)
+- Status: Eliminated
 
 **❌ WRONG ROOT CAUSE #5**: OAuth callback URL mismatch
-- Evidence: OAuth flow completes successfully
+- Hypothesis: OAuth callback URL not matching Google OAuth app configuration
+- Evidence: OAuth flow completes successfully, reaches callback endpoint
+- Wrong Fix Attempted: Updating OAuth callback URL configuration
+- Confidence: 20% (eliminated - OAuth flow working)
 - Status: Eliminated
 
 **🔍 INVESTIGATING #6**: Session store configuration mismatch
 - Hypothesis: PostgreSQL session store not properly configured to retrieve existing sessions
 - Evidence: New session created for each request instead of using existing
+- Potential Fix: Session store connection string and table configuration
+- Confidence: 60% (high - session store behavior inconsistent)
 - Status: TESTING
 
 **🔍 INVESTIGATING #7**: Session middleware order/configuration
 - Hypothesis: Session middleware configuration causing session ID regeneration
 - Evidence: resave/saveUninitialized settings may be interfering
+- Potential Fix: Session middleware resave/saveUninitialized configuration
+- Confidence: 70% (high - session middleware directly affects session behavior)
 - Status: TESTING
 
 **🔍 INVESTIGATING #8**: Express session parsing/serialization
 - Hypothesis: Session data not properly serialized/deserialized from database
 - Evidence: Session exists in DB but not loaded into req.session
+- Potential Fix: Session serialization/deserialization logic
+- Confidence: 65% (high - session data exists but not loaded)
 - Status: TESTING
 
 **🔍 INVESTIGATING #9**: Session secret/signing mismatch
 - Hypothesis: Session secret causing signature validation failures
 - Evidence: Different session secrets between OAuth callback and API requests
+- Potential Fix: Session secret consistency across all requests
+- Confidence: 80% (very high - session signing critical for session retrieval)
 - Status: TESTING
 
 **✅ CORRECT ROOT CAUSE #10**: Session cookie signing/parsing mismatch
 - Hypothesis: Session cookies not properly signed/parsed by express-session
 - Evidence: Cookie ID `v6J0nF_bVggTGHi3zxW4dSmiJoXTU0PQ` exists in DB but server creates new session `B_inqz0CDuC74lRE2yDmwzdLgg81Lbrz`
+- Correct Fix: Session cookie signature verification and parsing
+- Confidence: 95% (confirmed - session ID mismatch is definitive evidence)
 - Status: CONFIRMED - Session store not retrieving existing sessions due to ID parsing issue
 
 **🔍 INVESTIGATING #11**: Express session middleware parsing order
 - Hypothesis: Session middleware not properly parsing signed cookies before creating new sessions
 - Evidence: Session ID mismatch persists even with memory store
+- Potential Fix: Middleware order adjustment for proper cookie parsing
+- Confidence: 85% (very high - middleware order affects cookie parsing)
 - Status: NEEDS TESTING
 
 **🔍 INVESTIGATING #12**: Session cookie signature verification
 - Hypothesis: express-session signature verification failing, causing fallback to new session creation
 - Evidence: Cookie format `s%3A<sessionid>.<signature>` not properly verified
+- Potential Fix: Session signature verification configuration
+- Confidence: 90% (very high - signature verification is core to session retrieval)
 - Status: NEEDS TESTING
 
 **🔍 INVESTIGATING #13**: Session middleware initialization timing
 - Hypothesis: Session middleware called before proper cookie parsing setup
 - Evidence: Session middleware may not have access to properly parsed cookies
+- Potential Fix: Express middleware initialization order
+- Confidence: 75% (high - timing issues common in Express middleware)
 - Status: NEEDS TESTING
 
 **🔍 INVESTIGATING #14**: Session store get/set operation timing
 - Hypothesis: Session store get operation failing or timing out during request processing
 - Evidence: New session created instead of retrieving existing session from store
+- Potential Fix: Session store operation timeout and error handling
+- Confidence: 55% (moderate - async timing issues possible)
 - Status: NEEDS TESTING
 
 **🔍 INVESTIGATING #15**: Cookie parser middleware compatibility
 - Hypothesis: Cookie parsing middleware conflicts with express-session cookie handling
 - Evidence: Cookie format correct but session data not loaded
+- Potential Fix: Cookie parser middleware configuration or removal
+- Confidence: 45% (moderate - middleware conflicts possible)
 - Status: NEEDS TESTING
 
 **🔍 INVESTIGATING #16**: Session regeneration on each request
 - Hypothesis: Session regeneration being triggered inappropriately on each request
 - Evidence: Different session IDs generated for each request despite valid cookies
+- Potential Fix: Session regeneration logic and triggers
+- Confidence: 70% (high - session ID changing indicates regeneration)
 - Status: NEEDS TESTING
 
 **🔍 INVESTIGATING #17**: Session store memory allocation/cleanup
 - Hypothesis: Session store not properly maintaining session data between requests
 - Evidence: Session created but not persisting across requests
+- Potential Fix: Session store memory management and cleanup
+- Confidence: 40% (moderate - memory issues less likely)
 - Status: NEEDS TESTING
 
 **🔍 INVESTIGATING #18**: Express session secret consistency
 - Hypothesis: Session secret not consistent between session creation and retrieval
 - Evidence: Different session secrets causing signature validation failures
+- Potential Fix: Session secret configuration and environment variable handling
+- Confidence: 85% (very high - secret consistency critical for session verification)
 - Status: NEEDS TESTING
 
 **🔍 INVESTIGATING #19**: Session middleware configuration overrides
 - Hypothesis: Session middleware configuration being overridden by other middleware
 - Evidence: Session settings not taking effect as expected
+- Potential Fix: Session middleware configuration isolation
+- Confidence: 50% (moderate - configuration overrides possible)
 - Status: NEEDS TESTING
 
 **🔍 INVESTIGATING #20**: Session store connection pooling
 - Hypothesis: Session store connection issues causing session retrieval failures
 - Evidence: Session store not properly connected or accessible during requests
+- Potential Fix: Session store connection pooling and error handling
+- Confidence: 35% (low - connection issues less likely with memory store)
 - Status: NEEDS TESTING
 
 ### Key Principles
