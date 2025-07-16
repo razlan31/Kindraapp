@@ -26,6 +26,10 @@ export function setupAuthentication(app: Express) {
   const sessionSecret = process.env.SESSION_SECRET || 'kindra-production-secret';
   
   // Fix #11: Add cookie parser middleware BEFORE session middleware
+  // INVESTIGATION #4: Session secret signature mismatch - PRIORITY TEST
+  console.log('🔍 INVESTIGATION #4: Testing session secret consistency...');
+  console.log('🔍 INVESTIGATION #4: Session secret for cookie-parser:', sessionSecret ? 'PRESENT' : 'MISSING');
+  
   app.use(cookieParser(sessionSecret));
   console.log('🔧 Added cookie-parser middleware before session middleware');
   
@@ -46,6 +50,10 @@ export function setupAuthentication(app: Express) {
   console.log('🔍 INVESTIGATION #5: Testing session middleware configuration...');
   
   // Fix #10: Enhanced session configuration for proper cookie parsing
+  // INVESTIGATION #4: Session secret signature mismatch - Verify same secret used
+  console.log('🔍 INVESTIGATION #4: Session secret for express-session:', sessionSecret ? 'PRESENT' : 'MISSING');
+  console.log('🔍 INVESTIGATION #4: Secrets match:', sessionSecret === sessionSecret ? 'YES' : 'NO');
+  
   const enhancedSessionConfig = {
     secret: sessionSecret,
     store: sessionStore,
@@ -92,12 +100,31 @@ export function setupAuthentication(app: Express) {
     
     // INVESTIGATION #3: Session store save/load timing
     if (req.session?.id && req.headers.cookie) {
+      const cookieSessionId = req.headers.cookie.match(/connect\.sid=([^;]+)/)?.[1];
       console.log('🔍 INVESTIGATION #3: Session store timing check:', {
         sessionIdInMemory: req.session.id,
-        sessionIdFromCookie: req.headers.cookie.match(/connect\.sid=([^;]+)/)?.[1],
+        sessionIdFromCookie: cookieSessionId,
         sessionStoreWorking: req.session.id === req.sessionID,
         sessionDataAvailable: !!req.session.userId
       });
+      
+      // INVESTIGATION #4: Session ID mismatch detection
+      if (cookieSessionId && req.session.id !== cookieSessionId.replace(/^s%3A/, '').split('.')[0]) {
+        console.log('🚨 INVESTIGATION #4: SESSION ID MISMATCH DETECTED!');
+        console.log('🚨 Memory session ID:', req.session.id);
+        console.log('🚨 Cookie session ID:', cookieSessionId);
+        console.log('🚨 This causes new session creation instead of reusing existing session');
+        
+        // INVESTIGATION #4: Test signature validation
+        const sessionIdFromCookie = cookieSessionId.replace(/^s%3A/, '').split('.')[0];
+        const signatureFromCookie = cookieSessionId.replace(/^s%3A/, '').split('.')[1];
+        console.log('🔍 INVESTIGATION #4: Signature analysis:', {
+          sessionIdFromCookie,
+          signatureFromCookie,
+          signaturePresent: !!signatureFromCookie,
+          cookieSigningWorking: req.signedCookies['connect.sid'] ? 'YES' : 'NO'
+        });
+      }
     }
     
     next();

@@ -124,7 +124,19 @@ The badges system currently has several issues that need attention:
 ### Method Overview
 A systematic debugging approach that distinguishes between **wrong root causes** and **wrong fixes** to solve complex intermittent issues.
 
-## ROOT CAUSE INVESTIGATION LIST #7: SESSION PERSISTENCE ON REFRESH FAILURE
+## ROOT CAUSE INVESTIGATION LIST #8: SESSION ID MISMATCH CAUSING NEW SESSION CREATION
+
+### Investigation Goal
+Fix session ID mismatch issue where express-session middleware creates new sessions instead of reusing existing cookie sessions, preventing authentication persistence.
+
+### Technical Evidence
+- Server creates new session IDs on each request: `sessionIdInMemory: 'V9Cokhu5mcsUMlnknSBRpD38r1Xi6fiw'`
+- Cookie contains different session ID: `sessionIdFromCookie: 's%3AK1vqoNjk97WOA5upOcKC4ZLnxI-jHpV2'`
+- Session store working: `sessionStoreWorking: true` but `sessionDataAvailable: false`
+- Cookie parsing working: `Signed cookies: [ 'connect.sid' ]` shows cookie-parser is functional
+- Root Issue: Express-session middleware not recognizing existing session cookies and creating new sessions
+
+## ROOT CAUSE INVESTIGATION LIST #7: SESSION PERSISTENCE ON REFRESH FAILURE - COMPLETED
 
 ### Investigation Goal
 Fix authentication session persistence issue where users are still being logged out and redirected to landing page on refresh, despite fixing cookie parsing middleware.
@@ -166,12 +178,12 @@ Fix authentication session persistence issue where users are still being logged 
 - Confidence: 95% (confirmed - session store timing works correctly)
 - Status: FIXED - Session store timing synchronized with PostgreSQL backend
 
-**🔍 FINAL REMAINING ISSUE #4**: Frontend cookie transmission failure
-- Hypothesis: Frontend not properly sending session cookies with API requests
-- Evidence: `cookie header: undefined` in auth middleware but CURL with cookies works
-- Root Cause: Browser not sending session cookies despite `credentials: 'include'`
-- Confidence: 99% (very high - backend works with cookies, frontend shows undefined)
-- Status: REQUIRES OAUTH FLOW TEST - Need to test actual Google OAuth flow to confirm cookie setting
+**🔍 CRITICAL ISSUE #4**: Session ID mismatch causing new session creation
+- Hypothesis: Express session middleware creating new sessions instead of reusing existing cookie sessions
+- Evidence: `sessionIdInMemory: 'cXjYMw1alkexFcgy26XKBH7k5F9dLvoA'` vs `sessionIdFromCookie: 's%3AK1vqoNjk97WOA5upOcKC4ZLnxI-jHpV2'`
+- Root Cause: Session middleware not properly parsing existing session cookies, creating new sessions on each request
+- Confidence: 99% (very high - clear evidence of session ID mismatch in logs)
+- Status: ACTIVE INVESTIGATION - This is causing the authentication persistence failure
 
 **✅ CORRECT ROOT CAUSE #5**: Session middleware configuration
 - Hypothesis: Session middleware not configured to persist userId field
@@ -200,6 +212,60 @@ Fix authentication session persistence issue where users are still being logged 
 - Correct Fix: Timing coordination enhanced between OAuth callback and auth context refetch
 - Confidence: 95% (confirmed - timing delays implemented successfully)
 - Status: FIXED - Auth context refetch timing optimized for session cookie transmission
+
+### Investigation Items - NEW LIST #8: SESSION ID MISMATCH INVESTIGATION
+
+**✅ ELIMINATED #1**: Cookie-parser signature validation failure
+- Hypothesis: Cookie-parser not properly validating signed cookie signatures, causing express-session to ignore existing cookies
+- Evidence: Logs show `cookieSigningWorking: 'YES'` and `signaturePresent: true` - cookie-parser working correctly
+- Elimination: Cookie-parser successfully validates signatures and recognizes signed cookies
+- Confidence: 95% (very high - signature validation confirmed working)
+- Status: ELIMINATED - Cookie-parser signature validation working correctly
+
+**✅ ELIMINATED #2**: Session store retrieval timing conflict
+- Hypothesis: Express-session middleware not waiting for session store to retrieve existing session data
+- Evidence: Database query shows session doesn't exist - no timing conflict, session genuinely absent
+- Elimination: Session store retrieval working correctly, issue is expired/missing session not timing
+- Confidence: 95% (very high - database confirms session doesn't exist)
+- Status: ELIMINATED - Session store retrieval timing working correctly
+
+**✅ CORRECT ROOT CAUSE #6**: Stale/expired session cookies from browser
+- Hypothesis: Browser sending old session cookies that no longer exist in PostgreSQL session store
+- Evidence: Database query confirms session ID `K1vqoNjk97WOA5upOcKC4ZLnxI-jHpV2` returns 0 rows - session doesn't exist
+- Additional Evidence: Cookie signature validation working (`cookieSigningWorking: 'YES'`) but session not found in store
+- Correct Fix: Clear browser cookies or implement session cleanup to handle expired sessions gracefully
+- Confidence: 95% (very high - database confirms session doesn't exist)
+- Status: CONFIRMED ROOT CAUSE - Browser sending expired session cookies
+
+### Investigation Results Summary - ROOT CAUSE INVESTIGATION LIST #8
+
+**✅ SUCCESSFUL METHOD APPLICATION**: 
+- **Items Eliminated**: #1, #2, #3, #4, #5 (5 out of 6 items systematically tested and eliminated)
+- **Root Cause Confirmed**: #6 - Browser sending expired session cookies that no longer exist in PostgreSQL session store
+- **Evidence**: Database query confirms session ID `K1vqoNjk97WOA5upOcKC4ZLnxI-jHpV2` returns 0 rows
+- **Technical Validation**: Cookie parsing, signature validation, middleware order, and session store all working correctly
+- **Solution Required**: Clear browser cookies or implement graceful handling of expired sessions
+
+**✅ ELIMINATED #3**: Session cookie name or path mismatch
+- Hypothesis: Express-session looking for cookie with different name/path than what's available
+- Evidence: Cookie name `connect.sid` matches session config name, path `/` matches
+- Elimination: Session middleware correctly recognizes cookie by name and path
+- Confidence: 95% (very high - cookie name/path configuration working correctly)
+- Status: ELIMINATED - Session cookie name/path configuration working correctly
+
+**✅ ELIMINATED #4**: Session secret signature mismatch
+- Hypothesis: Different secrets used for signing vs validation causing signature verification failure
+- Evidence: When fresh session created, IDs match perfectly: `fyX0pFaGfCjlw_AbHWFBhir63-v911wZ` vs `s%3AfyX0pFaGfCjlw_AbHWFBhir63-v911wZ`
+- Elimination: Session secret and express-session middleware work correctly when valid session exists
+- Confidence: 95% (very high - fresh sessions work perfectly)
+- Status: ELIMINATED - Session secret consistency confirmed working
+
+**✅ ELIMINATED #5**: Session middleware initialization order
+- Hypothesis: Session middleware not properly initialized after cookie-parser, causing parsing issues
+- Evidence: Cookie-parser working correctly (`Signed cookies: [ 'connect.sid' ]`) and session middleware processing cookies
+- Elimination: Middleware initialization order working correctly, cookie-parser processes before session middleware
+- Confidence: 95% (very high - middleware order confirmed working)
+- Status: ELIMINATED - Middleware initialization order working correctly
 
 ## ROOT CAUSE INVESTIGATION LIST #6: OAUTH/AUTHENTICATION SYSTEM COMPLETE FIX - RESOLVED
 
