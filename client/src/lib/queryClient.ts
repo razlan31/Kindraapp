@@ -73,6 +73,15 @@ export async function apiRequest(
   console.log(`🔍 Response status: ${res.status}`);
   console.log(`🔍 Response headers: ${JSON.stringify(Array.from(res.headers.entries()))}`);
 
+  // Check for expired session renewal
+  if (res.headers.get('X-Session-Renewed') === 'true') {
+    console.log('🧹 Session renewed by server, invalidating auth cache');
+    // Import queryClient dynamically to avoid circular dependency
+    const { queryClient } = await import('./queryClient');
+    queryClient.invalidateQueries({ queryKey: ['/api/me'] });
+    queryClient.invalidateQueries({ queryKey: ['/api/auth/user'] });
+  }
+
   await throwIfResNotOk(res);
   return res;
 }
@@ -92,6 +101,15 @@ export const getQueryFn: <T>(options: {
 
     console.log(`🔍 Query Response status: ${res.status}`);
     console.log(`🔍 Query Response headers: ${JSON.stringify(Array.from(res.headers.entries()))}`);
+
+    // Check for expired session renewal in query responses
+    if (res.headers.get('X-Session-Renewed') === 'true') {
+      console.log('🧹 Session renewed by server during query, invalidating auth cache');
+      // Import queryClient dynamically to avoid circular dependency
+      const { queryClient } = await import('./queryClient');
+      queryClient.invalidateQueries({ queryKey: ['/api/me'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/auth/user'] });
+    }
 
     // Log 404 errors to identify what's causing them
     if (res.status === 404) {

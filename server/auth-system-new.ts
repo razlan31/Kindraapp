@@ -108,22 +108,25 @@ export function setupAuthentication(app: Express) {
         sessionDataAvailable: !!req.session.userId
       });
       
-      // INVESTIGATION #4: Session ID mismatch detection
+      // GRACEFUL EXPIRED SESSION HANDLING
       if (cookieSessionId && req.session.id !== cookieSessionId.replace(/^s%3A/, '').split('.')[0]) {
-        console.log('🚨 INVESTIGATION #4: SESSION ID MISMATCH DETECTED!');
-        console.log('🚨 Memory session ID:', req.session.id);
-        console.log('🚨 Cookie session ID:', cookieSessionId);
-        console.log('🚨 This causes new session creation instead of reusing existing session');
-        
-        // INVESTIGATION #4: Test signature validation
         const sessionIdFromCookie = cookieSessionId.replace(/^s%3A/, '').split('.')[0];
-        const signatureFromCookie = cookieSessionId.replace(/^s%3A/, '').split('.')[1];
-        console.log('🔍 INVESTIGATION #4: Signature analysis:', {
-          sessionIdFromCookie,
-          signatureFromCookie,
-          signaturePresent: !!signatureFromCookie,
-          cookieSigningWorking: req.signedCookies['connect.sid'] ? 'YES' : 'NO'
+        console.log('🧹 GRACEFUL HANDLING: Expired session cookie detected');
+        console.log('🧹 Clearing expired cookie:', sessionIdFromCookie);
+        console.log('🧹 New session created:', req.session.id);
+        
+        // Clear the expired cookie from browser
+        res.clearCookie('connect.sid', {
+          path: '/',
+          domain: undefined,
+          secure: process.env.NODE_ENV === 'production',
+          httpOnly: false,
+          sameSite: 'lax'
         });
+        
+        // Set response header to indicate session was renewed
+        res.setHeader('X-Session-Renewed', 'true');
+        console.log('🧹 Expired session cookie cleared, fresh session ready');
       }
     }
     
