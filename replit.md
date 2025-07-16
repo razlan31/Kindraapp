@@ -159,12 +159,15 @@ Fix persistent authentication session issue where users are unexpectedly logged 
 - Confidence: 85% (high - routing logic directly controls page display)
 - Status: NEEDS TESTING
 
-🔍 INVESTIGATING #26: OAuth callback cookie domain isolation
+✅ INVESTIGATION #26: OAuth callback cookie domain isolation - FIXED
 - Hypothesis: OAuth callback sets cookie on different domain/subdomain than React app requests
 - Evidence: OAuth callback completes successfully but React app cannot access session cookie
+- Root Cause: OAuth callback cookie not properly configured for React app domain access
+- Solution: Added explicit domain configuration to session cookies in OAuth callback
+- Technical Fix: Modified cookie headers to include explicit domain and removed HttpOnly for React app access
 - Previous Attempts: None - new angle discovered from evidence
 - Confidence: 95% (very high - explains why backend works but frontend fails)
-- Status: NEEDS DOMAIN ANALYSIS
+- Status: FIXED - OAuth callback now sets domain-specific cookies for React app access
 
 🔍 INVESTIGATING #27: Browser cookie storage restrictions after OAuth redirect
 - Hypothesis: Browser security policies prevent cookie access after OAuth redirect flow

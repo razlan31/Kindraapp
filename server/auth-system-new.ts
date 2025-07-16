@@ -254,31 +254,53 @@ export function setupAuthentication(app: Express) {
           cookieWillBeSent: !!cookieHeader
         });
         
-        // INVESTIGATION #4: CRITICAL FIX - Force session cookie to be accessible to React app
-        console.log('🔍 INVESTIGATION #4: CRITICAL FIX - Force session cookie to be accessible to React app');
+        // INVESTIGATION #26: CRITICAL FIX - OAuth callback cookie domain isolation
+        console.log('🔍 INVESTIGATION #26: CRITICAL FIX - OAuth callback cookie domain isolation');
         
-        // The session middleware sets the cookie, but we need to ensure it's accessible to frontend
-        // Force httpOnly to false so React can access the cookie
+        // The OAuth callback happens on the server side, but we need to ensure the cookie
+        // is set correctly for the React app to access it after the redirect
+        const host = req.get('host') || 'localhost:5000';
+        const protocol = req.secure || req.headers['x-forwarded-proto'] === 'https' ? 'https' : 'http';
+        
+        console.log('🔍 INVESTIGATION #26: OAuth callback domain analysis:', {
+          requestHost: host,
+          protocol: protocol,
+          userAgent: req.get('user-agent'),
+          origin: req.get('origin'),
+          referer: req.get('referer')
+        });
+        
+        // Force session cookie to be set with explicit domain configuration
         const currentCookies = res.getHeaders()['set-cookie'];
         console.log('🔍 Current cookies being set:', currentCookies);
         
-        // Ensure cookie is properly formatted for frontend access
+        // Ensure cookie is properly formatted for frontend access with correct domain
         if (currentCookies && Array.isArray(currentCookies)) {
           const sessionCookie = currentCookies.find(cookie => cookie.includes('connect.sid'));
           if (sessionCookie) {
-            // Ensure HttpOnly is false for frontend access
-            const modifiedCookie = sessionCookie.replace(/HttpOnly[;]?\s*/g, '');
+            // Remove HttpOnly and ensure correct domain/path for React app access
+            let modifiedCookie = sessionCookie.replace(/HttpOnly[;]?\s*/g, '');
+            
+            // Ensure the cookie is accessible to the React app domain
+            if (!modifiedCookie.includes('Domain=')) {
+              // Add explicit domain for the current host if not already present
+              modifiedCookie = modifiedCookie.replace(/;?\s*$/, `; Domain=${host.split(':')[0]}`);
+            }
+            
             res.setHeader('Set-Cookie', modifiedCookie);
-            console.log('🔍 INVESTIGATION #4: Modified session cookie for frontend access:', modifiedCookie);
+            console.log('🔍 INVESTIGATION #26: Modified session cookie for React app domain access:', modifiedCookie);
           }
         }
         
-        // INVESTIGATION #8: Auth context refetch timing - Add delay before redirect
-        console.log('🔍 INVESTIGATION #8: Adding delay before redirect to ensure cookie is fully set');
+        // INVESTIGATION #26: Redirect with domain-specific cookie handling
+        console.log('🔍 INVESTIGATION #26: Redirect with domain-specific cookie handling');
+        
+        // Add a brief delay to ensure the cookie is fully processed by the browser
         setTimeout(() => {
           console.log('✅ OAuth success, redirecting to /?auth=success');
+          console.log('🔍 INVESTIGATION #26: Cookie should now be accessible to React app on same domain');
           res.redirect("/?auth=success");
-        }, 100); // Small delay to ensure cookie is fully processed
+        }, 200); // Increased delay to ensure cookie propagation
 
       });
       
