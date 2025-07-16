@@ -302,11 +302,36 @@ export function setupAuthentication(app: Express) {
         // INVESTIGATION #26: Redirect with domain-specific cookie handling
         console.log('🔍 INVESTIGATION #26: Redirect with domain-specific cookie handling');
         
+        // CRITICAL FIX: Create session transfer mechanism
+        const transferKey = `transfer_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        const transferData = {
+          userId: user.id,
+          sessionId: req.sessionID,
+          timestamp: Date.now(),
+          expires: Date.now() + 30000 // 30 second expiry
+        };
+        
+        // Initialize global session transfers storage
+        if (!(global as any).sessionTransfers) {
+          (global as any).sessionTransfers = new Map();
+        }
+        
+        // Store transfer data temporarily
+        (global as any).sessionTransfers.set(transferKey, transferData);
+        
+        // Clean up expired transfers
+        setTimeout(() => {
+          (global as any).sessionTransfers.delete(transferKey);
+        }, 30000);
+        
+        console.log('🔍 CRITICAL FIX: Created session transfer key:', transferKey);
+        console.log('🔍 CRITICAL FIX: Transfer data stored:', transferData);
+        
         // Add a brief delay to ensure the cookie is fully processed by the browser
         setTimeout(() => {
-          console.log('✅ OAuth success, redirecting to /?auth=success');
+          console.log('✅ OAuth success, redirecting to /?auth=success with transfer key');
           console.log('🔍 INVESTIGATION #26: Cookie should now be accessible to React app on same domain');
-          res.redirect("/?auth=success");
+          res.redirect(`/?auth=success&transfer=${transferKey}`);
         }, 200); // Increased delay to ensure cookie propagation
 
       });
@@ -314,6 +339,61 @@ export function setupAuthentication(app: Express) {
     } catch (error) {
       console.error("❌ OAuth callback error:", error);
       res.redirect("/?error=auth_failed");
+    }
+  });
+
+  // Session transfer endpoint for OAuth callback bridge
+  app.get('/api/auth/transfer/:transferKey', async (req, res) => {
+    try {
+      const { transferKey } = req.params;
+      console.log('🔍 CRITICAL FIX: Session transfer requested for key:', transferKey);
+      
+      // Get transfer data from global storage
+      const transferData = (global as any).sessionTransfers?.get(transferKey);
+      if (!transferData) {
+        console.log('❌ Transfer key not found or expired');
+        return res.status(404).json({ error: 'Transfer key not found or expired' });
+      }
+      
+      // Check if expired
+      if (Date.now() > transferData.expires) {
+        console.log('❌ Transfer key expired');
+        (global as any).sessionTransfers.delete(transferKey);
+        return res.status(404).json({ error: 'Transfer key expired' });
+      }
+      
+      // Set session from transfer data
+      req.session.userId = transferData.userId;
+      req.session.authenticated = true;
+      
+      console.log('🔍 CRITICAL FIX: Session data transferred:', { userId: req.session.userId, authenticated: req.session.authenticated });
+      
+      // Save session
+      await new Promise<void>((resolve, reject) => {
+        req.session.save((err) => {
+          if (err) {
+            console.error('❌ Session save error:', err);
+            reject(err);
+          } else {
+            console.log('✅ Session saved successfully via transfer');
+            resolve();
+          }
+        });
+      });
+      
+      // Clean up transfer data
+      (global as any).sessionTransfers.delete(transferKey);
+      
+      console.log('🔍 CRITICAL FIX: Session transfer completed, new session ID:', req.session.id);
+      
+      res.json({ 
+        message: 'Session transfer successful', 
+        userId: req.session.userId,
+        sessionId: req.session.id 
+      });
+    } catch (error) {
+      console.error('❌ Session transfer error:', error);
+      res.status(500).json({ error: 'Session transfer failed' });
     }
   });
 
