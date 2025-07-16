@@ -30,8 +30,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const { data: currentUser, isLoading, error, refetch } = useQuery({
     queryKey: ['/api/me'],
     retry: false,
-    staleTime: 0,
-    cacheTime: 0,
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
+    cacheTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
     queryFn: async () => {
       // Removed excessive console logging for performance
       const response = await fetch('/api/me', {

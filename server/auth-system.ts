@@ -37,7 +37,7 @@ export function setupSession(app: Express) {
   app.use(session({
     secret: process.env.SESSION_SECRET || 'kindra-development-secret-fixed',
     store: sessionStore,
-    resave: false,
+    resave: true, // Force session to be saved on every request
     saveUninitialized: false, // Don't create session for every request
     rolling: true, // Extend session on activity
     cookie: {
@@ -46,6 +46,7 @@ export function setupSession(app: Express) {
       maxAge: sessionTtl,
       sameSite: 'lax',
       path: '/',
+      domain: undefined, // Let browser set domain automatically
     },
     name: 'connect.sid', // Explicit session name
   }));
@@ -164,7 +165,8 @@ export function setupOAuthRoutes(app: Express) {
         }
         console.log('✅ Session saved successfully, redirecting to home');
         console.log('✅ Session after save:', { userId: req.session.userId, sessionId: req.session.id });
-        res.redirect("/");
+        console.log('✅ Session cookie will be sent with name:', 'connect.sid');
+        res.redirect("/?auth=success");
       });
       
     } catch (error) {
@@ -187,6 +189,8 @@ export function setupApiRoutes(app: Express) {
       
       console.log(`🔍 Session check - userId: ${userId}, sessionID: ${req.session.id}`);
       console.log(`🔍 Session exists: ${!!req.session}, cookie header: ${req.headers.cookie}`);
+      console.log(`🔍 Full session data:`, req.session);
+      console.log(`🔍 Session authenticated: ${req.session.authenticated}`);
       
       // Force session to be saved if it doesn't exist
       if (!req.session.id) {
