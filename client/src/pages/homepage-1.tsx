@@ -36,6 +36,7 @@ export default function Homepage1() {
 
   return (
     <div className="w-full max-w-sm sm:max-w-md lg:max-w-lg mx-auto bg-white dark:bg-neutral-900 min-h-screen flex flex-col relative overflow-hidden">
+      {/* CACHE-BUSTER: 2025-01-16-v1-homepage-nav-fixed */}
       <Header />
 
       <main className="flex-1 overflow-y-auto pb-20 px-3 sm:px-4 lg:px-6 pt-4 sm:pt-6 lg:pt-8">

@@ -355,6 +355,7 @@ export default function Activities() {
   
   return (
     <div className="max-w-md mx-auto bg-white dark:bg-neutral-900 min-h-screen flex flex-col relative">
+      {/* CACHE-BUSTER: 2025-01-16-v1-activities-nav-fixed */}
       <Header />
 
       <main className="flex-1 overflow-y-auto pb-20 h-0">
