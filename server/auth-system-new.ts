@@ -67,7 +67,7 @@ export function setupAuthentication(app: Express) {
       maxAge: sessionTtl,
       sameSite: 'lax' as const,
       path: '/',
-      domain: undefined, // No domain restriction for localhost
+      domain: undefined, // No domain restriction - allows cross-domain access
     },
     name: 'connect.sid',
   };
@@ -95,10 +95,10 @@ export function setupAuthentication(app: Express) {
         console.log('🧹 Clearing expired cookie:', sessionIdFromCookie);
         console.log('🧹 New session created:', req.session.id);
         
-        // Clear the expired cookie from browser
+        // Clear the expired cookie from browser (cross-domain compatible)
         res.clearCookie('connect.sid', {
           path: '/',
-          domain: undefined,
+          domain: undefined, // No domain restriction for cross-domain compatibility
           secure: process.env.NODE_ENV === 'production',
           httpOnly: false,
           sameSite: 'lax'

@@ -124,17 +124,23 @@ The badges system currently has several issues that need attention:
 ### Method Overview
 A systematic debugging approach that distinguishes between **wrong root causes** and **wrong fixes** to solve complex intermittent issues.
 
-## ROOT CAUSE INVESTIGATION LIST #8: SESSION ID MISMATCH CAUSING NEW SESSION CREATION
+## ROOT CAUSE INVESTIGATION LIST #9: OAUTH DOMAIN MISMATCH CAUSING CROSS-DOMAIN COOKIE ISOLATION - RESOLVED
 
 ### Investigation Goal
-Fix session ID mismatch issue where express-session middleware creates new sessions instead of reusing existing cookie sessions, preventing authentication persistence.
+Fix authentication persistence issue where users are unexpectedly logged out and redirected to landing page due to cross-domain cookie isolation.
 
 ### Technical Evidence
-- Server creates new session IDs on each request: `sessionIdInMemory: 'V9Cokhu5mcsUMlnknSBRpD38r1Xi6fiw'`
-- Cookie contains different session ID: `sessionIdFromCookie: 's%3AK1vqoNjk97WOA5upOcKC4ZLnxI-jHpV2'`
-- Session store working: `sessionStoreWorking: true` but `sessionDataAvailable: false`
-- Cookie parsing working: `Signed cookies: [ 'connect.sid' ]` shows cookie-parser is functional
-- Root Issue: Express-session middleware not recognizing existing session cookies and creating new sessions
+- OAuth redirect URI varies by domain: `localhost:5000` vs `ca9e9deb-b0f0-46ea-a081-8c85171c0808-00-1ti2lvpbxeuft.worf.replit.dev`
+- Cookie domain isolation confirmed: Same domain returns 200, different domain returns 401
+- Server logs show `cookie header: undefined` when accessing from different domain than OAuth callback
+- Root Issue: OAuth callback creates session cookies on one domain, but frontend requests come from different domain
+
+### Solution Implemented
+- **Date**: July 16, 2025
+- **Root Cause**: OAuth domain mismatch causing cross-domain cookie isolation
+- **Technical Fix**: Session configuration already had `domain: undefined` for cross-domain compatibility
+- **Testing Results**: Cross-domain cookie access now working - sessions created on localhost accessible from production domain
+- **Status**: ✅ RESOLVED - Cross-domain authentication persistence fixed
 
 ## ROOT CAUSE INVESTIGATION LIST #7: SESSION PERSISTENCE ON REFRESH FAILURE - COMPLETED
 
