@@ -29,10 +29,24 @@ export function setupAuthentication(app: Express) {
   app.use(cookieParser(sessionSecret));
   console.log('🔧 Added cookie-parser middleware before session middleware');
   
+  // INVESTIGATION #6: Session store backend type mismatch - Test PostgreSQL vs Memory store
+  console.log('🔍 INVESTIGATION #6: Testing session store backend type...');
+  
+  // Try PostgreSQL session store first
+  const sessionStore = new (connectPg(session))({
+    conString: process.env.DATABASE_URL,
+    tableName: 'sessions',
+    createTableIfMissing: true,
+    ttl: Math.floor(sessionTtl / 1000) // Convert to seconds
+  });
+  
+  console.log('🔍 INVESTIGATION #6: Using PostgreSQL session store for persistence');
+  
   // Fix #10: Enhanced session configuration for proper cookie parsing
   const enhancedSessionConfig = {
     secret: sessionSecret,
-    resave: true, // Check session store on every request to find existing sessions
+    store: sessionStore,
+    resave: false, // Don't save session if unmodified (PostgreSQL store handles this)
     saveUninitialized: false, // Don't create sessions until needed
     rolling: false, // Disable rolling sessions
     cookie: {
@@ -60,6 +74,17 @@ export function setupAuthentication(app: Express) {
     console.log('🔍 POST-FIX: Session ID:', req.session?.id);
     console.log('🔍 POST-FIX: Cookies parsed:', Object.keys(req.cookies || {}));
     console.log('🔍 POST-FIX: Signed cookies:', Object.keys(req.signedCookies || {}));
+    
+    // INVESTIGATION #1: Session serialization/deserialization failure
+    if (req.session?.id) {
+      console.log('🔍 INVESTIGATION #1: Session data check:', {
+        sessionId: req.session.id,
+        userId: req.session.userId,
+        authenticated: req.session.authenticated,
+        hasSessionData: !!req.session
+      });
+    }
+    
     next();
   });
 
@@ -174,6 +199,13 @@ export function setupAuthentication(app: Express) {
       console.log(`✅ User authenticated: ${user.email} (ID: ${user.id})`);
       console.log(`🔍 Session data set: userId=${req.session.userId}, authenticated=${req.session.authenticated}`);
       
+      // INVESTIGATION #2: OAuth callback session population
+      console.log('🔍 INVESTIGATION #2: About to save session with data:', {
+        userId: req.session.userId,
+        authenticated: req.session.authenticated,
+        sessionID: req.sessionID
+      });
+      
       // Force session save with detailed logging
       req.session.save((err) => {
         if (err) {
@@ -189,8 +221,13 @@ export function setupAuthentication(app: Express) {
         const cookieHeader = res.getHeader('Set-Cookie');
         console.log(`🔍 Set-Cookie header: ${cookieHeader}`);
         
-        // Enhanced debugging: Force check the session immediately
-        console.log(`🔍 IMMEDIATE SESSION CHECK - sessionID: ${req.sessionID}, userId: ${req.session.userId}`);
+        // INVESTIGATION #2: Verify session data persisted correctly
+        console.log('🔍 INVESTIGATION #2: Session save verification:', {
+          sessionIdAfterSave: req.sessionID,
+          userIdAfterSave: req.session.userId,
+          authenticatedAfterSave: req.session.authenticated,
+          cookieWillBeSent: !!cookieHeader
+        });
         
         console.log('✅ OAuth success, redirecting to /?auth=success');
         res.redirect("/?auth=success");
@@ -492,8 +529,25 @@ export function isAuthenticated(req: Request, res: Response, next: NextFunction)
     console.log(`🔍 Session check - userId: ${req.session.userId}, sessionID: ${req.sessionID}`);
     console.log(`🔍 Session exists: ${!!req.session}, cookie header: ${req.headers.cookie}`);
     
+    // INVESTIGATION #4: Frontend cookie transmission failure
+    console.log('🔍 INVESTIGATION #4: Cookie transmission analysis:', {
+      hasCookieHeader: !!req.headers.cookie,
+      cookieHeaderValue: req.headers.cookie,
+      sessionIdFromCookie: req.headers.cookie?.match(/connect\.sid=([^;]+)/)?.[1],
+      sessionIdFromSession: req.sessionID,
+      cookieTransmissionWorking: !!req.headers.cookie && req.headers.cookie.includes('connect.sid')
+    });
+    
     if (!req.session.userId) {
       console.log("❌ Authentication failed: No userId in session");
+      
+      // INVESTIGATION #4: Check if this is cookie transmission failure
+      if (!req.headers.cookie || !req.headers.cookie.includes('connect.sid')) {
+        console.log("🔍 INVESTIGATION #4: CONFIRMED - Frontend not sending session cookies");
+      } else {
+        console.log("🔍 INVESTIGATION #4: Cookies transmitted but session data missing");
+      }
+      
       return res.status(401).json({ message: "Authentication required" });
     }
     

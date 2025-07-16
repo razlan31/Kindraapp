@@ -33,7 +33,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     staleTime: 5 * 60 * 1000, // Cache for 5 minutes
     cacheTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
     queryFn: async () => {
-      // Removed excessive console logging for performance
+      // INVESTIGATION #4: Frontend cookie transmission failure
+      console.log('🔍 INVESTIGATION #4: Auth context checking cookies:', document.cookie);
+      console.log('🔍 INVESTIGATION #4: About to fetch /api/me with credentials: include');
+      
       const response = await fetch('/api/me', {
         credentials: 'include',
         cache: 'no-cache',
@@ -42,7 +45,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           'Pragma': 'no-cache'
         }
       });
+      
+      console.log('🔍 INVESTIGATION #4: /api/me response status:', response.status);
+      console.log('🔍 INVESTIGATION #4: /api/me response headers:', Array.from(response.headers.entries()));
+      
       if (!response.ok) {
+        console.log('🔍 INVESTIGATION #4: Authentication failed - checking if cookies present');
+        console.log('🔍 INVESTIGATION #4: Document cookies at failure time:', document.cookie);
         throw new Error(`${response.status}: ${response.statusText}`);
       }
       const data = await response.json();
