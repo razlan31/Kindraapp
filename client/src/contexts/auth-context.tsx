@@ -38,10 +38,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     queryFn: async () => {
       console.log('🔍 AUTH: Checking authentication status...');
       
-      // INVESTIGATION #4: Enhanced cookie diagnostic
-      console.log('🔍 INVESTIGATION #4: Cookie diagnostic before auth request');
+      // INVESTIGATION #39: React app authentication context initialization race condition
+      console.log('🔍 INVESTIGATION #39: Enhanced auth context initialization with race condition prevention');
       console.log('🔍 Document.cookie:', document.cookie);
       console.log('🔍 Has session cookie:', document.cookie.includes('connect.sid'));
+      
+      // INVESTIGATION #39: Check if we need to wait for OAuth callback to complete
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('auth') === 'success') {
+        console.log('🔍 INVESTIGATION #39: OAuth callback detected, waiting for session cookie propagation');
+        // Wait for session cookie to be available after OAuth redirect
+        await new Promise(resolve => setTimeout(resolve, 300));
+        console.log('🔍 INVESTIGATION #39: Post-OAuth wait complete, document.cookie:', document.cookie);
+      }
       
       const response = await fetch('/api/me', {
         credentials: 'include',
@@ -93,11 +102,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       console.log('🔍 Document.cookie after OAuth:', document.cookie);
       console.log('🔍 Session cookie available:', document.cookie.includes('connect.sid'));
       
+      // INVESTIGATION #33: React app cookie reading timing issues
       // Allow time for session cookie to be set before refetching
       setTimeout(() => {
-        console.log('🔍 INVESTIGATION #4: About to refetch auth after OAuth');
+        console.log('🔍 INVESTIGATION #33: About to refetch auth after OAuth with timing fix');
+        console.log('🔍 INVESTIGATION #33: Final cookie check:', document.cookie);
         refetch();
-      }, 1000);
+      }, 500); // Reduced timeout for faster response
     };
 
     // Check for auth success in URL

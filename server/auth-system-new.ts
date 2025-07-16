@@ -63,11 +63,11 @@ export function setupAuthentication(app: Express) {
     cookie: {
       signed: true, // Ensure cookies are signed for proper parsing
       secure: false, // Development mode
-      httpOnly: false, // INVESTIGATION #5: Test with httpOnly false to see if frontend can access
+      httpOnly: false, // INVESTIGATION #34: Allow React app to read session cookie
       maxAge: sessionTtl,
-      sameSite: 'lax' as const,
+      sameSite: 'lax' as const, // INVESTIGATION #40: Lax for OAuth redirect compatibility
       path: '/',
-      domain: undefined, // No domain restriction - allows cross-domain access
+      domain: undefined, // INVESTIGATION #30: No domain restriction for localhost compatibility
     },
     name: 'connect.sid',
   };
@@ -281,10 +281,17 @@ export function setupAuthentication(app: Express) {
             // Remove HttpOnly and ensure correct domain/path for React app access
             let modifiedCookie = sessionCookie.replace(/HttpOnly[;]?\s*/g, '');
             
-            // Ensure the cookie is accessible to the React app domain
+            // INVESTIGATION #40: Browser same-site cookie policy enforcement
+            // Ensure the cookie is accessible to the React app domain with proper SameSite policy
             if (!modifiedCookie.includes('Domain=')) {
-              // Add explicit domain for the current host if not already present
-              modifiedCookie = modifiedCookie.replace(/;?\s*$/, `; Domain=${host.split(':')[0]}`);
+              // Don't add explicit domain - let browser handle it naturally for localhost
+              // Adding explicit domain can cause issues with localhost development
+              console.log('🔍 INVESTIGATION #40: Keeping domain undefined for same-site policy compatibility');
+            }
+            
+            // INVESTIGATION #40: Ensure SameSite=Lax for OAuth redirect compatibility
+            if (!modifiedCookie.includes('SameSite=')) {
+              modifiedCookie = modifiedCookie.replace(/;?\s*$/, '; SameSite=Lax');
             }
             
             res.setHeader('Set-Cookie', modifiedCookie);

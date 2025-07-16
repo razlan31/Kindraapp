@@ -54,20 +54,31 @@ export async function apiRequest(
   console.log(`🔍 API Request to ${url} (method: ${method})`);
   console.log(`🔍 Document cookies before request: ${document.cookie}`);
   
-  // INVESTIGATION #4: Frontend cookie transmission failure
+  // INVESTIGATION #36: React app fetch credentials configuration inconsistency
   const cookieHeader = document.cookie;
-  console.log('🔍 INVESTIGATION #4: Cookie transmission check:', {
+  console.log('🔍 INVESTIGATION #36: Enhanced fetch credentials configuration:', {
     hasCookies: !!cookieHeader,
     cookieContent: cookieHeader,
     containsSessionCookie: cookieHeader.includes('connect.sid'),
-    fetchCredentials: 'include'
+    fetchCredentials: 'include',
+    fetchMode: 'cors',
+    currentDomain: window.location.hostname,
+    currentPort: window.location.port
   });
   
+  // INVESTIGATION #36: Ensure consistent credentials and CORS configuration
   const res = await fetch(url, {
     method,
-    headers: data ? { "Content-Type": "application/json" } : {},
+    headers: {
+      ...(data ? { "Content-Type": "application/json" } : {}),
+      // INVESTIGATION #36: Add explicit headers for session cookie transmission
+      'Cache-Control': 'no-cache',
+      'Pragma': 'no-cache'
+    },
     body: data ? JSON.stringify(data) : undefined,
-    credentials: "include",
+    credentials: "include", // Always include credentials for session cookies
+    mode: 'cors', // Explicit CORS mode
+    cache: 'no-cache', // Prevent caching issues with authentication
   });
 
   console.log(`🔍 Response status: ${res.status}`);
