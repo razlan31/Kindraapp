@@ -54,6 +54,15 @@ export async function apiRequest(
   console.log(`🔍 API Request to ${url} (method: ${method})`);
   console.log(`🔍 Document cookies before request: ${document.cookie}`);
   
+  // INVESTIGATION #4: Frontend cookie transmission failure
+  const cookieHeader = document.cookie;
+  console.log('🔍 INVESTIGATION #4: Cookie transmission check:', {
+    hasCookies: !!cookieHeader,
+    cookieContent: cookieHeader,
+    containsSessionCookie: cookieHeader.includes('connect.sid'),
+    fetchCredentials: 'include'
+  });
+  
   const res = await fetch(url, {
     method,
     headers: data ? { "Content-Type": "application/json" } : {},

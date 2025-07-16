@@ -69,13 +69,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [currentUser, error, isLoading]);
 
-  // Listen for authentication success and refresh user data
+  // INVESTIGATION #8: Auth context refetch timing
   useEffect(() => {
     const handleAuthSuccess = () => {
-      // Force immediate refetch with delay to ensure cookie is set
+      console.log('🔍 INVESTIGATION #8: Auth success detected, checking cookies before refetch');
+      console.log('🔍 INVESTIGATION #8: Document cookies at auth success:', document.cookie);
+      
+      // Extended delay to ensure cookie is fully set
       setTimeout(() => {
+        console.log('🔍 INVESTIGATION #8: About to refetch after auth success');
+        console.log('🔍 INVESTIGATION #8: Document cookies before refetch:', document.cookie);
         refetch();
-      }, 500);
+      }, 1000); // Increased delay from 500ms to 1000ms
     };
 
     // Check for auth success in URL

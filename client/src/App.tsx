@@ -30,9 +30,22 @@ import { ModalProvider } from "./contexts/modal-context";
 import { SyncProvider } from "./contexts/sync-context";
 import { ThemeProvider } from "./contexts/theme-context";
 import ModalsContainer from "./components/modals/modals-container";
+import { diagnoseCookieTransmission } from "./utils/cookieTest";
+import { useEffect } from "react";
 
 function AppRoutes() {
   const { user, isLoading } = useAuth();
+  
+  // INVESTIGATION #4: Frontend cookie transmission failure diagnostic
+  useEffect(() => {
+    const runDiagnostic = async () => {
+      console.log('🔍 INVESTIGATION #4: Running frontend cookie diagnostic...');
+      const results = diagnoseCookieTransmission();
+      console.log('🔍 INVESTIGATION #4: Cookie diagnostic results:', results);
+    };
+    
+    runDiagnostic();
+  }, []);
   
   // Removed console logging for performance
   

@@ -42,6 +42,9 @@ export function setupAuthentication(app: Express) {
   
   console.log('🔍 INVESTIGATION #6: Using PostgreSQL session store for persistence');
   
+  // INVESTIGATION #5: Session middleware configuration
+  console.log('🔍 INVESTIGATION #5: Testing session middleware configuration...');
+  
   // Fix #10: Enhanced session configuration for proper cookie parsing
   const enhancedSessionConfig = {
     secret: sessionSecret,
@@ -52,7 +55,7 @@ export function setupAuthentication(app: Express) {
     cookie: {
       signed: true, // Ensure cookies are signed for proper parsing
       secure: false, // Development mode
-      httpOnly: true, // Secure cookies for production
+      httpOnly: false, // INVESTIGATION #5: Test with httpOnly false to see if frontend can access
       maxAge: sessionTtl,
       sameSite: 'lax' as const,
       path: '/',
@@ -60,6 +63,8 @@ export function setupAuthentication(app: Express) {
     },
     name: 'connect.sid',
   };
+  
+  console.log('🔍 INVESTIGATION #5: Session config test - httpOnly disabled for frontend access');
   
   console.log('🔧 Enhanced session config for proper cookie parsing:', {
     resave: enhancedSessionConfig.resave,
@@ -82,6 +87,16 @@ export function setupAuthentication(app: Express) {
         userId: req.session.userId,
         authenticated: req.session.authenticated,
         hasSessionData: !!req.session
+      });
+    }
+    
+    // INVESTIGATION #3: Session store save/load timing
+    if (req.session?.id && req.headers.cookie) {
+      console.log('🔍 INVESTIGATION #3: Session store timing check:', {
+        sessionIdInMemory: req.session.id,
+        sessionIdFromCookie: req.headers.cookie.match(/connect\.sid=([^;]+)/)?.[1],
+        sessionStoreWorking: req.session.id === req.sessionID,
+        sessionDataAvailable: !!req.session.userId
       });
     }
     
@@ -229,8 +244,12 @@ export function setupAuthentication(app: Express) {
           cookieWillBeSent: !!cookieHeader
         });
         
-        console.log('✅ OAuth success, redirecting to /?auth=success');
-        res.redirect("/?auth=success");
+        // INVESTIGATION #8: Auth context refetch timing - Add delay before redirect
+        console.log('🔍 INVESTIGATION #8: Adding delay before redirect to ensure cookie is fully set');
+        setTimeout(() => {
+          console.log('✅ OAuth success, redirecting to /?auth=success');
+          res.redirect("/?auth=success");
+        }, 100); // Small delay to ensure cookie is fully processed
       });
       
     } catch (error) {
