@@ -131,11 +131,15 @@ Fix authentication session persistence issue where users are still being logged 
 
 ### Technical Evidence Gathered
 - Cookie parsing middleware working correctly (`Signed cookies: [ 'connect.sid' ]`)
-- Session creation working (session IDs generated)
-- Session exists in memory but userId is undefined
+- OAuth callback sets `req.session.userId = user.id` and `req.session.authenticated = true`
+- OAuth callback successfully saves session with `req.session.save()`
+- Session exists in memory but userId is undefined during API requests
 - GET /api/connections returns 401 "Authentication required"
 - GET /api/me returns 401 "Not authenticated"
 - Session check shows: `userId: undefined, sessionID: [valid-id], Session exists: true, cookie header: undefined`
+- Frontend uses `credentials: 'include'` in fetch requests
+- Auth context checks `/api/me` endpoint which fails with 401
+- OAuth callback logs successful session save but data not persisting
 
 ### Investigation Items
 
@@ -172,6 +176,27 @@ Fix authentication session persistence issue where users are still being logged 
 - Evidence: Session exists but specific authentication fields not saved
 - Potential Fix: Session middleware saveUninitialized or resave settings
 - Confidence: 70% (high - session configuration affects field persistence)
+- Status: TESTING
+
+**🔍 INVESTIGATING #6**: Session store backend type mismatch
+- Hypothesis: Using memory store vs PostgreSQL session store causing persistence issues
+- Evidence: Session saved in OAuth callback but not accessible in authentication middleware
+- Potential Fix: Switch to PostgreSQL session store for persistent sessions
+- Confidence: 85% (very high - session storage backend affects persistence)
+- Status: ACTIVE INVESTIGATION
+
+**🔍 INVESTIGATING #7**: Session regeneration between requests
+- Hypothesis: New session created on each request instead of reusing existing
+- Evidence: Different session IDs generated, losing authentication state
+- Potential Fix: Session ID consistency and reuse mechanism
+- Confidence: 80% (high - session ID inconsistency is visible in logs)
+- Status: ACTIVE INVESTIGATION
+
+**🔍 INVESTIGATING #8**: Auth context refetch timing
+- Hypothesis: Auth context `/api/me` check happening before session cookie transmitted
+- Evidence: OAuth redirect to `/?auth=success` triggers immediate auth check
+- Potential Fix: Delay auth check or improve cookie timing
+- Confidence: 75% (high - timing coordination between OAuth and auth context)
 - Status: TESTING
 
 ## ROOT CAUSE INVESTIGATION LIST #6: OAUTH/AUTHENTICATION SYSTEM COMPLETE FIX - RESOLVED
