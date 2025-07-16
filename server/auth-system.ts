@@ -23,6 +23,8 @@ export function setupSession(app: Express) {
     createTableIfMissing: true,
     ttl: sessionTtl / 1000, // Convert to seconds
     tableName: "sessions", // Use existing sessions table
+    schemaName: "public", // Explicit schema
+    errorLog: console.error.bind(console), // Enable error logging
   });
   
   // Test session store connection
@@ -34,12 +36,21 @@ export function setupSession(app: Express) {
     console.error('❌ Session store error:', err);
   });
   
+  // Test session store manually
+  sessionStore.get('test-session-id', (err, session) => {
+    if (err) {
+      console.error('❌ Session store test failed:', err);
+    } else {
+      console.log('✅ Session store test passed');
+    }
+  });
+  
   app.use(session({
     secret: process.env.SESSION_SECRET || 'kindra-development-secret-fixed',
     store: sessionStore,
-    resave: true, // Force session to be saved on every request
-    saveUninitialized: false, // Don't create session for every request
-    rolling: true, // Extend session on activity
+    resave: false, // Don't resave unchanged sessions
+    saveUninitialized: false, // Don't create sessions until needed
+    rolling: false, // Don't extend session on activity to prevent session ID changes
     cookie: {
       secure: false, // Always false for development - HTTPS handled by proxy
       httpOnly: true, // Secure cookies
@@ -156,6 +167,7 @@ export function setupOAuthRoutes(app: Express) {
       req.session.authenticated = true;
       
       console.log(`✅ User authenticated: ${user.email} (ID: ${user.id})`);
+      console.log(`✅ Session before save:`, { userId: req.session.userId, sessionId: req.session.id, authenticated: req.session.authenticated });
       
       // Save session and redirect
       req.session.save((err) => {
@@ -166,6 +178,9 @@ export function setupOAuthRoutes(app: Express) {
         console.log('✅ Session saved successfully, redirecting to home');
         console.log('✅ Session after save:', { userId: req.session.userId, sessionId: req.session.id });
         console.log('✅ Session cookie will be sent with name:', 'connect.sid');
+        
+        // Don't manually set cookie - let express-session handle it
+        
         res.redirect("/?auth=success");
       });
       
@@ -191,6 +206,16 @@ export function setupApiRoutes(app: Express) {
       console.log(`🔍 Session exists: ${!!req.session}, cookie header: ${req.headers.cookie}`);
       console.log(`🔍 Full session data:`, req.session);
       console.log(`🔍 Session authenticated: ${req.session.authenticated}`);
+      
+      // Check if session exists in database
+      if (req.session.id) {
+        console.log(`🔍 Checking session ${req.session.id} in database...`);
+      }
+      
+      // Regenerate session if it's new and empty
+      if (!req.session.userId && !req.session.authenticated) {
+        console.log('🔍 Session has no user data, checking for authentication...');
+      }
       
       // Force session to be saved if it doesn't exist
       if (!req.session.id) {
