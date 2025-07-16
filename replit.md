@@ -124,6 +124,56 @@ The badges system currently has several issues that need attention:
 ### Method Overview
 A systematic debugging approach that distinguishes between **wrong root causes** and **wrong fixes** to solve complex intermittent issues.
 
+## ROOT CAUSE INVESTIGATION LIST #7: SESSION PERSISTENCE ON REFRESH FAILURE
+
+### Investigation Goal
+Fix authentication session persistence issue where users are still being logged out and redirected to landing page on refresh, despite fixing cookie parsing middleware.
+
+### Technical Evidence Gathered
+- Cookie parsing middleware working correctly (`Signed cookies: [ 'connect.sid' ]`)
+- Session creation working (session IDs generated)
+- Session exists in memory but userId is undefined
+- GET /api/connections returns 401 "Authentication required"
+- GET /api/me returns 401 "Not authenticated"
+- Session check shows: `userId: undefined, sessionID: [valid-id], Session exists: true, cookie header: undefined`
+
+### Investigation Items
+
+**🔍 INVESTIGATING #1**: Session serialization/deserialization failure
+- Hypothesis: Session data not properly serialized to include userId when session is saved
+- Evidence: Session exists but userId is undefined in authentication middleware
+- Potential Fix: OAuth callback not properly setting userId in session
+- Confidence: 85% (very high - userId missing from session despite session existing)
+- Status: ACTIVE INVESTIGATION
+
+**🔍 INVESTIGATING #2**: OAuth callback session population
+- Hypothesis: OAuth callback completes but doesn't populate session with userId
+- Evidence: Sessions created but authentication data not persisted
+- Potential Fix: OAuth callback success handler not setting req.session.userId
+- Confidence: 90% (very high - core authentication data missing)
+- Status: ACTIVE INVESTIGATION
+
+**🔍 INVESTIGATING #3**: Session store save/load timing
+- Hypothesis: Session data saved but not loaded on subsequent requests
+- Evidence: Session exists but data not accessible during authentication checks
+- Potential Fix: Session store save/load operation timing or async issues
+- Confidence: 75% (high - session persistence mechanism)
+- Status: TESTING
+
+**🔍 INVESTIGATING #4**: Cookie transmission from frontend
+- Hypothesis: Frontend not properly sending session cookies with API requests
+- Evidence: cookie header shows as undefined in session check logs
+- Potential Fix: Frontend fetch configuration missing credentials or cookie settings
+- Confidence: 80% (high - cookie header undefined suggests transmission issue)
+- Status: ACTIVE INVESTIGATION
+
+**🔍 INVESTIGATING #5**: Session middleware configuration
+- Hypothesis: Session middleware not configured to persist userId field
+- Evidence: Session exists but specific authentication fields not saved
+- Potential Fix: Session middleware saveUninitialized or resave settings
+- Confidence: 70% (high - session configuration affects field persistence)
+- Status: TESTING
+
 ## ROOT CAUSE INVESTIGATION LIST #6: OAUTH/AUTHENTICATION SYSTEM COMPLETE FIX - RESOLVED
 
 ### Investigation Goal
