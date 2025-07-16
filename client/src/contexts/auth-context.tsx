@@ -38,6 +38,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     queryFn: async () => {
       console.log('🔍 AUTH: Checking authentication status...');
       
+      // INVESTIGATION #4: Enhanced cookie diagnostic
+      console.log('🔍 INVESTIGATION #4: Cookie diagnostic before auth request');
+      console.log('🔍 Document.cookie:', document.cookie);
+      console.log('🔍 Has session cookie:', document.cookie.includes('connect.sid'));
+      
       const response = await fetch('/api/me', {
         credentials: 'include',
         cache: 'no-cache',
@@ -83,8 +88,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const handleAuthSuccess = () => {
       console.log('🔐 OAuth authentication successful, refreshing user data...');
       
+      // INVESTIGATION #4: Check if session cookie is now available after OAuth
+      console.log('🔍 INVESTIGATION #4: Post-OAuth cookie check');
+      console.log('🔍 Document.cookie after OAuth:', document.cookie);
+      console.log('🔍 Session cookie available:', document.cookie.includes('connect.sid'));
+      
       // Allow time for session cookie to be set before refetching
       setTimeout(() => {
+        console.log('🔍 INVESTIGATION #4: About to refetch auth after OAuth');
         refetch();
       }, 1000);
     };
@@ -92,7 +103,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Check for auth success in URL
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('auth') === 'success') {
-      handleAuthSuccess();
+      const transferKey = urlParams.get('transfer');
+      if (transferKey) {
+        // Use session transfer endpoint
+        console.log('🔍 INVESTIGATION #4: Using session transfer endpoint');
+        
+        fetch(`/api/auth/transfer/${transferKey}`, {
+          method: 'GET',
+          credentials: 'include'
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            console.log('✅ Session transfer successful');
+            handleAuthSuccess();
+          } else {
+            console.error('❌ Session transfer failed:', data.error);
+            handleAuthSuccess(); // Fallback to regular handling
+          }
+        })
+        .catch(error => {
+          console.error('❌ Session transfer error:', error);
+          handleAuthSuccess(); // Fallback to regular handling
+        });
+      } else {
+        handleAuthSuccess();
+      }
       // Clean up URL
       window.history.replaceState({}, document.title, window.location.pathname);
     }

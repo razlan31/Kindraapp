@@ -254,12 +254,33 @@ export function setupAuthentication(app: Express) {
           cookieWillBeSent: !!cookieHeader
         });
         
+        // INVESTIGATION #4: Alternative approach - Create session transfer endpoint
+        console.log('🔍 INVESTIGATION #4: Creating session transfer for frontend access');
+        
+        // Instead of redirecting immediately, create a session transfer endpoint
+        // that the frontend can call to get the session cookie
+        
+        // Store session data in a temporary transfer mechanism
+        const transferKey = `auth_transfer_${Date.now()}_${Math.random()}`;
+        
+        // Store the session ID temporarily (in memory for now)
+        app.locals.authTransfer = app.locals.authTransfer || {};
+        app.locals.authTransfer[transferKey] = {
+          sessionId: req.sessionID,
+          userId: user.id,
+          authenticated: true,
+          timestamp: Date.now()
+        };
+        
+        console.log('✅ Session transfer created:', transferKey);
+        
         // INVESTIGATION #8: Auth context refetch timing - Add delay before redirect
         console.log('🔍 INVESTIGATION #8: Adding delay before redirect to ensure cookie is fully set');
         setTimeout(() => {
-          console.log('✅ OAuth success, redirecting to /?auth=success');
-          res.redirect("/?auth=success");
+          console.log('✅ OAuth success, redirecting to /?auth=success&transfer=' + transferKey);
+          res.redirect("/?auth=success&transfer=" + transferKey);
         }, 100); // Small delay to ensure cookie is fully processed
+
       });
       
     } catch (error) {
@@ -533,6 +554,50 @@ export function setupAuthentication(app: Express) {
       console.error("❌ /api/me error:", error);
       res.status(500).json({ message: "Server error" });
     }
+  });
+
+  // Session transfer endpoint for frontend cookie access
+  app.get("/api/auth/transfer/:transferKey", (req: Request, res: Response) => {
+    const { transferKey } = req.params;
+    
+    // Check if transfer key exists
+    const authTransfer = app.locals.authTransfer?.[transferKey];
+    if (!authTransfer) {
+      return res.status(404).json({ error: "Transfer key not found or expired" });
+    }
+    
+    // Check if transfer is not too old (5 minutes max)
+    if (Date.now() - authTransfer.timestamp > 5 * 60 * 1000) {
+      delete app.locals.authTransfer[transferKey];
+      return res.status(410).json({ error: "Transfer key expired" });
+    }
+    
+    // Set session data
+    req.session.userId = authTransfer.userId;
+    req.session.authenticated = authTransfer.authenticated;
+    
+    // Save session
+    req.session.save((err) => {
+      if (err) {
+        console.error('❌ Session transfer save error:', err);
+        return res.status(500).json({ error: "Session transfer failed" });
+      }
+      
+      console.log('✅ Session transferred successfully to frontend');
+      console.log('🔍 New session ID:', req.sessionID);
+      
+      // Clean up transfer key
+      delete app.locals.authTransfer[transferKey];
+      
+      // Return success with user data
+      res.json({
+        success: true,
+        user: {
+          id: authTransfer.userId,
+          authenticated: authTransfer.authenticated
+        }
+      });
+    });
   });
 
   // Logout
