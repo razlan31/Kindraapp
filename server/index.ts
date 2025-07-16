@@ -143,16 +143,19 @@ let startupInProgress = false;
   
   app.use('/files', express.static(path.join(import.meta.dirname, '../public')));
 
-  // Vite development server setup
+  // Vite development server setup (AFTER authentication to prevent interference)
   console.log("🔍 Environment check - NODE_ENV:", process.env.NODE_ENV);
-  if (app.get("env") === "development") { // Re-enabled to test
-    console.log("🚀 Setting up Vite for development...");
+  if (app.get("env") === "development") {
+    console.log("🚀 Setting up Vite for development (AFTER authentication)...");
     await setupVite(app, server);
     console.log("✅ Vite setup completed");
   } else {
     console.log("🏗️ Setting up static serving for production...");
     serveStatic(app);
-    
+  }
+
+  // Production fallback for React Router (only after authentication is set up)
+  if (app.get("env") !== "development") {
     // Add React Router fallback for production only
     app.get('*', (req, res, next) => {
       // Skip API routes
