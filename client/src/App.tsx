@@ -36,9 +36,26 @@ import { useEffect } from "react";
 function AppRoutes() {
   const { user, isLoading } = useAuth();
   
-  // Clean application startup
+  // Clean application startup with cookie diagnostic
   useEffect(() => {
     console.log('🚀 Kindra application starting...');
+    
+    // INVESTIGATION #4: Frontend cookie diagnostic
+    console.log('🔍 INVESTIGATION #4: Frontend cookie diagnostic on startup');
+    console.log('🔍 Document.cookie:', document.cookie);
+    console.log('🔍 Has session cookie:', document.cookie.includes('connect.sid'));
+    console.log('🔍 Location:', window.location.href);
+    
+    // Check if cookies are accessible
+    const allCookies = document.cookie;
+    const sessionCookie = allCookies.split(';').find(c => c.trim().startsWith('connect.sid='));
+    console.log('🔍 Session cookie found:', !!sessionCookie);
+    console.log('🔍 Session cookie value:', sessionCookie?.trim() || 'NOT FOUND');
+    
+    // Test if we can set cookies
+    document.cookie = 'test_cookie=test_value; path=/; SameSite=Lax';
+    const canSetCookies = document.cookie.includes('test_cookie');
+    console.log('🔍 Can set cookies:', canSetCookies);
   }, []);
   
   // Removed console logging for performance
