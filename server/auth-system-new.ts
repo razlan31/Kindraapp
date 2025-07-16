@@ -254,31 +254,30 @@ export function setupAuthentication(app: Express) {
           cookieWillBeSent: !!cookieHeader
         });
         
-        // INVESTIGATION #4: Alternative approach - Create session transfer endpoint
-        console.log('🔍 INVESTIGATION #4: Creating session transfer for frontend access');
+        // INVESTIGATION #4: CRITICAL FIX - Force session cookie to be accessible to React app
+        console.log('🔍 INVESTIGATION #4: CRITICAL FIX - Force session cookie to be accessible to React app');
         
-        // Instead of redirecting immediately, create a session transfer endpoint
-        // that the frontend can call to get the session cookie
+        // The session middleware sets the cookie, but we need to ensure it's accessible to frontend
+        // Force httpOnly to false so React can access the cookie
+        const currentCookies = res.getHeaders()['set-cookie'];
+        console.log('🔍 Current cookies being set:', currentCookies);
         
-        // Store session data in a temporary transfer mechanism
-        const transferKey = `auth_transfer_${Date.now()}_${Math.random()}`;
-        
-        // Store the session ID temporarily (in memory for now)
-        app.locals.authTransfer = app.locals.authTransfer || {};
-        app.locals.authTransfer[transferKey] = {
-          sessionId: req.sessionID,
-          userId: user.id,
-          authenticated: true,
-          timestamp: Date.now()
-        };
-        
-        console.log('✅ Session transfer created:', transferKey);
+        // Ensure cookie is properly formatted for frontend access
+        if (currentCookies && Array.isArray(currentCookies)) {
+          const sessionCookie = currentCookies.find(cookie => cookie.includes('connect.sid'));
+          if (sessionCookie) {
+            // Ensure HttpOnly is false for frontend access
+            const modifiedCookie = sessionCookie.replace(/HttpOnly[;]?\s*/g, '');
+            res.setHeader('Set-Cookie', modifiedCookie);
+            console.log('🔍 INVESTIGATION #4: Modified session cookie for frontend access:', modifiedCookie);
+          }
+        }
         
         // INVESTIGATION #8: Auth context refetch timing - Add delay before redirect
         console.log('🔍 INVESTIGATION #8: Adding delay before redirect to ensure cookie is fully set');
         setTimeout(() => {
-          console.log('✅ OAuth success, redirecting to /?auth=success&transfer=' + transferKey);
-          res.redirect("/?auth=success&transfer=" + transferKey);
+          console.log('✅ OAuth success, redirecting to /?auth=success');
+          res.redirect("/?auth=success");
         }, 100); // Small delay to ensure cookie is fully processed
 
       });

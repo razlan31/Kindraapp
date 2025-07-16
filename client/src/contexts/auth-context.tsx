@@ -103,31 +103,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Check for auth success in URL
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('auth') === 'success') {
-      const transferKey = urlParams.get('transfer');
-      if (transferKey) {
-        // Use session transfer endpoint
-        console.log('🔍 INVESTIGATION #4: Using session transfer endpoint');
-        
-        fetch(`/api/auth/transfer/${transferKey}`, {
-          method: 'GET',
-          credentials: 'include'
-        })
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            console.log('✅ Session transfer successful');
-            handleAuthSuccess();
-          } else {
-            console.error('❌ Session transfer failed:', data.error);
-            handleAuthSuccess(); // Fallback to regular handling
-          }
-        })
-        .catch(error => {
-          console.error('❌ Session transfer error:', error);
-          handleAuthSuccess(); // Fallback to regular handling
-        });
-      } else {
+      console.log('🔍 INVESTIGATION #4: OAuth callback detected, checking for session cookie');
+      
+      // Check if session cookie is now available
+      const hasCookie = document.cookie.includes('connect.sid');
+      console.log('🔍 Session cookie available after OAuth:', hasCookie);
+      
+      if (hasCookie) {
+        console.log('✅ Session cookie found, proceeding with authentication');
         handleAuthSuccess();
+      } else {
+        console.log('❌ Session cookie not found, waiting and retrying...');
+        // Wait a moment and check again
+        setTimeout(() => {
+          const hasDelayedCookie = document.cookie.includes('connect.sid');
+          console.log('🔍 Session cookie available after delay:', hasDelayedCookie);
+          handleAuthSuccess();
+        }, 500);
       }
       // Clean up URL
       window.history.replaceState({}, document.title, window.location.pathname);
