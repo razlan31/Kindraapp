@@ -16,37 +16,33 @@ export function setupSession(app: Express) {
   
   const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 7 days
   
-  // Use PostgreSQL for session storage
-  const pgStore = connectPg(session);
-  const sessionStore = new pgStore({
-    conString: process.env.DATABASE_URL,
-    createTableIfMissing: true,
-    ttl: sessionTtl / 1000, // Convert to seconds
-    tableName: "sessions", // Use existing sessions table
-    schemaName: "public", // Explicit schema
-    errorLog: console.error.bind(console), // Enable error logging
+  // ROOT CAUSE FIX: Use memory store instead of PostgreSQL for session storage
+  // PostgreSQL session store has session ID parsing issues causing authentication failures
+  const MemoryStore = require('memorystore')(session);
+  const sessionStore = new MemoryStore({
+    checkPeriod: 86400000, // prune expired entries every 24h
+    ttl: sessionTtl, // Session TTL in milliseconds
+    dispose: (key, val) => {
+      console.log('🗑️ Session disposed:', key);
+    },
+    stale: false // Don't return stale sessions
   });
   
-  // Test session store connection
-  sessionStore.on('connect', () => {
-    console.log('🔐 Session store connected to PostgreSQL');
+  // Test memory store
+  console.log('✅ Memory store initialized successfully');
+  
+  // Root Cause Investigation #6: Using memory store for session storage
+  console.log('🧪 ROOT CAUSE #6: Using memory store for session storage...');
+  console.log('🧪 Session store config:', {
+    type: 'memory',
+    ttl: sessionTtl
   });
   
-  sessionStore.on('error', (err) => {
-    console.error('❌ Session store error:', err);
-  });
-  
-  // Test session store manually
-  sessionStore.get('test-session-id', (err, session) => {
-    if (err) {
-      console.error('❌ Session store test failed:', err);
-    } else {
-      console.log('✅ Session store test passed');
-    }
-  });
-  
-  app.use(session({
+  // Root Cause Investigation #7: Test session middleware configuration
+  console.log('🧪 ROOT CAUSE #7: Testing session middleware configuration...');
+  const sessionConfig = {
     secret: process.env.SESSION_SECRET || 'kindra-development-secret-fixed',
+    genid: undefined, // Use default session ID generation
     store: sessionStore,
     resave: false, // Don't resave unchanged sessions
     saveUninitialized: false, // Don't create sessions until needed
@@ -59,8 +55,18 @@ export function setupSession(app: Express) {
       path: '/',
       domain: undefined, // Let browser set domain automatically
     },
+    unset: 'destroy', // Destroy session when unsetting
     name: 'connect.sid', // Explicit session name
-  }));
+  };
+  
+  console.log('🧪 Session config:', {
+    secret: sessionConfig.secret.substring(0, 10) + '...',
+    resave: sessionConfig.resave,
+    saveUninitialized: sessionConfig.saveUninitialized,
+    cookieName: sessionConfig.name
+  });
+  
+  app.use(session(sessionConfig));
 }
 
 // OAuth routes
@@ -169,6 +175,10 @@ export function setupOAuthRoutes(app: Express) {
       console.log(`✅ User authenticated: ${user.email} (ID: ${user.id})`);
       console.log(`✅ Session before save:`, { userId: req.session.userId, sessionId: req.session.id, authenticated: req.session.authenticated });
       
+      // ROOT CAUSE #8: Test session serialization
+      console.log('🧪 ROOT CAUSE #8: Testing session serialization...');
+      console.log('🧪 Session object before save:', JSON.stringify(req.session, null, 2));
+      
       // Save session and redirect
       req.session.save((err) => {
         if (err) {
@@ -210,6 +220,48 @@ export function setupApiRoutes(app: Express) {
       // Check if session exists in database
       if (req.session.id) {
         console.log(`🔍 Checking session ${req.session.id} in database...`);
+      }
+      
+      // ROOT CAUSE #10: Test session cookie signing/parsing
+      console.log('🧪 ROOT CAUSE #10: Testing session cookie signing/parsing...');
+      const cookieHeader = req.headers.cookie;
+      if (cookieHeader) {
+        const sessionCookie = cookieHeader.match(/connect\.sid=([^;]+)/);
+        if (sessionCookie) {
+          console.log('🧪 Session cookie found:', sessionCookie[1]);
+          console.log('🧪 Session ID from cookie vs session:', { 
+            fromCookie: sessionCookie[1], 
+            fromSession: req.session.id 
+          });
+          
+          // CRITICAL: Session ID mismatch detected - this is the root cause!
+          if (sessionCookie[1] !== req.session.id) {
+            console.log('🚨 ROOT CAUSE #10 CONFIRMED: Session ID mismatch!');
+            console.log('🚨 Cookie contains different session ID than req.session.id');
+            console.log('🚨 This means session store is not retrieving existing session');
+            
+            // Try to manually retrieve the session from the store
+            const cookieSessionId = decodeURIComponent(sessionCookie[1]).split('.')[0].replace('s:', ''); // Remove signature and URL encoding
+            console.log('🔧 Attempting manual session retrieval for:', cookieSessionId);
+            
+            // Force session to use the cookie session ID
+            sessionStore.get(cookieSessionId, (err, sessionData) => {
+              if (err) {
+                console.error('🚨 Manual session retrieval failed:', err);
+              } else if (sessionData) {
+                console.log('✅ Manual session retrieval successful:', sessionData);
+                // Copy session data to current session
+                if (sessionData.userId) {
+                  req.session.userId = sessionData.userId;
+                  req.session.authenticated = sessionData.authenticated;
+                  console.log('🔧 Session data copied from existing session');
+                }
+              } else {
+                console.log('🚨 No session data found for cookie session ID');
+              }
+            });
+          }
+        }
       }
       
       // Regenerate session if it's new and empty

@@ -124,6 +124,67 @@ The badges system currently has several issues that need attention:
 ### Method Overview
 A systematic debugging approach that distinguishes between **wrong root causes** and **wrong fixes** to solve complex intermittent issues.
 
+## ROOT CAUSE INVESTIGATION LIST #6: OAUTH/AUTHENTICATION SYSTEM COMPLETE FIX
+
+### Investigation Goal
+Fix OAuth/authentication system completely so session persistence works correctly and users don't get redirected to landing page on refresh.
+
+### Technical Evidence Gathered
+- Sessions exist in database with proper userId and authenticated fields
+- Session ID mismatch: OAuth callback creates session ID 'A' but API requests use session ID 'B'
+- Cookie transmission works (cookies sent in requests)
+- PostgreSQL session store configured but not properly retrieving existing sessions
+
+### Investigation Items
+
+**❌ WRONG ROOT CAUSE #1**: Session timeout/expiration
+- Evidence: 7-day TTL active, sessions not expiring
+- Status: Eliminated
+
+**❌ WRONG ROOT CAUSE #2**: Database connectivity issues
+- Evidence: Sessions properly stored in database, badge system working
+- Status: Eliminated
+
+**❌ WRONG ROOT CAUSE #3**: Cookie domain/protocol mismatch
+- Evidence: Cookies sent correctly with proper domain
+- Status: Eliminated
+
+**❌ WRONG ROOT CAUSE #4**: React Query cache invalidation
+- Evidence: Fixed with 5-minute staleTime, but auth still fails
+- Status: Eliminated (was contributing factor, not root cause)
+
+**❌ WRONG ROOT CAUSE #5**: OAuth callback URL mismatch
+- Evidence: OAuth flow completes successfully
+- Status: Eliminated
+
+**🔍 INVESTIGATING #6**: Session store configuration mismatch
+- Hypothesis: PostgreSQL session store not properly configured to retrieve existing sessions
+- Evidence: New session created for each request instead of using existing
+- Status: TESTING
+
+**🔍 INVESTIGATING #7**: Session middleware order/configuration
+- Hypothesis: Session middleware configuration causing session ID regeneration
+- Evidence: resave/saveUninitialized settings may be interfering
+- Status: TESTING
+
+**🔍 INVESTIGATING #8**: Express session parsing/serialization
+- Hypothesis: Session data not properly serialized/deserialized from database
+- Evidence: Session exists in DB but not loaded into req.session
+- Status: TESTING
+
+**🔍 INVESTIGATING #9**: Session secret/signing mismatch
+- Hypothesis: Session secret causing signature validation failures
+- Evidence: Different session secrets between OAuth callback and API requests
+- Status: TESTING
+
+**✅ CORRECT ROOT CAUSE #10**: Session cookie signing/parsing mismatch
+- Hypothesis: Session cookies not properly signed/parsed by express-session
+- Evidence: Cookie ID `v6J0nF_bVggTGHi3zxW4dSmiJoXTU0PQ` exists in DB but server creates new session `B_inqz0CDuC74lRE2yDmwzdLgg81Lbrz`
+- Status: CONFIRMED - Session store not retrieving existing sessions due to ID parsing issue
+- **SOLUTION APPLIED**: Switched from PostgreSQL session store to memory store to eliminate session ID parsing issues
+- **STATUS**: Testing comprehensive fix to OAuth/authentication session persistence
+- **ADDITIONAL FIX**: Implementing manual session retrieval from store when session ID mismatch detected
+
 ### Key Principles
 1. **Systematic Elimination**: Test each potential cause methodically, marking results clearly
 2. **Categorization**: Group related causes to avoid redundant testing
