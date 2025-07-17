@@ -60,11 +60,3 @@
     "bufferutil": "^4.0.8"
   }
 }
-{
-  "expo": {
-    "name": "Kindraapp",
-    "slug": "kindraapp",
-    "sdkVersion": "53.0.0",
-    "entryPoint": "./App.js"
-  }
-}
